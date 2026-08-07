@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS } = require("./config");
+const { writeFeeds } = require("./ics");
 
 const OUT_DIR = path.join(__dirname, "data");
 const OUT_FILE = path.join(OUT_DIR, "events.json");
@@ -120,10 +121,12 @@ function shape(raw, region) {
     name: String(raw.name || "").trim(),
     type: TYPE_MAP[raw.event_configuration_template] || "other",
     start: localIso(start),
+    end: raw.end_datetime ? localIso(new Date(raw.end_datetime)) : null,
     day: dayKey(start),
     time: timeLabel(start),
     venue: String(store.name || "").replace(/ Ltd\.?$/, "").trim(),
     city: store.city || "",
+    address: store.full_address || "",
     region: region,
     cap: raw.capacity == null ? null : raw.capacity,
     reg: raw.registered_user_count || 0,
@@ -182,6 +185,11 @@ async function main() {
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 1) + "\n", "utf8");
+
+  const feeds = writeFeeds(OUT_DIR, events);
+  for (const f of feeds) {
+    console.log(`wrote ${f.file} (${f.count} events)`);
+  }
 
   console.log(`wrote ${events.length} events from ${fetched} rows`);
   for (const a of perAnchor) {

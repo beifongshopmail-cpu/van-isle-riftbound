@@ -1,0 +1,5 @@
+# ICS is a CRLF format by RFC 5545. Git's autocrlf normalisation would
+# store these blobs LF-only, and the bytes committed here are the bytes
+# GitHub Pages serves to calendar clients. Exempt them from all text
+# conversion so what the fetcher writes is what subscribers receive.
+*.ics -text

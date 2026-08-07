@@ -1,0 +1,1097 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Van Isle Riftbound - Island
+X-WR-TIMEZONE:America/Vancouver
+X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on the o
+ fficial locator.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:687959@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260808T010000Z
+DTEND:20260808T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/687959
+URL:https://locator.riftbound.uvsgames.com/events/687959
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:829566@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260808T173000Z
+DTEND:20260808T205000Z
+SUMMARY:Nexus Night Aug 8th
+LOCATION:2770 Leigh Rd\, Victoria\, BC V9B 4G2\, Canada
+DESCRIPTION:Nexus Nights\nElite4 Games\, Victoria\n4 of 16 registered\n$5.0
+ 0 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/829566
+URL:https://locator.riftbound.uvsgames.com/events/829566
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770769@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260808T190000Z
+DTEND:20260808T231000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 28 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770769
+URL:https://locator.riftbound.uvsgames.com/events/770769
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770692@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260808T190000Z
+DTEND:20260808T222000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770692
+URL:https://locator.riftbound.uvsgames.com/events/770692
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:805031@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260809T003000Z
+DTEND:20260809T035000Z
+SUMMARY:Saturday Evening Nexus Nights - 1v1
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n2 of 1
+ 6 registered\n$5.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/e
+ vents/805031
+URL:https://locator.riftbound.uvsgames.com/events/805031
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817571@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260809T010000Z
+DTEND:20260809T051000Z
+SUMMARY:Saturday Evening Nexus Nights - 1v1
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n1 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817571
+URL:https://locator.riftbound.uvsgames.com/events/817571
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:820769@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260809T183000Z
+DTEND:20260809T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n1 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/820769
+URL:https://locator.riftbound.uvsgames.com/events/820769
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:694342@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260812T010000Z
+DTEND:20260812T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/694342
+URL:https://locator.riftbound.uvsgames.com/events/694342
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:826200@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260813T010000Z
+DTEND:20260813T040000Z
+SUMMARY:Wednesday Evening Nexus Nights - 1v1
+LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
+ V8T 2C3\, CA
+DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n0 of 16 registered\n$5
+ .00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/826200
+URL:https://locator.riftbound.uvsgames.com/events/826200
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770760@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260814T010000Z
+DTEND:20260814T042000Z
+SUMMARY:Thursday Evening Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770760
+URL:https://locator.riftbound.uvsgames.com/events/770760
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:702529@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260815T010000Z
+DTEND:20260815T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/702529
+URL:https://locator.riftbound.uvsgames.com/events/702529
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:829570@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260815T173000Z
+DTEND:20260815T210000Z
+SUMMARY:Saturday Morning Riftbound Open Play
+LOCATION:2770 Leigh Rd\, Victoria\, BC V9B 4G2\, Canada
+DESCRIPTION:Open Play\nElite4 Games\, Victoria\n0 of 16 registered\nFree\nS
+ ign up: https://locator.riftbound.uvsgames.com/events/829570
+URL:https://locator.riftbound.uvsgames.com/events/829570
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770770@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260815T190000Z
+DTEND:20260815T231000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 28 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770770
+URL:https://locator.riftbound.uvsgames.com/events/770770
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:805033@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260815T203000Z
+DTEND:20260815T235000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n1 of 1
+ 6 registered\n$5.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/e
+ vents/805033
+URL:https://locator.riftbound.uvsgames.com/events/805033
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770783@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260815T233000Z
+DTEND:20260816T030000Z
+SUMMARY:Saturday Afternoon Learn-to-Play Event
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Learn-to-Play\nNorth Park Picture Framing and Collectables\, Vi
+ ctoria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsga
+ mes.com/events/770783
+URL:https://locator.riftbound.uvsgames.com/events/770783
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817579@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260816T010000Z
+DTEND:20260816T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817579
+URL:https://locator.riftbound.uvsgames.com/events/817579
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:820770@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260816T183000Z
+DTEND:20260816T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/820770
+URL:https://locator.riftbound.uvsgames.com/events/820770
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:826576@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260817T000000Z
+DTEND:20260817T041000Z
+SUMMARY:Sunday Evening Nexus Nights - 1v1
+LOCATION:3458 Tillicum Rd\, Victoria\, BC\, V8Z 4H3\, CA
+DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n0 of 24 registered\n$5
+ .00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/826576
+URL:https://locator.riftbound.uvsgames.com/events/826576
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:710970@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260819T010000Z
+DTEND:20260819T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/710970
+URL:https://locator.riftbound.uvsgames.com/events/710970
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:826203@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260820T010000Z
+DTEND:20260820T040000Z
+SUMMARY:Wednesday Evening Nexus Nights - 1v1
+LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
+ V8T 2C3\, CA
+DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n0 of 16 registered\n$5
+ .00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/826203
+URL:https://locator.riftbound.uvsgames.com/events/826203
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770761@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260821T010000Z
+DTEND:20260821T042000Z
+SUMMARY:Thursday Evening Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770761
+URL:https://locator.riftbound.uvsgames.com/events/770761
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:719378@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260822T010000Z
+DTEND:20260822T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/719378
+URL:https://locator.riftbound.uvsgames.com/events/719378
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:507745@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260822T180000Z
+DTEND:20260823T004000Z
+SUMMARY:Saturday Morning Vendetta Summoner Skirmish I
+LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
+ V8T 2C3\, CA
+DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n0 of 24 registere
+ d\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/507745
+URL:https://locator.riftbound.uvsgames.com/events/507745
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770771@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260822T190000Z
+DTEND:20260822T231000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 28 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770771
+URL:https://locator.riftbound.uvsgames.com/events/770771
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817581@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260823T010000Z
+DTEND:20260823T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817581
+URL:https://locator.riftbound.uvsgames.com/events/817581
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:821775@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260823T183000Z
+DTEND:20260823T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/821775
+URL:https://locator.riftbound.uvsgames.com/events/821775
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:498166@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260823T183000Z
+DTEND:20260824T011000Z
+SUMMARY:Sunday Morning Vendetta Summoner Skirmish I
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n4 of 32 registe
+ red\n$20.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/49
+ 8166
+URL:https://locator.riftbound.uvsgames.com/events/498166
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:729122@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260826T010000Z
+DTEND:20260826T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/729122
+URL:https://locator.riftbound.uvsgames.com/events/729122
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:826213@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260827T010000Z
+DTEND:20260827T040000Z
+SUMMARY:Wednesday Evening Nexus Nights - 1v1
+LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
+ V8T 2C3\, CA
+DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n0 of 16 registered\n$5
+ .00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/826213
+URL:https://locator.riftbound.uvsgames.com/events/826213
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770762@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260828T010000Z
+DTEND:20260828T042000Z
+SUMMARY:Thursday Evening Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770762
+URL:https://locator.riftbound.uvsgames.com/events/770762
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:741579@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260829T010000Z
+DTEND:20260829T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/741579
+URL:https://locator.riftbound.uvsgames.com/events/741579
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:500942@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260829T173000Z
+DTEND:20260830T001000Z
+SUMMARY:Summoner Skirmish - August 29th
+LOCATION:2770 Leigh Rd\, Victoria\, BC V9B 4G2\, Canada
+DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n1 of 24 registered\
+ n$20.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/500942
+URL:https://locator.riftbound.uvsgames.com/events/500942
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:771838@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260829T190000Z
+DTEND:20260829T231000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 28 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/771838
+URL:https://locator.riftbound.uvsgames.com/events/771838
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:532618@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260829T190000Z
+DTEND:20260830T014000Z
+SUMMARY:Saturday Afternoon Vendetta Summoner Skirmish I
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
+ , Victoria\n0 of 28 registered\n$10.00 CAD\nSign up: https://locator.riftb
+ ound.uvsgames.com/events/532618
+URL:https://locator.riftbound.uvsgames.com/events/532618
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:501060@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260829T220000Z
+DTEND:20260830T035000Z
+SUMMARY:Saturday Afternoon Vendetta Summoner Skirmish I
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n0 of 16 registe
+ red\n$10.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/50
+ 1060
+URL:https://locator.riftbound.uvsgames.com/events/501060
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:518578@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260829T220000Z
+DTEND:20260830T035000Z
+SUMMARY:Saturday Afternoon Vendetta Summoner Skirmish
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n3
+  of 16 registered\n$15.00 CAD\nSign up: https://locator.riftbound.uvsgames
+ .com/events/518578
+URL:https://locator.riftbound.uvsgames.com/events/518578
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817583@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260830T010000Z
+DTEND:20260830T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817583
+URL:https://locator.riftbound.uvsgames.com/events/817583
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:820772@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260830T183000Z
+DTEND:20260830T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/820772
+URL:https://locator.riftbound.uvsgames.com/events/820772
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:519457@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260830T210000Z
+DTEND:20260831T025000Z
+SUMMARY:Sunday Afternoon Vendetta Summoner Skirmish I
+LOCATION:515 Chatham St\, Victoria\, BC\, V8T 1E1\, CA
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n1 
+ of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgames.com/ev
+ ents/519457
+URL:https://locator.riftbound.uvsgames.com/events/519457
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:751284@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260902T010000Z
+DTEND:20260902T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/751284
+URL:https://locator.riftbound.uvsgames.com/events/751284
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:770763@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260904T010000Z
+DTEND:20260904T042000Z
+SUMMARY:Thursday Evening Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/770763
+URL:https://locator.riftbound.uvsgames.com/events/770763
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:759989@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260905T010000Z
+DTEND:20260905T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/759989
+URL:https://locator.riftbound.uvsgames.com/events/759989
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:771839@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260905T190000Z
+DTEND:20260905T231000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 28 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/771839
+URL:https://locator.riftbound.uvsgames.com/events/771839
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:805034@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260905T203000Z
+DTEND:20260905T235000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n0 of 1
+ 6 registered\n$5.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/e
+ vents/805034
+URL:https://locator.riftbound.uvsgames.com/events/805034
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817585@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260906T010000Z
+DTEND:20260906T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817585
+URL:https://locator.riftbound.uvsgames.com/events/817585
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:820773@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260906T183000Z
+DTEND:20260906T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/820773
+URL:https://locator.riftbound.uvsgames.com/events/820773
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:497219@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260907T000000Z
+DTEND:20260907T064000Z
+SUMMARY:Sunday Evening Vendetta Summoner Skirmish I
+LOCATION:3458 Tillicum Rd\, Victoria\, BC\, V8Z 4H3\, CA
+DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n0 of 24 registere
+ d\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/497219
+URL:https://locator.riftbound.uvsgames.com/events/497219
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:769256@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260909T010000Z
+DTEND:20260909T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/769256
+URL:https://locator.riftbound.uvsgames.com/events/769256
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:774317@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260911T010000Z
+DTEND:20260911T042000Z
+SUMMARY:Thursday Evening Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/774317
+URL:https://locator.riftbound.uvsgames.com/events/774317
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:777203@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260912T010000Z
+DTEND:20260912T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/777203
+URL:https://locator.riftbound.uvsgames.com/events/777203
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:779809@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260912T190000Z
+DTEND:20260912T231000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 28 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/779809
+URL:https://locator.riftbound.uvsgames.com/events/779809
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:805044@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260912T203000Z
+DTEND:20260912T235000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n0 of 1
+ 6 registered\n$5.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/e
+ vents/805044
+URL:https://locator.riftbound.uvsgames.com/events/805044
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817587@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260913T010000Z
+DTEND:20260913T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817587
+URL:https://locator.riftbound.uvsgames.com/events/817587
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:820774@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260913T183000Z
+DTEND:20260913T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/820774
+URL:https://locator.riftbound.uvsgames.com/events/820774
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:786833@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260916T010000Z
+DTEND:20260916T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/786833
+URL:https://locator.riftbound.uvsgames.com/events/786833
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:792667@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260918T010000Z
+DTEND:20260918T042000Z
+SUMMARY:Thursday Evening Nexus Nights - 1v1
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n0 of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgam
+ es.com/events/792667
+URL:https://locator.riftbound.uvsgames.com/events/792667
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:795635@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260919T010000Z
+DTEND:20260919T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/795635
+URL:https://locator.riftbound.uvsgames.com/events/795635
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:500945@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260919T173000Z
+DTEND:20260919T232000Z
+SUMMARY:Summoner Skirmish - September 19th
+LOCATION:2770 Leigh Rd\, Victoria\, BC V9B 4G2\, Canada
+DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n0 of 16 registered\
+ n$20.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/500945
+URL:https://locator.riftbound.uvsgames.com/events/500945
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:507748@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260919T180000Z
+DTEND:20260920T004000Z
+SUMMARY:Saturday Morning Vendetta Summoner Skirmish II
+LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
+ V8T 2C3\, CA
+DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n1 of 24 registere
+ d\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/507748
+URL:https://locator.riftbound.uvsgames.com/events/507748
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:805048@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260919T203000Z
+DTEND:20260919T235000Z
+SUMMARY:Saturday Afternoon Nexus Nights - 1v1
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n0 of 1
+ 6 registered\n$5.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/e
+ vents/805048
+URL:https://locator.riftbound.uvsgames.com/events/805048
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:817589@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260920T010000Z
+DTEND:20260920T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/817589
+URL:https://locator.riftbound.uvsgames.com/events/817589
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:821776@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260920T183000Z
+DTEND:20260920T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/821776
+URL:https://locator.riftbound.uvsgames.com/events/821776
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:498188@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260920T183000Z
+DTEND:20260921T011000Z
+SUMMARY:Sunday Morning Vendetta Summoner Skirmish II
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n1 of 32 registe
+ red\n$20.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/49
+ 8188
+URL:https://locator.riftbound.uvsgames.com/events/498188
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:806489@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260923T010000Z
+DTEND:20260923T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/806489
+URL:https://locator.riftbound.uvsgames.com/events/806489
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:816058@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260926T010000Z
+DTEND:20260926T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/816058
+URL:https://locator.riftbound.uvsgames.com/events/816058
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:532629@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260926T190000Z
+DTEND:20260927T014000Z
+SUMMARY:Saturday Afternoon Vendetta Summoner Skirmish II
+LOCATION:1046 Mason St\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
+ , Victoria\n1 of 28 registered\n$10.00 CAD\nSign up: https://locator.riftb
+ ound.uvsgames.com/events/532629
+URL:https://locator.riftbound.uvsgames.com/events/532629
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:501062@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260926T220000Z
+DTEND:20260927T035000Z
+SUMMARY:Saturday Afternoon Vendetta Summoner Skirmish II
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n0 of 16 registe
+ red\n$10.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/50
+ 1062
+URL:https://locator.riftbound.uvsgames.com/events/501062
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:518595@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260926T220000Z
+DTEND:20260927T035000Z
+SUMMARY:Saturday Afternoon Vendetta Summoner Skirmish II
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n2
+  of 16 registered\n$15.00 CAD\nSign up: https://locator.riftbound.uvsgames
+ .com/events/518595
+URL:https://locator.riftbound.uvsgames.com/events/518595
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:805051@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260927T003000Z
+DTEND:20260927T035000Z
+SUMMARY:Saturday Evening Nexus Nights - 1v1
+LOCATION:542 Comox Road\, Courtenay\, BC\, V9N 3P6\, CA
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n0 of 1
+ 6 registered\n$5.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/e
+ vents/805051
+URL:https://locator.riftbound.uvsgames.com/events/805051
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:818680@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260927T010000Z
+DTEND:20260927T051000Z
+SUMMARY:Saturday evening nexus night
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 32 registered\n
+ Free\nSign up: https://locator.riftbound.uvsgames.com/events/818680
+URL:https://locator.riftbound.uvsgames.com/events/818680
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:821777@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260927T183000Z
+DTEND:20260927T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n
+ $6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/821777
+URL:https://locator.riftbound.uvsgames.com/events/821777
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:827959@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20260930T010000Z
+DTEND:20260930T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/827959
+URL:https://locator.riftbound.uvsgames.com/events/827959
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:837229@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20261003T010000Z
+DTEND:20261003T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/837229
+URL:https://locator.riftbound.uvsgames.com/events/837229
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:519459@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20261004T210000Z
+DTEND:20261005T025000Z
+SUMMARY:Sunday Afternoon Vendetta Summoner Skirmish II
+LOCATION:515 Chatham St\, Victoria\, BC\, V8T 1E1\, CA
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n2 
+ of 16 registered\nFree\nSign up: https://locator.riftbound.uvsgames.com/ev
+ ents/519459
+URL:https://locator.riftbound.uvsgames.com/events/519459
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:497224@van-isle-riftbound
+DTSTAMP:20260807T053308Z
+DTSTART:20261005T000000Z
+DTEND:20261005T064000Z
+SUMMARY:Sunday Evening Vendetta Summoner Skirmish II
+LOCATION:3458 Tillicum Rd\, Victoria\, BC\, V8Z 4H3\, CA
+DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n0 of 24 registere
+ d\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/497224
+URL:https://locator.riftbound.uvsgames.com/events/497224
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
