@@ -1,0 +1,69 @@
+name: fetch events
+
+# 01:00 and 13:00 UTC. In Pacific that lands at 6pm/6am during daylight
+# time and 5pm/5am during standard time. The drift is deliberate: pinning
+# to local time would mean two crons that are wrong half the year.
+on:
+  schedule:
+    - cron: "0 1 * * *"
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-events
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch events and build feeds
+        run: node fetch-events.js
+
+      - name: Summarise
+        run: |
+          node -e "
+          const d = require('./data/events.json');
+          const lines = [];
+          lines.push('| metric | value |');
+          lines.push('| --- | --- |');
+          lines.push('| unique events | ' + d.totals.unique + ' |');
+          for (const a of d.anchors) {
+            lines.push('| ' + a.name + ' | ' + a.returned + ' |');
+          }
+          const uk = Object.keys(d.unknown_templates);
+          lines.push('| unknown templates | ' + uk.length + ' |');
+          if (uk.length) {
+            lines.push('');
+            lines.push('New event categories seen upstream. Add them to TYPE_MAP in config.js:');
+            lines.push('');
+            for (const k of uk) {
+              lines.push('- \`' + k + '\` x' + d.unknown_templates[k].count +
+                         ' e.g. ' + d.unknown_templates[k].sample_name);
+            }
+          }
+          require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+          "
+
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "nothing to publish"
+            exit 0
+          fi
+          git commit -m "data: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push
