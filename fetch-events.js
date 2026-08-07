@@ -136,6 +136,15 @@ function shape(raw, region) {
   };
 }
 
+// Accumulate an unrecognised template id. Extracted from main so the
+// fixture can exercise it directly. Behaviour is unchanged.
+function noteUnknown(unknown, templateId, ev) {
+  const k = templateId || "null";
+  if (!unknown[k]) unknown[k] = { count: 0, sample_name: ev.name };
+  unknown[k].count += 1;
+  return unknown;
+}
+
 async function main() {
   const after = startOfLocalDay();
   const afterIso = after.toISOString();
@@ -154,9 +163,7 @@ async function main() {
       if (byId.has(raw.id)) continue;
       const ev = shape(raw, anchor.region);
       if (ev.type === "other") {
-        const k = raw.event_configuration_template || "null";
-        if (!unknown[k]) unknown[k] = { count: 0, sample_name: ev.name };
-        unknown[k].count += 1;
+        noteUnknown(unknown, raw.event_configuration_template, ev);
       }
       byId.set(raw.id, ev);
       kept += 1;
@@ -206,8 +213,12 @@ async function main() {
   }
 }
 
-main().catch(function (err) {
-  console.error("FETCH FAILED: " + err.message);
-  console.error("data/events.json left untouched");
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(function (err) {
+    console.error("FETCH FAILED: " + err.message);
+    console.error("data/events.json left untouched");
+    process.exit(1);
+  });
+}
+
+module.exports = { shape, noteUnknown };

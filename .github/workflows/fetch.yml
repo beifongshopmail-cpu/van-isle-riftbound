@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Fixture checks
+        run: node test-unknown-template.js
+
       - name: Fetch events and build feeds
         run: node fetch-events.js
 
