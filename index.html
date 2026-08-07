@@ -107,14 +107,17 @@
   }
   .nav button:disabled{color:var(--mute);cursor:default;box-shadow:none;background:none;}
 
-  .dows{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:5px;}
+  .dows{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:5px;}
   .dows span{
     text-align:center;
     font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
     color:var(--mute);text-transform:uppercase;
   }
 
-  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+  /* minmax(0,...) not 1fr: aspect-ratio on the cells transfers their
+     content min-height back into a min-width, which inflates an auto
+     track and overflows the row. A zero floor blocks that path. */
+  .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
   .pad{aspect-ratio:1/1.12;}
   .cell{
     aspect-ratio:1/1.12;
@@ -124,8 +127,13 @@
     box-shadow:var(--surf-hi);
     padding:5px 4px 5px;
     display:flex;flex-direction:column;
+    min-width:0;overflow:hidden;
     cursor:pointer;color:inherit;text-align:left;font:inherit;
     transition:background .16s,border-color .16s;
+  }
+  .cell .top{
+    display:flex;align-items:flex-start;justify-content:space-between;
+    gap:2px;min-width:0;
   }
   .cell .n{
     font-family:var(--display);font-weight:700;
@@ -140,11 +148,11 @@
   }
   .cell .more{
     font-family:var(--mono);font-size:8.5px;color:var(--mute);
-    line-height:1;padding-top:2px;
+    line-height:1;padding-top:2px;flex:0 0 auto;
   }
   .cell.today .n{
     background:var(--bone);color:#000;border-radius:var(--r-xs);
-    padding:2px 4px;margin:-1px -1px 0;align-self:flex-start;
+    padding:2px 4px;margin:-1px 0 0 -1px;
   }
   .cell[aria-pressed="true"]{
     background:var(--surf-up);border-color:var(--bone);
@@ -497,9 +505,13 @@ function renderGrid(){
       ev.slice(0,4).forEach(function(e){
         bars += '<span class="bar" style="--c:' + typeOf(e.type).color + '"></span>';
       });
-      if (ev.length > 4) bars += '<span class="more">+' + (ev.length-4) + '</span>';
+      var more = (ev.length > 4)
+        ? '<span class="more">+' + (ev.length-4) + '</span>'
+        : "";
 
-      b.innerHTML = '<span class="n">' + n + '</span><span class="bars">' + bars + '</span>';
+      b.innerHTML =
+        '<span class="top"><span class="n">' + n + '</span>' + more + '</span>' +
+        '<span class="bars">' + bars + '</span>';
       b.onclick = function(){
         selDay = (selDay === k) ? null : k;
         showAll = false;
