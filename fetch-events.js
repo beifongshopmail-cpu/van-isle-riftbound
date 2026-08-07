@@ -32,7 +32,10 @@ function offsetMinutes(date, tz) {
     Number(p.year), Number(p.month) - 1, Number(p.day),
     Number(hour), Number(p.minute), Number(p.second)
   );
-  return (asUTC - date.getTime()) / 60000;
+  // Round to whole minutes. asUTC is built from second-resolution
+  // formatted parts, so any milliseconds on the input Date leak into
+  // the quotient as a fraction and corrupt the offset string.
+  return Math.round((asUTC - date.getTime()) / 60000);
 }
 
 // Start of today in TZ, as a Date.
