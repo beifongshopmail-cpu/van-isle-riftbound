@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Riftbound events on Vancouver Island. Victoria, Courtenay and Campbell River, updated twice a day.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Van Isle RB">
+<title>Van Isle Riftbound</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@110,700;110,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --warn:#FFB020;
+
+    --surf:linear-gradient(180deg,#14161B 0%,#0A0B0E 100%);
+    --surf-hi:inset 0 1px 0 rgba(255,255,255,.05);
+    --surf-up:linear-gradient(180deg,#1C1F26 0%,#12141A 100%);
+
+    --t-nexus:#3FA9F5;
+    --t-skirmish:#FFB020;
+    --t-open:#FF4F9A;
+    --t-learn:#EDEFF2;
+
+    --r:9px;
+    --r-cell:5px;
+    --r-sm:4px;
+    --r-xs:2px;
+
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+    --gut:16px;
+    --tap:44px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ground);}
+  body{
+    color:var(--bone);
+    font-family:var(--body);
+    font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  body::before{
+    content:"";position:fixed;inset:0 0 auto;height:70vh;pointer-events:none;z-index:0;
+    background:radial-gradient(115% 62% at 50% -8%,rgba(63,169,245,.085),transparent 62%);
+  }
+  .wrap{
+    max-width:600px;margin:0 auto;position:relative;z-index:1;
+    padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
+  }
+
+  .mast{padding:30px 0 18px;}
+  .mast h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(38px,11.5vw,60px);
+    line-height:.86;letter-spacing:-.035em;
+    text-transform:uppercase;margin:0;
+  }
+  .mast .stamp{
+    margin-top:12px;
+    font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .mast .stamp b{color:var(--dim);font-weight:400;}
+  .mast .stamp.stale b,.mast .stamp.stale{color:var(--warn);}
+
+  .scope{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:24px;}
+  .scope button{
+    min-height:var(--tap);
+    background:var(--surf);border:1px solid var(--rule);border-radius:var(--r);
+    box-shadow:var(--surf-hi);
+    color:var(--mute);cursor:pointer;
+    font-family:var(--display);font-weight:700;font-size:12px;
+    letter-spacing:.07em;text-transform:uppercase;
+    transition:color .16s,background .16s;
+  }
+  .scope button[aria-pressed="true"]{
+    background:var(--bone);color:#000;border-color:var(--bone);
+    box-shadow:0 4px 18px -8px rgba(242,243,245,.5);
+  }
+
+  .monthbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .monthbar h2{
+    font-family:var(--display);font-weight:800;
+    font-size:22px;letter-spacing:-.02em;text-transform:uppercase;
+    margin:0;flex:1;
+  }
+  .monthbar .n{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .nav{display:flex;gap:5px;}
+  .nav button{
+    width:38px;height:38px;
+    background:var(--surf);border:1px solid var(--rule);border-radius:var(--r-sm);
+    box-shadow:var(--surf-hi);
+    color:var(--bone);cursor:pointer;font-size:15px;line-height:1;
+  }
+  .nav button:disabled{color:var(--mute);cursor:default;box-shadow:none;background:none;}
+
+  .dows{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:5px;}
+  .dows span{
+    text-align:center;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+    color:var(--mute);text-transform:uppercase;
+  }
+
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+  .pad{aspect-ratio:1/1.12;}
+  .cell{
+    aspect-ratio:1/1.12;
+    background:var(--surf);
+    border:1px solid var(--rule);
+    border-radius:var(--r-cell);
+    box-shadow:var(--surf-hi);
+    padding:5px 4px 5px;
+    display:flex;flex-direction:column;
+    cursor:pointer;color:inherit;text-align:left;font:inherit;
+    transition:background .16s,border-color .16s;
+  }
+  .cell .n{
+    font-family:var(--display);font-weight:700;
+    font-size:13px;line-height:1;color:var(--mute);letter-spacing:-.01em;
+  }
+  .cell.has .n{color:var(--bone);}
+  .cell .bars{margin-top:auto;display:flex;flex-direction:column;gap:2px;}
+  .cell .bar{
+    height:5px;border-radius:var(--r-xs);
+    background:var(--c);
+    box-shadow:0 0 7px -2px var(--c);
+  }
+  .cell .more{
+    font-family:var(--mono);font-size:8.5px;color:var(--mute);
+    line-height:1;padding-top:2px;
+  }
+  .cell.today .n{
+    background:var(--bone);color:#000;border-radius:var(--r-xs);
+    padding:2px 4px;margin:-1px -1px 0;align-self:flex-start;
+  }
+  .cell[aria-pressed="true"]{
+    background:var(--surf-up);border-color:var(--bone);
+    box-shadow:var(--surf-hi),0 6px 20px -10px rgba(242,243,245,.45);
+  }
+  @media (hover:hover){ .cell:not(:disabled):hover{border-color:var(--rule-hi);} }
+  .cell:focus-visible{outline:2px solid var(--bone);outline-offset:2px;}
+  .cell:disabled{cursor:default;}
+
+  .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:16px;}
+  .lg{
+    display:flex;align-items:center;gap:9px;
+    min-height:40px;padding:0 11px;
+    background:var(--surf);border:1px solid var(--rule);border-radius:var(--r);
+    box-shadow:var(--surf-hi);
+    cursor:pointer;color:var(--dim);
+    font-family:var(--body);font-size:12.5px;font-weight:500;
+    text-align:left;transition:color .16s,opacity .16s,border-color .16s;
+  }
+  .lg .sw{
+    width:12px;height:12px;flex:0 0 12px;border-radius:3px;
+    background:var(--c);box-shadow:0 0 9px -2px var(--c);
+  }
+  .lg .ct{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--mute);}
+  .lg[aria-pressed="true"]{color:var(--bone);border-color:var(--rule-hi);}
+  .lg.off{opacity:.5;}
+  .lg.off .sw{opacity:.25;box-shadow:none;}
+
+  .agenda{margin-top:36px;}
+  .ahead{
+    display:flex;align-items:center;gap:10px;
+    padding-bottom:10px;border-bottom:2px solid var(--bone);
+  }
+  .ahead h3{
+    font-family:var(--display);font-weight:800;
+    font-size:15px;letter-spacing:.02em;text-transform:uppercase;
+    margin:0;flex:1;
+  }
+  .ahead button{
+    background:none;border:0;cursor:pointer;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--dim);
+    text-decoration:underline;text-underline-offset:3px;padding:4px 0;
+  }
+
+  .dayhead{
+    display:flex;align-items:baseline;gap:8px;
+    margin-top:20px;padding-bottom:6px;border-bottom:1px solid var(--rule);
+  }
+  .dayhead .dn{
+    font-family:var(--display);font-weight:800;font-size:17px;
+    letter-spacing:-.02em;line-height:1;
+  }
+  .dayhead .dt{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .dayhead .dc{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mute);}
+
+  .ev{
+    display:flex;gap:10px;padding:11px 0;
+    border-bottom:1px solid rgba(33,36,41,.6);
+    text-decoration:none;color:inherit;
+  }
+  .ev:last-child{border-bottom:0;}
+  .ev .bar{
+    flex:0 0 4px;margin:1px 0;border-radius:var(--r-xs);
+    background:var(--c);box-shadow:0 0 9px -3px var(--c);
+  }
+  .ev .when{
+    flex:0 0 60px;font-family:var(--mono);font-size:11.5px;
+    color:var(--dim);padding-top:2px;letter-spacing:-.02em;
+  }
+  .ev .body{flex:1;min-width:0;}
+  .ev .ttl{font-weight:600;font-size:14.5px;line-height:1.25;margin:0 0 3px;}
+  .ev .meta{
+    font-size:12.5px;color:var(--dim);
+    display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;
+  }
+  .ev .kind{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .ev .sep{color:var(--rule-hi);}
+  .ev .right{
+    flex:0 0 auto;display:flex;flex-direction:column;
+    align-items:flex-end;gap:3px;padding-top:1px;
+  }
+  .ev .spots{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .ev .spots.tight{color:var(--t-skirmish);}
+  .ev .cost{font-family:var(--mono);font-size:10.5px;color:var(--mute);}
+  .ev .new{
+    font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;font-weight:500;
+    color:#000;background:var(--bone);padding:2px 5px;border-radius:var(--r-xs);
+  }
+  @media (hover:hover){ .ev:hover .ttl{text-decoration:underline;text-underline-offset:3px;} }
+  .ev:focus-visible{outline:2px solid var(--bone);outline-offset:3px;border-radius:var(--r-sm);}
+
+  .none{padding:38px 0;text-align:center;color:var(--mute);font-size:13.5px;}
+
+  .boot{
+    padding:64px 0;text-align:center;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--mute);
+  }
+  .boot.bad{color:var(--warn);text-transform:none;letter-spacing:0;font-size:13px;line-height:1.7;}
+  .boot.bad a{color:var(--bone);}
+
+  .foot{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);}
+  .sub{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;min-height:var(--tap);
+    background:var(--bone);border:0;border-radius:var(--r);color:#000;cursor:pointer;
+    font-family:var(--display);font-weight:700;font-size:12.5px;
+    letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+    box-shadow:0 8px 26px -12px rgba(242,243,245,.55);
+  }
+  .foot p{
+    font-family:var(--mono);font-size:10.5px;line-height:1.75;
+    color:var(--mute);text-align:center;margin:15px 0 0;
+  }
+  .foot a{color:var(--dim);}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important;scroll-behavior:auto !important;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .daygroup{animation:rise .32s cubic-bezier(.22,.72,.2,1) backwards;}
+    @keyframes rise{from{opacity:0;transform:translateY(6px);}}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <h1>Van Isle<br>Riftbound</h1>
+    <div class="stamp" id="stamp">Loading</div>
+  </header>
+
+  <div id="boot" class="boot">Loading events</div>
+
+  <div id="app" hidden>
+    <div class="scope" role="group" aria-label="Area">
+      <button type="button" data-scope="victoria" aria-pressed="true">Greater Victoria</button>
+      <button type="button" data-scope="all" aria-pressed="false">Whole island</button>
+    </div>
+
+    <section aria-label="Month">
+      <div class="monthbar">
+        <h2 id="mtitle"></h2>
+        <span class="n" id="mcount"></span>
+        <div class="nav">
+          <button type="button" id="prev" aria-label="Previous month">&lsaquo;</button>
+          <button type="button" id="next" aria-label="Next month">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="dows"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+      <div class="grid" id="grid"></div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <section class="agenda">
+      <div class="ahead">
+        <h3 id="atitle"></h3>
+        <button type="button" id="atoggle"></button>
+      </div>
+      <div id="list"></div>
+    </section>
+
+    <footer class="foot">
+      <a class="sub" id="subbtn" href="#">Add to your calendar</a>
+      <p>
+        Subscribe once and new events appear on your phone by themselves.<br>
+        Data from the <a href="https://locator.riftbound.uvsgames.com/events">Riftbound Gaming Network</a>. Sign-ups happen there.
+      </p>
+    </footer>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+var TZ = "America/Vancouver";
+var TYPES = {
+  nexus:    {label:"Nexus Nights",      color:"#3FA9F5"},
+  skirmish: {label:"Summoner Skirmish", color:"#FFB020"},
+  learn:    {label:"Learn-to-Play",     color:"#EDEFF2"},
+  open:     {label:"Open Play",         color:"#FF4F9A"},
+  other:    {label:"Event",             color:"#5A6472"}
+};
+var TYPE_ORDER = ["nexus","skirmish","learn","open","other"];
+var EVENT_URL = "https://locator.riftbound.uvsgames.com/events/";
+var SEEN_KEY = "vir.seen.v1";
+var STALE_HOURS = 30;
+
+var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var MONTH = ["January","February","March","April","May","June",
+             "July","August","September","October","November","December"];
+
+var EVENTS = [];
+var META = null;
+var TODAY = "";
+var NEW = new Set();
+
+var scope = "victoria";
+var hidden = new Set();
+var selDay = null;
+var showAll = false;
+var cursor = null;
+
+var gridEl, legendEl, listEl;
+
+/* ---------- date helpers ---------- */
+
+// Today in TZ, not in the visitor's zone. Someone checking from a hotel
+// in Toronto should still see the island's idea of today.
+function todayKey(){
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: TZ, year:"numeric", month:"2-digit", day:"2-digit"
+  }).format(new Date());
+}
+function key(d){
+  return d.getFullYear() + "-" +
+         String(d.getMonth()+1).padStart(2,"0") + "-" +
+         String(d.getDate()).padStart(2,"0");
+}
+function parseDay(s){ var p = s.split("-").map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function addDays(s,n){ var d = parseDay(s); d.setDate(d.getDate()+n); return key(d); }
+function monthIndex(y,m){ return y*12+m; }
+function typeOf(t){ return TYPES[t] || TYPES.other; }
+
+function ago(iso){
+  var then = new Date(iso).getTime();
+  if (!isFinite(then)) return null;
+  var mins = Math.round((Date.now() - then) / 60000);
+  if (mins < 2) return "just now";
+  if (mins < 60) return mins + " min ago";
+  var hrs = Math.round(mins / 60);
+  if (hrs < 24) return hrs + (hrs === 1 ? " hour ago" : " hours ago");
+  var days = Math.round(hrs / 24);
+  return days + (days === 1 ? " day ago" : " days ago");
+}
+
+/* ---------- new-since-last-visit ---------- */
+
+function loadSeen(){
+  try {
+    var raw = window.localStorage.getItem(SEEN_KEY);
+    return raw ? new Set(JSON.parse(raw)) : null;
+  } catch (e) { return null; }
+}
+function saveSeen(ids){
+  try { window.localStorage.setItem(SEEN_KEY, JSON.stringify(ids)); } catch (e) {}
+}
+function markNew(){
+  var ids = EVENTS.map(function(e){ return e.id; });
+  var seen = loadSeen();
+  // First ever visit: everything is "seen", so nobody gets 70 NEW badges.
+  if (seen) {
+    EVENTS.forEach(function(e){ if (!seen.has(e.id)) NEW.add(e.id); });
+  }
+  saveSeen(ids);
+}
+
+/* ---------- selectors ---------- */
+
+function inScope(e){ return scope === "all" || e.region === "victoria"; }
+function visible(){
+  return EVENTS.filter(function(e){ return inScope(e) && !hidden.has(e.type); });
+}
+function byDay(list){
+  var m = {};
+  list.forEach(function(e){ (m[e.day] = m[e.day] || []).push(e); });
+  return m;
+}
+
+/* ---------- feed link ---------- */
+
+function feedHref(){
+  var file = (scope === "all") ? "island.ics" : "victoria.ics";
+  var base;
+  if (location.protocol === "http:" || location.protocol === "https:") {
+    base = location.host + location.pathname.replace(/[^\/]*$/, "");
+  } else {
+    base = "beifongshopmail-cpu.github.io/van-isle-riftbound/";
+  }
+  return "webcal://" + base + "data/" + file;
+}
+
+/* ---------- render ---------- */
+
+function renderStamp(){
+  var el = document.getElementById("stamp");
+  var when = META && META.generated_at ? ago(META.generated_at) : null;
+  var n = visible().length;
+  var stale = false;
+  if (META && META.generated_at) {
+    stale = (Date.now() - new Date(META.generated_at).getTime()) > STALE_HOURS * 3600000;
+  }
+  el.className = "stamp" + (stale ? " stale" : "");
+  el.innerHTML =
+    (stale ? "Last checked <b>" : "Updated <b>") + (when || "unknown") + "</b>" +
+    " &nbsp;/&nbsp; <b>" + n + "</b> event" + (n === 1 ? "" : "s") + " " +
+    (scope === "all" ? "island-wide" : "near Victoria");
+}
+
+function renderGrid(){
+  var map = byDay(visible());
+  var first = new Date(cursor.y, cursor.m, 1);
+  var days = new Date(cursor.y, cursor.m+1, 0).getDate();
+
+  document.getElementById("mtitle").textContent = MONTH[cursor.m];
+
+  var mtotal = 0;
+  Object.keys(map).forEach(function(k){
+    var d = parseDay(k);
+    if (d.getFullYear() === cursor.y && d.getMonth() === cursor.m) mtotal += map[k].length;
+  });
+  document.getElementById("mcount").textContent =
+    mtotal + " event" + (mtotal === 1 ? "" : "s");
+
+  var ci = monthIndex(cursor.y, cursor.m);
+  document.getElementById("prev").disabled = ci <= BOUNDS.min;
+  document.getElementById("next").disabled = ci >= BOUNDS.max;
+
+  gridEl.innerHTML = "";
+  for (var i = 0; i < first.getDay(); i++){
+    var p = document.createElement("div");
+    p.className = "pad";
+    gridEl.appendChild(p);
+  }
+
+  for (var n = 1; n <= days; n++){
+    (function(n){
+      var d = new Date(cursor.y, cursor.m, n);
+      var k = key(d);
+      var ev = map[k] || [];
+
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "cell" + (ev.length ? " has" : "") + (k === TODAY ? " today" : "");
+      b.disabled = !ev.length;
+      b.setAttribute("aria-pressed", selDay === k ? "true" : "false");
+      b.setAttribute("aria-label",
+        MONTH[cursor.m] + " " + n + ", " + ev.length + (ev.length === 1 ? " event" : " events"));
+      if (k < TODAY) b.style.opacity = ".38";
+
+      var bars = "";
+      ev.slice(0,4).forEach(function(e){
+        bars += '<span class="bar" style="--c:' + typeOf(e.type).color + '"></span>';
+      });
+      if (ev.length > 4) bars += '<span class="more">+' + (ev.length-4) + '</span>';
+
+      b.innerHTML = '<span class="n">' + n + '</span><span class="bars">' + bars + '</span>';
+      b.onclick = function(){
+        selDay = (selDay === k) ? null : k;
+        showAll = false;
+        render();
+        if (selDay){
+          document.querySelector(".agenda").scrollIntoView({behavior:"smooth", block:"start"});
+        }
+      };
+      gridEl.appendChild(b);
+    })(n);
+  }
+}
+
+function renderLegend(){
+  var counts = {};
+  EVENTS.forEach(function(e){ if (inScope(e)) counts[e.type] = (counts[e.type]||0)+1; });
+
+  legendEl.innerHTML = "";
+  TYPE_ORDER.forEach(function(k){
+    if (!counts[k]) return;
+    var on = !hidden.has(k);
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "lg" + (on ? "" : " off");
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.innerHTML =
+      '<span class="sw" style="--c:' + TYPES[k].color + '"></span>' +
+      '<span>' + TYPES[k].label + '</span>' +
+      '<span class="ct">' + counts[k] + '</span>';
+    b.onclick = function(){
+      if (hidden.has(k)) hidden.delete(k); else hidden.add(k);
+      render();
+    };
+    legendEl.appendChild(b);
+  });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+  });
+}
+
+function renderList(){
+  var all = visible();
+  var title = document.getElementById("atitle");
+  var tog = document.getElementById("atoggle");
+  var picked, heading, toggleText, toggleFn;
+
+  if (selDay){
+    picked = all.filter(function(e){ return e.day === selDay; });
+    var d = parseDay(selDay);
+    heading = DOW[d.getDay()] + " " + d.getDate() + " " + MONTH[d.getMonth()];
+    toggleText = "Clear";
+    toggleFn = function(){ selDay = null; render(); };
+  } else if (showAll){
+    picked = all;
+    heading = "All upcoming";
+    toggleText = "Next 7 days";
+    toggleFn = function(){ showAll = false; render(); };
+  } else {
+    var cut = addDays(TODAY, 7);
+    picked = all.filter(function(e){ return e.day <= cut; });
+    heading = "Next 7 days";
+    toggleText = "All upcoming (" + all.length + ")";
+    toggleFn = function(){ showAll = true; render(); };
+  }
+
+  title.textContent = heading;
+  tog.textContent = toggleText;
+  tog.onclick = toggleFn;
+
+  listEl.innerHTML = "";
+  if (!picked.length){
+    listEl.innerHTML = '<div class="none">' +
+      (hidden.size
+        ? "Nothing here. Turn a category back on above."
+        : "Nothing in the next week. Tap a day on the calendar, or see all upcoming.") +
+      '</div>';
+    return;
+  }
+
+  var map = byDay(picked);
+  Object.keys(map).sort().forEach(function(day, i){
+    var d = parseDay(day);
+    var g = document.createElement("div");
+    g.className = "daygroup";
+    g.style.animationDelay = Math.min(i,7)*20 + "ms";
+
+    if (!selDay){
+      var h = document.createElement("div");
+      h.className = "dayhead";
+      h.innerHTML =
+        '<span class="dn">' + d.getDate() + '</span>' +
+        '<span class="dt">' + DOW[d.getDay()] + ' &middot; ' + MONTH[d.getMonth()].slice(0,3) + '</span>' +
+        '<span class="dc">' + map[day].length + '</span>';
+      g.appendChild(h);
+    }
+
+    map[day].forEach(function(e){
+      var t = typeOf(e.type);
+      var left = (e.cap != null) ? e.cap - e.reg : null;
+      var tight = left != null && e.cap > 0 && left <= Math.max(2, e.cap*0.2);
+
+      var a = document.createElement("a");
+      a.className = "ev";
+      a.href = EVENT_URL + e.id;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.innerHTML =
+        '<span class="bar" style="--c:' + t.color + '"></span>' +
+        '<span class="when">' + escapeHtml(e.time) + '</span>' +
+        '<span class="body">' +
+          '<span class="ttl">' + escapeHtml(e.name) + '</span>' +
+          '<span class="meta">' +
+            '<span class="kind" style="color:' + t.color + '">' + t.label + '</span>' +
+            '<span class="sep">/</span><span>' + escapeHtml(e.venue) + '</span>' +
+            (e.region === "island" ? '<span class="sep">/</span><span>' + escapeHtml(e.city) + '</span>' : '') +
+          '</span>' +
+        '</span>' +
+        '<span class="right">' +
+          (NEW.has(e.id) ? '<span class="new">NEW</span>' : '') +
+          (e.cap != null ? '<span class="spots' + (tight ? ' tight' : '') + '">' + e.reg + '/' + e.cap + '</span>' : '') +
+          '<span class="cost">' + (e.cents ? "$" + (e.cents/100).toFixed(0) : "free") + '</span>' +
+        '</span>';
+      g.appendChild(a);
+    });
+
+    listEl.appendChild(g);
+  });
+}
+
+function render(){
+  renderStamp();
+  renderGrid();
+  renderLegend();
+  renderList();
+  document.getElementById("subbtn").href = feedHref();
+}
+
+/* ---------- boot ---------- */
+
+var BOUNDS = {min:0, max:0};
+
+function computeBounds(){
+  var days = EVENTS.map(function(e){ return e.day; }).sort();
+  var firstD = parseDay(TODAY);
+  var lastD = days.length ? parseDay(days[days.length-1]) : firstD;
+  BOUNDS.min = monthIndex(firstD.getFullYear(), firstD.getMonth());
+  BOUNDS.max = Math.max(BOUNDS.min, monthIndex(lastD.getFullYear(), lastD.getMonth()));
+  cursor = {y:firstD.getFullYear(), m:firstD.getMonth()};
+}
+
+function wire(){
+  document.getElementById("prev").onclick = function(){
+    if (cursor.m === 0){ cursor = {y:cursor.y-1, m:11}; } else { cursor.m--; }
+    selDay = null; render();
+  };
+  document.getElementById("next").onclick = function(){
+    if (cursor.m === 11){ cursor = {y:cursor.y+1, m:0}; } else { cursor.m++; }
+    selDay = null; render();
+  };
+  var buttons = document.querySelectorAll(".scope button");
+  Array.prototype.forEach.call(buttons, function(b){
+    b.onclick = function(){
+      scope = b.dataset.scope;
+      Array.prototype.forEach.call(buttons, function(x){
+        x.setAttribute("aria-pressed", x === b ? "true" : "false");
+      });
+      selDay = null;
+      render();
+    };
+  });
+}
+
+function fail(msg){
+  var boot = document.getElementById("boot");
+  boot.className = "boot bad";
+  boot.innerHTML = msg +
+    '<br><br>In the meantime, the official listing is at ' +
+    '<a href="https://locator.riftbound.uvsgames.com/events">the Riftbound locator</a>.';
+  document.getElementById("stamp").textContent = "";
+}
+
+function start(){
+  gridEl = document.getElementById("grid");
+  legendEl = document.getElementById("legend");
+  listEl = document.getElementById("list");
+  TODAY = todayKey();
+
+  fetch("./data/events.json", {cache:"no-cache"})
+    .then(function(res){
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function(data){
+      if (!data || !Array.isArray(data.events)) throw new Error("bad payload");
+      META = data;
+      // Events that already finished are dropped client-side too, so the
+      // page stays correct between scheduled fetches.
+      EVENTS = data.events.filter(function(e){ return e.day >= TODAY; });
+      if (!EVENTS.length){
+        fail("No upcoming events are listed right now.");
+        return;
+      }
+      markNew();
+      computeBounds();
+      wire();
+      document.getElementById("boot").hidden = true;
+      document.getElementById("app").hidden = false;
+      render();
+    })
+    .catch(function(err){
+      fail("Could not load the event list (" + err.message + ").");
+    });
+}
+
+if (document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", start);
+} else {
+  start();
+}
+</script>
+</body>
+</html>
