@@ -7,6 +7,10 @@
 const assert = require("assert");
 const { TYPE_MAP } = require("./config");
 const { shape, noteUnknown } = require("./fetch-events");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const { reportUnknown } = require("./report-anomalies");
 
 let failures = 0;
 
@@ -71,6 +75,26 @@ check("noteUnknown keeps distinct ids in distinct buckets", function () {
   noteUnknown(unknown, BOGUS, { name: "A" });
   noteUnknown(unknown, "some-other-id", { name: "B" });
   assert.strictEqual(Object.keys(unknown).length, 2);
+});
+
+check("reportUnknown writes an issue body when a template is unrecognised", function () {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "vir-fixture-"));
+  const payload = {
+    generated_at: "2026-08-07T00:00:00.000Z",
+    unknown_templates: { [BOGUS]: { count: 3, sample_name: "Mystery Event" } }
+  };
+  const file = reportUnknown(payload, dir);
+  assert.ok(file, "expected a body file path");
+  const body = fs.readFileSync(file, "utf8");
+  assert.ok(body.indexOf(BOGUS) !== -1, "body does not name the template id");
+  assert.ok(body.indexOf("Mystery Event") !== -1, "body does not name the sample event");
+});
+
+check("reportUnknown writes nothing when there are no unknown templates", function () {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "vir-fixture-"));
+  const res = reportUnknown({ generated_at: "x", unknown_templates: {} }, dir);
+  assert.strictEqual(res, null);
+  assert.strictEqual(fs.readdirSync(dir).length, 0);
 });
 
 if (failures) {

@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: fetch-events
@@ -70,3 +71,22 @@ jobs:
           fi
           git commit -m "data: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
+
+      - name: Report anomalies
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          node report-anomalies.js
+          BODY="$RUNNER_TEMP/anomaly-unknown.md"
+          if [ -f "$BODY" ]; then
+            gh label create unknown-template --color FFB020 --description "Upstream event category not in TYPE_MAP" 2>/dev/null || true
+            OPEN=$(gh issue list --label unknown-template --state open --json number --jq "length")
+            if [ "$OPEN" = "0" ]; then
+              gh issue create --title "Unrecognised event template seen upstream" --label unknown-template --body-file "$BODY"
+            else
+              echo "an unknown-template issue is already open; not opening another"
+            fi
+          else
+            echo "no anomalies to report"
+          fi
