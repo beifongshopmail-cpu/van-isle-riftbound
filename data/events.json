@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-08-08T02:54:40.242Z",
- "generated_local": "2026-08-07T19:54:40-07:00",
- "window_start": "2026-08-07T07:00:00.000Z",
+ "generated_at": "2026-08-08T13:47:10.167Z",
+ "generated_local": "2026-08-08T06:47:10-07:00",
+ "window_start": "2026-08-08T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -41,7 +41,7 @@
    "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 4,
+   "reg": 6,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-04T19:52:45+00:00"
