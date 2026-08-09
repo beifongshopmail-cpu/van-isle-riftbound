@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-09T03:02:32.276Z",
- "generated_local": "2026-08-08T20:02:32-07:00",
- "window_start": "2026-08-08T07:00:00.000Z",
+ "generated_at": "2026-08-09T13:51:03.446Z",
+ "generated_local": "2026-08-09T06:51:03-07:00",
+ "window_start": "2026-08-09T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 44,
-   "added": 44
+   "returned": 45,
+   "added": 45
   },
   {
    "name": "Courtenay",
@@ -23,8 +23,8 @@
   }
  ],
  "totals": {
-  "fetched": 69,
-  "unique": 69
+  "fetched": 70,
+  "unique": 70
  },
  "unknown_templates": {},
  "events": [
@@ -41,7 +41,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 3,
+   "reg": 4,
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-01T18:13:14+00:00"
@@ -371,24 +371,6 @@
    "updated": "2026-08-01T18:16:19+00:00"
   },
   {
-   "id": 821775,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-08-23T11:30:00-07:00",
-   "end": "2026-08-23T15:40:00-07:00",
-   "day": "2026-08-23",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-02T05:01:07+00:00"
-  },
-  {
    "id": 498166,
    "name": "Sunday Morning Vendetta Summoner Skirmish I",
    "type": "skirmish",
@@ -405,6 +387,24 @@
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:22:38+00:00"
+  },
+  {
+   "id": 821775,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-08-23T11:30:00-07:00",
+   "end": "2026-08-23T15:40:00-07:00",
+   "day": "2026-08-23",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-08-02T05:01:07+00:00"
   },
   {
    "id": 729122,
@@ -497,24 +497,6 @@
    "updated": "2026-07-23T23:31:47+00:00"
   },
   {
-   "id": 532618,
-   "name": "Saturday Afternoon Vendetta Summoner Skirmish I",
-   "type": "skirmish",
-   "start": "2026-08-29T12:00:00-07:00",
-   "end": "2026-08-29T18:40:00-07:00",
-   "day": "2026-08-29",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 1,
-   "cents": 1000,
-   "currency": "CAD",
-   "updated": "2026-04-30T20:27:53+00:00"
-  },
-  {
    "id": 771838,
    "name": "Saturday Afternoon Nexus Nights - 1v1",
    "type": "nexus",
@@ -531,6 +513,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-15T05:03:31+00:00"
+  },
+  {
+   "id": 532618,
+   "name": "Saturday Afternoon Vendetta Summoner Skirmish I",
+   "type": "skirmish",
+   "start": "2026-08-29T12:00:00-07:00",
+   "end": "2026-08-29T18:40:00-07:00",
+   "day": "2026-08-29",
+   "time": "12:00 PM",
+   "venue": "North Park Picture Framing and Collectables",
+   "city": "Victoria",
+   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
+   "region": "victoria",
+   "cap": 28,
+   "reg": 1,
+   "cents": 1000,
+   "currency": "CAD",
+   "updated": "2026-04-30T20:27:53+00:00"
   },
   {
    "id": 501060,
@@ -1233,6 +1233,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-08-07T05:04:57+00:00"
+  },
+  {
+   "id": 841879,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-10-04T11:30:00-07:00",
+   "end": "2026-10-04T15:40:00-07:00",
+   "day": "2026-10-04",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-08-09T05:01:11+00:00"
   },
   {
    "id": 519459,
