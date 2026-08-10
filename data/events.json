@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-09T13:51:03.446Z",
- "generated_local": "2026-08-09T06:51:03-07:00",
+ "generated_at": "2026-08-10T03:11:56.694Z",
+ "generated_local": "2026-08-09T20:11:56-07:00",
  "window_start": "2026-08-09T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 45,
-   "added": 45
+   "returned": 44,
+   "added": 44
   },
   {
    "name": "Courtenay",
@@ -23,29 +23,11 @@
   }
  ],
  "totals": {
-  "fetched": 70,
-  "unique": 70
+  "fetched": 69,
+  "unique": 69
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 820769,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-08-09T11:30:00-07:00",
-   "end": "2026-08-09T15:40:00-07:00",
-   "day": "2026-08-09",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 4,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-01T18:13:14+00:00"
-  },
   {
    "id": 694342,
    "name": "Tuesday Riftbound Playnight",
@@ -371,24 +353,6 @@
    "updated": "2026-08-01T18:16:19+00:00"
   },
   {
-   "id": 498166,
-   "name": "Sunday Morning Vendetta Summoner Skirmish I",
-   "type": "skirmish",
-   "start": "2026-08-23T11:30:00-07:00",
-   "end": "2026-08-23T18:10:00-07:00",
-   "day": "2026-08-23",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 4,
-   "cents": 2000,
-   "currency": "CAD",
-   "updated": "2026-04-14T00:22:38+00:00"
-  },
-  {
    "id": 821775,
    "name": "Sunday morning \"nexus Night\"",
    "type": "nexus",
@@ -405,6 +369,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-02T05:01:07+00:00"
+  },
+  {
+   "id": 498166,
+   "name": "Sunday Morning Vendetta Summoner Skirmish I",
+   "type": "skirmish",
+   "start": "2026-08-23T11:30:00-07:00",
+   "end": "2026-08-23T18:10:00-07:00",
+   "day": "2026-08-23",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 4,
+   "cents": 2000,
+   "currency": "CAD",
+   "updated": "2026-04-14T00:22:38+00:00"
   },
   {
    "id": 729122,
