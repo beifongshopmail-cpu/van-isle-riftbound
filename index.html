@@ -74,6 +74,13 @@
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
+  .mast .by{
+    margin-top:10px;
+    font-family:var(--mono);font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .mast .by a{color:var(--dim);text-decoration:none;}
+  .mast .by a:hover{color:var(--bone);}
   .mast .stamp.stale b,.mast .stamp.stale{color:var(--warn);}
 
   .scope{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:24px;}
@@ -261,6 +268,11 @@
   .boot.bad a{color:var(--bone);}
 
   .foot{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);}
+  .foot .by{
+    font-family:var(--mono);font-size:10.5px;line-height:1.75;
+    color:var(--mute);text-align:center;margin:15px 0 0;
+  }
+  .foot .by a{color:var(--dim);}
   .sub{
     display:flex;align-items:center;justify-content:center;gap:9px;
     width:100%;min-height:var(--tap);
@@ -290,6 +302,7 @@
   <header class="mast">
     <h1>Van Isle<br>Riftbound</h1>
     <div class="stamp" id="stamp">Loading</div>
+    <div class="by">Kept by <a href="https://beifonghithouse.com">Beifong's Hit-House</a></div>
   </header>
 
   <div id="boot" class="boot">Loading events</div>
@@ -327,6 +340,10 @@
       <p>
         Subscribe once and new events appear on your phone by themselves.<br>
         Data from the <a href="https://locator.riftbound.uvsgames.com/events">Riftbound Gaming Network</a>. Sign-ups happen there.
+      </p>
+      <p class="by">
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Free for any island store or player to use or link.
       </p>
     </footer>
   </div>
