@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-08-12T04:23:08.908Z",
- "generated_local": "2026-08-11T21:23:08-07:00",
- "window_start": "2026-08-11T07:00:00.000Z",
+ "generated_at": "2026-08-12T14:20:44.612Z",
+ "generated_local": "2026-08-12T07:20:44-07:00",
+ "window_start": "2026-08-12T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -42,7 +42,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-03T18:51:32+00:00"
@@ -528,7 +528,7 @@
    "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
    "region": "island",
    "cap": 16,
-   "reg": 7,
+   "reg": 8,
    "cents": 1500,
    "currency": "CAD",
    "updated": "2026-08-02T03:29:32+00:00"
