@@ -145,6 +145,20 @@ function noteUnknown(unknown, templateId, ev) {
   return unknown;
 }
 
+// Previous published unique count, or null if unavailable. Never
+// throws: a missing or malformed prior file is a normal first-run
+// condition, not a fetch failure.
+function priorUnique(file) {
+  try {
+    const raw = fs.readFileSync(file, "utf8");
+    const prev = JSON.parse(raw);
+    const n = prev && prev.totals ? prev.totals.unique : null;
+    return typeof n === "number" && isFinite(n) ? n : null;
+  } catch (err) {
+    return null;
+  }
+}
+
 async function main() {
   const after = startOfLocalDay();
   const afterIso = after.toISOString();
@@ -180,12 +194,14 @@ async function main() {
     throw new Error(`only ${events.length} events (floor is ${MIN_EVENTS}) -- refusing to overwrite`);
   }
 
+  const prevUnique = priorUnique(OUT_FILE);
+
   const payload = {
     generated_at: new Date().toISOString(),
     generated_local: localIso(new Date()),
     window_start: afterIso,
     anchors: perAnchor,
-    totals: { fetched: fetched, unique: events.length },
+    totals: { fetched: fetched, unique: events.length, prev_unique: prevUnique },
     unknown_templates: unknown,
     events: events
   };
@@ -221,4 +237,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { shape, noteUnknown };
+module.exports = { shape, noteUnknown, priorUnique };

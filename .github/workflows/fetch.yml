@@ -90,3 +90,15 @@ jobs:
           else
             echo "no anomalies to report"
           fi
+          DROPBODY="$RUNNER_TEMP/anomaly-drop.md"
+          if [ -f "$DROPBODY" ]; then
+            gh label create event-drop --color FF4F9A --description "Event count fell sharply against the previous run" 2>/dev/null || true
+            OPENDROP=$(gh issue list --label event-drop --state open --json number --jq "length")
+            if [ "$OPENDROP" = "0" ]; then
+              gh issue create --title "Event count dropped sharply" --label event-drop --body-file "$DROPBODY"
+            else
+              echo "an event-drop issue is already open; not opening another"
+            fi
+          else
+            echo "no drop to report"
+          fi

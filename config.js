@@ -27,4 +27,15 @@ const TZ = "America/Vancouver";
 // silently-degraded API response overwriting a good file.
 const MIN_EVENTS = 10;
 
-module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS };
+// Degradation delta. If unique event count falls by more than this
+// fraction against the previous published file, raise a notice. The
+// feed still publishes: a real seasonal lull must not blank the
+// calendar, and MIN_EVENTS already holds the hard floor. Deliberately
+// loose - a false positive trains us to ignore the notices.
+const DROP_FRACTION = 0.4;
+
+// Below this count, percentage swings are noise. No delta notice fires
+// when either side of the comparison is under this.
+const DROP_FLOOR = 20;
+
+module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR };
