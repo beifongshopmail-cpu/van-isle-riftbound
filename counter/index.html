@@ -12,166 +12,184 @@
 <link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
 <style>
   :root{
-    --ground:#000000;
-    --rule:#212429;
-    --rule-hi:#343A44;
     --bone:#F2F3F5;
     --dim:#828A97;
     --mute:#4E5561;
-    --warn:#FFB020;
-    --surf:linear-gradient(180deg,#14161B 0%,#0A0B0E 100%);
-    --surf-hi:inset 0 1px 0 rgba(255,255,255,.05);
-    --surf-up:linear-gradient(180deg,#1C1F26 0%,#12141A 100%);
+    --rule:#212429;
+    --rule-hi:#343A44;
     --p1:#3FA9F5;
     --p2:#FF4F9A;
     --display:"Archivo",system-ui,sans-serif;
     --body:"IBM Plex Sans",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
-    --r:9px;
-    --r-sm:4px;
-    --r-xs:2px;
-    --gut:14px;
-    --tap:44px;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
-  body{background:var(--ground);color:var(--bone);font-family:var(--body);overscroll-behavior:none;-webkit-user-select:none;user-select:none}
-  .app{min-height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
-  .bar{display:flex;align-items:center;gap:8px;padding:10px var(--gut);border-bottom:1px solid var(--rule)}
-  .back{color:var(--dim);font-family:var(--mono);font-size:11px;text-decoration:none;letter-spacing:.1em;text-transform:uppercase}
-  .turnpill{margin-left:auto;margin-right:auto;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
-  .tools{display:flex;gap:6px}
-  button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone);background:var(--surf);border:1px solid var(--rule-hi);border-radius:var(--r-sm);box-shadow:var(--surf-hi);padding:7px 9px;min-height:34px}
-  button:disabled{opacity:.3}
-  button.armed{color:var(--warn);border-color:var(--warn)}
-  .board{flex:1;display:flex;flex-direction:column;gap:8px;padding:10px var(--gut) 0}
-  .side{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--surf);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--surf-hi);padding:14px 12px;min-height:0;overflow:hidden}
-  .side.big{flex:3}
-  .side.sm{flex:1}
-  .side.eq{flex:1}
-  .who{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-  .score{font-family:var(--display);font-weight:800;line-height:.85;font-size:clamp(52px,20vw,150px)}
-  .side.sm .score{font-size:clamp(30px,9vw,60px)}
-  .s1 .score{color:var(--p1);text-shadow:0 0 28px rgba(63,169,245,.32)}
-  .s2 .score{color:var(--p2);text-shadow:0 0 28px rgba(255,79,154,.32)}
-  .pips{display:flex;gap:4px}
-  .pips i{width:11px;height:6px;border-radius:var(--r-xs);background:var(--rule-hi);display:block}
-  .s1 .pips i.on{background:var(--p1)}
-  .s2 .pips i.on{background:var(--p2)}
-  .turns{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.1em}
-  .btns{display:flex;gap:6px;width:100%}
-  .btns button{flex:1;min-height:var(--tap)}
-  .passwrap{padding:8px var(--gut) 0}
-  .pass{width:100%;min-height:var(--tap);background:var(--surf-up)}
-  .app[data-mode="split"] .s2{transform:rotate(180deg)}
-  .app[data-mode="pass"][data-active="2"] .board{transform:rotate(180deg)}
-  .logwrap{border-top:1px solid var(--rule);margin-top:10px;padding:10px var(--gut) calc(16px + env(safe-area-inset-bottom));max-height:32vh;overflow:auto}
-  .logwrap h2{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:8px}
-  #log{list-style:none;display:flex;flex-direction:column}
-  #log li{font-size:13px;display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--rule)}
-  #log li span{font-family:var(--mono);font-size:10px;color:var(--mute);margin-left:auto;white-space:nowrap}
-  #log li b{font-weight:600}
-  #log li.t b{color:var(--dim);font-weight:500}
-  #log li.p1 b{color:var(--p1)}
-  #log li.p2 b{color:var(--p2)}
-  #log li.empty{color:var(--mute);border:0}
-  .banner{display:none;position:fixed;left:0;right:0;bottom:0;padding:14px var(--gut) calc(14px + env(safe-area-inset-bottom));background:var(--surf-up);border-top:1px solid var(--rule-hi);align-items:center;gap:12px}
-  .app[data-won="1"] .banner{display:flex}
-  .banner b{font-family:var(--display);font-weight:800;font-size:19px}
-  .banner button{margin-left:auto}
+  html,body{height:100%;overflow:hidden}
+  body{background:#000;color:var(--bone);font-family:var(--body);
+    display:flex;flex-direction:column;overscroll-behavior:none;
+    -webkit-user-select:none;user-select:none;
+    padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+
+  .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden}
+
+  .strip{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:6px 12px}
+  .strip .home{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mute);text-decoration:none}
+  .strip .turn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--dim);margin-left:10px}
+  .strip .sp{margin-left:auto}
+  .strip button{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--dim);background:none;border:1px solid var(--rule);border-radius:4px;
+    padding:5px 8px;min-height:28px}
+  .strip button:disabled{opacity:.3}
+  .strip button.armed{color:#FFB020;border-color:#FFB020}
+
+  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 6px 6px}
+  .side{min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;overflow:hidden;border-radius:10px}
+  .side[data-role="major"]{flex:1}
+  .side[data-role="minor"]{flex:0 0 auto;flex-direction:row;gap:14px;padding:10px 14px;
+    justify-content:center;background:#07080A;border:1px solid var(--rule)}
+  .side[data-role="equal"]{flex:1}
+  .p1[data-role="minor"]{border-color:rgba(63,169,245,.3)}
+  .p2[data-role="minor"]{border-color:rgba(255,79,154,.3)}
+  .far{transform:rotate(180deg)}
+
+  .name{font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--mute);position:relative;z-index:3}
+  .p1 .name{color:rgba(63,169,245,.72)}
+  .p2 .name{color:rgba(255,79,154,.72)}
+  .num{font-family:var(--display);font-weight:800;line-height:.78;letter-spacing:-.03em;
+    font-size:min(36vh,38vw);position:relative;z-index:3}
+  .p1 .num{color:var(--p1)}
+  .p2 .num{color:var(--p2)}
+  .side[data-role="minor"] .num{font-size:32px}
+  .side[data-role="equal"] .num{font-size:min(24vh,28vw)}
+
+  .track{position:relative;z-index:3;margin-top:14px;width:min(62vw,330px)}
+  .side[data-role="minor"] .track{width:78px;margin-top:0}
+  .side[data-role="equal"] .track{margin-top:10px}
+  .track .segs{display:flex;gap:3px}
+  .track .segs i{flex:1;height:3px;background:#1B1E24;display:block}
+  .p1 .track .segs i.on{background:var(--p1)}
+  .p2 .track .segs i.on{background:var(--p2)}
+  .track .keys{display:flex;gap:3px;margin-top:5px}
+  .track .keys b{flex:1;text-align:center;font-family:var(--mono);font-weight:400;font-size:10px;
+    letter-spacing:.04em;color:var(--mute);line-height:1}
+  .p1 .track .keys b.on{color:rgba(63,169,245,.85)}
+  .p2 .track .keys b.on{color:rgba(255,79,154,.85)}
+  .side[data-role="minor"] .track .keys{display:none}
+
+  .acts{display:flex;gap:0;position:relative;z-index:3;margin-top:22px}
+  .acts button{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.12em;
+    text-transform:uppercase;padding:14px 15px 11px;min-height:48px;background:none;border:0;
+    border-bottom:2px solid transparent;color:var(--bone)}
+  .p1 .acts button{border-bottom-color:rgba(63,169,245,.6)}
+  .p2 .acts button{border-bottom-color:rgba(255,79,154,.6)}
+  .p1 .acts button:active{color:var(--p1);text-shadow:0 0 20px rgba(63,169,245,.7)}
+  .p2 .acts button:active{color:var(--p2);text-shadow:0 0 20px rgba(255,79,154,.7)}
+  .acts button:disabled{opacity:.25}
+  .side[data-role="minor"] .acts{margin-top:0}
+  .side[data-role="minor"] .acts button{min-height:32px;padding:7px 9px 5px;font-size:10px}
+  .side[data-role="equal"] .acts{margin-top:14px}
+
+  .seamwrap{flex:0 0 auto;padding:8px 0}
+  .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
+    color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
+    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px}
+  .seam em{font-family:var(--mono);font-style:normal;font-weight:400;font-size:10px;
+    letter-spacing:.14em;color:var(--dim)}
+  .seam:active{background:rgba(255,255,255,.05)}
+  .seam:disabled{opacity:.3}
+
+  .sheet{position:absolute;inset:0;background:rgba(0,0,0,.95);z-index:30;display:none;
+    flex-direction:column;padding:12px}
+  .sheet.open{display:flex}
+  .sheet h2{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--dim);font-weight:400;margin-bottom:10px}
+  .sheet ol{list-style:none;flex:1;min-height:0;overflow:auto}
+  .sheet li{display:flex;gap:8px;align-items:baseline;font-size:13px;padding:8px 0;
+    border-bottom:1px solid var(--rule)}
+  .sheet li span{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mute);white-space:nowrap}
+  .sheet li.e1 b{color:var(--p1)}
+  .sheet li.e2 b{color:var(--p2)}
+  .sheet li.et b{color:var(--dim);font-weight:500}
+  .sheet li.empty{color:var(--mute);border:0}
+  .sheet .close{margin-top:10px;min-height:44px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--bone);background:#14161B;
+    border:1px solid var(--rule-hi);border-radius:6px}
+
+  .win{position:absolute;left:10px;right:10px;bottom:10px;z-index:25;display:none;
+    align-items:center;gap:12px;padding:14px;border-radius:10px;
+    background:linear-gradient(180deg,#1C1F26 0%,#12141A 100%);border:1px solid var(--rule-hi)}
+  .stage[data-won="1"] .win{display:flex}
+  .win b{font-family:var(--display);font-weight:800;font-size:18px}
+  .win button{margin-left:auto;min-height:40px;padding:0 14px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--bone);background:#0A0B0E;
+    border:1px solid var(--rule-hi);border-radius:6px}
 </style>
 </head>
 <body>
-<div class="app" id="app" data-mode="focus" data-active="1" data-won="0">
-  <header class="bar">
-    <a class="back" href="/van-isle-riftbound/">Events</a>
-    <div class="turnpill" id="turnpill">P1 turn 1</div>
-    <div class="tools">
-      <button id="modebtn">Focus</button>
-      <button id="undobtn">Undo</button>
-      <button id="newbtn">New</button>
-    </div>
-  </header>
-  <main class="board">
-    <section class="side s1 big">
-      <div class="who">Player 1</div>
-      <div class="score" id="sc1">0</div>
-      <div class="pips" id="pip1"></div>
-      <div class="turns" id="tn1">T1</div>
-      <div class="btns">
-        <button data-p="1" data-src="conquer">Conquer</button>
-        <button data-p="1" data-src="hold">Hold</button>
-        <button data-p="1" data-src="other">Other</button>
-      </div>
-    </section>
-    <section class="side s2 sm">
-      <div class="who">Player 2</div>
-      <div class="score" id="sc2">0</div>
-      <div class="pips" id="pip2"></div>
-      <div class="turns" id="tn2">T0</div>
-      <div class="btns">
-        <button data-p="2" data-src="conquer">Conquer</button>
-        <button data-p="2" data-src="hold">Hold</button>
-        <button data-p="2" data-src="other">Other</button>
-      </div>
-    </section>
-  </main>
-  <div class="passwrap"><button class="pass" id="passbtn">Pass turn</button></div>
-  <section class="logwrap">
-    <h2>Log</h2>
-    <ol id="log"></ol>
-  </section>
-  <div class="banner">
-    <b id="wintext">Player 1 wins</b>
-    <button id="newbtn2">New game</button>
+<div class="stage" id="stage" data-mode="focus" data-won="0">
+  <div class="strip">
+    <a class="home" href="/van-isle-riftbound/">Events</a>
+    <div class="turn" id="turn">Player 1 turn 1</div>
+    <div class="sp"></div>
+    <button id="modebtn">Focus</button>
+    <button id="undo">Undo</button>
+    <button id="logbtn">Log</button>
+    <button id="reset">New</button>
   </div>
+  <div class="field" id="field"></div>
+  <div class="sheet" id="sheet">
+    <h2>Every point, in order</h2>
+    <ol id="log"></ol>
+    <button class="close" id="closelog">Back to the game</button>
+  </div>
+  <div class="win"><b id="wintext">Player 1 wins</b><button id="again">New game</button></div>
 </div>
 <script>
 (function(){
-  var KEY = "vir.counter.v1";
+  var GKEY = "vir.counter.game.v1";
   var MKEY = "vir.counter.mode.v1";
   var GOAL = 8;
   var MODES = ["focus","split","pass"];
   var MODE_LABEL = { focus:"Focus", split:"Split", pass:"Pass" };
-  var SRC_LABEL = { conquer:"Conquer", hold:"Hold", other:"Other" };
+  var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
+  var KEY = { conquer:"C", hold:"H", other:"O" };
+  var NAME = { 1:"Player 1", 2:"Player 2" };
 
-  var app = document.getElementById("app");
-  var elLog = document.getElementById("log");
-  var elTurn = document.getElementById("turnpill");
+  var stage = document.getElementById("stage");
+  var field = document.getElementById("field");
+  var elTurn = document.getElementById("turn");
   var elMode = document.getElementById("modebtn");
-  var elUndo = document.getElementById("undobtn");
-  var elNew = document.getElementById("newbtn");
-  var elNew2 = document.getElementById("newbtn2");
+  var elUndo = document.getElementById("undo");
+  var elReset = document.getElementById("reset");
   var elWin = document.getElementById("wintext");
-  var elPass = document.getElementById("passbtn");
-  var sc = [null, document.getElementById("sc1"), document.getElementById("sc2")];
-  var pip = [null, document.getElementById("pip1"), document.getElementById("pip2")];
-  var tn = [null, document.getElementById("tn1"), document.getElementById("tn2")];
-  var s1 = document.querySelector(".s1");
-  var s2 = document.querySelector(".s2");
+  var elLog = document.getElementById("log");
+  var sheet = document.getElementById("sheet");
 
-  var state = null;
+  var ev = null;
   var mode = "focus";
-  var newArmed = false;
-  var newTimer = null;
+  var armed = false;
+  var armTimer = null;
   var wake = null;
 
-  function freshGame(){ return { started: Date.now(), events: [ { t:"turn", p:1, n:1 } ] }; }
+  function fresh(){ return [ { t:"turn", p:1, n:1 } ]; }
 
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function save(){ try { localStorage.setItem(GKEY, JSON.stringify(ev)); } catch (e) {} }
   function saveMode(){ try { localStorage.setItem(MKEY, mode); } catch (e) {} }
 
   function load(){
     try {
-      var raw = localStorage.getItem(KEY);
+      var raw = localStorage.getItem(GKEY);
       if (raw) {
-        var g = JSON.parse(raw);
-        if (g && g.events && g.events.length) { return g; }
+        var a = JSON.parse(raw);
+        if (a && a.length && a[0] && a[0].t === "turn") { return a; }
       }
     } catch (e) {}
     return null;
   }
-
   function loadMode(){
     try {
       var m = localStorage.getItem(MKEY);
@@ -180,124 +198,94 @@
     return "focus";
   }
 
-  function score(p){
-    var s = 0;
-    for (var i = 0; i < state.events.length; i++) {
-      var e = state.events[i];
-      if (e.t === "point" && e.p === p) { s += 1; }
-    }
-    return s;
+  function pointsOf(p){
+    var a = [];
+    for (var i = 0; i < ev.length; i++) { if (ev[i].t === "point" && ev[i].p === p) { a.push(ev[i]); } }
+    return a;
   }
-
-  function turnsOf(p){
+  function score(p){ return pointsOf(p).length; }
+  function turns(p){
     var c = 0;
-    for (var i = 0; i < state.events.length; i++) {
-      var e = state.events[i];
-      if (e.t === "turn" && e.p === p) { c += 1; }
-    }
+    for (var i = 0; i < ev.length; i++) { if (ev[i].t === "turn" && ev[i].p === p) { c++; } }
     return c;
   }
-
   function ctx(){
-    for (var i = state.events.length - 1; i >= 0; i--) {
-      if (state.events[i].t === "turn") { return state.events[i]; }
-    }
+    for (var i = ev.length - 1; i >= 0; i--) { if (ev[i].t === "turn") { return ev[i]; } }
     return { t:"turn", p:1, n:1 };
   }
-
-  function winner(){
+  function won(){
     if (score(1) >= GOAL) { return 1; }
     if (score(2) >= GOAL) { return 2; }
     return 0;
   }
 
-  function addPoint(p, src){
-    if (winner()) { return; }
-    var c = ctx();
-    state.events.push({ t:"point", p:p, src:src, tp:c.p, tn:c.n });
-    save();
-    render();
-  }
-
-  function passTurn(){
-    if (winner()) { return; }
-    var c = ctx();
-    var nx = c.p === 1 ? 2 : 1;
-    state.events.push({ t:"turn", p:nx, n:turnsOf(nx) + 1 });
-    save();
-    render();
-  }
-
-  function undo(){
-    if (state.events.length <= 1) { return; }
-    state.events.pop();
-    save();
-    render();
-  }
-
-  function sideClass(p, active){
-    if (mode === "split") { return "eq"; }
-    if (mode === "pass") { return p === active ? "big" : "sm"; }
-    return p === 1 ? "big" : "sm";
-  }
-
-  function renderPips(el, n){
-    var out = "";
-    for (var i = 0; i < GOAL; i++) { out += "<i" + (i < n ? " class=\"on\"" : "") + "></i>"; }
-    el.innerHTML = out;
-  }
-
-  function renderLog(){
-    if (state.events.length <= 1) {
-      elLog.innerHTML = "<li class=\"empty\">No points yet.</li>";
-      return;
+  function trackOf(p){
+    var pts = pointsOf(p), segs = "", keys = "";
+    for (var i = 0; i < GOAL; i++) {
+      var on = i < pts.length;
+      var k = on ? KEY[pts[i].src] : ".";
+      segs += "<i" + (on ? " class=\"on\"" : "") + "></i>";
+      keys += "<b" + (on ? " class=\"on\"" : "") + ">" + k + "</b>";
     }
-    var out = "";
-    for (var i = state.events.length - 1; i >= 0; i--) {
-      var e = state.events[i];
-      if (e.t === "point") {
-        out += "<li class=\"p" + e.p + "\"><b>P" + e.p + " +1</b> " + SRC_LABEL[e.src] +
-               " <span>during P" + e.tp + " T" + e.tn + "</span></li>";
-      } else {
-        out += "<li class=\"t\"><b>P" + e.p + " turn " + e.n + "</b> <span>begins</span></li>";
-      }
-    }
-    elLog.innerHTML = out;
+    return "<div class=\"track\"><div class=\"segs\">" + segs + "</div>" +
+           "<div class=\"keys\">" + keys + "</div></div>";
+  }
+
+  function acts(p){
+    var d = won() ? " disabled" : "";
+    return "<div class=\"acts\">" +
+      "<button data-p=\"" + p + "\" data-s=\"conquer\"" + d + ">Conquer</button>" +
+      "<button data-p=\"" + p + "\" data-s=\"hold\"" + d + ">Hold</button>" +
+      "<button data-p=\"" + p + "\" data-s=\"other\"" + d + ">Other</button></div>";
+  }
+
+  function block(p, role){
+    var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
+    return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role + "\">" +
+      "<div class=\"name\">" + NAME[p] + "</div>" +
+      "<div class=\"num\">" + score(p) + "</div>" +
+      trackOf(p) + acts(p) + "</section>";
+  }
+
+  function seam(){
+    var c = ctx(), d = won() ? " disabled" : "";
+    return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d + ">Pass turn" +
+      "<em>" + NAME[c.p] + " turn " + c.n + "</em></button></div>";
   }
 
   function render(){
-    var w = winner();
-    var c = ctx();
-    app.setAttribute("data-mode", mode);
-    app.setAttribute("data-active", String(c.p));
-    app.setAttribute("data-won", w ? "1" : "0");
+    var c = ctx(), w = won();
+    stage.setAttribute("data-mode", mode);
+    stage.setAttribute("data-won", w ? "1" : "0");
     elMode.textContent = MODE_LABEL[mode];
-    elTurn.textContent = "P" + c.p + " turn " + c.n;
-    for (var p = 1; p <= 2; p++) {
-      sc[p].textContent = String(score(p));
-      tn[p].textContent = "T" + turnsOf(p);
-      renderPips(pip[p], score(p));
+    elTurn.textContent = NAME[c.p] + " turn " + c.n;
+    elWin.textContent = NAME[w || 1] + " wins";
+    elUndo.disabled = ev.length <= 1;
+
+    var top, bot;
+    if (mode === "split") { top = block(2, "equal"); bot = block(1, "equal"); }
+    else if (mode === "pass") {
+      var a = c.p, b = a === 1 ? 2 : 1;
+      top = block(b, "minor"); bot = block(a, "major");
+    } else { top = block(2, "minor"); bot = block(1, "major"); }
+
+    field.innerHTML = top + seam() + bot;
+    field.style.transform = (mode === "pass" && c.p === 2) ? "rotate(180deg)" : "none";
+
+    var out = "";
+    if (ev.length <= 1) {
+      out = "<li class=\"empty\">No points yet. Tap Conquer, Hold or Other when someone scores.</li>";
     }
-    s1.className = "side s1 " + sideClass(1, c.p);
-    s2.className = "side s2 " + sideClass(2, c.p);
-    if (w) { elWin.textContent = "Player " + w + " wins"; }
-    elUndo.disabled = state.events.length <= 1;
-    elPass.disabled = w ? true : false;
-    renderLog();
-  }
-
-  function resetNewButton(){
-    newArmed = false;
-    elNew.textContent = "New";
-    elNew.className = "";
-    if (newTimer) { clearTimeout(newTimer); newTimer = null; }
-  }
-
-  function startNew(){
-    resetNewButton();
-    state = freshGame();
-    save();
-    render();
+    for (var i = ev.length - 1; i >= 0; i--) {
+      var e = ev[i];
+      if (e.t === "point") {
+        out += "<li class=\"e" + e.p + "\"><b>" + NAME[e.p] + " +1</b> " + SRC[e.src] +
+               " <span>during " + NAME[e.tp] + " T" + e.tn + "</span></li>";
+      } else {
+        out += "<li class=\"et\"><b>" + NAME[e.p] + " turn " + e.n + "</b> <span>begins</span></li>";
+      }
+    }
+    elLog.innerHTML = out;
   }
 
   function keepAwake(){
@@ -311,43 +299,67 @@
     } catch (e) {}
   }
 
-  var btns = document.querySelectorAll("[data-src]");
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].addEventListener("click", function(ev){
-      var b = ev.currentTarget;
-      addPoint(parseInt(b.getAttribute("data-p"), 10), b.getAttribute("data-src"));
-      keepAwake();
-    });
+  function disarm(){
+    armed = false;
+    elReset.textContent = "New";
+    elReset.className = "";
+    if (armTimer) { clearTimeout(armTimer); armTimer = null; }
+  }
+  function startNew(){
+    disarm();
+    ev = fresh();
+    save();
+    render();
   }
 
-  elPass.addEventListener("click", function(){ passTurn(); keepAwake(); });
-  elUndo.addEventListener("click", function(){ undo(); });
+  field.addEventListener("click", function(e){
+    var t = e.target;
+    while (t && t !== field && t.tagName !== "BUTTON") { t = t.parentNode; }
+    if (!t || t === field) { return; }
+    if (t.id === "seam") {
+      if (!won()) {
+        var c = ctx(), nx = c.p === 1 ? 2 : 1;
+        ev.push({ t:"turn", p:nx, n:turns(nx) + 1 });
+        save(); render(); keepAwake();
+      }
+      return;
+    }
+    if (t.getAttribute("data-s")) {
+      if (won()) { return; }
+      var c2 = ctx();
+      ev.push({ t:"point", p:parseInt(t.getAttribute("data-p"), 10),
+                src:t.getAttribute("data-s"), tp:c2.p, tn:c2.n });
+      save(); render(); keepAwake();
+    }
+  });
 
   elMode.addEventListener("click", function(){
     mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
-    saveMode();
-    render();
+    saveMode(); render();
   });
-
-  elNew.addEventListener("click", function(){
-    if (!newArmed) {
-      newArmed = true;
-      elNew.textContent = "Sure?";
-      elNew.className = "armed";
-      newTimer = setTimeout(resetNewButton, 3000);
+  elUndo.addEventListener("click", function(){
+    if (ev.length > 1) { ev.pop(); save(); render(); }
+  });
+  elReset.addEventListener("click", function(){
+    if (!armed) {
+      armed = true;
+      elReset.textContent = "Sure?";
+      elReset.className = "armed";
+      armTimer = setTimeout(disarm, 3000);
       return;
     }
     startNew();
   });
-
-  elNew2.addEventListener("click", function(){ startNew(); });
+  document.getElementById("logbtn").addEventListener("click", function(){ sheet.classList.add("open"); });
+  document.getElementById("closelog").addEventListener("click", function(){ sheet.classList.remove("open"); });
+  document.getElementById("again").addEventListener("click", function(){ startNew(); });
 
   document.addEventListener("visibilitychange", function(){
     if (document.visibilityState === "visible") { wake = null; keepAwake(); }
   });
 
   mode = loadMode();
-  state = load() || freshGame();
+  ev = load() || fresh();
   render();
 })();
 </script>
