@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Offline point counter for Riftbound. Tracks points, how they were scored, and which turn they landed on.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RB Counter">
+<title>Point Counter - Van Isle Riftbound</title>
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+  :root{
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --warn:#FFB020;
+    --surf:linear-gradient(180deg,#14161B 0%,#0A0B0E 100%);
+    --surf-hi:inset 0 1px 0 rgba(255,255,255,.05);
+    --surf-up:linear-gradient(180deg,#1C1F26 0%,#12141A 100%);
+    --p1:#3FA9F5;
+    --p2:#FF4F9A;
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --r:9px;
+    --r-sm:4px;
+    --r-xs:2px;
+    --gut:14px;
+    --tap:44px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:var(--ground);color:var(--bone);font-family:var(--body);overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+  .app{min-height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+  .bar{display:flex;align-items:center;gap:8px;padding:10px var(--gut);border-bottom:1px solid var(--rule)}
+  .back{color:var(--dim);font-family:var(--mono);font-size:11px;text-decoration:none;letter-spacing:.1em;text-transform:uppercase}
+  .turnpill{margin-left:auto;margin-right:auto;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+  .tools{display:flex;gap:6px}
+  button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone);background:var(--surf);border:1px solid var(--rule-hi);border-radius:var(--r-sm);box-shadow:var(--surf-hi);padding:7px 9px;min-height:34px}
+  button:disabled{opacity:.3}
+  button.armed{color:var(--warn);border-color:var(--warn)}
+  .board{flex:1;display:flex;flex-direction:column;gap:8px;padding:10px var(--gut) 0}
+  .side{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--surf);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--surf-hi);padding:14px 12px;min-height:0;overflow:hidden}
+  .side.big{flex:3}
+  .side.sm{flex:1}
+  .side.eq{flex:1}
+  .who{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .score{font-family:var(--display);font-weight:800;line-height:.85;font-size:clamp(52px,20vw,150px)}
+  .side.sm .score{font-size:clamp(30px,9vw,60px)}
+  .s1 .score{color:var(--p1);text-shadow:0 0 28px rgba(63,169,245,.32)}
+  .s2 .score{color:var(--p2);text-shadow:0 0 28px rgba(255,79,154,.32)}
+  .pips{display:flex;gap:4px}
+  .pips i{width:11px;height:6px;border-radius:var(--r-xs);background:var(--rule-hi);display:block}
+  .s1 .pips i.on{background:var(--p1)}
+  .s2 .pips i.on{background:var(--p2)}
+  .turns{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:.1em}
+  .btns{display:flex;gap:6px;width:100%}
+  .btns button{flex:1;min-height:var(--tap)}
+  .passwrap{padding:8px var(--gut) 0}
+  .pass{width:100%;min-height:var(--tap);background:var(--surf-up)}
+  .app[data-mode="split"] .s2{transform:rotate(180deg)}
+  .app[data-mode="pass"][data-active="2"] .board{transform:rotate(180deg)}
+  .logwrap{border-top:1px solid var(--rule);margin-top:10px;padding:10px var(--gut) calc(16px + env(safe-area-inset-bottom));max-height:32vh;overflow:auto}
+  .logwrap h2{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:8px}
+  #log{list-style:none;display:flex;flex-direction:column}
+  #log li{font-size:13px;display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--rule)}
+  #log li span{font-family:var(--mono);font-size:10px;color:var(--mute);margin-left:auto;white-space:nowrap}
+  #log li b{font-weight:600}
+  #log li.t b{color:var(--dim);font-weight:500}
+  #log li.p1 b{color:var(--p1)}
+  #log li.p2 b{color:var(--p2)}
+  #log li.empty{color:var(--mute);border:0}
+  .banner{display:none;position:fixed;left:0;right:0;bottom:0;padding:14px var(--gut) calc(14px + env(safe-area-inset-bottom));background:var(--surf-up);border-top:1px solid var(--rule-hi);align-items:center;gap:12px}
+  .app[data-won="1"] .banner{display:flex}
+  .banner b{font-family:var(--display);font-weight:800;font-size:19px}
+  .banner button{margin-left:auto}
+</style>
+</head>
+<body>
+<div class="app" id="app" data-mode="focus" data-active="1" data-won="0">
+  <header class="bar">
+    <a class="back" href="/van-isle-riftbound/">Events</a>
+    <div class="turnpill" id="turnpill">P1 turn 1</div>
+    <div class="tools">
+      <button id="modebtn">Focus</button>
+      <button id="undobtn">Undo</button>
+      <button id="newbtn">New</button>
+    </div>
+  </header>
+  <main class="board">
+    <section class="side s1 big">
+      <div class="who">Player 1</div>
+      <div class="score" id="sc1">0</div>
+      <div class="pips" id="pip1"></div>
+      <div class="turns" id="tn1">T1</div>
+      <div class="btns">
+        <button data-p="1" data-src="conquer">Conquer</button>
+        <button data-p="1" data-src="hold">Hold</button>
+        <button data-p="1" data-src="other">Other</button>
+      </div>
+    </section>
+    <section class="side s2 sm">
+      <div class="who">Player 2</div>
+      <div class="score" id="sc2">0</div>
+      <div class="pips" id="pip2"></div>
+      <div class="turns" id="tn2">T0</div>
+      <div class="btns">
+        <button data-p="2" data-src="conquer">Conquer</button>
+        <button data-p="2" data-src="hold">Hold</button>
+        <button data-p="2" data-src="other">Other</button>
+      </div>
+    </section>
+  </main>
+  <div class="passwrap"><button class="pass" id="passbtn">Pass turn</button></div>
+  <section class="logwrap">
+    <h2>Log</h2>
+    <ol id="log"></ol>
+  </section>
+  <div class="banner">
+    <b id="wintext">Player 1 wins</b>
+    <button id="newbtn2">New game</button>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY = "vir.counter.v1";
+  var MKEY = "vir.counter.mode.v1";
+  var GOAL = 8;
+  var MODES = ["focus","split","pass"];
+  var MODE_LABEL = { focus:"Focus", split:"Split", pass:"Pass" };
+  var SRC_LABEL = { conquer:"Conquer", hold:"Hold", other:"Other" };
+
+  var app = document.getElementById("app");
+  var elLog = document.getElementById("log");
+  var elTurn = document.getElementById("turnpill");
+  var elMode = document.getElementById("modebtn");
+  var elUndo = document.getElementById("undobtn");
+  var elNew = document.getElementById("newbtn");
+  var elNew2 = document.getElementById("newbtn2");
+  var elWin = document.getElementById("wintext");
+  var elPass = document.getElementById("passbtn");
+  var sc = [null, document.getElementById("sc1"), document.getElementById("sc2")];
+  var pip = [null, document.getElementById("pip1"), document.getElementById("pip2")];
+  var tn = [null, document.getElementById("tn1"), document.getElementById("tn2")];
+  var s1 = document.querySelector(".s1");
+  var s2 = document.querySelector(".s2");
+
+  var state = null;
+  var mode = "focus";
+  var newArmed = false;
+  var newTimer = null;
+  var wake = null;
+
+  function freshGame(){ return { started: Date.now(), events: [ { t:"turn", p:1, n:1 } ] }; }
+
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function saveMode(){ try { localStorage.setItem(MKEY, mode); } catch (e) {} }
+
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) {
+        var g = JSON.parse(raw);
+        if (g && g.events && g.events.length) { return g; }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function loadMode(){
+    try {
+      var m = localStorage.getItem(MKEY);
+      if (MODES.indexOf(m) >= 0) { return m; }
+    } catch (e) {}
+    return "focus";
+  }
+
+  function score(p){
+    var s = 0;
+    for (var i = 0; i < state.events.length; i++) {
+      var e = state.events[i];
+      if (e.t === "point" && e.p === p) { s += 1; }
+    }
+    return s;
+  }
+
+  function turnsOf(p){
+    var c = 0;
+    for (var i = 0; i < state.events.length; i++) {
+      var e = state.events[i];
+      if (e.t === "turn" && e.p === p) { c += 1; }
+    }
+    return c;
+  }
+
+  function ctx(){
+    for (var i = state.events.length - 1; i >= 0; i--) {
+      if (state.events[i].t === "turn") { return state.events[i]; }
+    }
+    return { t:"turn", p:1, n:1 };
+  }
+
+  function winner(){
+    if (score(1) >= GOAL) { return 1; }
+    if (score(2) >= GOAL) { return 2; }
+    return 0;
+  }
+
+  function addPoint(p, src){
+    if (winner()) { return; }
+    var c = ctx();
+    state.events.push({ t:"point", p:p, src:src, tp:c.p, tn:c.n });
+    save();
+    render();
+  }
+
+  function passTurn(){
+    if (winner()) { return; }
+    var c = ctx();
+    var nx = c.p === 1 ? 2 : 1;
+    state.events.push({ t:"turn", p:nx, n:turnsOf(nx) + 1 });
+    save();
+    render();
+  }
+
+  function undo(){
+    if (state.events.length <= 1) { return; }
+    state.events.pop();
+    save();
+    render();
+  }
+
+  function sideClass(p, active){
+    if (mode === "split") { return "eq"; }
+    if (mode === "pass") { return p === active ? "big" : "sm"; }
+    return p === 1 ? "big" : "sm";
+  }
+
+  function renderPips(el, n){
+    var out = "";
+    for (var i = 0; i < GOAL; i++) { out += "<i" + (i < n ? " class=\"on\"" : "") + "></i>"; }
+    el.innerHTML = out;
+  }
+
+  function renderLog(){
+    if (state.events.length <= 1) {
+      elLog.innerHTML = "<li class=\"empty\">No points yet.</li>";
+      return;
+    }
+    var out = "";
+    for (var i = state.events.length - 1; i >= 0; i--) {
+      var e = state.events[i];
+      if (e.t === "point") {
+        out += "<li class=\"p" + e.p + "\"><b>P" + e.p + " +1</b> " + SRC_LABEL[e.src] +
+               " <span>during P" + e.tp + " T" + e.tn + "</span></li>";
+      } else {
+        out += "<li class=\"t\"><b>P" + e.p + " turn " + e.n + "</b> <span>begins</span></li>";
+      }
+    }
+    elLog.innerHTML = out;
+  }
+
+  function render(){
+    var w = winner();
+    var c = ctx();
+    app.setAttribute("data-mode", mode);
+    app.setAttribute("data-active", String(c.p));
+    app.setAttribute("data-won", w ? "1" : "0");
+    elMode.textContent = MODE_LABEL[mode];
+    elTurn.textContent = "P" + c.p + " turn " + c.n;
+    for (var p = 1; p <= 2; p++) {
+      sc[p].textContent = String(score(p));
+      tn[p].textContent = "T" + turnsOf(p);
+      renderPips(pip[p], score(p));
+    }
+    s1.className = "side s1 " + sideClass(1, c.p);
+    s2.className = "side s2 " + sideClass(2, c.p);
+    if (w) { elWin.textContent = "Player " + w + " wins"; }
+    elUndo.disabled = state.events.length <= 1;
+    elPass.disabled = w ? true : false;
+    renderLog();
+  }
+
+  function resetNewButton(){
+    newArmed = false;
+    elNew.textContent = "New";
+    elNew.className = "";
+    if (newTimer) { clearTimeout(newTimer); newTimer = null; }
+  }
+
+  function startNew(){
+    resetNewButton();
+    state = freshGame();
+    save();
+    render();
+  }
+
+  function keepAwake(){
+    try {
+      if (navigator.wakeLock && !wake) {
+        navigator.wakeLock.request("screen").then(function(l){
+          wake = l;
+          l.addEventListener("release", function(){ wake = null; });
+        })["catch"](function(){});
+      }
+    } catch (e) {}
+  }
+
+  var btns = document.querySelectorAll("[data-src]");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function(ev){
+      var b = ev.currentTarget;
+      addPoint(parseInt(b.getAttribute("data-p"), 10), b.getAttribute("data-src"));
+      keepAwake();
+    });
+  }
+
+  elPass.addEventListener("click", function(){ passTurn(); keepAwake(); });
+  elUndo.addEventListener("click", function(){ undo(); });
+
+  elMode.addEventListener("click", function(){
+    mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+    saveMode();
+    render();
+  });
+
+  elNew.addEventListener("click", function(){
+    if (!newArmed) {
+      newArmed = true;
+      elNew.textContent = "Sure?";
+      elNew.className = "armed";
+      newTimer = setTimeout(resetNewButton, 3000);
+      return;
+    }
+    startNew();
+  });
+
+  elNew2.addEventListener("click", function(){ startNew(); });
+
+  document.addEventListener("visibilitychange", function(){
+    if (document.visibilityState === "visible") { wake = null; keepAwake(); }
+  });
+
+  mode = loadMode();
+  state = load() || freshGame();
+  render();
+})();
+</script>
+</body>
+</html>
