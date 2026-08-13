@@ -3,3 +3,4 @@
 # GitHub Pages serves to calendar clients. Exempt them from all text
 # conversion so what the fetcher writes is what subscribers receive.
 *.ics -text
+*.woff2 binary
