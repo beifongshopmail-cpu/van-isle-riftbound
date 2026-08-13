@@ -43,6 +43,11 @@
     padding:5px 8px;min-height:28px}
   .strip button:disabled{opacity:.3}
   .strip button.armed{color:#FFB020;border-color:#FFB020}
+  .modes{display:flex;border:1px solid var(--rule);border-radius:5px;overflow:hidden;margin-left:8px}
+  .modes button{border:0;border-radius:0;min-height:28px;padding:5px 10px;background:none;
+    font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  .modes button+button{border-left:1px solid var(--rule)}
+  .modes button[aria-pressed="true"]{background:var(--bone);color:#000;font-weight:500}
 
   .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 6px 6px}
   .side{min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;
@@ -98,9 +103,16 @@
     color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px}
   .seam em{font-family:var(--mono);font-style:normal;font-weight:400;font-size:10px;
-    letter-spacing:.14em;color:var(--dim)}
-  .seam:active{background:rgba(255,255,255,.05)}
+    letter-spacing:.14em;color:var(--bone);opacity:.8}
+  .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
+  .seam.flash{animation:seamflash .42s ease-out}
+  @keyframes seamflash{
+    0%{background:rgba(242,243,245,.26);border-color:var(--bone);color:#000}
+    45%{background:rgba(242,243,245,.10);border-color:var(--bone)}
+    100%{background:none;border-color:var(--rule-hi)}
+  }
+  @media (prefers-reduced-motion:reduce){ .seam.flash{animation:none} }
 
   .sheet{position:absolute;inset:0;background:rgba(0,0,0,.95);z-index:30;display:none;
     flex-direction:column;padding:12px}
@@ -119,23 +131,28 @@
     letter-spacing:.14em;text-transform:uppercase;color:var(--bone);background:#14161B;
     border:1px solid var(--rule-hi);border-radius:6px}
 
-  .win{position:absolute;left:10px;right:10px;bottom:10px;z-index:25;display:none;
-    align-items:center;gap:12px;padding:14px;border-radius:10px;
-    background:linear-gradient(180deg,#1C1F26 0%,#12141A 100%);border:1px solid var(--rule-hi)}
+  .win{position:absolute;left:6px;right:6px;bottom:6px;z-index:25;display:none;
+    align-items:center;gap:12px;padding:0 16px;min-height:58px;border-radius:8px;
+    background:#000;border:1px solid var(--rule-hi)}
   .stage[data-won="1"] .win{display:flex}
-  .win b{font-family:var(--display);font-weight:800;font-size:18px}
-  .win button{margin-left:auto;min-height:40px;padding:0 14px;font-family:var(--mono);font-size:10px;
-    letter-spacing:.12em;text-transform:uppercase;color:var(--bone);background:#0A0B0E;
-    border:1px solid var(--rule-hi);border-radius:6px}
+  .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--bone)}
+  .win button{margin-left:auto;min-height:38px;padding:0 14px;background:none;border:0;
+    border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;
+    font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--bone)}
 </style>
 </head>
 <body>
 <div class="stage" id="stage" data-mode="focus" data-won="0">
   <div class="strip">
     <a class="home" href="/van-isle-riftbound/">Events</a>
-    <div class="turn" id="turn">Player 1 turn 1</div>
+    <div class="modes" id="modes" role="group" aria-label="Layout">
+      <button data-mode="focus" aria-pressed="true">Focus</button>
+      <button data-mode="split" aria-pressed="false">Split</button>
+      <button data-mode="pass" aria-pressed="false">Pass</button>
+    </div>
     <div class="sp"></div>
-    <button id="modebtn">Focus</button>
     <button id="undo">Undo</button>
     <button id="logbtn">Log</button>
     <button id="reset">New</button>
@@ -154,15 +171,13 @@
   var MKEY = "vir.counter.mode.v1";
   var GOAL = 8;
   var MODES = ["focus","split","pass"];
-  var MODE_LABEL = { focus:"Focus", split:"Split", pass:"Pass" };
   var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
   var KEY = { conquer:"C", hold:"H", other:"O" };
   var NAME = { 1:"Player 1", 2:"Player 2" };
 
   var stage = document.getElementById("stage");
   var field = document.getElementById("field");
-  var elTurn = document.getElementById("turn");
-  var elMode = document.getElementById("modebtn");
+  var elModes = document.getElementById("modes");
   var elUndo = document.getElementById("undo");
   var elReset = document.getElementById("reset");
   var elWin = document.getElementById("wintext");
@@ -257,9 +272,11 @@
     var c = ctx(), w = won();
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
-    elMode.textContent = MODE_LABEL[mode];
-    elTurn.textContent = NAME[c.p] + " turn " + c.n;
     elWin.textContent = NAME[w || 1] + " wins";
+    var mb = elModes.getElementsByTagName("button");
+    for (var k = 0; k < mb.length; k++) {
+      mb[k].setAttribute("aria-pressed", mb[k].getAttribute("data-mode") === mode ? "true" : "false");
+    }
     elUndo.disabled = ev.length <= 1;
 
     var top, bot;
@@ -320,7 +337,7 @@
       if (!won()) {
         var c = ctx(), nx = c.p === 1 ? 2 : 1;
         ev.push({ t:"turn", p:nx, n:turns(nx) + 1 });
-        save(); render(); keepAwake();
+        save(); render(); flashSeam(); keepAwake();
       }
       return;
     }
@@ -333,10 +350,21 @@
     }
   });
 
-  elMode.addEventListener("click", function(){
-    mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+  elModes.addEventListener("click", function(e){
+    var m = e.target.getAttribute && e.target.getAttribute("data-mode");
+    if (!m || MODES.indexOf(m) < 0 || m === mode) { return; }
+    mode = m;
     saveMode(); render();
   });
+
+  function flashSeam(){
+    var s = document.getElementById("seam");
+    if (!s) { return; }
+    s.className = "seam";
+    void s.offsetWidth;
+    s.className = "seam flash";
+    try { if (navigator.vibrate) { navigator.vibrate(16); } } catch (e) {}
+  }
   elUndo.addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
