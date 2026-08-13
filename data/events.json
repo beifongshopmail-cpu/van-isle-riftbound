@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-12T14:20:44.612Z",
- "generated_local": "2026-08-12T07:20:44-07:00",
+ "generated_at": "2026-08-13T03:26:56.552Z",
+ "generated_local": "2026-08-12T20:26:56-07:00",
  "window_start": "2026-08-12T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 44,
-   "added": 44
+   "returned": 43,
+   "added": 43
   },
   {
    "name": "Courtenay",
@@ -23,30 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 69,
-  "unique": 69,
+  "fetched": 68,
+  "unique": 68,
   "prev_unique": 69
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 826200,
-   "name": "Wednesday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-08-12T18:00:00-07:00",
-   "end": "2026-08-12T21:00:00-07:00",
-   "day": "2026-08-12",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 1,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-08-03T18:51:32+00:00"
-  },
   {
    "id": 770760,
    "name": "Thursday Evening Nexus Nights - 1v1",
@@ -528,7 +510,7 @@
    "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
    "region": "island",
    "cap": 16,
-   "reg": 8,
+   "reg": 9,
    "cents": 1500,
    "currency": "CAD",
    "updated": "2026-08-02T03:29:32+00:00"
