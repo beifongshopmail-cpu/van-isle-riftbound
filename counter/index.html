@@ -24,7 +24,7 @@
     --mono:"IBM Plex Mono",ui-monospace,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden}
+  html,body{height:100%;overflow:hidden;touch-action:manipulation}
   body{background:#000;color:var(--bone);font-family:var(--body);
     display:flex;flex-direction:column;overscroll-behavior:none;
     -webkit-user-select:none;user-select:none;
@@ -56,18 +56,15 @@
   .side[data-role="minor"]{flex:0 0 auto;flex-direction:row;gap:14px;padding:10px 14px;
     justify-content:center;background:#07080A;border:1px solid var(--rule)}
   .side[data-role="equal"]{flex:1}
-  .p1[data-role="minor"]{border-color:rgba(63,169,245,.3)}
-  .p2[data-role="minor"]{border-color:rgba(255,79,154,.3)}
+  .side[data-role="minor"]{border-color:var(--c)}
   .far{transform:rotate(180deg)}
 
   .name{font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
     color:var(--mute);position:relative;z-index:3}
-  .p1 .name{color:rgba(63,169,245,.72)}
-  .p2 .name{color:rgba(255,79,154,.72)}
+  .side .name{color:var(--c);opacity:.72}
   .num{font-family:var(--display);font-weight:800;line-height:.78;letter-spacing:-.03em;
     font-size:min(36vh,38vw);position:relative;z-index:3}
-  .p1 .num{color:var(--p1)}
-  .p2 .num{color:var(--p2)}
+  .side .num{color:var(--c)}
   .side[data-role="minor"] .num{font-size:32px}
   .side[data-role="equal"] .num{font-size:min(24vh,28vw)}
 
@@ -76,23 +73,19 @@
   .side[data-role="equal"] .track{margin-top:10px}
   .track .segs{display:flex;gap:3px}
   .track .segs i{flex:1;height:3px;background:#1B1E24;display:block}
-  .p1 .track .segs i.on{background:var(--p1)}
-  .p2 .track .segs i.on{background:var(--p2)}
+  .side .track .segs i.on{background:var(--c)}
   .track .keys{display:flex;gap:3px;margin-top:5px}
   .track .keys b{flex:1;text-align:center;font-family:var(--mono);font-weight:400;font-size:10px;
     letter-spacing:.04em;color:var(--mute);line-height:1}
-  .p1 .track .keys b.on{color:rgba(63,169,245,.85)}
-  .p2 .track .keys b.on{color:rgba(255,79,154,.85)}
+  .side .track .keys b.on{color:var(--c);opacity:.85}
   .side[data-role="minor"] .track .keys{display:none}
 
   .acts{display:flex;gap:0;position:relative;z-index:3;margin-top:22px}
   .acts button{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.12em;
     text-transform:uppercase;padding:14px 15px 11px;min-height:48px;background:none;border:0;
     border-bottom:2px solid transparent;color:var(--bone)}
-  .p1 .acts button{border-bottom-color:rgba(63,169,245,.6)}
-  .p2 .acts button{border-bottom-color:rgba(255,79,154,.6)}
-  .p1 .acts button:active{color:var(--p1);text-shadow:0 0 20px rgba(63,169,245,.7)}
-  .p2 .acts button:active{color:var(--p2);text-shadow:0 0 20px rgba(255,79,154,.7)}
+  .side .acts button{border-bottom-color:var(--c);opacity:.92}
+  .side .acts button:active{color:var(--c);opacity:1;text-shadow:0 0 20px var(--c)}
   .acts button:disabled{opacity:.25}
   .side[data-role="minor"] .acts{margin-top:0}
   .side[data-role="minor"] .acts button{min-height:32px;padding:7px 9px 5px;font-size:10px}
@@ -135,6 +128,30 @@
     align-items:center;gap:12px;padding:0 16px;min-height:58px;border-radius:8px;
     background:#000;border:1px solid var(--rule-hi)}
   .stage[data-won="1"] .win{display:flex}
+  .legend{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--mute);position:relative;z-index:3;margin-top:6px}
+  .side[data-role="minor"] .legend{display:none}
+  .setup{position:absolute;inset:0;background:#000;z-index:40;display:none;
+    flex-direction:column;padding:14px;overflow:auto}
+  .setup.open{display:flex}
+  .setup h2{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.14em;
+    text-transform:uppercase;margin-bottom:14px}
+  .setup .grp{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+  .setup label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .setup input,.setup select{width:100%;min-height:44px;background:#0A0B0E;color:var(--bone);
+    border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;font-family:var(--body);
+    font-size:16px;margin-bottom:10px;-webkit-appearance:none;appearance:none}
+  .swatches{display:flex;flex-wrap:wrap;gap:8px}
+  .swatches button{width:38px;height:38px;border-radius:6px;border:2px solid transparent;padding:0}
+  .swatches button[aria-pressed="true"]{border-color:var(--bone)}
+  .setup .done{min-height:52px;margin-top:auto;background:none;border:0;
+    border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
+    font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+  .concede{display:flex;gap:0;margin-top:10px}
+  .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--rule-hi);
+    border-radius:0;color:var(--dim);font-family:var(--display);font-weight:800;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase}
   .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--bone)}
   .win button{margin-left:auto;min-height:38px;padding:0 14px;background:none;border:0;
@@ -153,6 +170,7 @@
       <button data-mode="pass" aria-pressed="false">Pass</button>
     </div>
     <div class="sp"></div>
+    <button id="setupbtn">Setup</button>
     <button id="undo">Undo</button>
     <button id="logbtn">Log</button>
     <button id="reset">New</button>
@@ -164,6 +182,33 @@
     <button class="close" id="closelog">Back to the game</button>
   </div>
   <div class="win"><b id="wintext">Player 1 wins</b><button id="again">New game</button></div>
+  <div class="setup" id="setup">
+    <h2>Match setup</h2>
+    <div class="grp" data-for="1">
+      <label>Player 1 name</label>
+      <input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false">
+      <label>Player 1 legend</label>
+      <select id="l1"></select>
+      <label>Player 1 colour</label>
+      <div class="swatches" id="c1"></div>
+    </div>
+    <div class="grp" data-for="2">
+      <label>Player 2 name</label>
+      <input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false">
+      <label>Player 2 legend</label>
+      <select id="l2"></select>
+      <label>Player 2 colour</label>
+      <div class="swatches" id="c2"></div>
+    </div>
+    <div class="grp">
+      <label>End this game early</label>
+      <div class="concede">
+        <button data-concede="1">P1 concedes</button>
+        <button data-concede="2">P2 concedes</button>
+      </div>
+    </div>
+    <button class="done" id="setupdone">Back to the game</button>
+  </div>
 </div>
 <script>
 (function(){
@@ -173,7 +218,15 @@
   var MODES = ["focus","split","pass"];
   var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
   var KEY = { conquer:"C", hold:"H", other:"O" };
-  var NAME = { 1:"Player 1", 2:"Player 2" };
+  var PKEY = "vir.counter.players.v1";
+  var SWATCH = ["#3FA9F5","#FF4F9A","#FFB020","#4ADE80","#A78BFA","#F87171","#22D3EE","#FB923C","#F2F3F5"];
+  var LEGENDS = ["","Annie","Ashe","Braum","Caitlyn","Darius","Diana","Ekko","Ezreal","Garen",
+    "Jinx","Kai'Sa","Karma","Katarina","Lee Sin","Leona","Lucian","Lux","Master Yi","Miss Fortune",
+    "Nasus","Riven","Sett","Shen","Sona","Swain","Teemo","Thresh","Tristana","Twisted Fate",
+    "Vi","Viktor","Volibear","Warwick","Yasuo","Zed","Ziggs","Zoe"];
+  var players = { 1:{ name:"Player 1", legend:"", colour:"#3FA9F5" },
+                  2:{ name:"Player 2", legend:"", colour:"#FF4F9A" } };
+  function nameOf(p){ return players[p].name || ("Player " + p); }
 
   var stage = document.getElementById("stage");
   var field = document.getElementById("field");
@@ -194,6 +247,23 @@
 
   function save(){ try { localStorage.setItem(GKEY, JSON.stringify(ev)); } catch (e) {} }
   function saveMode(){ try { localStorage.setItem(MKEY, mode); } catch (e) {} }
+  function savePlayers(){ try { localStorage.setItem(PKEY, JSON.stringify(players)); } catch (e) {} }
+  function loadPlayers(){
+    try {
+      var raw = localStorage.getItem(PKEY);
+      if (!raw) { return; }
+      var o = JSON.parse(raw);
+      for (var p = 1; p <= 2; p++) {
+        if (o && o[p]) {
+          if (typeof o[p].name === "string") { players[p].name = o[p].name; }
+          if (typeof o[p].legend === "string") { players[p].legend = o[p].legend; }
+          if (typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
+            players[p].colour = o[p].colour;
+          }
+        }
+      }
+    } catch (e) {}
+  }
 
   function load(){
     try {
@@ -229,6 +299,9 @@
     return { t:"turn", p:1, n:1 };
   }
   function won(){
+    for (var i = ev.length - 1; i >= 0; i--) {
+      if (ev[i].t === "concede") { return ev[i].p === 1 ? 2 : 1; }
+    }
     if (score(1) >= GOAL) { return 1; }
     if (score(2) >= GOAL) { return 2; }
     return 0;
@@ -256,23 +329,25 @@
 
   function block(p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
-    return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role + "\">" +
-      "<div class=\"name\">" + NAME[p] + "</div>" +
-      "<div class=\"num\">" + score(p) + "</div>" +
+    var leg = players[p].legend ? "<div class=\"legend\">" + esc(players[p].legend) + "</div>" : "";
+    return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
+      "\" style=\"--c:" + players[p].colour + "\">" +
+      "<div class=\"name\">" + esc(nameOf(p)) + "</div>" +
+      "<div class=\"num\">" + score(p) + "</div>" + leg +
       trackOf(p) + acts(p) + "</section>";
   }
 
   function seam(){
     var c = ctx(), d = won() ? " disabled" : "";
     return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d + ">Pass turn" +
-      "<em>" + NAME[c.p] + " turn " + c.n + "</em></button></div>";
+      "<em>" + esc(nameOf(c.p)) + " turn " + c.n + "</em></button></div>";
   }
 
   function render(){
     var c = ctx(), w = won();
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
-    elWin.textContent = NAME[w || 1] + " wins";
+    elWin.textContent = nameOf(w || 1) + " wins";
     var mb = elModes.getElementsByTagName("button");
     for (var k = 0; k < mb.length; k++) {
       mb[k].setAttribute("aria-pressed", mb[k].getAttribute("data-mode") === mode ? "true" : "false");
@@ -296,10 +371,14 @@
     for (var i = ev.length - 1; i >= 0; i--) {
       var e = ev[i];
       if (e.t === "point") {
-        out += "<li class=\"e" + e.p + "\"><b>" + NAME[e.p] + " +1</b> " + SRC[e.src] +
-               " <span>during " + NAME[e.tp] + " T" + e.tn + "</span></li>";
+        out += "<li class=\"e" + e.p + "\"><b>" + esc(nameOf(e.p)) + " +1</b> " + SRC[e.src] +
+               " <span>during " + esc(nameOf(e.tp)) + " T" + e.tn + "</span></li>";
       } else {
-        out += "<li class=\"et\"><b>" + NAME[e.p] + " turn " + e.n + "</b> <span>begins</span></li>";
+        if (e.t === "concede") {
+          out += "<li class=\"et\"><b>" + esc(nameOf(e.p)) + " concedes</b> <span>game over</span></li>";
+        } else {
+          out += "<li class=\"et\"><b>" + esc(nameOf(e.p)) + " turn " + e.n + "</b> <span>begins</span></li>";
+        }
       }
     }
     elLog.innerHTML = out;
@@ -386,8 +465,77 @@
     if (document.visibilityState === "visible") { wake = null; keepAwake(); }
   });
 
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  var setup = document.getElementById("setup");
+
+  function buildSetup(){
+    for (var p = 1; p <= 2; p++) {
+      var sel = document.getElementById("l" + p), o = "";
+      for (var i = 0; i < LEGENDS.length; i++) {
+        o += "<option value=\"" + esc(LEGENDS[i]) + "\">" +
+             (LEGENDS[i] ? esc(LEGENDS[i]) : "No legend") + "</option>";
+      }
+      sel.innerHTML = o;
+      var sw = document.getElementById("c" + p), h = "";
+      for (var j = 0; j < SWATCH.length; j++) {
+        h += "<button data-p=\"" + p + "\" data-col=\"" + SWATCH[j] +
+             "\" style=\"background:" + SWATCH[j] + "\" aria-pressed=\"false\"></button>";
+      }
+      sw.innerHTML = h;
+    }
+  }
+
+  function syncSetup(){
+    for (var p = 1; p <= 2; p++) {
+      document.getElementById("n" + p).value = players[p].name;
+      document.getElementById("l" + p).value = players[p].legend;
+      var bs = document.getElementById("c" + p).getElementsByTagName("button");
+      for (var i = 0; i < bs.length; i++) {
+        bs[i].setAttribute("aria-pressed",
+          bs[i].getAttribute("data-col") === players[p].colour ? "true" : "false");
+      }
+    }
+  }
+
+  setup.addEventListener("click", function(e){
+    var t = e.target;
+    var col = t.getAttribute && t.getAttribute("data-col");
+    if (col) {
+      players[parseInt(t.getAttribute("data-p"), 10)].colour = col;
+      savePlayers(); syncSetup(); render();
+      return;
+    }
+    var cc = t.getAttribute && t.getAttribute("data-concede");
+    if (cc) {
+      if (!won()) { ev.push({ t:"concede", p:parseInt(cc, 10) }); save(); render(); }
+      setup.classList.remove("open");
+    }
+  });
+
+  setup.addEventListener("change", function(e){
+    var id = e.target.id;
+    if (!id) { return; }
+    var p = parseInt(id.charAt(1), 10);
+    if (id.charAt(0) === "n") { players[p].name = e.target.value.slice(0, 14); }
+    else if (id.charAt(0) === "l") { players[p].legend = e.target.value; }
+    else { return; }
+    savePlayers(); render();
+  });
+
+  document.getElementById("setupbtn").addEventListener("click", function(){
+    syncSetup(); setup.classList.add("open");
+  });
+  document.getElementById("setupdone").addEventListener("click", function(){
+    setup.classList.remove("open");
+  });
+
   mode = loadMode();
+  loadPlayers();
   ev = load() || fresh();
+  buildSetup();
   render();
 })();
 </script>
