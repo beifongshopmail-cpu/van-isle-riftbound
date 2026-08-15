@@ -62,14 +62,15 @@
 
   .name{font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
     color:var(--mute);position:relative;z-index:3}
-  .side .name{color:var(--c);opacity:.72}
+  .side .name{color:var(--c);opacity:.72;order:2;margin-top:8px}
+  .side[data-role="minor"] .name{order:0;margin-top:0}
   .num{font-family:var(--display);font-weight:800;line-height:.78;letter-spacing:-.03em;
-    font-size:min(36vh,38vw);position:relative;z-index:3}
+    font-size:min(36vh,38vw);position:relative;z-index:3;order:1}
   .side .num{color:var(--c)}
   .side[data-role="minor"] .num{font-size:32px}
   .side[data-role="equal"] .num{font-size:min(24vh,28vw)}
 
-  .track{position:relative;z-index:3;margin-top:14px;width:min(62vw,330px)}
+  .track{position:relative;z-index:3;margin-top:14px;width:min(62vw,330px);order:3}
   .side[data-role="minor"] .track{width:78px;margin-top:0}
   .side[data-role="equal"] .track{margin-top:10px}
   .track .segs{display:flex;gap:3px}
@@ -81,7 +82,7 @@
   .side .track .keys b.on{color:color-mix(in srgb, var(--c) 85%, transparent)}
   .side[data-role="minor"] .track .keys{display:none}
 
-  .acts{display:flex;gap:0;position:relative;z-index:3;margin-top:22px}
+  .acts{display:flex;gap:0;position:relative;z-index:3;margin-top:22px;order:4}
   .acts button{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.12em;
     text-transform:uppercase;padding:14px 15px 11px;min-height:48px;background:none;border:0;
     border-bottom:2px solid transparent;color:var(--bone)}
@@ -130,8 +131,8 @@
     align-items:center;gap:12px;padding:0 16px;min-height:58px;border-radius:8px;
     background:#000;border:1px solid var(--rule-hi)}
   .stage[data-won="1"] .win{display:flex}
-  .legend{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--mute);position:relative;z-index:3;margin-top:6px}
+  .legend{color:var(--mute)}
+  .legend::before{content:"|";margin:0 7px;color:var(--rule-hi)}
   .side[data-role="minor"] .legend{display:none}
   .setup{position:absolute;inset:0;background:#000;z-index:40;display:none;
     flex-direction:column;padding:14px;overflow:auto}
@@ -151,15 +152,19 @@
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
     font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
   .concede{display:flex;gap:0;margin-top:10px}
-  .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--rule-hi);
-    border-radius:0;color:var(--dim);font-family:var(--display);font-weight:800;font-size:12px;
+  .concede{gap:10px}
+  .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--cc);
+    border-radius:0;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
+  .concede button:active{color:var(--cc);text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
   .setup .wide{width:100%;min-height:46px;background:none;border:1px solid var(--rule-hi);
     border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
   .setup .wide.armed{color:#FFB020;border-color:#FFB020}
-  .setup .home{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:9px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-decoration:none}
+  .setup .home{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;
+    margin-top:10px;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);
+    font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;
+    text-transform:uppercase;text-decoration:none}
   .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--bone)}
   .win button{margin-left:auto;min-height:38px;padding:0 14px;background:none;border:0;
@@ -215,7 +220,7 @@
     <div class="grp">
       <label>Start over</label>
       <button class="wide" id="reset">New game</button>
-      <a class="home" href="/van-isle-riftbound/">Back to the events calendar</a>
+      <a class="home" href="/van-isle-riftbound/">Events calendar</a>
     </div>
     <button class="done" id="setupdone">Back to the game</button>
   </div>
@@ -339,11 +344,11 @@
 
   function block(p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
-    var leg = players[p].legend ? "<div class=\"legend\">" + esc(players[p].legend) + "</div>" : "";
+    var leg = players[p].legend ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>" : "";
     return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
       "\" style=\"--c:" + players[p].colour + "\">" +
-      "<div class=\"name\">" + esc(nameOf(p)) + "</div>" +
-      "<div class=\"num\">" + score(p) + "</div>" + leg +
+      "<div class=\"name\">" + esc(nameOf(p)) + leg + "</div>" +
+      "<div class=\"num\">" + score(p) + "</div>" +
       trackOf(p) + acts(p) + "</section>";
   }
 
@@ -499,8 +504,11 @@
   }
 
   function syncSetup(){
-    document.getElementById("cc1").textContent = nameOf(1) + " concedes";
-    document.getElementById("cc2").textContent = nameOf(2) + " concedes";
+    var cc1 = document.getElementById("cc1"), cc2 = document.getElementById("cc2");
+    cc1.textContent = nameOf(1) + " concedes";
+    cc2.textContent = nameOf(2) + " concedes";
+    cc1.style.setProperty("--cc", players[1].colour);
+    cc2.style.setProperty("--cc", players[2].colour);
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
       document.getElementById("l" + p).value = players[p].legend;
