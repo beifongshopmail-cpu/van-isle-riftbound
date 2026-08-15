@@ -98,6 +98,7 @@
     text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px}
   .seam em{font-family:var(--mono);font-style:normal;font-weight:400;font-size:10px;
     letter-spacing:.14em;color:var(--bone);opacity:.8}
+  .seam em b{font-weight:400;color:var(--sc)}
   .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
   .seam.flash{animation:seamflash .42s ease-out}
@@ -355,8 +356,9 @@
 
   function seam(){
     var c = ctx(), d = won() ? " disabled" : "";
-    return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d + ">Pass turn" +
-      "<em>" + esc(nameOf(c.p)) + " turn " + c.n + "</em></button></div>";
+    return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d +
+      " style=\"--sc:" + players[c.p].colour + "\">Pass turn" +
+      "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
   }
 
   function render(){
