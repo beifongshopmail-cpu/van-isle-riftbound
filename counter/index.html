@@ -32,7 +32,8 @@
 
   .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden}
 
-  .strip{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:6px 12px}
+  .strip{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 8px 4px;
+    border-top:1px solid var(--rule)}
   .strip .home{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--mute);text-decoration:none}
   .strip .turn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
@@ -43,8 +44,8 @@
     padding:5px 8px;min-height:28px}
   .strip button:disabled{opacity:.3}
   .strip button.armed{color:#FFB020;border-color:#FFB020}
-  .modes{display:flex;border:1px solid var(--rule);border-radius:5px;overflow:hidden;margin-left:8px}
-  .modes button{border:0;border-radius:0;min-height:28px;padding:5px 10px;background:none;
+  .modes{display:flex;flex:1;border:1px solid var(--rule);border-radius:5px;overflow:hidden}
+  .modes button{flex:1;border:0;border-radius:0;min-height:32px;padding:5px 4px;background:none;
     font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
   .modes button+button{border-left:1px solid var(--rule)}
   .modes button[aria-pressed="true"]{background:var(--bone);color:#000;font-weight:500}
@@ -153,6 +154,12 @@
   .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--rule-hi);
     border-radius:0;color:var(--dim);font-family:var(--display);font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
+  .setup .wide{width:100%;min-height:46px;background:none;border:1px solid var(--rule-hi);
+    border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase}
+  .setup .wide.armed{color:#FFB020;border-color:#FFB020}
+  .setup .home{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:9px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-decoration:none}
   .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--bone)}
   .win button{margin-left:auto;min-height:38px;padding:0 14px;background:none;border:0;
@@ -163,20 +170,17 @@
 </head>
 <body>
 <div class="stage" id="stage" data-mode="focus" data-won="0">
+  <div class="field" id="field"></div>
   <div class="strip">
-    <a class="home" href="/van-isle-riftbound/">Events</a>
     <div class="modes" id="modes" role="group" aria-label="Layout">
       <button data-mode="focus" aria-pressed="true">Focus</button>
       <button data-mode="split" aria-pressed="false">Split</button>
       <button data-mode="pass" aria-pressed="false">Pass</button>
     </div>
-    <div class="sp"></div>
-    <button id="setupbtn">Setup</button>
     <button id="undo">Undo</button>
     <button id="logbtn">Log</button>
-    <button id="reset">New</button>
+    <button id="setupbtn">Menu</button>
   </div>
-  <div class="field" id="field"></div>
   <div class="sheet" id="sheet">
     <h2>Every point, in order</h2>
     <ol id="log"></ol>
@@ -184,7 +188,14 @@
   </div>
   <div class="win"><b id="wintext">Player 1 wins</b><button id="again">New game</button></div>
   <div class="setup" id="setup">
-    <h2>Match setup</h2>
+    <h2>Menu</h2>
+    <div class="grp">
+      <label>End this game early</label>
+      <div class="concede">
+        <button data-concede="1" id="cc1">P1 concedes</button>
+        <button data-concede="2" id="cc2">P2 concedes</button>
+      </div>
+    </div>
     <div class="grp" data-for="1">
       <label>Player 1 name</label>
       <input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false">
@@ -202,11 +213,9 @@
       <div class="swatches" id="c2"></div>
     </div>
     <div class="grp">
-      <label>End this game early</label>
-      <div class="concede">
-        <button data-concede="1">P1 concedes</button>
-        <button data-concede="2">P2 concedes</button>
-      </div>
+      <label>Start over</label>
+      <button class="wide" id="reset">New game</button>
+      <a class="home" href="/van-isle-riftbound/">Back to the events calendar</a>
     </div>
     <button class="done" id="setupdone">Back to the game</button>
   </div>
@@ -398,8 +407,8 @@
 
   function disarm(){
     armed = false;
-    elReset.textContent = "New";
-    elReset.className = "";
+    elReset.textContent = "New game";
+    elReset.className = "wide";
     if (armTimer) { clearTimeout(armTimer); armTimer = null; }
   }
   function startNew(){
@@ -451,8 +460,8 @@
   elReset.addEventListener("click", function(){
     if (!armed) {
       armed = true;
-      elReset.textContent = "Sure?";
-      elReset.className = "armed";
+      elReset.textContent = "Sure? Tap again";
+      elReset.className = "wide armed";
       armTimer = setTimeout(disarm, 3000);
       return;
     }
@@ -490,6 +499,8 @@
   }
 
   function syncSetup(){
+    document.getElementById("cc1").textContent = nameOf(1) + " concedes";
+    document.getElementById("cc2").textContent = nameOf(2) + " concedes";
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
       document.getElementById("l" + p).value = players[p].legend;
