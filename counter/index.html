@@ -34,16 +34,14 @@
 
   .strip{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 8px 4px;
     border-top:1px solid var(--rule)}
-  .strip .home{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--mute);text-decoration:none}
   .strip .turn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--dim);margin-left:10px}
   .strip .sp{margin-left:auto}
-  .strip button{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--dim);background:none;border:1px solid var(--rule);border-radius:4px;
-    padding:5px 8px;min-height:28px}
+  .strip button{flex:0 0 44px;height:34px;display:flex;align-items:center;justify-content:center;
+    color:var(--dim);background:none;border:1px solid var(--rule);border-radius:5px;padding:0}
   .strip button:disabled{opacity:.3}
-  .strip button.armed{color:#FFB020;border-color:#FFB020}
+  .strip button:active{color:var(--bone);border-color:var(--rule-hi)}
+  .strip button svg{width:18px;height:18px;display:block}
   .modes{display:flex;flex:1;border:1px solid var(--rule);border-radius:5px;overflow:hidden}
   .modes button{flex:1;border:0;border-radius:0;min-height:32px;padding:5px 4px;background:none;
     font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
@@ -123,9 +121,9 @@
   .sheet li.e2 b{color:var(--p2)}
   .sheet li.et b{color:var(--dim);font-weight:500}
   .sheet li.empty{color:var(--mute);border:0}
-  .sheet .close{margin-top:10px;min-height:44px;font-family:var(--mono);font-size:10px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--bone);background:#14161B;
-    border:1px solid var(--rule-hi);border-radius:6px}
+  .sheet .close{min-height:52px;margin-top:10px;background:none;border:0;
+    border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
+    font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
 
   .win{position:absolute;left:6px;right:6px;bottom:6px;z-index:25;display:none;
     align-items:center;gap:12px;padding:0 16px;min-height:58px;border-radius:8px;
@@ -148,15 +146,17 @@
   .swatches{display:flex;flex-wrap:wrap;gap:8px}
   .swatches button{width:38px;height:38px;border-radius:6px;border:2px solid transparent;padding:0}
   .swatches button[aria-pressed="true"]{border-color:var(--bone)}
+  .setup .done.top{margin-top:0;margin-bottom:16px}
   .setup .done{min-height:52px;margin-top:auto;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
     font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
-  .concede{display:flex;gap:0;margin-top:10px}
-  .concede{gap:10px}
+  .concede{display:flex;gap:10px;margin-top:10px}
   .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--cc);
     border-radius:0;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
   .concede button:active{color:var(--cc);text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
+  .concede button.armed{color:var(--cc);border-bottom-color:var(--cc);
+    text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
   .setup .wide{width:100%;min-height:46px;background:none;border:1px solid var(--rule-hi);
     border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
@@ -182,9 +182,9 @@
       <button data-mode="split" aria-pressed="false">Split</button>
       <button data-mode="pass" aria-pressed="false">Pass</button>
     </div>
-    <button id="undo">Undo</button>
-    <button id="logbtn">Log</button>
-    <button id="setupbtn">Menu</button>
+    <button id="undo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10a5.5 5.5 0 0 1 0 11h-6"/><polyline points="8 4 4 8 8 12"/></svg></button>
+    <button id="logbtn" aria-label="Log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg></button>
+    <button id="setupbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.1"/><path d="M12 3.2v2.4M12 18.4v2.4M20.8 12h-2.4M5.6 12H3.2M18.2 5.8l-1.7 1.7M7.5 16.5l-1.7 1.7M18.2 18.2l-1.7-1.7M7.5 7.5L5.8 5.8"/></svg></button>
   </div>
   <div class="sheet" id="sheet">
     <h2>Every point, in order</h2>
@@ -193,7 +193,7 @@
   </div>
   <div class="win"><b id="wintext">Player 1 wins</b><button id="again">New game</button></div>
   <div class="setup" id="setup">
-    <h2>Menu</h2>
+    <button class="done top" id="setupdone">Back to the game</button>
     <div class="grp">
       <label>End this game early</label>
       <div class="concede">
@@ -218,11 +218,9 @@
       <div class="swatches" id="c2"></div>
     </div>
     <div class="grp">
-      <label>Start over</label>
       <button class="wide" id="reset">New game</button>
       <a class="home" href="/van-isle-riftbound/">Events calendar</a>
     </div>
-    <button class="done" id="setupdone">Back to the game</button>
   </div>
 </div>
 <script>
@@ -392,7 +390,17 @@
         if (e.t === "concede") {
           out += "<li class=\"et\"><b>" + esc(nameOf(e.p)) + " concedes</b> <span>game over</span></li>";
         } else {
-          out += "<li class=\"et\"><b>" + esc(nameOf(e.p)) + " turn " + e.n + "</b> <span>begins</span></li>";
+          var gained = 0, ended = false;
+        for (var j = i + 1; j < ev.length; j++) {
+          if (ev[j].t === "turn") { ended = true; break; }
+          if (ev[j].t === "point") { gained++; }
+        }
+        var tail = !ended ? "in progress"
+                 : gained === 0 ? "no points"
+                 : gained === 1 ? "1 point"
+                 : gained + " points";
+        out += "<li class=\"et\"><b>" + esc(nameOf(e.p)) + " turn " + e.n +
+               "</b> <span>" + tail + "</span></li>";
         }
       }
     }
@@ -485,6 +493,16 @@
   }
 
   var setup = document.getElementById("setup");
+  var ccArmed = null;
+  var ccTimer = null;
+
+  function disarmConcede(){
+    ccArmed = null;
+    if (ccTimer) { clearTimeout(ccTimer); ccTimer = null; }
+    var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
+    if (b1) { b1.className = ""; b1.textContent = nameOf(1) + " concedes"; }
+    if (b2) { b2.className = ""; b2.textContent = nameOf(2) + " concedes"; }
+  }
 
   function buildSetup(){
     for (var p = 1; p <= 2; p++) {
@@ -530,7 +548,18 @@
     }
     var cc = t.getAttribute && t.getAttribute("data-concede");
     if (cc) {
-      if (!won()) { ev.push({ t:"concede", p:parseInt(cc, 10) }); save(); render(); }
+      if (won()) { return; }
+      if (ccArmed !== cc) {
+        disarmConcede();
+        ccArmed = cc;
+        t.className = "armed";
+        t.textContent = "Sure? Tap again";
+        ccTimer = setTimeout(disarmConcede, 3000);
+        return;
+      }
+      disarmConcede();
+      ev.push({ t:"concede", p:parseInt(cc, 10) });
+      save(); render();
       setup.classList.remove("open");
     }
   });
@@ -546,7 +575,7 @@
   });
 
   document.getElementById("setupbtn").addEventListener("click", function(){
-    syncSetup(); setup.classList.add("open");
+    disarmConcede(); syncSetup(); setup.classList.add("open");
   });
   document.getElementById("setupdone").addEventListener("click", function(){
     setup.classList.remove("open");
