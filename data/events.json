@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-16T02:20:58.013Z",
- "generated_local": "2026-08-15T19:20:58-07:00",
- "window_start": "2026-08-15T07:00:00.000Z",
+ "generated_at": "2026-08-16T13:32:35.424Z",
+ "generated_local": "2026-08-16T06:32:35-07:00",
+ "window_start": "2026-08-16T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 38,
-   "added": 38
+   "returned": 39,
+   "added": 39
   },
   {
    "name": "Courtenay",
@@ -23,9 +23,9 @@
   }
  ],
  "totals": {
-  "fetched": 62,
-  "unique": 62,
-  "prev_unique": 67
+  "fetched": 63,
+  "unique": 63,
+  "prev_unique": 62
  },
  "unknown_templates": {},
  "events": [
@@ -42,7 +42,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 4,
+   "reg": 5,
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-01T18:13:15+00:00"
@@ -1144,6 +1144,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-08-14T05:03:59+00:00"
+  },
+  {
+   "id": 860816,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-10-11T11:30:00-07:00",
+   "end": "2026-10-11T15:40:00-07:00",
+   "day": "2026-10-11",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-08-16T05:00:57+00:00"
   }
  ]
 }
