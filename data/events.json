@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-18T02:15:35.063Z",
- "generated_local": "2026-08-17T19:15:35-07:00",
- "window_start": "2026-08-17T07:00:00.000Z",
+ "generated_at": "2026-08-18T13:43:14.867Z",
+ "generated_local": "2026-08-18T06:43:14-07:00",
+ "window_start": "2026-08-18T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 38,
-   "added": 38
+   "returned": 39,
+   "added": 39
   },
   {
    "name": "Courtenay",
@@ -18,14 +18,14 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 18,
-   "added": 18
+   "returned": 19,
+   "added": 19
   }
  ],
  "totals": {
-  "fetched": 62,
-  "unique": 62,
-  "prev_unique": 61
+  "fetched": 64,
+  "unique": 64,
+  "prev_unique": 62
  },
  "unknown_templates": {},
  "events": [
@@ -60,7 +60,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 3,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-03T18:57:09+00:00"
@@ -156,24 +156,6 @@
    "updated": "2026-08-01T18:16:19+00:00"
   },
   {
-   "id": 821775,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-08-23T11:30:00-07:00",
-   "end": "2026-08-23T15:40:00-07:00",
-   "day": "2026-08-23",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-02T05:01:07+00:00"
-  },
-  {
    "id": 498166,
    "name": "Sunday Morning Vendetta Summoner Skirmish I",
    "type": "skirmish",
@@ -190,6 +172,24 @@
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:22:38+00:00"
+  },
+  {
+   "id": 821775,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-08-23T11:30:00-07:00",
+   "end": "2026-08-23T15:40:00-07:00",
+   "day": "2026-08-23",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-08-02T05:01:07+00:00"
   },
   {
    "id": 864436,
@@ -424,6 +424,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-24T00:56:05+00:00"
+  },
+  {
+   "id": 865236,
+   "name": "Sunday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-08-30T17:00:00-07:00",
+   "end": "2026-08-30T21:10:00-07:00",
+   "day": "2026-08-30",
+   "time": "5:00 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-18T02:48:43+00:00"
   },
   {
    "id": 751284,
@@ -1144,6 +1162,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-16T05:00:57+00:00"
+  },
+  {
+   "id": 866184,
+   "name": "Tuesday Riftbound Playnight",
+   "type": "learn",
+   "start": "2026-10-13T18:00:00-07:00",
+   "end": "2026-10-13T21:30:00-07:00",
+   "day": "2026-10-13",
+   "time": "6:00 PM",
+   "venue": "Giddy-Up Games",
+   "city": "Campbell River",
+   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
+   "region": "island",
+   "cap": 8,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-08-18T05:03:23+00:00"
   }
  ]
 }
