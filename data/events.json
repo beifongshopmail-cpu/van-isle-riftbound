@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-19T13:45:02.780Z",
- "generated_local": "2026-08-19T06:45:02-07:00",
+ "generated_at": "2026-08-20T02:17:43.118Z",
+ "generated_local": "2026-08-19T19:17:43-07:00",
  "window_start": "2026-08-19T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 39,
-   "added": 39
+   "returned": 38,
+   "added": 38
   },
   {
    "name": "Courtenay",
@@ -23,30 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 63,
-  "unique": 63,
+  "fetched": 62,
+  "unique": 62,
   "prev_unique": 63
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 826203,
-   "name": "Wednesday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-08-19T18:00:00-07:00",
-   "end": "2026-08-19T21:00:00-07:00",
-   "day": "2026-08-19",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 3,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-08-03T18:57:09+00:00"
-  },
   {
    "id": 770761,
    "name": "Thursday Evening Nexus Nights - 1v1",
@@ -138,6 +120,24 @@
    "updated": "2026-08-01T18:16:19+00:00"
   },
   {
+   "id": 498166,
+   "name": "Sunday Morning Vendetta Summoner Skirmish I",
+   "type": "skirmish",
+   "start": "2026-08-23T11:30:00-07:00",
+   "end": "2026-08-23T18:10:00-07:00",
+   "day": "2026-08-23",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 7,
+   "cents": 2000,
+   "currency": "CAD",
+   "updated": "2026-04-14T00:22:38+00:00"
+  },
+  {
    "id": 821775,
    "name": "Sunday morning \"nexus Night\"",
    "type": "nexus",
@@ -154,24 +154,6 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-02T05:01:07+00:00"
-  },
-  {
-   "id": 498166,
-   "name": "Sunday Morning Vendetta Summoner Skirmish I",
-   "type": "skirmish",
-   "start": "2026-08-23T11:30:00-07:00",
-   "end": "2026-08-23T18:10:00-07:00",
-   "day": "2026-08-23",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 6,
-   "cents": 2000,
-   "currency": "CAD",
-   "updated": "2026-04-14T00:22:38+00:00"
   },
   {
    "id": 864436,
