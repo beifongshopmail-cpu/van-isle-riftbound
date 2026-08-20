@@ -526,12 +526,20 @@
     }
   }
 
+  function syncConcedeLabels(){
+    var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
+    if (b1) {
+      if (b1.className !== "armed") { b1.textContent = nameOf(1) + " concedes"; }
+      b1.style.setProperty("--cc", players[1].colour);
+    }
+    if (b2) {
+      if (b2.className !== "armed") { b2.textContent = nameOf(2) + " concedes"; }
+      b2.style.setProperty("--cc", players[2].colour);
+    }
+  }
+
   function syncSetup(){
-    var cc1 = document.getElementById("cc1"), cc2 = document.getElementById("cc2");
-    cc1.textContent = nameOf(1) + " concedes";
-    cc2.textContent = nameOf(2) + " concedes";
-    cc1.style.setProperty("--cc", players[1].colour);
-    cc2.style.setProperty("--cc", players[2].colour);
+    syncConcedeLabels();
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
       document.getElementById("l" + p).value = players[p].legend;
@@ -569,15 +577,17 @@
     }
   });
 
-  setup.addEventListener("change", function(e){
+  function onSetupField(e){
     var id = e.target.id;
     if (!id) { return; }
     var p = parseInt(id.charAt(1), 10);
     if (id.charAt(0) === "n") { players[p].name = e.target.value.slice(0, 14); }
     else if (id.charAt(0) === "l") { players[p].legend = e.target.value; }
     else { return; }
-    savePlayers(); render();
-  });
+    savePlayers(); syncConcedeLabels(); render();
+  }
+  setup.addEventListener("input", onSetupField);
+  setup.addEventListener("change", onSetupField);
 
   document.getElementById("setupbtn").addEventListener("click", function(){
     disarmConcede(); syncSetup(); setup.classList.add("open");
