@@ -179,7 +179,7 @@
     font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--bone)}
   .win button.armed{color:#FFB020;border-bottom-color:#FFB020}
-  .win #unwin{margin-left:auto;color:var(--mute);border-bottom-color:var(--rule)}
+  .win #unwin{margin-left:auto;color:var(--bone);border-bottom-color:transparent}
 </style>
 </head>
 <body>
@@ -371,6 +371,7 @@
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
     elWin.textContent = nameOf(w || 1) + " wins";
+    elWin.style.color = w ? players[w].colour : "";
     var mb = elModes.getElementsByTagName("button");
     for (var k = 0; k < mb.length; k++) {
       mb[k].setAttribute("aria-pressed", mb[k].getAttribute("data-mode") === mode ? "true" : "false");
