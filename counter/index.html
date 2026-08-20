@@ -172,11 +172,13 @@
     font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;text-decoration:none}
   .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
-    text-transform:uppercase;color:var(--bone)}
-  .win button{margin-left:auto;min-height:38px;padding:0 14px;background:none;border:0;
+    text-transform:uppercase;color:var(--bone);min-width:0;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .win button{margin-left:12px;min-height:38px;padding:0 14px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;
     font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--bone)}
+  .win #unwin{margin-left:auto;color:var(--mute);border-bottom-color:var(--rule)}
 </style>
 </head>
 <body>
@@ -197,7 +199,7 @@
     <ol id="log"></ol>
     <button class="close" id="closelog">Back to the game</button>
   </div>
-  <div class="win"><b id="wintext">Player 1 wins</b><button id="again">New game</button></div>
+  <div class="win"><b id="wintext">Player 1 wins</b><button id="unwin">Undo</button><button id="again">New game</button></div>
   <div class="setup" id="setup">
     <button class="done top" id="setupdone">Back to the game</button>
     <div class="grp">
@@ -490,6 +492,9 @@
   document.getElementById("logbtn").addEventListener("click", function(){ sheet.classList.add("open"); });
   document.getElementById("closelog").addEventListener("click", function(){ sheet.classList.remove("open"); });
   document.getElementById("again").addEventListener("click", function(){ startNew(); });
+  document.getElementById("unwin").addEventListener("click", function(){
+    if (ev.length > 1) { ev.pop(); save(); render(); }
+  });
 
   document.addEventListener("visibilitychange", function(){
     if (document.visibilityState === "visible") { wake = null; keepAwake(); }
