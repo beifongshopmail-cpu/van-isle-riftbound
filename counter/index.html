@@ -48,7 +48,7 @@
   .modes button+button{border-left:1px solid var(--rule)}
   .modes button[aria-pressed="true"]{background:var(--bone);color:#000;font-weight:500}
 
-  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 6px 6px}
+  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px 6px}
   .side{min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;
     justify-content:center;overflow:hidden;border-radius:10px}
   .side[data-role="major"]{flex:1}
@@ -99,8 +99,8 @@
   .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
     color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px}
-  .seam em{font-family:var(--mono);font-style:normal;font-weight:400;font-size:10px;
-    letter-spacing:.14em;color:var(--dim)}
+  .seam em{font-family:var(--mono);font-style:normal;font-weight:400;font-size:11px;
+    letter-spacing:.14em;color:color-mix(in srgb, var(--bone) 45%, var(--dim))}
   .seam em b{font-weight:500;font-size:11px;color:var(--sc)}
   .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
