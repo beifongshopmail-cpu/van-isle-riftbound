@@ -60,7 +60,7 @@
 
   .name{font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
     color:var(--mute);position:relative;z-index:3}
-  .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:8px}
+  .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px}
   .side[data-role="minor"] .name{order:0;margin-top:0}
   .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
@@ -68,9 +68,10 @@
   .side[data-role="minor"] .num{font-size:32px}
   .side[data-role="equal"] .num{font-size:min(26vh,44vw)}
 
-  .track{position:relative;z-index:3;margin-top:14px;width:min(62vw,330px);order:3}
+  .track{position:relative;z-index:3;margin-top:26px;width:min(62vw,330px);order:3}
   .side[data-role="minor"] .track{display:none}
-  .side[data-role="equal"] .track{margin-top:10px}
+  .side[data-role="equal"] .name{margin-top:12px}
+  .side[data-role="equal"] .track{margin-top:18px}
   .side:not([data-role="minor"]) .track{align-self:stretch;width:auto}
   .track .segs{display:flex;gap:3px}
   .track .segs i{flex:1;height:3px;background:#1B1E24;display:block}
