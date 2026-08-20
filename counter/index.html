@@ -69,7 +69,7 @@
   .side[data-role="equal"] .num{font-size:min(24vh,28vw)}
 
   .track{position:relative;z-index:3;margin-top:14px;width:min(62vw,330px);order:3}
-  .side[data-role="minor"] .track{width:78px;margin-top:0}
+  .side[data-role="minor"] .track{display:none}
   .side[data-role="equal"] .track{margin-top:10px}
   .side:not([data-role="minor"]) .track{align-self:stretch;width:auto}
   .track .segs{display:flex;gap:3px}
@@ -97,11 +97,14 @@
 
   .seamwrap{flex:0 0 auto;padding:8px 0}
   .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
-    color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
-    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:12px}
-  .seam em{font-family:var(--mono);font-style:normal;font-weight:400;font-size:11px;
-    letter-spacing:.14em;color:color-mix(in srgb, var(--bone) 45%, var(--dim))}
-  .seam em b{font-weight:500;font-size:11px;color:var(--sc)}
+    color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.1em;
+    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0}
+  .seam em{font-family:var(--display);font-style:normal;font-weight:800;font-size:14px;
+    letter-spacing:.1em;color:color-mix(in srgb, var(--bone) 45%, var(--dim));
+    border-left:1px solid var(--rule-hi);padding-left:14px;margin-left:14px;
+    display:flex;align-items:center;gap:.5ch;min-width:0}
+  .seam em b{font-weight:800;font-size:14px;color:var(--sc);
+    max-width:9ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
   .seam.flash{animation:seamflash .42s ease-out}
