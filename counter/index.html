@@ -161,6 +161,8 @@
   .concede button:active{color:var(--cc);text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
   .concede button.armed{color:var(--cc);border-bottom-color:var(--cc);
     text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
+  .concede button:disabled{opacity:.32;color:var(--mute);border-bottom-color:var(--rule);
+    text-shadow:none;pointer-events:none}
   .setup .wide{width:100%;min-height:46px;background:none;border:1px solid var(--rule-hi);
     border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
@@ -527,14 +529,17 @@
   }
 
   function syncConcedeLabels(){
+    var w = won();
     var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
     if (b1) {
       if (b1.className !== "armed") { b1.textContent = nameOf(1) + " concedes"; }
       b1.style.setProperty("--cc", players[1].colour);
+      b1.disabled = w ? true : false;
     }
     if (b2) {
       if (b2.className !== "armed") { b2.textContent = nameOf(2) + " concedes"; }
       b2.style.setProperty("--cc", players[2].colour);
+      b2.disabled = w ? true : false;
     }
   }
 
@@ -561,7 +566,8 @@
     }
     var cc = t.getAttribute && t.getAttribute("data-concede");
     if (cc) {
-      if (won()) { return; }
+      if (won()) { syncConcedeLabels(); return; }
+      if (t.disabled) { return; }
       if (ccArmed !== cc) {
         disarmConcede();
         ccArmed = cc;
