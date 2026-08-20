@@ -178,6 +178,7 @@
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;
     font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--bone)}
+  .win button.armed{color:#FFB020;border-bottom-color:#FFB020}
   .win #unwin{margin-left:auto;color:var(--mute);border-bottom-color:var(--rule)}
 </style>
 </head>
@@ -491,8 +492,26 @@
   });
   document.getElementById("logbtn").addEventListener("click", function(){ sheet.classList.add("open"); });
   document.getElementById("closelog").addEventListener("click", function(){ sheet.classList.remove("open"); });
-  document.getElementById("again").addEventListener("click", function(){ startNew(); });
+  var againArmed = false, againTimer = null;
+  function disarmAgain(){
+    againArmed = false;
+    if (againTimer) { clearTimeout(againTimer); againTimer = null; }
+    var b = document.getElementById("again");
+    if (b) { b.className = ""; b.textContent = "New game"; }
+  }
+  document.getElementById("again").addEventListener("click", function(){
+    if (!againArmed) {
+      againArmed = true;
+      this.className = "armed";
+      this.textContent = "Sure? Tap again";
+      againTimer = setTimeout(disarmAgain, 3000);
+      return;
+    }
+    disarmAgain();
+    startNew();
+  });
   document.getElementById("unwin").addEventListener("click", function(){
+    disarmAgain();
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
 
