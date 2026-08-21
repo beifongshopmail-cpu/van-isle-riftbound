@@ -233,6 +233,8 @@
     text-transform:uppercase;color:var(--bone);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .win #unwin{border-bottom-color:transparent}
+  .win[data-next="0"] .nextrow{display:none}
+  .win .armed{color:#FFB020;border-bottom-color:#FFB020}
 </style>
 </head>
 <body>
@@ -257,7 +259,7 @@
     <ul id="past"></ul>
     <button class="close" id="closelog">Back to the game</button>
   </div>
-  <div class="win"><b id="wintext">Player 1 wins</b><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
+  <div class="win" id="win" data-next="0"><b id="wintext">Player 1 wins</b><div class="winrow nextrow"><button id="nextg">Next game</button></div><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
   <div class="setup" id="setup" data-face="live">
     <button class="done top" id="setupdone" data-face="live">Back to the game</button>
     <h2 data-face="pre">Before the match</h2>
@@ -334,6 +336,7 @@
   var elUndo = document.getElementById("undo");
   var elReset = document.getElementById("reset");
   var elWin = document.getElementById("wintext");
+  var elBanner = document.getElementById("win");
   var elLog = document.getElementById("log");
   var sheet = document.getElementById("sheet");
   var elPast = document.getElementById("past");
@@ -612,8 +615,14 @@
     var c = ctx(), w = won();
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
-    elWin.textContent = nameOf(w || 1) + " wins";
+    var open = w ? matchOpen() : false;
+    elWin.textContent = !w ? nameOf(1) + " wins"
+      : bo === 1 ? nameOf(w) + " wins"
+      : open ? nameOf(w) + " wins game " + (banked.length + 1)
+      : nameOf(w) + " wins the match";
     elWin.style.color = w ? players[w].colour : "";
+    elBanner.setAttribute("data-next", open ? "1" : "0");
+    if (open) { syncAgain(); } else { disarmAgain(); }
     var mb = elModes.getElementsByTagName("button");
     for (var k = 0; k < mb.length; k++) {
       mb[k].setAttribute("aria-pressed", mb[k].getAttribute("data-mode") === mode ? "true" : "false");
@@ -750,8 +759,39 @@
     disarmClear();
     sheet.classList.remove("open");
   });
+  var againArmed = false, againTimer = null;
+  function syncAgain(){
+    var b = document.getElementById("again");
+    if (!b) { return; }
+    b.textContent = againArmed ? "Sure? Tap again" : "New match";
+    b.className = againArmed ? "armed" : "";
+  }
+  function disarmAgain(){
+    againArmed = false;
+    if (againTimer) { clearTimeout(againTimer); againTimer = null; }
+    syncAgain();
+  }
   document.getElementById("winlog").addEventListener("click", openSheet);
-  document.getElementById("again").addEventListener("click", function(){ openPre(); });
+  document.getElementById("again").addEventListener("click", function(){
+    if (matchOpen()) {
+      if (!againArmed) {
+        againArmed = true;
+        syncAgain();
+        againTimer = setTimeout(disarmAgain, 3000);
+        return;
+      }
+      disarmAgain();
+    }
+    openPre();
+  });
+  document.getElementById("nextg").addEventListener("click", function(){
+    if (!won() || !matchOpen()) { return; }
+    var opener = (ev.length && ev[0].t === "turn" && ev[0].p === 2) ? 1 : 2;
+    bankGame();
+    ev = fresh(opener);
+    save();
+    render();
+  });
   document.getElementById("unwin").addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
