@@ -60,8 +60,10 @@
 
   .name{font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
     color:var(--mute);position:relative;z-index:3}
-  .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px}
-  .side[data-role="minor"] .name{order:0;margin-top:0}
+  .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px;
+    max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .side[data-role="minor"] .name{order:0;margin-top:0;flex:0 1 auto;min-width:0}
+  .side[data-role="minor"] .num,.side[data-role="minor"] .acts{flex:0 0 auto}
   .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
   .side .num{color:var(--c)}
