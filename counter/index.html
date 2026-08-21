@@ -124,13 +124,16 @@
   .sheet h2{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
     color:var(--dim);font-weight:400;margin-bottom:10px}
   .sheet ol{list-style:none;flex:1;min-height:0;overflow:auto}
-  .sheet li{display:flex;gap:8px;align-items:baseline;font-size:13px;padding:8px 0;
-    border-bottom:1px solid var(--rule)}
-  .sheet li span{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mute);white-space:nowrap}
-  .sheet li.e1 b{color:var(--p1)}
-  .sheet li.e2 b{color:var(--p2)}
-  .sheet li.et b{color:var(--dim);font-weight:500}
-  .sheet li.empty{color:var(--mute);border:0}
+  #log li,.mbody li{display:flex;gap:10px;align-items:baseline;padding:8px 0;
+    border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:11px}
+  #log li .lt,.mbody li .lt{flex:1;min-width:0;color:var(--mute);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #log li .rt,.mbody li .rt{flex:0 0 auto;color:var(--dim);white-space:nowrap}
+  #log li .rt b,.mbody li .rt b{font-weight:500;color:var(--bone)}
+  #log li.e1 .rt b,.mbody li.e1 .rt b{color:var(--p1)}
+  #log li.e2 .rt b,.mbody li.e2 .rt b{color:var(--p2)}
+  #log li.et .rt b,.mbody li.et .rt b{color:var(--dim)}
+  .sheet li.empty{color:var(--mute);border:0;font-family:var(--body);font-size:13px}
   .sheet .close{min-height:52px;margin-top:10px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
     font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
@@ -575,10 +578,12 @@
     for (var i = list.length - 1; i >= 0; i--) {
       var e = list[i];
       if (e.t === "point") {
-        out += "<li class=\"e" + e.p + "\"><b>" + esc(nm(e.p)) + " +1</b> " + SRC[e.src] +
-               " <span>during " + esc(nm(e.tp)) + " T" + e.tn + "</span></li>";
+        out += "<li class=\"e" + e.p + "\"><span class=\"lt\">" + esc(nm(e.tp)) +
+               " turn " + e.tn + "</span><span class=\"rt\"><b>" + esc(nm(e.p)) +
+               " +1</b> " + SRC[e.src] + "</span></li>";
       } else if (e.t === "concede") {
-        out += "<li class=\"et\"><b>" + esc(nm(e.p)) + " concedes</b> <span>game over</span></li>";
+        out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
+               "<span class=\"rt\"><b>" + esc(nm(e.p)) + " concedes</b></span></li>";
       } else {
         var gained = 0, ended = false;
         for (var j = i + 1; j < list.length; j++) {
@@ -589,8 +594,8 @@
                  : gained === 0 ? "no points"
                  : gained === 1 ? "1 point"
                  : gained + " points";
-        out += "<li class=\"et\"><b>" + esc(nm(e.p)) + " turn " + e.n +
-               "</b> <span>" + tail + "</span></li>";
+        out += "<li class=\"et\"><span class=\"lt\">" + esc(nm(e.p)) + " turn " + e.n +
+               "</span><span class=\"rt\">" + tail + "</span></li>";
       }
     }
     return out;
