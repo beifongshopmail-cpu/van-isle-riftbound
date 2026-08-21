@@ -143,24 +143,35 @@
   .sheet[data-face="past"] #log{display:none}
   #past{list-style:none;flex:1;min-height:0;overflow:auto}
   #past li{border-bottom:1px solid var(--rule);padding:0}
+  #past > li{display:block}
   #past li.empty{color:var(--mute);border:0;font-size:13px;padding:18px 0;line-height:1.5}
   .mrow{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;
-    border-radius:0;padding:11px 0;text-align:left;color:var(--bone)}
-  .mline{flex:1;min-width:0}
-  .mtop{display:flex;align-items:baseline;gap:7px;font-size:14px}
-  .mtop b{font-family:var(--mono);font-weight:500}
-  .mtop .w1,.mtop .k1{color:var(--p1)}
-  .mtop .w2,.mtop .k2{color:var(--p2)}
-  .mtop .said{font-weight:500;color:var(--dim);min-width:0;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap}
-  .msub{margin-top:3px;font-family:var(--mono);font-size:10px;color:var(--mute);
+    border-radius:0;padding:13px 0;text-align:left;color:var(--bone)}
+  .res{flex:0 0 42px;font-family:var(--mono);font-weight:500;font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase}
+  .res.win{color:var(--p1)}
+  .res.loss{color:var(--p2)}
+  .res.dnf{color:var(--mute)}
+  .sco{flex:0 0 52px;display:flex;align-items:baseline;gap:2px;
+    font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em}
+  .sco .s1{color:var(--p1)}
+  .sco .s2{color:var(--p2)}
+  .sco .dash{color:var(--rule-hi);font-size:13px}
+  .fmt{flex:0 0 36px;font-family:var(--mono);font-weight:500;font-size:11px;
+    letter-spacing:.14em;color:var(--bone)}
+  .opp{flex:1;min-width:0;font-size:14px;font-weight:600;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .mday{font-family:var(--mono);font-size:10px;color:var(--mute);white-space:nowrap;
-    letter-spacing:.1em}
+  .opp .them{color:var(--p2)}
+  .opp .vs{color:var(--mute);font-weight:400;font-size:12px}
+  .mday{flex:0 0 auto;font-family:var(--mono);font-size:10px;color:var(--mute);
+    white-space:nowrap;letter-spacing:.1em}
+  .dtl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--mute);padding:0 0 10px;line-height:1.7}
   .mbody{display:none;padding:0 0 10px}
   #past li.open .mbody{display:block}
   .mbody ol{list-style:none}
-  .ghead{display:flex;align-items:baseline;gap:7px;padding:8px 0 4px;
+  .ghead{display:flex;align-items:baseline;gap:7px;padding:10px 0 4px;
+    border-top:1px solid var(--rule);
     font-family:var(--mono);font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--mute)}
   .ghead b{font-weight:500}
@@ -615,36 +626,36 @@
         return function(pp){ return rec.p[pp].name || ("Player " + pp); };
       })(g0);
       var multi = gs.length > 1 || m.bo === 3;
-      var gw1 = 0, gw2 = 0, body = "";
+      var gw1 = 0, gw2 = 0, tt = 0, body = "";
       for (var j = 0; j < gs.length; j++) {
         var gj = gs[j], sj = statsOf(gj.ev), wj = winnerOf(gj.ev);
         if (wj === 1) { gw1++; } else if (wj === 2) { gw2++; }
-        if (multi) {
-          var jt = sj.conceded ? "conceded" : sj.turns + " turns";
-          body += "<div class=\"ghead\">Game " + (j + 1) +
-            "<b class=\"g1\">" + sj[1] + "</b><b>v</b><b class=\"g2\">" + sj[2] + "</b>" +
-            "<span class=\"gsub\">" + esc(nm(sj.first)) + " first &middot; " + jt + "</span></div>";
-        }
+        tt += sj.turns;
+        var jt = sj.conceded ? "conceded" : sj.turns + " turns";
+        body += "<div class=\"ghead\">Game " + (j + 1) +
+          "<b class=\"g1\">" + sj[1] + "</b><b>vs</b><b class=\"g2\">" + sj[2] + "</b>" +
+          "<span class=\"gsub\">" + esc(nm(sj.first)) + " first &middot; " + jt + "</span></div>";
         body += "<ol>" + logHTML(gj.ev, nm) + "</ol>";
       }
       var s0 = statsOf(g0.ev);
       var w = multi ? (gw1 > gw2 ? 1 : (gw2 > gw1 ? 2 : 0)) : winnerOf(g0.ev);
-      var said = w ? esc(nm(w)) + " beat " + esc(nm(w === 1 ? 2 : 1)) : "Unfinished";
-      var legs = esc(g0.p[1].legend || "No legend") + " v " + esc(g0.p[2].legend || "No legend");
-      var tail = multi
-        ? (gs.length === 1 ? "1 game" : gs.length + " games")
-        : (s0.conceded ? "conceded" : s0.turns + " turns");
-      var lead = multi
-        ? "<b class=\"k1\">" + gw1 + "</b><b>v</b><b class=\"k2\">" + gw2 + "</b>"
-        : "<b class=\"k1\">" + s0[1] + "</b><b>v</b><b class=\"k2\">" + s0[2] + "</b>";
-      var opener = multi ? "best of 3" : esc(nm(s0.first)) + " went first";
+      var lf = multi ? gw1 : s0[1], rt = multi ? gw2 : s0[2];
+      var rc = w === 1 ? "win" : (w === 2 ? "loss" : "dnf");
+      var rl = w === 1 ? "Win" : (w === 2 ? "Loss" : "DNF");
+      var legs = esc(g0.p[1].legend || "No legend") + " vs " +
+                 esc(g0.p[2].legend || "No legend");
+      var len = multi ? "best of 3" : "single game";
+      var cnt = gs.length === 1 ? "1 game" : gs.length + " games";
       out += "<li data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
-        "<span class=\"mline\">" +
-          "<span class=\"mtop\">" + lead +
-          "<span class=\"said w" + (w || 1) + "\">" + said + "</span></span>" +
-          "<span class=\"msub\">" + legs + " &middot; " + opener + " &middot; " + tail + "</span>" +
-        "</span><span class=\"mday\">" + stamp(m.at) + "</span></button>" +
-        "<div class=\"mbody\">" + body + "</div></li>";
+        "<span class=\"res " + rc + "\">" + rl + "</span>" +
+        "<span class=\"sco\"><b class=\"s1\">" + lf + "</b><b class=\"dash\">-</b>" +
+        "<b class=\"s2\">" + rt + "</b></span>" +
+        "<span class=\"fmt\">BO" + (multi ? 3 : 1) + "</span>" +
+        "<span class=\"opp\"><span class=\"vs\">vs</span> " +
+        "<span class=\"them\">" + esc(nm(2)) + "</span></span>" +
+        "<span class=\"mday\">" + stamp(m.at) + "</span></button>" +
+        "<div class=\"mbody\"><div class=\"dtl\">" + legs + " &middot; " + len +
+        " &middot; " + cnt + " &middot; " + tt + " turns</div>" + body + "</div></li>";
     }
     out += "<li class=\"empty\" style=\"padding:0\"><button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button></li>";
     elPast.innerHTML = out;
