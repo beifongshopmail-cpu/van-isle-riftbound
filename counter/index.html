@@ -134,8 +134,9 @@
     font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
 
   .win{position:absolute;left:6px;right:6px;bottom:6px;z-index:25;display:none;
-    align-items:center;gap:12px;padding:0 16px;min-height:58px;border-radius:8px;
+    flex-direction:column;gap:10px;padding:12px;border-radius:8px;
     background:#000;border:1px solid var(--rule-hi)}
+  .winrow{display:flex;gap:10px}
   .stage[data-won="1"] .win{display:flex}
   .legend{color:var(--dim)}
   .legend::before{content:"|";margin:0 7px;color:var(--rule-hi)}
@@ -193,13 +194,13 @@
     text-transform:uppercase;text-decoration:none}
   .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--bone);min-width:0;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap}
-  .win button{margin-left:12px;min-height:38px;padding:0 14px;background:none;border:0;
+    text-overflow:ellipsis;white-space:nowrap;text-align:center}
+  .win button{flex:1;min-width:0;min-height:44px;padding:0 6px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;
-    font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.12em;
-    text-transform:uppercase;color:var(--bone)}
-  .win button.armed{color:#FFB020;border-bottom-color:#FFB020}
-  .win #unwin{margin-left:auto;color:var(--bone);border-bottom-color:transparent}
+    font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--bone);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .win #unwin{border-bottom-color:transparent}
 </style>
 </head>
 <body>
@@ -220,7 +221,7 @@
     <ol id="log"></ol>
     <button class="close" id="closelog">Back to the game</button>
   </div>
-  <div class="win"><b id="wintext">Player 1 wins</b><button id="unwin">Undo</button><button id="again">New game</button></div>
+  <div class="win"><b id="wintext">Player 1 wins</b><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
   <div class="setup" id="setup" data-face="live">
     <button class="done top" id="setupdone" data-face="live">Back to the game</button>
     <h2 data-face="pre">Before the match</h2>
@@ -510,26 +511,11 @@
   elReset.addEventListener("click", function(){ openPre(); });
   document.getElementById("logbtn").addEventListener("click", function(){ sheet.classList.add("open"); });
   document.getElementById("closelog").addEventListener("click", function(){ sheet.classList.remove("open"); });
-  var againArmed = false, againTimer = null;
-  function disarmAgain(){
-    againArmed = false;
-    if (againTimer) { clearTimeout(againTimer); againTimer = null; }
-    var b = document.getElementById("again");
-    if (b) { b.className = ""; b.textContent = "New game"; }
-  }
-  document.getElementById("again").addEventListener("click", function(){
-    if (!againArmed) {
-      againArmed = true;
-      this.className = "armed";
-      this.textContent = "Sure? Tap again";
-      againTimer = setTimeout(disarmAgain, 3000);
-      return;
-    }
-    disarmAgain();
-    startNew();
+  document.getElementById("winlog").addEventListener("click", function(){
+    sheet.classList.add("open");
   });
+  document.getElementById("again").addEventListener("click", function(){ openPre(); });
   document.getElementById("unwin").addEventListener("click", function(){
-    disarmAgain();
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
 
