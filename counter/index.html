@@ -160,6 +160,13 @@
   .mbody{display:none;padding:0 0 10px}
   #past li.open .mbody{display:block}
   .mbody ol{list-style:none}
+  .ghead{display:flex;align-items:baseline;gap:7px;padding:8px 0 4px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--mute)}
+  .ghead b{font-weight:500}
+  .ghead .g1{color:var(--p1)}
+  .ghead .g2{color:var(--p2)}
+  .gsub{margin-left:auto;color:var(--mute);white-space:nowrap}
   .clearpast{width:100%;min-height:46px;margin-top:10px;background:none;
     border:1px solid var(--rule-hi);border-radius:6px;color:var(--mute);
     font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
@@ -602,19 +609,41 @@
     }
     var out = "";
     for (var i = 0; i < history.length; i++) {
-      var m = history[i], g = m.games[0], nm = function(pp){ return g.p[pp].name || ("Player " + pp); };
-      var s = statsOf(g.ev);
-      var w = s.conceded ? (s.conceded === 1 ? 2 : 1) : (s[1] >= GOAL ? 1 : (s[2] >= GOAL ? 2 : 0));
+      var m = history[i];
+      var gs = m.games, g0 = gs[0];
+      var nm = (function(rec){
+        return function(pp){ return rec.p[pp].name || ("Player " + pp); };
+      })(g0);
+      var multi = gs.length > 1 || m.bo === 3;
+      var gw1 = 0, gw2 = 0, body = "";
+      for (var j = 0; j < gs.length; j++) {
+        var gj = gs[j], sj = statsOf(gj.ev), wj = winnerOf(gj.ev);
+        if (wj === 1) { gw1++; } else if (wj === 2) { gw2++; }
+        if (multi) {
+          var jt = sj.conceded ? "conceded" : sj.turns + " turns";
+          body += "<div class=\"ghead\">Game " + (j + 1) +
+            "<b class=\"g1\">" + sj[1] + "</b><b>v</b><b class=\"g2\">" + sj[2] + "</b>" +
+            "<span class=\"gsub\">" + esc(nm(sj.first)) + " first &middot; " + jt + "</span></div>";
+        }
+        body += "<ol>" + logHTML(gj.ev, nm) + "</ol>";
+      }
+      var s0 = statsOf(g0.ev);
+      var w = multi ? (gw1 > gw2 ? 1 : (gw2 > gw1 ? 2 : 0)) : winnerOf(g0.ev);
       var said = w ? esc(nm(w)) + " beat " + esc(nm(w === 1 ? 2 : 1)) : "Unfinished";
-      var legs = esc(g.p[1].legend || "No legend") + " v " + esc(g.p[2].legend || "No legend");
-      var tail = s.conceded ? "conceded" : s.turns + " turns";
+      var legs = esc(g0.p[1].legend || "No legend") + " v " + esc(g0.p[2].legend || "No legend");
+      var tail = multi
+        ? (gs.length === 1 ? "1 game" : gs.length + " games")
+        : (s0.conceded ? "conceded" : s0.turns + " turns");
+      var lead = multi
+        ? "<b class=\"k1\">" + gw1 + "</b><b>v</b><b class=\"k2\">" + gw2 + "</b>"
+        : "<b class=\"k1\">" + s0[1] + "</b><b>v</b><b class=\"k2\">" + s0[2] + "</b>";
+      var opener = multi ? "best of 3" : esc(nm(s0.first)) + " went first";
       out += "<li data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
-        "<span class=\"mline\">" +
-          "<span class=\"mtop\"><b class=\"k1\">" + s[1] + "</b><b>v</b><b class=\"k2\">" + s[2] +
-          "</b><span class=\"said w" + (w || 1) + "\">" + said + "</span></span>" +
-          "<span class=\"msub\">" + legs + " &middot; " + esc(nm(s.first)) + " went first &middot; " + tail + "</span>" +
+        "<span class=\"mline\">" + lead +
+          "<span class=\"said w" + (w || 1) + "\">" + said + "</span></span>" +
+          "<span class=\"msub\">" + legs + " &middot; " + opener + " &middot; " + tail + "</span>" +
         "</span><span class=\"mday\">" + stamp(m.at) + "</span></button>" +
-        "<div class=\"mbody\"><ol>" + logHTML(g.ev, nm) + "</ol></div></li>";
+        "<div class=\"mbody\">" + body + "</div></li>";
     }
     out += "<li class=\"empty\" style=\"padding:0\"><button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button></li>";
     elPast.innerHTML = out;
