@@ -213,6 +213,8 @@
     letter-spacing:.1em;text-transform:uppercase;padding:0 8px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .first button[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
+  .first.who button[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#000}
+  .setup .label2{margin-top:12px}
   .prefoot{margin-top:auto;display:flex;flex-direction:column}
   .prefoot .done{margin-top:10px}
   .setup .start{width:100%;min-height:52px;background:var(--bone);border:1px solid var(--bone);
@@ -283,8 +285,13 @@
       <div class="swatches" id="c2"></div>
     </div>
     <div class="grp" id="firstgrp" data-face="pre">
-      <label>Who goes first</label>
-      <div class="first" id="first">
+      <label>Match length</label>
+      <div class="first" id="blen">
+        <button data-bo="1" aria-pressed="true">Single game</button>
+        <button data-bo="3" aria-pressed="false">Best of 3</button>
+      </div>
+      <label class="label2">Who goes first</label>
+      <div class="first who" id="first">
         <button data-first="1" aria-pressed="true">Player 1</button>
         <button data-first="2" aria-pressed="false">Player 2</button>
       </div>
@@ -337,6 +344,7 @@
   var wake = null;
   var firstP = 1;
   var bo = 1;
+  var boPick = 1;
   var banked = [];
 
   function fresh(p){ return [ { t:"turn", p:(p === 2 ? 2 : 1), n:1 } ]; }
@@ -426,10 +434,11 @@
              2:{ name:players[2].name, legend:players[2].legend, colour:players[2].colour } };
   }
 
-  function archive(){
-    var w = won();
-    if (!w) { return; }
-    history.unshift({ v:1, at:Date.now(), games:[ { ev:ev.slice(), p:snap() } ] });
+  function endMatch(){
+    var games = banked.slice();
+    if (won()) { games.push({ ev:ev.slice(), p:snap() }); }
+    if (!games.length) { return; }
+    history.unshift({ v:1, at:Date.now(), bo:bo, games:games });
     while (history.length > HMAX) { history.pop(); }
     saveHistory();
   }
@@ -636,7 +645,10 @@
   }
 
   function startNew(){
-    archive();
+    endMatch();
+    bo = boPick;
+    banked = [];
+    saveMatch();
     ev = fresh(firstP);
     renderPast();
     save();
@@ -796,18 +808,29 @@
     }
   }
 
+  function syncLen(){
+    var b = document.getElementById("blen").getElementsByTagName("button");
+    for (var i = 0; i < b.length; i++) {
+      var v = parseInt(b[i].getAttribute("data-bo"), 10);
+      b[i].setAttribute("aria-pressed", v === boPick ? "true" : "false");
+    }
+  }
+
   function syncFirst(){
     var b = document.getElementById("first").getElementsByTagName("button");
     for (var i = 0; i < b.length; i++) {
       var p = parseInt(b[i].getAttribute("data-first"), 10);
       b[i].textContent = nameOf(p);
+      b[i].style.setProperty("--c", players[p].colour);
       b[i].setAttribute("aria-pressed", p === firstP ? "true" : "false");
     }
   }
 
   function openPre(){
     disarmConcede();
+    boPick = bo;
     syncSetup();
+    syncLen();
     syncFirst();
     setup.setAttribute("data-face", "pre");
     setup.classList.add("open");
@@ -833,6 +856,12 @@
 
   setup.addEventListener("click", function(e){
     var t = e.target;
+    var bl = t.getAttribute && t.getAttribute("data-bo");
+    if (bl) {
+      boPick = parseInt(bl, 10);
+      syncLen();
+      return;
+    }
     var fp = t.getAttribute && t.getAttribute("data-first");
     if (fp) {
       firstP = parseInt(fp, 10);
@@ -842,7 +871,7 @@
     var col = t.getAttribute && t.getAttribute("data-col");
     if (col) {
       players[parseInt(t.getAttribute("data-p"), 10)].colour = col;
-      savePlayers(); syncSetup(); render();
+      savePlayers(); syncSetup(); syncFirst(); render();
       return;
     }
     var cc = t.getAttribute && t.getAttribute("data-concede");
