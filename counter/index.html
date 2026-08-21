@@ -132,6 +132,36 @@
   .sheet .close{min-height:52px;margin-top:10px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
     font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+  .faces{display:flex;border-bottom:1px solid var(--rule);margin-bottom:10px}
+  .faces button{flex:1;min-height:42px;background:none;border:0;border-bottom:2px solid transparent;
+    border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--mono);font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase}
+  .faces button[aria-pressed="true"]{color:var(--bone);border-bottom-color:var(--bone)}
+  .sheet[data-face="now"] #past{display:none}
+  .sheet[data-face="past"] #log{display:none}
+  #past{list-style:none;flex:1;min-height:0;overflow:auto}
+  #past li{border-bottom:1px solid var(--rule);padding:0}
+  #past li.empty{color:var(--mute);border:0;font-size:13px;padding:18px 0;line-height:1.5}
+  .mrow{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;
+    border-radius:0;padding:11px 0;text-align:left;color:var(--bone)}
+  .mline{flex:1;min-width:0}
+  .mtop{display:flex;align-items:baseline;gap:7px;font-size:14px}
+  .mtop b{font-family:var(--mono);font-weight:500}
+  .mtop .w1,.mtop .k1{color:var(--p1)}
+  .mtop .w2,.mtop .k2{color:var(--p2)}
+  .mtop .said{font-weight:500;color:var(--dim);min-width:0;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .msub{margin-top:3px;font-family:var(--mono);font-size:10px;color:var(--mute);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mday{font-family:var(--mono);font-size:10px;color:var(--mute);white-space:nowrap;
+    letter-spacing:.1em}
+  .mbody{display:none;padding:0 0 10px}
+  #past li.open .mbody{display:block}
+  .mbody ol{list-style:none}
+  .clearpast{width:100%;min-height:46px;margin-top:10px;background:none;
+    border:1px solid var(--rule-hi);border-radius:6px;color:var(--mute);
+    font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+  .clearpast.armed{color:#FFB020;border-color:#FFB020}
 
   .win{position:absolute;left:6px;right:6px;bottom:6px;z-index:25;display:none;
     flex-direction:column;gap:10px;padding:12px;border-radius:8px;
@@ -216,9 +246,13 @@
     <button id="logbtn" aria-label="Log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg></button>
     <button id="setupbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 14.6a1.6 1.6 0 0 0 .32 1.77l.06.06a1.94 1.94 0 1 1-2.74 2.74l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47v.17a1.94 1.94 0 0 1-3.88 0v-.09a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a1.94 1.94 0 1 1-2.74-2.74l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97h-.17a1.94 1.94 0 0 1 0-3.88h.09a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a1.94 1.94 0 1 1 2.74-2.74l.06.06a1.6 1.6 0 0 0 1.77.32h.08a1.6 1.6 0 0 0 .97-1.47v-.17a1.94 1.94 0 0 1 3.88 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a1.94 1.94 0 1 1 2.74 2.74l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97h.17a1.94 1.94 0 0 1 0 3.88h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg></button>
   </div>
-  <div class="sheet" id="sheet">
-    <h2>Every point, in order</h2>
+  <div class="sheet" id="sheet" data-face="now">
+    <div class="faces" id="faces" role="group" aria-label="History">
+      <button data-face="now" aria-pressed="true">This game</button>
+      <button data-face="past" aria-pressed="false">Past matches</button>
+    </div>
     <ol id="log"></ol>
+    <ul id="past"></ul>
     <button class="close" id="closelog">Back to the game</button>
   </div>
   <div class="win"><b id="wintext">Player 1 wins</b><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
@@ -274,6 +308,9 @@
   var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
   var KEY = { conquer:"C", hold:"H", other:"O" };
   var PKEY = "vir.counter.players.v1";
+  var HKEY = "vir.counter.history.v1";
+  var HMAX = 50;
+  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var SWATCH = ["#3FA9F5","#FF4F9A","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
   var LEGENDS = ["","Annie","Ashe","Braum","Caitlyn","Darius","Diana","Ekko","Ezreal","Garen",
     "Jinx","Kai'Sa","Karma","Katarina","Lee Sin","Leona","Lucian","Lux","Master Yi","Miss Fortune",
@@ -291,8 +328,10 @@
   var elWin = document.getElementById("wintext");
   var elLog = document.getElementById("log");
   var sheet = document.getElementById("sheet");
+  var elPast = document.getElementById("past");
 
   var ev = null;
+  var history = [];
   var mode = "focus";
   var wake = null;
   var firstP = 1;
@@ -335,6 +374,36 @@
       if (MODES.indexOf(m) >= 0) { return m; }
     } catch (e) {}
     return "focus";
+  }
+
+  function loadHistory(){
+    try {
+      var raw = localStorage.getItem(HKEY);
+      if (!raw) { return []; }
+      var a = JSON.parse(raw);
+      if (!a || !a.length) { return []; }
+      var out = [];
+      for (var i = 0; i < a.length; i++) {
+        var m = a[i];
+        if (m && m.v === 1 && m.games && m.games.length && m.games[0] &&
+            m.games[0].ev && m.games[0].ev.length) { out.push(m); }
+      }
+      return out;
+    } catch (e) { return []; }
+  }
+
+  function saveHistory(){
+    try { localStorage.setItem(HKEY, JSON.stringify(history)); } catch (e) {}
+  }
+
+  function archive(){
+    var w = won();
+    if (!w) { return; }
+    var snap = { 1:{ name:players[1].name, legend:players[1].legend, colour:players[1].colour },
+                 2:{ name:players[2].name, legend:players[2].legend, colour:players[2].colour } };
+    history.unshift({ v:1, at:Date.now(), games:[ { ev:ev.slice(), p:snap } ] });
+    while (history.length > HMAX) { history.pop(); }
+    saveHistory();
   }
 
   function pointsOf(p){
@@ -427,6 +496,48 @@
     return out;
   }
 
+  function statsOf(list){
+    var s = { 1:0, 2:0, turns:0, conceded:0, first:1, src:{ conquer:0, hold:0, other:0 } };
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e.t === "point") { s[e.p]++; if (s.src[e.src] !== undefined) { s.src[e.src]++; } }
+      else if (e.t === "turn") { s.turns++; }
+      else if (e.t === "concede") { s.conceded = e.p; }
+    }
+    if (list.length && list[0].t === "turn") { s.first = list[0].p; }
+    return s;
+  }
+
+  function stamp(ms){
+    var d = new Date(ms);
+    return MON[d.getMonth()].toUpperCase() + " " + d.getDate();
+  }
+
+  function renderPast(){
+    if (!history.length) {
+      elPast.innerHTML = "<li class=\"empty\">No finished matches yet. A match is saved here when you start the next one.</li>";
+      return;
+    }
+    var out = "";
+    for (var i = 0; i < history.length; i++) {
+      var m = history[i], g = m.games[0], nm = function(pp){ return g.p[pp].name || ("Player " + pp); };
+      var s = statsOf(g.ev);
+      var w = s.conceded ? (s.conceded === 1 ? 2 : 1) : (s[1] >= GOAL ? 1 : (s[2] >= GOAL ? 2 : 0));
+      var said = w ? esc(nm(w)) + " beat " + esc(nm(w === 1 ? 2 : 1)) : "Unfinished";
+      var legs = esc(g.p[1].legend || "No legend") + " v " + esc(g.p[2].legend || "No legend");
+      var tail = s.conceded ? "conceded" : s.turns + " turns";
+      out += "<li data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
+        "<span class=\"mline\">" +
+          "<span class=\"mtop\"><b class=\"k1\">" + s[1] + "</b><b>v</b><b class=\"k2\">" + s[2] +
+          "</b><span class=\"said w" + (w || 1) + "\">" + said + "</span></span>" +
+          "<span class=\"msub\">" + legs + " &middot; " + esc(nm(s.first)) + " went first &middot; " + tail + "</span>" +
+        "</span><span class=\"mday\">" + stamp(m.at) + "</span></button>" +
+        "<div class=\"mbody\"><ol>" + logHTML(g.ev, nm) + "</ol></div></li>";
+    }
+    out += "<li class=\"empty\" style=\"padding:0\"><button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button></li>";
+    elPast.innerHTML = out;
+  }
+
   function render(){
     var c = ctx(), w = won();
     stage.setAttribute("data-mode", mode);
@@ -464,7 +575,9 @@
   }
 
   function startNew(){
+    archive();
     ev = fresh(firstP);
+    renderPast();
     save();
     render();
   }
@@ -509,11 +622,62 @@
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
   elReset.addEventListener("click", function(){ openPre(); });
-  document.getElementById("logbtn").addEventListener("click", function(){ sheet.classList.add("open"); });
-  document.getElementById("closelog").addEventListener("click", function(){ sheet.classList.remove("open"); });
-  document.getElementById("winlog").addEventListener("click", function(){
+  var clearArmed = false, clearTimer = null;
+  function disarmClear(){
+    clearArmed = false;
+    if (clearTimer) { clearTimeout(clearTimer); clearTimer = null; }
+    var b = document.getElementById("clearpast");
+    if (b) { b.className = "clearpast"; b.textContent = "Delete all past matches"; }
+  }
+  function openSheet(){
+    disarmClear();
+    sheet.setAttribute("data-face", "now");
+    var fb = document.getElementById("faces").getElementsByTagName("button");
+    for (var i = 0; i < fb.length; i++) {
+      fb[i].setAttribute("aria-pressed", fb[i].getAttribute("data-face") === "now" ? "true" : "false");
+    }
+    renderPast();
     sheet.classList.add("open");
+  }
+  document.getElementById("faces").addEventListener("click", function(e){
+    var f = e.target.getAttribute && e.target.getAttribute("data-face");
+    if (!f) { return; }
+    disarmClear();
+    sheet.setAttribute("data-face", f);
+    var b = this.getElementsByTagName("button");
+    for (var i = 0; i < b.length; i++) {
+      b[i].setAttribute("aria-pressed", b[i].getAttribute("data-face") === f ? "true" : "false");
+    }
   });
+  elPast.addEventListener("click", function(e){
+    var t = e.target;
+    while (t && t !== elPast && t.tagName !== "BUTTON") { t = t.parentNode; }
+    if (!t || t === elPast) { return; }
+    if (t.id === "clearpast") {
+      if (!clearArmed) {
+        clearArmed = true;
+        t.className = "clearpast armed";
+        t.textContent = "Sure? Tap again";
+        clearTimer = setTimeout(disarmClear, 3000);
+        return;
+      }
+      disarmClear();
+      history = [];
+      saveHistory();
+      renderPast();
+      return;
+    }
+    var mi = t.getAttribute("data-m");
+    if (mi === null) { return; }
+    var li = t.parentNode;
+    if (li.className === "open") { li.className = ""; } else { li.className = "open"; }
+  });
+  document.getElementById("logbtn").addEventListener("click", openSheet);
+  document.getElementById("closelog").addEventListener("click", function(){
+    disarmClear();
+    sheet.classList.remove("open");
+  });
+  document.getElementById("winlog").addEventListener("click", openSheet);
   document.getElementById("again").addEventListener("click", function(){ openPre(); });
   document.getElementById("unwin").addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }
@@ -665,8 +829,10 @@
 
   mode = loadMode();
   loadPlayers();
+  history = loadHistory();
   ev = load() || fresh();
   buildSetup();
+  renderPast();
   render();
 })();
 </script>
