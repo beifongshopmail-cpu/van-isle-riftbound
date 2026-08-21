@@ -118,7 +118,7 @@
   }
   @media (prefers-reduced-motion:reduce){ .seam.flash{animation:none} }
 
-  .sheet{position:absolute;inset:0;background:rgba(0,0,0,.95);z-index:30;display:none;
+  .sheet{position:absolute;inset:0;background:#000;z-index:30;display:none;
     flex-direction:column;padding:12px}
   .sheet.open{display:flex}
   .sheet h2{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
@@ -639,7 +639,8 @@
         : "<b class=\"k1\">" + s0[1] + "</b><b>v</b><b class=\"k2\">" + s0[2] + "</b>";
       var opener = multi ? "best of 3" : esc(nm(s0.first)) + " went first";
       out += "<li data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
-        "<span class=\"mline\">" + lead +
+        "<span class=\"mline\">" +
+          "<span class=\"mtop\">" + lead +
           "<span class=\"said w" + (w || 1) + "\">" + said + "</span></span>" +
           "<span class=\"msub\">" + legs + " &middot; " + opener + " &middot; " + tail + "</span>" +
         "</span><span class=\"mday\">" + stamp(m.at) + "</span></button>" +
