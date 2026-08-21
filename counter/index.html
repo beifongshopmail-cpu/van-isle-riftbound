@@ -310,6 +310,7 @@
   var PKEY = "vir.counter.players.v1";
   var HKEY = "vir.counter.history.v1";
   var HMAX = 50;
+  var CKEY = "vir.counter.match.v1";
   var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var SWATCH = ["#3FA9F5","#FF4F9A","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
   var LEGENDS = ["","Annie","Ashe","Braum","Caitlyn","Darius","Diana","Ekko","Ezreal","Garen",
@@ -335,6 +336,8 @@
   var mode = "focus";
   var wake = null;
   var firstP = 1;
+  var bo = 1;
+  var banked = [];
 
   function fresh(p){ return [ { t:"turn", p:(p === 2 ? 2 : 1), n:1 } ]; }
 
@@ -396,14 +399,65 @@
     try { localStorage.setItem(HKEY, JSON.stringify(history)); } catch (e) {}
   }
 
+  function loadMatch(){
+    try {
+      var raw = localStorage.getItem(CKEY);
+      if (!raw) { return; }
+      var m = JSON.parse(raw);
+      if (!m || m.v !== 1) { return; }
+      if (m.bo === 3) { bo = 3; }
+      if (m.games && m.games.length) {
+        var out = [];
+        for (var i = 0; i < m.games.length; i++) {
+          var g = m.games[i];
+          if (g && g.ev && g.ev.length && g.p) { out.push(g); }
+        }
+        banked = out;
+      }
+    } catch (e) {}
+  }
+
+  function saveMatch(){
+    try { localStorage.setItem(CKEY, JSON.stringify({ v:1, bo:bo, games:banked })); } catch (e) {}
+  }
+
+  function snap(){
+    return { 1:{ name:players[1].name, legend:players[1].legend, colour:players[1].colour },
+             2:{ name:players[2].name, legend:players[2].legend, colour:players[2].colour } };
+  }
+
   function archive(){
     var w = won();
     if (!w) { return; }
-    var snap = { 1:{ name:players[1].name, legend:players[1].legend, colour:players[1].colour },
-                 2:{ name:players[2].name, legend:players[2].legend, colour:players[2].colour } };
-    history.unshift({ v:1, at:Date.now(), games:[ { ev:ev.slice(), p:snap } ] });
+    history.unshift({ v:1, at:Date.now(), games:[ { ev:ev.slice(), p:snap() } ] });
     while (history.length > HMAX) { history.pop(); }
     saveHistory();
+  }
+
+  function bankGame(){
+    banked.push({ ev:ev.slice(), p:snap() });
+    saveMatch();
+  }
+
+  function gameWins(p){
+    var c = 0;
+    for (var i = 0; i < banked.length; i++) {
+      if (winnerOf(banked[i].ev) === p) { c++; }
+    }
+    if (winnerOf(ev) === p) { c++; }
+    return c;
+  }
+
+  function need(){ return bo === 3 ? 2 : 1; }
+
+  function matchWinner(){
+    if (gameWins(1) >= need()) { return 1; }
+    if (gameWins(2) >= need()) { return 2; }
+    return 0;
+  }
+
+  function matchOpen(){
+    return bo === 3 && !matchWinner() && (gameWins(1) + gameWins(2)) > 0;
   }
 
   function pointsOf(p){
@@ -421,14 +475,21 @@
     for (var i = ev.length - 1; i >= 0; i--) { if (ev[i].t === "turn") { return ev[i]; } }
     return { t:"turn", p:1, n:1 };
   }
-  function won(){
-    for (var i = ev.length - 1; i >= 0; i--) {
-      if (ev[i].t === "concede") { return ev[i].p === 1 ? 2 : 1; }
+  function winnerOf(list){
+    for (var i = list.length - 1; i >= 0; i--) {
+      if (list[i].t === "concede") { return list[i].p === 1 ? 2 : 1; }
     }
-    if (score(1) >= GOAL) { return 1; }
-    if (score(2) >= GOAL) { return 2; }
+    var s1 = 0, s2 = 0;
+    for (var j = 0; j < list.length; j++) {
+      if (list[j].t === "point") {
+        if (list[j].p === 1) { s1++; } else if (list[j].p === 2) { s2++; }
+      }
+    }
+    if (s1 >= GOAL) { return 1; }
+    if (s2 >= GOAL) { return 2; }
     return 0;
   }
+  function won(){ return winnerOf(ev); }
 
   function trackOf(p){
     var pts = pointsOf(p), segs = "", keys = "";
@@ -830,6 +891,7 @@
   mode = loadMode();
   loadPlayers();
   history = loadHistory();
+  loadMatch();
   ev = load() || fresh();
   buildSetup();
   renderPast();
