@@ -237,7 +237,10 @@
   .win[data-next="0"] .nextbox{display:none}
   .win .nlab{font-family:var(--mono);font-size:9px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--dim);text-align:center}
-  .win .nextbox button{border-bottom-color:var(--c)}
+  .win .nextbox button{border-bottom-color:var(--c);display:flex;
+    align-items:center;justify-content:center;gap:.5ch}
+  .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .win .nsuf{flex:0 0 auto}
   .win .armed{color:#FFB020;border-bottom-color:#FFB020}
 </style>
 </head>
@@ -769,7 +772,8 @@
     var b = document.getElementById("nextrow").getElementsByTagName("button");
     for (var i = 0; i < b.length; i++) {
       var p = parseInt(b[i].getAttribute("data-open"), 10);
-      b[i].textContent = nameOf(p) + " first";
+      b[i].innerHTML = "<span class=\"nnm\">" + esc(nameOf(p)) +
+        "</span><span class=\"nsuf\">first</span>";
       b[i].style.setProperty("--c", players[p].colour);
     }
   }
