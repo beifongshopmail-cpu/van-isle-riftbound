@@ -129,6 +129,11 @@
     font-variant-numeric:tabular-nums}
   .tmv.tmfar{transform:rotate(180deg)}
   .tmv.tmover{color:var(--over)}
+  #tmwin{font-family:var(--mono);font-size:12px;font-weight:500;
+    letter-spacing:.04em;color:var(--dim);font-variant-numeric:tabular-nums;
+    padding:2px 0 10px}
+  #tmwin.tmover{color:var(--over)}
+  #tmwin:empty{display:none}
   .tmm{flex:2;display:flex;align-items:center;padding:0 12px;min-height:46px;
     border:1px solid var(--rule);border-radius:6px;font-family:var(--mono);
     font-size:16px;letter-spacing:.04em;color:var(--bone);
@@ -308,7 +313,7 @@
     <ul id="past"></ul>
     <button class="close" id="closelog">Back to the game</button>
   </div>
-  <div class="win" id="win" data-next="0"><b id="wintext">Player 1 wins</b><div class="nextbox"><span class="nlab">Next game - who goes first</span><div class="winrow" id="nextrow"><button data-open="1">Player 1 first</button><button data-open="2">Player 2 first</button></div></div><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
+  <div class="win" id="win" data-next="0"><b id="wintext">Player 1 wins</b><div id="tmwin"></div><div class="nextbox"><span class="nlab">Next game - who goes first</span><div class="winrow" id="nextrow"><button data-open="1">Player 1 first</button><button data-open="2">Player 2 first</button></div></div><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
   <div class="setup" id="setup" data-face="live">
     <button class="done top" id="setupdone" data-face="live">Back to the game</button>
     <h2 data-face="pre">Before the match</h2>
@@ -406,6 +411,14 @@
     return "<div class=\"tmv" + (far ? " tmfar" : "") + (ms <= 0 ? " tmover" : "") + "\">"
       + fmtClock(ms) + "</div>";
   }
+  function tmWin(){
+    var el = document.getElementById("tmwin");
+    if(!el) return;
+    var ms = tmMs();
+    if(ms === null){ el.textContent = ""; el.className = ""; return; }
+    el.textContent = fmtClock(ms) + (ms <= 0 ? " over time" : " left in the round");
+    el.className = ms <= 0 ? "tmover" : "";
+  }
   function timerTick(){
     var ms = tmMs();
     if(ms === null){ if(tmInt){ clearInterval(tmInt); tmInt = null; } return; }
@@ -420,6 +433,7 @@
       b[i].textContent = txt;
       if(over){ b[i].classList.add("tmover"); } else { b[i].classList.remove("tmover"); }
     }
+    tmWin();
   }
   function tmRun(){ if(!tmInt) tmInt = setInterval(timerTick, 1000); }
   function renderTimerRow(){
@@ -799,6 +813,7 @@
     field.style.transform = (mode === "pass" && c.p === 2) ? "rotate(180deg)" : "none";
 
     elLog.innerHTML = logHTML(ev, nameOf);
+    tmWin();
   }
 
   function keepAwake(){
