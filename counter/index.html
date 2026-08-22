@@ -153,9 +153,9 @@
     border-radius:0;padding:13px 0;text-align:left;color:var(--bone)}
   .res{flex:0 0 42px;font-family:var(--mono);font-weight:500;font-size:11px;
     letter-spacing:.14em;text-transform:uppercase}
-  .res.win{color:var(--p1)}
-  .res.loss{color:var(--p2)}
-  .res.dnf{color:var(--mute)}
+  .res.rwin{color:var(--p1)}
+  .res.rloss{color:var(--p2)}
+  .res.rdnf{color:var(--mute)}
   .sco{flex:0 0 52px;display:flex;align-items:baseline;gap:2px;
     font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em}
   .sco .s1{color:var(--p1)}
@@ -646,7 +646,7 @@
       var s0 = statsOf(g0.ev);
       var w = multi ? (gw1 > gw2 ? 1 : (gw2 > gw1 ? 2 : 0)) : winnerOf(g0.ev);
       var lf = multi ? gw1 : s0[1], rt = multi ? gw2 : s0[2];
-      var rc = w === 1 ? "win" : (w === 2 ? "loss" : "dnf");
+      var rc = w === 1 ? "rwin" : (w === 2 ? "rloss" : "rdnf");
       var rl = w === 1 ? "Win" : (w === 2 ? "Loss" : "DNF");
       var legs = esc(g0.p[1].legend || "No legend") + " vs " +
                  esc(g0.p[2].legend || "No legend");
