@@ -129,11 +129,11 @@
     font-variant-numeric:tabular-nums}
   .tmv.tmfar{transform:rotate(180deg)}
   .tmv.tmover{color:var(--over)}
-  .tmm{flex:2;display:flex;align-items:center;padding:0 12px;min-height:46px;
-    border:1px solid var(--rule);border-radius:6px;font-family:var(--mono);
-    font-size:16px;letter-spacing:.04em;color:var(--bone);
-    font-variant-numeric:tabular-nums}
-  .tmm.tmover{color:var(--over)}
+  #tmnow{font-family:var(--mono);font-size:13px;font-weight:500;
+    letter-spacing:.04em;color:var(--dim);font-variant-numeric:tabular-nums;
+    margin-bottom:8px}
+  #tmnow.tmover{color:var(--over)}
+  #tmnow:empty{display:none}
   .tmr{display:flex;gap:8px}
 
   .sheet{position:absolute;inset:0;background:#000;z-index:30;display:none;
@@ -349,6 +349,7 @@
     </div>
     <div class="grp">
       <label>Round timer</label>
+      <div id="tmnow"></div>
       <div class="first tmr" id="tmrow"></div>
     </div>
     <div class="grp" data-face="live">
@@ -415,29 +416,34 @@
       a[i].textContent = txt;
       if(over){ a[i].classList.add("tmover"); } else { a[i].classList.remove("tmover"); }
     }
-    var b = document.querySelectorAll(".tmm");
-    for(i = 0; i < b.length; i++){
-      b[i].textContent = txt;
-      if(over){ b[i].classList.add("tmover"); } else { b[i].classList.remove("tmover"); }
+    var n = document.getElementById("tmnow");
+    if(n && n.textContent !== ""){
+      n.textContent = txt + (over ? " over time" : " left");
+      n.className = over ? "tmover" : "";
     }
   }
   function tmRun(){ if(!tmInt) tmInt = setInterval(timerTick, 1000); }
   function renderTimerRow(){
-    var el = document.getElementById("tmrow");
+    var el = document.getElementById("tmrow"), now = document.getElementById("tmnow");
     if(!el) return;
-    var ms = tmMs();
-    if(ms === null){
-      el.innerHTML = "<button type=\"button\" data-min=\"30\">30</button>"
-        + "<button type=\"button\" data-min=\"50\">50</button>"
-        + "<button type=\"button\" data-min=\"60\">60</button>";
-    } else {
-      el.innerHTML = "<span class=\"tmm" + (ms <= 0 ? " tmover" : "") + "\">"
-        + fmtClock(ms) + "</span>"
-        + "<button type=\"button\" id=\"tmstop\">Stop</button>";
+    var t = loadTimer(), ms = tmMs(), mins = [30, 50, 60], h = "", i, sel;
+    for(i = 0; i < mins.length; i++){
+      sel = (t && t.min === mins[i]) ? "true" : "false";
+      h += "<button type=\"button\" data-min=\"" + mins[i] + "\" aria-pressed=\"" + sel + "\">"
+        + mins[i] + "</button>";
+    }
+    if(ms !== null){ h += "<button type=\"button\" id=\"tmstop\">Stop</button>"; }
+    el.innerHTML = h;
+    if(now){
+      if(ms === null){ now.textContent = ""; now.className = ""; }
+      else {
+        now.textContent = fmtClock(ms) + (ms <= 0 ? " over time" : " left");
+        now.className = ms <= 0 ? "tmover" : "";
+      }
     }
   }
   function startTimer(min){
-    saveTimer({ end: Date.now() + min*60000 });
+    saveTimer({ end: Date.now() + min*60000, min: min });
     renderTimerRow(); render(); tmRun();
   }
   function stopTimer(){
@@ -1036,6 +1042,7 @@
   }
 
   function openPre(){
+    stopTimer();
     disarmConcede();
     boPick = bo;
     syncSetup();
