@@ -644,7 +644,7 @@
         body += "<ol>" + logHTML(gj.ev, nm) + "</ol>";
       }
       var s0 = statsOf(g0.ev);
-      var w = multi ? (gw1 > gw2 ? 1 : (gw2 > gw1 ? 2 : 0)) : winnerOf(g0.ev);
+      var w = multi ? (gw1 >= 2 ? 1 : (gw2 >= 2 ? 2 : 0)) : winnerOf(g0.ev);
       var lf = multi ? gw1 : s0[1], rt = multi ? gw2 : s0[2];
       var rc = w === 1 ? "rwin" : (w === 2 ? "rloss" : "rdnf");
       var rl = w === 1 ? "Win" : (w === 2 ? "Loss" : "DNF");
