@@ -19,6 +19,7 @@
     --rule-hi:#343A44;
     --p1:#3FA9F5;
     --p2:#FF4F9A;
+    --over:#FF453A;
     --display:"Archivo",system-ui,sans-serif;
     --body:"IBM Plex Sans",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -107,7 +108,7 @@
   .seamwrap{flex:0 0 auto;padding:8px 0}
   .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
     color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.1em;
-    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0}
+    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0;position:relative}
   .seam em{font-family:var(--display);font-style:normal;font-weight:800;font-size:14px;
     letter-spacing:.1em;color:color-mix(in srgb, var(--bone) 45%, var(--dim));
     border-left:1px solid var(--rule-hi);padding-left:14px;margin-left:14px;
@@ -123,6 +124,16 @@
     100%{background:none;border-color:var(--rule-hi)}
   }
   @media (prefers-reduced-motion:reduce){ .seam.flash{animation:none} }
+  .tmv{position:absolute;right:12px;font-family:var(--mono);font-size:12px;
+    font-weight:500;letter-spacing:.04em;text-transform:none;color:var(--dim);
+    font-variant-numeric:tabular-nums}
+  .tmv.tmover{color:var(--over)}
+  .tmm{flex:2;display:flex;align-items:center;padding:0 12px;min-height:46px;
+    border:1px solid var(--rule);border-radius:6px;font-family:var(--mono);
+    font-size:16px;letter-spacing:.04em;color:var(--bone);
+    font-variant-numeric:tabular-nums}
+  .tmm.tmover{color:var(--over)}
+  .tmr{display:flex;gap:8px}
 
   .sheet{position:absolute;inset:0;background:#000;z-index:30;display:none;
     flex-direction:column;padding:12px}
@@ -202,7 +213,7 @@
   .legend::before{content:"|";margin:0 7px;color:var(--rule-hi)}
   .side[data-role="minor"] .legend{display:none}
   .setup{position:absolute;inset:0;background:#000;z-index:40;display:none;
-    flex-direction:column;padding:12px;overflow:hidden}
+    flex-direction:column;padding:12px;overflow-y:auto}
   .setup.open{display:flex}
   .setup h2{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.14em;
     text-transform:uppercase;margin-bottom:14px}
@@ -336,6 +347,10 @@
       </div>
     </div>
     <div class="grp" data-face="live">
+      <label>Round timer</label>
+      <div class="first tmr" id="tmrow"></div>
+    </div>
+    <div class="grp" data-face="live">
       <button class="wide" id="reset">New match</button>
       <a class="home" href="/van-isle-riftbound/">Events calendar</a>
     </div>
@@ -357,6 +372,72 @@
   var HKEY = "vir.counter.history.v1";
   var HMAX = 50;
   var CKEY = "vir.counter.match.v1";
+  var TKEY = "vir.counter.timer.v1";
+  var tmInt = null;
+
+  function loadTimer(){
+    try{
+      var r = localStorage.getItem(TKEY);
+      if(!r) return null;
+      var o = JSON.parse(r);
+      return (o && typeof o.end === "number") ? o : null;
+    }catch(e){ return null; }
+  }
+  function saveTimer(o){ try{ localStorage.setItem(TKEY, JSON.stringify(o)); }catch(e){} }
+  function clearTimer(){ try{ localStorage.removeItem(TKEY); }catch(e){} }
+
+  function tmMs(){
+    var t = loadTimer();
+    if(!t) return null;
+    var ms = t.end - Date.now();
+    if(ms < -900000) ms = -900000;
+    return ms;
+  }
+  function fmtClock(ms){
+    if(ms > -1000 && ms < 0) ms = 0;
+    var neg = ms < 0, s = Math.floor(Math.abs(ms)/1000), m = Math.floor(s/60);
+    s = s - m*60;
+    return (neg ? "-" : "") + m + ":" + (s < 10 ? "0" + s : s);
+  }
+  function tmHTML(){
+    var ms = tmMs();
+    if(ms === null) return "";
+    return "<span class=\"tmv" + (ms <= 0 ? " tmover" : "") + "\" id=\"tmv\">"
+      + fmtClock(ms) + "</span>";
+  }
+  function timerTick(){
+    var ms = tmMs();
+    if(ms === null){ if(tmInt){ clearInterval(tmInt); tmInt = null; } return; }
+    var txt = fmtClock(ms), over = ms <= 0;
+    var a = document.getElementById("tmv");
+    if(a){ a.textContent = txt; a.className = over ? "tmv tmover" : "tmv"; }
+    var b = document.getElementById("tmm");
+    if(b){ b.textContent = txt; b.className = over ? "tmm tmover" : "tmm"; }
+  }
+  function tmRun(){ if(!tmInt) tmInt = setInterval(timerTick, 1000); }
+  function renderTimerRow(){
+    var el = document.getElementById("tmrow");
+    if(!el) return;
+    var ms = tmMs();
+    if(ms === null){
+      el.innerHTML = "<button type=\"button\" data-min=\"30\">30</button>"
+        + "<button type=\"button\" data-min=\"50\">50</button>"
+        + "<button type=\"button\" data-min=\"60\">60</button>";
+    } else {
+      el.innerHTML = "<span class=\"tmm" + (ms <= 0 ? " tmover" : "") + "\" id=\"tmm\">"
+        + fmtClock(ms) + "</span>"
+        + "<button type=\"button\" id=\"tmstop\">Stop</button>";
+    }
+  }
+  function startTimer(min){
+    saveTimer({ end: Date.now() + min*60000 });
+    renderTimerRow(); render(); tmRun();
+  }
+  function stopTimer(){
+    clearTimer();
+    if(tmInt){ clearInterval(tmInt); tmInt = null; }
+    renderTimerRow(); render();
+  }
   var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var SWATCH = ["#3FA9F5","#FF4F9A","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
   var LEGENDS = ["","Annie","Ashe","Braum","Caitlyn","Darius","Diana","Ekko","Ezreal","Garen",
@@ -582,7 +663,7 @@
     var c = ctx(), d = won() ? " disabled" : "";
     return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d +
       " style=\"--sc:" + players[c.p].colour + "\">Pass turn" +
-      "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
+      "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em>" + tmHTML() + "</button></div>";
   }
 
   function logHTML(list, nm){
@@ -1037,6 +1118,13 @@
     startNew();
     closeSetup();
   });
+  document.getElementById("tmrow").addEventListener("click", function(e){
+    var b = e.target.closest("button");
+    if(!b) return;
+    if(b.id === "tmstop"){ stopTimer(); return; }
+    var m = b.getAttribute("data-min");
+    if(m){ startTimer(parseInt(m, 10)); }
+  });
 
   mode = loadMode();
   loadPlayers();
@@ -1046,6 +1134,8 @@
   buildSetup();
   renderPast();
   render();
+  renderTimerRow();
+  if(tmMs() !== null) tmRun();
 })();
 </script>
 </body>
