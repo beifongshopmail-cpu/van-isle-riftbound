@@ -108,7 +108,7 @@
   .seamwrap{flex:0 0 auto;padding:8px 0}
   .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
     color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.1em;
-    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0;position:relative}
+    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0}
   .seam em{font-family:var(--display);font-style:normal;font-weight:800;font-size:14px;
     letter-spacing:.1em;color:color-mix(in srgb, var(--bone) 45%, var(--dim));
     border-left:1px solid var(--rule-hi);padding-left:14px;margin-left:14px;
@@ -124,9 +124,10 @@
     100%{background:none;border-color:var(--rule-hi)}
   }
   @media (prefers-reduced-motion:reduce){ .seam.flash{animation:none} }
-  .tmv{position:absolute;right:12px;font-family:var(--mono);font-size:12px;
-    font-weight:500;letter-spacing:.04em;text-transform:none;color:var(--dim);
+  .tmv{flex:0 0 auto;text-align:center;padding:2px 0 6px;font-family:var(--mono);
+    font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--dim);
     font-variant-numeric:tabular-nums}
+  .tmv.tmfar{transform:rotate(180deg)}
   .tmv.tmover{color:var(--over)}
   .tmm{flex:2;display:flex;align-items:center;padding:0 12px;min-height:46px;
     border:1px solid var(--rule);border-radius:6px;font-family:var(--mono);
@@ -384,7 +385,7 @@
     }catch(e){ return null; }
   }
   function saveTimer(o){ try{ localStorage.setItem(TKEY, JSON.stringify(o)); }catch(e){} }
-  function clearTimer(){ try{ localStorage.removeItem(TKEY); }catch(e){} }
+  function tmClear(){ try{ localStorage.removeItem(TKEY); }catch(e){} }
 
   function tmMs(){
     var t = loadTimer();
@@ -399,20 +400,26 @@
     s = s - m*60;
     return (neg ? "-" : "") + m + ":" + (s < 10 ? "0" + s : s);
   }
-  function tmHTML(){
+  function tmLine(far){
     var ms = tmMs();
     if(ms === null) return "";
-    return "<span class=\"tmv" + (ms <= 0 ? " tmover" : "") + "\" id=\"tmv\">"
-      + fmtClock(ms) + "</span>";
+    return "<div class=\"tmv" + (far ? " tmfar" : "") + (ms <= 0 ? " tmover" : "") + "\">"
+      + fmtClock(ms) + "</div>";
   }
   function timerTick(){
     var ms = tmMs();
     if(ms === null){ if(tmInt){ clearInterval(tmInt); tmInt = null; } return; }
-    var txt = fmtClock(ms), over = ms <= 0;
-    var a = document.getElementById("tmv");
-    if(a){ a.textContent = txt; a.className = over ? "tmv tmover" : "tmv"; }
-    var b = document.getElementById("tmm");
-    if(b){ b.textContent = txt; b.className = over ? "tmm tmover" : "tmm"; }
+    var txt = fmtClock(ms), over = ms <= 0, i;
+    var a = document.querySelectorAll(".tmv");
+    for(i = 0; i < a.length; i++){
+      a[i].textContent = txt;
+      if(over){ a[i].classList.add("tmover"); } else { a[i].classList.remove("tmover"); }
+    }
+    var b = document.querySelectorAll(".tmm");
+    for(i = 0; i < b.length; i++){
+      b[i].textContent = txt;
+      if(over){ b[i].classList.add("tmover"); } else { b[i].classList.remove("tmover"); }
+    }
   }
   function tmRun(){ if(!tmInt) tmInt = setInterval(timerTick, 1000); }
   function renderTimerRow(){
@@ -424,7 +431,7 @@
         + "<button type=\"button\" data-min=\"50\">50</button>"
         + "<button type=\"button\" data-min=\"60\">60</button>";
     } else {
-      el.innerHTML = "<span class=\"tmm" + (ms <= 0 ? " tmover" : "") + "\" id=\"tmm\">"
+      el.innerHTML = "<span class=\"tmm" + (ms <= 0 ? " tmover" : "") + "\">"
         + fmtClock(ms) + "</span>"
         + "<button type=\"button\" id=\"tmstop\">Stop</button>";
     }
@@ -434,7 +441,7 @@
     renderTimerRow(); render(); tmRun();
   }
   function stopTimer(){
-    clearTimer();
+    tmClear();
     if(tmInt){ clearInterval(tmInt); tmInt = null; }
     renderTimerRow(); render();
   }
@@ -663,7 +670,7 @@
     var c = ctx(), d = won() ? " disabled" : "";
     return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d +
       " style=\"--sc:" + players[c.p].colour + "\">Pass turn" +
-      "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em>" + tmHTML() + "</button></div>";
+      "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
   }
 
   function logHTML(list, nm){
@@ -788,7 +795,7 @@
       top = block(b, "minor"); bot = block(a, "major");
     } else { top = block(2, "minor"); bot = block(1, "major"); }
 
-    field.innerHTML = top + seam() + bot;
+    field.innerHTML = top + (mode === "split" ? tmLine(true) : "") + seam() + tmLine(false) + bot;
     field.style.transform = (mode === "pass" && c.p === 2) ? "rotate(180deg)" : "none";
 
     elLog.innerHTML = logHTML(ev, nameOf);
