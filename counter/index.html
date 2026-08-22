@@ -287,6 +287,36 @@
   .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .win .nsuf{flex:0 0 auto}
   .win .armed{color:#FFB020;border-bottom-color:#FFB020}
+.lgpbtn{flex:1;min-width:0;min-height:42px;background:#0A0B0E;color:var(--bone);
+  border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
+  font-family:var(--body);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
+.lgp.open{display:flex}
+.lgphead{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 9px;
+  border-bottom:1px solid var(--rule)}
+.lgpt{flex:1;min-width:0;font-family:var(--display);font-weight:800;font-size:13px;
+  letter-spacing:.12em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lgpx{flex:0 0 auto;min-height:38px;background:none;color:var(--bone);
+  border:1px solid var(--rule-hi);border-radius:6px;padding:0 12px;
+  font-family:var(--body);font-size:12px;font-weight:600}
+.lgpgrid{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding:12px}
+.lgptile{background:none;border:0;padding:0;color:var(--bone);text-align:center}
+.lgppic{width:100%;aspect-ratio:62/87;border-radius:5px;border:1px solid var(--rule);
+  background:#0E0F11 center/cover no-repeat}
+.lgptile[aria-pressed="true"] .lgppic{border-color:var(--bone);box-shadow:0 0 0 2px var(--bone)}
+.lgpn{font-family:var(--body);font-weight:600;font-size:10px;line-height:1.15;margin-top:5px}
+.lgpsub{font-family:var(--body);font-size:9px;line-height:1.15;color:var(--dim);margin-top:1px}
+.lgppr{flex:0 0 auto;border-top:1px solid var(--rule);padding:10px 12px 16px;display:none}
+.lgppr.on{display:block}
+.lgpprh{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.lgpchips{display:flex;flex-wrap:wrap;gap:6px}
+.lgpchip{background:#0A0B0E;border:1px solid var(--rule);border-radius:6px;color:var(--mute);
+  padding:8px 10px;font-family:var(--body);font-size:11px;font-weight:500}
+.lgpchip[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
+.lgpna{font-family:var(--mono);font-size:9px;color:var(--dim);margin-left:6px}
+.lgpchip[aria-pressed="true"] .lgpna{color:#555}
 </style>
 </head>
 <body>
@@ -327,7 +357,7 @@
       <label>Player 1</label>
       <div class="pair">
         <input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name">
-        <select id="l1"></select>
+        <button type="button" class="lgpbtn" id="lgp1" data-lgp="1">No legend</button>
       </div>
       <div class="swatches" id="c1"></div>
     </div>
@@ -335,7 +365,7 @@
       <label>Player 2</label>
       <div class="pair">
         <input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name">
-        <select id="l2"></select>
+        <button type="button" class="lgpbtn" id="lgp2" data-lgp="2">No legend</button>
       </div>
       <div class="swatches" id="c2"></div>
     </div>
@@ -364,6 +394,18 @@
       <button class="start" id="startmatch">Start match</button>
       <button class="done" id="preback">Back to the game</button>
     </section>
+  </div>
+</div>
+<div class="lgp" id="lgpsheet">
+  <div class="lgphead">
+    <div class="lgpt" id="lgptitle">Legend</div>
+    <button type="button" class="lgpx" id="lgpnone">No legend</button>
+    <button type="button" class="lgpx" id="lgpdone">Done</button>
+  </div>
+  <div class="lgpgrid" id="lgpgrid"></div>
+  <div class="lgppr" id="lgppr">
+    <div class="lgpprh" id="lgpprh">Printing</div>
+    <div class="lgpchips" id="lgpchips"></div>
   </div>
 </div>
 <script src="legends.js"></script>
@@ -480,8 +522,8 @@
     if (typeof VIR_LEGENDS === "undefined") { return; }
     for (var i = 0; i < VIR_LEGENDS.length; i++) { LEGENDS.push(VIR_LEGENDS[i].n); }
   })();
-  var players = { 1:{ name:"Player 1", legend:"", colour:"#3FA9F5" },
-                  2:{ name:"Player 2", legend:"", colour:"#FF4F9A" } };
+  var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#3FA9F5" },
+                  2:{ name:"Player 2", legend:"", art:"", colour:"#FF4F9A" } };
   function nameOf(p){ return players[p].name || ("Player " + p); }
 
   var stage = document.getElementById("stage");
@@ -518,6 +560,7 @@
         if (o && o[p]) {
           if (typeof o[p].name === "string") { players[p].name = o[p].name; }
           if (typeof o[p].legend === "string") { players[p].legend = o[p].legend; }
+          if (typeof o[p].art === "string") { players[p].art = o[p].art; }
           if (typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
             players[p].colour = o[p].colour;
           }
@@ -1101,12 +1144,6 @@
 
   function buildSetup(){
     for (var p = 1; p <= 2; p++) {
-      var sel = document.getElementById("l" + p), o = "";
-      for (var i = 0; i < LEGENDS.length; i++) {
-        o += "<option value=\"" + esc(LEGENDS[i]) + "\">" +
-             (LEGENDS[i] ? esc(LEGENDS[i]) : "No legend") + "</option>";
-      }
-      sel.innerHTML = o;
       var sw = document.getElementById("c" + p), h = "";
       for (var j = 0; j < SWATCH.length; j++) {
         h += "<button data-p=\"" + p + "\" data-col=\"" + SWATCH[j] +
@@ -1171,7 +1208,7 @@
     syncConcedeLabels();
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
-      document.getElementById("l" + p).value = players[p].legend;
+      lgpLabel(p);
       var bs = document.getElementById("c" + p).getElementsByTagName("button");
       for (var i = 0; i < bs.length; i++) {
         bs[i].setAttribute("aria-pressed",
@@ -1224,7 +1261,6 @@
     if (!id) { return; }
     var p = parseInt(id.charAt(1), 10);
     if (id.charAt(0) === "n") { players[p].name = e.target.value.slice(0, 14); }
-    else if (id.charAt(0) === "l") { players[p].legend = e.target.value; }
     else { return; }
     savePlayers(); syncConcedeLabels(); syncFirst(); render();
   }
@@ -1238,6 +1274,136 @@
   });
   document.getElementById("setupdone").addEventListener("click", closeSetup);
   document.getElementById("preback").addEventListener("click", closeSetup);
+
+  // Legend picker. players[p].legend stays a plain name string, exactly as
+  // every archived match already stores it. players[p].art holds the product
+  // id of the printing chosen, and is COSMETIC ONLY -- it decides which
+  // picture is shown and nothing else. Records written before this existed
+  // have no art and read correctly. Nothing is added to the history snapshot.
+  var lgpFor = 0;
+
+  function lgpFirstArt(x){
+    for (var i = 0; i < x.v.length; i++) { if (x.v[i].a) { return x.v[i]; } }
+    return null;
+  }
+  function lgpEntry(nm){
+    if (typeof VIR_LEGENDS === "undefined") { return null; }
+    for (var i = 0; i < VIR_LEGENDS.length; i++) {
+      if (VIR_LEGENDS[i].n === nm) { return VIR_LEGENDS[i]; }
+    }
+    return null;
+  }
+  function lgpSplit(n){
+    var i = n.indexOf(",");
+    return i < 0 ? [n, ""] : [n.slice(0, i), n.slice(i + 1).replace(/^\s+/, "")];
+  }
+  function lgpLabel(p){
+    var b = document.getElementById("lgp" + p);
+    if (b) { b.textContent = players[p].legend || "No legend"; }
+  }
+  function lgpBuild(){
+    var g = document.getElementById("lgpgrid"), h = "", i;
+    if (typeof VIR_LEGENDS === "undefined") {
+      g.innerHTML = "";
+      return;
+    }
+    for (i = 0; i < VIR_LEGENDS.length; i++) {
+      var a = lgpFirstArt(VIR_LEGENDS[i]), nm = lgpSplit(VIR_LEGENDS[i].n);
+      h += "<button type=\"button\" class=\"lgptile\" data-lgpi=\"" + i +
+        "\" aria-pressed=\"false\"><span class=\"lgppic\"" +
+        (a ? " style=\"background-image:url(art/" + a.i + ".jpg)\"" : "") +
+        "></span><span class=\"lgpn\">" + esc(nm[0]) +
+        "</span><span class=\"lgpsub\">" + esc(nm[1]) + "</span></button>";
+    }
+    g.innerHTML = h;
+  }
+  function lgpSyncTiles(){
+    var t = document.getElementById("lgpgrid").getElementsByTagName("button"), i;
+    var cur = lgpFor ? players[lgpFor].legend : "";
+    for (i = 0; i < t.length; i++) {
+      var e = VIR_LEGENDS[parseInt(t[i].getAttribute("data-lgpi"), 10)];
+      t[i].setAttribute("aria-pressed", (e && e.n === cur) ? "true" : "false");
+    }
+  }
+  function lgpSyncChips(){
+    var box = document.getElementById("lgppr");
+    var e = lgpFor ? lgpEntry(players[lgpFor].legend) : null;
+    if (!e) { box.className = "lgppr"; return; }
+    box.className = "lgppr on";
+    document.getElementById("lgpprh").textContent =
+      "Printing - " + e.v.length + (e.v.length === 1 ? " available" : " available");
+    var h = "", i;
+    for (i = 0; i < e.v.length; i++) {
+      var v = e.v[i];
+      h += "<button type=\"button\" class=\"lgpchip\" data-lgpv=\"" + i + "\" aria-pressed=\"" +
+        (v.i === players[lgpFor].art ? "true" : "false") + "\">" + esc(v.l) +
+        (v.a ? "" : "<span class=\"lgpna\">no art</span>") + "</button>";
+    }
+    document.getElementById("lgpchips").innerHTML = h;
+    document.getElementById("lgptitle").textContent = e.n;
+  }
+  function lgpOpen(p){
+    lgpFor = p;
+    document.getElementById("lgptitle").textContent = players[p].legend || "Legend";
+    lgpSyncTiles();
+    lgpSyncChips();
+    document.getElementById("lgpsheet").classList.add("open");
+  }
+  function lgpClose(){
+    document.getElementById("lgpsheet").classList.remove("open");
+    lgpFor = 0;
+  }
+  function lgpChoose(nm){
+    if (!lgpFor) { return; }
+    players[lgpFor].legend = nm;
+    var e = lgpEntry(nm), a = e ? lgpFirstArt(e) : null;
+    players[lgpFor].art = a ? a.i : "";
+    savePlayers();
+    lgpLabel(lgpFor);
+    lgpSyncTiles();
+    lgpSyncChips();
+    syncConcedeLabels();
+    syncFirst();
+    render();
+  }
+
+  setup.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-lgp]") : null;
+    if (!b) { return; }
+    lgpOpen(parseInt(b.getAttribute("data-lgp"), 10));
+  });
+  document.getElementById("lgpgrid").addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest(".lgptile") : null;
+    if (!t) { return; }
+    var x = VIR_LEGENDS[parseInt(t.getAttribute("data-lgpi"), 10)];
+    if (x) { lgpChoose(x.n); }
+  });
+  document.getElementById("lgpchips").addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest(".lgpchip") : null;
+    if (!t || !lgpFor) { return; }
+    var en = lgpEntry(players[lgpFor].legend);
+    if (!en) { return; }
+    players[lgpFor].art = en.v[parseInt(t.getAttribute("data-lgpv"), 10)].i;
+    savePlayers();
+    lgpSyncChips();
+    render();
+  });
+  document.getElementById("lgpnone").addEventListener("click", function(){
+    if (!lgpFor) { return; }
+    players[lgpFor].legend = "";
+    players[lgpFor].art = "";
+    savePlayers();
+    lgpLabel(lgpFor);
+    lgpSyncTiles();
+    lgpSyncChips();
+    document.getElementById("lgptitle").textContent = "Legend";
+    syncConcedeLabels();
+    syncFirst();
+    render();
+  });
+  document.getElementById("lgpdone").addEventListener("click", lgpClose);
+  lgpBuild();
+
   document.getElementById("startmatch").addEventListener("click", function(){
     startNew();
     closeSetup();
