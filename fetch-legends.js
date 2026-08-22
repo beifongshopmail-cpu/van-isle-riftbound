@@ -1,0 +1,216 @@
+// fetch-legends.js
+// Pulls the Riftbound legend roster and card art from the TCGCSV mirror of
+// the TCGplayer catalog, writes counter/legends.js, and caches the art under
+// counter/art/. Zero dependencies. Run by hand when a set drops:
+//     node fetch-legends.js
+// This is NOT on cron and has nothing to do with the event fetcher. It never
+// reads or writes data/, index.html, or counter/index.html.
+
+var https = require('https');
+var fs = require('fs');
+var path = require('path');
+
+var CATEGORY = 89;
+var UA = 'VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-isle-riftbound)';
+var BASE = 'https://tcgcsv.com/tcgplayer/' + CATEGORY;
+var CDN = 'https://tcgplayer-cdn.tcgplayer.com/product/';
+var ART_DIR = path.join('counter', 'art');
+var OUT_FILE = path.join('counter', 'legends.js');
+var SLEEP_MS = 200;
+
+function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+function get(url, binary) {
+  return new Promise(function (resolve, reject) {
+    var req = https.get(url, { headers: { 'User-Agent': UA } }, function (res) {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        res.resume();
+        resolve(get(res.headers.location, binary));
+        return;
+      }
+      if (res.statusCode !== 200) {
+        res.resume();
+        reject(new Error('HTTP ' + res.statusCode + ' for ' + url));
+        return;
+      }
+      var chunks = [];
+      res.on('data', function (c) { chunks.push(c); });
+      res.on('end', function () {
+        var buf = Buffer.concat(chunks);
+        if (binary) { resolve(buf); return; }
+        try { resolve(JSON.parse(buf.toString('utf8'))); }
+        catch (e) { reject(new Error('bad JSON from ' + url + ': ' + e.message)); }
+      });
+    });
+    req.on('error', reject);
+    req.setTimeout(30000, function () { req.destroy(new Error('timeout for ' + url)); });
+  });
+}
+
+// A product is a legend when any extendedData value is the literal 'Legend'.
+function isLegend(p) {
+  var ed = p.extendedData || [];
+  for (var i = 0; i < ed.length; i++) {
+    if (ed[i].value === 'Legend') { return true; }
+  }
+  return false;
+}
+
+// "Ahri, Nine-Tailed Fox (Metal) (Best Of)" -> name plus ordered tag list.
+function splitName(raw) {
+  var name = String(raw);
+  var tags = [];
+  var re = /\s*\(([^()]+)\)\s*$/;
+  var m = name.match(re);
+  while (m) {
+    tags.unshift(m[1].trim());
+    name = name.slice(0, m.index);
+    m = name.match(re);
+  }
+  return { name: name.trim(), tags: tags };
+}
+
+function hasTag(tags, t) {
+  for (var i = 0; i < tags.length; i++) { if (tags[i] === t) { return true; } }
+  return false;
+}
+
+function labelOf(row) {
+  return row.tags.length ? (row.set + ' ' + row.tags.join(' ')) : row.set;
+}
+
+function main() {
+  var groups, order = {}, rows = [];
+
+  return get(BASE + '/groups', false).then(function (g) {
+    groups = g.results || [];
+    groups.sort(function (a, b) {
+      return String(a.publishedOn).localeCompare(String(b.publishedOn));
+    });
+    for (var i = 0; i < groups.length; i++) { order[groups[i].abbreviation] = i; }
+    console.log('groups: ' + groups.length);
+
+    var chain = Promise.resolve();
+    groups.forEach(function (grp) {
+      chain = chain.then(function () {
+        return sleep(SLEEP_MS);
+      }).then(function () {
+        return get(BASE + '/' + grp.groupId + '/products', false);
+      }).then(function (res) {
+        var prods = res.results || [];
+        var n = 0;
+        for (var j = 0; j < prods.length; j++) {
+          if (!isLegend(prods[j])) { continue; }
+          var sp = splitName(prods[j].name);
+          rows.push({
+            name: sp.name,
+            tags: sp.tags,
+            set: grp.abbreviation,
+            id: String(prods[j].productId)
+          });
+          n++;
+        }
+        console.log('  ' + grp.abbreviation + ': ' + n + ' legend rows of ' + prods.length);
+      });
+    });
+    return chain;
+  }).then(function () {
+    console.log('legend rows before signature rule: ' + rows.length);
+
+    // SIGNATURE RULE. Within one legend name and one set, a Signature printing
+    // is the same art as the Overnumbered one with a signature added, so keep
+    // only the Signature. Sets that printed an Overnumbered and no Signature
+    // keep the Overnumbered.
+    var sigKeys = {};
+    rows.forEach(function (r) {
+      if (hasTag(r.tags, 'Signature')) { sigKeys[r.name + '|' + r.set] = true; }
+    });
+    var before = rows.length;
+    rows = rows.filter(function (r) {
+      if (!hasTag(r.tags, 'Overnumbered')) { return true; }
+      if (hasTag(r.tags, 'Signature')) { return true; }
+      return !sigKeys[r.name + '|' + r.set];
+    });
+    console.log('dropped as signature duplicates: ' + (before - rows.length));
+
+    // Group into legends.
+    var byName = {};
+    rows.forEach(function (r) {
+      if (!byName[r.name]) { byName[r.name] = []; }
+      byName[r.name].push(r);
+    });
+
+    var names = Object.keys(byName).sort(function (a, b) { return a.localeCompare(b); });
+    var legends = names.map(function (nm) {
+      var list = byName[nm].slice();
+      list.sort(function (a, b) {
+        var oa = order[a.set], ob = order[b.set];
+        if (oa !== ob) { return oa - ob; }
+        if (a.tags.length !== b.tags.length) { return a.tags.length - b.tags.length; }
+        return labelOf(a).localeCompare(labelOf(b));
+      });
+      return { n: nm, v: list };
+    });
+
+    var printings = 0;
+    legends.forEach(function (L) { printings += L.v.length; });
+    console.log('legends: ' + legends.length + ', printings: ' + printings);
+
+    // Write the generated roster.
+    var out = '';
+    out += '/* GENERATED by fetch-legends.js -- do not edit by hand. */\n';
+    out += '/* ' + legends.length + ' legends, ' + printings + ' printings. */\n';
+    out += 'var VIR_LEGENDS = [\n';
+    legends.forEach(function (L) {
+      var parts = L.v.map(function (r) {
+        return '{"l":' + JSON.stringify(labelOf(r)) + ',"i":' + JSON.stringify(r.id) + '}';
+      });
+      out += '{"n":' + JSON.stringify(L.n) + ',"v":[' + parts.join(',') + ']},\n';
+    });
+    out += '];\n';
+    fs.mkdirSync('counter', { recursive: true });
+    fs.writeFileSync(OUT_FILE, out, 'utf8');
+    console.log('wrote ' + OUT_FILE);
+
+    // Cache the art. Only fetches what is missing, so a re-run after a new set
+    // downloads only the new cards.
+    fs.mkdirSync(ART_DIR, { recursive: true });
+    var todo = [];
+    legends.forEach(function (L) {
+      L.v.forEach(function (r) {
+        var dest = path.join(ART_DIR, r.id + '.jpg');
+        if (!fs.existsSync(dest)) { todo.push({ id: r.id, dest: dest }); }
+      });
+    });
+    console.log('images already cached: ' + (printings - todo.length));
+    console.log('images to fetch: ' + todo.length);
+
+    var got = 0, failed = [];
+    var chain = Promise.resolve();
+    todo.forEach(function (t) {
+      chain = chain.then(function () {
+        return sleep(SLEEP_MS);
+      }).then(function () {
+        return get(CDN + t.id + '_200w.jpg', true);
+      }).then(function (buf) {
+        fs.writeFileSync(t.dest, buf);
+        got++;
+        if (got % 25 === 0) { console.log('  fetched ' + got + '/' + todo.length); }
+      }).catch(function (e) {
+        failed.push(t.id + ': ' + e.message);
+      });
+    });
+    return chain.then(function () {
+      console.log('images fetched: ' + got);
+      console.log('image failures: ' + failed.length);
+      failed.forEach(function (f) { console.log('  FAIL ' + f); });
+    });
+  });
+}
+
+main().then(function () {
+  console.log('done');
+}).catch(function (e) {
+  console.error('FAILED: ' + e.message);
+  process.exit(1);
+});
