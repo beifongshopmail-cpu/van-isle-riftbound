@@ -551,6 +551,39 @@
     try { localStorage.setItem(HKEY, JSON.stringify(history)); } catch (e) {}
   }
 
+  function expName(){
+    var d = new Date(), p = function(n){ return n < 10 ? "0" + n : "" + n; };
+    return "riftbound-matches-" + d.getFullYear() + "-" + p(d.getMonth() + 1)
+      + "-" + p(d.getDate()) + ".json";
+  }
+  function expData(){
+    return JSON.stringify({
+      app: "van-isle-riftbound",
+      kind: "counter-history",
+      v: 1,
+      at: Date.now(),
+      count: history.length,
+      matches: history
+    });
+  }
+  function exportHistory(){
+    if(!history.length) return;
+    var url, a;
+    try{
+      url = URL.createObjectURL(new Blob([expData()], { type: "application/json" }));
+      a = document.createElement("a");
+      a.href = url;
+      a.download = expName();
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    }catch(e){
+      var b = document.getElementById("expjson");
+      if(b){ b.textContent = "Export failed"; }
+    }
+  }
+
   function loadMatch(){
     try {
       var raw = localStorage.getItem(CKEY);
@@ -781,7 +814,7 @@
         "<div class=\"mbody\"><div class=\"dtl\">" + legs + " &middot; " + len +
         " &middot; " + cnt + " &middot; " + tt + " turns</div>" + body + "</div></li>";
     }
-    out += "<li class=\"empty\" style=\"padding:0\"><button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button></li>";
+    out += "<li class=\"empty\" style=\"padding:0\"><button type=\"button\" class=\"clearpast\" id=\"expjson\">Export matches</button><button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button></li>";
     elPast.innerHTML = out;
   }
 
@@ -910,6 +943,7 @@
     var t = e.target;
     while (t && t !== elPast && t.tagName !== "BUTTON") { t = t.parentNode; }
     if (!t || t === elPast) { return; }
+    if (t.id === "expjson") { exportHistory(); return; }
     if (t.id === "clearpast") {
       if (!clearArmed) {
         clearArmed = true;
