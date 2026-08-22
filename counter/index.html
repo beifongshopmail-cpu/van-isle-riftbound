@@ -204,6 +204,9 @@
     border:1px solid var(--rule-hi);border-radius:6px;color:var(--mute);
     font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
   .clearpast.armed{color:#FFB020;border-color:#FFB020}
+  #impmsg{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);padding:10px 2px 0;text-align:center}
+  #impmsg:empty{display:none}
 
   .win{position:absolute;left:6px;right:6px;bottom:6px;z-index:25;display:none;
     flex-direction:column;gap:10px;padding:12px;border-radius:8px;
@@ -309,6 +312,7 @@
     <button class="close" id="closelog">Back to the game</button>
   </div>
   <div class="win" id="win" data-next="0"><b id="wintext">Player 1 wins</b><div class="nextbox"><span class="nlab">Next game - who goes first</span><div class="winrow" id="nextrow"><button data-open="1">Player 1 first</button><button data-open="2">Player 2 first</button></div></div><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
+  <input type="file" id="impfile" accept="application/json,.json" style="display:none">
   <div class="setup" id="setup" data-face="live">
     <button class="done top" id="setupdone" data-face="live">Back to the game</button>
     <h2 data-face="pre">Before the match</h2>
@@ -583,6 +587,47 @@
       if(b){ b.textContent = "Export failed"; }
     }
   }
+  function impMsg(s){
+    var el = document.getElementById("impmsg");
+    if(el){ el.textContent = s; }
+  }
+  function impOK(m){
+    return !!(m && m.v === 1 && m.games && m.games.length && m.games[0]
+      && m.games[0].ev && m.games[0].ev.length);
+  }
+  function importHistory(txt){
+    var o;
+    try{ o = JSON.parse(txt); }
+    catch(e){ impMsg("That file is not readable. Nothing changed."); return; }
+    if(!o || o.app !== "van-isle-riftbound" || o.kind !== "counter-history"){
+      impMsg("That is not a Riftbound match file. Nothing changed."); return;
+    }
+    if(o.v !== 1){ impMsg("That file came from a newer version. Nothing changed."); return; }
+    if(!o.matches || !o.matches.length){ impMsg("That file holds no matches. Nothing changed."); return; }
+    var have = {}, i, m, add = 0, dup = 0, bad = 0;
+    for(i = 0; i < history.length; i++){
+      if(typeof history[i].at === "number"){ have[history[i].at] = 1; }
+    }
+    for(i = 0; i < o.matches.length; i++){
+      m = o.matches[i];
+      if(!impOK(m)){ bad++; continue; }
+      if(typeof m.at === "number"){
+        if(have[m.at]){ dup++; continue; }
+        have[m.at] = 1;
+      }
+      history.push(m); add++;
+    }
+    history.sort(function(a, b){ return (b.at || 0) - (a.at || 0); });
+    var over = history.length > HMAX ? history.length - HMAX : 0;
+    if(over){ history = history.slice(0, HMAX); }
+    if(add){ saveHistory(); }
+    renderPast();
+    var s = add ? add + (add === 1 ? " match added" : " matches added") : "Nothing new to add";
+    if(dup){ s += ", " + dup + " already here"; }
+    if(bad){ s += ", " + bad + " not readable"; }
+    if(over){ s += ", " + over + " dropped past the " + HMAX + " match limit"; }
+    impMsg(s + ".");
+  }
 
   function loadMatch(){
     try {
@@ -771,8 +816,13 @@
   }
 
   function renderPast(){
+    var tools = "<li class=\"empty\" style=\"padding:0\">"
+      + (history.length ? "<button type=\"button\" class=\"clearpast\" id=\"expjson\">Export matches</button>" : "")
+      + "<button type=\"button\" class=\"clearpast\" id=\"impjson\">Import matches</button>"
+      + (history.length ? "<button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button>" : "")
+      + "<div id=\"impmsg\"></div></li>";
     if (!history.length) {
-      elPast.innerHTML = "<li class=\"empty\">No finished matches yet. A match is saved here when you start the next one.</li>";
+      elPast.innerHTML = "<li class=\"empty\">No finished matches yet. A match is saved here when you start the next one.</li>" + tools;
       return;
     }
     var out = "";
@@ -814,7 +864,7 @@
         "<div class=\"mbody\"><div class=\"dtl\">" + legs + " &middot; " + len +
         " &middot; " + cnt + " &middot; " + tt + " turns</div>" + body + "</div></li>";
     }
-    out += "<li class=\"empty\" style=\"padding:0\"><button type=\"button\" class=\"clearpast\" id=\"expjson\">Export matches</button><button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button></li>";
+    out += tools;
     elPast.innerHTML = out;
   }
 
@@ -943,6 +993,11 @@
     var t = e.target;
     while (t && t !== elPast && t.tagName !== "BUTTON") { t = t.parentNode; }
     if (!t || t === elPast) { return; }
+    if (t.id === "impjson") {
+      var fi = document.getElementById("impfile");
+      if (fi) { fi.value = ""; fi.click(); }
+      return;
+    }
     if (t.id === "expjson") { exportHistory(); return; }
     if (t.id === "clearpast") {
       if (!clearArmed) {
@@ -1193,6 +1248,14 @@
     }
     tmDisarm();
     if(want === -1){ stopTimer(); } else { startTimer(want); }
+  });
+  document.getElementById("impfile").addEventListener("change", function(){
+    var f = this.files && this.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){ importHistory(String(r.result)); };
+    r.onerror = function(){ impMsg("That file could not be read. Nothing changed."); };
+    r.readAsText(f);
   });
 
   mode = loadMode();
