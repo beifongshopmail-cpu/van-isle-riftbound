@@ -62,8 +62,14 @@
     color:var(--mute);position:relative;z-index:3}
   .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px;
     max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .side[data-role="minor"] .name{order:0;margin-top:0;flex:0 1 auto;min-width:0}
+  .side[data-role="minor"] .name{order:0;margin-top:0;flex:0 1 auto;min-width:0;
+    display:flex;align-items:baseline}
+  .side[data-role="minor"] .name .nm{min-width:0;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
   .side[data-role="minor"] .num,.side[data-role="minor"] .acts{flex:0 0 auto}
+  .pips{display:inline-flex;gap:4px;margin-left:9px;vertical-align:middle;flex:0 0 auto}
+  .pips i{width:5px;height:5px;border-radius:50%;background:#1B1E24;display:block}
+  .side .pips i.on{background:var(--c)}
   .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
   .side .num{color:var(--c)}
@@ -554,12 +560,20 @@
       "<button data-p=\"" + p + "\" data-s=\"other\"" + d + ">Other</button></div>";
   }
 
+  function pipsOf(p){
+    if (bo !== 3) { return ""; }
+    var w = gameWins(p), h = "";
+    for (var i = 0; i < 2; i++) { h += "<i" + (i < w ? " class=\"on\"" : "") + "></i>"; }
+    return "<span class=\"pips\">" + h + "</span>";
+  }
+
   function block(p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
     var leg = players[p].legend ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>" : "";
     return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
       "\" style=\"--c:" + players[p].colour + "\">" +
-      "<div class=\"name\">" + esc(nameOf(p)) + leg + "</div>" +
+      "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
+      "</span>" + pipsOf(p) + "</div>" +
       "<div class=\"num\">" + score(p) + "</div>" +
       trackOf(p) + acts(p) + "</section>";
   }
