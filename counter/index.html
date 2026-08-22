@@ -376,6 +376,7 @@
   var CKEY = "vir.counter.match.v1";
   var TKEY = "vir.counter.timer.v1";
   var tmInt = null;
+  var tmArm = 0, tmArmT = null;
 
   function loadTimer(){
     try{
@@ -429,10 +430,15 @@
     var t = loadTimer(), ms = tmMs(), mins = [30, 50, 60], h = "", i, sel;
     for(i = 0; i < mins.length; i++){
       sel = (t && t.min === mins[i]) ? "true" : "false";
-      h += "<button type=\"button\" data-min=\"" + mins[i] + "\" aria-pressed=\"" + sel + "\">"
-        + mins[i] + "</button>";
+      h += "<button type=\"button\" data-min=\"" + mins[i] + "\" aria-pressed=\"" + sel
+        + "\"" + (tmArm === mins[i] ? " class=\"armed\"" : "") + ">"
+        + (tmArm === mins[i] ? "Sure?" : mins[i]) + "</button>";
     }
-    if(ms !== null){ h += "<button type=\"button\" id=\"tmstop\">Stop</button>"; }
+    if(ms !== null){
+      h += "<button type=\"button\" id=\"tmstop\""
+        + (tmArm === -1 ? " class=\"armed\"" : "") + ">"
+        + (tmArm === -1 ? "Sure?" : "Stop") + "</button>";
+    }
     el.innerHTML = h;
     if(now){
       if(ms === null){ now.textContent = ""; now.className = ""; }
@@ -450,6 +456,10 @@
     tmClear();
     if(tmInt){ clearInterval(tmInt); tmInt = null; }
     renderTimerRow(); render();
+  }
+  function tmDisarm(){
+    if(tmArmT){ clearTimeout(tmArmT); tmArmT = null; }
+    if(tmArm){ tmArm = 0; renderTimerRow(); }
   }
   var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var SWATCH = ["#3FA9F5","#FF4F9A","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
@@ -1042,6 +1052,7 @@
   }
 
   function openPre(){
+    tmDisarm();
     stopTimer();
     disarmConcede();
     boPick = bo;
@@ -1053,6 +1064,7 @@
   }
 
   function closeSetup(){
+    tmDisarm();
     setup.classList.remove("open");
     setup.setAttribute("data-face", "live");
   }
@@ -1135,9 +1147,18 @@
   document.getElementById("tmrow").addEventListener("click", function(e){
     var b = e.target.closest("button");
     if(!b) return;
-    if(b.id === "tmstop"){ stopTimer(); return; }
-    var m = b.getAttribute("data-min");
-    if(m){ startTimer(parseInt(m, 10)); }
+    var want = b.id === "tmstop" ? -1 : parseInt(b.getAttribute("data-min"), 10);
+    if(!want) return;
+    if(tmArm !== want){
+      tmDisarm();
+      if(want !== -1 && tmMs() === null){ startTimer(want); return; }
+      tmArm = want;
+      renderTimerRow();
+      tmArmT = setTimeout(tmDisarm, 3000);
+      return;
+    }
+    tmDisarm();
+    if(want === -1){ stopTimer(); } else { startTimer(want); }
   });
 
   mode = loadMode();
