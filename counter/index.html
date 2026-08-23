@@ -287,6 +287,14 @@
   .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .win .nsuf{flex:0 0 auto}
   .win .armed{color:#FFB020;border-bottom-color:#FFB020}
+.lgabg{position:absolute;inset:0;z-index:0;background-position:center 20%;
+  background-size:cover;background-repeat:no-repeat;border-radius:inherit}
+.lgascrim{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.68);border-radius:inherit}
+.lgathumb{flex:0 0 auto;width:62px;height:87px;border-radius:4px;position:relative;z-index:3;
+  border:1px solid var(--rule-hi);background:#0E0F11 center/cover no-repeat;order:0;
+  margin-bottom:10px}
+.side[data-role="minor"] .lgathumb{width:31px;height:44px;margin-bottom:0}
+.side[data-role="equal"] .lgathumb{margin-bottom:6px}
 .lgpbtn{flex:1;min-width:0;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
   font-family:var(--body);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -386,6 +394,14 @@
       <div id="tmnow"></div>
       <div class="first tmr" id="tmrow"></div>
     </div>
+    <div class="grp">
+      <label>Legend art</label>
+      <div class="first" id="lgarow">
+        <button type="button" data-lga="off" aria-pressed="true">Off</button>
+        <button type="button" data-lga="small" aria-pressed="false">Small</button>
+        <button type="button" data-lga="bg" aria-pressed="false">Background</button>
+      </div>
+    </div>
     <div class="grp" data-face="live">
       <button class="wide" id="reset">New match</button>
       <a class="home" href="/van-isle-riftbound/">Events calendar</a>
@@ -422,6 +438,19 @@
   var HMAX = 50;
   var CKEY = "vir.counter.match.v1";
   var TKEY = "vir.counter.timer.v1";
+  var AKEY = "vir.counter.art.v1";
+  var lgaMode = "off";
+  function lgaLoad(){
+    try {
+      var v = localStorage.getItem(AKEY);
+      if (v === "small" || v === "bg") { lgaMode = v; }
+    } catch (e) {}
+  }
+  function lgaSave(){ try { localStorage.setItem(AKEY, lgaMode); } catch (e) {} }
+  function lgaSrc(p){
+    var id = players[p] && players[p].art;
+    return id ? ("art/" + id + ".jpg") : "";
+  }
   var tmInt = null;
   var tmArm = 0, tmArmT = null;
 
@@ -804,8 +833,17 @@
   function block(p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
     var leg = players[p].legend ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>" : "";
+    var lgaS = lgaSrc(p);
+    var lgaB = (lgaMode === "bg" && lgaS)
+      ? "<div class=\"lgabg\" style=\"background-image:url(" + lgaS + ")\"></div>" +
+        "<div class=\"lgascrim\"></div>"
+      : "";
+    var lgaT = (lgaMode === "small" && lgaS)
+      ? "<div class=\"lgathumb\" style=\"background-image:url(" + lgaS + ")\"></div>"
+      : "";
     return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
       "\" style=\"--c:" + players[p].colour + "\">" +
+      lgaB + lgaT +
       "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
       "</span>" + pipsOf(p) + "</div>" +
       "<div class=\"num\">" + score(p) + "</div>" +
@@ -1404,6 +1442,23 @@
   document.getElementById("lgpdone").addEventListener("click", lgpClose);
   lgpBuild();
 
+  function lgaSync(){
+    var b = document.getElementById("lgarow").getElementsByTagName("button"), i;
+    for (i = 0; i < b.length; i++) {
+      b[i].setAttribute("aria-pressed",
+        b[i].getAttribute("data-lga") === lgaMode ? "true" : "false");
+    }
+  }
+  document.getElementById("lgarow").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-lga]") : null;
+    if (!b) { return; }
+    lgaMode = b.getAttribute("data-lga");
+    lgaSave();
+    lgaSync();
+    render();
+  });
+  lgaSync();
+
   document.getElementById("startmatch").addEventListener("click", function(){
     startNew();
     closeSetup();
@@ -1434,6 +1489,7 @@
   });
 
   mode = loadMode();
+  lgaLoad();
   loadPlayers();
   history = loadHistory();
   loadMatch();
