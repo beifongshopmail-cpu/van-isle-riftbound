@@ -5,3 +5,4 @@
 *.ics -text
 *.woff2 binary
 *.jpg binary
+*.svg text eol=lf
