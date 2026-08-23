@@ -287,17 +287,25 @@
   .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .win .nsuf{flex:0 0 auto}
   .win .armed{color:#FFB020;border-bottom-color:#FFB020}
-.lgabg{position:absolute;inset:0;z-index:0;background-position:center 20%;
-  background-size:cover;background-repeat:no-repeat;border-radius:inherit}
-.lgascrim{position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.68);border-radius:inherit}
+.lgabg{position:absolute;inset:0;z-index:0;background-position:center 26%;
+  background-size:210% auto;background-repeat:no-repeat;border-radius:inherit}
+.side[data-role="minor"] .lgabg{background-size:150% auto;background-position:center 24%}
+.lgascrim{position:absolute;inset:0;z-index:1;border-radius:inherit;
+  background:radial-gradient(ellipse 62% 40% at 50% 46%, rgba(0,0,0,.86) 0%,
+  rgba(0,0,0,.72) 45%, rgba(0,0,0,.28) 78%, rgba(0,0,0,.12) 100%)}
+.side[data-role="minor"] .lgascrim{background:rgba(0,0,0,.55)}
+.side .lgabg + .lgascrim ~ .acts button{text-shadow:0 1px 8px rgba(0,0,0,.95)}
+.side .lgabg + .lgascrim ~ .name{text-shadow:0 1px 6px rgba(0,0,0,.95)}
+.side .lgabg + .lgascrim ~ .track .keys b{text-shadow:0 1px 6px rgba(0,0,0,.95)}
 .lgathumb{flex:0 0 auto;width:62px;height:87px;border-radius:4px;position:relative;z-index:3;
   border:1px solid var(--rule-hi);background:#0E0F11 center/cover no-repeat;order:0;
-  margin-bottom:10px}
+  align-self:flex-start;margin:0 0 10px}
 .side[data-role="minor"] .lgathumb{width:31px;height:44px;margin-bottom:0}
 .side[data-role="equal"] .lgathumb{margin-bottom:6px}
-.lgpbtn{flex:1;min-width:0;min-height:42px;background:#0A0B0E;color:var(--bone);
+.lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
-  font-family:var(--body);font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  font-family:var(--body);font-size:14px;line-height:40px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
 .lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
 .lgp.open{display:flex}
 .lgphead{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 9px;
@@ -399,7 +407,7 @@
       <div class="first" id="lgarow">
         <button type="button" data-lga="off" aria-pressed="true">Off</button>
         <button type="button" data-lga="small" aria-pressed="false">Small</button>
-        <button type="button" data-lga="bg" aria-pressed="false">Background</button>
+        <button type="button" data-lga="bg" aria-pressed="false">Full</button>
       </div>
     </div>
     <div class="grp" data-face="live">
@@ -1348,10 +1356,10 @@
     for (i = 0; i < VIR_LEGENDS.length; i++) {
       var a = lgpFirstArt(VIR_LEGENDS[i]), nm = lgpSplit(VIR_LEGENDS[i].n);
       h += "<button type=\"button\" class=\"lgptile\" data-lgpi=\"" + i +
-        "\" aria-pressed=\"false\"><span class=\"lgppic\"" +
+        "\" aria-pressed=\"false\"><div class=\"lgppic\"" +
         (a ? " style=\"background-image:url(art/" + a.i + ".jpg)\"" : "") +
-        "></span><span class=\"lgpn\">" + esc(nm[0]) +
-        "</span><span class=\"lgpsub\">" + esc(nm[1]) + "</span></button>";
+        "></div><div class=\"lgpn\">" + esc(nm[0]) +
+        "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div></button>";
     }
     g.innerHTML = h;
   }
