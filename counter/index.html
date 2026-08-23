@@ -73,7 +73,7 @@
   .side .pips i.on{background:var(--c)}
   .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
-  .side .num{color:var(--c);margin-top:10px}
+  .side .num{color:var(--c)}
   .side[data-role="minor"] .num{font-size:32px}
   .side[data-role="equal"] .num{font-size:min(26vh,44vw)}
 
@@ -287,21 +287,23 @@
   .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .win .nsuf{flex:0 0 auto}
   .win .armed{color:#FFB020;border-bottom-color:#FFB020}
+/* On a major or equal side the card and the runes are pinned to the two top
+   corners, OUT of the vertical stack. As stack items they pushed the name row
+   and the control band past the bottom edge, which is what broke split. On a
+   minor side the banner is a horizontal row, so the card stays inline there
+   and the runes are hidden, matching the legend text which is already hidden. */
 .lgathumb{flex:0 0 auto;width:86px;height:121px;border-radius:5px;position:relative;z-index:3;
   border:1px solid var(--rule-hi);background:#0E0F11 center/cover no-repeat;order:0;
   align-self:flex-start;margin:0 0 10px}
+.side[data-role="major"] .lgathumb,.side[data-role="equal"] .lgathumb{position:absolute;
+  top:0;left:0;margin:0;align-self:auto}
+.side[data-role="equal"] .lgathumb{width:66px;height:93px}
 .side[data-role="minor"] .lgathumb{width:40px;height:56px;margin-bottom:0}
-.side[data-role="equal"] .lgathumb{width:66px;height:93px;margin-bottom:6px}
-.lgadom{display:inline-flex;gap:5px;margin-left:8px;vertical-align:-2px;flex:0 0 auto}
-.lgadom img{width:15px;height:15px;display:block}
-.side[data-role="minor"] .lgadom{margin-left:6px}
-.side[data-role="minor"] .lgadom img{width:13px;height:13px}
-.lgpdom{display:flex;justify-content:center;gap:4px;margin-top:3px}
-.lgpdom img{width:13px;height:13px;display:block}
-.lgpchip .lgadom{margin-left:6px}
-.side[data-role="equal"] .lgathumb{order:0}
-.side[data-role="equal"] .name{order:2}
-.side[data-role="equal"] .num{order:1}
+.lgarune{position:absolute;top:0;right:0;z-index:3;display:flex;flex-direction:column;gap:7px}
+.lgarune img{width:52px;height:52px;display:block}
+.side[data-role="equal"] .lgarune img{width:40px;height:40px;gap:5px}
+.side[data-role="minor"] .lgarune{display:none}
+.side[data-role="minor"] .name .nm{min-width:5ch}
 .lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
   font-family:var(--body);font-size:14px;line-height:40px;overflow:hidden;
@@ -840,16 +842,16 @@
   function block(p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
     var leg = players[p].legend
-      ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>" +
-        lgaDom(players[p].legend, "lgadom")
+      ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>"
       : "";
+    var lgaR = lgaDom(players[p].legend, "lgarune");
     var lgaS = lgaSrc(p);
     var lgaT = (lgaMode === "small" && lgaS)
       ? "<div class=\"lgathumb\" style=\"background-image:url(" + lgaS + ")\"></div>"
       : "";
     return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
       "\" style=\"--c:" + players[p].colour + "\">" +
-      lgaT +
+      lgaT + lgaR +
       "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
       "</span>" + pipsOf(p) + "</div>" +
       "<div class=\"num\">" + score(p) + "</div>" +
@@ -1374,8 +1376,7 @@
         "\" aria-pressed=\"false\"><div class=\"lgppic\"" +
         (a ? " style=\"background-image:url(art/" + a.i + ".jpg)\"" : "") +
         "></div><div class=\"lgpn\">" + esc(nm[0]) +
-        "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div>" +
-        lgaDom(VIR_LEGENDS[i].n, "lgpdom") + "</button>";
+        "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div></button>";
     }
     g.innerHTML = h;
   }
