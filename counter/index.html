@@ -20,6 +20,14 @@
     --p1:#3FA9F5;
     --p2:#FF4F9A;
     --over:#FF453A;
+    --over-deep:#8C1F19;
+    --mo-fast:.16s;
+    --mo-tap:.22s;
+    --mo-rise:.32s;
+    --mo-seam:.42s;
+    --mo-settle:.7s;
+    --mo-pulse:1.8s;
+    --mo-ease:cubic-bezier(.22,.72,.2,1);
     --display:"Archivo",system-ui,sans-serif;
     --body:"IBM Plex Sans",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
@@ -117,13 +125,13 @@
     max-width:9ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
-  .seam.flash{animation:seamflash .42s ease-out}
+  .seam.flash{animation:seamflash var(--mo-seam) ease-out}
   @keyframes seamflash{
     0%{background:rgba(242,243,245,.26);border-color:var(--bone);color:#000}
     45%{background:rgba(242,243,245,.10);border-color:var(--bone)}
     100%{background:none;border-color:var(--rule-hi)}
   }
-  @media (prefers-reduced-motion:reduce){ .seam.flash{animation:none} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important;animation:none !important} }
   .tmv{flex:0 0 auto;text-align:center;padding:2px 0 6px;font-family:var(--mono);
     font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--dim);
     font-variant-numeric:tabular-nums}

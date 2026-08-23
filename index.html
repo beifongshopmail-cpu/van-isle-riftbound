@@ -12,6 +12,13 @@
 <link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
 <style>
   :root{
+    --mo-fast:.16s;
+    --mo-tap:.22s;
+    --mo-rise:.32s;
+    --mo-seam:.42s;
+    --mo-settle:.7s;
+    --mo-pulse:1.8s;
+    --mo-ease:cubic-bezier(.22,.72,.2,1);
     --ground:#000000;
     --rule:#212429;
     --rule-hi:#343A44;
@@ -89,7 +96,7 @@
     color:var(--mute);cursor:pointer;
     font-family:var(--display);font-weight:700;font-size:12px;
     letter-spacing:.07em;text-transform:uppercase;
-    transition:color .16s,background .16s;
+    transition:color var(--mo-fast),background var(--mo-fast);
   }
   .scope button[aria-pressed="true"]{
     background:var(--bone);color:#000;border-color:var(--bone);
@@ -134,7 +141,7 @@
     display:flex;flex-direction:column;
     min-width:0;overflow:hidden;
     cursor:pointer;color:inherit;text-align:left;font:inherit;
-    transition:background .16s,border-color .16s;
+    transition:background var(--mo-fast),border-color var(--mo-fast);
   }
   .cell .top{
     display:flex;align-items:flex-start;justify-content:space-between;
@@ -175,7 +182,7 @@
     box-shadow:var(--surf-hi);
     cursor:pointer;color:var(--dim);
     font-family:var(--body);font-size:12.5px;font-weight:500;
-    text-align:left;transition:color .16s,opacity .16s,border-color .16s;
+    text-align:left;transition:color var(--mo-fast),opacity var(--mo-fast),border-color var(--mo-fast);
   }
   .lg .sw{
     width:12px;height:12px;flex:0 0 12px;border-radius:3px;
@@ -289,7 +296,7 @@
     *{transition:none !important;animation:none !important;scroll-behavior:auto !important;}
   }
   @media (prefers-reduced-motion:no-preference){
-    .daygroup{animation:rise .32s cubic-bezier(.22,.72,.2,1) backwards;}
+    .daygroup{animation:rise var(--mo-rise) var(--mo-ease) backwards;}
     @keyframes rise{from{opacity:0;transform:translateY(6px);}}
   }
 </style>
