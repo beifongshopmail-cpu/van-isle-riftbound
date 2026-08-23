@@ -59,7 +59,7 @@
   .side[data-role="minor"]{border-color:color-mix(in srgb, var(--c) 30%, transparent)}
   .far{transform:rotate(180deg)}
 
-  .name{font-family:var(--mono);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  .name{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;
     color:var(--mute);position:relative;z-index:3}
   .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px;
     max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -69,11 +69,11 @@
     text-overflow:ellipsis;white-space:nowrap}
   .side[data-role="minor"] .num,.side[data-role="minor"] .acts{flex:0 0 auto}
   .pips{display:inline-flex;gap:4px;margin-left:9px;vertical-align:middle;flex:0 0 auto}
-  .pips i{width:5px;height:5px;border-radius:50%;background:#1B1E24;display:block}
+  .pips i{width:6px;height:6px;border-radius:50%;background:#1B1E24;display:block}
   .side .pips i.on{background:var(--c)}
   .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
-  .side .num{color:var(--c)}
+  .side .num{color:var(--c);margin-top:10px}
   .side[data-role="minor"] .num{font-size:32px}
   .side[data-role="equal"] .num{font-size:min(26vh,44vw)}
 
@@ -287,21 +287,21 @@
   .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .win .nsuf{flex:0 0 auto}
   .win .armed{color:#FFB020;border-bottom-color:#FFB020}
-.lgabg{position:absolute;inset:0;z-index:0;background-position:center 26%;
-  background-size:210% auto;background-repeat:no-repeat;border-radius:inherit}
-.side[data-role="minor"] .lgabg{background-size:150% auto;background-position:center 24%}
-.lgascrim{position:absolute;inset:0;z-index:1;border-radius:inherit;
-  background:radial-gradient(ellipse 62% 40% at 50% 46%, rgba(0,0,0,.86) 0%,
-  rgba(0,0,0,.72) 45%, rgba(0,0,0,.28) 78%, rgba(0,0,0,.12) 100%)}
-.side[data-role="minor"] .lgascrim{background:rgba(0,0,0,.55)}
-.side .lgabg + .lgascrim ~ .acts button{text-shadow:0 1px 8px rgba(0,0,0,.95)}
-.side .lgabg + .lgascrim ~ .name{text-shadow:0 1px 6px rgba(0,0,0,.95)}
-.side .lgabg + .lgascrim ~ .track .keys b{text-shadow:0 1px 6px rgba(0,0,0,.95)}
-.lgathumb{flex:0 0 auto;width:62px;height:87px;border-radius:4px;position:relative;z-index:3;
+.lgathumb{flex:0 0 auto;width:86px;height:121px;border-radius:5px;position:relative;z-index:3;
   border:1px solid var(--rule-hi);background:#0E0F11 center/cover no-repeat;order:0;
   align-self:flex-start;margin:0 0 10px}
-.side[data-role="minor"] .lgathumb{width:31px;height:44px;margin-bottom:0}
-.side[data-role="equal"] .lgathumb{margin-bottom:6px}
+.side[data-role="minor"] .lgathumb{width:40px;height:56px;margin-bottom:0}
+.side[data-role="equal"] .lgathumb{width:66px;height:93px;margin-bottom:6px}
+.lgadom{display:inline-flex;gap:5px;margin-left:8px;vertical-align:-2px;flex:0 0 auto}
+.lgadom img{width:15px;height:15px;display:block}
+.side[data-role="minor"] .lgadom{margin-left:6px}
+.side[data-role="minor"] .lgadom img{width:13px;height:13px}
+.lgpdom{display:flex;justify-content:center;gap:4px;margin-top:3px}
+.lgpdom img{width:13px;height:13px;display:block}
+.lgpchip .lgadom{margin-left:6px}
+.side[data-role="equal"] .lgathumb{order:0}
+.side[data-role="equal"] .name{order:2}
+.side[data-role="equal"] .num{order:1}
 .lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
   font-family:var(--body);font-size:14px;line-height:40px;overflow:hidden;
@@ -406,8 +406,7 @@
       <label>Legend art</label>
       <div class="first" id="lgarow">
         <button type="button" data-lga="off" aria-pressed="true">Off</button>
-        <button type="button" data-lga="small" aria-pressed="false">Small</button>
-        <button type="button" data-lga="bg" aria-pressed="false">Full</button>
+        <button type="button" data-lga="small" aria-pressed="false">On</button>
       </div>
     </div>
     <div class="grp" data-face="live">
@@ -451,7 +450,7 @@
   function lgaLoad(){
     try {
       var v = localStorage.getItem(AKEY);
-      if (v === "small" || v === "bg") { lgaMode = v; }
+      if (v === "small") { lgaMode = v; }
     } catch (e) {}
   }
   function lgaSave(){ try { localStorage.setItem(AKEY, lgaMode); } catch (e) {} }
@@ -840,18 +839,17 @@
 
   function block(p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
-    var leg = players[p].legend ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>" : "";
-    var lgaS = lgaSrc(p);
-    var lgaB = (lgaMode === "bg" && lgaS)
-      ? "<div class=\"lgabg\" style=\"background-image:url(" + lgaS + ")\"></div>" +
-        "<div class=\"lgascrim\"></div>"
+    var leg = players[p].legend
+      ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>" +
+        lgaDom(players[p].legend, "lgadom")
       : "";
+    var lgaS = lgaSrc(p);
     var lgaT = (lgaMode === "small" && lgaS)
       ? "<div class=\"lgathumb\" style=\"background-image:url(" + lgaS + ")\"></div>"
       : "";
     return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
       "\" style=\"--c:" + players[p].colour + "\">" +
-      lgaB + lgaT +
+      lgaT +
       "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
       "</span>" + pipsOf(p) + "</div>" +
       "<div class=\"num\">" + score(p) + "</div>" +
@@ -1328,6 +1326,23 @@
   // have no art and read correctly. Nothing is added to the history snapshot.
   var lgpFor = 0;
 
+  // The six domain glyphs are Riot's own, cached under counter/art. A legend
+  // with no domains renders nothing rather than a placeholder.
+  function lgaDom(nm, cls){
+    if (typeof VIR_LEGENDS === "undefined" || !nm) { return ""; }
+    var e = null, i;
+    for (i = 0; i < VIR_LEGENDS.length; i++) {
+      if (VIR_LEGENDS[i].n === nm) { e = VIR_LEGENDS[i]; break; }
+    }
+    if (!e || !e.d || !e.d.length) { return ""; }
+    var h = "";
+    for (i = 0; i < e.d.length; i++) {
+      var d = String(e.d[i]).toLowerCase();
+      h += "<img src=\"art/rune_" + esc(d) + ".svg\" alt=\"" + esc(e.d[i]) + "\">";
+    }
+    return "<span class=\"" + cls + "\">" + h + "</span>";
+  }
+
   function lgpFirstArt(x){
     for (var i = 0; i < x.v.length; i++) { if (x.v[i].a) { return x.v[i]; } }
     return null;
@@ -1359,7 +1374,8 @@
         "\" aria-pressed=\"false\"><div class=\"lgppic\"" +
         (a ? " style=\"background-image:url(art/" + a.i + ".jpg)\"" : "") +
         "></div><div class=\"lgpn\">" + esc(nm[0]) +
-        "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div></button>";
+        "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div>" +
+        lgaDom(VIR_LEGENDS[i].n, "lgpdom") + "</button>";
     }
     g.innerHTML = h;
   }
