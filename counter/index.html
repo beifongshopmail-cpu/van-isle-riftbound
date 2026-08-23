@@ -303,7 +303,16 @@
 .lgarune img{width:52px;height:52px;display:block}
 .side[data-role="equal"] .lgarune img{width:40px;height:40px;gap:5px}
 .side[data-role="minor"] .lgarune{display:none}
+/* In the slim banner the name is the first thing to give up its space. Below
+   5 characters it is a meaningless stub, so it is dropped entirely and the
+   score and the win pips keep the room. The pips stay visible either way --
+   they are the match standing, not decoration. Runes never appear on a minor
+   side, so only the card image can squeeze this row. */
 .side[data-role="minor"] .name .nm{min-width:5ch}
+@media (max-width:430px){
+  .side[data-role="minor"] .lgathumb ~ .name .nm{display:none}
+  .side[data-role="minor"] .lgathumb ~ .name{margin-left:0}
+}
 .lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
   font-family:var(--body);font-size:14px;line-height:40px;overflow:hidden;
@@ -405,10 +414,10 @@
       <div class="first tmr" id="tmrow"></div>
     </div>
     <div class="grp">
-      <label>Legend art</label>
+      <label>Show on the field</label>
       <div class="first" id="lgarow">
-        <button type="button" data-lga="off" aria-pressed="true">Off</button>
-        <button type="button" data-lga="small" aria-pressed="false">On</button>
+        <button type="button" id="lgacard" aria-pressed="false">Legend art</button>
+        <button type="button" id="lgrrune" aria-pressed="false">Domains</button>
       </div>
     </div>
     <div class="grp" data-face="live">
@@ -448,6 +457,14 @@
   var CKEY = "vir.counter.match.v1";
   var TKEY = "vir.counter.timer.v1";
   var AKEY = "vir.counter.art.v1";
+  var RKEY = "vir.counter.runes.v1";
+  var lgrOn = false;
+  function lgrLoad(){
+    try { if (localStorage.getItem(RKEY) === "on") { lgrOn = true; } } catch (e) {}
+  }
+  function lgrSave(){
+    try { localStorage.setItem(RKEY, lgrOn ? "on" : "off"); } catch (e) {}
+  }
   var lgaMode = "off";
   function lgaLoad(){
     try {
@@ -844,7 +861,7 @@
     var leg = players[p].legend
       ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>"
       : "";
-    var lgaR = lgaDom(players[p].legend, "lgarune");
+    var lgaR = lgrOn ? lgaDom(players[p].legend, "lgarune") : "";
     var lgaS = lgaSrc(p);
     var lgaT = (lgaMode === "small" && lgaS)
       ? "<div class=\"lgathumb\" style=\"background-image:url(" + lgaS + ")\"></div>"
@@ -1467,18 +1484,23 @@
   document.getElementById("lgpdone").addEventListener("click", lgpClose);
   lgpBuild();
 
+  // Two independent switches sharing one row. Card art and domain runes are
+  // deliberately separate -- runes with no card is a wanted combination.
   function lgaSync(){
-    var b = document.getElementById("lgarow").getElementsByTagName("button"), i;
-    for (i = 0; i < b.length; i++) {
-      b[i].setAttribute("aria-pressed",
-        b[i].getAttribute("data-lga") === lgaMode ? "true" : "false");
-    }
+    var c = document.getElementById("lgacard"), r = document.getElementById("lgrrune");
+    if (c) { c.setAttribute("aria-pressed", lgaMode === "small" ? "true" : "false"); }
+    if (r) { r.setAttribute("aria-pressed", lgrOn ? "true" : "false"); }
   }
   document.getElementById("lgarow").addEventListener("click", function(e){
-    var b = e.target.closest ? e.target.closest("[data-lga]") : null;
+    var b = e.target.closest ? e.target.closest("button") : null;
     if (!b) { return; }
-    lgaMode = b.getAttribute("data-lga");
-    lgaSave();
+    if (b.id === "lgacard") {
+      lgaMode = (lgaMode === "small") ? "off" : "small";
+      lgaSave();
+    } else if (b.id === "lgrrune") {
+      lgrOn = !lgrOn;
+      lgrSave();
+    } else { return; }
     lgaSync();
     render();
   });
@@ -1515,6 +1537,7 @@
 
   mode = loadMode();
   lgaLoad();
+  lgrLoad();
   loadPlayers();
   history = loadHistory();
   loadMatch();
