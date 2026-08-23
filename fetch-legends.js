@@ -294,16 +294,6 @@ function main() {
         console.log('domain glyph failures: ' + gFail.length);
         gFail.forEach(function (f) { console.log('  FAIL ' + f); });
       });
-
-      var noArt = 0;
-      legends.forEach(function (L) {
-        var any = false;
-        L.v.forEach(function (r) {
-          if (fs.existsSync(path.join(ART_DIR, r.id + '.jpg'))) { any = true; }
-        });
-        if (!any) { noArt++; console.log('  NO ART AT ALL: ' + L.n); }
-      });
-      console.log('legends with no art at all: ' + noArt);
     });
   });
 }
