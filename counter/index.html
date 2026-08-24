@@ -1075,8 +1075,9 @@
     if (!fieldBuilt) { buildField(); }
     var topP, botP, topR, botR;
     if (mode === "split") { topP = 2; botP = 1; topR = "equal"; botR = "equal"; }
-    else if (mode === "pass") { botP = c.p; topP = botP === 1 ? 2 : 1;
-      topR = "minor"; botR = "major"; }
+    else if (mode === "pass") { topP = 2; botP = 1;
+      topR = (c.p === 2) ? "major" : "minor";
+      botR = (c.p === 1) ? "major" : "minor"; }
     else { topP = 2; botP = 1; topR = "minor"; botR = "major"; }
     fillSide(document.getElementById("sideTop"), topP, topR);
     fillSide(document.getElementById("sideBot"), botP, botR);
