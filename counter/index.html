@@ -113,10 +113,11 @@
   .side[data-role="minor"] .acts button{min-height:32px;padding:7px 9px 5px;font-size:10px}
   .side[data-role="equal"] .acts{margin-top:14px}
 
-  .seamwrap{flex:0 0 auto;padding:8px 0}
+  .seamwrap{flex:0 0 auto;padding:8px 0;position:relative}
   .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
     color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.1em;
-    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0}
+    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0;
+    position:relative;z-index:2}
   .seam em{font-family:var(--display);font-style:normal;font-weight:800;font-size:14px;
     letter-spacing:.1em;color:color-mix(in srgb, var(--bone) 45%, var(--dim));
     border-left:1px solid var(--rule-hi);padding-left:14px;margin-left:14px;
@@ -126,6 +127,16 @@
   .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
   .seam.flash{animation:seamflash var(--mo-seam) ease-out}
+  .burst{position:absolute;left:0;right:0;top:8px;bottom:8px;z-index:0;
+    pointer-events:none;opacity:0;border-radius:8px;
+    border:1.5px solid var(--sc);
+    box-shadow:0 0 18px color-mix(in srgb, var(--sc) 55%, transparent)}
+  .burst.go{animation:burstrim var(--mo-seam) var(--mo-ease)}
+  @keyframes burstrim{
+    0%{opacity:0;transform:scale(.98)}
+    18%{opacity:1}
+    100%{opacity:0;transform:scale(1.14)}
+  }
   @keyframes seamflash{
     0%{background:rgba(242,243,245,.26);border-color:var(--bone);color:#000}
     45%{background:rgba(242,243,245,.10);border-color:var(--bone)}
@@ -880,7 +891,9 @@
 
   function seam(){
     var c = ctx(), d = won() ? " disabled" : "";
-    return "<div class=\"seamwrap\"><button class=\"seam\" id=\"seam\"" + d +
+    return "<div class=\"seamwrap\" style=\"--sc:" + players[c.p].colour + "\">" +
+      "<div class=\"burst\" id=\"burst\"></div>" +
+      "<button class=\"seam\" id=\"seam\"" + d +
       " style=\"--sc:" + players[c.p].colour + "\">Pass turn" +
       "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
   }
@@ -1078,6 +1091,9 @@
     s.className = "seam";
     void s.offsetWidth;
     s.className = "seam flash";
+    var bz = document.getElementById("burst");
+    if (bz) { bz.classList.remove("go"); void bz.offsetWidth;
+              bz.classList.add("go"); }
     try { if (navigator.vibrate) { navigator.vibrate(16); } } catch (e) {}
   }
   elUndo.addEventListener("click", function(){
