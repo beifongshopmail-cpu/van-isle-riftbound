@@ -26,6 +26,7 @@
     --mo-rise:.32s;
     --mo-seam:.42s;
     --mo-settle:.7s;
+    --mo-travel:.42s;
     --mo-pulse:1.8s;
     --mo-ease:cubic-bezier(.22,.72,.2,1);
     --display:"Archivo",system-ui,sans-serif;
@@ -73,9 +74,14 @@
 
   .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px 6px}
   .side{min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;overflow:hidden;border-radius:10px}
+    justify-content:center;overflow:hidden;border-radius:10px;
+    transition:flex-grow var(--mo-travel) var(--mo-ease),
+    flex-basis var(--mo-travel) var(--mo-ease),
+    padding var(--mo-travel) var(--mo-ease),
+    background var(--mo-travel) var(--mo-ease),
+    border-color var(--mo-travel) var(--mo-ease)}
   .side[data-role="major"]{flex:1}
-  .side[data-role="minor"]{flex:0 0 auto;flex-direction:row;gap:14px;padding:10px 14px;
+  .side[data-role="minor"]{flex:0 1 62px;flex-direction:row;gap:14px;padding:10px 14px;
     justify-content:center;background:#07080A;border:1px solid var(--rule)}
   .side[data-role="equal"]{flex:1}
   .side[data-role="minor"]{border-color:color-mix(in srgb, var(--c) 30%, transparent)}
@@ -94,13 +100,18 @@
   .pips i{width:6px;height:6px;border-radius:50%;background:#1B1E24;display:block}
   .side .pips i.on{background:var(--c)}
   .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
-    font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
+    font-size:min(42vh,64vw);position:relative;z-index:3;order:1;
+    transition:font-size var(--mo-travel) var(--mo-ease)}
   .side .num{color:var(--c)}
   .side[data-role="minor"] .num{font-size:32px}
   .side[data-role="equal"] .num{font-size:min(26vh,44vw)}
 
   .track{position:relative;z-index:3;margin-top:26px;width:min(62vw,330px);order:3}
-  .side[data-role="minor"] .track{display:none}
+  .side[data-role="minor"] .track{opacity:0;max-height:0;margin-top:0;overflow:hidden;
+    pointer-events:none}
+  .side .track{transition:opacity var(--mo-travel) var(--mo-ease),
+    max-height var(--mo-travel) var(--mo-ease),
+    margin-top var(--mo-travel) var(--mo-ease);max-height:40px}
   .side[data-role="equal"] .name{margin-top:12px}
   .side[data-role="equal"] .track{margin-top:18px}
   .side:not([data-role="minor"]) .track{align-self:stretch;width:auto}
@@ -116,7 +127,10 @@
   .acts{display:flex;gap:10px;position:relative;z-index:3;margin-top:22px;order:4}
   .acts button{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.12em;
     text-transform:uppercase;padding:14px 15px 11px;min-height:48px;background:none;border:0;
-    border-bottom:2px solid transparent;color:var(--bone);border-radius:6px 6px 0 0}
+    border-bottom:2px solid transparent;color:var(--bone);border-radius:6px 6px 0 0;
+    transition:font-size var(--mo-travel) var(--mo-ease),
+    padding var(--mo-travel) var(--mo-ease),
+    min-height var(--mo-travel) var(--mo-ease)}
   .side .acts button{border-bottom-color:color-mix(in srgb, var(--c) 60%, transparent)}
   .side:not([data-role="minor"]) .acts{align-self:stretch}
   .side:not([data-role="minor"]) .acts button{flex:1;padding-left:0;padding-right:0}
