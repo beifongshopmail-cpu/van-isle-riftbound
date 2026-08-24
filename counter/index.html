@@ -889,8 +889,7 @@
     return "<span class=\"pips\">" + h + "</span>";
   }
 
-  function block(p, role){
-    var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
+  function blockInner(p){
     var leg = players[p].legend
       ? "<span class=\"legend\">" + esc(players[p].legend) + "</span>"
       : "";
@@ -899,13 +898,35 @@
     var lgaT = (lgaMode === "small" && lgaS)
       ? "<div class=\"lgathumb\" style=\"background-image:url(" + lgaS + ")\"></div>"
       : "";
-    return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
-      "\" style=\"--c:" + players[p].colour + "\">" +
-      lgaT + lgaR +
+    return lgaT + lgaR +
       "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
       "</span>" + pipsOf(p) + "</div>" +
       "<div class=\"num\">" + score(p) + "</div>" +
-      trackOf(p) + acts(p) + "</section>";
+      trackOf(p) + acts(p);
+  }
+
+  function block(p, role){
+    var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
+    return "<section class=\"side p" + p + (far ? " far" : "") + "\" data-role=\"" + role +
+      "\" style=\"--c:" + players[p].colour + "\">" + blockInner(p) + "</section>";
+  }
+
+  var fieldBuilt = false;
+  function buildField(){
+    field.innerHTML =
+      "<section class=\"side\" id=\"sideTop\"></section>" +
+      "<div id=\"tmFar\"></div>" +
+      "<div id=\"seamSlot\"></div>" +
+      "<div id=\"tmNear\"></div>" +
+      "<section class=\"side\" id=\"sideBot\"></section>";
+    fieldBuilt = true;
+  }
+  function fillSide(el, p, role){
+    var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
+    el.className = "side p" + p + (far ? " far" : "");
+    el.setAttribute("data-role", role);
+    el.style.setProperty("--c", players[p].colour);
+    el.innerHTML = blockInner(p);
   }
 
   function seam(){
@@ -1037,14 +1058,17 @@
     }
     elUndo.disabled = ev.length <= 1;
 
-    var top, bot;
-    if (mode === "split") { top = block(2, "equal"); bot = block(1, "equal"); }
-    else if (mode === "pass") {
-      var a = c.p, b = a === 1 ? 2 : 1;
-      top = block(b, "minor"); bot = block(a, "major");
-    } else { top = block(2, "minor"); bot = block(1, "major"); }
-
-    field.innerHTML = top + (mode === "split" ? tmLine(true) : "") + seam() + tmLine(false) + bot;
+    if (!fieldBuilt) { buildField(); }
+    var topP, botP, topR, botR;
+    if (mode === "split") { topP = 2; botP = 1; topR = "equal"; botR = "equal"; }
+    else if (mode === "pass") { botP = c.p; topP = botP === 1 ? 2 : 1;
+      topR = "minor"; botR = "major"; }
+    else { topP = 2; botP = 1; topR = "minor"; botR = "major"; }
+    fillSide(document.getElementById("sideTop"), topP, topR);
+    fillSide(document.getElementById("sideBot"), botP, botR);
+    document.getElementById("tmFar").innerHTML = (mode === "split") ? tmLine(true) : "";
+    document.getElementById("seamSlot").innerHTML = seam();
+    document.getElementById("tmNear").innerHTML = tmLine(false);
     field.style.transform = (mode === "pass" && c.p === 2) ? "rotate(180deg)" : "none";
 
     elLog.innerHTML = logHTML(ev, nameOf);
