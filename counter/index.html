@@ -411,7 +411,6 @@
     <div class="modes" id="modes" role="group" aria-label="Layout">
       <button data-mode="focus" aria-pressed="true">Focus</button>
       <button data-mode="split" aria-pressed="false">Split</button>
-      <button data-mode="pass" aria-pressed="false">Pass</button>
     </div>
     <button id="undo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10a5.5 5.5 0 0 1 0 11h-6"/><polyline points="8 4 4 8 8 12"/></svg></button>
     <button id="logbtn" aria-label="Log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg></button>
@@ -507,7 +506,7 @@
   var GKEY = "vir.counter.game.v1";
   var MKEY = "vir.counter.mode.v1";
   var GOAL = 8;
-  var MODES = ["focus","split","pass"];
+  var MODES = ["focus","split"];
   var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
   var KEY = { conquer:"C", hold:"H", other:"O" };
   var PKEY = "vir.counter.players.v1";
@@ -1075,16 +1074,12 @@
     if (!fieldBuilt) { buildField(); }
     var topP, botP, topR, botR;
     if (mode === "split") { topP = 2; botP = 1; topR = "equal"; botR = "equal"; }
-    else if (mode === "pass") { topP = 2; botP = 1;
-      topR = (c.p === 2) ? "major" : "minor";
-      botR = (c.p === 1) ? "major" : "minor"; }
     else { topP = 2; botP = 1; topR = "minor"; botR = "major"; }
     fillSide(document.getElementById("sideTop"), topP, topR);
     fillSide(document.getElementById("sideBot"), botP, botR);
     document.getElementById("tmFar").innerHTML = (mode === "split") ? tmLine(true) : "";
     document.getElementById("seamSlot").innerHTML = seam();
     document.getElementById("tmNear").innerHTML = tmLine(false);
-    field.style.transform = (mode === "pass" && c.p === 2) ? "rotate(180deg)" : "none";
 
     elLog.innerHTML = logHTML(ev, nameOf);
   }
