@@ -82,7 +82,8 @@
     border-color var(--mo-travel) var(--mo-ease)}
   .side[data-role="major"]{flex:1}
   .side[data-role="minor"]{flex:0 1 62px;flex-direction:row;gap:14px;padding:10px 14px;
-    justify-content:center;background:#07080A;border:1px solid var(--rule)}
+    justify-content:center;background:#07080A;border:1px solid var(--rule);
+    align-items:center}
   .side[data-role="minor"]:has(.lgathumb){flex:0 1 78px}
   .side[data-role="equal"]{flex:1}
   .side[data-role="minor"]{border-color:color-mix(in srgb, var(--c) 30%, transparent)}
@@ -93,12 +94,13 @@
   .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px;
     max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .side[data-role="minor"] .name{margin-top:0;flex:1 1 auto;min-width:0;display:flex;
-    align-items:baseline;text-overflow:clip}
+    align-items:center;gap:9px;text-overflow:clip;line-height:1}
+  .side[data-role="minor"] .pips{margin-left:0}
   .side[data-role="minor"] .pn{display:flex;flex:1 1 auto;min-width:0;
-    flex-direction:row;align-items:baseline;gap:12px}
-  .side[data-role="minor"] .lgathumb ~ .pn{flex-direction:column;
-    align-items:flex-start;justify-content:center;gap:2px}
-  .side[data-role="minor"] .lgathumb ~ .pn .num{font-size:26px}
+    flex-direction:row;align-items:center;gap:12px}
+  .side[data-role="minor"] .lgathumb ~ .pn{flex-direction:row;align-items:center;
+    gap:10px}
+  .side[data-role="minor"] .lgathumb ~ .pn .nm{display:none}
   .side[data-role="minor"] .name .nm{min-width:0;overflow:hidden;text-overflow:clip;
     white-space:nowrap;flex:0 1 auto}
   .side[data-role="minor"] .num,.side[data-role="minor"] .acts{flex:0 0 auto}
@@ -144,7 +146,8 @@
     text-shadow:0 0 20px color-mix(in srgb, var(--c) 70%, transparent)}
   .acts button:disabled{opacity:.25}
   .side[data-role="minor"] .acts{margin-top:0}
-  .side[data-role="minor"] .acts button{min-height:32px;padding:7px 9px 5px;font-size:10px}
+  .side[data-role="minor"] .acts button{min-height:32px;padding:7px 9px 5px;font-size:10px;
+    padding:7px 9px}
   .side[data-role="equal"] .acts{margin-top:14px}
 
   .seamwrap{flex:0 0 auto;padding:8px 0;position:relative}
