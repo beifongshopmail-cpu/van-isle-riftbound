@@ -369,11 +369,11 @@
 .lgarune img{width:52px;height:52px;display:block}
 .side[data-role="equal"] .lgarune img{width:40px;height:40px;gap:5px}
 .side[data-role="minor"] .lgarune{display:none}
-/* In the slim banner the name is the first thing to give up its space. Below
-   5 characters it is a meaningless stub, so it is dropped entirely and the
-   score and the win pips keep the room. The pips stay visible either way --
-   they are the match standing, not decoration. Runes never appear on a minor
-   side, so only the card image can squeeze this row. */
+/* Runes never appear on a minor side, so the card image is the only thing that
+   can change this row's height -- which is what the :has(.lgathumb) rule keys
+   off. With art the score and name stack; without it they sit side by side and
+   the name takes whatever room is left. The pips are the match standing, not
+   decoration, so they sit outside the part that shrinks. */
 .lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
   font-family:var(--body);font-size:14px;line-height:40px;overflow:hidden;
