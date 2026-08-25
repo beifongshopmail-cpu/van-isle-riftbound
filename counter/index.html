@@ -114,7 +114,7 @@
 
   .track{position:relative;z-index:3;margin-top:26px;width:min(62vw,330px);order:3}
   .side[data-role="minor"] .track{opacity:0;max-height:0;margin-top:0;overflow:hidden;
-    pointer-events:none}
+    pointer-events:none;position:absolute;width:0;min-width:0;flex:0 0 0;left:0;top:0}
   .side .track{transition:opacity var(--mo-travel) var(--mo-ease),
     max-height var(--mo-travel) var(--mo-ease),
     margin-top var(--mo-travel) var(--mo-ease);max-height:40px}
