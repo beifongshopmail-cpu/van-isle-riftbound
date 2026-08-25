@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-08-25T02:18:27.994Z",
- "generated_local": "2026-08-24T19:18:27-07:00",
- "window_start": "2026-08-24T07:00:00.000Z",
+ "generated_at": "2026-08-25T13:51:42.307Z",
+ "generated_local": "2026-08-25T06:51:42-07:00",
+ "window_start": "2026-08-25T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -18,13 +18,13 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 18,
-   "added": 18
+   "returned": 19,
+   "added": 19
   }
  ],
  "totals": {
-  "fetched": 56,
-  "unique": 56,
+  "fetched": 57,
+  "unique": 57,
   "prev_unique": 56
  },
  "unknown_templates": {},
@@ -60,7 +60,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-03T19:03:38+00:00"
@@ -78,7 +78,7 @@
    "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-14T22:25:05+00:00"
@@ -114,7 +114,7 @@
    "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 3,
+   "reg": 4,
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-07-23T23:31:47+00:00"
@@ -204,7 +204,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 32,
-   "reg": 0,
+   "reg": 1,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-08-01T18:16:23+00:00"
@@ -222,7 +222,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-01T18:13:15+00:00"
@@ -240,7 +240,7 @@
    "address": "515 Chatham St, Victoria, BC, V8T 1E1, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 3,
+   "reg": 4,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-24T00:56:05+00:00"
@@ -1036,6 +1036,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-23T05:01:10+00:00"
+  },
+  {
+   "id": 884760,
+   "name": "Tuesday Riftbound Playnight",
+   "type": "learn",
+   "start": "2026-10-20T18:00:00-07:00",
+   "end": "2026-10-20T21:30:00-07:00",
+   "day": "2026-10-20",
+   "time": "6:00 PM",
+   "venue": "Giddy-Up Games",
+   "city": "Campbell River",
+   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
+   "region": "island",
+   "cap": 8,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-08-25T05:04:31+00:00"
   }
  ]
 }
