@@ -1,0 +1,52 @@
+name: fetch prices
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fetch-prices
+  cancel-in-progress: false
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Fetch prices
+        run: node fetch-prices.js
+      - name: Summarise
+        run: |
+          node -e "
+          const d = require('./data/prices.json');
+          const lines = [];
+          lines.push('| metric | value |');
+          lines.push('| --- | --- |');
+          lines.push('| priced products | ' + d.totals.priced + ' |');
+          lines.push('| previous run | ' + (d.totals.prev_priced === null ? 'none' : d.totals.prev_priced) + ' |');
+          lines.push('| unpriced | ' + d.totals.unpriced + ' |');
+          lines.push('| sets | ' + d.totals.sets + ' |');
+          lines.push('| USD to CAD | ' + d.fx.rate + ' as of ' + d.fx.date + ' |');
+          if (d.totals.prev_priced !== null && d.totals.priced < d.totals.prev_priced * 0.9) {
+            lines.push('');
+            lines.push('Priced product count fell more than 10 percent against the previous run. Check upstream before trusting this file.');
+          }
+          require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
+          "
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/prices.json
+          if git diff --cached --quiet; then
+            echo "nothing to publish"
+            exit 0
+          fi
+          git commit -m "data: refresh prices $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase
+          git push
