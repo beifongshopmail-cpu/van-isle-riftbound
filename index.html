@@ -30,6 +30,7 @@
     --surf:linear-gradient(180deg,#14161B 0%,#0A0B0E 100%);
     --surf-hi:inset 0 1px 0 rgba(255,255,255,.05);
     --surf-up:linear-gradient(180deg,#1C1F26 0%,#12141A 100%);
+    --plate:#0F1116;
 
     --t-nexus:#3FA9F5;
     --t-skirmish:#FFB020;
@@ -88,7 +89,7 @@
   .mast .by a:hover{color:var(--bone);}
   .mast .stamp.stale b,.mast .stamp.stale{color:var(--warn);}
 
-  .scope{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:24px;
+  .scope{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:24px;
     border:1px solid var(--rule-hi);border-radius:var(--r);overflow:hidden;}
   .scope button{
     min-height:var(--tap);
@@ -129,10 +130,9 @@
   .pad{aspect-ratio:1/1.12;}
   .cell{
     aspect-ratio:1/1.12;
-    background:var(--surf);
-    border:1px solid var(--rule);
+    background-color:var(--plate);
+    border:1px solid transparent;
     border-radius:var(--r-cell);
-    box-shadow:var(--surf-hi);
     padding:5px 4px 5px;
     display:flex;flex-direction:column;
     min-width:0;overflow:hidden;
@@ -163,8 +163,7 @@
     padding:2px 4px;margin:-1px 0 0 -1px;
   }
   .cell[aria-pressed="true"]{
-    background:var(--surf-up);border-color:var(--bone);
-    box-shadow:var(--surf-hi),0 6px 20px -10px rgba(242,243,245,.45);
+    border-color:var(--bone);
   }
   @media (hover:hover){ .cell:not(:disabled):hover{border-color:var(--rule-hi);} }
   .cell:focus-visible{outline:2px solid var(--bone);outline-offset:2px;}
