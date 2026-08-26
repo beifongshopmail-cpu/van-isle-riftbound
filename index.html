@@ -80,6 +80,18 @@
   }
   .mast .by a{color:var(--dim);text-decoration:none;}
   .mast .by a:hover{color:var(--bone);}
+  .mast .pages{
+    margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;
+  }
+  .mast .pages a{
+    color:var(--dim);text-decoration:none;padding:5px 0;
+    transition:color var(--mo-fast);
+  }
+  .mast .pages a:hover{color:var(--bone)}
+  .mast .pages [aria-current="page"]{color:var(--bone)}
+  .mast .pages .sep{color:var(--rule-hi)}
   .mast .stamp.stale b,.mast .stamp.stale{color:var(--warn);}
 
   .scope{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:24px;
@@ -294,6 +306,11 @@
   <header class="mast">
     <h1>Van Isle<br>Riftbound</h1>
     <div class="stamp" id="stamp">Loading</div>
+    <nav class="pages" aria-label="Pages">
+      <span aria-current="page">Calendar</span>
+      <span class="sep">/</span>
+      <a href="counter/">Point counter</a>
+    </nav>
     <div class="by">Kept by <a href="https://beifonghithouse.com">Beifong's Hit-House</a></div>
   </header>
 
