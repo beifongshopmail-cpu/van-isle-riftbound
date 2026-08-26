@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Riftbound trade calculator for Vancouver Island. Two sides, TCGplayer market prices, CAD or USD.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RB Trade">
+<title>Trade calculator - Van Isle Riftbound</title>
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+  :root{
+    --mo-fast:.16s;
+    --mo-tap:.22s;
+    --mo-rise:.32s;
+    --mo-ease:cubic-bezier(.22,.72,.2,1);
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --warn:#FFB020;
+    --plate:#14171D;
+    --r:9px;
+    --r-sm:4px;
+    --r-xs:2px;
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --gut:16px;
+    --tap:44px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ground);}
+  body{
+    color:var(--bone);
+    font-family:var(--body);
+    font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wrap{
+    max-width:600px;margin:0 auto;
+    padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
+  }
+
+  .mast{padding:30px 0 18px;}
+  .mast h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(38px,11.5vw,60px);
+    line-height:.86;letter-spacing:-.035em;
+    text-transform:uppercase;margin:0;
+  }
+  .mast .stamp{
+    margin-top:12px;
+    font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .mast .stamp b{color:var(--dim);font-weight:400;}
+  .mast .stamp .stale{color:var(--warn);}
+  .mast .pages{
+    margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);
+  }
+  .mast .pages a{color:var(--dim);text-decoration:none;}
+  .mast .pages a:hover{color:var(--bone);}
+  .mast .pages [aria-current]{color:var(--bone);}
+  .mast .pages .sep{color:var(--rule-hi);}
+  .mast .by{
+    margin-top:10px;
+    font-family:var(--mono);font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .mast .by a{color:var(--dim);text-decoration:none;}
+
+  .boot{
+    font-family:var(--mono);font-size:11px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);padding:24px 0;
+  }
+  .boot.bad{color:var(--warn);}
+
+  .seg{display:flex;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
+  .seg button{
+    flex:1;border:0;border-radius:0;background:none;
+    min-height:32px;padding:6px 10px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;
+    transition:background var(--mo-fast) ease,color var(--mo-fast) ease;
+  }
+  .seg button+button{border-left:1px solid var(--rule);}
+  .seg button[aria-pressed="true"]{background:var(--bone);color:#000;}
+
+  .bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
+  .bar .seg{flex:0 0 150px;}
+  .bar .clear{
+    margin-left:auto;
+    border:1px solid var(--rule);border-radius:var(--r-sm);background:none;
+    color:var(--dim);font-family:var(--mono);font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;
+    min-height:32px;padding:6px 12px;cursor:pointer;
+  }
+  .bar .clear:active{border-color:var(--rule-hi);color:var(--bone);}
+
+  .find{margin-bottom:18px;}
+  .find input{
+    width:100%;-webkit-appearance:none;appearance:none;
+    background:var(--plate);border:1px solid var(--rule);border-radius:var(--r-sm);
+    color:var(--bone);font-family:var(--body);font-size:16px;
+    padding:12px 14px;min-height:var(--tap);
+  }
+  .find input::placeholder{color:var(--mute);}
+  .find input:focus{outline:none;border-color:var(--rule-hi);}
+  .find .target{margin-top:10px;}
+
+  .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
+  .results .row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--plate);}
+  .results .row+.row{border-top:1px solid var(--rule);}
+  .results .meta{min-width:0;flex:1;}
+  .results .nm{font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .results .sub{
+    margin-top:3px;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
+  }
+  .results .buys{display:flex;gap:6px;flex:0 0 auto;}
+  .results .buys button{
+    border:1px solid var(--rule-hi);border-radius:var(--r-xs);background:none;
+    color:var(--bone);font-family:var(--mono);font-size:11px;
+    letter-spacing:.04em;padding:6px 9px;min-height:38px;cursor:pointer;
+  }
+  .results .buys button:active{background:var(--bone);color:#000;}
+  .results .buys button .pl{
+    display:block;font-size:8.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .results .buys button:active .pl{color:#000;}
+  .results .none{
+    padding:12px;background:var(--plate);
+    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);
+  }
+
+  .panel{border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;}
+  .panel .head{
+    display:flex;align-items:baseline;gap:10px;padding:12px 14px;
+    background:var(--plate);border-bottom:1px solid var(--rule);
+  }
+  .panel .head .lb{
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .panel .head .tot{margin-left:auto;font-family:var(--mono);font-size:15px;color:var(--bone);}
+  .panel .empty{
+    padding:16px 14px;font-family:var(--mono);font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .line{display:flex;align-items:center;gap:10px;padding:10px 14px;}
+  .line+.line{border-top:1px solid var(--rule);}
+  .line .meta{min-width:0;flex:1;}
+  .line .nm{font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .line .sub{
+    margin-top:3px;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
+  }
+  .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:var(--r-xs);flex:0 0 auto;}
+  .qty button{
+    width:32px;min-height:32px;border:0;background:none;color:var(--bone);
+    font-family:var(--mono);font-size:14px;line-height:1;cursor:pointer;
+  }
+  .qty button:active{background:rgba(255,255,255,.06);}
+  .qty span{min-width:26px;text-align:center;font-family:var(--mono);font-size:12px;}
+  .line .amt{
+    flex:0 0 auto;font-family:var(--mono);font-size:13px;
+    min-width:66px;text-align:right;
+  }
+  .line .del{
+    flex:0 0 auto;border:0;background:none;color:var(--mute);
+    font-family:var(--mono);font-size:14px;width:28px;min-height:32px;cursor:pointer;
+  }
+  .line .del:active{color:var(--bone);}
+
+  .verdict{
+    margin:14px 0;padding:18px 14px;
+    border:1px solid var(--rule);border-radius:var(--r);
+    background:var(--plate);text-align:center;
+  }
+  .verdict .lb{
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .verdict .big{
+    margin-top:8px;font-family:var(--display);font-weight:800;
+    font-size:clamp(30px,9vw,42px);line-height:1;letter-spacing:-.02em;
+  }
+  .verdict .say{margin-top:10px;font-size:13px;color:var(--dim);line-height:1.4;}
+
+  .src{
+    margin-top:22px;font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.07em;line-height:1.7;text-transform:uppercase;color:var(--mute);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <h1>Trade</h1>
+    <div class="stamp" id="stamp">Loading</div>
+    <nav class="pages" aria-label="Pages">
+      <a href="../">Calendar</a>
+      <span class="sep">/</span>
+      <a href="../counter/">Point counter</a>
+      <span class="sep">/</span>
+      <span aria-current="page">Trade</span>
+    </nav>
+    <div class="by">Kept by <a href="https://beifonghithouse.com">Beifong's Hit-House</a></div>
+  </header>
+
+  <div id="boot" class="boot">Loading prices</div>
+
+  <main id="app" hidden>
+
+    <div class="bar">
+      <div class="seg" id="cur" role="group" aria-label="Currency">
+        <button type="button" data-cur="CAD" aria-pressed="true">CAD</button>
+        <button type="button" data-cur="USD" aria-pressed="false">USD</button>
+      </div>
+      <button type="button" class="clear" data-act="clear">Clear both</button>
+    </div>
+
+    <div class="find">
+      <input id="q" type="search" placeholder="Search by card name or number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div class="target">
+        <div class="seg" id="target" role="group" aria-label="Add to">
+          <button type="button" data-side="1" aria-pressed="true">Add to yours</button>
+          <button type="button" data-side="2" aria-pressed="false">Add to theirs</button>
+        </div>
+      </div>
+      <div id="results" class="results" hidden></div>
+    </div>
+
+    <section class="panel">
+      <div class="head"><span class="lb">Your cards</span><span class="tot" id="tot1">$0.00</span></div>
+      <div id="body1"></div>
+    </section>
+
+    <div class="verdict">
+      <div class="lb">Difference</div>
+      <div class="big" id="diff">$0.00</div>
+      <div class="say" id="say">Add cards to both sides.</div>
+    </div>
+
+    <section class="panel">
+      <div class="head"><span class="lb">Their cards</span><span class="tot" id="tot2">$0.00</span></div>
+      <div id="body2"></div>
+    </section>
+
+    <div class="src" id="src"></div>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY = "vir.trade.v1";
+  var D = null, FX = 1, CUR = "CAD", SIDE = 1;
+  var sides = { 1: [], 2: [] };
+  var byId = new Map(), setById = new Map();
+
+  function el(id){ return document.getElementById(id); }
+
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function save(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify({
+        cur: CUR, side: SIDE, s1: sides[1], s2: sides[2]
+      }));
+    }catch(e){}
+  }
+
+  function restore(){
+    try{
+      var r = JSON.parse(localStorage.getItem(KEY));
+      if(!r) return;
+      if(r.cur === "USD" || r.cur === "CAD") CUR = r.cur;
+      if(r.side === 2) SIDE = 2;
+      if(Array.isArray(r.s1)) sides[1] = r.s1;
+      if(Array.isArray(r.s2)) sides[2] = r.s2;
+    }catch(e){}
+  }
+
+  // Every stored price is USD. Conversion happens only at display time.
+  function money(usd){
+    var v = (CUR === "CAD") ? usd * FX : usd;
+    return "$" + v.toFixed(2);
+  }
+
+  function priceOf(it){
+    var c = byId.get(it.i);
+    if(!c) return 0;
+    var p = c.p[it.s];
+    return (typeof p === "number") ? p : 0;
+  }
+
+  function sideTotal(n){
+    var t = 0, a = sides[n], k;
+    for(k = 0; k < a.length; k++) t += priceOf(a[k]) * a[k].q;
+    return t;
+  }
+
+  function setLabel(g){
+    var s = setById.get(g);
+    if(!s) return "";
+    return s.a || s.n;
+  }
+
+  function cardSub(c){
+    var bits = [];
+    var sl = setLabel(c.g);
+    if(sl) bits.push(sl);
+    if(c.k === 1){
+      if(c.c) bits.push(c.c);
+      if(c.r) bits.push(c.r);
+    } else {
+      bits.push("Sealed");
+    }
+    return bits.join(" / ");
+  }
+
+  function search(term){
+    var t = term.trim().toLowerCase();
+    var box = el("results");
+    if(t.length < 2){ box.hidden = true; box.innerHTML = ""; return; }
+
+    var hits = [], i, c, n, at, numAt;
+    for(i = 0; i < D.cards.length; i++){
+      c = D.cards[i];
+      n = c.n.toLowerCase();
+      at = n.indexOf(t);
+      numAt = c.c ? c.c.toLowerCase().indexOf(t) : -1;
+      if(at > -1 || numAt === 0){
+        hits.push({ c: c, rank: (at === 0 ? 0 : (numAt === 0 ? 1 : 2)) });
+        if(hits.length > 300) break;
+      }
+    }
+
+    hits.sort(function(a,b){
+      if(a.rank !== b.rank) return a.rank - b.rank;
+      return a.c.n.localeCompare(b.c.n);
+    });
+    hits = hits.slice(0, 40);
+
+    if(!hits.length){
+      box.innerHTML = '<div class="none">Nothing found</div>';
+      box.hidden = false;
+      return;
+    }
+
+    var html = "", k, subs, s, j;
+    for(k = 0; k < hits.length; k++){
+      c = hits[k].c;
+      subs = Object.keys(c.p).sort();
+      s = "";
+      for(j = 0; j < subs.length; j++){
+        s += '<button type="button" data-add="' + c.i + '|' + esc(subs[j]) + '">' +
+             money(c.p[subs[j]]) +
+             '<span class="pl">' + esc(subs[j]) + '</span></button>';
+      }
+      html += '<div class="row"><div class="meta">' +
+              '<div class="nm">' + esc(c.n) + '</div>' +
+              '<div class="sub">' + esc(cardSub(c)) + '</div>' +
+              '</div><div class="buys">' + s + '</div></div>';
+    }
+    box.innerHTML = html;
+    box.hidden = false;
+  }
+
+  function renderSide(n){
+    var a = sides[n], html = "", k, it, c, unit;
+    if(!a.length){
+      el("body" + n).innerHTML = '<div class="empty">Nothing here yet</div>';
+      el("tot" + n).textContent = money(0);
+      return;
+    }
+    for(k = 0; k < a.length; k++){
+      it = a[k];
+      c = byId.get(it.i);
+      unit = priceOf(it);
+      html += '<div class="line"><div class="meta">' +
+              '<div class="nm">' + esc(c ? c.n : "Unknown card") + '</div>' +
+              '<div class="sub">' + esc(it.s) + ' / ' + money(unit) + ' each</div>' +
+              '</div>' +
+              '<div class="qty">' +
+              '<button type="button" data-act="dec" data-side="' + n + '" data-idx="' + k + '" aria-label="Fewer">-</button>' +
+              '<span>' + it.q + '</span>' +
+              '<button type="button" data-act="inc" data-side="' + n + '" data-idx="' + k + '" aria-label="More">+</button>' +
+              '</div>' +
+              '<div class="amt">' + money(unit * it.q) + '</div>' +
+              '<button type="button" class="del" data-act="del" data-side="' + n + '" data-idx="' + k + '" aria-label="Remove">x</button>' +
+              '</div>';
+    }
+    el("body" + n).innerHTML = html;
+    el("tot" + n).textContent = money(sideTotal(n));
+  }
+
+  function renderVerdict(){
+    var a = sideTotal(1), b = sideTotal(2);
+    var gap = Math.abs(a - b);
+    el("diff").textContent = money(gap);
+
+    var say;
+    if(!sides[1].length && !sides[2].length){
+      say = "Add cards to both sides.";
+    } else if(gap < 0.005){
+      say = "Even. Both sides are worth the same.";
+    } else if(a > b){
+      say = "Your side is worth more, so the trade favours theirs. You would give up " +
+            money(gap) + " more than you get.";
+    } else {
+      say = "Their side is worth more, so the trade favours yours. You would get " +
+            money(gap) + " more than you give up.";
+    }
+    el("say").textContent = say;
+  }
+
+  function paint(){
+    renderSide(1);
+    renderSide(2);
+    renderVerdict();
+  }
+
+  function add(side, i, sub){
+    var a = sides[side], k;
+    for(k = 0; k < a.length; k++){
+      if(a[k].i === i && a[k].s === sub){ a[k].q++; save(); paint(); return; }
+    }
+    a.push({ i: i, s: sub, q: 1 });
+    save();
+    paint();
+  }
+
+  function pressGroup(box, attr, val){
+    var bs = box.querySelectorAll("button"), k;
+    for(k = 0; k < bs.length; k++){
+      bs[k].setAttribute("aria-pressed", bs[k].getAttribute(attr) === val ? "true" : "false");
+    }
+  }
+
+  function onClick(ev){
+    var t = ev.target.closest("button");
+    if(!t) return;
+
+    var addKey = t.getAttribute("data-add");
+    if(addKey){
+      var parts = addKey.split("|");
+      add(SIDE, parseInt(parts[0], 10), parts[1]);
+      return;
+    }
+
+    var cur = t.getAttribute("data-cur");
+    if(cur){
+      CUR = cur;
+      pressGroup(el("cur"), "data-cur", CUR);
+      save();
+      paint();
+      search(el("q").value);
+      return;
+    }
+
+    var act = t.getAttribute("data-act");
+    if(act === "clear"){
+      sides[1] = [];
+      sides[2] = [];
+      save();
+      paint();
+      return;
+    }
+    if(act === "inc" || act === "dec" || act === "del"){
+      var n = parseInt(t.getAttribute("data-side"), 10);
+      var idx = parseInt(t.getAttribute("data-idx"), 10);
+      var a = sides[n];
+      if(!a || !a[idx]) return;
+      if(act === "inc") a[idx].q++;
+      else if(act === "dec"){ a[idx].q--; if(a[idx].q < 1) a.splice(idx, 1); }
+      else a.splice(idx, 1);
+      save();
+      paint();
+      return;
+    }
+
+    var side = t.getAttribute("data-side");
+    if(side && !act){
+      SIDE = parseInt(side, 10);
+      pressGroup(el("target"), "data-side", String(SIDE));
+      save();
+    }
+  }
+
+  function stampText(){
+    var gen = new Date(D.generated_at);
+    var age = (Date.now() - gen.getTime()) / 3600000;
+    var d = gen.toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+    var s = "Prices <b>" + esc(d) + "</b>";
+    if(age > 48) s += ' <span class="stale">may be stale</span>';
+    s += " / USD to CAD <b>" + esc(String(D.fx.rate)) + "</b> as of <b>" + esc(D.fx.date) + "</b>";
+    return s;
+  }
+
+  function boot(){
+    restore();
+    pressGroup(el("cur"), "data-cur", CUR);
+    pressGroup(el("target"), "data-side", String(SIDE));
+
+    fetch("../data/prices.json", { cache: "no-store" })
+      .then(function(r){
+        if(!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function(j){
+        D = j;
+        FX = (j.fx && typeof j.fx.rate === "number" && j.fx.rate > 0) ? j.fx.rate : 1;
+        var k;
+        for(k = 0; k < j.cards.length; k++) byId.set(j.cards[k].i, j.cards[k]);
+        for(k = 0; k < j.sets.length; k++) setById.set(j.sets[k].g, j.sets[k]);
+
+        el("stamp").innerHTML = stampText();
+        el("src").textContent =
+          "TCGplayer market price via tcgcsv.com. Rate from the Bank of Canada. " +
+          "A public benchmark, not an offer from any store. " +
+          j.totals.priced + " products priced across " + j.totals.sets + " sets.";
+
+        el("boot").hidden = true;
+        el("app").hidden = false;
+        paint();
+      })
+      .catch(function(e){
+        var b = el("boot");
+        b.className = "boot bad";
+        b.textContent = "Prices could not be loaded. Try again later.";
+      });
+
+    el("q").addEventListener("input", function(){ search(this.value); });
+    el("app").addEventListener("click", onClick);
+  }
+
+  document.addEventListener("DOMContentLoaded", boot);
+})();
+</script>
+</body>
+</html>
