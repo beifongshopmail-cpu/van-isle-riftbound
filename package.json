@@ -5,7 +5,8 @@
   "description": "Riftbound event calendar for Vancouver Island",
   "main": "fetch-events.js",
   "scripts": {
-    "fetch": "node fetch-events.js"
+    "fetch": "node fetch-events.js",
+    "fetch-prices": "node fetch-prices.js"
   },
   "engines": {
     "node": ">=18"
