@@ -97,6 +97,7 @@
   .seg button[aria-pressed="true"]{background:var(--bone);color:#000;}
   #target button[data-side="1"][aria-pressed="true"]{background:var(--s1);color:#000;}
   #target button[data-side="2"][aria-pressed="true"]{background:var(--s2);color:#000;}
+  #q:focus{border-color:var(--s1);}
   #q.s2:focus{border-color:var(--s2);}
 
   .bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
@@ -164,13 +165,19 @@
     padding:16px 14px;font-family:var(--mono);font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
   }
-  .line{display:flex;align-items:center;gap:10px;padding:10px 14px;}
+  .line{padding:10px 14px;}
   .line+.line{border-top:1px solid var(--rule);}
-  .line .meta{min-width:0;flex:1;}
-  .line .nm{font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .line .top{display:flex;align-items:baseline;gap:10px;}
+  .line .nm{
+    flex:1;min-width:0;font-size:14px;line-height:1.25;
+    overflow:hidden;text-overflow:clip;white-space:nowrap;
+  }
+  .line .amt{flex:0 0 auto;font-family:var(--mono);font-size:13px;text-align:right;}
+  .line .bot{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .line .sub{
-    margin-top:3px;font-family:var(--mono);font-size:9.5px;
+    flex:1;min-width:0;font-family:var(--mono);font-size:9.5px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
+    overflow:hidden;white-space:nowrap;
   }
   .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:var(--r-xs);flex:0 0 auto;}
   .qty button{
@@ -179,15 +186,13 @@
   }
   .qty button:active{background:rgba(255,255,255,.06);}
   .qty span{min-width:26px;text-align:center;font-family:var(--mono);font-size:12px;}
-  .line .amt{
-    flex:0 0 auto;font-family:var(--mono);font-size:13px;
-    min-width:66px;text-align:right;
+  .line .mv,.line .del{
+    flex:0 0 auto;border:1px solid var(--rule);border-radius:var(--r-xs);
+    background:none;color:var(--mute);font-family:var(--mono);font-size:13px;
+    line-height:1;width:32px;min-height:32px;cursor:pointer;
   }
-  .line .del{
-    flex:0 0 auto;border:0;background:none;color:var(--mute);
-    font-family:var(--mono);font-size:14px;width:28px;min-height:32px;cursor:pointer;
-  }
-  .line .del:active{color:var(--bone);}
+  .line .mv svg{display:block;margin:0 auto;}
+  .line .mv:active,.line .del:active{border-color:var(--rule-hi);color:var(--bone);}
 
   .verdict{
     margin:14px 0;padding:18px 14px;
@@ -272,7 +277,7 @@
     </section>
 
     <div class="verdict">
-      <div class="lb">Difference</div>
+      <div class="lb" id="dlb">Difference CAD</div>
       <div class="big" id="diff">$0.00</div>
       <div class="who" id="who"></div>
       <div class="bar" aria-hidden="true"><i class="b1" id="b1"></i><i class="b2" id="b2"></i></div>
@@ -425,28 +430,37 @@
   }
 
   function renderSide(n){
-    var a = sides[n], html = "", k, it, c, unit;
+    var a = sides[n], html = "", k, it, c, unit, arrow;
     if(!a.length){
       el("body" + n).innerHTML = '<div class="empty">Nothing here yet</div>';
       el("tot" + n).textContent = money(0);
       return;
     }
+    // The arrow points at the other panel: down from yours, up from theirs.
+    arrow = (n === 1)
+      ? '<path d="M12 5v14M6 13l6 6 6-6"/>'
+      : '<path d="M12 19V5M6 11l6-6 6 6"/>';
     for(k = 0; k < a.length; k++){
       it = a[k];
       c = byId.get(it.i);
       unit = priceOf(it);
-      html += '<div class="line"><div class="meta">' +
+      html += '<div class="line">' +
+              '<div class="top">' +
               '<div class="nm">' + esc(c ? c.n : "Unknown card") + '</div>' +
-              '<div class="sub">' + esc(it.s) + ' / ' + money(unit) + ' each</div>' +
+              '<div class="amt">' + money(unit * it.q) + '</div>' +
               '</div>' +
+              '<div class="bot">' +
+              '<div class="sub">' + esc(it.s) + ' / ' + money(unit) + ' each</div>' +
               '<div class="qty">' +
               '<button type="button" data-act="dec" data-side="' + n + '" data-idx="' + k + '" aria-label="Fewer">-</button>' +
               '<span>' + it.q + '</span>' +
               '<button type="button" data-act="inc" data-side="' + n + '" data-idx="' + k + '" aria-label="More">+</button>' +
               '</div>' +
-              '<div class="amt">' + money(unit * it.q) + '</div>' +
+              '<button type="button" class="mv" data-act="mv" data-side="' + n + '" data-idx="' + k + '" aria-label="Move to the other side">' +
+              '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">' + arrow + '</svg>' +
+              '</button>' +
               '<button type="button" class="del" data-act="del" data-side="' + n + '" data-idx="' + k + '" aria-label="Remove">x</button>' +
-              '</div>';
+              '</div></div>';
     }
     el("body" + n).innerHTML = html;
     el("tot" + n).textContent = money(sideTotal(n));
@@ -456,6 +470,7 @@
     var a = sideTotal(1), b = sideTotal(2);
     var gap = Math.abs(a - b), sum = a + b;
     el("diff").textContent = money(gap);
+    el("dlb").textContent = "Difference " + CUR;
 
     // The bar is a share of the pot, so the wider half is the richer side.
     // With nothing on either side both halves sit at 50 and read as even.
@@ -528,14 +543,28 @@
       paint();
       return;
     }
-    if(act === "inc" || act === "dec" || act === "del"){
+    if(act === "inc" || act === "dec" || act === "del" || act === "mv"){
       var n = parseInt(t.getAttribute("data-side"), 10);
       var idx = parseInt(t.getAttribute("data-idx"), 10);
       var a = sides[n];
       if(!a || !a[idx]) return;
       if(act === "inc") a[idx].q++;
       else if(act === "dec"){ a[idx].q--; if(a[idx].q < 1) a.splice(idx, 1); }
-      else a.splice(idx, 1);
+      else if(act === "del") a.splice(idx, 1);
+      else {
+        // Moving lands on the other side, folding into a matching entry if
+        // one is already there rather than leaving two rows for one card.
+        var moved = a.splice(idx, 1)[0];
+        var other = sides[n === 1 ? 2 : 1], m;
+        for(m = 0; m < other.length; m++){
+          if(other[m].i === moved.i && other[m].s === moved.s){
+            other[m].q += moved.q;
+            moved = null;
+            break;
+          }
+        }
+        if(moved) other.push(moved);
+      }
       save();
       paint();
       return;
