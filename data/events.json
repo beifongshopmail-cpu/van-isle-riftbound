@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-27T10:58:00.382Z",
- "generated_local": "2026-08-27T03:58:00-07:00",
+ "generated_at": "2026-08-27T22:51:24.716Z",
+ "generated_local": "2026-08-27T15:51:24-07:00",
  "window_start": "2026-08-27T07:00:00.000Z",
  "anchors": [
   {
@@ -25,7 +25,7 @@
  "totals": {
   "fetched": 55,
   "unique": 55,
-  "prev_unique": 56
+  "prev_unique": 55
  },
  "unknown_templates": {},
  "events": [
@@ -42,7 +42,7 @@
    "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 2,
+   "reg": 4,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-14T22:25:05+00:00"
