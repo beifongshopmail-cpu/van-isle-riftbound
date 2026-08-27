@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-26T13:55:55.007Z",
- "generated_local": "2026-08-26T06:55:55-07:00",
- "window_start": "2026-08-26T07:00:00.000Z",
+ "generated_at": "2026-08-27T10:58:00.382Z",
+ "generated_local": "2026-08-27T03:58:00-07:00",
+ "window_start": "2026-08-27T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 32,
-   "added": 32
+   "returned": 31,
+   "added": 31
   },
   {
    "name": "Courtenay",
@@ -23,30 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 56,
-  "unique": 56,
+  "fetched": 55,
+  "unique": 55,
   "prev_unique": 56
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 826213,
-   "name": "Wednesday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-08-26T18:00:00-07:00",
-   "end": "2026-08-26T21:00:00-07:00",
-   "day": "2026-08-26",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 2,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-08-03T19:03:38+00:00"
-  },
   {
    "id": 770762,
    "name": "Thursday Evening Nexus Nights - 1v1",
@@ -60,7 +42,7 @@
    "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-14T22:25:05+00:00"
@@ -102,24 +84,6 @@
    "updated": "2026-07-23T23:31:47+00:00"
   },
   {
-   "id": 771838,
-   "name": "Saturday Afternoon Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-08-29T12:00:00-07:00",
-   "end": "2026-08-29T16:10:00-07:00",
-   "day": "2026-08-29",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-15T05:03:31+00:00"
-  },
-  {
    "id": 532618,
    "name": "Saturday Afternoon Vendetta Summoner Skirmish I",
    "type": "skirmish",
@@ -136,6 +100,24 @@
    "cents": 1000,
    "currency": "CAD",
    "updated": "2026-04-30T20:27:53+00:00"
+  },
+  {
+   "id": 771838,
+   "name": "Saturday Afternoon Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-08-29T12:00:00-07:00",
+   "end": "2026-08-29T16:10:00-07:00",
+   "day": "2026-08-29",
+   "time": "12:00 PM",
+   "venue": "North Park Picture Framing and Collectables",
+   "city": "Victoria",
+   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
+   "region": "victoria",
+   "cap": 28,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-07-15T05:03:31+00:00"
   },
   {
    "id": 501060,
@@ -222,7 +204,7 @@
    "address": "515 Chatham St, Victoria, BC, V8T 1E1, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 4,
+   "reg": 5,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-24T00:56:05+00:00"
