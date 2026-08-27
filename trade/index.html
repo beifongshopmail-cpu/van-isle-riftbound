@@ -192,7 +192,10 @@
     line-height:1;width:32px;min-height:32px;cursor:pointer;
   }
   .line .mv svg{display:block;margin:0 auto;}
-  .line .mv:active,.line .del:active{border-color:var(--rule-hi);color:var(--bone);}
+  .panel[data-side="1"] .line .mv{color:var(--s2);border-color:#3A2233;}
+  .panel[data-side="2"] .line .mv{color:var(--s1);border-color:#1B3348;}
+  .line .del:active{border-color:var(--rule-hi);color:var(--bone);}
+  .line .mv:active{background:rgba(255,255,255,.06);}
 
   .verdict{
     margin:14px 0;padding:18px 14px;
