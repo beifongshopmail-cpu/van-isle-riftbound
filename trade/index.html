@@ -233,6 +233,69 @@
     margin-top:22px;font-family:var(--mono);font-size:9.5px;
     letter-spacing:.07em;line-height:1.7;text-transform:uppercase;color:var(--mute);
   }
+
+  /* Percent of market, per side. Collapsed by default: at 100/100 the row is
+     quiet and the page behaves exactly as it did before it existed. */
+  .rates{margin-top:10px;}
+  .rtog{
+    width:100%;min-height:var(--tap);
+    display:flex;align-items:center;gap:10px;
+    padding:0 12px;
+    background:var(--plate);
+    border:1px solid var(--rule);border-radius:var(--r);
+    color:var(--dim);
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;text-align:left;cursor:pointer;
+    transition:color var(--mo-fast) ease,border-color var(--mo-fast) ease;
+  }
+  .rtog:active{border-color:var(--rule-hi);}
+  .rtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
+  .rtog .rcar{
+    flex:0 0 auto;display:block;
+    transition:transform var(--mo-fast) var(--mo-ease);
+  }
+  .rtog[aria-expanded="true"] .rcar{transform:rotate(180deg);}
+  .rnow{margin-left:auto;display:flex;gap:10px;}
+
+  .rpan{
+    margin-top:6px;padding:12px;
+    background:var(--plate);
+    border:1px solid var(--rule);border-radius:var(--r);
+  }
+  .rcap{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);margin-bottom:10px;
+  }
+  .rfs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .rf{position:relative;display:flex;align-items:center;gap:8px;min-width:0;}
+  .rf .rfl{
+    flex:0 0 auto;
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    color:var(--c);
+  }
+  .rf input{
+    flex:1;min-width:0;min-height:var(--tap);
+    background:var(--ground);color:var(--bone);
+    border:1px solid var(--rule-hi);border-radius:var(--r-sm);
+    font-family:var(--mono);font-size:16px;text-align:right;
+    padding:0 26px 0 8px;
+    -moz-appearance:textfield;
+  }
+  .rf input::-webkit-outer-spin-button,
+  .rf input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .rf input:focus{outline:none;border-color:var(--c);}
+  .rf .pcs{
+    position:absolute;right:8px;pointer-events:none;
+    font-family:var(--mono);font-size:12px;font-weight:400;color:var(--dim);
+  }
+  .rreset{
+    margin-top:10px;width:100%;min-height:var(--tap);
+    background:none;color:var(--bone);
+    border:1px solid var(--rule-hi);border-radius:var(--r-sm);
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;cursor:pointer;
+  }
+  .rreset:active{background:rgba(255,255,255,.06);}
 </style>
 </head>
 <body>
@@ -261,6 +324,22 @@
         <button type="button" data-cur="USD" aria-pressed="false">USD</button>
       </div>
       <button type="button" class="clear" data-act="clear">Clear both</button>
+    </div>
+
+    <div class="rates">
+      <button type="button" class="rtog" id="rtog" data-act="rtog" aria-expanded="false" aria-controls="rpan">
+        <span>Rates</span>
+        <span class="rnow" id="rnow"></span>
+        <svg class="rcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="rpan" id="rpan" hidden>
+        <div class="rcap">Percent of market price</div>
+        <div class="rfs">
+          <label class="rf" style="--c:var(--s1)"><span class="rfl">Yours</span><input id="pc1" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></label>
+          <label class="rf" style="--c:var(--s2)"><span class="rfl">Theirs</span><input id="pc2" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></label>
+        </div>
+        <button type="button" class="rreset" data-act="rreset">Reset both to 100</button>
+      </div>
     </div>
 
     <div class="find">
@@ -353,6 +432,30 @@
 
   function pcAdj(usd, n){
     return usd * (PCT[n] / 100);
+  }
+
+  function pcOpen(on){
+    el("rtog").setAttribute("aria-expanded", on ? "true" : "false");
+    el("rpan").hidden = !on;
+  }
+
+  function pcSet(n, raw){
+    PCT[n] = pcClamp(raw);
+    save();
+    paint();
+  }
+
+  function wirePc(n){
+    var box = el("pc" + n);
+    // An empty or half-typed box reads as 100 for display, but the field
+    // itself is left alone so backspacing to retype does not fight the input.
+    box.addEventListener("input", function(){
+      pcSet(n, this.value === "" ? 100 : this.value);
+    });
+    box.addEventListener("change", function(){
+      this.value = pcClamp(this.value === "" ? 100 : this.value);
+      pcSet(n, this.value);
+    });
   }
 
   function priceOf(it){
@@ -557,6 +660,19 @@
     }
 
     var act = t.getAttribute("data-act");
+    if(act === "rtog"){
+      pcOpen(el("rtog").getAttribute("aria-expanded") !== "true");
+      return;
+    }
+    if(act === "rreset"){
+      el("pc1").value = 100;
+      el("pc2").value = 100;
+      PCT[1] = 100;
+      PCT[2] = 100;
+      save();
+      paint();
+      return;
+    }
     if(act === "clear"){
       sides[1] = [];
       sides[2] = [];
@@ -614,6 +730,10 @@
     restore();
     pressGroup(el("cur"), "data-cur", CUR);
     pressGroup(el("target"), "data-side", String(SIDE));
+    el("pc1").value = PCT[1];
+    el("pc2").value = PCT[2];
+    wirePc(1);
+    wirePc(2);
 
     fetch("../data/prices.json", { cache: "no-store" })
       .then(function(r){
