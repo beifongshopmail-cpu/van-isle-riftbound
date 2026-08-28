@@ -303,6 +303,7 @@
   var KEY = "vir.trade.v1";
   var D = null, FX = 1, CUR = "CAD", SIDE = 1;
   var sides = { 1: [], 2: [] };
+  var PCT = { 1: 100, 2: 100 };
   var byId = new Map(), setById = new Map();
 
   function el(id){ return document.getElementById(id); }
@@ -315,7 +316,8 @@
   function save(){
     try{
       localStorage.setItem(KEY, JSON.stringify({
-        cur: CUR, side: SIDE, s1: sides[1], s2: sides[2]
+        cur: CUR, side: SIDE, s1: sides[1], s2: sides[2],
+        p1: PCT[1], p2: PCT[2]
       }));
     }catch(e){}
   }
@@ -328,6 +330,8 @@
       if(r.side === 2) SIDE = 2;
       if(Array.isArray(r.s1)) sides[1] = r.s1;
       if(Array.isArray(r.s2)) sides[2] = r.s2;
+      if(r.p1 != null) PCT[1] = pcClamp(r.p1);
+      if(r.p2 != null) PCT[2] = pcClamp(r.p2);
     }catch(e){}
   }
 
@@ -335,6 +339,20 @@
   function money(usd){
     var v = (CUR === "CAD") ? usd * FX : usd;
     return "$" + v.toFixed(2);
+  }
+
+  // Percent of market, per side. A second display transform stacked under
+  // money(): percentage first, then currency. Neither writes to storage.
+  function pcClamp(v){
+    var n = Math.round(Number(v));
+    if(!isFinite(n)) return 100;
+    if(n < 0) return 0;
+    if(n > 200) return 200;
+    return n;
+  }
+
+  function pcAdj(usd, n){
+    return usd * (PCT[n] / 100);
   }
 
   function priceOf(it){
@@ -346,7 +364,7 @@
 
   function sideTotal(n){
     var t = 0, a = sides[n], k;
-    for(k = 0; k < a.length; k++) t += priceOf(a[k]) * a[k].q;
+    for(k = 0; k < a.length; k++) t += pcAdj(priceOf(a[k]), n) * a[k].q;
     return t;
   }
 
@@ -446,7 +464,7 @@
     for(k = 0; k < a.length; k++){
       it = a[k];
       c = byId.get(it.i);
-      unit = priceOf(it);
+      unit = pcAdj(priceOf(it), n);
       html += '<div class="line">' +
               '<div class="top">' +
               '<div class="nm">' + esc(c ? c.n : "Unknown card") + '</div>' +
