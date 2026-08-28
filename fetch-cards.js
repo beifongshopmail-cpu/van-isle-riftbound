@@ -20,6 +20,21 @@ var GALLERY = 'https://riftbound.leagueoflegends.com/en-us/card-gallery';
 var OUT_DIR = 'cards';
 var CATALOGUE = path.join(OUT_DIR, 'catalogue.json');
 var ARTMAP = path.join(OUT_DIR, 'art.json');
+var ART_DIR = path.join(OUT_DIR, 'art');
+// Riot's CDN resizes and reformats on request, so no image library is
+// needed. 744 is the native width the gallery itself serves; 200 is the
+// thumbnail width for search rows and the legend picker. The base URL is
+// taken from each card's own record rather than rebuilt, because the
+// dimension suffix varies by card shape - landscape battlefields and
+// oversized cards are not 744x1039 and a rebuilt URL 404s for every one
+// of them.
+var FULL_W = 744;
+var THUMB_W = 200;
+var IMG_Q = 78;
+var SLEEP_MS = 120;
+// A run that would delete more than this many cached files stops instead.
+// A gallery hiccup must not be able to empty the cache.
+var MAX_PRUNE = 60;
 var PRICES = path.join('data', 'prices.json');
 
 // Safety floor, same idea as MIN_EVENTS and MIN_PRICED. A gallery that
@@ -53,6 +68,8 @@ function get(url, binary) {
     req.setTimeout(45000, function () { req.destroy(new Error('timeout for ' + url)); });
   });
 }
+
+function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
 // The gallery is a Next.js page. Its data route carries a build id that
 // changes on every site deploy, so it is read from the page each run
@@ -115,7 +132,8 @@ function shape(c) {
     t: String(ct.id || ''),
     r: String(rar.id || ''),
     d: doms,
-    h: hashOf(img.url)
+    h: hashOf(img.url),
+    u: String(img.url || '')
   };
   if (typeof c.energy === 'number') { o.e = c.energy; }
   if (typeof c.might === 'number') { o.p = c.might; }
@@ -332,6 +350,92 @@ function main() {
 
     console.log('wrote ' + CATALOGUE + ' (' + fs.statSync(CATALOGUE).size + ' bytes)');
     console.log('wrote ' + ARTMAP + ' (' + fs.statSync(ARTMAP).size + ' bytes)');
+
+    // The filename IS the content hash Riot publishes, which is what makes a
+    // refresh cheap: art that has not changed keeps its name and is skipped,
+    // and redrawn art arrives under a new name. Nothing is ever overwritten.
+    fs.mkdirSync(ART_DIR, { recursive: true });
+
+    var want = {}, srcOf = {}, todo = [];
+    for (var w = 0; w < list.length; w++) {
+      if (!list[w].h || !list[w].u) { continue; }
+      want[list[w].h + '.webp'] = true;
+      want[list[w].h + '.t.webp'] = true;
+      srcOf[list[w].h] = list[w].u;
+    }
+    var wantKeys = Object.keys(want);
+    for (var wk = 0; wk < wantKeys.length; wk++) {
+      var f = wantKeys[wk];
+      if (fs.existsSync(path.join(ART_DIR, f))) { continue; }
+      var isThumb = f.indexOf('.t.webp') !== -1;
+      todo.push({
+        file: f,
+        src: srcOf[f.split('.')[0]],
+        w: isThumb ? THUMB_W : FULL_W
+      });
+    }
+    console.log('images wanted: ' + wantKeys.length);
+    console.log('already cached: ' + (wantKeys.length - todo.length));
+    console.log('to download: ' + todo.length);
+
+    var got = 0, gotBytes = 0, failed = [];
+    var chain = Promise.resolve();
+    todo.forEach(function (t) {
+      chain = chain.then(function () {
+        return sleep(SLEEP_MS);
+      }).then(function () {
+        return get(t.src + (t.src.indexOf('?') === -1 ? '?' : '&') +
+          'w=' + t.w + '&fm=webp&q=' + IMG_Q, true);
+      }).then(function (buf) {
+        if (!buf || buf.length < 400) {
+          throw new Error('suspiciously small response, ' + (buf ? buf.length : 0) + ' bytes');
+        }
+        fs.writeFileSync(path.join(ART_DIR, t.file), buf);
+        got++;
+        gotBytes += buf.length;
+        if (got % 100 === 0) {
+          console.log('  ' + got + '/' + todo.length + ', ' +
+            Math.round(gotBytes / 1048576) + ' MB');
+        }
+      }).catch(function (e) {
+        failed.push(t.file + ': ' + e.message);
+      });
+    });
+
+    return chain.then(function () {
+      console.log('downloaded: ' + got + ' files, ' + (gotBytes / 1048576).toFixed(1) + ' MB');
+      console.log('download failures: ' + failed.length);
+      for (var fl = 0; fl < Math.min(failed.length, 10); fl++) {
+        console.log('  FAIL ' + failed[fl]);
+      }
+
+      // Anything on disk the live catalogue no longer references is stale.
+      // Pruning is capped: a partial or broken gallery response must not be
+      // able to empty a cache that took an hour to build.
+      var onDisk = fs.readdirSync(ART_DIR);
+      var stale = [];
+      for (var od = 0; od < onDisk.length; od++) {
+        if (!want[onDisk[od]]) { stale.push(onDisk[od]); }
+      }
+      console.log('files on disk: ' + onDisk.length);
+      console.log('stale files: ' + stale.length);
+      if (stale.length > MAX_PRUNE) {
+        console.log('REFUSING TO PRUNE: ' + stale.length + ' stale files exceeds the cap of ' +
+          MAX_PRUNE + '. Nothing deleted. Check the gallery response before re-running.');
+      } else {
+        for (var st = 0; st < stale.length; st++) {
+          fs.unlinkSync(path.join(ART_DIR, stale[st]));
+          console.log('  pruned ' + stale[st]);
+        }
+      }
+
+      var total = 0;
+      var finalList = fs.readdirSync(ART_DIR);
+      for (var fi = 0; fi < finalList.length; fi++) {
+        total += fs.statSync(path.join(ART_DIR, finalList[fi])).size;
+      }
+      console.log('cache: ' + finalList.length + ' files, ' + (total / 1048576).toFixed(1) + ' MB');
+    });
   });
 }
 
