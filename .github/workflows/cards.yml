@@ -1,0 +1,136 @@
+name: refresh cards
+
+# Weekly, Mondays at 08:00 UTC. Card sets drop a few times a year, so
+# daily would be noise. workflow_dispatch is the set-drop-day trigger.
+#
+# THIS WORKFLOW NEVER WRITES TO main. It does the whole job - fetch the
+# catalogue, download new art, commit - on a branch, then opens a pull
+# request. The work is finished and verified before anyone is asked
+# anything, so merging is instant rather than the point where downloading
+# starts. A run that finds nothing new exits silently: no branch, no pull
+# request, no notification.
+on:
+  schedule:
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-cards
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Record the cache before
+        id: before
+        run: |
+          echo "files=$(ls -1 cards/art | wc -l)" >> "$GITHUB_OUTPUT"
+          echo "cards=$(node -e "console.log(require('./cards/catalogue.json').cards.length)")" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch the catalogue and any new art
+        run: node fetch-cards.js
+
+      - name: Measure what changed
+        id: after
+        run: |
+          echo "files=$(ls -1 cards/art | wc -l)" >> "$GITHUB_OUTPUT"
+          echo "cards=$(node -e "console.log(require('./cards/catalogue.json').cards.length)")" >> "$GITHUB_OUTPUT"
+          echo "mapped=$(node -e "console.log(Object.keys(require('./cards/art.json').art).length)")" >> "$GITHUB_OUTPUT"
+          echo "mb=$(du -sm cards/art | cut -f1)" >> "$GITHUB_OUTPUT"
+          if git diff --quiet -- cards/art cards/catalogue.json cards/art.json; then
+            echo "changed=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=yes" >> "$GITHUB_OUTPUT"
+          fi
+
+      # generated_at changes on every run, so catalogue.json is always
+      # different even when nothing real moved. New ART is the honest
+      # signal that a set has actually dropped.
+      - name: Decide whether this is worth a pull request
+        id: gate
+        run: |
+          B=${{ steps.before.outputs.files }}
+          A=${{ steps.after.outputs.files }}
+          BC=${{ steps.before.outputs.cards }}
+          AC=${{ steps.after.outputs.cards }}
+          if [ "$A" -ne "$B" ] || [ "$AC" -ne "$BC" ]; then
+            echo "open=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "open=no" >> "$GITHUB_OUTPUT"
+          fi
+          echo "new_files=$((A - B))" >> "$GITHUB_OUTPUT"
+          echo "new_cards=$((AC - BC))" >> "$GITHUB_OUTPUT"
+
+      - name: Summarise
+        run: |
+          {
+            echo "| metric | before | after |"
+            echo "| --- | --- | --- |"
+            echo "| cards in catalogue | ${{ steps.before.outputs.cards }} | ${{ steps.after.outputs.cards }} |"
+            echo "| cached image files | ${{ steps.before.outputs.files }} | ${{ steps.after.outputs.files }} |"
+            echo "| products mapped to art | - | ${{ steps.after.outputs.mapped }} |"
+            echo "| cache size | - | ${{ steps.after.outputs.mb }} MB |"
+            echo ""
+            if [ "${{ steps.gate.outputs.open }}" = "yes" ]; then
+              echo "New cards found. A pull request has been opened for review."
+            else
+              echo "No new cards. Nothing was committed and no pull request was opened."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open a pull request
+        if: steps.gate.outputs.open == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="cards/refresh-$(date -u +%Y%m%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add cards
+          git commit -m "cards: refresh from Riot's gallery $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --set-upstream origin "$BRANCH"
+          BODY="$RUNNER_TEMP/cards-pr.md"
+          {
+            echo "New Riftbound cards appeared in Riot's official gallery."
+            echo ""
+            echo "The art is already downloaded and committed on this branch."
+            echo "Merging publishes it; nothing downloads at merge time."
+            echo ""
+            echo "| metric | before | after |"
+            echo "| --- | --- | --- |"
+            echo "| cards in catalogue | ${{ steps.before.outputs.cards }} | ${{ steps.after.outputs.cards }} |"
+            echo "| cached image files | ${{ steps.before.outputs.files }} | ${{ steps.after.outputs.files }} |"
+            echo ""
+            echo "New cards: ${{ steps.gate.outputs.new_cards }}"
+            echo "New image files: ${{ steps.gate.outputs.new_files }}"
+            echo "Products mapped to art: ${{ steps.after.outputs.mapped }}"
+            echo "Cache size after: ${{ steps.after.outputs.mb }} MB"
+            echo ""
+            echo "Closing this without merging is safe. The next run will"
+            echo "open a fresh one, because the art it needs is still missing."
+          } > "$BODY"
+          gh pr create \
+            --title "New Riftbound cards: ${{ steps.gate.outputs.new_cards }} cards, ${{ steps.gate.outputs.new_files }} image files" \
+            --body-file "$BODY" \
+            --base main \
+            --head "$BRANCH"
+
+      - name: Nothing new
+        if: steps.gate.outputs.open != 'yes'
+        run: |
+          git checkout -- cards || true
+          echo "no new cards; working tree restored, nothing committed"
