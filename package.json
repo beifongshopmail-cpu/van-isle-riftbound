@@ -6,7 +6,8 @@
   "main": "fetch-events.js",
   "scripts": {
     "fetch": "node fetch-events.js",
-    "fetch-prices": "node fetch-prices.js"
+    "fetch-prices": "node fetch-prices.js",
+    "fetch-cards": "node fetch-cards.js"
   },
   "engines": {
     "node": ">=18"
