@@ -69,6 +69,55 @@ function priorPriced(file) {
   }
 }
 
+const BASELINE_DAYS = Number(process.env.VIRB_BASELINE_DAYS || 7);
+
+// Reads the previous file whole. Never throws; returns null if the file
+// is missing, empty or unparseable.
+function priorAll(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch (e) {
+    return null;
+  }
+}
+
+// Attaches a frozen baseline price to every card and returns the date
+// that baseline describes. Three cases:
+//   no usable prior baseline -> seed from today's prices, dated now
+//   baseline older than the limit -> roll forward to the prior run's
+//     prices, dated by the prior run
+//   otherwise -> carry the prior baseline through untouched
+function attachBaseline(cards, prev, nowIso) {
+  const prevCards = (prev && Array.isArray(prev.cards)) ? prev.cards : null;
+  const prevAt = (prev && typeof prev.baseline_at === "string") ? prev.baseline_at : null;
+  let ageDays = Infinity;
+  if (prevAt) {
+    const t = Date.parse(prevAt);
+    if (isFinite(t)) ageDays = (Date.parse(nowIso) - t) / 86400000;
+  }
+  if (!prevCards || !prevAt) {
+    for (const c of cards) c.b = Object.assign({}, c.p);
+    return nowIso;
+  }
+  const roll = ageDays >= BASELINE_DAYS;
+  const src = new Map();
+  for (const pc of prevCards) {
+    const from = roll ? pc.p : pc.b;
+    if (from) src.set(pc.i, from);
+  }
+  for (const c of cards) {
+    const from = src.get(c.i);
+    const out = {};
+    if (from) {
+      for (const k of Object.keys(c.p)) {
+        if (typeof from[k] === "number") out[k] = from[k];
+      }
+    }
+    c.b = out;
+  }
+  return roll ? (typeof prev.generated_at === "string" ? prev.generated_at : prevAt) : prevAt;
+}
+
 async function main() {
   const fx = await fxRate();
   console.log("fx USDCAD " + fx.rate + " as of " + fx.date);
@@ -137,8 +186,11 @@ async function main() {
   sets.sort(function (a, b) { return a.g - b.g; });
 
   const now = new Date();
+  const prevAllFile = priorAll(OUT_FILE);
+  const baselineAt = attachBaseline(cards, prevAllFile, now.toISOString());
   const payload = {
     generated_at: now.toISOString(),
+    baseline_at: baselineAt,
     generated_local: now.toLocaleString("en-CA", { timeZone: TZ }),
     source: "TCGplayer market price via tcgcsv.com, category " + CATEGORY,
     fx: { pair: "USDCAD", rate: fx.rate, date: fx.date, source: "Bank of Canada Valet" },
