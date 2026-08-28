@@ -125,6 +125,11 @@ function shape(c) {
   for (var i = 0; i < dv.length; i++) {
     if (dv[i] && dv[i].id) { doms.push(String(dv[i].id)); }
   }
+  var cgTags = (c.tags && c.tags.tags) || [];
+  var cgList = [];
+  for (var j = 0; j < cgTags.length; j++) {
+    if (cgTags[j]) { cgList.push(String(cgTags[j])); }
+  }
   var o = {
     c: String(c.publicCode || ''),
     n: String(c.name || ''),
@@ -137,6 +142,7 @@ function shape(c) {
   };
   if (typeof c.energy === 'number') { o.e = c.energy; }
   if (typeof c.might === 'number') { o.p = c.might; }
+  if (cgList.length) { o.g = cgList; }
   // Riot's policy requires official card text to be displayed wherever a
   // card is shown. Nothing renders it yet; it is captured now so a later
   // surface does not need a second pass over the catalogue.
