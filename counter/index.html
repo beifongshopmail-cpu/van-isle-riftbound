@@ -503,7 +503,7 @@
     <div class="lgpchips" id="lgpchips"></div>
   </div>
 </div>
-<script src="legends.js"></script>
+<script src="../cards/legends.js"></script>
 <script>
 (function(){
   var GKEY = "vir.counter.game.v1";
@@ -536,7 +536,7 @@
   function lgaSave(){ try { localStorage.setItem(AKEY, lgaMode); } catch (e) {} }
   function lgaSrc(p){
     var id = players[p] && players[p].art;
-    return id ? ("art/" + id + ".jpg") : "";
+    return id ? ("../cards/art/" + id + ".t.webp") : "";
   }
   var tmInt = null;
   var tmArm = 0, tmArmT = null;
@@ -1443,29 +1443,39 @@
   // with no domains renders nothing rather than a placeholder.
   function lgaDom(nm, cls){
     if (typeof VIR_LEGENDS === "undefined" || !nm) { return ""; }
-    var e = null, i;
-    for (i = 0; i < VIR_LEGENDS.length; i++) {
-      if (VIR_LEGENDS[i].n === nm) { e = VIR_LEGENDS[i]; break; }
-    }
+    var e = lgaFind(nm);
     if (!e || !e.d || !e.d.length) { return ""; }
     var h = "";
     for (i = 0; i < e.d.length; i++) {
       var d = String(e.d[i]).toLowerCase();
-      h += "<img src=\"art/rune_" + esc(d) + ".svg\" alt=\"" + esc(e.d[i]) + "\">";
+      h += "<img src=\"../cards/runes/rune_" + esc(d) + ".svg\" alt=\"" + esc(e.d[i]) + "\">";
     }
     return "<span class=\"" + cls + "\">" + h + "</span>";
   }
 
   function lgpFirstArt(x){
-    for (var i = 0; i < x.v.length; i++) { if (x.v[i].a) { return x.v[i]; } }
+    for (var i = 0; i < x.v.length; i++) { if (x.v[i] && x.v[i].h) { return x.v[i]; } }
     return null;
   }
-  function lgpEntry(nm){
-    if (typeof VIR_LEGENDS === "undefined") { return null; }
-    for (var i = 0; i < VIR_LEGENDS.length; i++) {
+  function lgaNorm(s){
+    return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9]/g, "");
+  }
+
+  function lgaFind(nm){
+    if (typeof VIR_LEGENDS === "undefined" || !nm) { return null; }
+    var i;
+    for (i = 0; i < VIR_LEGENDS.length; i++) {
       if (VIR_LEGENDS[i].n === nm) { return VIR_LEGENDS[i]; }
     }
+    var k = lgaNorm(nm);
+    for (i = 0; i < VIR_LEGENDS.length; i++) {
+      if (lgaNorm(VIR_LEGENDS[i].n) === k) { return VIR_LEGENDS[i]; }
+    }
     return null;
+  }
+
+  function lgpEntry(nm){
+    return lgaFind(nm);
   }
   function lgpSplit(n){
     var i = n.indexOf(",");
@@ -1485,7 +1495,7 @@
       var a = lgpFirstArt(VIR_LEGENDS[i]), nm = lgpSplit(VIR_LEGENDS[i].n);
       h += "<button type=\"button\" class=\"lgptile\" data-lgpi=\"" + i +
         "\" aria-pressed=\"false\"><div class=\"lgppic\"" +
-        (a ? " style=\"background-image:url(art/" + a.i + ".jpg)\"" : "") +
+        (a ? " style=\"background-image:url(../cards/art/" + a.h + ".t.webp)\"" : "") +
         "></div><div class=\"lgpn\">" + esc(nm[0]) +
         "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div></button>";
     }
@@ -1510,7 +1520,7 @@
     for (i = 0; i < e.v.length; i++) {
       var v = e.v[i];
       h += "<button type=\"button\" class=\"lgpchip\" data-lgpv=\"" + i + "\" aria-pressed=\"" +
-        (v.i === players[lgpFor].art ? "true" : "false") + "\">" + esc(v.l) + "</button>";
+        (v.h === players[lgpFor].art ? "true" : "false") + "\">" + esc(v.l) + "</button>";
     }
     document.getElementById("lgpchips").innerHTML = h;
     document.getElementById("lgptitle").textContent = e.n;
@@ -1530,7 +1540,7 @@
     if (!lgpFor) { return; }
     players[lgpFor].legend = nm;
     var e = lgpEntry(nm), a = e ? lgpFirstArt(e) : null;
-    players[lgpFor].art = a ? a.i : "";
+    players[lgpFor].art = a ? a.h : "";
     savePlayers();
     lgpLabel(lgpFor);
     lgpSyncTiles();
@@ -1556,7 +1566,7 @@
     if (!t || !lgpFor) { return; }
     var en = lgpEntry(players[lgpFor].legend);
     if (!en) { return; }
-    players[lgpFor].art = en.v[parseInt(t.getAttribute("data-lgpv"), 10)].i;
+    players[lgpFor].art = en.v[parseInt(t.getAttribute("data-lgpv"), 10)].h;
     savePlayers();
     lgpSyncChips();
     render();
