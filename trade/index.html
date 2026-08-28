@@ -312,7 +312,7 @@
   .tlpan{border-top:1px solid var(--rule);padding-top:10px}
   .tlnote{width:100%;font-size:16px;padding:8px 10px;background:var(--plate);border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;box-sizing:border-box}
   .tlsave{display:block;width:100%;margin-top:8px;padding:10px;background:var(--plate);border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;font:inherit}
-  .tlrow{border-top:1px solid var(--rule);padding:10px 0}
+  .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font:inherit}
   .tlhd{display:flex;align-items:baseline;gap:8px}
   .tlwhen{color:var(--dim)}
   .tltot{margin-left:auto;white-space:nowrap}
@@ -932,13 +932,13 @@
       pcs = (r.pct && (r.pct[1] !== 100 || r.pct[2] !== 100))
         ? '<span class="tlpcs"><b class="tlt1">' + r.pct[1] + '%</b> <b class="tlt2">' + r.pct[2] + '%</b></span>'
         : "";
-      h += '<div class="tlrow" data-act="tlopen" data-k="' + k + '"><div class="tlhd"><span class="tlwhen">'
+      h += '<button type="button" class="tlrow" data-act="tlopen" data-k="' + k + '"><div class="tlhd"><span class="tlwhen">'
         + esc(tlWhen(r.at)) + '</span>' + pcs
         + '<span class="tltot"><b class="tlt1">' + esc(tlMoney(tlTotal(r, 1), r))
         + '</b><span class="tlvs">/</span><b class="tlt2">'
         + esc(tlMoney(tlTotal(r, 2), r)) + '</b></span></div>'
         + (r.note ? '<div class="tlnl">' + esc(r.note) + '</div>' : "")
-        + '</div>';
+        + '</button>';
     }
     el("tllist").innerHTML = h;
   }
