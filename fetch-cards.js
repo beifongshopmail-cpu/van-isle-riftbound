@@ -119,9 +119,6 @@ function shape(c) {
   };
   if (typeof c.energy === 'number') { o.e = c.energy; }
   if (typeof c.might === 'number') { o.p = c.might; }
-  var ill = c.illustrator;
-  if (Array.isArray(ill)) { ill = ill.join(', '); }
-  if (typeof ill === 'string' && ill) { o.a = ill; }
   // Riot's policy requires official card text to be displayed wherever a
   // card is shown. Nothing renders it yet; it is captured now so a later
   // surface does not need a second pass over the catalogue.
@@ -197,25 +194,77 @@ function main() {
     var byCode = {};
     for (var b = 0; b < list.length; b++) { byCode[list[b].c.toUpperCase()] = list[b]; }
 
+    // Some price rows carry no usable card number at all -- runes are filed
+    // as "R04" with no set, split cards as "T01 // T02". Riot's own data is
+    // unambiguous; the gap is entirely on the price side, so those rows are
+    // matched on name plus set instead. Within one set a card name is
+    // unique, which is what makes this exact rather than approximate. Any
+    // name that resolves to more than one card in its set is dropped rather
+    // than guessed at.
+    var byName = {}, nameDupes = 0;
+    for (var nb = 0; nb < list.length; nb++) {
+      var nk = list[nb].s.toUpperCase() + '|' + list[nb].n.toUpperCase().replace(/\s+/g, ' ').trim();
+      if (byName[nk]) { byName[nk] = 'DUPE'; nameDupes++; continue; }
+      byName[nk] = list[nb];
+    }
+    console.log('name index entries: ' + Object.keys(byName).length + ', ambiguous names: ' + nameDupes);
+
     var prices = JSON.parse(fs.readFileSync(PRICES, 'utf8'));
     var pcards = prices.cards || [];
     console.log('price rows: ' + pcards.length);
 
+    // Every mapping records HOW it was found. Without this an exact code
+    // match and a fallback to the base card's picture look identical in the
+    // data, so a future join defect would read as success rather than as a
+    // gap. m: 1 exact code, 2 base-art fallback, 3 name and set.
     var map = {};
-    var stat = { variant: 0, base: 0, sealed: 0, split: 0, odd: 0, noPrefix: 0, miss: 0 };
-    var oddSamples = [], missSamples = [];
+    var stat = { exact: 0, base: 0, name: 0, sealed: 0, split: 0, odd: 0, noPrefix: 0, miss: 0 };
+    var oddSamples = [], missSamples = [], nameSamples = [];
+
+    var setAbbr = {};
+    var psets = prices.sets || [];
+    for (var sa = 0; sa < psets.length; sa++) {
+      setAbbr[String(psets[sa].g)] = String(psets[sa].a || '');
+    }
+
+    // Falls back to name and set for any row whose number cannot be parsed.
+    function byNameSet(r) {
+      var ab = (setAbbr[String(r.g)] || '').toUpperCase();
+      if (!ab) { return null; }
+      var nk = ab + '|' + String(r.n || '').toUpperCase().replace(/\s+/g, ' ').trim();
+      var c = byName[nk];
+      if (!c || c === 'DUPE') { return null; }
+      return c;
+    }
 
     for (var p = 0; p < pcards.length; p++) {
       var r = pcards[p];
       var rawc = String(r.c || '');
+      var viaName = null;
+
       if (!rawc) { stat.sealed++; continue; }
-      if (rawc.indexOf('//') !== -1) { stat.split++; continue; }
-      var pm = rawc.toUpperCase().match(/^(\d+)([A-Z]*)(\*?)\/(\d+)$/);
+
+      var pm = rawc.indexOf('//') === -1
+        ? rawc.toUpperCase().match(/^(\d+)([A-Z]*)(\*?)\/(\d+)$/)
+        : null;
+
       if (!pm) {
-        stat.odd++;
-        if (oddSamples.length < 8) { oddSamples.push(rawc + ' ' + r.n); }
+        viaName = byNameSet(r);
+        if (!viaName) {
+          if (rawc.indexOf('//') !== -1) { stat.split++; }
+          else {
+            stat.odd++;
+            if (oddSamples.length < 8) { oddSamples.push(rawc + ' ' + r.n); }
+          }
+          continue;
+        }
+        if (!viaName.h) { stat.miss++; continue; }
+        map[String(r.i)] = { h: viaName.h, m: 3 };
+        stat.name++;
+        if (nameSamples.length < 8) { nameSamples.push(rawc + ' -> ' + viaName.c + ' ' + viaName.n); }
         continue;
       }
+
       var pref = denom[pm[4]];
       if (!pref) { stat.noPrefix++; continue; }
       var stem = pref + '-' + pad3(pm[1]);
@@ -234,15 +283,17 @@ function main() {
         continue;
       }
       if (!byCode[hit].h) { stat.miss++; continue; }
-      map[String(r.i)] = byCode[hit].h;
-      if (exact) { stat.variant++; } else { stat.base++; }
+      map[String(r.i)] = { h: byCode[hit].h, m: exact ? 1 : 2 };
+      if (exact) { stat.exact++; } else { stat.base++; }
     }
 
-    console.log('joined exact: ' + stat.variant);
-    console.log('joined to base art (no separate variant published): ' + stat.base);
+    console.log('matched on exact code: ' + stat.exact);
+    console.log('matched to base art, no separate variant published: ' + stat.base);
+    console.log('matched on name and set: ' + stat.name);
+    for (var ns = 0; ns < nameSamples.length; ns++) { console.log('  BY NAME: ' + nameSamples[ns]); }
     console.log('sealed rows with no card number: ' + stat.sealed);
-    console.log('split cards skipped: ' + stat.split);
-    console.log('unparsable card numbers: ' + stat.odd);
+    console.log('split cards still unmatched: ' + stat.split);
+    console.log('unparsable and unmatched by name: ' + stat.odd);
     for (var os = 0; os < oddSamples.length; os++) { console.log('  ODD: ' + oddSamples[os]); }
     console.log('no prefix for denominator: ' + stat.noPrefix);
     console.log('unmatched: ' + stat.miss);
@@ -271,8 +322,9 @@ function main() {
       source: 'riftbound.leagueoflegends.com card gallery',
       totals: {
         mapped: Object.keys(map).length,
-        exact: stat.variant,
+        exact: stat.exact,
         base_fallback: stat.base,
+        by_name: stat.name,
         unmatched: stat.miss
       },
       art: map
