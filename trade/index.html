@@ -303,6 +303,26 @@
   .pcx:empty{display:none;}
   .panel[data-side="1"] .pcx{color:var(--s1);}
   .panel[data-side="2"] .pcx{color:var(--s2);}
+
+  .tlwrap{margin-top:18px}
+  .tltog{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:10px 0;color:inherit;font:inherit;text-align:left}
+  .tlcar{transition:transform var(--mo-fast) var(--mo-ease)}
+  .tltog[aria-expanded="true"] .tlcar{transform:rotate(180deg)}
+  .tlcount{margin-left:auto}
+  .tlpan{border-top:1px solid var(--rule);padding-top:10px}
+  .tlnote{width:100%;font-size:16px;padding:8px 10px;background:var(--plate);border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;box-sizing:border-box}
+  .tlsave{display:block;width:100%;margin-top:8px;padding:10px;background:var(--plate);border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;font:inherit}
+  .tlrow{border-top:1px solid var(--rule);padding:10px 0}
+  .tlhd{display:flex;align-items:baseline;gap:8px}
+  .tlwhen{color:var(--dim)}
+  .tltot{margin-left:auto;white-space:nowrap}
+  .tlt1{color:var(--s1)}
+  .tlt2{color:var(--s2)}
+  .tlvs{padding:0 6px}
+  .tlnl{margin-top:4px}
+  .tlpcs{margin-left:6px}
+  .tlempty{padding:10px 0}
+  .tlclear{display:block;width:100%;margin-top:12px;padding:8px;background:none;border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;font:inherit}
 </style>
 </head>
 <body>
@@ -371,6 +391,20 @@
       <div class="who" id="who"></div>
       <div class="bar" aria-hidden="true"><i class="b1" id="b1"></i><i class="b2" id="b2"></i></div>
     </div>
+
+    <section class="tlwrap">
+      <button type="button" class="tltog" id="tltog" data-act="tltog" aria-expanded="false" aria-controls="tlpan">
+        <span>Saved trades</span>
+        <span class="tlcount" id="tlcount"></span>
+        <svg class="tlcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="tlpan" id="tlpan" hidden>
+        <input id="tlnote" class="tlnote" type="text" maxlength="60" placeholder="Label this trade (optional)">
+        <button type="button" class="tlsave" id="tlsave" data-act="tlsave">Save this trade</button>
+        <div id="tllist"></div>
+        <button type="button" class="tlclear" id="tlclear" data-act="tlclear" hidden>Delete all saved trades</button>
+      </div>
+    </section>
 
     <section class="panel" data-side="2">
       <div class="head"><span class="lb">Their cards</span><span class="pcx" id="pcx2"></span><span class="tot" id="tot2">$0.00</span></div>
@@ -687,6 +721,29 @@
       pcOpen(el("rtog").getAttribute("aria-expanded") !== "true");
       return;
     }
+    if(act === "tltog"){
+      tlOpen(el("tltog").getAttribute("aria-expanded") !== "true");
+      return;
+    }
+    if(act === "tlsave"){
+      tlSave();
+      return;
+    }
+    if(act === "tlclear"){
+      if(TLARM){
+        clearTimeout(TLARM);
+        TLARM = 0;
+        tlWrite([]);
+        tlRender();
+        return;
+      }
+      el("tlclear").textContent = "Sure?";
+      TLARM = setTimeout(function(){
+        TLARM = 0;
+        el("tlclear").textContent = "Delete all saved trades";
+      }, 3000);
+      return;
+    }
     if(act === "rreset"){
       el("pc1").value = 100;
       el("pc2").value = 100;
@@ -749,8 +806,119 @@
     return s;
   }
 
+  var TLKEY = "vir.trade.log.v1", TLCAP = 50, TLARM = 0;
+
+  function tlLoad(){
+    try{
+      var a = JSON.parse(localStorage.getItem(TLKEY));
+      return Array.isArray(a) ? a : [];
+    }catch(e){ return []; }
+  }
+
+  function tlWrite(a){
+    try{ localStorage.setItem(TLKEY, JSON.stringify(a)); }catch(e){}
+  }
+
+  // Freezes actual numbers, never references. Prices, names, the FX rate
+  // and both percentages are copied in here and never read live again.
+  function tlSnap(){
+    var rec = {
+      v: 1,
+      at: Date.now(),
+      note: el("tlnote").value.slice(0, 60),
+      cur: CUR,
+      fx: { rate: FX, date: (D && D.fx) ? D.fx.date : "" },
+      pd: (D && D.generated_at) ? D.generated_at : "",
+      pct: { 1: PCT[1], 2: PCT[2] },
+      s1: [],
+      s2: []
+    };
+    var n, a, k, it, c;
+    for(n = 1; n <= 2; n++){
+      a = sides[n];
+      for(k = 0; k < a.length; k++){
+        it = a[k];
+        c = byId.get(it.i);
+        rec["s" + n].push({
+          i: it.i,
+          s: it.s,
+          q: it.q,
+          u: priceOf(it),
+          n: c ? String(c.n || "") : "",
+          c: c ? String(c.c || "") : "",
+          sn: c ? String(setLabel(c.g) || "") : ""
+        });
+      }
+    }
+    return rec;
+  }
+
+  // Uses the RECORD's currency and rate, never the live ones.
+  function tlMoney(usd, rec){
+    var v = (rec.cur === "CAD") ? usd * rec.fx.rate : usd;
+    return "$" + v.toFixed(2);
+  }
+
+  // Derived from the frozen line prices, the same way the counter derives
+  // every score from its stream. No total is stored.
+  function tlTotal(rec, n){
+    var a = rec["s" + n] || [], t = 0, k;
+    var pc = (rec.pct && rec.pct[n] != null) ? rec.pct[n] : 100;
+    for(k = 0; k < a.length; k++) t += a[k].u * (pc / 100) * a[k].q;
+    return t;
+  }
+
+  function tlWhen(ms){
+    var d = new Date(ms);
+    return d.toLocaleDateString("en-CA", { month: "short", day: "numeric" })
+      + " " + d.toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
+  }
+
+  function tlRender(){
+    var a = tlLoad(), h = "", k, r, pcs;
+    el("tlcount").textContent = a.length ? String(a.length) : "";
+    el("tlclear").hidden = !a.length;
+    el("tlclear").textContent = "Delete all saved trades";
+    if(!a.length){
+      el("tllist").innerHTML = '<div class="tlempty">Nothing saved yet.</div>';
+      return;
+    }
+    for(k = 0; k < a.length; k++){
+      r = a[k];
+      pcs = (r.pct && (r.pct[1] !== 100 || r.pct[2] !== 100))
+        ? '<span class="tlpcs"><b class="tlt1">' + r.pct[1] + '%</b> <b class="tlt2">' + r.pct[2] + '%</b></span>'
+        : "";
+      h += '<div class="tlrow"><div class="tlhd"><span class="tlwhen">'
+        + esc(tlWhen(r.at)) + '</span>' + pcs
+        + '<span class="tltot"><b class="tlt1">' + esc(tlMoney(tlTotal(r, 1), r))
+        + '</b><span class="tlvs">/</span><b class="tlt2">'
+        + esc(tlMoney(tlTotal(r, 2), r)) + '</b></span></div>'
+        + (r.note ? '<div class="tlnl">' + esc(r.note) + '</div>' : "")
+        + '</div>';
+    }
+    el("tllist").innerHTML = h;
+  }
+
+  // Non-destructive: saving does not clear the panels.
+  function tlSave(){
+    if(!sides[1].length && !sides[2].length) return;
+    var a = tlLoad();
+    a.unshift(tlSnap());
+    if(a.length > TLCAP) a = a.slice(0, TLCAP);
+    tlWrite(a);
+    el("tlnote").value = "";
+    tlRender();
+    tlOpen(true);
+  }
+
+  function tlOpen(on){
+    el("tltog").setAttribute("aria-expanded", on ? "true" : "false");
+    el("tlpan").hidden = !on;
+  }
+
   function boot(){
     restore();
+    tlRender();
     pressGroup(el("cur"), "data-cur", CUR);
     pressGroup(el("target"), "data-side", String(SIDE));
     el("pc1").value = PCT[1];
