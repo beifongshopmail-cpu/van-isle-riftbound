@@ -1501,12 +1501,31 @@
     }
     g.innerHTML = h;
   }
+  function lgpSetTileArt(tile, e, want){
+    if (!tile || !e) { return; }
+    var h = "", i;
+    if (want) {
+      for (i = 0; i < e.v.length; i++) {
+        if (e.v[i] && e.v[i].h === want) { h = want; break; }
+      }
+    }
+    if (!h) {
+      var a = lgpFirstArt(e);
+      h = a ? a.h : "";
+    }
+    var pic = tile.getElementsByClassName("lgppic")[0];
+    if (!pic) { return; }
+    pic.style.backgroundImage = h ? ("url(../cards/art/" + h + ".t.webp)") : "";
+  }
   function lgpSyncTiles(){
     var t = document.getElementById("lgpgrid").getElementsByTagName("button"), i;
     var cur = lgpFor ? players[lgpFor].legend : "";
+    var art = lgpFor ? players[lgpFor].art : "";
     for (i = 0; i < t.length; i++) {
       var e = VIR_LEGENDS[parseInt(t[i].getAttribute("data-lgpi"), 10)];
-      t[i].setAttribute("aria-pressed", (e && e.n === cur) ? "true" : "false");
+      var on = (e && e.n === cur);
+      t[i].setAttribute("aria-pressed", on ? "true" : "false");
+      lgpSetTileArt(t[i], e, on ? art : "");
     }
   }
   function lgpSyncChips(){
@@ -1569,6 +1588,7 @@
     players[lgpFor].art = en.v[parseInt(t.getAttribute("data-lgpv"), 10)].h;
     savePlayers();
     lgpSyncChips();
+    lgpSyncTiles();
     render();
   });
   document.getElementById("lgpnone").addEventListener("click", function(){
