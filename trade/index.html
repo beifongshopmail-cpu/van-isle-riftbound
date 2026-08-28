@@ -1168,7 +1168,7 @@
     f.click();
   }
 
-  var RCPW = 1080, RCPPAD = 48, RCPROWS = 26;
+  var RCPW = 1080, RCPPAD = 48, RCPMAXH = 14000, RCPLH = 62;
 
   // Canvas cannot render HTML, so the receipt is drawn from the same
   // frozen record the sheet reads. Numbers can never disagree; only
@@ -1212,7 +1212,7 @@
     var t1 = tlTotal(rec, 1), t2 = tlTotal(rec, 2);
     var gap = Math.abs(t1 - t2);
     var last = (page === pages - 1);
-    h = RCPPAD * 2 + 150 + lines.length * 62 + (last ? 150 : 40);
+    h = RCPPAD * 2 + 150 + lines.length * RCPLH + (last ? 150 : 40);
     cv.width = RCPW;
     cv.height = Math.round(h);
     cx = cv.getContext("2d");
@@ -1315,11 +1315,15 @@
     return cv;
   }
 
+  // ONE image unless it would exceed the canvas area limit iOS enforces,
+  // above which a canvas silently returns blank. The split is a guard,
+  // not a layout choice, and does not fire for any realistic trade.
   function rcpBuild(k){
-    var a = tlLoad(), rec = a[k], all, pages, p, slice, cv, h;
+    var a = tlLoad(), rec = a[k], all, per, pages, p, slice, cv, h;
     if(!rec) return;
     all = rcpLines(rec);
-    pages = Math.max(1, Math.ceil(all.length / RCPROWS));
+    per = Math.floor((RCPMAXH - 400) / RCPLH);
+    pages = Math.max(1, Math.ceil(all.length / per));
     h = '<div class="rcphd"><b>Receipt</b>'
       + '<button type="button" class="rcpx" data-act="rcphide">Close</button></div>'
       + '<div class="rcphint tlwhen">Press and hold an image to save or share it.</div>'
@@ -1327,7 +1331,7 @@
     el("rcpwrap").innerHTML = h;
     el("rcpwrap").hidden = false;
     for(p = 0; p < pages; p++){
-      slice = all.slice(p * RCPROWS, (p + 1) * RCPROWS);
+      slice = (pages === 1) ? all : all.slice(p * per, (p + 1) * per);
       cv = rcpDraw(rec, slice, p, pages);
       el("rcpimgs").appendChild(rcpImg(cv));
     }
