@@ -226,6 +226,23 @@ function fetchRunes(list) {
   });
 }
 
+function printMeta(code) {
+  var m = String(code || '').match(/^(.+?)-(\d+)(\*?)\/(\d+)$/);
+  if (!m) { return { n: 0, star: 0, denom: 0, ok: 0 }; }
+  return { n: parseInt(m[2], 10), star: m[3] ? 1 : 0, denom: parseInt(m[4], 10), ok: 1 };
+}
+
+function printLabel(code, set) {
+  var m = printMeta(code);
+  if (!m.ok) { return String(code || ''); }
+  return String(set || '') + ' ' + m.n + (m.star ? '*' : '');
+}
+
+function printBase(code) {
+  var m = printMeta(code);
+  return (m.ok && !m.star && m.n <= m.denom) ? 1 : 0;
+}
+
 function buildLegends(list) {
   var groups = {};
   var order = [];
@@ -247,12 +264,20 @@ function buildLegends(list) {
     if (g.d.join(',') !== (o.d || []).join(',')) {
       warn.push('domain mismatch across printings of ' + g.n + ' at ' + o.c);
     }
-    if (o.h) { g.v.push({ c: o.c, s: o.s, h: o.h }); }
+    if (o.h) { g.v.push({ c: o.c, s: o.s, h: o.h, l: printLabel(o.c, o.s) }); }
   }
   var out = [];
   for (i = 0; i < order.length; i++) {
     g = groups[order[i]];
     if (!g.v.length) { throw new Error('legend has no art: ' + g.n); }
+    g.v.sort(function (a, b) {
+      var ab = printBase(a.c), bb = printBase(b.c);
+      if (ab !== bb) { return bb - ab; }
+      var am = printMeta(a.c), bm = printMeta(b.c);
+      if (am.n !== bm.n) { return am.n - bm.n; }
+      return a.c < b.c ? -1 : (a.c > b.c ? 1 : 0);
+    });
+    if (!printBase(g.v[0].c)) { warn.push('no base printing for ' + g.n); }
     out.push(g);
   }
   out.sort(function (a, b) { return a.n < b.n ? -1 : (a.n > b.n ? 1 : 0); });
