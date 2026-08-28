@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-28T12:33:16.383Z",
- "generated_local": "2026-08-28T05:33:16-07:00",
+ "generated_at": "2026-08-28T22:55:31.699Z",
+ "generated_local": "2026-08-28T15:55:31-07:00",
  "window_start": "2026-08-28T07:00:00.000Z",
  "anchors": [
   {
@@ -204,7 +204,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-18T02:48:43+00:00"
