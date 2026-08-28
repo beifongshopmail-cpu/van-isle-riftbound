@@ -1078,6 +1078,7 @@
   function boot(){
     restore();
     tlRender();
+    el("tlsh").addEventListener("click", onClick);
     pressGroup(el("cur"), "data-cur", CUR);
     pressGroup(el("target"), "data-side", String(SIDE));
     el("pc1").value = PCT[1];
