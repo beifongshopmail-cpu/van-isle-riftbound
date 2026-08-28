@@ -342,6 +342,10 @@
   .tlsum{border-top:1px solid var(--rule-hi);margin-top:10px;padding-top:8px;display:flex;gap:8px}
   .tlacts{margin-top:20px;display:flex;gap:8px}
   .tlacts button{flex:1;padding:10px;background:var(--plate);border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;font:inherit}
+
+  .tlio{display:flex;gap:8px;margin-top:12px}
+  .tlio button{flex:1;padding:8px;background:none;border:1px solid var(--rule-hi);border-radius:var(--r);color:inherit;font:inherit}
+  .tlmsg{margin-top:8px}
 </style>
 </head>
 <body>
@@ -426,6 +430,12 @@
         <input id="tlnote" class="tlnote" type="text" maxlength="60" placeholder="Label this trade (optional)">
         <button type="button" class="tlsave" id="tlsave" data-act="tlsave">Save this trade</button>
         <div id="tllist"></div>
+        <div class="tlio">
+          <button type="button" data-act="tlexp">Export</button>
+          <button type="button" data-act="tlimp">Import</button>
+        </div>
+        <div class="tlmsg tlwhen" id="tlmsg"></div>
+        <input id="tlfile" type="file" accept="application/json,.json" hidden>
         <button type="button" class="tlclear" id="tlclear" data-act="tlclear" hidden>Delete all saved trades</button>
       </div>
     </section>
@@ -748,6 +758,14 @@
       tlSave();
       return;
     }
+    if(act === "tlexp"){
+      tlExport();
+      return;
+    }
+    if(act === "tlimp"){
+      tlPick();
+      return;
+    }
     if(act === "tlclear"){
       if(TLARM){
         clearTimeout(TLARM);
@@ -923,6 +941,7 @@
     el("tlcount").textContent = a.length ? String(a.length) : "";
     el("tlclear").hidden = !a.length;
     el("tlclear").textContent = "Delete all saved trades";
+    tlMsg("");
     if(!a.length){
       el("tllist").innerHTML = '<div class="tlempty">Nothing saved yet.</div>';
       return;
@@ -1075,10 +1094,76 @@
     tlRender();
   }
 
+  var TLAPP = "van-isle-riftbound", TLKIND = "trade-log", TLFV = 1;
+
+  function tlMsg(s){
+    el("tlmsg").textContent = s || "";
+  }
+
+  function tlExport(){
+    var a = tlLoad(), env, blob, url, ln;
+    if(!a.length){ tlMsg("Nothing to export."); return; }
+    env = { app: TLAPP, kind: TLKIND, v: TLFV, at: Date.now(), count: a.length, trades: a };
+    try{
+      blob = new Blob([JSON.stringify(env)], { type: "application/json" });
+      url = URL.createObjectURL(blob);
+      ln = document.createElement("a");
+      ln.href = url;
+      ln.download = "trades-" + new Date().toISOString().slice(0, 10) + ".json";
+      document.body.appendChild(ln);
+      ln.click();
+      document.body.removeChild(ln);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      tlMsg("Exported " + a.length + ".");
+    }catch(e){ tlMsg("Export failed."); }
+  }
+
+  // MERGES, never replaces, deduped on the saved timestamp. Same ruling
+  // the counter's history import got: an import can only ever add.
+  function tlImport(txt){
+    var env, incoming, have, a, k, added = 0;
+    try{ env = JSON.parse(txt); }catch(e){ tlMsg("Not a readable file."); return; }
+    if(!env || env.app !== TLAPP || env.kind !== TLKIND){
+      tlMsg("Not a saved trades file.");
+      return;
+    }
+    incoming = Array.isArray(env.trades) ? env.trades : null;
+    if(!incoming){ tlMsg("No trades in that file."); return; }
+    a = tlLoad();
+    have = {};
+    for(k = 0; k < a.length; k++) have[a[k].at] = 1;
+    for(k = 0; k < incoming.length; k++){
+      if(!incoming[k] || incoming[k].at == null) continue;
+      if(have[incoming[k].at]) continue;
+      have[incoming[k].at] = 1;
+      a.push(incoming[k]);
+      added++;
+    }
+    a.sort(function(x, y){ return y.at - x.at; });
+    if(a.length > TLCAP) a = a.slice(0, TLCAP);
+    tlWrite(a);
+    tlRender();
+    tlMsg(added ? ("Added " + added + ".") : "Already had all of those.");
+  }
+
+  function tlPick(){
+    var f = el("tlfile");
+    f.value = "";
+    f.click();
+  }
+
   function boot(){
     restore();
     tlRender();
     el("tlsh").addEventListener("click", onClick);
+    el("tlfile").addEventListener("change", function(){
+      var f = this.files && this.files[0], rd;
+      if(!f) return;
+      rd = new FileReader();
+      rd.onload = function(){ tlImport(String(rd.result)); };
+      rd.onerror = function(){ tlMsg("Could not read that file."); };
+      rd.readAsText(f);
+    });
     pressGroup(el("cur"), "data-cur", CUR);
     pressGroup(el("target"), "data-side", String(SIDE));
     el("pc1").value = PCT[1];
