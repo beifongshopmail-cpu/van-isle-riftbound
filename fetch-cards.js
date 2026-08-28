@@ -179,6 +179,53 @@ function priorLegendNames() {
   return names;
 }
 
+var RUNE_DIR = path.join('cards', 'runes');
+var GLYPH_BASE = 'https://assetcdn.rgpub.io/public/live/riot-shared/' +
+  'player-experiences/riot-glyphs/rb/latest/';
+
+function runeDomains(list) {
+  var seen = {};
+  var out = [];
+  var i, j, d;
+  for (i = 0; i < list.length; i++) {
+    if (list[i].t !== 'legend') { continue; }
+    d = list[i].d || [];
+    for (j = 0; j < d.length; j++) {
+      if (d[j] && !seen[d[j]]) { seen[d[j]] = true; out.push(String(d[j])); }
+    }
+  }
+  out.sort();
+  return out;
+}
+
+function fetchRunes(list) {
+  var doms = runeDomains(list);
+  if (!doms.length) { throw new Error('no domains found on any legend'); }
+  fs.mkdirSync(RUNE_DIR, { recursive: true });
+  var got = 0, have = 0, failed = [];
+  var chain = Promise.resolve();
+  doms.forEach(function (d) {
+    var dest = path.join(RUNE_DIR, 'rune_' + d + '.svg');
+    chain = chain.then(function () {
+      if (fs.existsSync(dest)) { have++; return null; }
+      return sleep(SLEEP_MS).then(function () {
+        return get(GLYPH_BASE + 'rune_' + d + '.svg', true);
+      }).then(function (buf) {
+        if (!buf || buf.length < 100) {
+          throw new Error('suspiciously small glyph, ' + (buf ? buf.length : 0) + ' bytes');
+        }
+        fs.writeFileSync(dest, buf);
+        got++;
+      }).catch(function (e) {
+        failed.push(d + ': ' + e.message);
+      });
+    });
+  });
+  return chain.then(function () {
+    return { doms: doms, got: got, have: have, failed: failed };
+  });
+}
+
 function buildLegends(list) {
   var groups = {};
   var order = [];
@@ -422,106 +469,118 @@ function main() {
     if (legres.removed.length) { console.log('legends REMOVED: ' + legres.removed.join(' | ')); }
     for (var lgWi = 0; lgWi < legres.warn.length; lgWi++) { console.log('legends WARNING: ' + legres.warn[lgWi]); }
 
-    fs.writeFileSync(ARTMAP, JSON.stringify({
-      generated_at: now,
-      source: 'riftbound.leagueoflegends.com card gallery',
-      totals: {
-        mapped: Object.keys(map).length,
-        exact: stat.exact,
-        base_fallback: stat.base,
-        by_name: stat.name,
-        unmatched: stat.miss
-      },
-      art: map
-    }), 'utf8');
+    return fetchRunes(list).then(function (rnres) {
+      console.log('rune glyphs: ' + rnres.doms.join(' ') +
+        ' (' + rnres.got + ' fetched, ' + rnres.have + ' already cached)');
+      for (var rnI = 0; rnI < rnres.failed.length; rnI++) {
+        console.log('rune FAILURE: ' + rnres.failed[rnI]);
+      }
+      if (rnres.failed.length) {
+        throw new Error('a domain used by a legend has no glyph: ' +
+          rnres.failed.length + ' failed. Nothing further was written.');
+      }
 
-    console.log('wrote ' + CATALOGUE + ' (' + fs.statSync(CATALOGUE).size + ' bytes)');
-    console.log('wrote ' + ARTMAP + ' (' + fs.statSync(ARTMAP).size + ' bytes)');
+      fs.writeFileSync(ARTMAP, JSON.stringify({
+        generated_at: now,
+        source: 'riftbound.leagueoflegends.com card gallery',
+        totals: {
+          mapped: Object.keys(map).length,
+          exact: stat.exact,
+          base_fallback: stat.base,
+          by_name: stat.name,
+          unmatched: stat.miss
+        },
+        art: map
+      }), 'utf8');
 
-    // The filename IS the content hash Riot publishes, which is what makes a
-    // refresh cheap: art that has not changed keeps its name and is skipped,
-    // and redrawn art arrives under a new name. Nothing is ever overwritten.
-    fs.mkdirSync(ART_DIR, { recursive: true });
+      console.log('wrote ' + CATALOGUE + ' (' + fs.statSync(CATALOGUE).size + ' bytes)');
+      console.log('wrote ' + ARTMAP + ' (' + fs.statSync(ARTMAP).size + ' bytes)');
 
-    var want = {}, srcOf = {}, todo = [];
-    for (var w = 0; w < list.length; w++) {
-      if (!list[w].h || !list[w].u) { continue; }
-      want[list[w].h + '.webp'] = true;
-      want[list[w].h + '.t.webp'] = true;
-      srcOf[list[w].h] = list[w].u;
-    }
-    var wantKeys = Object.keys(want);
-    for (var wk = 0; wk < wantKeys.length; wk++) {
-      var f = wantKeys[wk];
-      if (fs.existsSync(path.join(ART_DIR, f))) { continue; }
-      var isThumb = f.indexOf('.t.webp') !== -1;
-      todo.push({
-        file: f,
-        src: srcOf[f.split('.')[0]],
-        w: isThumb ? THUMB_W : FULL_W
+      // The filename IS the content hash Riot publishes, which is what makes a
+      // refresh cheap: art that has not changed keeps its name and is skipped,
+      // and redrawn art arrives under a new name. Nothing is ever overwritten.
+      fs.mkdirSync(ART_DIR, { recursive: true });
+
+      var want = {}, srcOf = {}, todo = [];
+      for (var w = 0; w < list.length; w++) {
+        if (!list[w].h || !list[w].u) { continue; }
+        want[list[w].h + '.webp'] = true;
+        want[list[w].h + '.t.webp'] = true;
+        srcOf[list[w].h] = list[w].u;
+      }
+      var wantKeys = Object.keys(want);
+      for (var wk = 0; wk < wantKeys.length; wk++) {
+        var f = wantKeys[wk];
+        if (fs.existsSync(path.join(ART_DIR, f))) { continue; }
+        var isThumb = f.indexOf('.t.webp') !== -1;
+        todo.push({
+          file: f,
+          src: srcOf[f.split('.')[0]],
+          w: isThumb ? THUMB_W : FULL_W
+        });
+      }
+      console.log('images wanted: ' + wantKeys.length);
+      console.log('already cached: ' + (wantKeys.length - todo.length));
+      console.log('to download: ' + todo.length);
+
+      var got = 0, gotBytes = 0, failed = [];
+      var chain = Promise.resolve();
+      todo.forEach(function (t) {
+        chain = chain.then(function () {
+          return sleep(SLEEP_MS);
+        }).then(function () {
+          return get(t.src + (t.src.indexOf('?') === -1 ? '?' : '&') +
+            'w=' + t.w + '&fm=webp&q=' + IMG_Q, true);
+        }).then(function (buf) {
+          if (!buf || buf.length < 400) {
+            throw new Error('suspiciously small response, ' + (buf ? buf.length : 0) + ' bytes');
+          }
+          fs.writeFileSync(path.join(ART_DIR, t.file), buf);
+          got++;
+          gotBytes += buf.length;
+          if (got % 100 === 0) {
+            console.log('  ' + got + '/' + todo.length + ', ' +
+              Math.round(gotBytes / 1048576) + ' MB');
+          }
+        }).catch(function (e) {
+          failed.push(t.file + ': ' + e.message);
+        });
       });
-    }
-    console.log('images wanted: ' + wantKeys.length);
-    console.log('already cached: ' + (wantKeys.length - todo.length));
-    console.log('to download: ' + todo.length);
 
-    var got = 0, gotBytes = 0, failed = [];
-    var chain = Promise.resolve();
-    todo.forEach(function (t) {
-      chain = chain.then(function () {
-        return sleep(SLEEP_MS);
-      }).then(function () {
-        return get(t.src + (t.src.indexOf('?') === -1 ? '?' : '&') +
-          'w=' + t.w + '&fm=webp&q=' + IMG_Q, true);
-      }).then(function (buf) {
-        if (!buf || buf.length < 400) {
-          throw new Error('suspiciously small response, ' + (buf ? buf.length : 0) + ' bytes');
+      return chain.then(function () {
+        console.log('downloaded: ' + got + ' files, ' + (gotBytes / 1048576).toFixed(1) + ' MB');
+        console.log('download failures: ' + failed.length);
+        for (var fl = 0; fl < Math.min(failed.length, 10); fl++) {
+          console.log('  FAIL ' + failed[fl]);
         }
-        fs.writeFileSync(path.join(ART_DIR, t.file), buf);
-        got++;
-        gotBytes += buf.length;
-        if (got % 100 === 0) {
-          console.log('  ' + got + '/' + todo.length + ', ' +
-            Math.round(gotBytes / 1048576) + ' MB');
+
+        // Anything on disk the live catalogue no longer references is stale.
+        // Pruning is capped: a partial or broken gallery response must not be
+        // able to empty a cache that took an hour to build.
+        var onDisk = fs.readdirSync(ART_DIR);
+        var stale = [];
+        for (var od = 0; od < onDisk.length; od++) {
+          if (!want[onDisk[od]]) { stale.push(onDisk[od]); }
         }
-      }).catch(function (e) {
-        failed.push(t.file + ': ' + e.message);
+        console.log('files on disk: ' + onDisk.length);
+        console.log('stale files: ' + stale.length);
+        if (stale.length > MAX_PRUNE) {
+          console.log('REFUSING TO PRUNE: ' + stale.length + ' stale files exceeds the cap of ' +
+            MAX_PRUNE + '. Nothing deleted. Check the gallery response before re-running.');
+        } else {
+          for (var st = 0; st < stale.length; st++) {
+            fs.unlinkSync(path.join(ART_DIR, stale[st]));
+            console.log('  pruned ' + stale[st]);
+          }
+        }
+
+        var total = 0;
+        var finalList = fs.readdirSync(ART_DIR);
+        for (var fi = 0; fi < finalList.length; fi++) {
+          total += fs.statSync(path.join(ART_DIR, finalList[fi])).size;
+        }
+        console.log('cache: ' + finalList.length + ' files, ' + (total / 1048576).toFixed(1) + ' MB');
       });
-    });
-
-    return chain.then(function () {
-      console.log('downloaded: ' + got + ' files, ' + (gotBytes / 1048576).toFixed(1) + ' MB');
-      console.log('download failures: ' + failed.length);
-      for (var fl = 0; fl < Math.min(failed.length, 10); fl++) {
-        console.log('  FAIL ' + failed[fl]);
-      }
-
-      // Anything on disk the live catalogue no longer references is stale.
-      // Pruning is capped: a partial or broken gallery response must not be
-      // able to empty a cache that took an hour to build.
-      var onDisk = fs.readdirSync(ART_DIR);
-      var stale = [];
-      for (var od = 0; od < onDisk.length; od++) {
-        if (!want[onDisk[od]]) { stale.push(onDisk[od]); }
-      }
-      console.log('files on disk: ' + onDisk.length);
-      console.log('stale files: ' + stale.length);
-      if (stale.length > MAX_PRUNE) {
-        console.log('REFUSING TO PRUNE: ' + stale.length + ' stale files exceeds the cap of ' +
-          MAX_PRUNE + '. Nothing deleted. Check the gallery response before re-running.');
-      } else {
-        for (var st = 0; st < stale.length; st++) {
-          fs.unlinkSync(path.join(ART_DIR, stale[st]));
-          console.log('  pruned ' + stale[st]);
-        }
-      }
-
-      var total = 0;
-      var finalList = fs.readdirSync(ART_DIR);
-      for (var fi = 0; fi < finalList.length; fi++) {
-        total += fs.statSync(path.join(ART_DIR, finalList[fi])).size;
-      }
-      console.log('cache: ' + finalList.length + ' files, ' + (total / 1048576).toFixed(1) + ' MB');
     });
   });
 }
