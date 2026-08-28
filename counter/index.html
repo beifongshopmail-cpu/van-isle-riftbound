@@ -1446,7 +1446,7 @@
     var e = lgaFind(nm);
     if (!e || !e.d || !e.d.length) { return ""; }
     var h = "";
-    for (i = 0; i < e.d.length; i++) {
+    for (var i = 0; i < e.d.length; i++) {
       var d = String(e.d[i]).toLowerCase();
       h += "<img src=\"../cards/runes/rune_" + esc(d) + ".svg\" alt=\"" + esc(e.d[i]) + "\">";
     }
