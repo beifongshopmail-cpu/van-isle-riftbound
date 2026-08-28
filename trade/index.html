@@ -296,6 +296,13 @@
     text-transform:uppercase;cursor:pointer;
   }
   .rreset:active{background:rgba(255,255,255,.06);}
+  .rnow b{font-family:var(--mono);font-size:10.5px;font-weight:400;letter-spacing:.08em;}
+  .rnow .n1{color:var(--s1);}
+  .rnow .n2{color:var(--s2);}
+  .pcx{font-family:var(--mono);font-size:10px;letter-spacing:.1em;}
+  .pcx:empty{display:none;}
+  .panel[data-side="1"] .pcx{color:var(--s1);}
+  .panel[data-side="2"] .pcx{color:var(--s2);}
 </style>
 </head>
 <body>
@@ -338,7 +345,7 @@
           <label class="rf" style="--c:var(--s1)"><span class="rfl">Yours</span><input id="pc1" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></label>
           <label class="rf" style="--c:var(--s2)"><span class="rfl">Theirs</span><input id="pc2" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></label>
         </div>
-        <button type="button" class="rreset" data-act="rreset">Reset both to 100</button>
+        <button type="button" class="rreset" id="rreset" data-act="rreset">Reset both to 100</button>
       </div>
     </div>
 
@@ -354,7 +361,7 @@
     </div>
 
     <section class="panel" data-side="1">
-      <div class="head"><span class="lb">Your cards</span><span class="tot" id="tot1">$0.00</span></div>
+      <div class="head"><span class="lb">Your cards</span><span class="pcx" id="pcx1"></span><span class="tot" id="tot1">$0.00</span></div>
       <div id="body1"></div>
     </section>
 
@@ -366,7 +373,7 @@
     </div>
 
     <section class="panel" data-side="2">
-      <div class="head"><span class="lb">Their cards</span><span class="tot" id="tot2">$0.00</span></div>
+      <div class="head"><span class="lb">Their cards</span><span class="pcx" id="pcx2"></span><span class="tot" id="tot2">$0.00</span></div>
       <div id="body2"></div>
     </section>
 
@@ -613,10 +620,26 @@
     }
   }
 
+  // Deliberately NOT part of renderSide, which returns early on an empty
+  // side -- the marker has to survive a panel being cleared.
+  function pcMark(){
+    var n, box, on;
+    for(n = 1; n <= 2; n++){
+      box = el("pcx" + n);
+      box.textContent = (PCT[n] === 100) ? "" : (PCT[n] + "%");
+    }
+    on = (PCT[1] !== 100 || PCT[2] !== 100);
+    el("rnow").innerHTML = on
+      ? '<b class="n1">' + PCT[1] + '%</b><b class="n2">' + PCT[2] + '%</b>'
+      : "";
+    el("rreset").hidden = !on;
+  }
+
   function paint(){
     renderSide(1);
     renderSide(2);
     renderVerdict();
+    pcMark();
   }
 
   function add(side, i, sub){
