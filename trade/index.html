@@ -1359,6 +1359,37 @@
     rcpBuild(k);
   }
 
+  // The card art map, loaded independently of prices. It is allowed
+  // to fail: every row falls back to an empty frame and the page
+  // works exactly as it did before. Each entry is an object -- h is
+  // the image hash, m records how the mapping was found.
+  var THUMBS = null;
+
+  function thumbSrc(i){
+    if(!THUMBS) return "";
+    var a = THUMBS[i];
+    if(!a || !a.h) return "";
+    return "../cards/art/" + a.h + ".t.webp";
+  }
+
+  function thumbLoad(){
+    fetch("../cards/art.json")
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if(!j || !j.art) return;
+        THUMBS = j.art;
+        // If the page has already drawn, redraw it now that art exists.
+        if(el("body1")){
+          paint();
+          var qi = el("q");
+          if(qi && qi.value) search(qi.value);
+        }
+      })
+      .catch(function(){});
+  }
+
+  thumbLoad();
+
   function boot(){
     restore();
     tlRender();
