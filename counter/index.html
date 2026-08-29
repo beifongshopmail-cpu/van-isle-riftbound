@@ -382,6 +382,9 @@
   text-overflow:ellipsis;white-space:nowrap}
 .lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
 .lgp.open{display:flex}
+.spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:#000;border:0;padding:14px;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+.spot.open{display:flex}
+.spotpic{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
 .lgphead{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 9px;
   border-bottom:1px solid var(--rule)}
 .lgpt{flex:1;min-width:0;font-family:var(--display);font-weight:800;font-size:13px;
@@ -503,6 +506,7 @@
     <div class="lgpchips" id="lgpchips"></div>
   </div>
 </div>
+<button class="spot" id="spotsheet" type="button" aria-label="Close card"><img class="spotpic" id="spotpic" alt="" decoding="async"></button>
 <script src="../cards/legends.js"></script>
 <script>
 (function(){
@@ -538,6 +542,27 @@
     var id = players[p] && players[p].art;
     return id ? ("../cards/art/" + id + ".t.webp") : "";
   }
+  function spotSrc(p){
+    var id = players[p] && players[p].art;
+    return id ? ("../cards/art/" + id + ".webp") : "";
+  }
+  function spotOpen(p){
+    var s = spotSrc(p);
+    if (!s) { return; }
+    var pic = document.getElementById("spotpic");
+    var sh = document.getElementById("spotsheet");
+    if (!pic || !sh) { return; }
+    pic.src = s;
+    sh.classList.add("open");
+  }
+  function spotClose(){
+    var pic = document.getElementById("spotpic");
+    var sh = document.getElementById("spotsheet");
+    if (sh) { sh.classList.remove("open"); }
+    if (pic) { pic.removeAttribute("src"); }
+  }
+  var spotEl = document.getElementById("spotsheet");
+  if (spotEl) { spotEl.addEventListener("click", function(){ spotClose(); }); }
   var tmInt = null;
   var tmArm = 0, tmArmT = null;
 
