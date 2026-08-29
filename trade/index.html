@@ -338,7 +338,10 @@
   .tlsec{margin-top:16px}
   .tlcols{display:flex;gap:8px;margin-top:8px}
   .tlcol{flex:1}
-  .tlline{border-top:1px solid var(--rule);padding:8px 0}
+  .tlline{border-top:1px solid var(--rule);padding:8px 0;display:flex;align-items:center;gap:10px}
+  .tlline .tlthumb{flex:0 0 31px;height:44px;border-radius:var(--r-xs);border:1px solid var(--rule);overflow:hidden}
+  .tlline .tlthumb img{display:block;width:100%;height:100%;object-fit:contain}
+  .tlline .tlstack{min-width:0;flex:1}
   .tll1{display:flex;gap:8px}
   .tll2{display:flex;gap:8px;margin-top:2px}
   .tlnm{flex:1;min-width:0;overflow:hidden}
@@ -1046,14 +1049,16 @@
       now = (u === null)
         ? '<span class="tlgone">no longer priced</span>'
         : tlMoneyNow(u * (pc / 100) * it.q, rec);
-      h += '<div class="tlline"><div class="tll1"><span class="tlnm">'
+      h += '<div class="tlline">'
+        + '<div class="tlthumb">' + thumbImg(it.i) + '</div>'
+        + '<div class="tlstack"><div class="tll1"><span class="tlnm">'
         + esc(it.n) + '</span><span class="tlv ' + cls + '">'
         + esc(tlMoney(it.u * (pc / 100) * it.q, rec)) + '</span></div>'
         + '<div class="tll2"><span class="tlnm tlwhen">'
         + esc(it.s) + (it.c ? " " + esc(it.c) : "")
         + (it.sn ? " / " + esc(it.sn) : "")
         + " / x" + it.q + '</span><span class="tlv tlwhen">'
-        + now + '</span></div></div>';
+        + now + '</span></div></div></div>';
     }
     var sum = tlTotalNow(rec, n);
     h += '<div class="tlsum"><span class="tlnm tlwhen">Then / now</span>'
