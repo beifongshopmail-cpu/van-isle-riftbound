@@ -167,7 +167,10 @@
     padding:16px 14px;font-family:var(--mono);font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
   }
-  .line{padding:10px 14px;}
+  .line{padding:10px 14px;display:flex;align-items:center;gap:10px;}
+  .line .thumb{flex:0 0 31px;height:44px;border-radius:var(--r-xs);border:1px solid var(--rule);overflow:hidden;}
+  .line .thumb img{display:block;width:100%;height:100%;object-fit:contain;}
+  .line .thumbstack{min-width:0;flex:1;}
   .line+.line{border-top:1px solid var(--rule);}
   .line .top{display:flex;align-items:baseline;gap:10px;}
   .line .nm{
@@ -650,6 +653,8 @@
       c = byId.get(it.i);
       unit = pcAdj(priceOf(it), n);
       html += '<div class="line">' +
+              '<div class="thumb">' + thumbImg(it.i) + '</div>' +
+              '<div class="thumbstack">' +
               '<div class="top">' +
               '<div class="nm">' + esc(c ? c.n : "Unknown card") + '</div>' +
               '<div class="amt">' + money(unit * it.q) + '</div>' +
@@ -665,7 +670,7 @@
               '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">' + arrow + '</svg>' +
               '</button>' +
               '<button type="button" class="del" data-act="del" data-side="' + n + '" data-idx="' + k + '" aria-label="Remove">x</button>' +
-              '</div></div>';
+              '</div></div></div>';
     }
     el("body" + n).innerHTML = html;
     el("tot" + n).textContent = money(sideTotal(n));
