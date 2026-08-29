@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Tell us what is broken, missing, or worth building on Van Isle Riftbound.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RB Feedback">
+<title>Feedback - Van Isle Riftbound</title>
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+  :root{
+    --mo-fast:.16s;
+    --mo-ease:cubic-bezier(.22,.72,.2,1);
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --plate:#14171D;
+    --r:9px;
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --gut:16px;
+    --tap:44px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ground);}
+  body{
+    color:var(--bone);
+    font-family:var(--body);
+    font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .wrap{
+    max-width:600px;margin:0 auto;
+    padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
+  }
+
+  .mast{padding:30px 0 18px;}
+  .mast h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(38px,11.5vw,60px);
+    line-height:.86;letter-spacing:-.035em;
+    text-transform:uppercase;margin:0;
+  }
+  .mast .pages{
+    margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);
+  }
+  .mast .pages a{color:var(--dim);text-decoration:none;}
+  .mast .pages a:hover{color:var(--bone);}
+  .mast .pages [aria-current]{color:var(--bone);}
+  .mast .pages .sep{color:var(--rule-hi);}
+
+  .fdbkintro p{margin:0 0 12px;}
+  .fdbkintro p:last-child{margin-bottom:0;color:var(--dim);font-size:14px;}
+
+  .fdbkform{
+    margin-top:26px;
+    border:1px solid var(--rule);border-radius:var(--r);
+    background:var(--plate);
+    overflow:hidden;
+  }
+  .fdbkform iframe{
+    display:block;width:100%;height:820px;border:0;
+    background:transparent;
+  }
+  .fdbkform .alt{
+    display:block;padding:12px 14px;
+    border-top:1px solid var(--rule);
+    font-family:var(--mono);font-size:9.5px;
+    letter-spacing:.08em;text-transform:uppercase;
+    color:var(--mute);text-decoration:none;text-align:center;
+  }
+  .fdbkform .alt:hover{color:var(--bone);}
+
+  .fdbkship{margin-top:34px;}
+  .fdbkship h2{
+    font-family:var(--display);font-weight:800;
+    font-size:15px;letter-spacing:.02em;text-transform:uppercase;
+    margin:0 0 4px;
+  }
+  .fdbkship .lead{
+    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--mute);margin:0 0 10px;
+  }
+  .fdbkship ul{
+    list-style:none;margin:0;padding:0;
+    border-top:1px solid var(--rule);
+  }
+  .fdbkship li{
+    padding:11px 0;border-bottom:1px solid var(--rule);
+    font-size:14px;line-height:1.35;
+  }
+
+  .fdbknote{
+    margin-top:34px;padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-family:var(--mono);font-size:10px;line-height:1.75;
+    letter-spacing:.07em;color:var(--mute);text-align:center;
+  }
+  .fdbknote a{color:var(--dim);}
+  .fdbknote a:hover{color:var(--bone);}
+  .fdbknote p{margin:0 0 12px;}
+  .fdbknote p:last-child{margin-bottom:0;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <h1>Feedback</h1>
+    <nav class="pages" aria-label="Pages">
+      <a href="../">Calendar</a>
+      <span class="sep">/</span>
+      <a href="../counter/">Point counter</a>
+      <span class="sep">/</span>
+      <a href="../trade/">Trade calculator</a>
+      <span class="sep">/</span>
+      <span aria-current="page">Feedback</span>
+    </nav>
+  </header>
+
+  <div class="fdbkintro">
+    <p>This is a free tool for the Riftbound scene on Vancouver Island. If something is broken, an event is wrong or missing, or you want it to do something it does not do yet, this is where to say so.</p>
+    <p>It is not a contact form for any store, including the one that maintains it. Anything about a particular shop's events, prices or stock is better taken to that shop directly.</p>
+  </div>
+
+  <div class="fdbkform">
+    <iframe src="https://tally.so/embed/QKIGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1" loading="lazy" title="Feedback form"></iframe>
+    <a class="alt" href="https://tally.so/r/QKIGxX">Form not loading? Open it on its own page</a>
+  </div>
+
+  <section class="fdbkship">
+    <h2>Recently shipped</h2>
+    <p class="lead">Some of what came out of feedback like this</p>
+    <ul>
+      <li>Card art on the counter and the trade calculator, with a full-screen view on tap.</li>
+      <li>Saved trades, kept at the numbers they were agreed at, with a receipt image you can send.</li>
+      <li>Percent-of-market rates per side, so the calculator can match how you actually trade.</li>
+      <li>Match history on the counter, with legends and who went first.</li>
+      <li>The trade calculator itself.</li>
+    </ul>
+  </section>
+
+  <div class="fdbknote">
+    <p>Everything sent here gets read. Most suggestions will not get built, and there is no reply unless you leave an email.</p>
+    <p>Van Isle Riftbound is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties.</p>
+    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>Free for any island store or player to use or link.</p>
+  </div>
+
+</div>
+</body>
+</html>
