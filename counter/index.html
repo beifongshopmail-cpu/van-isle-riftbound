@@ -383,9 +383,13 @@
   text-overflow:ellipsis;white-space:nowrap}
 .lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
 .lgp.open{display:flex}
-.spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:#000;border:0;padding:14px;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+.spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.93);border:0;padding:14px;font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
 .spot.open{display:flex}
 .spotpic{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+@media (prefers-reduced-motion: no-preference){
+.spot.open .spotpic{animation:cardgrow var(--mo-rise) var(--mo-ease) both}
+}
+@keyframes cardgrow{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 .lgphead{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 9px;
   border-bottom:1px solid var(--rule)}
 .lgpt{flex:1;min-width:0;font-family:var(--display);font-weight:800;font-size:13px;
