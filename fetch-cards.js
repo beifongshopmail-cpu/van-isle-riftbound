@@ -6,8 +6,8 @@
 // pruning land in a later step, keyed on the content hash recorded here.
 //
 // Riot's Riftbound tools policy requires that card assets come from Riot
-// rather than an external mirror, which is why this replaces the TCGCSV
-// image route in fetch-legends.js. It never reads or writes data/,
+// rather than an external mirror, so this script pulls art straight from
+// Riot's own CDN. It never reads or writes data/,
 // index.html, counter/index.html or trade/index.html.
 //     node fetch-cards.js
 

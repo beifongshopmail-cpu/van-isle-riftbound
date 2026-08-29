@@ -1439,8 +1439,8 @@
   // have no art and read correctly. Nothing is added to the history snapshot.
   var lgpFor = 0;
 
-  // The six domain glyphs are Riot's own, cached under counter/art. A legend
-  // with no domains renders nothing rather than a placeholder.
+  // The six domain glyphs are Riot's own, written by fetch-cards.js into
+  // cards/runes/ and referenced here as ../cards/runes/. A legend with no domains renders nothing rather than a placeholder.
   function lgaDom(nm, cls){
     if (typeof VIR_LEGENDS === "undefined" || !nm) { return ""; }
     var e = lgaFind(nm);
