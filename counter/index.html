@@ -363,6 +363,7 @@
 .lgathumb{flex:0 0 auto;width:86px;height:121px;border-radius:5px;position:relative;z-index:3;
   border:1px solid var(--rule-hi);background:#0E0F11 center/cover no-repeat;order:0;
   align-self:flex-start;margin:0 0 10px}
+.lgathumb{border:0;padding:0;margin-top:0;background-color:transparent;color:inherit;font:inherit;-webkit-appearance:none;appearance:none;touch-action:manipulation;cursor:pointer}
 .side[data-role="major"] .lgathumb,.side[data-role="equal"] .lgathumb{position:absolute;
   top:0;left:0;margin:0;align-self:auto}
 .side[data-role="equal"] .lgathumb{width:66px;height:93px}
@@ -937,7 +938,7 @@
     var lgaR = lgrOn ? lgaDom(players[p].legend, "lgarune") : "";
     var lgaS = lgaSrc(p);
     var lgaT = (lgaMode === "small" && lgaS)
-      ? "<div class=\"lgathumb\" style=\"background-image:url(" + lgaS + ")\"></div>"
+      ? "<button type=\"button\" class=\"lgathumb\" data-spot=\"" + p + "\" aria-label=\"Expand card\" style=\"background-image:url(" + lgaS + ")\"></button>"
       : "";
     var pn =
       "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
@@ -1145,6 +1146,10 @@
         ev.push({ t:"turn", p:nx, n:turns(nx) + 1 });
         save(); render(); flashSeam(); keepAwake();
       }
+      return;
+    }
+    if (t.getAttribute("data-spot")) {
+      spotOpen(parseInt(t.getAttribute("data-spot"), 10));
       return;
     }
     if (t.getAttribute("data-s")) {
