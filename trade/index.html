@@ -124,6 +124,8 @@
 
   .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
   .results .row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--plate);}
+  .results .thumb{flex:0 0 31px;height:44px;border-radius:var(--r-xs);border:1px solid var(--rule);overflow:hidden;}
+  .results .thumb img{display:block;width:100%;height:100%;object-fit:contain;}
   .results .row+.row{border-top:1px solid var(--rule);}
   .results .meta{min-width:0;flex:1;}
   .results .nm{font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -606,7 +608,9 @@
              money(c.p[subs[j]]) +
              '<span class="pl">' + esc(subs[j]) + '</span></button>';
       }
-      html += '<div class="row"><div class="meta">' +
+      html += '<div class="row">' +
+              '<div class="thumb">' + thumbImg(c.i) + '</div>' +
+              '<div class="meta">' +
               '<div class="nm">' + esc(c.n) + '</div>' +
               '<div class="sub">' + esc(cardSub(c)) + '</div>' +
               '</div><div class="buys">' + s + '</div></div>';
@@ -1370,6 +1374,12 @@
     var a = THUMBS[i];
     if(!a || !a.h) return "";
     return "../cards/art/" + a.h + ".t.webp";
+  }
+
+  function thumbImg(i){
+    var s = thumbSrc(i);
+    if(!s) return "";
+    return '<img src="' + s + '" alt="" loading="lazy" decoding="async">';
   }
 
   function thumbLoad(){
