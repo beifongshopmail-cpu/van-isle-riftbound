@@ -118,6 +118,19 @@ function attachBaseline(cards, prev, nowIso) {
   return roll ? (typeof prev.generated_at === "string" ? prev.generated_at : prevAt) : prevAt;
 }
 
+function writeDayLog(payload) {
+  const dir = path.join(OUT_DIR, "log");
+  fs.mkdirSync(dir, { recursive: true });
+  const day = String(payload.generated_at).slice(0, 10);
+  const file = path.join(dir, day + ".json");
+  if (fs.existsSync(file)) return "already present";
+  const p = {};
+  for (const c of payload.cards) p[c.i] = c.p;
+  const out = { v: 1, at: payload.generated_at, d: day, p: p };
+  fs.writeFileSync(file, JSON.stringify(out) + "\n", "utf8");
+  return "written";
+}
+
 async function main() {
   const fx = await fxRate();
   console.log("fx USDCAD " + fx.rate + " as of " + fx.date);
@@ -208,6 +221,14 @@ async function main() {
   // Written compact on purpose, unlike events.json. This file is 1500-plus
   // records committed daily and no human reads it by hand.
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload) + "\n", "utf8");
+  // One price file per UTC day, written once and never rewritten.
+  // Nothing on the site reads it. It exists because the past cannot be
+  // invented later. A failure here must never fail the price publish.
+  try {
+    console.log("day log " + writeDayLog(payload));
+  } catch (e) {
+    console.log("day log failed: " + e.message);
+  }
   console.log("wrote " + OUT_FILE + " " + fs.statSync(OUT_FILE).size + " bytes, " +
     cards.length + " priced, " + unpriced + " unpriced");
 }
