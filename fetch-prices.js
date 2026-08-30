@@ -99,7 +99,10 @@ function attachBaseline(cards, prev, nowIso) {
     for (const c of cards) c.b = Object.assign({}, c.p);
     return nowIso;
   }
-  const roll = ageDays >= BASELINE_DAYS;
+  // The all-time anchor never rolls. It is the oldest price we hold,
+  // so it means "since we started tracking". The 1/7/30/365 anchors
+  // come from the daily log instead -- see attachAnchors.
+  const roll = false;
   const src = new Map();
   for (const pc of prevCards) {
     const from = roll ? pc.p : pc.b;
@@ -116,6 +119,70 @@ function attachBaseline(cards, prev, nowIso) {
     c.b = out;
   }
   return roll ? (typeof prev.generated_at === "string" ? prev.generated_at : prevAt) : prevAt;
+}
+
+const WINDOWS = [1, 7, 30, 365];
+
+// Reads the daily log and attaches the price each card carried at each
+// window. Returns a map of window to the ACTUAL DATE used, which the
+// page shows instead of claiming a fixed period.
+//
+// THE COMPACTION RULE, and the page depends on it: if a window appears
+// in the returned map, it resolved. A card with NO entry for that
+// window was unchanged. A card carrying null for that window was not
+// in the log that day and has no reading. Absence and unknown are
+// different things and must stay that way.
+function attachAnchors(cards, nowIso) {
+  const dir = path.join(OUT_DIR, "log");
+  let days = [];
+  try {
+    days = fs.readdirSync(dir)
+      .filter(function (f) { return /^\d{4}-\d{2}-\d{2}\.json$/.test(f); })
+      .map(function (f) { return f.slice(0, 10); })
+      .sort();
+  } catch (e) {
+    return {};
+  }
+  const today = String(nowIso).slice(0, 10);
+  const used = {};
+  for (const w of WINDOWS) {
+    const cut = new Date(Date.parse(today + "T00:00:00Z") - w * 86400000)
+      .toISOString().slice(0, 10);
+    let pick = null;
+    for (const d of days) {
+      if (d <= cut) pick = d;
+    }
+    if (!pick) continue;
+    let src = null;
+    try {
+      const o = JSON.parse(fs.readFileSync(path.join(dir, pick + ".json"), "utf8"));
+      src = (o && o.p) ? o.p : null;
+    } catch (e) {
+      src = null;
+    }
+    if (!src) continue;
+    used[w] = pick;
+    for (const c of cards) {
+      const from = src[c.i];
+      if (!from) {
+        if (!c.a) c.a = {};
+        c.a[w] = null;
+        continue;
+      }
+      let same = true;
+      for (const k of Object.keys(c.p)) {
+        if (from[k] !== c.p[k]) { same = false; break; }
+      }
+      if (same) continue;
+      const rec = {};
+      for (const k of Object.keys(c.p)) {
+        if (typeof from[k] === "number") rec[k] = from[k];
+      }
+      if (!c.a) c.a = {};
+      c.a[w] = rec;
+    }
+  }
+  return used;
 }
 
 function writeDayLog(payload) {
@@ -201,9 +268,11 @@ async function main() {
   const now = new Date();
   const prevAllFile = priorAll(OUT_FILE);
   const baselineAt = attachBaseline(cards, prevAllFile, now.toISOString());
+  const anchors = attachAnchors(cards, now.toISOString());
   const payload = {
     generated_at: now.toISOString(),
     baseline_at: baselineAt,
+    anchors: anchors,
     generated_local: now.toLocaleString("en-CA", { timeZone: TZ }),
     source: "TCGplayer market price via tcgcsv.com, category " + CATEGORY,
     fx: { pair: "USDCAD", rate: fx.rate, date: fx.date, source: "Bank of Canada Valet" },
