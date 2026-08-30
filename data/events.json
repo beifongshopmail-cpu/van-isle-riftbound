@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-08-30T06:18:22.162Z",
- "generated_local": "2026-08-29T23:18:22-07:00",
- "window_start": "2026-08-29T07:00:00.000Z",
+ "generated_at": "2026-08-30T17:14:30.913Z",
+ "generated_local": "2026-08-30T10:14:30-07:00",
+ "window_start": "2026-08-30T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -25,7 +25,7 @@
  "totals": {
   "fetched": 49,
   "unique": 49,
-  "prev_unique": 54
+  "prev_unique": 49
  },
  "unknown_templates": {},
  "events": [
@@ -60,7 +60,7 @@
    "address": "515 Chatham St, Victoria, BC, V8T 1E1, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 8,
+   "reg": 12,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-24T00:56:05+00:00"
@@ -78,7 +78,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 2,
+   "reg": 3,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-18T02:48:43+00:00"
