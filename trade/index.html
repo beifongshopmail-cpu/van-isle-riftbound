@@ -768,7 +768,8 @@
               '<div class="amt">' + money(unit * it.q) + '</div>' +
               '</div>' +
               '<div class="bot">' +
-              '<div class="sub">' + esc(it.s) + ' / ' + money(unit) + ' each</div>' +
+              '<div class="sub">' + esc(it.s) + ' / ' + money(unit) + ' each' +
+              dltChip(c, it.s) + '</div>' +
               '<div class="qty">' +
               '<button type="button" data-act="dec" data-side="' + n + '" data-idx="' + k + '" aria-label="Fewer">-</button>' +
               '<span>' + it.q + '</span>' +
@@ -878,6 +879,7 @@
       save();
       dltNote();
       search(el("q").value);
+      paint();
       return;
     }
 
