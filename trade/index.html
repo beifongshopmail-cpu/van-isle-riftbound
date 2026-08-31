@@ -109,6 +109,11 @@
     letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
     margin-bottom:14px;min-height:12px;
   }
+  .dltc{
+    display:inline-block;margin-left:6px;
+    font-family:var(--mono);font-weight:500;font-size:9px;
+    letter-spacing:.06em;color:var(--dim);
+  }
   .bar .clear{
     margin-left:auto;
     border:1px solid var(--rule);border-radius:var(--r-sm);background:none;
@@ -620,6 +625,51 @@
     return a ? dltWhen(a) : "";
   }
 
+  // Under five cents of absolute movement is jitter on a cheap card,
+  // and anything rounding to zero percent is noise on an expensive
+  // one. Both return null and render nothing at all, so a quiet day
+  // looks exactly like the page did before this feature existed.
+  var DLTFLOOR = 0.05;
+
+  // Returns the percent a printing has moved since the current
+  // window's anchor, or null for no signal. THREE DIFFERENT REASONS
+  // RETURN NULL AND THEY MUST NOT BE COLLAPSED: the window has not
+  // filled, the card has no reading for that day, or the move is too
+  // small to mean anything. Only the first is a property of the file;
+  // the other two are properties of the card.
+  function dltPct(c, sub){
+    if(!c) return null;
+    var from = null;
+    if(DLT === "all"){
+      from = (c.b && typeof c.b[sub] === "number") ? c.b[sub] : null;
+    }else{
+      if(!D || !D.anchors || !D.anchors[DLT]) return null;
+      if(!c.a || !(DLT in c.a)) return null;
+      var rec = c.a[DLT];
+      if(rec === null) return null;
+      from = (typeof rec[sub] === "number") ? rec[sub] : null;
+    }
+    if(from === null || !(from > 0)) return null;
+    var now = c.p ? c.p[sub] : null;
+    if(typeof now !== "number") return null;
+    var diff = now - from;
+    if(Math.abs(diff) < DLTFLOOR) return null;
+    var pct = Math.round(diff / from * 100);
+    if(pct === 0) return null;
+    return pct;
+  }
+
+  // Direction is carried by the arrow and NEVER by colour. A price
+  // rising is good news for a seller and bad news for a buyer, and the
+  // page must not take that side.
+  function dltChip(c, sub){
+    var p = dltPct(c, sub);
+    if(p === null) return "";
+    var up = p > 0;
+    return '<span class="dltc">' + (up ? "&#9650;" : "&#9660;") +
+           Math.abs(p) + '%</span>';
+  }
+
   function dltNote(){
     var n = el("dltnote");
     if(!n) return;
@@ -666,7 +716,8 @@
       for(j = 0; j < subs.length; j++){
         s += '<button type="button" data-add="' + c.i + '|' + esc(subs[j]) + '">' +
              money(c.p[subs[j]]) +
-             '<span class="pl">' + esc(subs[j]) + '</span></button>';
+             '<span class="pl">' + esc(subs[j]) + '</span>' +
+             dltChip(c, subs[j]) + '</button>';
       }
       html += '<div class="row">' +
               '<div class="thumb">' + thumbImg(c.i) + '</div>' +
@@ -826,6 +877,7 @@
       pressGroup(el("dlt"), "data-dlt", DLT);
       save();
       dltNote();
+      search(el("q").value);
       return;
     }
 
