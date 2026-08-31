@@ -102,6 +102,13 @@
 
   .bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
   .bar .seg{flex:0 0 150px;}
+  .dltbar{margin-bottom:6px;}
+  .dltbar .seg{flex:1 1 auto;}
+  .dltnote{
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+    margin-bottom:14px;min-height:12px;
+  }
   .bar .clear{
     margin-left:auto;
     border:1px solid var(--rule);border-radius:var(--r-sm);background:none;
@@ -392,6 +399,16 @@
       </div>
       <button type="button" class="clear" data-act="clear">Clear both</button>
     </div>
+    <div class="bar dltbar">
+      <div class="seg" id="dlt" role="group" aria-label="Price movement window">
+        <button type="button" data-dlt="1" aria-pressed="false">1D</button>
+        <button type="button" data-dlt="7" aria-pressed="false">7D</button>
+        <button type="button" data-dlt="30" aria-pressed="true">30D</button>
+        <button type="button" data-dlt="365" aria-pressed="false">1Y</button>
+        <button type="button" data-dlt="all" aria-pressed="false">All</button>
+      </div>
+    </div>
+    <div class="dltnote" id="dltnote"></div>
 
     <div class="rates">
       <button type="button" class="rtog" id="rtog" data-act="rtog" aria-expanded="false" aria-controls="rpan">
@@ -469,6 +486,7 @@
 
   var KEY = "vir.trade.v1";
   var D = null, FX = 1, CUR = "CAD", SIDE = 1;
+  var DLT = "30";
   var sides = { 1: [], 2: [] };
   var PCT = { 1: 100, 2: 100 };
   var byId = new Map(), setById = new Map();
@@ -483,7 +501,7 @@
   function save(){
     try{
       localStorage.setItem(KEY, JSON.stringify({
-        cur: CUR, side: SIDE, s1: sides[1], s2: sides[2],
+        cur: CUR, dlt: DLT, side: SIDE, s1: sides[1], s2: sides[2],
         p1: PCT[1], p2: PCT[2]
       }));
     }catch(e){}
@@ -494,6 +512,7 @@
       var r = JSON.parse(localStorage.getItem(KEY));
       if(!r) return;
       if(r.cur === "USD" || r.cur === "CAD") CUR = r.cur;
+      if(r.dlt != null && DLTW.indexOf(String(r.dlt)) > -1) DLT = String(r.dlt);
       if(r.side === 2) SIDE = 2;
       if(Array.isArray(r.s1)) sides[1] = r.s1;
       if(Array.isArray(r.s2)) sides[2] = r.s2;
@@ -576,6 +595,38 @@
       bits.push("Sealed");
     }
     return bits.join(" / ");
+  }
+
+  // The five movement windows. "all" reads the frozen baseline, which
+  // never rolls and means "since we started tracking".
+  var DLTW = ["1","7","30","365","all"];
+  var DLTL = {"1":"daily","7":"7-day","30":"30-day","365":"1-year","all":"all-time"};
+  var DLTM = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function dltWhen(ymd){
+    var t = Date.parse(String(ymd).slice(0,10) + "T00:00:00Z");
+    if(!isFinite(t)) return "";
+    var d = new Date(t);
+    return d.getUTCDate() + " " + DLTM[d.getUTCMonth()] + " " + d.getUTCFullYear();
+  }
+
+  // Each anchor drifts in age, so the page names the ACTUAL date it
+  // compared against rather than claiming a fixed period. An empty
+  // return means that window has not filled yet.
+  function dltDate(){
+    if(!D) return "";
+    if(DLT === "all") return dltWhen(D.baseline_at);
+    var a = D.anchors ? D.anchors[DLT] : null;
+    return a ? dltWhen(a) : "";
+  }
+
+  function dltNote(){
+    var n = el("dltnote");
+    if(!n) return;
+    if(!D){ n.textContent = ""; return; }
+    var w = dltDate();
+    n.textContent = w ? ("Movement against " + w)
+                      : ("No " + (DLTL[DLT] || "") + " history yet");
   }
 
   function search(term){
@@ -725,6 +776,8 @@
     renderSide(2);
     renderVerdict();
     pcMark();
+    pressGroup(el("dlt"), "data-dlt", DLT);
+    dltNote();
   }
 
   function add(side, i, sub){
@@ -764,6 +817,15 @@
       save();
       paint();
       search(el("q").value);
+      return;
+    }
+
+    var dlw = t.getAttribute("data-dlt");
+    if(dlw){
+      DLT = dlw;
+      pressGroup(el("dlt"), "data-dlt", DLT);
+      save();
+      dltNote();
       return;
     }
 
