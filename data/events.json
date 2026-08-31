@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-08-31T06:46:01.375Z",
- "generated_local": "2026-08-30T23:46:01-07:00",
- "window_start": "2026-08-30T07:00:00.000Z",
+ "generated_at": "2026-08-31T19:25:44.176Z",
+ "generated_local": "2026-08-31T12:25:44-07:00",
+ "window_start": "2026-08-31T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 24,
-   "added": 24
+   "returned": 31,
+   "added": 31
   },
   {
    "name": "Courtenay",
@@ -23,9 +23,9 @@
   }
  ],
  "totals": {
-  "fetched": 46,
-  "unique": 46,
-  "prev_unique": 49
+  "fetched": 53,
+  "unique": 53,
+  "prev_unique": 46
  },
  "unknown_templates": {},
  "events": [
@@ -46,6 +46,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-07T05:03:06+00:00"
+  },
+  {
+   "id": 903312,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-02T18:00:00-07:00",
+   "end": "2026-09-02T21:00:00-07:00",
+   "day": "2026-09-02",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:23:59+00:00"
   },
   {
    "id": 770763,
@@ -192,6 +210,24 @@
    "updated": "2026-07-14T05:03:21+00:00"
   },
   {
+   "id": 903316,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-09T18:00:00-07:00",
+   "end": "2026-09-09T21:00:00-07:00",
+   "day": "2026-09-09",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:24:41+00:00"
+  },
+  {
    "id": 774317,
    "name": "Thursday Evening Nexus Nights - 1v1",
    "type": "nexus",
@@ -318,6 +354,24 @@
    "updated": "2026-07-21T05:03:39+00:00"
   },
   {
+   "id": 903317,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-16T18:00:00-07:00",
+   "end": "2026-09-16T21:00:00-07:00",
+   "day": "2026-09-16",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:24:59+00:00"
+  },
+  {
    "id": 792667,
    "name": "Thursday Evening Nexus Nights - 1v1",
    "type": "nexus",
@@ -426,24 +480,6 @@
    "updated": "2026-08-01T18:16:00+00:00"
   },
   {
-   "id": 821776,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-09-20T11:30:00-07:00",
-   "end": "2026-09-20T15:40:00-07:00",
-   "day": "2026-09-20",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-02T05:01:08+00:00"
-  },
-  {
    "id": 498188,
    "name": "Sunday Morning Vendetta Summoner Skirmish II",
    "type": "skirmish",
@@ -462,6 +498,24 @@
    "updated": "2026-04-14T00:28:13+00:00"
   },
   {
+   "id": 821776,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-09-20T11:30:00-07:00",
+   "end": "2026-09-20T15:40:00-07:00",
+   "day": "2026-09-20",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-08-02T05:01:08+00:00"
+  },
+  {
    "id": 806489,
    "name": "Tuesday Riftbound Playnight",
    "type": "learn",
@@ -478,6 +532,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-28T05:03:37+00:00"
+  },
+  {
+   "id": 903318,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-23T18:00:00-07:00",
+   "end": "2026-09-23T21:00:00-07:00",
+   "day": "2026-09-23",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:25:29+00:00"
   },
   {
    "id": 816058,
@@ -624,6 +696,24 @@
    "updated": "2026-08-04T05:03:26+00:00"
   },
   {
+   "id": 903319,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-30T18:00:00-07:00",
+   "end": "2026-09-30T21:00:00-07:00",
+   "day": "2026-09-30",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:25:47+00:00"
+  },
+  {
    "id": 837229,
    "name": "Tuesday Riftbound Playnight",
    "type": "learn",
@@ -714,6 +804,24 @@
    "updated": "2026-08-11T05:02:52+00:00"
   },
   {
+   "id": 903320,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-10-07T18:00:00-07:00",
+   "end": "2026-10-07T21:00:00-07:00",
+   "day": "2026-10-07",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:27:27+00:00"
+  },
+  {
    "id": 856044,
    "name": "Tuesday Riftbound Playnight",
    "type": "learn",
@@ -766,6 +874,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-08-18T05:03:23+00:00"
+  },
+  {
+   "id": 903321,
+   "name": "Wednesday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-10-14T18:00:00-07:00",
+   "end": "2026-10-14T21:00:00-07:00",
+   "day": "2026-10-14",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-08-31T18:27:49+00:00"
   },
   {
    "id": 875551,
