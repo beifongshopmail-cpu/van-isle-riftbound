@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-08-31T19:25:44.176Z",
- "generated_local": "2026-08-31T12:25:44-07:00",
+ "generated_at": "2026-09-01T06:05:08.498Z",
+ "generated_local": "2026-08-31T23:05:08-07:00",
  "window_start": "2026-08-31T07:00:00.000Z",
  "anchors": [
   {
@@ -18,14 +18,14 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 17,
-   "added": 17
+   "returned": 18,
+   "added": 18
   }
  ],
  "totals": {
-  "fetched": 53,
-  "unique": 53,
-  "prev_unique": 46
+  "fetched": 54,
+  "unique": 54,
+  "prev_unique": 53
  },
  "unknown_templates": {},
  "events": [
@@ -129,7 +129,7 @@
    "time": "1:30 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
-   "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
    "region": "island",
    "cap": 16,
    "reg": 0,
@@ -291,7 +291,7 @@
    "time": "1:30 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
-   "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
    "region": "island",
    "cap": 16,
    "reg": 0,
@@ -453,7 +453,7 @@
    "time": "1:30 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
-   "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
    "region": "island",
    "cap": 16,
    "reg": 0,
@@ -615,7 +615,7 @@
    "time": "3:00 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
-   "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
    "region": "island",
    "cap": 16,
    "reg": 2,
@@ -633,7 +633,7 @@
    "time": "5:30 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
-   "address": "542 Comox Road, Courtenay, BC, V9N 3P6, CA",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
    "region": "island",
    "cap": 16,
    "reg": 0,
@@ -982,6 +982,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-30T05:01:14+00:00"
+  },
+  {
+   "id": 904901,
+   "name": "Tuesday Riftbound Playnight",
+   "type": "learn",
+   "start": "2026-10-27T18:00:00-07:00",
+   "end": "2026-10-27T21:30:00-07:00",
+   "day": "2026-10-27",
+   "time": "6:00 PM",
+   "venue": "Giddy-Up Games",
+   "city": "Campbell River",
+   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
+   "region": "island",
+   "cap": 8,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-09-01T05:03:26+00:00"
   }
  ]
 }
