@@ -704,8 +704,8 @@ function render(){
   renderGrid();
   renderLegend();
   if (selDay){
-    panelEl.appendChild(document.querySelector(".ahead"));
     renderList(panelEl);
+    panelEl.insertBefore(document.querySelector(".ahead"), panelEl.firstChild);
     listEl.innerHTML = "";
   } else {
     renderList(listEl);
