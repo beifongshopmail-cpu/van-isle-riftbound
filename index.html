@@ -133,6 +133,7 @@
      track and overflows the row. A zero floor blocks that path. */
   .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
   .pad{aspect-ratio:1/1.12;}
+  .expand{grid-column:1/-1;margin:9px 0 4px;}
   .cell{
     aspect-ratio:1/1.12;
     background-color:var(--plate);
@@ -394,7 +395,7 @@ var selDay = null;
 var showAll = false;
 var cursor = null;
 
-var gridEl, legendEl, listEl;
+var gridEl, legendEl, listEl, panelEl;
 
 /* ---------- date helpers ---------- */
 
@@ -509,7 +510,12 @@ function renderGrid(){
   document.getElementById("prev").disabled = ci <= BOUNDS.min;
   document.getElementById("next").disabled = ci >= BOUNDS.max;
 
+  var aheadEl = document.querySelector(".ahead");
+  if (aheadEl && gridEl.contains(aheadEl)){
+    document.querySelector(".agenda").insertBefore(aheadEl, listEl);
+  }
   gridEl.innerHTML = "";
+  panelEl = null;
   for (var i = 0; i < first.getDay(); i++){
     var p = document.createElement("div");
     p.className = "pad";
@@ -553,6 +559,25 @@ function renderGrid(){
       gridEl.appendChild(b);
     })(n);
   }
+
+  if (selDay){
+    var selD = parseDay(selDay);
+    if (selD.getFullYear() === cursor.y && selD.getMonth() === cursor.m){
+      var sn = selD.getDate();
+      var pos = first.getDay() + sn;
+      var weekEnd = Math.ceil(pos / 7) * 7;
+      var cellsBefore = Math.min(weekEnd, first.getDay() + days) - first.getDay();
+      var idx = first.getDay() + cellsBefore;
+
+      panelEl = document.createElement("div");
+      panelEl.className = "expand";
+      if (idx < gridEl.children.length){
+        gridEl.insertBefore(panelEl, gridEl.children[idx]);
+      } else {
+        gridEl.appendChild(panelEl);
+      }
+    }
+  }
 }
 
 function renderLegend(){
@@ -585,7 +610,7 @@ function escapeHtml(s){
   });
 }
 
-function renderList(){
+function renderList(target){
   var all = visible();
   var title = document.getElementById("atitle");
   var tog = document.getElementById("atoggle");
@@ -614,9 +639,9 @@ function renderList(){
   tog.textContent = toggleText;
   tog.onclick = toggleFn;
 
-  listEl.innerHTML = "";
+  target.innerHTML = "";
   if (!picked.length){
-    listEl.innerHTML = '<div class="none">' +
+    target.innerHTML = '<div class="none">' +
       (hidden.size
         ? "Nothing here. Turn a category back on above."
         : "Nothing in the next week. Tap a day on the calendar, or see all upcoming.") +
@@ -670,7 +695,7 @@ function renderList(){
       g.appendChild(a);
     });
 
-    listEl.appendChild(g);
+    target.appendChild(g);
   });
 }
 
@@ -678,7 +703,13 @@ function render(){
   renderStamp();
   renderGrid();
   renderLegend();
-  renderList();
+  if (selDay){
+    panelEl.appendChild(document.querySelector(".ahead"));
+    renderList(panelEl);
+    listEl.innerHTML = "";
+  } else {
+    renderList(listEl);
+  }
   document.getElementById("subbtn").href = feedHref();
 }
 
