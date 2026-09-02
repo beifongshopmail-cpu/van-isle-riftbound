@@ -99,11 +99,11 @@
   .scope button{
     min-height:var(--tap);
     background:none;border:0;color:var(--dim);cursor:pointer;
-    font-family:var(--display);font-weight:700;font-size:12px;
-    letter-spacing:.07em;text-transform:uppercase;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;
     transition:color var(--mo-fast),background var(--mo-fast);
   }
-  .scope button+button{border-left:1px solid var(--rule-hi)}
+  .scope button+button{border-left:1px solid var(--rule)}
   .scope button[aria-pressed="true"]{background:var(--bone);color:#000}
 
   .monthbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
