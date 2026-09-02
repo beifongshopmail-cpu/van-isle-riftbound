@@ -194,6 +194,7 @@
   .lg.off .sw{opacity:.25;box-shadow:none;}
 
   .agenda{margin-top:36px;}
+  .agenda.empty{margin-top:0;}
   .ahead{
     display:flex;align-items:center;gap:10px;
     padding-bottom:10px;border-bottom:2px solid var(--bone);
@@ -552,9 +553,6 @@ function renderGrid(){
         selDay = (selDay === k) ? null : k;
         showAll = false;
         render();
-        if (selDay){
-          document.querySelector(".agenda").scrollIntoView({behavior:"smooth", block:"start"});
-        }
       };
       gridEl.appendChild(b);
     })(n);
@@ -707,8 +705,10 @@ function render(){
     renderList(panelEl);
     panelEl.insertBefore(document.querySelector(".ahead"), panelEl.firstChild);
     listEl.innerHTML = "";
+    document.querySelector(".agenda").classList.add("empty");
   } else {
     renderList(listEl);
+    document.querySelector(".agenda").classList.remove("empty");
   }
   document.getElementById("subbtn").href = feedHref();
 }
