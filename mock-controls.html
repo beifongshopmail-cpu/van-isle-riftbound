@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Control treatments</title>
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+  :root{
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --plate:#14171D;
+    --s1:#3FA9F5;
+    --s2:#FF4F9A;
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --tap:44px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--ground);color:var(--bone);
+    font-family:var(--body);font-size:15px;line-height:1.45;
+    padding:24px 16px calc(40px + env(safe-area-inset-bottom));
+    padding-top:calc(24px + env(safe-area-inset-top));
+  }
+  .tlabel{
+    font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--mute);
+    margin:0 0 10px;padding-top:26px;border-top:1px solid var(--rule);
+  }
+  .t:first-of-type .tlabel{border-top:0;padding-top:0}
+  .t{margin-bottom:20px}
+
+  .bar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .seg{display:flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+  .seg button{
+    flex:1;border:0;border-radius:0;background:none;
+    min-height:32px;padding:6px 10px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;
+  }
+  .seg button+button{border-left:1px solid var(--rule)}
+  .seg button.on{background:var(--bone);color:#000}
+  .clear{
+    margin-left:auto;
+    border:1px solid var(--rule);border-radius:6px;background:none;
+    color:var(--dim);font-family:var(--mono);font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;
+    min-height:32px;padding:6px 12px;cursor:pointer;
+  }
+  .five{width:100%;margin-bottom:6px}
+  .dltnote{
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+    margin-bottom:10px;
+  }
+  .rtog{
+    width:100%;min-height:var(--tap);
+    display:flex;align-items:center;gap:10px;
+    padding:0 12px;background:none;
+    border:1px solid var(--rule);border-radius:6px;
+    color:var(--dim);
+    font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.1em;
+    text-transform:uppercase;text-align:left;cursor:pointer;
+    margin-bottom:10px;
+  }
+  .rtog .pcs{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em}
+  .rtog .pcs .a{color:var(--s1)}
+  .rtog .pcs .b{color:var(--s2);margin-left:6px}
+  .find input{
+    width:100%;-webkit-appearance:none;appearance:none;
+    background:var(--plate);border:1px solid var(--rule-hi);border-radius:6px;
+    color:var(--bone);font-family:var(--body);font-size:16px;
+    min-height:52px;padding:0 12px;margin-bottom:10px;
+  }
+  .find input::placeholder{color:var(--mute)}
+  .target{width:100%;margin-bottom:14px}
+  .target button.on1{background:var(--s1);color:#000}
+  .target button.on2{background:var(--s2);color:#000}
+
+  .panel{border:1px solid var(--rule);border-radius:9px;overflow:hidden}
+  .panel .head{
+    display:flex;align-items:baseline;gap:10px;padding:12px 14px;
+    border-bottom:1px solid var(--rule);
+  }
+  .panel .head .lb{
+    font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--s1);
+  }
+  .panel .head .pc{font-family:var(--mono);font-size:10px;color:var(--dim)}
+  .panel .head .tot{margin-left:auto;font-family:var(--mono);font-size:15px;color:var(--bone)}
+  .line{display:flex;align-items:center;gap:10px;padding:10px 14px}
+  .line .nm{flex:1;min-width:0;font-size:14px;line-height:1.25}
+  .line .amt{font-family:var(--mono);font-size:13px}
+
+  /* TREATMENT B -- actions on the display face, selectors stay mono */
+  .tB .clear{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em}
+  .tB .target button{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em}
+  .tB .rtog .pcs{font-size:12px}
+  .tB .panel .head .pc{font-size:12px}
+
+  /* TREATMENT C -- every control on the display face */
+  .tC .seg button{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.08em}
+  .tC .clear{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em}
+  .tC .target button{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em}
+  .tC .dltnote{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.08em}
+  .tC .rtog .pcs{font-size:12px}
+  .tC .panel .head .pc{font-size:12px}
+</style>
+</head>
+<body>
+
+<section class="t tA">
+  <p class="tlabel">A / everything as it ships today</p>
+  <div class="bar">
+    <div class="seg"><button type="button">CAD</button><button type="button" class="on">USD</button></div>
+    <button type="button" class="clear">Clear both</button>
+  </div>
+  <div class="seg five"><button type="button" class="on">1D</button><button type="button">7D</button><button type="button">30D</button><button type="button">1Y</button><button type="button">All</button></div>
+  <p class="dltnote">Movement against 1 Sep 2026</p>
+  <button type="button" class="rtog">Rates<span class="pcs"><span class="a">90%</span><span class="b">80%</span></span></button>
+  <div class="find"><input type="text" placeholder="Search by card name or number"></div>
+  <div class="seg target"><button type="button" class="on1">Add to yours</button><button type="button">Add to theirs</button></div>
+  <div class="panel">
+    <div class="head"><span class="lb">Your cards</span><span class="pc">90%</span><span class="tot">$149.14</span></div>
+    <div class="line"><span class="nm">Heimerdinger, Inventor</span><span class="amt">$148.20</span></div>
+  </div>
+</section>
+
+<section class="t tB">
+  <p class="tlabel">B / actions display, selectors mono</p>
+  <div class="bar">
+    <div class="seg"><button type="button">CAD</button><button type="button" class="on">USD</button></div>
+    <button type="button" class="clear">Clear both</button>
+  </div>
+  <div class="seg five"><button type="button" class="on">1D</button><button type="button">7D</button><button type="button">30D</button><button type="button">1Y</button><button type="button">All</button></div>
+  <p class="dltnote">Movement against 1 Sep 2026</p>
+  <button type="button" class="rtog">Rates<span class="pcs"><span class="a">90%</span><span class="b">80%</span></span></button>
+  <div class="find"><input type="text" placeholder="Search by card name or number"></div>
+  <div class="seg target"><button type="button" class="on1">Add to yours</button><button type="button">Add to theirs</button></div>
+  <div class="panel">
+    <div class="head"><span class="lb">Your cards</span><span class="pc">90%</span><span class="tot">$149.14</span></div>
+    <div class="line"><span class="nm">Heimerdinger, Inventor</span><span class="amt">$148.20</span></div>
+  </div>
+</section>
+
+<section class="t tC">
+  <p class="tlabel">C / every control on the display face</p>
+  <div class="bar">
+    <div class="seg"><button type="button">CAD</button><button type="button" class="on">USD</button></div>
+    <button type="button" class="clear">Clear both</button>
+  </div>
+  <div class="seg five"><button type="button" class="on">1D</button><button type="button">7D</button><button type="button">30D</button><button type="button">1Y</button><button type="button">All</button></div>
+  <p class="dltnote">Movement against 1 Sep 2026</p>
+  <button type="button" class="rtog">Rates<span class="pcs"><span class="a">90%</span><span class="b">80%</span></span></button>
+  <div class="find"><input type="text" placeholder="Search by card name or number"></div>
+  <div class="seg target"><button type="button" class="on1">Add to yours</button><button type="button">Add to theirs</button></div>
+  <div class="panel">
+    <div class="head"><span class="lb">Your cards</span><span class="pc">90%</span><span class="tot">$149.14</span></div>
+    <div class="line"><span class="nm">Heimerdinger, Inventor</span><span class="amt">$148.20</span></div>
+  </div>
+</section>
+
+</body>
+</html>
