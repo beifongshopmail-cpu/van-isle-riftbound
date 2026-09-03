@@ -65,7 +65,7 @@
   .mast .stamp .stale{color:var(--warn);}
   .mast .pages{
     margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
     text-transform:uppercase;color:var(--mute);
   }
   .mast .pages a{color:var(--dim);text-decoration:none;}
@@ -80,7 +80,7 @@
   .mast .by a{color:var(--dim);text-decoration:none;}
 
   .boot{
-    font-family:var(--mono);font-size:11px;letter-spacing:.09em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
     text-transform:uppercase;color:var(--mute);padding:24px 0;
   }
   .boot.bad{color:var(--warn);}
@@ -130,17 +130,18 @@
     color:var(--bone);font-family:var(--mono);font-size:16px;letter-spacing:.08em;text-transform:uppercase;
     padding:12px 14px;min-height:44px;
   }
-  .find input::placeholder{color:var(--mute);}
+  .find input::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
+  .tlnote::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
   .find input:focus{outline:none;border-color:var(--rule-hi);}
   .find .target{margin-top:10px;}
 
   .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
-  .results .row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--plate);}
+  .results .row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:none;}
   .results .thumb{flex:0 0 31px;height:44px;border-radius:var(--r-xs);border:1px solid var(--rule);overflow:hidden;}
   .results .thumb img{display:block;width:100%;height:100%;object-fit:contain;}
   .results .row+.row{border-top:1px solid var(--rule);}
   .results .meta{min-width:0;flex:1;}
-  .results .nm{font-family:var(--mono);font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .results .nm{font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .results .sub{
     margin-top:3px;font-family:var(--mono);font-size:10px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
@@ -148,7 +149,7 @@
   .results .buys{display:flex;gap:6px;flex:0 0 auto;}
   .results .buys button{
     border:1px solid var(--rule-hi);border-radius:6px;background:none;
-    color:var(--bone);font-family:var(--mono);font-size:11px;
+    color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;
     letter-spacing:.04em;padding:6px 9px;min-height:38px;cursor:pointer;
   }
   .results .buys button:active{background:var(--bone);color:#000;}
@@ -159,7 +160,7 @@
   .results .buys button:active .pl{color:#000;}
   .results .none{
     padding:12px;
-    font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
     text-transform:uppercase;color:var(--mute);
   }
 
@@ -174,9 +175,9 @@
   }
   .panel[data-side="1"] .head .lb{color:var(--s1);}
   .panel[data-side="2"] .head .lb{color:var(--s2);}
-  .panel .head .tot{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
+  .panel .head .tot{font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
   .panel .empty{
-    padding:16px 14px;font-family:var(--mono);font-size:10px;
+    padding:16px 14px;font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
   }
   .line{padding:10px 14px;display:flex;align-items:center;gap:10px;}
@@ -186,10 +187,10 @@
   .line+.line{border-top:1px solid var(--rule);}
   .line .top{display:flex;align-items:baseline;gap:10px;}
   .line .nm{
-    flex:1;min-width:0;font-family:var(--mono);font-size:13px;line-height:1.25;
+    flex:1;min-width:0;font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.25;
     overflow:hidden;text-overflow:clip;white-space:nowrap;
   }
-  .line .amt{flex:0 0 auto;font-family:var(--mono);font-size:13px;text-align:right;}
+  .line .amt{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:13px;text-align:right;}
   .line .bot{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .line .sub{
     flex:1;min-width:0;font-family:var(--mono);font-size:10px;
@@ -199,13 +200,13 @@
   .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:var(--r-xs);flex:0 0 auto;}
   .qty button{
     width:32px;min-height:32px;border:0;background:none;color:var(--bone);
-    font-family:var(--mono);font-size:14px;line-height:1;cursor:pointer;
+    font-family:var(--mono);font-weight:500;font-size:13px;line-height:1;cursor:pointer;
   }
   .qty button:active{background:rgba(255,255,255,.06);}
-  .qty span{min-width:26px;text-align:center;font-family:var(--mono);font-size:12px;}
+  .qty span{min-width:26px;text-align:center;font-family:var(--mono);font-weight:500;font-size:13px;}
   .line .mv,.line .del{
     flex:0 0 auto;border:1px solid var(--rule);border-radius:5px;
-    background:none;color:var(--mute);font-family:var(--mono);font-size:13px;
+    background:none;color:var(--mute);font-family:var(--mono);font-weight:500;font-size:13px;
     line-height:1;width:32px;min-height:32px;cursor:pointer;
   }
   .line .mv svg{display:block;margin:0 auto;}
@@ -283,7 +284,7 @@
   }
   .setpan{margin-top:6px;padding:14px;border:1px solid var(--rule-hi);border-radius:var(--r);}
   .setpan .bar{margin-bottom:10px;}
-  .setpan .dltnote{margin-bottom:16px;}
+  .setpan .dltnote{margin-bottom:10px;}
   .rcap{
     font-family:var(--mono);font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:10px;
@@ -292,7 +293,7 @@
   .rf{position:relative;display:flex;align-items:center;gap:8px;min-width:0;}
   .rf .rfl{
     flex:0 0 auto;
-    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--c);
   }
   .rf input{
@@ -308,7 +309,7 @@
   .rf input:focus{outline:none;border-color:var(--c);}
   .rf .pcs{
     position:absolute;right:8px;pointer-events:none;
-    font-family:var(--mono);font-size:12px;font-weight:400;color:var(--dim);
+    font-family:var(--mono);font-size:10px;font-weight:500;color:var(--dim);
   }
   .rreset{
     margin-top:10px;width:100%;min-height:var(--tap);
@@ -322,7 +323,7 @@
   .rnow .n1{color:var(--s1);}
   .rnow .n2{color:var(--s2);}
   .rnow .n0{color:var(--dim);}
-  .pcx{font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;}
+  .pcx{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;}
   .pcx:empty{display:none;}
   .panel[data-side="1"] .pcx{color:var(--s1);}
   .panel[data-side="2"] .pcx{color:var(--s2);}
@@ -333,10 +334,10 @@
   .tltog[aria-expanded="true"] .tlcar{transform:rotate(180deg)}
   .tltog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi)}
   .tlcount{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em}
-  .tlpan{margin-top:6px;padding:14px;border:1px solid var(--rule-hi);border-radius:var(--r)}
+  .tlpan{margin-top:6px;padding:14px 14px 4px;border:1px solid var(--rule-hi);border-radius:var(--r)}
   .tlnote{width:100%;font-family:var(--mono);font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;min-height:44px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box}
   .tlsave{display:block;width:100%;margin-top:8px;min-height:44px;padding:10px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
-  .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font-family:var(--mono);font-size:13px}
+  .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font-family:var(--mono);font-weight:500;font-size:13px}
   .tlhd{display:flex;align-items:baseline;gap:8px}
   .tlwhen{color:var(--dim)}
   .tltot{margin-left:auto;white-space:nowrap}
@@ -446,7 +447,7 @@
     </div>
 
     <section class="panel" data-side="1">
-      <div class="head"><span class="lb">Your cards</span><span class="pcx" id="pcx1"></span><span class="tot" id="tot1">$0.00</span></div>
+      <div class="head"><span class="lb">Your cards</span><span class="tot" id="tot1">$0.00</span><span class="pcx" id="pcx1"></span></div>
       <div id="body1"></div>
     </section>
 
@@ -458,7 +459,7 @@
     </div>
 
     <section class="panel" data-side="2">
-      <div class="head"><span class="lb">Their cards</span><span class="pcx" id="pcx2"></span><span class="tot" id="tot2">$0.00</span></div>
+      <div class="head"><span class="lb">Their cards</span><span class="tot" id="tot2">$0.00</span><span class="pcx" id="pcx2"></span></div>
       <div id="body2"></div>
     </section>
 
