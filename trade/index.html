@@ -140,7 +140,7 @@
   .results .thumb img{display:block;width:100%;height:100%;object-fit:contain;}
   .results .row+.row{border-top:1px solid var(--rule);}
   .results .meta{min-width:0;flex:1;}
-  .results .nm{font-size:14px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .results .nm{font-family:var(--mono);font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .results .sub{
     margin-top:3px;font-family:var(--mono);font-size:9px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
@@ -169,12 +169,12 @@
     border-bottom:1px solid var(--rule);
   }
   .panel .head .lb{
-    font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.12em;
+    font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--dim);
   }
   .panel[data-side="1"] .head .lb{color:var(--s1);}
   .panel[data-side="2"] .head .lb{color:var(--s2);}
-  .panel .head .tot{margin-left:auto;font-family:var(--mono);font-size:15px;color:var(--bone);}
+  .panel .head .tot{margin-left:auto;font-family:var(--display);font-weight:600;font-size:15px;color:var(--bone);}
   .panel .empty{
     padding:16px 14px;font-family:var(--mono);font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
@@ -186,7 +186,7 @@
   .line+.line{border-top:1px solid var(--rule);}
   .line .top{display:flex;align-items:baseline;gap:10px;}
   .line .nm{
-    flex:1;min-width:0;font-size:14px;line-height:1.25;
+    flex:1;min-width:0;font-family:var(--mono);font-size:13px;line-height:1.25;
     overflow:hidden;text-overflow:clip;white-space:nowrap;
   }
   .line .amt{flex:0 0 auto;font-family:var(--mono);font-size:13px;text-align:right;}
@@ -250,7 +250,7 @@
   .fdbklink a{color:var(--dim);}
   .src{
     margin-top:22px;font-family:var(--mono);font-size:10px;
-    letter-spacing:.07em;line-height:1.7;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.04em;line-height:1.7;color:var(--mute);
   }
 
   /* One disclosure for currency, clear, the movement window and the per-side
@@ -263,7 +263,7 @@
     background:none;
     border:1px solid var(--rule);border-radius:6px;
     color:var(--dim);
-    font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.1em;
+    font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;
     text-transform:uppercase;text-align:left;cursor:pointer;
     transition:color var(--mo-fast) ease,border-color var(--mo-fast) ease;
   }
@@ -328,7 +328,7 @@
   .panel[data-side="2"] .pcx{color:var(--s2);}
 
   .tlwrap{margin-top:18px}
-  .tltog{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--tap);padding:0 14px;background:none;border:1px solid var(--rule);border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.1em;text-transform:uppercase;text-align:left;cursor:pointer}
+  .tltog{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--tap);padding:0 14px;background:none;border:1px solid var(--rule);border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;text-align:left;cursor:pointer}
   .tlcar{transition:transform var(--mo-fast) var(--mo-ease)}
   .tltog[aria-expanded="true"] .tlcar{transform:rotate(180deg)}
   .tlcount{margin-left:auto}
