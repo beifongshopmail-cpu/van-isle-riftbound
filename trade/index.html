@@ -194,10 +194,10 @@
   .line .bot{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .line .sub{
     flex:1;min-width:0;font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.04em;text-transform:uppercase;color:var(--mute);
     white-space:nowrap;overflow:hidden;text-overflow:clip;
   }
-  .line .bot .dltc{margin-left:0;}
+  .line .top .dltc{margin-left:0;}
   .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:6px;flex:0 0 auto;}
   .qty button{
     width:32px;min-height:32px;border:0;background:none;color:var(--bone);
@@ -777,11 +777,11 @@
               '<div class="thumbstack">' +
               '<div class="top">' +
               '<div class="nm">' + esc(c ? c.n : "Unknown card") + '</div>' +
+              dltChip(c, it.s) +
               '<div class="amt">' + money(unit * it.q) + '</div>' +
               '</div>' +
               '<div class="bot">' +
               '<div class="sub">' + esc(it.s) + ' / ' + money(unit) + ' each</div>' +
-              dltChip(c, it.s) +
               '<div class="qty">' +
               '<button type="button" data-act="dec" data-side="' + n + '" data-idx="' + k + '" aria-label="Fewer">-</button>' +
               '<span>' + it.q + '</span>' +
