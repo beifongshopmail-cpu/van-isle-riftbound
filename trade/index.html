@@ -295,19 +295,20 @@
     flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--c);
+    text-align:center;
   }
   .rfw{position:relative;display:block;}
   .rf input{
-    width:100%;box-sizing:border-box;min-height:var(--tap);
+    width:100%;box-sizing:border-box;min-height:38px;
     background:var(--ground);color:var(--bone);
-    border:1px solid var(--rule-hi);border-radius:var(--r-sm);
-    font-family:var(--mono);font-size:16px;text-align:right;
-    padding:0 26px 0 8px;
+    border:1px solid var(--c);border-radius:var(--r-sm);
+    font-family:var(--mono);font-size:16px;text-align:center;
+    padding:0 22px;
     -moz-appearance:textfield;
   }
   .rf input::-webkit-outer-spin-button,
   .rf input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-  .rf input:focus{outline:none;border-color:var(--c);}
+  .rf input:focus{outline:none;border-color:var(--bone);}
   .rf .pcs{
     position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;
     font-family:var(--mono);font-size:10px;font-weight:500;color:var(--dim);
