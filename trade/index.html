@@ -110,7 +110,7 @@
     margin-bottom:14px;min-height:12px;
   }
   .dltc{
-    display:inline-block;margin-left:6px;
+    display:inline-block;margin-left:6px;flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.06em;color:var(--dim);
   }
@@ -195,9 +195,9 @@
   .line .sub{
     flex:1;min-width:0;font-family:var(--mono);font-size:10px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
-    overflow:hidden;white-space:nowrap;
+    white-space:nowrap;
   }
-  .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:var(--r-xs);flex:0 0 auto;}
+  .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:6px;flex:0 0 auto;}
   .qty button{
     width:32px;min-height:32px;border:0;background:none;color:var(--bone);
     font-family:var(--mono);font-weight:500;font-size:13px;line-height:1;cursor:pointer;
@@ -284,13 +284,15 @@
   }
   .setpan{margin-top:6px;padding:14px;border:1px solid var(--rule-hi);border-radius:var(--r);}
   .setpan .bar{margin-bottom:10px;}
-  .setpan .dltnote{margin-bottom:10px;}
+  .setpan .dltnote{margin-bottom:0;}
+  .setpan .rcap{margin-top:16px;padding-top:16px;border-top:1px solid var(--rule);}
+  .setpan .dltbar{margin-bottom:6px;}
   .rcap{
     font-family:var(--mono);font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:10px;
   }
-  .rfs{display:flex;gap:20px;}
-  .rf{display:flex;flex-direction:column;align-items:stretch;gap:6px;flex:0 0 auto;width:92px;}
+  .rfs{display:flex;gap:20px;justify-content:center;}
+  .rf{display:flex;flex-direction:column;align-items:stretch;gap:6px;flex:0 0 auto;width:76px;}
   .rf .rfl{
     flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
@@ -299,11 +301,11 @@
   }
   .rfw{position:relative;display:block;}
   .rf input{
-    width:92px;box-sizing:border-box;min-height:38px;
+    width:76px;box-sizing:border-box;min-height:38px;
     background:var(--ground);color:var(--bone);
     border:1px solid var(--c);border-radius:var(--r-sm);
     font-family:var(--mono);font-size:16px;text-align:center;
-    padding:0 22px;
+    padding:0 20px 0 8px;
     -moz-appearance:textfield;
   }
   .rf input::-webkit-outer-spin-button,
