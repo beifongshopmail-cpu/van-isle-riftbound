@@ -58,7 +58,7 @@
   }
   .mast .stamp{
     margin-top:12px;
-    font-family:var(--mono);font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
@@ -74,7 +74,7 @@
   .mast .pages .sep{color:var(--rule-hi);}
   .mast .by{
     margin-top:10px;
-    font-family:var(--mono);font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
   }
   .mast .by a{color:var(--dim);text-decoration:none;}
@@ -85,7 +85,7 @@
   }
   .boot.bad{color:var(--warn);}
 
-  .seg{display:flex;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
+  .seg{display:flex;border:1px solid var(--rule);border-radius:5px;overflow:hidden;}
   .seg button{
     flex:1;border:0;border-radius:0;background:none;
     min-height:38px;padding:6px 10px;
@@ -117,7 +117,7 @@
   .bar .clear{
     margin-left:auto;
     border:1px solid var(--rule);border-radius:6px;background:none;
-    color:var(--dim);font-family:var(--mono);font-size:10px;
+    color:var(--dim);font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.1em;text-transform:uppercase;
     min-height:32px;padding:6px 12px;cursor:pointer;
   }
@@ -127,7 +127,7 @@
   .find input{
     width:100%;-webkit-appearance:none;appearance:none;
     background:none;border:1px solid var(--rule-hi);border-radius:6px;
-    color:var(--bone);font-family:var(--mono);font-size:16px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--bone);font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;
     padding:12px 14px;min-height:44px;
   }
   .find input::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
@@ -143,7 +143,7 @@
   .results .meta{min-width:0;flex:1;}
   .results .nm{font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .results .sub{
-    margin-top:3px;font-family:var(--mono);font-size:10px;
+    margin-top:3px;font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
   }
   .results .buys{display:flex;gap:6px;flex:0 0 auto;}
@@ -193,7 +193,7 @@
   .line .amt{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:13px;text-align:right;}
   .line .bot{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .line .sub{
-    flex:1;min-width:0;font-family:var(--mono);font-size:10px;
+    flex:1;min-width:0;font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
     white-space:nowrap;
   }
@@ -221,7 +221,7 @@
     text-align:center;
   }
   .verdict .lb{
-    font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;
     text-transform:uppercase;color:var(--dim);
   }
   .verdict .big{
@@ -230,7 +230,7 @@
   }
   .verdict .who{
     margin-top:12px;display:flex;align-items:baseline;gap:10px;
-    font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;
     text-transform:uppercase;
   }
   .verdict .who .w1{color:var(--s1);}
@@ -250,7 +250,7 @@
   .fdbklink{margin:6px 0 0;}
   .fdbklink a{color:var(--dim);}
   .src{
-    margin-top:22px;font-family:var(--mono);font-size:10px;
+    margin-top:22px;font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.04em;line-height:1.7;color:var(--mute);
   }
 
@@ -288,7 +288,7 @@
   .setpan .rcap{margin-top:16px;padding-top:16px;border-top:1px solid var(--rule);}
   .setpan .dltbar{margin-bottom:6px;}
   .rcap{
-    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:10px;
   }
   .rfs{display:flex;gap:20px;justify-content:center;}
@@ -304,7 +304,7 @@
     width:76px;box-sizing:border-box;min-height:38px;
     background:var(--ground);color:var(--bone);
     border:1px solid var(--c);border-radius:var(--r-sm);
-    font-family:var(--mono);font-size:16px;text-align:center;
+    font-family:var(--mono);font-weight:500;font-size:16px;text-align:center;
     padding:0 20px 0 8px;
     -moz-appearance:textfield;
   }
@@ -319,7 +319,7 @@
     margin-top:10px;width:100%;min-height:var(--tap);
     background:none;color:var(--bone);
     border:1px solid var(--rule-hi);border-radius:6px;
-    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;cursor:pointer;
   }
   .rreset:active{background:rgba(255,255,255,.06);}
@@ -339,7 +339,7 @@
   .tltog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi)}
   .tlcount{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em}
   .tlpan{margin-top:6px;padding:14px 14px 4px;border:1px solid var(--rule-hi);border-radius:var(--r)}
-  .tlnote{width:100%;font-family:var(--mono);font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;min-height:44px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box}
+  .tlnote{width:100%;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;min-height:44px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box}
   .tlsave{display:block;width:100%;margin-top:8px;min-height:44px;padding:10px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
   .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font-family:var(--mono);font-weight:500;font-size:13px}
   .tlhd{display:flex;align-items:baseline;gap:8px}

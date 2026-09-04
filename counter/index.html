@@ -46,7 +46,7 @@
     border-top:1px solid var(--rule);
     min-height:46px;
     transition:border-color var(--mo-settle) ease}
-  .strip .turn{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  .strip .turn{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
     color:var(--dim);margin-left:10px}
   .strip .sp{margin-left:auto}
   .strip button{flex:0 0 44px;height:34px;display:flex;align-items:center;justify-content:center;
@@ -89,7 +89,7 @@
   .side[data-role="minor"]{border-color:color-mix(in srgb, var(--c) 30%, transparent)}
   .far{transform:rotate(180deg)}
 
-  .name{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  .name{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
     color:var(--mute);position:relative;z-index:3}
   .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px;
     max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -209,7 +209,7 @@
     color:var(--dim);font-weight:500;margin-bottom:10px}
   .sheet ol{list-style:none;flex:1;min-height:0;overflow:auto}
   #log li,.mbody li{display:flex;gap:12px;align-items:baseline;padding:11px 0;
-    border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:13px;
+    border-bottom:1px solid var(--rule);font-family:var(--mono);font-weight:500;font-size:13px;
     letter-spacing:.04em}
   #log li .lt,.mbody li .lt{flex:1;min-width:0;color:var(--mute);letter-spacing:.09em;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -224,7 +224,7 @@
     font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
   .faces{display:flex;border-bottom:1px solid var(--rule);margin-bottom:10px}
   .faces button{flex:1;min-height:42px;background:none;border:0;border-bottom:2px solid transparent;
-    border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--mono);font-size:10px;
+    border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.2em;text-transform:uppercase}
   .faces button[aria-pressed="true"]{color:var(--bone);border-bottom-color:var(--bone)}
   .sheet[data-face="now"] #past{display:none}
@@ -251,16 +251,16 @@
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .opp .them{color:var(--p2)}
   .opp .vs{color:var(--mute);font-weight:500;font-size:13px}
-  .mday{flex:0 0 auto;font-family:var(--mono);font-size:10px;color:var(--mute);
+  .mday{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:10px;color:var(--mute);
     white-space:nowrap;letter-spacing:.1em}
-  .dtl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  .dtl{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--mute);padding:0 0 10px;line-height:1.7}
   .mbody{display:none;padding:0 0 10px}
   #past li.open .mbody{display:block}
   .mbody ol{list-style:none}
   .ghead{display:flex;align-items:baseline;gap:7px;padding:10px 0 4px;
     border-top:1px solid var(--rule);
-    font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--mute)}
   .ghead b{font-weight:500}
   .ghead .g1{color:var(--p1)}
@@ -268,9 +268,9 @@
   .gsub{margin-left:auto;color:var(--mute);white-space:nowrap}
   .clearpast{width:100%;min-height:46px;margin-top:10px;background:none;
     border:1px solid var(--rule-hi);border-radius:6px;color:var(--mute);
-    font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
   .clearpast.armed{color:#FFB020;border-color:#FFB020}
-  #impmsg{font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  #impmsg{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);padding:10px 2px 0;text-align:center}
   #impmsg:empty{display:none}
 
