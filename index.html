@@ -371,7 +371,7 @@
 var TZ = "America/Vancouver";
 var TYPES = {
   nexus:    {label:"Nexus Nights",      color:"#3FA9F5"},
-  skirmish: {label:"Summoner Skirmish", color:"#FFB020"},
+  skirmish: {label:"Summoner Skirmish", short:"Skirmish", color:"#FFB020"},
   learn:    {label:"Learn-to-Play",     color:"#EDEFF2"},
   open:     {label:"Open Play",         color:"#FF4F9A"},
   other:    {label:"Event",             color:"#5A6472"}
@@ -592,7 +592,7 @@ function renderLegend(){
     b.setAttribute("aria-pressed", on ? "true" : "false");
     b.innerHTML =
       '<span class="sw" style="--c:' + TYPES[k].color + '"></span>' +
-      '<span>' + TYPES[k].label + '</span>' +
+      '<span>' + (TYPES[k].short || TYPES[k].label) + '</span>' +
       '<span class="ct">' + counts[k] + '</span>';
     b.onclick = function(){
       if (hidden.has(k)) hidden.delete(k); else hidden.add(k);
