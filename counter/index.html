@@ -133,7 +133,7 @@
   .side[data-role="minor"] .track .keys{display:none}
 
   .acts{display:flex;gap:10px;position:relative;z-index:3;margin-top:22px;order:4}
-  .acts button{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.12em;
+  .acts button{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.12em;
     text-transform:uppercase;padding:14px 15px 11px;min-height:48px;background:none;border:0;
     border-bottom:2px solid transparent;color:var(--bone);border-radius:6px 6px 0 0;
     transition:font-size var(--mo-travel) var(--mo-ease),
@@ -151,14 +151,14 @@
 
   .seamwrap{flex:0 0 auto;padding:8px 0;position:relative}
   .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
-    color:var(--bone);font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.1em;
+    color:var(--bone);font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.1em;
     text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0;
     position:relative;z-index:2}
-  .seam em{font-family:var(--display);font-style:normal;font-weight:800;font-size:14px;
+  .seam em{font-family:var(--display);font-style:normal;font-weight:600;font-size:14px;
     letter-spacing:.1em;color:color-mix(in srgb, var(--bone) 45%, var(--dim));
     border-left:1px solid var(--rule-hi);padding-left:14px;margin-left:14px;
     display:flex;align-items:center;gap:.5ch;min-width:0}
-  .seam em b{font-weight:800;font-size:14px;color:var(--sc);
+  .seam em b{font-weight:600;font-size:14px;color:var(--sc);
     max-width:9ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .seam:active{background:rgba(255,255,255,.08)}
   .seam:disabled{opacity:.3}
@@ -221,7 +221,7 @@
   .sheet li.empty{color:var(--mute);border:0;font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.5}
   .sheet .close{min-height:52px;margin-top:10px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
-    font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+    font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
   .faces{display:flex;border-bottom:1px solid var(--rule);margin-bottom:10px}
   .faces button{flex:1;min-height:42px;background:none;border:0;border-bottom:2px solid transparent;
     border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--mono);font-size:10px;
@@ -232,7 +232,7 @@
   #past{list-style:none;flex:1;min-height:0;overflow:auto}
   #past li{border-bottom:1px solid var(--rule);padding:0}
   #past > li{display:block}
-  #past li.empty{color:var(--mute);border:0;font-size:13px;padding:18px 0;line-height:1.5}
+  #past li.empty{color:var(--mute);border:0;font-family:var(--mono);font-weight:500;font-size:13px;padding:18px 0;line-height:1.5}
   .mrow{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;
     border-radius:0;padding:13px 0;text-align:left;color:var(--bone)}
   .res{flex:0 0 42px;font-family:var(--mono);font-weight:500;font-size:11px;
@@ -241,16 +241,16 @@
   .res.rloss{color:var(--p2)}
   .res.rdnf{color:var(--mute)}
   .sco{flex:0 0 52px;display:flex;align-items:baseline;gap:2px;
-    font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em}
+    font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.02em}
   .sco .s1{color:var(--p1)}
   .sco .s2{color:var(--p2)}
   .sco .dash{color:var(--rule-hi);font-size:13px}
   .fmt{flex:0 0 36px;font-family:var(--mono);font-weight:500;font-size:11px;
     letter-spacing:.14em;color:var(--bone)}
-  .opp{flex:1;min-width:0;font-size:14px;font-weight:600;
+  .opp{flex:1;min-width:0;font-family:var(--mono);font-size:13px;font-weight:500;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .opp .them{color:var(--p2)}
-  .opp .vs{color:var(--mute);font-weight:400;font-size:12px}
+  .opp .vs{color:var(--mute);font-weight:500;font-size:13px}
   .mday{flex:0 0 auto;font-family:var(--mono);font-size:10px;color:var(--mute);
     white-space:nowrap;letter-spacing:.1em}
   .dtl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
@@ -302,10 +302,10 @@
   .setup .done.top{margin-top:0;margin-bottom:16px}
   .setup .done{min-height:52px;margin-top:auto;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
-    font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+    font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
   .concede{display:flex;gap:10px;margin-top:10px}
   .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--cc);
-    border-radius:0;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
+    border-radius:0;color:var(--bone);font-family:var(--display);font-weight:600;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
   .concede button:active{color:var(--cc);text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
   .concede button.armed{color:var(--cc);border-bottom-color:var(--cc);
@@ -313,14 +313,14 @@
   .concede button:disabled{opacity:.32;color:var(--mute);border-bottom-color:var(--rule);
     text-shadow:none;pointer-events:none}
   .setup .wide{width:100%;min-height:46px;background:none;border:1px solid var(--rule-hi);
-    border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:800;font-size:12px;
+    border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:600;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase}
   .setup[data-face="live"] [data-face="pre"]{display:none}
   .setup[data-face="pre"] [data-face="live"]{display:none}
   .setup[data-face="pre"] #firstgrp{border-bottom:0}
   .first{display:flex;gap:10px}
   .first button{flex:1;min-width:0;min-height:46px;background:none;border:1px solid var(--rule-hi);
-    border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:800;font-size:12px;
+    border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:600;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;padding:0 8px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .first button[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
@@ -329,26 +329,26 @@
   .prefoot{margin-top:auto;display:flex;flex-direction:column}
   .prefoot .done{margin-top:10px}
   .setup .start{width:100%;min-height:52px;background:var(--bone);border:1px solid var(--bone);
-    border-radius:6px;color:#000;font-family:var(--display);font-weight:800;font-size:13px;
+    border-radius:6px;color:#000;font-family:var(--display);font-weight:600;font-size:13px;
     letter-spacing:.12em;text-transform:uppercase}
 .lgacred{font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.5;color:var(--dim);
   margin-top:14px;text-align:center}
   .setup .home{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;
     margin-top:10px;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);
-    font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;
+    font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;text-decoration:none}
-  .win b{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;
+  .win b{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;
     text-transform:uppercase;color:var(--bone);min-width:0;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap;text-align:center}
   .win button{flex:1;min-width:0;min-height:44px;padding:0 6px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;
-    font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;
+    font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--bone);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .win #unwin{border-bottom-color:transparent}
   .win .nextbox{display:flex;flex-direction:column;gap:6px}
   .win[data-next="0"] .nextbox{display:none}
-  .win .nlab{font-family:var(--mono);font-size:9px;letter-spacing:.2em;
+  .win .nlab{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--dim);text-align:center}
   .win .nextbox button{border-bottom-color:var(--c);display:flex;
     align-items:center;justify-content:center;gap:.5ch}
