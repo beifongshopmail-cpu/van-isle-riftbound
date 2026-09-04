@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-03T16:57:44.388Z",
- "generated_local": "2026-09-03T09:57:44-07:00",
+ "generated_at": "2026-09-04T05:36:51.263Z",
+ "generated_local": "2026-09-03T22:36:51-07:00",
  "window_start": "2026-09-03T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 30,
-   "added": 30
+   "returned": 29,
+   "added": 29
   },
   {
    "name": "Courtenay",
@@ -18,8 +18,8 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 17,
-   "added": 17
+   "returned": 18,
+   "added": 18
   }
  ],
  "totals": {
@@ -29,24 +29,6 @@
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 770763,
-   "name": "Thursday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-03T18:00:00-07:00",
-   "end": "2026-09-03T21:20:00-07:00",
-   "day": "2026-09-03",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 1,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-14T22:25:05+00:00"
-  },
   {
    "id": 759989,
    "name": "Tuesday Riftbound Playnight",
@@ -964,6 +946,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-09-01T05:03:26+00:00"
+  },
+  {
+   "id": 914712,
+   "name": "Tuesday Riftbound Playnight",
+   "type": "learn",
+   "start": "2026-10-30T18:00:00-07:00",
+   "end": "2026-10-30T21:30:00-07:00",
+   "day": "2026-10-30",
+   "time": "6:00 PM",
+   "venue": "Giddy-Up Games",
+   "city": "Campbell River",
+   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
+   "region": "island",
+   "cap": 8,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-09-04T05:04:26+00:00"
   }
  ]
 }
