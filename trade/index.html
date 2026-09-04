@@ -175,7 +175,7 @@
   }
   .panel[data-side="1"] .head .lb{color:var(--s1);}
   .panel[data-side="2"] .head .lb{color:var(--s2);}
-  .panel .head .tot{font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
+  .panel .head .tot{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
   .panel .empty{
     padding:16px 14px;font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
@@ -289,15 +289,16 @@
     font-family:var(--mono);font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:10px;
   }
-  .rfs{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .rf{position:relative;display:flex;align-items:center;gap:8px;min-width:0;}
+  .rfs{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .rf{display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:0;}
   .rf .rfl{
     flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--c);
   }
+  .rfw{position:relative;display:block;}
   .rf input{
-    flex:1;min-width:0;min-height:var(--tap);
+    width:100%;box-sizing:border-box;min-height:var(--tap);
     background:var(--ground);color:var(--bone);
     border:1px solid var(--rule-hi);border-radius:var(--r-sm);
     font-family:var(--mono);font-size:16px;text-align:right;
@@ -308,7 +309,7 @@
   .rf input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
   .rf input:focus{outline:none;border-color:var(--c);}
   .rf .pcs{
-    position:absolute;right:8px;pointer-events:none;
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;
     font-family:var(--mono);font-size:10px;font-weight:500;color:var(--dim);
   }
   .rreset{
@@ -323,7 +324,7 @@
   .rnow .n1{color:var(--s1);}
   .rnow .n2{color:var(--s2);}
   .rnow .n0{color:var(--dim);}
-  .pcx{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;}
+  .pcx{font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;}
   .pcx:empty{display:none;}
   .panel[data-side="1"] .pcx{color:var(--s1);}
   .panel[data-side="2"] .pcx{color:var(--s2);}
@@ -428,8 +429,8 @@
         <div class="dltnote" id="dltnote"></div>
         <div class="rcap">Percent of market price</div>
         <div class="rfs">
-          <label class="rf" style="--c:var(--s1)"><span class="rfl">Yours</span><input id="pc1" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></label>
-          <label class="rf" style="--c:var(--s2)"><span class="rfl">Theirs</span><input id="pc2" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></label>
+          <label class="rf" style="--c:var(--s1)"><span class="rfl">Yours</span><span class="rfw"><input id="pc1" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></span></label>
+          <label class="rf" style="--c:var(--s2)"><span class="rfl">Theirs</span><span class="rfw"><input id="pc2" type="number" inputmode="numeric" min="0" max="200" step="1" value="100"><b class="pcs">%</b></span></label>
         </div>
         <button type="button" class="rreset" id="rreset" data-act="rreset">Reset both to 100</button>
       </div>
