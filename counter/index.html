@@ -1302,7 +1302,8 @@
     openPre();
   });
   document.getElementById("nextrow").addEventListener("click", function(e){
-    var t = e.target, v = t.getAttribute && t.getAttribute("data-open");
+    var t = e.target.closest ? e.target.closest("button") : e.target;
+    var v = t && t.getAttribute ? t.getAttribute("data-open") : null;
     if (!v) { return; }
     if (!won() || !matchOpen()) { return; }
     disarmAgain();
