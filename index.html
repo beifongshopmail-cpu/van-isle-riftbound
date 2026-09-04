@@ -80,18 +80,32 @@
   }
   .mast .by a{color:var(--dim);text-decoration:none;}
   .mast .by a:hover{color:var(--bone);}
-  .mast .pages{
-    margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
-    text-transform:uppercase;
-  }
-  .mast .pages a{
-    color:var(--dim);text-decoration:none;padding:5px 0;
+  .mast .nvw{margin-top:12px;}
+  .mast .nvtog{
+    display:flex;width:100%;align-items:center;gap:10px;
+    min-height:44px;padding:0 14px;background:none;
+    border:1px solid var(--rule-hi);border-radius:6px;
+    color:var(--dim);cursor:pointer;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;
     transition:color var(--mo-fast);
   }
-  .mast .pages a:hover{color:var(--bone)}
-  .mast .pages [aria-current="page"]{color:var(--bone)}
-  .mast .pages .sep{color:var(--rule-hi)}
+  .mast .nvtog .nvcur{color:var(--bone);margin-left:auto;}
+  .mast .nvtog .nvsign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
+  .mast .nvpan{
+    margin-top:6px;border:1px solid var(--rule-hi);
+    border-radius:6px;overflow:hidden;
+  }
+  .mast .nvpan a{
+    display:flex;width:100%;align-items:center;min-height:38px;
+    padding:0 14px;background:none;color:var(--dim);text-decoration:none;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;
+    transition:color var(--mo-fast);
+  }
+  .mast .nvpan a+a{border-top:1px solid var(--rule);}
+  .mast .nvpan a:hover{color:var(--bone);}
+  .mast .nvpan [aria-current="page"]{color:var(--bone);}
   .mast .stamp.stale b,.mast .stamp.stale{color:var(--warn);}
 
   .scope{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:24px;
@@ -308,13 +322,15 @@
   <header class="mast">
     <h1>Van Isle<br>Riftbound</h1>
     <div class="stamp" id="stamp">Loading</div>
-    <nav class="pages" aria-label="Pages">
-      <span aria-current="page">Calendar</span>
-      <span class="sep">/</span>
-      <a href="counter/">Point counter</a>
-      <span class="sep">/</span>
-      <a href="trade/">Trade calculator</a>
-    </nav>
+    <div class="nvw">
+      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<span class="nvcur">Calendar</span><span class="nvsign">+</span></button>
+      <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
+        <a aria-current="page" href="./">Calendar</a>
+        <a href="counter/">Point counter</a>
+        <a href="trade/">Trade calculator</a>
+        <a href="feedback/">Feedback</a>
+      </nav>
+    </div>
     <div class="by">Kept by <a href="https://beifonghithouse.com">Beifong's Hit-House</a></div>
   </header>
 
@@ -794,6 +810,17 @@ if (document.readyState === "loading"){
 } else {
   start();
 }
+
+(function(){
+  var t = document.getElementById("nvtog"), p = document.getElementById("nvpan");
+  if(!t || !p){ return; }
+  t.addEventListener("click", function(){
+    var open = p.hasAttribute("hidden");
+    if(open){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); }
+    t.setAttribute("aria-expanded", open ? "true" : "false");
+    t.querySelector(".nvsign").textContent = open ? "-" : "+";
+  });
+})();
 </script>
 </body>
 </html>
