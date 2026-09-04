@@ -128,7 +128,7 @@
     width:100%;-webkit-appearance:none;appearance:none;
     background:none;border:1px solid var(--rule-hi);border-radius:6px;
     color:var(--bone);font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;
-    padding:12px 14px;min-height:44px;
+    padding:0 14px;min-height:44px;
   }
   .find input::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
   .tlnote::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
@@ -175,7 +175,7 @@
   }
   .panel[data-side="1"] .head .lb{color:var(--s1);}
   .panel[data-side="2"] .head .lb{color:var(--s2);}
-  .panel .head .tot{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
+  .panel .head .tot{font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
   .panel .empty{
     padding:16px 14px;font-family:var(--mono);font-weight:500;font-size:10px;
     letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
@@ -327,10 +327,12 @@
   .rnow .n1{color:var(--s1);}
   .rnow .n2{color:var(--s2);}
   .rnow .n0{color:var(--dim);}
-  .pcx{font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;}
+  .pcx{font-family:var(--mono);font-weight:500;font-size:15px;letter-spacing:.1em;}
   .pcx:empty{display:none;}
   .panel[data-side="1"] .pcx{color:var(--s1);}
   .panel[data-side="2"] .pcx{color:var(--s2);}
+  .panel .head .pcx{margin-left:auto;}
+  .panel .head .pcx:empty + .tot{margin-left:auto;}
 
   .tlwrap{margin-top:18px}
   .tltog{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--tap);padding:0 14px;background:none;border:1px solid var(--rule);border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;text-align:left;cursor:pointer}
@@ -339,7 +341,7 @@
   .tltog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi)}
   .tlcount{margin-left:auto;font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em}
   .tlpan{margin-top:6px;padding:14px 14px 4px;border:1px solid var(--rule-hi);border-radius:var(--r)}
-  .tlnote{width:100%;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;min-height:44px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box}
+  .tlnote{width:100%;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:0 14px;min-height:44px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box}
   .tlsave{display:block;width:100%;margin-top:8px;min-height:44px;padding:10px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
   .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font-family:var(--mono);font-weight:500;font-size:13px}
   .tlhd{display:flex;align-items:baseline;gap:8px}
@@ -451,7 +453,7 @@
     </div>
 
     <section class="panel" data-side="1">
-      <div class="head"><span class="lb">Your cards</span><span class="tot" id="tot1">$0.00</span><span class="pcx" id="pcx1"></span></div>
+      <div class="head"><span class="lb">Your cards</span><span class="pcx" id="pcx1"></span><span class="tot" id="tot1">$0.00</span></div>
       <div id="body1"></div>
     </section>
 
@@ -463,7 +465,7 @@
     </div>
 
     <section class="panel" data-side="2">
-      <div class="head"><span class="lb">Their cards</span><span class="tot" id="tot2">$0.00</span><span class="pcx" id="pcx2"></span></div>
+      <div class="head"><span class="lb">Their cards</span><span class="pcx" id="pcx2"></span><span class="tot" id="tot2">$0.00</span></div>
       <div id="body2"></div>
     </section>
 
