@@ -206,7 +206,7 @@
     flex-direction:column;padding:12px}
   .sheet.open{display:flex}
   .sheet h2{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--dim);font-weight:400;margin-bottom:10px}
+    color:var(--dim);font-weight:500;margin-bottom:10px}
   .sheet ol{list-style:none;flex:1;min-height:0;overflow:auto}
   #log li,.mbody li{display:flex;gap:12px;align-items:baseline;padding:11px 0;
     border-bottom:1px solid var(--rule);font-family:var(--mono);font-size:13px;
@@ -218,7 +218,7 @@
   #log li.e1 .rt b,.mbody li.e1 .rt b{color:var(--p1)}
   #log li.e2 .rt b,.mbody li.e2 .rt b{color:var(--p2)}
   #log li.et .rt b,.mbody li.et .rt b{color:var(--dim)}
-  .sheet li.empty{color:var(--mute);border:0;font-family:var(--body);font-size:14px;line-height:1.5}
+  .sheet li.empty{color:var(--mute);border:0;font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.5}
   .sheet .close{min-height:52px;margin-top:10px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
     font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
@@ -285,17 +285,17 @@
   .setup{position:absolute;inset:0;background:#000;z-index:40;display:none;
     flex-direction:column;padding:12px;overflow-y:auto}
   .setup.open{display:flex}
-  .setup h2{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:.14em;
+  .setup h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.14em;
     text-transform:uppercase;margin-bottom:14px}
   .setup .grp{margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
   .setup .grp:last-of-type{border-bottom:0;margin-bottom:0;padding-bottom:0}
   .setup .pair{display:flex;gap:8px}
   .setup .pair input,.setup .pair select{flex:1;min-width:0}
-  .setup label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.2em;
+  .setup label{display:block;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--mute);margin-bottom:6px}
   .setup input,.setup select{width:100%;min-height:42px;background:#0A0B0E;color:var(--bone);
-    border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;font-family:var(--body);
-    font-size:16px;margin-bottom:8px;-webkit-appearance:none;appearance:none}
+    border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;font-family:var(--mono);
+    font-weight:500;font-size:16px;margin-bottom:8px;-webkit-appearance:none;appearance:none}
   .swatches{display:flex;gap:8px}
   .swatches button{flex:1;height:38px;border-radius:6px;border:2px solid transparent;padding:0}
   .swatches button[aria-pressed="true"]{border-color:var(--bone)}
@@ -331,7 +331,7 @@
   .setup .start{width:100%;min-height:52px;background:var(--bone);border:1px solid var(--bone);
     border-radius:6px;color:#000;font-family:var(--display);font-weight:800;font-size:13px;
     letter-spacing:.12em;text-transform:uppercase}
-.lgacred{font-family:var(--body);font-size:10px;line-height:1.5;color:var(--dim);
+.lgacred{font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.5;color:var(--dim);
   margin-top:14px;text-align:center}
   .setup .home{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;
     margin-top:10px;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);
@@ -379,7 +379,7 @@
    decoration, so they sit outside the part that shrinks. */
 .lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
-  font-family:var(--body);font-size:14px;line-height:40px;overflow:hidden;
+  font-family:var(--mono);font-weight:500;font-size:13px;line-height:40px;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
 .lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 .lgp.open{display:flex}
@@ -392,26 +392,26 @@
 @keyframes cardgrow{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 .lgphead{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 9px;
   border-bottom:1px solid var(--rule)}
-.lgpt{flex:1;min-width:0;font-family:var(--display);font-weight:800;font-size:13px;
-  letter-spacing:.12em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lgpt{flex:1;min-width:0;font-family:var(--display);font-weight:600;font-size:15px;
+  letter-spacing:.02em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lgpx{flex:0 0 auto;min-height:38px;background:none;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 12px;
-  font-family:var(--body);font-size:12px;font-weight:600}
+  font-family:var(--mono);font-size:13px;font-weight:500}
 .lgpgrid{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding:12px}
 .lgptile{background:none;border:0;padding:0;color:var(--bone);text-align:center}
 .lgppic{width:100%;aspect-ratio:62/87;border-radius:5px;border:1px solid var(--rule);
   background:#0E0F11 center/cover no-repeat}
 .lgptile[aria-pressed="true"] .lgppic{border-color:var(--bone);box-shadow:0 0 0 2px var(--bone)}
-.lgpn{font-family:var(--body);font-weight:600;font-size:10px;line-height:1.15;margin-top:5px}
-.lgpsub{font-family:var(--body);font-size:9px;line-height:1.15;color:var(--dim);margin-top:1px}
+.lgpn{font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.15;margin-top:5px}
+.lgpsub{font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.15;color:var(--dim);margin-top:1px}
 .lgppr{flex:0 0 auto;border-top:1px solid var(--rule);padding:10px 12px 16px;display:none}
 .lgppr.on{display:block}
-.lgpprh{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.14em;
+.lgpprh{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--dim);margin-bottom:7px}
 .lgpchips{display:flex;flex-wrap:wrap;gap:6px}
 .lgpchip{background:#0A0B0E;border:1px solid var(--rule);border-radius:6px;color:var(--mute);
-  padding:8px 10px;font-family:var(--body);font-size:11px;font-weight:500}
+  padding:8px 10px;font-family:var(--mono);font-size:13px;font-weight:500}
 .lgpchip[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
 </style>
 </head>
