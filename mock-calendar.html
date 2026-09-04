@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Mockup - calendar type pass</title>
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+  :root{
+    --mo-fast:.16s;
+    --mo-ease:cubic-bezier(.22,.72,.2,1);
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --warn:#FFB020;
+    --plate:#14171D;
+    --t-nexus:#3FA9F5;
+    --t-skirmish:#FFB020;
+    --t-open:#FF4F9A;
+    --t-learn:#EDEFF2;
+    --r:9px;
+    --r-cell:5px;
+    --r-sm:4px;
+    --r-xs:2px;
+    --display:"Archivo",system-ui,sans-serif;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --gut:16px;
+    --tap:44px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ground);}
+  body{
+    color:var(--bone);
+    font-family:var(--body);
+    font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .tog{
+    position:sticky;top:0;z-index:9;display:flex;gap:0;
+    background:#000;border-bottom:1px solid var(--rule-hi);
+  }
+  .tog button{
+    flex:1;min-height:44px;background:none;border:0;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:11px;
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  }
+  .tog button+button{border-left:1px solid var(--rule);}
+  .tog button[aria-pressed="true"]{background:var(--bone);color:#000;}
+
+  .wrap{
+    max-width:600px;margin:0 auto;
+    padding:20px max(var(--gut),env(safe-area-inset-left)) 60px max(var(--gut),env(safe-area-inset-right));
+  }
+
+  .monthbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .monthbar h2{
+    font-family:var(--display);font-weight:800;
+    font-size:22px;letter-spacing:-.02em;text-transform:uppercase;
+    margin:0;flex:1;
+  }
+  .monthbar .n{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .nav{display:flex;gap:5px;}
+  .nav button{
+    width:38px;height:38px;
+    background:none;border:1px solid var(--rule-hi);border-radius:5px;
+    color:var(--bone);cursor:pointer;font-size:15px;line-height:1;
+  }
+
+  .dows{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:5px;}
+  .dows span{
+    text-align:center;
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    color:var(--mute);text-transform:uppercase;
+  }
+  .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
+  .pad{aspect-ratio:1/1.12;}
+  .cell{
+    aspect-ratio:1/1.12;
+    background-color:var(--plate);
+    border:1px solid transparent;
+    border-radius:var(--r-cell);
+    padding:5px 4px 5px;
+    display:flex;flex-direction:column;
+    min-width:0;overflow:hidden;
+    cursor:pointer;color:inherit;text-align:left;font:inherit;
+  }
+  .cell .top{
+    display:flex;align-items:flex-start;justify-content:space-between;
+    gap:2px;min-width:0;
+  }
+  .cell .n{
+    font-family:var(--display);font-weight:700;
+    font-size:13px;line-height:1;color:var(--mute);letter-spacing:-.01em;
+  }
+  .cell.has .n{color:var(--bone);}
+  .cell .bars{margin-top:auto;display:flex;flex-direction:column;gap:2px;}
+  .cell .bar{
+    height:5px;border-radius:var(--r-xs);
+    background:var(--c);
+    box-shadow:0 0 7px -2px var(--c);
+  }
+  .cell .more{
+    font-family:var(--mono);font-size:9px;color:var(--mute);
+    line-height:1;padding-top:2px;flex:0 0 auto;
+  }
+  .cell.today .n{
+    background:var(--bone);color:#000;border-radius:var(--r-xs);
+    padding:2px 4px;margin:-1px 0 0 -1px;
+  }
+  .cell[aria-pressed="true"]{border-color:var(--bone);}
+
+  .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:16px;}
+  .lg{
+    display:flex;align-items:center;gap:9px;
+    min-height:40px;padding:0 11px;
+    background:none;border:1px solid var(--rule-hi);border-radius:6px;
+    cursor:pointer;color:var(--dim);
+    font-family:var(--body);font-size:12px;font-weight:500;
+    text-align:left;
+  }
+  .lg .sw{
+    width:12px;height:12px;flex:0 0 12px;border-radius:3px;
+    background:var(--c);box-shadow:0 0 9px -2px var(--c);
+  }
+  .lg .ct{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mute);}
+  .lg[aria-pressed="true"]{color:var(--bone);border-color:var(--bone);}
+  .lg.off{opacity:.5;}
+  .lg.off .sw{opacity:.25;box-shadow:none;}
+
+  .agenda{margin-top:36px;}
+  .ahead{
+    display:flex;align-items:center;gap:10px;
+    padding-bottom:10px;border-bottom:2px solid var(--bone);
+  }
+  .ahead h3{
+    font-family:var(--display);font-weight:800;
+    font-size:15px;letter-spacing:.02em;text-transform:uppercase;
+    margin:0;flex:1;
+  }
+  .ahead button{
+    background:none;border:0;cursor:pointer;
+    font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--dim);
+    text-decoration:underline;text-underline-offset:3px;padding:4px 0;
+  }
+
+  .dayhead{
+    display:flex;align-items:baseline;gap:8px;
+    margin-top:20px;padding-bottom:6px;border-bottom:1px solid var(--rule);
+  }
+  .dayhead .dn{
+    font-family:var(--display);font-weight:800;font-size:17px;
+    letter-spacing:-.02em;line-height:1;
+  }
+  .dayhead .dt{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--dim);
+  }
+  .dayhead .dc{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--mute);}
+
+  .ev{
+    display:flex;gap:10px;padding:11px 0;
+    border-bottom:1px solid rgba(33,36,41,.6);
+    text-decoration:none;color:inherit;
+  }
+  .ev:last-child{border-bottom:0;}
+  .ev .bar{
+    flex:0 0 4px;margin:1px 0;border-radius:var(--r-xs);
+    background:var(--c);box-shadow:0 0 9px -3px var(--c);
+  }
+  .ev .when{
+    flex:0 0 60px;font-family:var(--mono);font-size:11px;
+    color:var(--dim);padding-top:2px;letter-spacing:-.02em;
+  }
+  .ev .body{flex:1;min-width:0;}
+  .ev .ttl{font-weight:600;font-size:14px;line-height:1.25;margin:0 0 3px;}
+  .ev .meta{
+    font-size:12px;color:var(--dim);
+    display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;
+  }
+  .ev .kind{
+    font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  }
+  .ev .sep{color:var(--rule-hi);}
+  .ev .right{
+    flex:0 0 auto;display:flex;flex-direction:column;
+    align-items:flex-end;gap:3px;padding-top:1px;
+  }
+  .ev .spots{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .ev .spots.tight{color:var(--t-skirmish);}
+  .ev .cost{font-family:var(--mono);font-size:10px;color:var(--mute);}
+  .ev .new{
+    font-family:var(--mono);font-size:9px;letter-spacing:.1em;font-weight:500;
+    color:#000;background:var(--bone);padding:2px 5px;border-radius:var(--r-xs);
+  }
+
+  .none{padding:38px 0;text-align:center;color:var(--mute);font-size:13px;}
+
+  .foot{margin-top:42px;padding-top:22px;border-top:1px solid var(--rule);}
+  .sub{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;min-height:var(--tap);
+    background:var(--bone);border:0;border-radius:6px;color:#000;cursor:pointer;
+    font-family:var(--display);font-weight:700;font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+    box-shadow:0 8px 26px -12px rgba(242,243,245,.55);
+  }
+  .foot p{
+    font-family:var(--mono);font-size:11px;line-height:1.75;
+    color:var(--mute);text-align:center;margin:15px 0 0;
+  }
+  .foot a{color:var(--dim);}
+
+  /* ---- PROPOSED ---- */
+  body.pr .monthbar .n{font-size:10px;}
+  body.pr .cell .n{font-family:var(--mono);font-weight:500;letter-spacing:0;}
+  body.pr .cell .more{font-size:10px;}
+  body.pr .lg{min-height:38px;font-family:var(--mono);font-size:13px;}
+  body.pr .ahead h3{font-weight:600;}
+  body.pr .dayhead .dn{font-weight:600;font-size:15px;}
+  body.pr .ev .when{flex:0 0 66px;font-size:13px;}
+  body.pr .ev .ttl{font-family:var(--mono);font-weight:500;font-size:13px;}
+  body.pr .ev .meta{font-family:var(--mono);font-weight:500;font-size:10px;}
+  body.pr .ev .spots{font-size:10px;}
+  body.pr .ev .new{font-size:10px;}
+  body.pr .none{font-family:var(--mono);font-weight:500;}
+  body.pr .sub{
+    font-family:var(--mono);font-weight:500;font-size:13px;
+    letter-spacing:.1em;box-shadow:none;
+  }
+  body.pr .foot p{font-size:10px;}
+</style>
+</head>
+<body>
+
+<div class="tog">
+  <button id="ms" aria-pressed="true">Shipped</button>
+  <button id="mp" aria-pressed="false">Proposed</button>
+</div>
+
+<div class="wrap">
+
+  <div class="monthbar">
+    <h2>September</h2>
+    <span class="n">14 events</span>
+    <div class="nav">
+      <button type="button">&lsaquo;</button>
+      <button type="button">&rsaquo;</button>
+    </div>
+  </div>
+
+  <div class="dows">
+    <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+  </div>
+
+  <div class="grid">
+    <div class="pad"></div>
+    <div class="pad"></div>
+    <button class="cell" type="button"><span class="top"><span class="n">1</span></span></button>
+    <button class="cell has" type="button"><span class="top"><span class="n">2</span></span><span class="bars"><span class="bar" style="--c:var(--t-open)"></span></span></button>
+    <button class="cell has today" type="button"><span class="top"><span class="n">3</span></span><span class="bars"><span class="bar" style="--c:var(--t-nexus)"></span></span></button>
+    <button class="cell has" aria-pressed="true" type="button"><span class="top"><span class="n">4</span></span><span class="bars"><span class="bar" style="--c:var(--t-nexus)"></span><span class="bar" style="--c:var(--t-open)"></span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">5</span></span></button>
+
+    <button class="cell has" type="button"><span class="top"><span class="n">6</span><span class="more">+2</span></span><span class="bars"><span class="bar" style="--c:var(--t-skirmish)"></span><span class="bar" style="--c:var(--t-learn)"></span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">7</span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">8</span></span></button>
+    <button class="cell has" type="button"><span class="top"><span class="n">9</span></span><span class="bars"><span class="bar" style="--c:var(--t-open)"></span></span></button>
+    <button class="cell has" type="button"><span class="top"><span class="n">10</span></span><span class="bars"><span class="bar" style="--c:var(--t-nexus)"></span></span></button>
+    <button class="cell has" type="button"><span class="top"><span class="n">11</span></span><span class="bars"><span class="bar" style="--c:var(--t-nexus)"></span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">12</span></span></button>
+
+    <button class="cell has" type="button"><span class="top"><span class="n">13</span><span class="more">+1</span></span><span class="bars"><span class="bar" style="--c:var(--t-skirmish)"></span><span class="bar" style="--c:var(--t-learn)"></span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">14</span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">15</span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">16</span></span></button>
+    <button class="cell has" type="button"><span class="top"><span class="n">17</span></span><span class="bars"><span class="bar" style="--c:var(--t-nexus)"></span></span></button>
+    <button class="cell has" type="button"><span class="top"><span class="n">18</span></span><span class="bars"><span class="bar" style="--c:var(--t-open)"></span></span></button>
+    <button class="cell" type="button"><span class="top"><span class="n">19</span></span></button>
+  </div>
+
+  <div class="legend">
+    <button class="lg" aria-pressed="true" type="button"><span class="sw" style="--c:var(--t-nexus)"></span>Nexus<span class="ct">6</span></button>
+    <button class="lg" aria-pressed="true" type="button"><span class="sw" style="--c:var(--t-skirmish)"></span>Skirmish<span class="ct">3</span></button>
+    <button class="lg off" type="button"><span class="sw" style="--c:var(--t-open)"></span>Open Play<span class="ct">4</span></button>
+    <button class="lg" aria-pressed="true" type="button"><span class="sw" style="--c:var(--t-learn)"></span>Learn to Play<span class="ct">1</span></button>
+  </div>
+
+  <section class="agenda">
+    <div class="ahead">
+      <h3>Next 7 days</h3>
+      <button type="button">All upcoming (14)</button>
+    </div>
+
+    <div class="dayhead">
+      <span class="dn">Thu 4</span>
+      <span class="dt">September</span>
+      <span class="dc">2 events</span>
+    </div>
+
+    <a class="ev" href="#">
+      <span class="bar" style="--c:var(--t-nexus)"></span>
+      <span class="when">6:00 PM</span>
+      <span class="body">
+        <div class="ttl">Weekly Nexus Night</div>
+        <div class="meta"><span class="kind">Nexus</span><span class="sep">/</span><span>Beifong's Hit-House, Victoria</span></div>
+      </span>
+      <span class="right">
+        <span class="new">New</span>
+        <span class="spots">12 / 16</span>
+        <span class="cost">$10</span>
+      </span>
+    </a>
+
+    <a class="ev" href="#">
+      <span class="bar" style="--c:var(--t-open)"></span>
+      <span class="when">7:00 PM</span>
+      <span class="body">
+        <div class="ttl">Open Play and Trade Night</div>
+        <div class="meta"><span class="kind">Open Play</span><span class="sep">/</span><span>Gnomish Gaming, Courtenay</span></div>
+      </span>
+      <span class="right">
+        <span class="spots">8 spots</span>
+      </span>
+    </a>
+
+    <div class="dayhead">
+      <span class="dn">Sat 6</span>
+      <span class="dt">September</span>
+      <span class="dc">2 events</span>
+    </div>
+
+    <a class="ev" href="#">
+      <span class="bar" style="--c:var(--t-skirmish)"></span>
+      <span class="when">10:30 AM</span>
+      <span class="body">
+        <div class="ttl">Saturday Skirmish</div>
+        <div class="meta"><span class="kind">Skirmish</span><span class="sep">/</span><span>Cascadia Games, Campbell River</span></div>
+      </span>
+      <span class="right">
+        <span class="spots tight">4 left</span>
+        <span class="cost">$15</span>
+      </span>
+    </a>
+
+    <a class="ev" href="#">
+      <span class="bar" style="--c:var(--t-learn)"></span>
+      <span class="when">1:00 PM</span>
+      <span class="body">
+        <div class="ttl">Learn to Play</div>
+        <div class="meta"><span class="kind">Learn to Play</span><span class="sep">/</span><span>Beifong's Hit-House, Victoria</span></div>
+      </span>
+      <span class="right">
+        <span class="cost">Free</span>
+      </span>
+    </a>
+
+    <div class="none">No events match those filters.</div>
+  </section>
+
+  <footer class="foot">
+    <a class="sub" href="#">Subscribe in Calendar</a>
+    <p>Events are pulled twice a day. Something wrong or missing? Let us know.</p>
+    <p>Built by <a href="#">Beifong's Hit-House</a></p>
+  </footer>
+
+</div>
+
+<script>
+  var b = document.body, s = document.getElementById('ms'), p = document.getElementById('mp');
+  function set(on){
+    b.classList.toggle('pr', on);
+    s.setAttribute('aria-pressed', String(!on));
+    p.setAttribute('aria-pressed', String(on));
+  }
+  s.onclick = function(){ set(false); };
+  p.onclick = function(){ set(true); };
+</script>
+
+</body>
+</html>
