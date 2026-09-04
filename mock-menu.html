@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Menu mockup</title>
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+  :root{
+    --mo-fast:.16s;
+    --mo-ease:cubic-bezier(.22,.72,.2,1);
+    --ground:#000000;
+    --rule:#212429;
+    --rule-hi:#343A44;
+    --bone:#F2F3F5;
+    --dim:#828A97;
+    --mute:#4E5561;
+    --plate:#14171D;
+    --display:"Archivo",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --gut:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ground);}
+  body{color:var(--bone);font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;}
+
+  .mock{position:sticky;top:0;z-index:5;background:#000;
+    border-bottom:1px solid var(--rule-hi);
+    padding:10px max(var(--gut),env(safe-area-inset-left));
+    font-family:system-ui,sans-serif;font-size:11px;color:var(--dim);}
+  .mock .row{display:flex;gap:6px;margin-bottom:6px;}
+  .mock button{flex:1;min-height:34px;background:var(--plate);
+    border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);
+    font-family:system-ui,sans-serif;font-size:11px;}
+  .mock button[aria-pressed="true"]{background:var(--bone);color:#000;}
+  .mock p{margin:2px 0 0;line-height:1.4;}
+
+  .wrap{max-width:600px;margin:0 auto;
+    padding:0 max(var(--gut),env(safe-area-inset-left)) 64px max(var(--gut),env(safe-area-inset-right));}
+
+  .mast{padding:30px 0 18px;}
+  .mast h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(38px,11.5vw,60px);
+    line-height:.86;letter-spacing:-.035em;
+    text-transform:uppercase;margin:0;
+  }
+  .mast .stamp{
+    margin-top:12px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .mast .by{
+    margin-top:10px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+  }
+  .mast .by a{color:var(--dim);text-decoration:none;}
+
+  #slot{margin-top:12px;}
+
+  .mtog{display:flex;width:100%;align-items:center;justify-content:space-between;
+    gap:10px;min-height:44px;padding:0 14px;background:none;
+    border:1px solid var(--rule-hi);border-radius:6px;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;cursor:pointer;}
+  .mtog .mcur{color:var(--bone);margin-left:auto;}
+  .mtog .msign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
+
+  .brow{display:flex;align-items:center;gap:10px;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--bone);}
+  .mtogb{display:inline-flex;align-items:center;gap:8px;min-height:32px;
+    padding:0 12px;background:none;border:1px solid var(--rule-hi);
+    border-radius:6px;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;cursor:pointer;}
+
+  .mpan{margin-top:6px;border:1px solid var(--rule-hi);border-radius:6px;overflow:hidden;}
+  .mpan button{display:flex;width:100%;align-items:center;min-height:38px;
+    padding:0 14px;background:none;border:0;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;text-align:left;cursor:pointer;
+    transition:color var(--mo-fast);}
+  .mpan button+button{border-top:1px solid var(--rule);}
+  .mpan button[aria-current="page"]{color:var(--bone);}
+
+  .pages{display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
+    text-transform:uppercase;}
+  .pages a{color:var(--dim);text-decoration:none;padding:5px 0;}
+  .pages [aria-current="page"]{color:var(--bone);}
+  .pages .sep{color:var(--rule-hi);}
+
+  .scope{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:24px;
+    border:1px solid var(--rule-hi);border-radius:5px;overflow:hidden;}
+  .scope button{min-height:38px;background:none;border:0;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;}
+  .scope button+button{border-left:1px solid var(--rule);}
+  .scope button[aria-pressed="true"]{background:var(--bone);color:#000;}
+
+  .monthbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .monthbar h2{font-family:var(--display);font-weight:800;font-size:22px;
+    letter-spacing:-.02em;text-transform:uppercase;margin:0;flex:1;}
+  .monthbar .n{font-family:var(--mono);font-weight:500;font-size:10px;color:var(--mute);}
+  .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
+  .cell{aspect-ratio:1/1.12;background:var(--plate);border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="mock">
+  <div class="row">
+    <button type="button" data-mode="a" aria-pressed="true">A bar</button>
+    <button type="button" data-mode="b" aria-pressed="false">B inline</button>
+    <button type="button" data-mode="c" aria-pressed="false">C as shipped</button>
+  </div>
+  <div class="row">
+    <button type="button" data-cnt="4" aria-pressed="true">Today, 4 tools</button>
+    <button type="button" data-cnt="7" aria-pressed="false">Later, 7 tools</button>
+  </div>
+  <p id="mockcap"></p>
+</div>
+
+<div class="wrap">
+  <header class="mast">
+    <h1>Van Isle<br>Riftbound</h1>
+    <div class="stamp">Updated 6 minutes ago</div>
+    <div id="slot"></div>
+    <div class="by">Kept by <a href="#">Beifong's Hit-House</a></div>
+  </header>
+
+  <div class="scope">
+    <button type="button" aria-pressed="true">All island</button>
+    <button type="button" aria-pressed="false">Victoria</button>
+  </div>
+
+  <div class="monthbar"><h2>September</h2><span class="n">7 EVENTS</span></div>
+  <div class="grid">
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell"></div><div class="cell"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var TOOLS = [
+    {n:"Calendar", cur:true},
+    {n:"Point counter"},
+    {n:"Trade calculator"},
+    {n:"Feedback"},
+    {n:"Errata", later:true},
+    {n:"Deckbuilder", later:true},
+    {n:"Performance", later:true}
+  ];
+  var CAPS = {
+    a:"A -- full-width 44px bar, matching the trade page's SETTINGS disclosure.",
+    b:"B -- compact inline control, sitting where the slash list sits now.",
+    c:"C -- the slash list as shipped, with Feedback added. No menu. The control case."
+  };
+  var mode = "a", cnt = 4, open = false;
+
+  function list(){
+    var out = [], i;
+    for(i = 0; i < TOOLS.length; i++){
+      if(cnt === 7 || !TOOLS[i].later){ out.push(TOOLS[i]); }
+    }
+    return out;
+  }
+  function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+  function panel(){
+    var t = list(), h = '<div class="mpan"' + (open ? "" : " hidden") + ">", i;
+    for(i = 0; i < t.length; i++){
+      h += '<button type="button"' + (t[i].cur ? ' aria-current="page"' : "") + ">" + esc(t[i].n) + "</button>";
+    }
+    return h + "</div>";
+  }
+  function render(){
+    var h = "", t = list(), i;
+    if(mode === "a"){
+      h = '<button type="button" class="mtog" id="mt" aria-expanded="' + open + '">Menu' +
+          '<span class="mcur">Calendar</span>' +
+          '<span class="msign">' + (open ? "-" : "+") + "</span></button>" + panel();
+    } else if(mode === "b"){
+      h = '<div class="brow">Calendar' +
+          '<button type="button" class="mtogb" id="mt" aria-expanded="' + open + '">Menu ' +
+          (open ? "-" : "+") + "</button></div>" + panel();
+    } else {
+      h = '<nav class="pages">';
+      for(i = 0; i < t.length; i++){
+        if(i){ h += '<span class="sep">/</span>'; }
+        h += t[i].cur ? '<span aria-current="page">' + esc(t[i].n) + "</span>"
+                      : '<a href="#">' + esc(t[i].n) + "</a>";
+      }
+      h += "</nav>";
+    }
+    document.getElementById("slot").innerHTML = h;
+    document.getElementById("mockcap").textContent = CAPS[mode];
+  }
+  document.getElementById("slot").addEventListener("click", function(e){
+    var b = e.target.closest("button");
+    if(!b || b.id !== "mt"){ return; }
+    open = !open;
+    render();
+  });
+  document.querySelector(".mock").addEventListener("click", function(e){
+    var b = e.target.closest("button"), i, all;
+    if(!b){ return; }
+    if(b.getAttribute("data-mode")){
+      mode = b.getAttribute("data-mode");
+      open = false;
+      all = document.querySelectorAll(".mock [data-mode]");
+      for(i = 0; i < all.length; i++){
+        all[i].setAttribute("aria-pressed", all[i] === b ? "true" : "false");
+      }
+      render();
+    }
+    if(b.getAttribute("data-cnt")){
+      cnt = parseInt(b.getAttribute("data-cnt"), 10);
+      all = document.querySelectorAll(".mock [data-cnt]");
+      for(i = 0; i < all.length; i++){
+        all[i].setAttribute("aria-pressed", all[i] === b ? "true" : "false");
+      }
+      render();
+    }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
