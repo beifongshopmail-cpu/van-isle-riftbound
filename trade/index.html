@@ -76,9 +76,10 @@
   .mast .nvtog:active{border-color:var(--rule-hi);}
   .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
   .mast .nvtog .nvcur{
-    margin-left:auto;color:var(--bone);
+    margin-left:auto;color:var(--dim);
     font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;
   }
+  .mast .nvtog[aria-expanded="true"] .nvcur{color:var(--bone);}
   .mast .nvtog .nvsign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
   .mast .nvpan{
     margin-top:6px;border:1px solid var(--rule);
@@ -152,7 +153,7 @@
     color:var(--bone);font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;
     padding:0 14px;min-height:44px;
   }
-  .find input::placeholder{color:var(--dim);font-size:13px;font-weight:500;letter-spacing:.08em;}
+  .find input::placeholder{color:var(--mute);font-size:13px;font-weight:500;letter-spacing:.08em;}
   .tlnote::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
   .find input:focus{outline:none;border-color:var(--rule-hi);}
   .find input{transition:border-color var(--mo-fast) ease;}
