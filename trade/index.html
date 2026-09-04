@@ -63,15 +63,32 @@
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
   .mast .stamp .stale{color:var(--warn);}
-  .mast .pages{
-    margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
-    text-transform:uppercase;color:var(--mute);
+  .mast .nvw{margin-top:12px;}
+  .mast .nvtog{
+    display:flex;width:100%;align-items:center;gap:10px;
+    min-height:44px;padding:0 14px;background:none;
+    border:1px solid var(--rule-hi);border-radius:6px;
+    color:var(--dim);cursor:pointer;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;
+    transition:color var(--mo-fast);
   }
-  .mast .pages a{color:var(--dim);text-decoration:none;}
-  .mast .pages a:hover{color:var(--bone);}
-  .mast .pages [aria-current]{color:var(--bone);}
-  .mast .pages .sep{color:var(--rule-hi);}
+  .mast .nvtog .nvcur{color:var(--bone);margin-left:auto;}
+  .mast .nvtog .nvsign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
+  .mast .nvpan{
+    margin-top:6px;border:1px solid var(--rule-hi);
+    border-radius:6px;overflow:hidden;
+  }
+  .mast .nvpan a{
+    display:flex;width:100%;align-items:center;min-height:38px;
+    padding:0 14px;background:none;color:var(--dim);text-decoration:none;
+    font-family:var(--mono);font-weight:500;font-size:10px;
+    letter-spacing:.09em;text-transform:uppercase;
+    transition:color var(--mo-fast);
+  }
+  .mast .nvpan a+a{border-top:1px solid var(--rule);}
+  .mast .nvpan a:hover{color:var(--bone);}
+  .mast .nvpan [aria-current="page"]{color:var(--bone);}
   .mast .by{
     margin-top:10px;
     font-family:var(--mono);font-weight:500;font-size:10px;
@@ -395,14 +412,16 @@
   <header class="mast">
     <h1>Trade</h1>
     <div class="stamp" id="stamp">Loading</div>
-    <nav class="pages" aria-label="Pages">
-      <a href="../">Calendar</a>
-      <span class="sep">/</span>
-      <a href="../counter/">Point counter</a>
-      <span class="sep">/</span>
-      <span aria-current="page">Trade</span>
-    </nav>
     <div class="by">Kept by <a href="https://beifonghithouse.com">Beifong's Hit-House</a></div>
+    <div class="nvw">
+      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<span class="nvcur">Trade</span><span class="nvsign">+</span></button>
+      <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
+        <a href="../">Calendar</a>
+        <a href="../counter/">Point counter</a>
+        <a aria-current="page" href="./">Trade calculator</a>
+        <a href="../feedback/">Feedback</a>
+      </nav>
+    </div>
   </header>
 
   <div id="boot" class="boot">Loading prices</div>
@@ -1606,6 +1625,17 @@
   }
 
   document.addEventListener("DOMContentLoaded", boot);
+})();
+
+(function(){
+  var t = document.getElementById("nvtog"), p = document.getElementById("nvpan");
+  if(!t || !p){ return; }
+  t.addEventListener("click", function(){
+    var open = p.hasAttribute("hidden");
+    if(open){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); }
+    t.setAttribute("aria-expanded", open ? "true" : "false");
+    t.querySelector(".nvsign").textContent = open ? "-" : "+";
+  });
 })();
 </script>
 <div class="tlsh" id="tlsh" hidden></div>
