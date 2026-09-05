@@ -243,7 +243,7 @@ function printBase(code) {
   return (m.ok && !m.star && m.n <= m.denom) ? 1 : 0;
 }
 
-function buildLegends(list) {
+function buildLegends(list, setOrder) {
   var groups = {};
   var order = [];
   var warn = [];
@@ -280,7 +280,27 @@ function buildLegends(list) {
     if (!printBase(g.v[0].c)) { warn.push('no base printing for ' + g.n); }
     out.push(g);
   }
-  out.sort(function (a, b) { return a.n < b.n ? -1 : (a.n > b.n ? 1 : 0); });
+  // Release order, from the set's TCGplayer publication date. Riot's
+  // own payload carries no date, so the order comes from prices.json,
+  // which uses a different vocabulary -- an unmatched code sorts last
+  // and warns rather than silently landing at the top.
+  var seen = {};
+  function relKey(g) {
+    var v = g.v[0] || {}, code = String(v.s || '');
+    var o = setOrder[code];
+    if (!o) {
+      if (!seen[code]) { seen[code] = 1; warn.push('no release date for set ' + (code || '(blank)') + ', sorting last'); }
+      return { d: '9999', g: 999999, n: 999999 };
+    }
+    return { d: o.p, g: o.g, n: printMeta(v.c).n };
+  }
+  out.sort(function (a, b) {
+    var ka = relKey(a), kb = relKey(b);
+    if (ka.d !== kb.d) { return ka.d < kb.d ? -1 : 1; }
+    if (ka.g !== kb.g) { return ka.g - kb.g; }
+    if (ka.n !== kb.n) { return ka.n - kb.n; }
+    return a.n < b.n ? -1 : (a.n > b.n ? 1 : 0);
+  });
   if (out.length < MIN_LEGENDS) {
     throw new Error('legend roster floor: ' + out.length + ' < ' + MIN_LEGENDS);
   }
@@ -488,7 +508,11 @@ function main() {
       cards: list
     }), 'utf8');
 
-    var legres = buildLegends(list);
+    var setOrder = {};
+    for (var so = 0; so < psets.length; so++) {
+      setOrder[String(psets[so].a || '').toUpperCase()] = { p: String(psets[so].p || ''), g: Number(psets[so].g) || 0 };
+    }
+    var legres = buildLegends(list, setOrder);
     console.log('legends: ' + legres.count + ' legends, ' + legres.printings + ' printings');
     if (legres.added.length) { console.log('legends ADDED: ' + legres.added.join(' | ')); }
     if (legres.removed.length) { console.log('legends REMOVED: ' + legres.removed.join(' | ')); }
