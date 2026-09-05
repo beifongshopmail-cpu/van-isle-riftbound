@@ -1540,21 +1540,46 @@
     var b = document.getElementById("lgp" + p);
     if (b) { b.textContent = players[p].legend || "No legend"; }
   }
+  var lgpSort = "rel";
+  var lgpQ = "";
+
+  // The grid can now be reordered and filtered, so a tile's position is
+  // no longer its roster index. data-lgpi carries the ROSTER index --
+  // lgpSyncTiles and the click handler both read it back.
+  function lgpView(){
+    var out = [], i, q = lgpQ;
+    for (i = 0; i < VIR_LEGENDS.length; i++) {
+      if (q && VIR_LEGENDS[i].n.toLowerCase().indexOf(q) < 0) { continue; }
+      out.push(i);
+    }
+    if (lgpSort === "az") {
+      out.sort(function (a, b) {
+        var an = VIR_LEGENDS[a].n, bn = VIR_LEGENDS[b].n;
+        return an < bn ? -1 : (an > bn ? 1 : 0);
+      });
+    }
+    return out;
+  }
+
   function lgpBuild(){
     var g = document.getElementById("lgpgrid"), h = "", i;
     if (typeof VIR_LEGENDS === "undefined") {
       g.innerHTML = "";
       return;
     }
-    for (i = 0; i < VIR_LEGENDS.length; i++) {
-      var a = lgpFirstArt(VIR_LEGENDS[i]), nm = lgpSplit(VIR_LEGENDS[i].n);
-      h += "<button type=\"button\" class=\"lgptile\" data-lgpi=\"" + i +
+    var view = lgpView();
+    for (i = 0; i < view.length; i++) {
+      var x = view[i];
+      var a = lgpFirstArt(VIR_LEGENDS[x]), nm = lgpSplit(VIR_LEGENDS[x].n);
+      h += "<button type=\"button\" class=\"lgptile\" data-lgpi=\"" + x +
         "\" aria-pressed=\"false\"><div class=\"lgppic\"" +
         (a ? " style=\"background-image:url(../cards/art/" + a.h + ".t.webp)\"" : "") +
         "></div><div class=\"lgpn\">" + esc(nm[0]) +
         "</div><div class=\"lgpsub\">" + esc(nm[1]) + "</div></button>";
     }
     g.innerHTML = h;
+    g.scrollTop = 0;
+    lgpSyncTiles();
   }
   function lgpSetTileArt(tile, e, want){
     if (!tile || !e) { return; }
@@ -1635,6 +1660,36 @@
     var x = VIR_LEGENDS[parseInt(t.getAttribute("data-lgpi"), 10)];
     if (x) { lgpChoose(x.n); }
   });
+
+  document.getElementById("lgpsort").addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest(".lgpsb") : null;
+    if (!t) { return; }
+    var v = t.getAttribute("data-lgps");
+    if (!v || v === lgpSort) { return; }
+    lgpSort = v;
+    lgpSortSync();
+    lgpSortSave();
+    lgpBuild();
+  });
+
+  document.getElementById("lgpq").addEventListener("input", function(e){
+    lgpQ = String(e.target.value || "").toLowerCase().trim();
+    lgpBuild();
+  });
+
+  function lgpSortSync(){
+    var b = document.getElementById("lgpsort").getElementsByTagName("button"), i;
+    for (i = 0; i < b.length; i++) {
+      b[i].setAttribute("aria-pressed", b[i].getAttribute("data-lgps") === lgpSort ? "true" : "false");
+    }
+  }
+  function lgpSortSave(){ try { localStorage.setItem("vir.counter.lgpsort.v1", lgpSort); } catch (e) {} }
+  function lgpSortLoad(){
+    try {
+      var v = localStorage.getItem("vir.counter.lgpsort.v1");
+      if (v === "rel" || v === "az") { lgpSort = v; }
+    } catch (e) {}
+  }
   document.getElementById("lgpchips").addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest(".lgpchip") : null;
     if (!t || !lgpFor) { return; }
@@ -1660,6 +1715,8 @@
     render();
   });
   document.getElementById("lgpdone").addEventListener("click", lgpClose);
+  lgpSortLoad();
+  lgpSortSync();
   lgpBuild();
 
   // Two independent switches sharing one row. Card art and domain runes are
