@@ -116,6 +116,7 @@
     letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;
     transition:background var(--mo-fast) ease,color var(--mo-fast) ease;
   }
+  #target button{font-size:13px;letter-spacing:.08em;}
   .seg button+button{border-left:1px solid var(--rule);}
   .seg button[aria-pressed="true"]{background:var(--bone);color:#000;}
   #target button[data-side="1"][aria-pressed="true"]{background:var(--s1);color:#000;}
@@ -316,21 +317,20 @@
     font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:10px;
   }
-  .rfs{display:flex;gap:20px;justify-content:center;}
-  .rf{display:flex;flex-direction:column;align-items:stretch;gap:6px;flex:0 0 auto;width:76px;}
+  .rfs{display:flex;gap:14px;}
+  .rf{display:flex;flex-direction:row;align-items:center;gap:8px;flex:1 1 0;}
   .rf .rfl{
     flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--c);
-    text-align:center;
   }
-  .rfw{position:relative;display:block;}
+  .rfw{position:relative;display:block;flex:1 1 auto;min-width:0;}
   .rf input{
-    width:76px;box-sizing:border-box;min-height:44px;
+    width:100%;box-sizing:border-box;min-height:44px;
     background:var(--ground);color:var(--bone);
     border:1px solid var(--c);border-radius:var(--r-sm);
     font-family:var(--mono);font-weight:500;font-size:16px;text-align:center;
-    padding:0 20px 0 8px;
+    padding:0 22px 0 10px;
     -moz-appearance:textfield;
   }
   .rf input::-webkit-outer-spin-button,
