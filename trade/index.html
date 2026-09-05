@@ -303,7 +303,7 @@
   .udpan{
     list-style:none;margin-top:6px;padding:4px 14px;
     border:1px solid var(--rule-hi);border-radius:var(--r);
-    text-align:left;max-height:220px;overflow:auto;
+    max-height:220px;overflow:auto;
     -webkit-overflow-scrolling:touch;
   }
   .udpan[hidden]{display:none;}
@@ -544,17 +544,18 @@
       <div class="big" id="diff">$0.00</div>
       <div class="who" id="who"></div>
       <div class="bar" aria-hidden="true"><i class="b1" id="b1"></i><i class="b2" id="b2"></i></div>
-      <div class="undo" id="undo" hidden>
-        <div class="udbar">
-          <button type="button" class="udtog" id="udtog" data-act="udtog" aria-expanded="false" aria-controls="udpan">
-            <span class="udlb" id="udlb"></span>
-            <span class="udn" id="udn"></span>
-            <svg class="rcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <button type="button" class="udob" data-act="undo">Undo</button>
-        </div>
-        <ol class="udpan" id="udpan" hidden></ol>
+    </div>
+
+    <div class="undo" id="undo" hidden>
+      <div class="udbar">
+        <button type="button" class="udtog" id="udtog" data-act="udtog" aria-expanded="false" aria-controls="udpan">
+          <span class="udlb" id="udlb"></span>
+          <span class="udn" id="udn"></span>
+          <svg class="rcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <button type="button" class="udob" data-act="undo">Undo</button>
       </div>
+      <ol class="udpan" id="udpan" hidden></ol>
     </div>
 
     <section class="panel" data-side="2">
