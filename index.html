@@ -315,8 +315,9 @@
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important;scroll-behavior:auto !important;}
   }
-  /* Motion confirms, it never decorates. Three rules only.
-     .rise-load  the page arriving. First paint, once, slowest.
+  /* Motion confirms, it never decorates. Two rules only.
+     There is deliberately NO first-paint animation. The agenda sits below
+     the fold on load, so a cascade there plays where nobody sees it.
      .rise-swap  a tap replacing the agenda's contents with different
                  contents. Not a filter tap, which only thins the list.
      .fx         the tapped control confirming itself, in its own colour
@@ -324,8 +325,6 @@
                  the FRESH node, because every render destroys the node
                  that was tapped. */
   @media (prefers-reduced-motion:no-preference){
-    .daygroup.rise-load{animation:riseload var(--mo-settle) var(--mo-ease) backwards;}
-    @keyframes riseload{from{opacity:0;transform:translateY(18px);}}
     .daygroup.rise-swap{animation:riseswap var(--mo-seam) var(--mo-ease) backwards;}
     @keyframes riseswap{from{opacity:0;transform:translateY(16px);}}
 
@@ -536,10 +535,9 @@ function feedHref(){
 // Why the current render is running. The rise used to fire on every
 // render because the class was declared in CSS with no trigger at all,
 // so a filter tap replayed the whole cascade. Now the reason decides.
-//   "load" first paint
 //   "swap" the agenda's contents are being replaced by different ones
-//   ""     everything else, which animates nothing
-var RSN = "load";
+//   ""     everything else, including first paint, which animates nothing
+var RSN = "";
 
 // The one motion helper. Restart needs the class removed, a forced
 // reflow, then the class added -- without the reflow a second tap on the
