@@ -60,7 +60,8 @@
   }
   .mast .nvtog:active{border-color:var(--rule-hi);}
   .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
-  .mast .nvtog .nvsign{margin-left:auto;color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
+  .mast .nvtog .nvcar{margin-left:auto;flex:0 0 auto;display:block;transition:transform var(--mo-fast) var(--mo-ease);}
+  .mast .nvtog[aria-expanded="true"] .nvcar{transform:rotate(180deg);}
   .mast .nvpan{
     margin-top:6px;border:1px solid var(--rule-hi);
     border-radius:6px;overflow:hidden;
@@ -141,7 +142,7 @@
   <header class="mast">
     <h1>Feedback</h1>
     <div class="nvw">
-      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<span class="nvsign">+</span></button>
+      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<svg class="nvcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
       <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
         <a href="../">Calendar</a>
         <a href="../counter/">Point counter</a>
@@ -188,7 +189,6 @@
     var open = p.hasAttribute("hidden");
     if(open){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); }
     t.setAttribute("aria-expanded", open ? "true" : "false");
-    t.querySelector(".nvsign").textContent = open ? "-" : "+";
   });
 })();
 </script>
