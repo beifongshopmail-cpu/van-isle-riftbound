@@ -149,15 +149,16 @@
 
   .find{margin-bottom:14px;}
   .find input{
-    width:100%;-webkit-appearance:none;appearance:none;
+    width:123.0769%;-webkit-appearance:none;appearance:none;
     background:none;border:1px solid var(--rule);border-radius:6px;
-    color:var(--bone);font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;
-    padding:0 14px;min-height:44px;
+    color:var(--bone);font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.1em;text-transform:uppercase;
+    padding:0 17.2px;min-height:54.1538px;
+    transform:scale(.8125);transform-origin:left center;
+    transition:border-color var(--mo-fast) ease;
   }
-  .find input::placeholder{color:var(--mute);font-size:16px;font-weight:500;letter-spacing:.08em;}
-  .tlnote::placeholder{color:var(--mute);font-size:13px;font-weight:500;}
+  .find input::placeholder{color:var(--mute);font-weight:500;}
+  .tlnote::placeholder{color:var(--mute);font-weight:500;}
   .find input:focus{outline:none;border-color:var(--rule-hi);}
-  .find input{transition:border-color var(--mo-fast) ease;}
   .find .target{margin-top:14px;}
 
   .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
@@ -365,7 +366,7 @@
   .tltog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi)}
   .tlcount{margin-left:auto;color:var(--dim);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em}
   .tlpan{margin-top:6px;padding:14px;border:1px solid var(--rule-hi);border-radius:var(--r)}
-  .tlnote{width:100%;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.08em;text-transform:uppercase;padding:0 14px;min-height:44px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box}
+  .tlnote{width:123.0769%;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.1em;text-transform:uppercase;padding:0 17.2px;min-height:54.1538px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box;transform:scale(.8125);transform-origin:left center}
   .tlsave{display:block;width:100%;margin-top:14px;min-height:44px;padding:10px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
   .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font-family:var(--mono);font-weight:500;font-size:13px}
   .tlrow:first-child{border-top:0}
