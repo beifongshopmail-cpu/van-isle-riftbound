@@ -344,14 +344,6 @@
       0%{background:rgba(242,243,245,.22);}
       100%{background:none;}
     }
-
-    /* The cell form. A day cell rests on --plate, so a flash ending at
-       none would leave it transparent. It ends where it started. */
-    .fx-cell{animation:fxcell var(--mo-tap) ease-out;}
-    @keyframes fxcell{
-      0%{background:rgba(242,243,245,.22);}
-      100%{background:var(--plate);}
-    }
   }
 </style>
 </head>
@@ -546,7 +538,7 @@ var RSN = "";
 function fxTap(node, kind){
   if (!node) return;
   var c = "fx-" + (kind || "n");
-  node.classList.remove("fx-c", "fx-n", "fx-cell");
+  node.classList.remove("fx-c", "fx-n");
   void node.offsetWidth;
   node.classList.add(c);
 }
@@ -607,7 +599,6 @@ function renderGrid(){
       b.type = "button";
       b.className = "cell" + (ev.length ? " has" : "") + (k === TODAY ? " today" : "");
       b.disabled = !ev.length;
-      b.setAttribute("data-day", k);
       b.setAttribute("aria-pressed", selDay === k ? "true" : "false");
       b.setAttribute("aria-label",
         MONTH[cursor.m] + " " + n + ", " + ev.length + (ev.length === 1 ? " event" : " events"));
@@ -624,14 +615,14 @@ function renderGrid(){
       b.innerHTML =
         '<span class="top"><span class="n">' + n + '</span>' + more + '</span>' +
         '<span class="bars">' + bars + '</span>';
+      // No flash here on purpose. A tapped cell already takes a bone
+      // border and pushes the expand panel open beneath it, so a third
+      // confirmation would be decoration. The rise is the confirmation.
       b.onclick = function(){
         selDay = (selDay === k) ? null : k;
         showAll = false;
         RSN = "swap";
         render();
-        // renderGrid rebuilt every cell, so the tapped node is gone.
-        // Find its replacement by the day it stands for.
-        fxTap(gridEl.querySelector('[data-day="' + k + '"]'), "cell");
       };
       gridEl.appendChild(b);
     })(n);
