@@ -315,9 +315,44 @@
   @media (prefers-reduced-motion:reduce){
     *{transition:none !important;animation:none !important;scroll-behavior:auto !important;}
   }
+  /* Motion confirms, it never decorates. Three rules only.
+     .rise-load  the page arriving. First paint, once, slowest.
+     .rise-swap  a tap replacing the agenda's contents with different
+                 contents. Not a filter tap, which only thins the list.
+     .fx         the tapped control confirming itself, in its own colour
+                 where it has one. Applied by fxTap after the render, to
+                 the FRESH node, because every render destroys the node
+                 that was tapped. */
   @media (prefers-reduced-motion:no-preference){
-    .daygroup{animation:rise var(--mo-rise) var(--mo-ease) backwards;}
-    @keyframes rise{from{opacity:0;transform:translateY(6px);}}
+    .daygroup.rise-load{animation:riseload var(--mo-settle) var(--mo-ease) backwards;}
+    @keyframes riseload{from{opacity:0;transform:translateY(18px);}}
+    .daygroup.rise-swap{animation:riseswap var(--mo-seam) var(--mo-ease) backwards;}
+    @keyframes riseswap{from{opacity:0;transform:translateY(16px);}}
+
+    /* The colour form. The element must set --c on ITSELF, not only on a
+       child, or the color-mix is invalid and the flash silently does
+       nothing. */
+    .fx-c{animation:fxc var(--mo-tap) ease-out;}
+    @keyframes fxc{
+      0%{background:color-mix(in srgb, var(--c) 30%, transparent);
+         text-shadow:0 0 24px color-mix(in srgb, var(--c) 85%, transparent);}
+      100%{background:none;text-shadow:none;}
+    }
+
+    /* The neutral form, for controls with no colour of their own. */
+    .fx-n{animation:fxn var(--mo-tap) ease-out;}
+    @keyframes fxn{
+      0%{background:rgba(242,243,245,.22);}
+      100%{background:none;}
+    }
+
+    /* The cell form. A day cell rests on --plate, so a flash ending at
+       none would leave it transparent. It ends where it started. */
+    .fx-cell{animation:fxcell var(--mo-tap) ease-out;}
+    @keyframes fxcell{
+      0%{background:rgba(242,243,245,.22);}
+      100%{background:var(--plate);}
+    }
   }
 </style>
 </head>
@@ -498,6 +533,26 @@ function feedHref(){
 
 /* ---------- render ---------- */
 
+// Why the current render is running. The rise used to fire on every
+// render because the class was declared in CSS with no trigger at all,
+// so a filter tap replayed the whole cascade. Now the reason decides.
+//   "load" first paint
+//   "swap" the agenda's contents are being replaced by different ones
+//   ""     everything else, which animates nothing
+var RSN = "load";
+
+// The one motion helper. Restart needs the class removed, a forced
+// reflow, then the class added -- without the reflow a second tap on the
+// same control does nothing. Any page adopting this copies the keyframes
+// above and calls fxTap; there are no values to rediscover.
+function fxTap(node, kind){
+  if (!node) return;
+  var c = "fx-" + (kind || "n");
+  node.classList.remove("fx-c", "fx-n", "fx-cell");
+  void node.offsetWidth;
+  node.classList.add(c);
+}
+
 function renderStamp(){
   var el = document.getElementById("stamp");
   var when = META && META.generated_at ? ago(META.generated_at) : null;
@@ -554,6 +609,7 @@ function renderGrid(){
       b.type = "button";
       b.className = "cell" + (ev.length ? " has" : "") + (k === TODAY ? " today" : "");
       b.disabled = !ev.length;
+      b.setAttribute("data-day", k);
       b.setAttribute("aria-pressed", selDay === k ? "true" : "false");
       b.setAttribute("aria-label",
         MONTH[cursor.m] + " " + n + ", " + ev.length + (ev.length === 1 ? " event" : " events"));
@@ -573,7 +629,11 @@ function renderGrid(){
       b.onclick = function(){
         selDay = (selDay === k) ? null : k;
         showAll = false;
+        RSN = "swap";
         render();
+        // renderGrid rebuilt every cell, so the tapped node is gone.
+        // Find its replacement by the day it stands for.
+        fxTap(gridEl.querySelector('[data-day="' + k + '"]'), "cell");
       };
       gridEl.appendChild(b);
     })(n);
@@ -611,13 +671,19 @@ function renderLegend(){
     b.type = "button";
     b.className = "lg" + (on ? "" : " off");
     b.setAttribute("aria-pressed", on ? "true" : "false");
+    // --c on the BUTTON, not only on the swatch. The swatch still reads
+    // it by inheritance, and the flash can now resolve it.
+    b.style.setProperty("--c", TYPES[k].color);
+    b.setAttribute("data-type", k);
     b.innerHTML =
       '<span class="sw" style="--c:' + TYPES[k].color + '"></span>' +
       '<span>' + (TYPES[k].short || TYPES[k].label) + '</span>' +
       '<span class="ct">' + counts[k] + '</span>';
     b.onclick = function(){
       if (hidden.has(k)) hidden.delete(k); else hidden.add(k);
+      RSN = "";
       render();
+      fxTap(legendEl.querySelector('[data-type="' + k + '"]'), "c");
     };
     legendEl.appendChild(b);
   });
@@ -672,8 +738,8 @@ function renderList(target){
   Object.keys(map).sort().forEach(function(day, i){
     var d = parseDay(day);
     var g = document.createElement("div");
-    g.className = "daygroup";
-    g.style.animationDelay = Math.min(i,7)*20 + "ms";
+    g.className = "daygroup" + (RSN ? " rise-" + RSN : "");
+    if (RSN) g.style.animationDelay = Math.min(i,7) * (RSN === "load" ? 55 : 60) + "ms";
 
     if (!selDay){
       var h = document.createElement("div");
