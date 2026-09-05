@@ -60,7 +60,7 @@
     padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
   }
 
-  .mast{padding:30px 0 18px;}
+  .mast{padding:30px 0 14px;}
   .mast h1{
     font-family:var(--display);font-weight:800;
     font-size:clamp(38px,11.5vw,60px);
@@ -84,12 +84,19 @@
   .mast .nvtog{
     display:flex;width:100%;align-items:center;gap:10px;
     min-height:44px;padding:0 14px;background:none;
-    border:1px solid var(--rule-hi);border-radius:6px;
-    color:var(--dim);cursor:pointer;
-    font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;
-    transition:color var(--mo-fast);
+    border:1px solid var(--rule);border-radius:6px;
+    color:var(--dim);cursor:pointer;text-align:left;
+    font-family:var(--display);font-weight:600;font-size:15px;
+    letter-spacing:.1em;text-transform:uppercase;
+    transition:color var(--mo-fast) ease,border-color var(--mo-fast) ease;
   }
+  .mast .nvtog:active{border-color:var(--rule-hi);}
+  .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
+  .mast .nvtog .nvcur{
+    margin-left:auto;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;
+  }
+  .mast .nvtog[aria-expanded="true"] .nvcur{color:var(--bone);}
   .mast .nvtog .nvcur{color:var(--bone);margin-left:auto;}
   .mast .nvtog .nvsign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
   .mast .nvpan{
@@ -97,10 +104,10 @@
     border-radius:6px;overflow:hidden;
   }
   .mast .nvpan a{
-    display:flex;width:100%;align-items:center;min-height:38px;
+    display:flex;width:100%;align-items:center;min-height:44px;
     padding:0 14px;background:none;color:var(--dim);text-decoration:none;
-    font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;
+    font-family:var(--mono);font-weight:500;font-size:13px;
+    letter-spacing:.08em;text-transform:uppercase;
     transition:color var(--mo-fast);
   }
   .mast .nvpan a+a{border-top:1px solid var(--rule);}
@@ -108,12 +115,12 @@
   .mast .nvpan [aria-current="page"]{color:var(--bone);}
   .mast .stamp.stale b,.mast .stamp.stale{color:var(--warn);}
 
-  .scope{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:24px;
+  .scope{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:14px;
     border:1px solid var(--rule-hi);border-radius:5px;overflow:hidden;}
   .scope button{
     min-height:38px;
     background:none;border:0;color:var(--dim);cursor:pointer;
-    font-family:var(--mono);font-weight:500;font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:13px;
     letter-spacing:.1em;text-transform:uppercase;
     transition:color var(--mo-fast),background var(--mo-fast);
   }
@@ -220,7 +227,7 @@
   }
   .ahead button{
     background:none;border:0;cursor:pointer;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.07em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.08em;
     text-transform:uppercase;color:var(--dim);
     text-decoration:underline;text-underline-offset:3px;padding:4px 0;
   }
