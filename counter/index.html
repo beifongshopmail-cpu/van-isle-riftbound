@@ -399,6 +399,14 @@
 .lgpx{flex:0 0 auto;min-height:38px;background:none;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 12px;
   font-family:var(--mono);font-size:13px;font-weight:500}
+.lgpfil{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--rule)}
+.lgpq{flex:1;min-width:0;min-height:38px;background:#14171D;color:var(--bone);border:1px solid var(--rule);border-radius:6px;padding:0 12px;font-family:var(--mono);font-size:16px;font-weight:500;-webkit-appearance:none;appearance:none}
+.lgpq:focus{outline:none;border-color:var(--rule-hi)}
+.lgpq::placeholder{color:var(--dim)}
+.lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+.lgpsort{flex:0 0 auto;display:flex;gap:6px}
+.lgpsb{min-height:38px;background:none;color:var(--dim);border:1px solid var(--rule);border-radius:5px;padding:0 10px;font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.lgpsb[aria-pressed="true"]{color:var(--bone);border-color:var(--rule-hi)}
 .lgpgrid{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding:12px}
 .lgptile{background:none;border:0;padding:0;color:var(--bone);text-align:center}
@@ -509,6 +517,13 @@
     <div class="lgpt" id="lgptitle">Legend</div>
     <button type="button" class="lgpx" id="lgpnone">No legend</button>
     <button type="button" class="lgpx" id="lgpdone">Done</button>
+  </div>
+  <div class="lgpfil">
+    <input type="search" class="lgpq" id="lgpq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends">
+    <div class="lgpsort" id="lgpsort" role="group" aria-label="Sort order">
+      <button type="button" class="lgpsb" data-lgps="rel" aria-pressed="true">Release</button>
+      <button type="button" class="lgpsb" data-lgps="az" aria-pressed="false">A-Z</button>
+    </div>
   </div>
   <div class="lgpgrid" id="lgpgrid"></div>
   <div class="lgppr" id="lgppr">
