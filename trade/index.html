@@ -148,18 +148,20 @@
   .bar .clear:active{border-color:var(--rule-hi);color:var(--bone);}
 
   .find{margin-bottom:14px;}
-  .find input{
-    width:100%;-webkit-appearance:none;appearance:none;
+  .findw{
+    height:44px;overflow:hidden;
+  }
+  .findw input{
+    display:block;width:123.0769%;height:54.1538px;
+    -webkit-appearance:none;appearance:none;
     background:none;border:1px solid var(--rule);border-radius:6px;
     color:var(--bone);font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.1em;text-transform:uppercase;
-    padding:0 17.2px;min-height:54.1538px;
-    zoom:.8125;
+    padding:0 17.2px;
+    transform:scale(.8125);transform-origin:top left;
     transition:border-color var(--mo-fast) ease;
   }
-  .find input::placeholder{color:var(--mute);font-weight:500;}
-  .tlnote::placeholder{color:var(--mute);font-weight:500;}
-  .find input:focus{outline:none;border-color:var(--rule-hi);}
-  .find input,.tlnote{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  .findw input::placeholder{color:var(--mute);font-weight:500;}
+  .findw input:focus{outline:none;border-color:var(--rule-hi);}
   .find .target{margin-top:14px;}
 
   .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
@@ -367,7 +369,9 @@
   .tltog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi)}
   .tlcount{margin-left:auto;color:var(--dim);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em}
   .tlpan{margin-top:6px;padding:14px;border:1px solid var(--rule-hi);border-radius:var(--r)}
-  .tlnote{width:100%;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.1em;text-transform:uppercase;padding:0 17.2px;min-height:54.1538px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box;zoom:.8125}
+  .tlnotew{height:44px;overflow:hidden;}
+  .tlnotew input{display:block;width:123.0769%;height:54.1538px;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.1em;text-transform:uppercase;padding:0 17.2px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box;transform:scale(.8125);transform-origin:top left}
+  .tlnotew input::placeholder{color:var(--mute);font-weight:500;}
   .tlsave{display:block;width:100%;margin-top:14px;min-height:44px;padding:10px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
   .tlrow{cursor:pointer;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--rule);padding:10px 0;color:inherit;font-family:var(--mono);font-weight:500;font-size:13px}
   .tlrow:first-child{border-top:0}
@@ -471,7 +475,7 @@
     </div>
 
     <div class="find">
-      <input id="q" type="search" placeholder="Search by card name or number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div class="findw"><input id="q" type="search" placeholder="Search by card name or number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
       <div class="target">
         <div class="seg" id="target" role="group" aria-label="Add to">
           <button type="button" data-side="1" aria-pressed="true">Add to yours</button>
@@ -505,7 +509,7 @@
         <svg class="tlcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
       </button>
       <div class="tlpan" id="tlpan" hidden>
-        <input id="tlnote" class="tlnote" type="text" maxlength="60" placeholder="Label this trade (optional)">
+        <div class="tlnotew"><input id="tlnote" class="tlnote" type="text" maxlength="60" placeholder="Label this trade (optional)"></div>
         <button type="button" class="tlsave" id="tlsave" data-act="tlsave">Save this trade</button>
         <div id="tllist"></div>
         <div class="tlio">
