@@ -41,22 +41,45 @@
     padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
   }
 
-  .mast{padding:30px 0 18px;}
+  .mast{padding:30px 0 14px;}
   .mast h1{
     font-family:var(--display);font-weight:800;
     font-size:clamp(38px,11.5vw,60px);
     line-height:.86;letter-spacing:-.035em;
     text-transform:uppercase;margin:0;
   }
-  .mast .pages{
-    margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
-    text-transform:uppercase;color:var(--mute);
+  .mast .nvw{margin-top:14px;}
+  .mast .nvtog{
+    display:flex;width:100%;align-items:center;gap:10px;
+    min-height:44px;padding:0 14px;background:none;
+    border:1px solid var(--rule);border-radius:6px;
+    color:var(--dim);cursor:pointer;text-align:left;
+    font-family:var(--display);font-weight:600;font-size:15px;
+    letter-spacing:.1em;text-transform:uppercase;
+    transition:color var(--mo-fast) ease,border-color var(--mo-fast) ease;
   }
-  .mast .pages a{color:var(--dim);text-decoration:none;}
-  .mast .pages a:hover{color:var(--bone);}
-  .mast .pages [aria-current]{color:var(--bone);}
-  .mast .pages .sep{color:var(--rule-hi);}
+  .mast .nvtog:active{border-color:var(--rule-hi);}
+  .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
+  .mast .nvtog .nvcur{
+    margin-left:auto;color:var(--dim);
+    font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;
+  }
+  .mast .nvtog[aria-expanded="true"] .nvcur{color:var(--bone);}
+  .mast .nvtog .nvsign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
+  .mast .nvpan{
+    margin-top:6px;border:1px solid var(--rule-hi);
+    border-radius:6px;overflow:hidden;
+  }
+  .mast .nvpan a{
+    display:flex;width:100%;align-items:center;min-height:44px;
+    padding:0 14px;background:none;color:var(--dim);text-decoration:none;
+    font-family:var(--mono);font-weight:500;font-size:13px;
+    letter-spacing:.08em;text-transform:uppercase;
+    transition:color var(--mo-fast);
+  }
+  .mast .nvpan a+a{border-top:1px solid var(--rule);}
+  .mast .nvpan a:hover{color:var(--bone);}
+  .mast .nvpan [aria-current="page"]{color:var(--bone);}
 
   .fdbkintro p{
     margin:0 0 12px;
@@ -76,8 +99,8 @@
   .fdbkform .alt{
     display:block;padding:12px 14px;
     border-top:1px solid var(--rule);
-    font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.08em;text-transform:uppercase;
+    font-family:var(--mono);font-weight:500;font-size:13px;
+    letter-spacing:.1em;text-transform:uppercase;
     color:var(--mute);text-decoration:none;text-align:center;
   }
   .fdbkform .alt:hover{color:var(--bone);}
@@ -122,15 +145,15 @@
 
   <header class="mast">
     <h1>Feedback</h1>
-    <nav class="pages" aria-label="Pages">
-      <a href="../">Calendar</a>
-      <span class="sep">/</span>
-      <a href="../counter/">Point counter</a>
-      <span class="sep">/</span>
-      <a href="../trade/">Trade calculator</a>
-      <span class="sep">/</span>
-      <span aria-current="page">Feedback</span>
-    </nav>
+    <div class="nvw">
+      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<span class="nvcur">Feedback</span><span class="nvsign">+</span></button>
+      <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
+        <a href="../">Calendar</a>
+        <a href="../counter/">Point counter</a>
+        <a href="../trade/">Trade calculator</a>
+        <a aria-current="page" href="./">Feedback</a>
+      </nav>
+    </div>
   </header>
 
   <div class="fdbkintro">
@@ -162,5 +185,17 @@
   </div>
 
 </div>
+<script>
+(function(){
+  var t = document.getElementById("nvtog"), p = document.getElementById("nvpan");
+  if(!t || !p){ return; }
+  t.addEventListener("click", function(){
+    var open = p.hasAttribute("hidden");
+    if(open){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); }
+    t.setAttribute("aria-expanded", open ? "true" : "false");
+    t.querySelector(".nvsign").textContent = open ? "-" : "+";
+  });
+})();
+</script>
 </body>
 </html>
