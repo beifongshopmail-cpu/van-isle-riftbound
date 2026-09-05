@@ -709,13 +709,13 @@ function renderList(target){
     picked = all;
     heading = "All upcoming";
     toggleText = "Next 7 days";
-    toggleFn = function(){ showAll = false; render(); };
+    toggleFn = function(){ showAll = false; RSN = "swap"; render(); fxTap(tog, "n"); };
   } else {
     var cut = addDays(TODAY, 7);
     picked = all.filter(function(e){ return e.day <= cut; });
     heading = "Next 7 days";
     toggleText = "All upcoming (" + all.length + ")";
-    toggleFn = function(){ showAll = true; render(); };
+    toggleFn = function(){ showAll = true; RSN = "swap"; render(); fxTap(tog, "n"); };
   }
 
   title.textContent = heading;
@@ -811,13 +811,17 @@ function computeBounds(){
 }
 
 function wire(){
+  // The arrows are static markup, so unlike a cell or a filter they are
+  // still the same node after the render. No re-query needed.
   document.getElementById("prev").onclick = function(){
     if (cursor.m === 0){ cursor = {y:cursor.y-1, m:11}; } else { cursor.m--; }
     selDay = null; render();
+    fxTap(this, "n");
   };
   document.getElementById("next").onclick = function(){
     if (cursor.m === 11){ cursor = {y:cursor.y+1, m:0}; } else { cursor.m++; }
     selDay = null; render();
+    fxTap(this, "n");
   };
   var buttons = document.querySelectorAll(".scope button");
   Array.prototype.forEach.call(buttons, function(b){
