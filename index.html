@@ -303,11 +303,13 @@
   .sub{
     display:flex;align-items:center;justify-content:center;gap:9px;
     width:100%;min-height:var(--tap);
-    background:var(--bone);border:0;border-radius:6px;color:#000;cursor:pointer;
+    background:none;border:1px solid var(--rule-hi);border-radius:6px;
+    color:var(--bone);cursor:pointer;
     font-family:var(--mono);font-weight:500;font-size:13px;
     letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+    transition:border-color var(--mo-fast) ease,color var(--mo-fast) ease;
   }
-  .sub:active{background:var(--dim);}
+  .sub:active{background:rgba(255,255,255,.06);}
   .foot p{
     font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.75;
     color:var(--mute);text-align:center;margin:15px 0 0;
