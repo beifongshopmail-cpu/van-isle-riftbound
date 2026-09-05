@@ -271,19 +271,49 @@
   }
   .verdict .bar .b1{background:var(--s1);}
   .verdict .bar .b2{background:var(--s2);}
-  .undo{
-    display:flex;align-items:center;gap:10px;margin-top:14px;
-  }
+  .undo{margin-top:14px;}
   .undo[hidden]{display:none;}
-  .undolb{
+  .udbar{display:flex;align-items:center;gap:10px;}
+  .udtog{
+    flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:10px;min-height:44px;
+    padding:0 12px;text-align:left;
+    background:transparent;border:1px solid var(--rule);border-radius:6px;color:inherit;
+  }
+  .udtog[aria-expanded="true"]{border-color:var(--rule-hi);}
+  .udtog[aria-expanded="true"] .rcar{transform:rotate(180deg);}
+  .udlb{
     flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
     font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;color:var(--dim);
   }
-  .undob{
-    flex:0 0 auto;height:32px;padding:0 14px;
+  .udn{
+    flex:0 0 auto;
+    font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;color:var(--dim);
+  }
+  .udob{
+    flex:0 0 auto;min-height:44px;padding:0 14px;
     background:transparent;border:1px solid var(--rule);border-radius:6px;color:inherit;
     font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;
   }
+  .udpan{
+    list-style:none;margin-top:10px;max-height:220px;overflow:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .udpan[hidden]{display:none;}
+  .udpan li{
+    display:flex;gap:12px;align-items:baseline;padding:11px 0;
+    border-bottom:1px solid var(--rule);
+    font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.04em;
+  }
+  .udpan li:last-child{border-bottom:0;}
+  .udpan .lt{
+    flex:1;min-width:0;color:var(--mute);letter-spacing:.09em;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .udpan .rt{flex:0 0 auto;color:var(--dim);white-space:nowrap;}
+  .udpan .rt b{font-weight:500;color:var(--bone);}
+  .udpan li.e1 .rt b{color:var(--s1);}
+  .udpan li.e2 .rt b{color:var(--s2);}
+  .udpan li.et .rt b{color:var(--dim);}
 
   .fdbklink{margin:6px 0 0;}
   .fdbklink a{color:var(--dim);}
@@ -504,8 +534,15 @@
       <div class="who" id="who"></div>
       <div class="bar" aria-hidden="true"><i class="b1" id="b1"></i><i class="b2" id="b2"></i></div>
       <div class="undo" id="undo" hidden>
-        <span class="undolb" id="undolb"></span>
-        <button type="button" class="undob" data-act="undo">Undo</button>
+        <div class="udbar">
+          <button type="button" class="udtog" id="udtog" data-act="udtog" aria-expanded="false" aria-controls="udpan">
+            <span class="udlb" id="udlb"></span>
+            <span class="udn" id="udn"></span>
+            <svg class="rcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <button type="button" class="udob" data-act="undo">Undo</button>
+        </div>
+        <ol class="udpan" id="udpan" hidden></ol>
       </div>
     </div>
 
@@ -547,10 +584,13 @@
 
   var KEY = "vir.trade.v1";
 
-  // One level of undo, in memory only and never persisted. The entry is a
-  // snapshot of both sides plus both rates as they were BEFORE a change.
-  var UD = null, UDTXT = "", UDKIND = "", UDLAST = null, UDBUSY = false;
-  var UDMK = "", UDMT = "";
+  // A stack of state-before snapshots, in memory only and never persisted,
+  // so it clears on reload by construction. Newest first, capped like the
+  // trade log. Undo writes a whole snapshot back rather than reversing an
+  // action -- a move folds into a matching row on the other side, so there
+  // is nothing reliable to reverse. There is no redo.
+  var UDS = [], UDCAP = 50, UDLAST = null, UDBUSY = false;
+  var UDMK = "", UDMT = "", UDSD = 0;
   var D = null, FX = 1, CUR = "CAD", SIDE = 1;
   var DLT = "30";
   var sides = { 1: [], 2: [] };
@@ -563,23 +603,45 @@
     return JSON.stringify({ s1: sides[1], s2: sides[2], p1: PCT[1], p2: PCT[2] });
   }
 
-  function udMark(kind, txt){ UDMK = kind; UDMT = txt; }
+  function udMark(kind, txt, side){ UDMK = kind; UDMT = txt; UDSD = side || 0; }
+
+  function udSide(n){
+    if(n === 1) return "Yours";
+    if(n === 2) return "Theirs";
+    return "Both";
+  }
+
+  function udOpen(on){
+    el("udtog").setAttribute("aria-expanded", on ? "true" : "false");
+    el("udpan").hidden = !on;
+  }
 
   function udBar(){
-    var w = el("undo");
+    var w = el("undo"), h = "", k, e;
     if(!w) return;
-    if(!UD){ w.hidden = true; el("undolb").textContent = ""; return; }
-    el("undolb").textContent = UDTXT;
+    if(!UDS.length){
+      w.hidden = true;
+      el("udpan").innerHTML = "";
+      udOpen(false);
+      return;
+    }
+    el("udlb").textContent = UDS[0].t;
+    el("udn").textContent = UDS.length;
+    for(k = 0; k < UDS.length; k++){
+      e = UDS[k];
+      h += '<li class="e' + (e.n === 1 ? "1" : (e.n === 2 ? "2" : "t")) + '">'
+        + '<span class="lt">' + esc(e.t) + '</span>'
+        + '<span class="rt"><b>' + esc(udSide(e.n)) + '</b></span></li>';
+    }
+    el("udpan").innerHTML = h;
     w.hidden = false;
   }
 
-  // Restoring is a whole-state write, not an inverse of the last action --
-  // a move folds into a matching row on the other side, so there is nothing
-  // reliable to reverse. No redo: UDBUSY stops this write recording itself.
+  // UDBUSY stops this write from recording itself as a new entry.
   function udDo(){
-    if(!UD) return;
-    var r;
-    try{ r = JSON.parse(UD); }catch(e){ return; }
+    if(!UDS.length) return;
+    var e = UDS.shift(), r;
+    try{ r = JSON.parse(e.s); }catch(x){ return; }
     if(!Array.isArray(r.s1) || !Array.isArray(r.s2)) return;
     sides[1] = r.s1;
     sides[2] = r.s2;
@@ -587,8 +649,6 @@
     PCT[2] = pcClamp(r.p2);
     el("pc1").value = PCT[1];
     el("pc2").value = PCT[2];
-    UD = null;
-    UDKIND = "";
     UDBUSY = true;
     save();
     UDBUSY = false;
@@ -601,17 +661,19 @@
   }
 
   function save(){
-    // Typing in a rate field fires per keystroke, so a run of rate edits
-    // keeps the entry from before the run rather than the previous character.
+    // Typing in a rate field fires per keystroke, so a run of edits to ONE
+    // field coalesces into the single entry from before the run. A run on
+    // the other field is a separate entry, which is why the side is checked.
     var udcur = udSnap();
-    if(!UDBUSY && UDLAST !== null && UDLAST !== udcur && !(UDMK === "rate" && UDKIND === "rate")){
-      UD = UDLAST;
-      UDKIND = UDMK || "other";
-      UDTXT = UDMT || "Last change";
+    if(!UDBUSY && UDLAST !== null && UDLAST !== udcur
+       && !(UDMK === "rate" && UDS.length && UDS[0].k === "rate" && UDS[0].n === UDSD)){
+      UDS.unshift({ s: UDLAST, t: UDMT || "Last change", k: UDMK || "other", n: UDSD });
+      while(UDS.length > UDCAP) UDS.pop();
     }
     UDLAST = udcur;
     UDMK = "";
     UDMT = "";
+    UDSD = 0;
     try{
       localStorage.setItem(KEY, JSON.stringify({
         cur: CUR, dlt: DLT, side: SIDE, s1: sides[1], s2: sides[2],
@@ -661,7 +723,7 @@
 
   function pcSet(n, raw){
     PCT[n] = pcClamp(raw);
-    udMark("rate", "Rate changed");
+    udMark("rate", "Rate changed", n);
     save();
     paint();
   }
@@ -947,7 +1009,7 @@
   function add(side, i, sub){
     var a = sides[side], k;
     var udc = byId.get(i);
-    udMark("add", "Added " + (udc ? udc.n : "a card") + (String(side) === "2" ? " to theirs" : " to yours"));
+    udMark("add", "Added " + (udc ? udc.n : "a card"), parseInt(side, 10));
     for(k = 0; k < a.length; k++){
       if(a[k].i === i && a[k].s === sub){ a[k].q++; save(); paint(); return; }
     }
@@ -1071,8 +1133,13 @@
       el("pc2").value = 100;
       PCT[1] = 100;
       PCT[2] = 100;
+      udMark("rreset", "Rates reset to 100", 0);
       save();
       paint();
+      return;
+    }
+    if(act === "udtog"){
+      udOpen(el("udpan").hidden);
       return;
     }
     if(act === "undo"){
@@ -1093,10 +1160,10 @@
       var a = sides[n];
       if(!a || !a[idx]) return;
       var udc2 = byId.get(a[idx].i), udn = udc2 ? udc2.n : "Unknown card";
-      if(act === "inc") udMark("qty", "Added one " + udn);
-      else if(act === "dec") udMark("qty", "Removed one " + udn);
-      else if(act === "del") udMark("del", "Removed " + udn);
-      else udMark("mv", "Moved " + udn + (n === 1 ? " to theirs" : " to yours"));
+      if(act === "inc") udMark("qty", "Added one " + udn, n);
+      else if(act === "dec") udMark("qty", "Removed one " + udn, n);
+      else if(act === "del") udMark("del", "Removed " + udn, n);
+      else udMark("mv", "Moved " + udn, n === 1 ? 2 : 1);
       if(act === "inc") a[idx].q++;
       else if(act === "dec"){ a[idx].q--; if(a[idx].q < 1) a.splice(idx, 1); }
       else if(act === "del") a.splice(idx, 1);
@@ -1352,6 +1419,7 @@
     el("pc1").value = PCT[1];
     el("pc2").value = PCT[2];
     pressGroup(el("cur"), "data-cur", CUR);
+    udMark("tlload", "Loaded a saved trade", 0);
     save();
     paint();
     pcMark();
