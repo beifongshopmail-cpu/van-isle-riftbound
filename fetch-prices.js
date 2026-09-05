@@ -253,6 +253,7 @@ async function main() {
       g: g.groupId,
       n: String(g.name || ""),
       a: String(g.abbreviation || ""),
+      p: String(g.publishedOn || ""),
       count: kept
     });
     console.log("set " + g.groupId + " " + g.name + " kept " + kept + " of " + products.length);
