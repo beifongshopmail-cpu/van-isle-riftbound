@@ -60,11 +60,6 @@
   }
   .mast .nvtog:active{border-color:var(--rule-hi);}
   .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
-  .mast .nvtog .nvcur{
-    margin-left:auto;color:var(--dim);
-    font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;
-  }
-  .mast .nvtog[aria-expanded="true"] .nvcur{color:var(--bone);}
   .mast .nvtog .nvsign{color:var(--dim);font-size:14px;line-height:1;width:12px;text-align:right;}
   .mast .nvpan{
     margin-top:6px;border:1px solid var(--rule-hi);
@@ -146,7 +141,7 @@
   <header class="mast">
     <h1>Feedback</h1>
     <div class="nvw">
-      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<span class="nvcur">Feedback</span><span class="nvsign">+</span></button>
+      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<span class="nvsign">+</span></button>
       <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
         <a href="../">Calendar</a>
         <a href="../counter/">Point counter</a>
