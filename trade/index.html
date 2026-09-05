@@ -604,7 +604,7 @@
   var UDS = [], UDCAP = 50, UDLAST = null, UDBUSY = false;
   var UDMK = "", UDMT = "", UDSD = 0;
   var D = null, FX = 1, CUR = "CAD", SIDE = 1;
-  var DLT = "30";
+  var DLT = "30", DLTX = false;
   var sides = { 1: [], 2: [] };
   var PCT = { 1: 100, 2: 100 };
   var byId = new Map(), setById = new Map();
@@ -688,7 +688,7 @@
     UDSD = 0;
     try{
       localStorage.setItem(KEY, JSON.stringify({
-        cur: CUR, dlt: DLT, side: SIDE, s1: sides[1], s2: sides[2],
+        cur: CUR, dlt: DLT, dltx: DLTX, side: SIDE, s1: sides[1], s2: sides[2],
         p1: PCT[1], p2: PCT[2]
       }));
     }catch(e){}
@@ -699,7 +699,10 @@
       var r = JSON.parse(localStorage.getItem(KEY));
       if(!r) return;
       if(r.cur === "USD" || r.cur === "CAD") CUR = r.cur;
-      if(r.dlt != null && DLTW.indexOf(String(r.dlt)) > -1) DLT = String(r.dlt);
+      if(r.dlt != null && DLTW.indexOf(String(r.dlt)) > -1){
+        DLT = String(r.dlt);
+        if(r.dltx === true) DLTX = true;
+      }
       if(r.side === 2) SIDE = 2;
       if(Array.isArray(r.s1)) sides[1] = r.s1;
       if(Array.isArray(r.s2)) sides[2] = r.s2;
@@ -806,6 +809,21 @@
     if(DLT === "all") return dltWhen(D.baseline_at);
     var a = D.anchors ? D.anchors[DLT] : null;
     return a ? dltWhen(a) : "";
+  }
+
+  // The opening window is the longest one that has actually filled,
+  // capped at 30 days so the default keeps meaning "recent movement"
+  // rather than drifting toward a yearly view as the log grows. 1Y and
+  // All are never selected automatically. A window the reader picked
+  // themselves always wins and is never recomputed -- DLTX records that
+  // choice, and a stored file with no dltx field was never chosen.
+  function dltDefault(){
+    var w = ["30", "7", "1"], k;
+    if(DLTX) return;
+    if(!D || !D.anchors) return;
+    for(k = 0; k < w.length; k++){
+      if(D.anchors[w[k]]){ DLT = w[k]; return; }
+    }
   }
 
   // Under five cents of absolute movement is jitter on a cheap card,
@@ -1063,6 +1081,7 @@
     var dlw = t.getAttribute("data-dlt");
     if(dlw){
       DLT = dlw;
+      DLTX = true;
       pressGroup(el("dlt"), "data-dlt", DLT);
       save();
       dltNote();
@@ -1760,6 +1779,7 @@
       })
       .then(function(j){
         D = j;
+        dltDefault();
         FX = (j.fx && typeof j.fx.rate === "number" && j.fx.rate > 0) ? j.fx.rate : 1;
         var k;
         for(k = 0; k < j.cards.length; k++) byId.set(j.cards[k].i, j.cards[k]);
