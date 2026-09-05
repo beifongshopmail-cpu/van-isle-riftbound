@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-04T16:46:07.353Z",
- "generated_local": "2026-09-04T09:46:07-07:00",
+ "generated_at": "2026-09-05T05:20:49.370Z",
+ "generated_local": "2026-09-04T22:20:49-07:00",
  "window_start": "2026-09-04T07:00:00.000Z",
  "anchors": [
   {
@@ -18,35 +18,17 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 18,
-   "added": 18
+   "returned": 17,
+   "added": 17
   }
  ],
  "totals": {
-  "fetched": 52,
-  "unique": 52,
+  "fetched": 51,
+  "unique": 51,
   "prev_unique": 52
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 759989,
-   "name": "Tuesday Riftbound Playnight",
-   "type": "learn",
-   "start": "2026-09-04T18:00:00-07:00",
-   "end": "2026-09-04T21:30:00-07:00",
-   "day": "2026-09-04",
-   "time": "6:00 PM",
-   "venue": "Giddy-Up Games",
-   "city": "Campbell River",
-   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
-   "region": "island",
-   "cap": 8,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-10T05:03:37+00:00"
-  },
   {
    "id": 771839,
    "name": "Saturday Afternoon Nexus Nights - 1v1",
