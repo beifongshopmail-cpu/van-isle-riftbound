@@ -301,7 +301,9 @@
   .swatches button::after{content:"";display:block;width:100%;height:30px;
     border-radius:5px;background:var(--sw);box-shadow:0 0 0 2px transparent}
   .swatches button[aria-pressed="true"]::after{box-shadow:0 0 0 2px var(--bone)}
-  .setup .done.top{margin-bottom:16px}
+  .setup .done.top{position:sticky;top:0;z-index:2;background:#000;
+    margin:-12px -12px 16px;padding:12px 12px 0;width:calc(100% + 24px);
+    min-height:56px}
   .setup .done{min-height:44px;margin-top:10px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
     font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
@@ -452,6 +454,7 @@
   <input type="file" id="impfile" accept="application/json,.json" style="display:none">
   <div class="setup" id="setup" data-face="live">
     <button class="done top" id="setupdone" data-face="live">Back to the game</button>
+    <button class="done top" id="preback" data-face="pre">Back to the game</button>
     <h2 data-face="pre">Before the match</h2>
     <div class="grp" data-face="live">
       <label>End this game early</label>
@@ -509,7 +512,6 @@
     </div>
     <section class="prefoot" data-face="pre">
       <button class="start" id="startmatch">Start match</button>
-      <button class="done" id="preback">Back to the game</button>
     </section>
     <p class="lgacred">Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
   </div>
