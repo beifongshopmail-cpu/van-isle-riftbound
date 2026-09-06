@@ -31,7 +31,7 @@
 <body>
 
 <div class="zone" id="p">
-  <p class="zh">Zone P script on</p>
+  <p class="zh">Zone P guard skips controls</p>
   <div class="bar"><b>October</b><span>tap this text</span></div>
   <p class="prose">Plain prose. Double tap these words, and the black space to the right of them.</p>
   <div class="ctr"><button type="button" data-d="-1">-</button><span class="num">0</span><button type="button" data-d="1">+</button><span class="taps">taps 0</span></div>
@@ -47,7 +47,7 @@
 </div>
 
 <div class="zone" id="r">
-  <p class="zh">Zone R script on</p>
+  <p class="zh">Zone R guard on everything</p>
   <div class="bar"><b>October</b><span>tap this text</span></div>
   <p class="prose">Plain prose. Double tap these words, and the black space to the right of them.</p>
   <div class="ctr"><button type="button" data-d="-1">-</button><span class="num">0</span><button type="button" data-d="1">+</button><span class="taps">taps 0</span></div>
@@ -87,11 +87,20 @@
   // the browser's zoom gesture. preventDefault on that touchend cancels
   // it. A scroll is a move, not a tap, and never reaches this. A pinch
   // carries more than one touch point and is skipped outright.
-  function guard(el){
+  // Interactive things are already immune to the zoom gesture, and
+  // guarding them costs a visible delay on fast repeated taps. A tap
+  // landing on or inside one of these is left completely alone.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+
+  function guard(el, skipControls){
     var lastT = 0, lastX = 0, lastY = 0;
     el.addEventListener("touchend", function(ev){
       if (ev.touches.length > 0) return;
       if (ev.changedTouches.length !== 1) return;
+      if (skipControls && ev.target.closest && ev.target.closest(SKIP)){
+        lastT = 0;
+        return;
+      }
       var tch = ev.changedTouches[0];
       var now = Date.now();
       var dx = Math.abs(tch.clientX - lastX);
@@ -102,8 +111,8 @@
       lastT = now; lastX = tch.clientX; lastY = tch.clientY;
     }, {passive:false});
   }
-  guard(document.getElementById("p"));
-  guard(document.getElementById("r"));
+  guard(document.getElementById("p"), true);
+  guard(document.getElementById("r"), false);
 })();
 </script>
 
