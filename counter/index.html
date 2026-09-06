@@ -296,11 +296,10 @@
     border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;font-family:var(--mono);
     font-weight:500;font-size:16px;margin-bottom:8px;-webkit-appearance:none;appearance:none}
   .swatches{display:flex;gap:8px}
-  .swatches button{flex:1;height:44px;border:0;border-radius:6px;padding:0;background:none !important;
+  .swatches button{flex:1;height:44px;border:0;border-radius:6px;padding:0;background:none;
     display:flex;align-items:center;justify-content:center}
   .swatches button::after{content:"";display:block;width:100%;max-width:30px;height:30px;
-    border-radius:5px;background:attr(data-col type(<color>), #000);
-    box-shadow:0 0 0 2px transparent}
+    border-radius:5px;background:var(--sw);box-shadow:0 0 0 2px transparent}
   .swatches button[aria-pressed="true"]::after{box-shadow:0 0 0 2px var(--bone)}
   .setup .done.top{margin-top:0;margin-bottom:16px}
   .setup .done{min-height:44px;margin-top:auto;background:none;border:0;
@@ -1362,7 +1361,7 @@
       var sw = document.getElementById("c" + p), h = "";
       for (var j = 0; j < SWATCH.length; j++) {
         h += "<button data-p=\"" + p + "\" data-col=\"" + SWATCH[j] +
-             "\" style=\"background:" + SWATCH[j] + "\" aria-pressed=\"false\"></button>";
+             "\" style=\"--sw:" + SWATCH[j] + "\" aria-pressed=\"false\"></button>";
       }
       sw.innerHTML = h;
     }
