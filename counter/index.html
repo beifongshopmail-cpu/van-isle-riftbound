@@ -1429,7 +1429,13 @@
   }
 
   setup.addEventListener("click", function(e){
-    var t = e.target;
+    // Walk to the button before reading anything. A direct e.target read
+    // returns null the moment a button gains a child element, and the
+    // failure is silent -- see commit dc3c13f, where the who-goes-first
+    // buttons went dead in the centre for exactly this reason. Falling
+    // back to e.target keeps taps on non-button elements working as they
+    // did before.
+    var t = (e.target.closest && e.target.closest("button")) || e.target;
     var bl = t.getAttribute && t.getAttribute("data-bo");
     if (bl) {
       boPick = parseInt(bl, 10);
@@ -1464,6 +1470,16 @@
       ev.push({ t:"concede", p:parseInt(cc, 10) });
       save(); render();
       setup.classList.remove("open");
+      return;
+    }
+    // The legend picker, merged in from a second click listener that was
+    // attached to this same element. It stays LAST: every branch above
+    // returns on its own attribute, so appending it preserves the
+    // previous behaviour exactly. It keeps its own walk because a picker
+    // row is not a button.
+    var lg = e.target.closest ? e.target.closest("[data-lgp]") : null;
+    if (lg) {
+      lgpOpen(parseInt(lg.getAttribute("data-lgp"), 10));
     }
   });
 
@@ -1649,11 +1665,6 @@
     render();
   }
 
-  setup.addEventListener("click", function(e){
-    var b = e.target.closest ? e.target.closest("[data-lgp]") : null;
-    if (!b) { return; }
-    lgpOpen(parseInt(b.getAttribute("data-lgp"), 10));
-  });
   document.getElementById("lgpgrid").addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest(".lgptile") : null;
     if (!t) { return; }
