@@ -206,13 +206,11 @@
   .sheet{position:absolute;inset:0;background:#000;z-index:30;display:none;
     flex-direction:column;padding:12px}
   .sheet.open{display:flex}
-  .sheet h2{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--dim);font-weight:500;margin-bottom:10px}
   .sheet ol{list-style:none;flex:1;min-height:0;overflow:auto}
   #log li,.mbody li{display:flex;gap:12px;align-items:baseline;padding:11px 0;
     border-bottom:1px solid var(--rule);font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.04em}
-  #log li .lt,.mbody li .lt{flex:1;min-width:0;color:var(--mute);letter-spacing:.09em;
+    letter-spacing:.08em}
+  #log li .lt,.mbody li .lt{flex:1;min-width:0;color:var(--mute);
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #log li .rt,.mbody li .rt{flex:0 0 auto;color:var(--dim);white-space:nowrap}
   #log li .rt b,.mbody li .rt b{font-weight:500;color:var(--bone)}
@@ -233,7 +231,7 @@
   #past{list-style:none;flex:1;min-height:0;overflow:auto}
   #past li{border-bottom:1px solid var(--rule);padding:0}
   #past > li{display:block}
-  #past li.empty{color:var(--mute);border:0;font-family:var(--mono);font-weight:500;font-size:13px;padding:18px 0;line-height:1.5}
+  #past li.empty{padding:18px 0}
   .mrow{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;
     border-radius:0;padding:13px 0;text-align:left;color:var(--bone)}
   .res{flex:0 0 42px;font-family:var(--mono);font-weight:500;font-size:11px;
