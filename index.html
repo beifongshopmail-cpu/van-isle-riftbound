@@ -389,9 +389,9 @@
     </section>
 
     <section class="agenda">
-      <div class="ahead">
-        <h3 id="atitle"></h3>
-        <button type="button" id="atoggle"></button>
+      <div class="ascope" id="ascope" role="group" aria-label="Agenda range">
+        <button type="button" data-span="7" aria-pressed="true">Next 7 days</button>
+        <button type="button" data-span="all" aria-pressed="false">All upcoming</button>
       </div>
       <div id="list"></div>
     </section>
@@ -578,10 +578,6 @@ function renderGrid(){
   document.getElementById("prev").disabled = ci <= BOUNDS.min;
   document.getElementById("next").disabled = ci >= BOUNDS.max;
 
-  var aheadEl = document.querySelector(".ahead");
-  if (aheadEl && gridEl.contains(aheadEl)){
-    document.querySelector(".agenda").insertBefore(aheadEl, listEl);
-  }
   gridEl.innerHTML = "";
   panelEl = null;
   for (var i = 0; i < first.getDay(); i++){
@@ -687,32 +683,29 @@ function escapeHtml(s){
 
 function renderList(target){
   var all = visible();
-  var title = document.getElementById("atitle");
-  var tog = document.getElementById("atoggle");
-  var picked, heading, toggleText, toggleFn;
+  var picked;
 
   if (selDay){
     picked = all.filter(function(e){ return e.day === selDay; });
-    var d = parseDay(selDay);
-    heading = DOW[d.getDay()] + " " + d.getDate() + " " + MONTH[d.getMonth()];
-    toggleText = "Clear";
-    toggleFn = function(){ selDay = null; render(); };
   } else if (showAll){
     picked = all;
-    heading = "All upcoming";
-    toggleText = "Next 7 days";
-    toggleFn = function(){ showAll = false; RSN = "swap"; render(); fxTap(tog, "n"); };
   } else {
     var cut = addDays(TODAY, 7);
     picked = all.filter(function(e){ return e.day <= cut; });
-    heading = "Next 7 days";
-    toggleText = "All upcoming (" + all.length + ")";
-    toggleFn = function(){ showAll = true; RSN = "swap"; render(); fxTap(tog, "n"); };
   }
 
-  title.textContent = heading;
-  tog.textContent = toggleText;
-  tog.onclick = toggleFn;
+  // The segment labels carry what the heading used to say, so there is no
+  // heading. The count lives on the second segment and is recomputed here
+  // because it follows the scope and legend filters.
+  var asc = document.getElementById("ascope");
+  if (asc){
+    var segs = asc.getElementsByTagName("button"), si;
+    for (si = 0; si < segs.length; si++){
+      segs[si].setAttribute("aria-pressed",
+        (segs[si].getAttribute("data-span") === "all") === !!showAll ? "true" : "false");
+    }
+    segs[1].textContent = "All upcoming (" + all.length + ")";
+  }
 
   target.innerHTML = "";
   if (!picked.length){
@@ -779,7 +772,6 @@ function render(){
   renderLegend();
   if (selDay){
     renderList(panelEl);
-    panelEl.insertBefore(document.querySelector(".ahead"), panelEl.firstChild);
     listEl.innerHTML = "";
     document.querySelector(".agenda").classList.add("empty");
   } else {
@@ -815,6 +807,20 @@ function wire(){
     selDay = null; render();
     fxTap(this, "n");
   };
+  var ascopeEl = document.getElementById("ascope");
+  if (ascopeEl){
+    ascopeEl.addEventListener("click", function(e){
+      var t = e.target.closest && e.target.closest("button");
+      if (!t) return;
+      var want = t.getAttribute("data-span") === "all";
+      if (want === !!showAll) return;
+      showAll = want;
+      RSN = "swap";
+      render();
+      fxTap(document.getElementById("ascope").querySelector('[data-span="' +
+        (want ? "all" : "7") + '"]'), "n");
+    });
+  }
   var buttons = document.querySelectorAll(".scope button");
   Array.prototype.forEach.call(buttons, function(b){
     b.onclick = function(){
