@@ -36,7 +36,6 @@
 
     --r:9px;
     --r-cell:5px;
-    --r-sm:4px;
     --r-xs:2px;
 
     --display:"Archivo",system-ui,sans-serif;
@@ -50,8 +49,9 @@
   html,body{margin:0;padding:0;background:var(--ground);touch-action:manipulation;}
   body{
     color:var(--bone);
-    font-family:var(--body);
-    font-size:15px;line-height:1.45;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:13px;line-height:1.45;
     -webkit-font-smoothing:antialiased;
     position:relative;
   }
@@ -70,13 +70,13 @@
   .mast .stamp{
     margin-top:12px;
     font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
   .mast .by{
     margin-top:14px;
     font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .mast .by a{color:var(--dim);text-decoration:none;}
   .mast .by a:hover{color:var(--bone);}
@@ -102,7 +102,7 @@
     display:flex;width:100%;align-items:center;min-height:44px;
     padding:0 14px;background:none;color:var(--dim);text-decoration:none;
     font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.08em;text-transform:uppercase;
+    letter-spacing:.1em;text-transform:uppercase;
     transition:color var(--mo-fast);
   }
   .mast .nvpan a+a{border-top:1px solid var(--rule);}
@@ -133,7 +133,8 @@
   .nav button{
     width:38px;height:38px;
     background:none;border:1px solid var(--rule-hi);border-radius:5px;
-    color:var(--bone);cursor:pointer;font-size:15px;line-height:1;
+    color:var(--bone);cursor:pointer;line-height:1;
+    font-family:var(--mono);font-weight:500;font-size:13px;
   }
   .nav button:disabled{color:var(--mute);cursor:default;box-shadow:none;background:none;}
 
@@ -278,7 +279,7 @@
     color:#000;background:var(--bone);padding:2px 5px;border-radius:var(--r-xs);
   }
   @media (hover:hover){ .ev:hover .ttl{text-decoration:underline;text-underline-offset:3px;} }
-  .ev:focus-visible{outline:2px solid var(--bone);outline-offset:3px;border-radius:var(--r-sm);}
+  .ev:focus-visible{outline:2px solid var(--bone);outline-offset:3px;border-radius:var(--r-cell);}
 
   .none{padding:38px 0;text-align:center;color:var(--mute);font-family:var(--mono);font-weight:500;font-size:13px;}
 
