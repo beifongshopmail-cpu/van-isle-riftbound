@@ -430,5 +430,19 @@ purpose. A menu inside a sheet would mean three taps to leave instead of two.
 Its setup sheet scrolls, and that is accepted. A sheet that HIDES A CONTROL to
 avoid scrolling is worse than one that scrolls.
 
+BECAUSE IT SCROLLS, ITS EXIT BUTTON IS STICKY. Back to the game sits at the top
+of both setup faces and pins there, so leaving mid-match never costs a scroll.
+The log's own close button is NOT sticky and stays at the bottom, because it
+follows a list you have finished reading.
+
+The sticky rule is fiddly and the numbers are not guessable. The sheet carries
+padding:12px, so a sticky child at top:0 leaves that 12px strip uncovered and
+rows scroll through it. The button therefore takes top:-12px, a negative margin
+of -12px on three sides, width:calc(100% + 24px) and its own padding:12px, so
+its black background starts above the sheet's inset rather than at it. Verified
+on device in Safari and installed. position:sticky inside a flex column with
+overflow-y:auto is not guaranteed on iOS; it works here and was checked, not
+assumed.
+
 THE TRADE PAGE IS WHERE THE LADDER CAME FROM. When in doubt about a control
 height, look there first.
