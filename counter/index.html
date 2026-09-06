@@ -218,13 +218,13 @@
   #log li.e2 .rt b,.mbody li.e2 .rt b{color:var(--p2)}
   #log li.et .rt b,.mbody li.et .rt b{color:var(--dim)}
   .sheet li.empty{color:var(--mute);border:0;font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.5}
-  .sheet .close{min-height:52px;margin-top:10px;background:none;border:0;
+  .sheet .close{min-height:44px;margin-top:10px;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
-    font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
   .faces{display:flex;border-bottom:1px solid var(--rule);margin-bottom:10px}
-  .faces button{flex:1;min-height:42px;background:none;border:0;border-bottom:2px solid transparent;
-    border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.2em;text-transform:uppercase}
+  .faces button{flex:1;min-height:38px;background:none;border:0;border-bottom:2px solid transparent;
+    border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--display);font-weight:600;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase}
   .faces button[aria-pressed="true"]{color:var(--bone);border-bottom-color:var(--bone)}
   .sheet[data-face="now"] #past{display:none}
   .sheet[data-face="past"] #log{display:none}
@@ -232,7 +232,7 @@
   #past li{border-bottom:1px solid var(--rule);padding:0}
   #past > li{display:block}
   #past li.empty{padding:18px 0}
-  .mrow{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;
+  .mrow{display:flex;width:100%;min-height:44px;align-items:center;gap:10px;background:none;border:0;
     border-radius:0;padding:13px 0;text-align:left;color:var(--bone)}
   .res{flex:0 0 42px;font-family:var(--mono);font-weight:500;font-size:11px;
     letter-spacing:.14em;text-transform:uppercase}
@@ -265,9 +265,9 @@
   .ghead .g1{color:var(--p1)}
   .ghead .g2{color:var(--p2)}
   .gsub{margin-left:auto;color:var(--mute);white-space:nowrap}
-  .clearpast{width:100%;min-height:46px;margin-top:10px;background:none;
+  .clearpast{width:100%;min-height:44px;margin-top:10px;background:none;
     border:1px solid var(--rule-hi);border-radius:6px;color:var(--mute);
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
   .clearpast.armed{color:#FFB020;border-color:#FFB020}
   #impmsg{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);padding:10px 2px 0;text-align:center}
@@ -292,33 +292,33 @@
   .setup .pair input,.setup .pair select{flex:1;min-width:0}
   .setup label{display:block;font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.2em;
     text-transform:uppercase;color:var(--mute);margin-bottom:6px}
-  .setup input,.setup select{width:100%;min-height:42px;background:#0A0B0E;color:var(--bone);
+  .setup input,.setup select{width:100%;min-height:44px;background:#0A0B0E;color:var(--bone);
     border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;font-family:var(--mono);
     font-weight:500;font-size:16px;margin-bottom:8px;-webkit-appearance:none;appearance:none}
   .swatches{display:flex;gap:8px}
   .swatches button{flex:1;height:38px;border-radius:6px;border:2px solid transparent;padding:0}
   .swatches button[aria-pressed="true"]{border-color:var(--bone)}
   .setup .done.top{margin-top:0;margin-bottom:16px}
-  .setup .done{min-height:52px;margin-top:auto;background:none;border:0;
+  .setup .done{min-height:44px;margin-top:auto;background:none;border:0;
     border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
-    font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
   .concede{display:flex;gap:10px;margin-top:10px}
-  .concede button{flex:1;min-height:46px;background:none;border:0;border-bottom:2px solid var(--cc);
-    border-radius:0;color:var(--bone);font-family:var(--display);font-weight:600;font-size:12px;
+  .concede button{flex:1;min-height:44px;background:none;border:0;border-bottom:2px solid var(--cc);
+    border-radius:0;color:var(--bone);font-family:var(--display);font-weight:600;font-size:13px;
     letter-spacing:.1em;text-transform:uppercase}
   .concede button:active{color:var(--cc);text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
   .concede button.armed{color:var(--cc);border-bottom-color:var(--cc);
     text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
   .concede button:disabled{opacity:.32;color:var(--mute);border-bottom-color:var(--rule);
     text-shadow:none;pointer-events:none}
-  .setup .wide{width:100%;min-height:46px;background:none;border:1px solid var(--rule-hi);
-    border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:600;font-size:12px;
+  .setup .wide{width:100%;min-height:44px;background:none;border:1px solid var(--rule-hi);
+    border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:600;font-size:13px;
     letter-spacing:.1em;text-transform:uppercase}
   .setup[data-face="live"] [data-face="pre"]{display:none}
   .setup[data-face="pre"] [data-face="live"]{display:none}
   .setup[data-face="pre"] #firstgrp{border-bottom:0}
   .first{display:flex;gap:10px}
-  .first button{flex:1;min-width:0;min-height:46px;background:none;border:1px solid var(--rule-hi);
+  .first button{flex:1;min-width:0;min-height:38px;background:none;border:1px solid var(--rule-hi);
     border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:600;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;padding:0 8px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -327,14 +327,14 @@
   .setup .label2{margin-top:12px}
   .prefoot{margin-top:auto;display:flex;flex-direction:column}
   .prefoot .done{margin-top:10px}
-  .setup .start{width:100%;min-height:52px;background:var(--bone);border:1px solid var(--bone);
+  .setup .start{width:100%;min-height:44px;background:var(--bone);border:1px solid var(--bone);
     border-radius:6px;color:#000;font-family:var(--display);font-weight:600;font-size:13px;
-    letter-spacing:.12em;text-transform:uppercase}
+    letter-spacing:.1em;text-transform:uppercase}
 .lgacred{font-family:var(--mono);font-weight:500;font-size:10px;line-height:1.5;color:var(--dim);
   margin-top:14px;text-align:center}
-  .setup .home{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;
+  .setup .home{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;
     margin-top:10px;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);
-    font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.1em;
+    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;
     text-transform:uppercase;text-decoration:none}
   .setup .navlab{margin-top:16px;}
   .win b{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.14em;
@@ -377,9 +377,9 @@
    off. With art the score and name stack; without it they sit side by side and
    the name takes whatever room is left. The pips are the match standing, not
    decoration, so they sit outside the part that shrinks. */
-.lgpbtn{flex:1;min-width:0;height:42px;min-height:42px;background:#0A0B0E;color:var(--bone);
+.lgpbtn{flex:1;min-width:0;height:44px;min-height:44px;background:#0A0B0E;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
-  font-family:var(--mono);font-weight:500;font-size:13px;line-height:40px;overflow:hidden;
+  font-family:var(--mono);font-weight:500;font-size:13px;line-height:42px;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
 .lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 .lgp.open{display:flex}
@@ -396,14 +396,14 @@
   letter-spacing:.02em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lgpx{flex:0 0 auto;min-height:38px;background:none;color:var(--bone);
   border:1px solid var(--rule-hi);border-radius:6px;padding:0 12px;
-  font-family:var(--mono);font-size:13px;font-weight:500}
+  font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
 .lgpfil{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--rule)}
 .lgpq{flex:1;min-width:0;min-height:38px;background:#14171D;color:var(--bone);border:1px solid var(--rule);border-radius:6px;padding:0 12px;font-family:var(--mono);font-size:16px;font-weight:500;-webkit-appearance:none;appearance:none}
 .lgpq:focus{outline:none;border-color:var(--rule-hi)}
 .lgpq::placeholder{color:var(--dim)}
 .lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
 .lgpsort{flex:0 0 auto;display:flex;gap:6px}
-.lgpsb{min-height:38px;background:none;color:var(--dim);border:1px solid var(--rule);border-radius:5px;padding:0 10px;font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.lgpsb{min-height:38px;background:none;color:var(--dim);border:1px solid var(--rule);border-radius:5px;padding:0 10px;font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
 .lgpsb[aria-pressed="true"]{color:var(--bone);border-color:var(--rule-hi)}
 .lgpgrid{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
   display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding:12px;align-content:start}
@@ -419,7 +419,7 @@
 .lgpprh{font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--dim);margin-bottom:7px}
 .lgpchips{display:flex;flex-wrap:wrap;gap:6px}
-.lgpchip{background:#0A0B0E;border:1px solid var(--rule);border-radius:6px;color:var(--mute);
+.lgpchip{min-height:32px;background:#0A0B0E;border:1px solid var(--rule);border-radius:6px;color:var(--mute);
   padding:8px 10px;font-family:var(--mono);font-size:13px;font-weight:500}
 .lgpchip[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
 </style>
