@@ -189,7 +189,7 @@
   }
   @media (hover:hover){ .cell:not(:disabled):hover{border-color:var(--rule-hi);} }
   .cell:focus-visible{outline:2px solid var(--bone);outline-offset:2px;}
-  .cell:disabled{cursor:default;}
+  .cell:disabled{cursor:default;pointer-events:none;}
 
   .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:16px;}
   .lg{
