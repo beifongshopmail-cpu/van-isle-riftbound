@@ -53,7 +53,16 @@ THE CALENDAR'S FOUR CATEGORY HUES:
     open      #FF4F9A   Open Play
     learn     #EDEFF2   Learn-to-Play
 
-Green and violet are deliberately absent. THE SHIPPED PALETTE STAYS AS IT IS.
+Green and violet are deliberately absent from that set. THE SHIPPED PALETTE
+STAYS AS IT IS.
+
+THE COUNTER'S SIX PLAYER SWATCHES ARE A DIFFERENT SET AND ARE NOT AN EXCEPTION
+TO ANYTHING. They include a green and a violet. A swatch is a player choosing
+which colour they are for the next hour, which is the most literal case of the
+data carrying the colour anywhere in the app - the chosen hue then drives that
+player's numeral, track, pips and banner. The category hues above are OURS and
+are fixed; these are the player's and are picked fresh every match. Do not
+reconcile the two lists.
 
 THREE ARGUED EXCEPTIONS to monochrome chrome. Each one was argued on its own
 merits and written down; ANY NEW HUE NEEDS THE SAME.
