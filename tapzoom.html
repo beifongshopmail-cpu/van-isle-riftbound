@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Tap zoom test 3</title>
+<title>Tap zoom test 4</title>
 <style>
   *,*::before,*::after{box-sizing:border-box;touch-action:manipulation}
   html,body{margin:0;padding:0;background:#000;color:#F2F3F5;
@@ -17,53 +17,95 @@
     border:1px solid #212429;border-radius:9px;padding:0 14px;margin-bottom:12px}
   .bar b{font-size:15px}
   .prose{color:#828A97;margin-bottom:12px}
-  .scroll{height:110px;overflow-y:auto;border:1px solid #212429;
-    border-radius:9px;padding:10px}
+  .scroll{height:100px;overflow-y:auto;border:1px solid #212429;
+    border-radius:9px;padding:10px;margin-bottom:12px}
   .scroll p{margin:0 0 10px}
-
-  /* ZONE J -- text is not selectable. */
-  #j{-webkit-user-select:none;user-select:none}
-
-  /* ZONE K -- not selectable AND the callout menu is off. */
-  #k{-webkit-user-select:none;user-select:none;
-    -webkit-touch-callout:none}
-
-  /* ZONE L -- text sits in a span that is display:block with a width. */
-  #l .bar b,#l .bar span,#l .prose{display:block}
-  #l{-webkit-text-size-adjust:100%}
-
-  /* ZONE M -- CONTROL. Nothing applied. */
+  .ctr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .ctr button{min-width:44px;min-height:44px;border:1px solid #343A44;
+    border-radius:5px;background:none;color:inherit;font:inherit;
+    font-size:19px;line-height:1}
+  .ctr .num{font-size:22px;min-width:3ch;text-align:center}
+  .ctr .taps{color:#828A97}
 </style>
 </head>
 <body>
 
-<div class="zone" id="j">
-  <p class="zh">Zone J no select</p>
+<div class="zone" id="p">
+  <p class="zh">Zone P script on</p>
   <div class="bar"><b>October</b><span>tap this text</span></div>
-  <p class="prose">Plain prose. Double tap these words.</p>
+  <p class="prose">Plain prose. Double tap these words, and the black space to the right of them.</p>
+  <div class="ctr"><button type="button" data-d="-1">-</button><span class="num">0</span><button type="button" data-d="1">+</button><span class="taps">taps 0</span></div>
   <div class="scroll"><p>scroll test</p><p>line two</p><p>line three</p><p>line four</p><p>line five</p><p>line six</p><p>line seven</p><p>end</p></div>
 </div>
 
-<div class="zone" id="k">
-  <p class="zh">Zone K no select no callout</p>
+<div class="zone" id="q">
+  <p class="zh">Zone Q control</p>
   <div class="bar"><b>October</b><span>tap this text</span></div>
-  <p class="prose">Plain prose. Double tap these words.</p>
+  <p class="prose">Plain prose. Double tap these words, and the black space to the right of them.</p>
+  <div class="ctr"><button type="button" data-d="-1">-</button><span class="num">0</span><button type="button" data-d="1">+</button><span class="taps">taps 0</span></div>
   <div class="scroll"><p>scroll test</p><p>line two</p><p>line three</p><p>line four</p><p>line five</p><p>line six</p><p>line seven</p><p>end</p></div>
 </div>
 
-<div class="zone" id="l">
-  <p class="zh">Zone L block text</p>
+<div class="zone" id="r">
+  <p class="zh">Zone R script on</p>
   <div class="bar"><b>October</b><span>tap this text</span></div>
-  <p class="prose">Plain prose. Double tap these words.</p>
+  <p class="prose">Plain prose. Double tap these words, and the black space to the right of them.</p>
+  <div class="ctr"><button type="button" data-d="-1">-</button><span class="num">0</span><button type="button" data-d="1">+</button><span class="taps">taps 0</span></div>
   <div class="scroll"><p>scroll test</p><p>line two</p><p>line three</p><p>line four</p><p>line five</p><p>line six</p><p>line seven</p><p>end</p></div>
 </div>
 
-<div class="zone" id="m">
-  <p class="zh">Zone M control</p>
+<div class="zone" id="s">
+  <p class="zh">Zone S control</p>
   <div class="bar"><b>October</b><span>tap this text</span></div>
-  <p class="prose">Plain prose. Double tap these words.</p>
+  <p class="prose">Plain prose. Double tap these words, and the black space to the right of them.</p>
+  <div class="ctr"><button type="button" data-d="-1">-</button><span class="num">0</span><button type="button" data-d="1">+</button><span class="taps">taps 0</span></div>
   <div class="scroll"><p>scroll test</p><p>line two</p><p>line three</p><p>line four</p><p>line five</p><p>line six</p><p>line seven</p><p>end</p></div>
 </div>
+
+<script>
+(function(){
+  // Counters, all four zones. Every tap increments the tap tally whether
+  // or not the value changes, so a swallowed tap is visible as a stall.
+  var ids = ["p","q","r","s"];
+  ids.forEach(function(id){
+    var z = document.getElementById(id);
+    var n = 0, t = 0;
+    var num = z.querySelector(".num");
+    var taps = z.querySelector(".taps");
+    z.querySelector(".ctr").addEventListener("click", function(ev){
+      var b = ev.target.closest("button");
+      if (!b) return;
+      t += 1;
+      n += parseInt(b.getAttribute("data-d"), 10);
+      num.textContent = n;
+      taps.textContent = "taps " + t;
+    });
+  });
+
+  // The double-tap swallow, zones P and R only.
+  // A second touch landing within 320ms and 30px of the previous one is
+  // the browser's zoom gesture. preventDefault on that touchend cancels
+  // it. A scroll is a move, not a tap, and never reaches this. A pinch
+  // carries more than one touch point and is skipped outright.
+  function guard(el){
+    var lastT = 0, lastX = 0, lastY = 0;
+    el.addEventListener("touchend", function(ev){
+      if (ev.touches.length > 0) return;
+      if (ev.changedTouches.length !== 1) return;
+      var tch = ev.changedTouches[0];
+      var now = Date.now();
+      var dx = Math.abs(tch.clientX - lastX);
+      var dy = Math.abs(tch.clientY - lastY);
+      if (now - lastT < 320 && dx < 30 && dy < 30){
+        ev.preventDefault();
+      }
+      lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+    }, {passive:false});
+  }
+  guard(document.getElementById("p"));
+  guard(document.getElementById("r"));
+})();
+</script>
 
 </body>
 </html>
