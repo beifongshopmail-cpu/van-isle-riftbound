@@ -144,6 +144,12 @@ THREE SIZES OUTSIDE DISPLAY TYPE, AND NO OTHERS:
     13px   controls and content
     16px   text inputs (a floor, not a choice - see section 7)
 
+ONE EXCEPTION, ON THE TRADE PAGE'S PANEL HEADER BAR. The side total and the
+percentage badge are mono 15px, matching the Archivo 600 15px label beside
+them. Elements sharing one bar must read as one size; a 13px total next to a
+15px label reads as a mistake rather than as a hierarchy. The exception is the
+bar, not the page - anywhere else on the ladder, 13px.
+
 WHOLE PIXELS ONLY. A half-pixel size renders softer and heavier at the same
 nominal size and reads as a different font.
 
