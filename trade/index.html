@@ -27,7 +27,6 @@
     --s1:#3FA9F5;
     --s2:#FF4F9A;
     --r:9px;
-    --r-sm:4px;
     --r-xs:2px;
     --display:"Archivo",system-ui,sans-serif;
     --body:"IBM Plex Sans",system-ui,sans-serif;
@@ -39,8 +38,9 @@
   html,body{margin:0;padding:0;background:var(--ground);touch-action:manipulation;}
   body{
     color:var(--bone);
-    font-family:var(--body);
-    font-size:15px;line-height:1.45;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:13px;line-height:1.45;
     -webkit-font-smoothing:antialiased;
     -webkit-tap-highlight-color:transparent;
   }
@@ -59,7 +59,7 @@
   .mast .stamp{
     margin-top:12px;
     font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
   .mast .stamp .stale{color:var(--warn);}
@@ -85,7 +85,7 @@
     display:flex;width:100%;align-items:center;min-height:44px;
     padding:0 14px;background:none;color:var(--dim);text-decoration:none;
     font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.08em;text-transform:uppercase;
+    letter-spacing:.1em;text-transform:uppercase;
     transition:color var(--mo-fast);
   }
   .mast .nvpan a+a{border-top:1px solid var(--rule);}
@@ -94,12 +94,12 @@
   .mast .by{
     margin-top:10px;
     font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .mast .by a{color:var(--dim);text-decoration:none;}
 
   .boot{
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--mute);padding:24px 0;
   }
   .boot.bad{color:var(--warn);}
@@ -112,7 +112,6 @@
     letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;
     transition:background var(--mo-fast) ease,color var(--mo-fast) ease;
   }
-  #target button{letter-spacing:.1em;}
   .seg button+button{border-left:1px solid var(--rule);}
   .seg button[aria-pressed="true"]{background:var(--bone);color:#000;}
   #target button[data-side="1"][aria-pressed="true"]{background:var(--s1);color:#000;}
@@ -132,7 +131,7 @@
   .dltc{
     display:inline-block;margin-left:6px;flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.06em;color:var(--dim);
+    letter-spacing:.08em;color:var(--dim);
   }
   .bar .clear{
     margin-left:auto;
@@ -160,7 +159,7 @@
   .findw input:focus{outline:none;border-color:var(--rule-hi);}
   .find .target{margin-top:14px;}
 
-  .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r-sm);overflow:hidden;}
+  .results{margin-top:10px;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;}
   .results .row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:none;}
   .results .thumb{flex:0 0 31px;height:44px;border-radius:var(--r-xs);border:1px solid var(--rule);overflow:hidden;}
   .results .thumb img{display:block;width:100%;height:100%;object-fit:contain;}
@@ -185,7 +184,7 @@
   .results .buys button:active .pl{color:#000;}
   .results .none{
     padding:12px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.09em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--mute);
   }
 
@@ -195,15 +194,15 @@
     border-bottom:1px solid var(--rule);
   }
   .panel .head .lb{
-    font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.12em;
+    font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);
   }
   .panel[data-side="1"] .head .lb{color:var(--s1);}
   .panel[data-side="2"] .head .lb{color:var(--s2);}
-  .panel .head .tot{font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
+  .panel .head .tot{font-family:var(--mono);font-weight:500;font-size:13px;color:var(--bone);}
   .panel .empty{
     padding:16px 14px;font-family:var(--mono);font-weight:500;font-size:10px;
-    letter-spacing:.09em;text-transform:uppercase;color:var(--mute);
+    letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .line{padding:10px 14px;display:flex;align-items:center;gap:10px;}
   .line .thumb{flex:0 0 31px;height:44px;border-radius:var(--r-xs);border:1px solid var(--rule);overflow:hidden;}
@@ -247,7 +246,7 @@
     text-align:center;
   }
   .verdict .lb{
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);
   }
   .verdict .big{
@@ -256,7 +255,7 @@
   }
   .verdict .who{
     margin-top:12px;display:flex;align-items:baseline;gap:10px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.12em;
+    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
     text-transform:uppercase;
   }
   .verdict .who .w1{color:var(--s1);}
@@ -315,7 +314,7 @@
   }
   .udpan li:last-child{border-bottom:0;}
   .udpan .lt{
-    flex:1;min-width:0;color:var(--mute);letter-spacing:.08em;
+    flex:1;min-width:0;color:var(--mute);
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .udpan .rt{flex:0 0 auto;color:var(--dim);white-space:nowrap;}
@@ -377,7 +376,7 @@
   .rf input{
     width:100%;box-sizing:border-box;min-height:44px;
     background:var(--ground);color:var(--bone);
-    border:1px solid var(--c);border-radius:var(--r-sm);
+    border:1px solid var(--c);border-radius:6px;
     font-family:var(--mono);font-weight:500;font-size:16px;text-align:center;
     padding:0 22px 0 10px;
     -moz-appearance:textfield;
@@ -405,7 +404,7 @@
   .rnow .n0{color:var(--dim);}
   .rtog[aria-expanded="true"] .rnow .n0{color:var(--bone);}
   .tltog[aria-expanded="true"] .tlcount{color:var(--bone);}
-  .pcx{font-family:var(--mono);font-weight:500;font-size:15px;letter-spacing:.1em;}
+  .pcx{font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em;}
   .pcx:empty{display:none;}
   .panel[data-side="1"] .pcx{color:var(--s1);}
   .panel[data-side="2"] .pcx{color:var(--s2);}
