@@ -1529,6 +1529,10 @@
   // Canvas cannot render HTML, so the receipt is drawn from the same
   // frozen record the sheet reads. Numbers can never disagree; only
   // layout can.
+  // Card names, sub-lines and totals are MONO, matching the page. Only the
+  // title and the difference number are Archivo 800, which is display type.
+  // Mono runs wider per character, so rcpCut trims a long name sooner than
+  // Archivo did -- it measures with the live font, so it cannot overflow.
   function rcpFont(px, w, mono){
     return w + " " + px + 'px ' + (mono ? '"IBM Plex Mono", ui-monospace, monospace' : '"Archivo", system-ui, sans-serif');
   }
@@ -1583,7 +1587,7 @@
 
     y += 34;
     cx.fillStyle = "#828A97";
-    cx.font = rcpFont(22, "400", true);
+    cx.font = rcpFont(22, "500", true);
     cx.fillText("SAVED " + tlWhen(rec.at).toUpperCase() + "  /  " + rec.cur
       + (rec.pd ? "  /  PRICES " + String(rec.pd).slice(0, 10) : ""), RCPPAD, y);
 
@@ -1604,7 +1608,7 @@
       }
       if(ln.t === "none"){
         cx.fillStyle = "#4E5561";
-        cx.font = rcpFont(26, "400", false);
+        cx.font = rcpFont(24, "500", true);
         cx.fillText("Nothing on this side.", RCPPAD, y + 26);
         y += 62;
         continue;
@@ -1617,7 +1621,7 @@
         cx.lineTo(RCPW - RCPPAD, y + 4);
         cx.stroke();
         cx.fillStyle = col;
-        cx.font = rcpFont(30, "700", true);
+        cx.font = rcpFont(30, "500", true);
         cx.textAlign = "right";
         cx.fillText(ln.amt, RCPW - RCPPAD, y + 40);
         cx.textAlign = "left";
@@ -1625,15 +1629,15 @@
         continue;
       }
       cx.fillStyle = col;
-      cx.font = rcpFont(28, "700", true);
+      cx.font = rcpFont(28, "500", true);
       cx.textAlign = "right";
       cx.fillText(ln.amt, RCPW - RCPPAD, y + 26);
       cx.textAlign = "left";
       cx.fillStyle = "#F2F3F5";
-      cx.font = rcpFont(28, "400", false);
+      cx.font = rcpFont(26, "500", true);
       cx.fillText(rcpCut(cx, ln.nm, RCPW - RCPPAD * 2 - 220), RCPPAD, y + 26);
       cx.fillStyle = "#828A97";
-      cx.font = rcpFont(20, "400", true);
+      cx.font = rcpFont(18, "500", true);
       cx.fillText(rcpCut(cx, ln.sub, RCPW - RCPPAD * 2 - 220), RCPPAD, y + 50);
       y += 62;
     }
@@ -1647,7 +1651,7 @@
       cx.stroke();
       y += 56;
       cx.fillStyle = "#828A97";
-      cx.font = rcpFont(22, "400", true);
+      cx.font = rcpFont(22, "500", true);
       cx.fillText("DIFFERENCE " + rec.cur, RCPPAD, y);
       y += 48;
       cx.fillStyle = "#F2F3F5";
@@ -1663,7 +1667,7 @@
 
     if(pages > 1){
       cx.fillStyle = "#4E5561";
-      cx.font = rcpFont(20, "400", true);
+      cx.font = rcpFont(18, "500", true);
       cx.textAlign = "right";
       cx.fillText((page + 1) + " OF " + pages, RCPW - RCPPAD, RCPPAD + 24);
       cx.textAlign = "left";
