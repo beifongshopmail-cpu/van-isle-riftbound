@@ -4,103 +4,57 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>Tap zoom test</title>
+<title>Tap zoom test 2</title>
 <style>
-  *{box-sizing:border-box;}
+  *,*::before,*::after{box-sizing:border-box;touch-action:manipulation}
   html,body{margin:0;padding:0;background:#000;color:#F2F3F5;
-    font-family:ui-monospace,monospace;font-size:13px}
+    font-family:ui-monospace,monospace;font-size:13px;touch-action:manipulation}
   .zone{padding:14px;border-bottom:6px solid #343A44}
   .zh{font-size:15px;font-weight:700;letter-spacing:.1em;
     text-transform:uppercase;margin:0 0 12px;color:#FFB020}
-  .bar{display:flex;align-items:center;gap:12px;min-height:44px;
-    border:1px solid #212429;border-radius:9px;padding:0 14px;margin-bottom:12px}
+  .bar{display:flex;align-items:center;min-height:44px;
+    border:1px solid #212429;border-radius:9px;padding:0 14px}
   .bar b{font-size:15px}
-  .grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));
-    gap:5px;margin-bottom:12px}
-  .cell{min-height:44px;border:1px solid #212429;border-radius:5px;
-    background:none;color:inherit;font:inherit}
-  .cell.has{border-color:#3FA9F5}
-  .cell:disabled{cursor:default;pointer-events:none}
-  .pad{min-height:44px}
-  .lab{margin-bottom:12px;color:#828A97}
-  .scroll{height:90px;overflow-y:auto;border:1px solid #212429;
-    border-radius:9px;padding:10px;margin-bottom:12px}
-  .prose{color:#828A97;margin-bottom:12px}
 
-  /* ZONE A -- CONTROL. Exactly what ships today. */
-  #a *{touch-action:manipulation}
-  #a{touch-action:manipulation}
+  /* ZONE E -- CONTROL. The shipped shape: flex with a gap. */
+  #e .bar{gap:12px}
 
-  /* ZONE B -- the zone itself only, inherited to nothing. */
-  #b{touch-action:manipulation}
+  /* ZONE F -- no gap. The child carries a margin instead. */
+  #f .bar{gap:0}
+  #f .bar b{margin-right:12px}
 
-  /* ZONE C -- manipulation plus pan-y on the zone, elements untouched. */
-  #c{touch-action:pan-y}
+  /* ZONE G -- children stretch to fill the whole bar, no free space. */
+  #g .bar{gap:0}
+  #g .bar b{margin-right:12px}
+  #g .bar span{flex:1 1 auto}
 
-  /* ZONE D -- every element AND every pseudo box. */
-  #d,#d *,#d *::before,#d *::after{touch-action:manipulation}
+  /* ZONE H -- children stretch AND the bar is a button, not a div. */
+  #h .bar{gap:0;width:100%;background:none;color:inherit;font:inherit;
+    text-align:left;-webkit-appearance:none;appearance:none}
+  #h .bar b{margin-right:12px}
+  #h .bar span{flex:1 1 auto}
 </style>
 </head>
 <body>
 
-<div class="zone" id="a">
-  <p class="zh">Zone A control</p>
-  <div class="bar"><b>October</b><span>trailing space to the right</span></div>
-  <div class="grid">
-    <div class="pad"></div><div class="pad"></div><div class="pad"></div>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell has">5</button>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell" disabled></button>
-  </div>
-  <div class="lab">Next 7 days</div>
-  <div class="scroll">scroll me<br>line<br>line<br>line<br>line<br>line<br>end</div>
-  <p class="prose">Plain prose block with dead space after this sentence.</p>
+<div class="zone" id="e">
+  <p class="zh">Zone E control gap</p>
+  <div class="bar"><b>October</b><span>tap the space right of this</span></div>
 </div>
 
-<div class="zone" id="b">
-  <p class="zh">Zone B zone only</p>
-  <div class="bar"><b>October</b><span>trailing space to the right</span></div>
-  <div class="grid">
-    <div class="pad"></div><div class="pad"></div><div class="pad"></div>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell has">5</button>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell" disabled></button>
-  </div>
-  <div class="lab">Next 7 days</div>
-  <div class="scroll">scroll me<br>line<br>line<br>line<br>line<br>line<br>end</div>
-  <p class="prose">Plain prose block with dead space after this sentence.</p>
+<div class="zone" id="f">
+  <p class="zh">Zone F margin not gap</p>
+  <div class="bar"><b>October</b><span>tap the space right of this</span></div>
 </div>
 
-<div class="zone" id="c">
-  <p class="zh">Zone C pan-y</p>
-  <div class="bar"><b>October</b><span>trailing space to the right</span></div>
-  <div class="grid">
-    <div class="pad"></div><div class="pad"></div><div class="pad"></div>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell has">5</button>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell" disabled></button>
-  </div>
-  <div class="lab">Next 7 days</div>
-  <div class="scroll">scroll me<br>line<br>line<br>line<br>line<br>line<br>end</div>
-  <p class="prose">Plain prose block with dead space after this sentence.</p>
+<div class="zone" id="g">
+  <p class="zh">Zone G children fill</p>
+  <div class="bar"><b>October</b><span>tap the space right of this</span></div>
 </div>
 
-<div class="zone" id="d">
-  <p class="zh">Zone D all plus pseudo</p>
-  <div class="bar"><b>October</b><span>trailing space to the right</span></div>
-  <div class="grid">
-    <div class="pad"></div><div class="pad"></div><div class="pad"></div>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell has">5</button>
-    <button type="button" class="cell" disabled></button>
-    <button type="button" class="cell" disabled></button>
-  </div>
-  <div class="lab">Next 7 days</div>
-  <div class="scroll">scroll me<br>line<br>line<br>line<br>line<br>line<br>end</div>
-  <p class="prose">Plain prose block with dead space after this sentence.</p>
+<div class="zone" id="h">
+  <p class="zh">Zone H fill and button</p>
+  <button type="button" class="bar"><b>October</b><span>tap the space right of this</span></button>
 </div>
 
 </body>
