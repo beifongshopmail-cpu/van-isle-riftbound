@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-09-07T05:46:48.537Z",
- "generated_local": "2026-09-06T22:46:48-07:00",
- "window_start": "2026-09-06T07:00:00.000Z",
+ "generated_at": "2026-09-07T18:09:01.634Z",
+ "generated_local": "2026-09-07T11:09:01-07:00",
+ "window_start": "2026-09-07T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -25,7 +25,7 @@
  "totals": {
   "fetched": 47,
   "unique": 47,
-  "prev_unique": 49
+  "prev_unique": 47
  },
  "unknown_templates": {},
  "events": [
@@ -330,7 +330,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 32,
-   "reg": 1,
+   "reg": 2,
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:28:13+00:00"
