@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Van Isle Riftbound</title>
+<meta name="apple-mobile-web-app-title" content="RB Look">
+<link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
+<style>
+/* Exploration page. Unlinked, deleted once the direction is settled.
+   Two things are being judged: the two-plane composition, and a grid
+   that carries no borders until a day is selected. */
+
+/* Archivo is one variable file. It is declared at 700 and 800 in
+   fonts.css; these add the text range from the SAME file, so they
+   cost no extra download. */
+@font-face{
+  font-family:'Archivo';font-style:normal;font-weight:400;
+  font-stretch:110%;font-display:swap;
+  src:url(../fonts/archivo-var.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Archivo';font-style:normal;font-weight:500;
+  font-stretch:110%;font-display:swap;
+  src:url(../fonts/archivo-var.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Archivo';font-style:normal;font-weight:600;
+  font-stretch:110%;font-display:swap;
+  src:url(../fonts/archivo-var.woff2) format('woff2');
+}
+
+:root{
+  --ground:#000000;
+  --sky-top:#161A22;
+  --sky-bot:#0D1015;
+  --rule:#212429;
+  --rule-hi:#343A44;
+  --bone:#F2F3F5;
+  --dim:#828A97;
+  --mute:#4E5561;
+
+  --t-nexus:#3FA9F5;
+  --t-skirmish:#FFB020;
+  --t-learn:#EDEFF2;
+  --t-open:#FF4F9A;
+  --t-other:#5A6472;
+
+  --gut:16px;
+  --tap:44px;
+  --mo-tap:.22s;
+  --mo-ease:cubic-bezier(.22,.72,.2,1);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--ground)}
+body{
+  color:var(--bone);
+  font-family:"Archivo",system-ui,sans-serif;
+  font-size:15px;line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;color:inherit;background:none;border:0;padding:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- upper plane ---------- */
+
+.sky{
+  background:linear-gradient(180deg,var(--sky-top),var(--sky-bot));
+  border-radius:0 0 22px 22px;
+  padding:calc(env(safe-area-inset-top,0px) + 20px) var(--gut) 20px var(--gut);
+}
+.sky h1{
+  margin:0;font-size:22px;font-weight:800;letter-spacing:-.025em;line-height:1.1;
+}
+.sky .by{margin:5px 0 0 0;font-size:12.5px;font-weight:400;color:var(--mute)}
+
+.scope{display:flex;gap:0;margin:18px 0 0 0;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.scope button{
+  flex:1 1 0;height:38px;font-size:13px;font-weight:600;color:var(--dim);
+}
+.scope button + button{border-left:1px solid var(--rule)}
+.scope button[aria-pressed="true"]{background:var(--bone);color:#000}
+
+.mrow{display:flex;align-items:flex-end;gap:9px;margin:22px 0 14px 0}
+.mrow .m{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:.95}
+.mrow .y{font-size:12px;color:var(--mute);padding-bottom:2px}
+.mrow .sp{flex:1}
+.mrow button{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+}
+.mrow button svg{width:14px;height:14px;stroke:var(--dim);stroke-width:1.7;fill:none}
+.mrow button:active{background:rgba(242,243,245,.08)}
+.mrow button[disabled] svg{stroke:#2C3038}
+
+.dow{display:grid;grid-template-columns:repeat(7,1fr);margin:0 0 4px 0}
+.dow span{text-align:center;font-size:10px;font-weight:600;color:var(--mute);letter-spacing:.05em}
+
+/* the grid carries NO borders. selection is the only border on it. */
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cell{
+  position:relative;min-height:56px;border-radius:6px;
+  padding:6px 5px 6px 6px;display:flex;flex-direction:column;
+  text-align:left;border:1px solid transparent;
+}
+.cell .d{font-size:12.5px;font-weight:500;color:var(--dim);line-height:1}
+.cell.out .d{color:#262A31}
+.cell.today .d{color:var(--bone);font-weight:700}
+.cell .plus{font-size:9.5px;color:var(--mute);margin-left:3px;font-weight:400}
+.bars{margin-top:auto;display:flex;flex-direction:column;gap:2px;padding-top:6px}
+.bar{height:3px;border-radius:1px;background:var(--c)}
+.cell[aria-pressed="true"]{border-color:var(--bone)}
+.cell[aria-pressed="true"] .d{color:var(--bone)}
+
+/* ---------- lower plane, lifted over the upper one ---------- */
+
+.sheet{
+  position:relative;z-index:2;margin-top:-16px;
+  background:var(--ground);
+  border-radius:18px 18px 0 0;
+  border-top:1px solid var(--rule);
+  padding:0 var(--gut) 40px var(--gut);
+  min-height:70vh;
+}
+.grab{
+  width:34px;height:3px;border-radius:2px;background:#2A2E36;
+  margin:9px auto 0 auto;
+}
+
+.ahead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:20px 0 4px 0}
+.ahead h2{margin:0;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.ahead .cnt{font-size:12px;color:var(--mute)}
+.ahead .clr{font-size:12.5px;font-weight:500;color:var(--dim);text-decoration:underline;text-underline-offset:3px}
+
+.list{margin:10px 0 0 0}
+.ev{
+  display:block;width:100%;text-align:left;
+  padding:13px 0 14px 0;border-bottom:1px solid var(--rule);
+  position:relative;
+}
+.ev:first-child{border-top:1px solid var(--rule)}
+.ev .l1{display:flex;align-items:center;gap:8px}
+.ev .node{width:7px;height:7px;border-radius:2px;background:var(--c);flex:0 0 auto}
+.ev .when{font-size:11.5px;color:var(--dim);letter-spacing:.01em}
+.ev .sp{flex:1}
+.ev .spots{font-size:11.5px;color:var(--mute)}
+.ev .spots.low{color:var(--t-skirmish)}
+.ev .name{
+  display:block;font-size:15.5px;font-weight:600;letter-spacing:-.015em;
+  margin:6px 0 0 15px;color:var(--bone);
+}
+.ev .venue{display:block;font-size:12.5px;font-weight:400;color:var(--dim);margin:3px 0 0 15px}
+.ev .new{
+  display:inline-block;vertical-align:2px;margin-left:7px;
+  font-size:9px;font-weight:700;letter-spacing:.06em;
+  color:#000;background:var(--bone);padding:2px 5px;border-radius:3px;
+}
+.ev:active{background:#0A0C0F}
+
+.empty{padding:26px 0;color:var(--mute);font-size:13.5px;text-align:center}
+
+.key{display:flex;flex-wrap:wrap;gap:8px 16px;margin:24px 0 0 0;padding:16px 0 0 0;border-top:1px solid var(--rule)}
+.kitem{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--dim)}
+.knode{width:7px;height:7px;border-radius:2px;background:var(--c)}
+
+.sub{
+  display:flex;align-items:center;gap:12px;margin:24px 0 0 0;
+  padding:14px;border:1px solid var(--rule-hi);border-radius:10px;
+  text-decoration:none;color:inherit;
+}
+.sub svg{flex:0 0 auto;width:19px;height:19px;stroke:var(--bone);stroke-width:1.5;fill:none}
+.sub .t{flex:1;font-size:13.5px;font-weight:600}
+.sub .t span{display:block;font-weight:400;font-size:12px;color:var(--mute);margin-top:2px}
+.sub .go{font-size:13px;font-weight:600;color:var(--bone)}
+
+.foot{margin:26px 0 0 0;padding:16px 0 0 0;border-top:1px solid var(--rule)}
+.foot p{margin:0 0 9px 0;font-size:11.5px;line-height:1.55;color:var(--mute);font-weight:400}
+.foot b{color:var(--dim);font-weight:500}
+
+.fail{margin:20px 0;padding:16px;border:1px solid var(--rule-hi);border-radius:10px;color:var(--dim);font-size:13.5px}
+.fail a{color:var(--bone)}
+
+@media (prefers-reduced-motion:no-preference){
+  .cell,.ev,.scope button{transition:background var(--mo-tap) var(--mo-ease),border-color var(--mo-tap) var(--mo-ease)}
+}
+</style>
+</head>
+<body>
+
+<div class="sky">
+  <h1>Van Isle Riftbound</h1>
+  <p class="by">Riftbound events on Vancouver Island. Kept by Beifong's Hit-House.</p>
+
+  <div class="scope" role="group" aria-label="Area">
+    <button type="button" data-scope="victoria" aria-pressed="true">Greater Victoria</button>
+    <button type="button" data-scope="island" aria-pressed="false">Whole Island</button>
+  </div>
+
+  <div class="mrow">
+    <span class="m" id="mname">&nbsp;</span>
+    <span class="y mono" id="myear"></span>
+    <span class="sp"></span>
+    <button type="button" id="prev" aria-label="Previous month">
+      <svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg>
+    </button>
+    <button type="button" id="next" aria-label="Next month">
+      <svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg>
+    </button>
+  </div>
+
+  <div class="dow" aria-hidden="true">
+    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="sheet">
+  <div class="grab"></div>
+
+  <div class="ahead">
+    <h2 id="atitle">Coming up</h2>
+    <span class="sp"></span>
+    <span class="cnt mono" id="acount"></span>
+    <button type="button" class="clr" id="clr" hidden>Whole month</button>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="key" id="key"></div>
+
+  <a class="sub" id="sub" href="#">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+    <span class="t">Subscribe in your calendar<span id="substate">Greater Victoria</span></span>
+    <span class="go">Add</span>
+  </a>
+
+  <footer class="foot">
+    <p id="stamp">&nbsp;</p>
+    <p>A community calendar covering every store on the island. It is not a contact form or a storefront for any of them.</p>
+    <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var TYPES = {
+    nexus:    {label:"Nexus Nights",      color:"#3FA9F5"},
+    skirmish: {label:"Summoner Skirmish", color:"#FFB020"},
+    learn:    {label:"Learn-to-Play",     color:"#EDEFF2"},
+    open:     {label:"Open Play",         color:"#FF4F9A"},
+    other:    {label:"Event",             color:"#5A6472"}
+  };
+  var TYPE_ORDER = ["nexus","skirmish","learn","open","other"];
+  var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var MONTH = ["January","February","March","April","May","June",
+               "July","August","September","October","November","December"];
+  var SEEN_KEY = "vir.look.seen.v1";
+
+  var EVENTS = [], META = null;
+  var scope = "victoria", selected = null, cursor = null;
+
+  var grid = document.getElementById("grid");
+  var list = document.getElementById("list");
+
+  function todayKey(){
+    var d = new Date(), m = d.getMonth() + 1, day = d.getDate();
+    return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day;
+  }
+  function parseKey(k){
+    var p = k.split("-");
+    return {y:parseInt(p[0],10), m:parseInt(p[1],10) - 1, d:parseInt(p[2],10)};
+  }
+  function keyOf(y,m,d){
+    return y + "-" + (m + 1 < 10 ? "0" : "") + (m + 1) + "-" + (d < 10 ? "0" : "") + d;
+  }
+
+  /* Exploration page only: so the NEW treatment is visible at all, the
+     first visit marks everything seen EXCEPT the three soonest. The real
+     page marks everything seen on a first visit. */
+  function seenSet(){
+    var s;
+    try { s = JSON.parse(localStorage.getItem(SEEN_KEY) || "null"); } catch(e){ s = null; }
+    return s && s.length ? s : null;
+  }
+  function seedSeen(all){
+    var ids = [];
+    for (var i = 3; i < all.length; i++) ids.push(all[i].id);
+    try { localStorage.setItem(SEEN_KEY, JSON.stringify(ids)); } catch(e){}
+    return ids;
+  }
+
+  function inScope(ev){ return scope === "island" ? true : ev.region === "victoria"; }
+
+  function visible(){
+    var t = todayKey(), out = [];
+    for (var i = 0; i < EVENTS.length; i++){
+      if (EVENTS[i].day >= t && inScope(EVENTS[i])) out.push(EVENTS[i]);
+    }
+    out.sort(function(a,b){
+      if (a.day !== b.day) return a.day < b.day ? -1 : 1;
+      return (a.start || "") < (b.start || "") ? -1 : 1;
+    });
+    return out;
+  }
+
+  function forDay(k){
+    var all = visible(), out = [];
+    for (var i = 0; i < all.length; i++) if (all[i].day === k) out.push(all[i]);
+    return out;
+  }
+
+  function renderMonth(){
+    var y = cursor.y, m = cursor.m;
+    document.getElementById("mname").textContent = MONTH[m];
+    document.getElementById("myear").textContent = String(y);
+
+    var first = new Date(y, m, 1).getDay();
+    var days = new Date(y, m + 1, 0).getDate();
+    var cells = Math.ceil((first + days) / 7) * 7;
+    var t = todayKey();
+
+    grid.innerHTML = "";
+    for (var i = 0; i < cells; i++){
+      var dn = i - first + 1;
+      var on = dn >= 1 && dn <= days;
+      var k = on ? keyOf(y, m, dn) : null;
+      var evs = on ? forDay(k) : [];
+
+      var cell = document.createElement(on ? "button" : "div");
+      cell.className = "cell" + (on ? "" : " out") + (k === t ? " today" : "");
+      if (on){
+        cell.type = "button";
+        cell.setAttribute("data-key", k);
+        cell.setAttribute("aria-pressed", selected === k ? "true" : "false");
+        cell.setAttribute("aria-label", DOW[i % 7] + " " + dn + ", " + evs.length + " events");
+      }
+
+      var d = document.createElement("span");
+      d.className = "d";
+      d.textContent = on ? String(dn) : "";
+      if (evs.length > 3){
+        var p = document.createElement("span");
+        p.className = "plus";
+        p.textContent = "+" + (evs.length - 3);
+        d.appendChild(p);
+      }
+      cell.appendChild(d);
+
+      if (evs.length){
+        var wrap = document.createElement("span");
+        wrap.className = "bars";
+        for (var b = 0; b < Math.min(evs.length, 3); b++){
+          var bar = document.createElement("span");
+          bar.className = "bar";
+          bar.style.setProperty("--c", (TYPES[evs[b].type] || TYPES.other).color);
+          wrap.appendChild(bar);
+        }
+        cell.appendChild(wrap);
+      }
+      grid.appendChild(cell);
+    }
+
+    var months = monthsWithEvents();
+    document.getElementById("prev").disabled = !months.some(function(x){ return x.y < y || (x.y === y && x.m < m); });
+    document.getElementById("next").disabled = !months.some(function(x){ return x.y > y || (x.y === y && x.m > m); });
+  }
+
+  function monthsWithEvents(){
+    var all = visible(), seen = {}, out = [];
+    for (var i = 0; i < all.length; i++){
+      var p = parseKey(all[i].day), id = p.y + "-" + p.m;
+      if (!seen[id]){ seen[id] = 1; out.push({y:p.y, m:p.m}); }
+    }
+    return out;
+  }
+
+  function money(ev){
+    if (!ev.cents) return "";
+    var n = ev.cents / 100;
+    return "$" + (n % 1 === 0 ? n.toFixed(0) : n.toFixed(2));
+  }
+
+  function renderList(){
+    var seen = seenSet() || [];
+    var rows;
+    if (selected){
+      rows = forDay(selected);
+      var p = parseKey(selected);
+      document.getElementById("atitle").textContent = DOW[new Date(p.y,p.m,p.d).getDay()] + " " + p.d + " " + MONTH[p.m];
+      document.getElementById("clr").hidden = false;
+    } else {
+      rows = visible().filter(function(ev){
+        var p = parseKey(ev.day);
+        return p.y === cursor.y && p.m === cursor.m;
+      });
+      document.getElementById("atitle").textContent = MONTH[cursor.m];
+      document.getElementById("clr").hidden = true;
+    }
+
+    document.getElementById("acount").textContent = rows.length ? rows.length + (rows.length === 1 ? " event" : " events") : "";
+
+    list.innerHTML = "";
+    if (!rows.length){
+      var none = document.createElement("div");
+      none.className = "empty";
+      none.textContent = selected ? "Nothing scheduled on this day." : "No events in this month yet.";
+      list.appendChild(none);
+      return;
+    }
+
+    for (var i = 0; i < rows.length; i++){
+      var ev = rows[i], ty = TYPES[ev.type] || TYPES.other;
+      var a = document.createElement("a");
+      a.className = "ev";
+      a.href = "https://locator.riftbound.uvsgames.com/events/" + ev.id;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.style.setProperty("--c", ty.color);
+
+      var l1 = document.createElement("span");
+      l1.className = "l1";
+      var node = document.createElement("span");
+      node.className = "node";
+      l1.appendChild(node);
+      var when = document.createElement("span");
+      when.className = "when mono";
+      var p2 = parseKey(ev.day);
+      when.textContent = (selected ? "" : DOW[new Date(p2.y,p2.m,p2.d).getDay()] + " " + p2.d + "   ") + (ev.time || "");
+      l1.appendChild(when);
+      var sp = document.createElement("span");
+      sp.className = "sp";
+      l1.appendChild(sp);
+
+      if (ev.cap){
+        var left = ev.cap - (ev.reg || 0);
+        var spots = document.createElement("span");
+        spots.className = "spots mono" + (left <= 4 ? " low" : "");
+        spots.textContent = left + " of " + ev.cap + " left";
+        l1.appendChild(spots);
+      } else if (money(ev)){
+        var pr = document.createElement("span");
+        pr.className = "spots mono";
+        pr.textContent = money(ev);
+        l1.appendChild(pr);
+      }
+      a.appendChild(l1);
+
+      var nm = document.createElement("span");
+      nm.className = "name";
+      nm.textContent = ev.name || ty.label;
+      if (seen.indexOf(ev.id) === -1){
+        var nb = document.createElement("span");
+        nb.className = "new";
+        nb.textContent = "NEW";
+        nm.appendChild(nb);
+      }
+      a.appendChild(nm);
+
+      var vn = document.createElement("span");
+      vn.className = "venue";
+      vn.textContent = (ev.venue || "") + (ev.city ? ", " + ev.city : "");
+      a.appendChild(vn);
+
+      list.appendChild(a);
+    }
+  }
+
+  function renderKey(){
+    var all = visible(), counts = {};
+    for (var i = 0; i < all.length; i++) counts[all[i].type] = 1;
+    var key = document.getElementById("key");
+    key.innerHTML = "";
+    for (var t = 0; t < TYPE_ORDER.length; t++){
+      var k = TYPE_ORDER[t];
+      if (!counts[k]) continue;
+      var item = document.createElement("span");
+      item.className = "kitem";
+      var n = document.createElement("span");
+      n.className = "knode";
+      n.style.setProperty("--c", TYPES[k].color);
+      item.appendChild(n);
+      var l = document.createElement("span");
+      l.textContent = TYPES[k].label;
+      item.appendChild(l);
+      key.appendChild(item);
+    }
+  }
+
+  function renderSub(){
+    var host = location.host + location.pathname.replace(/look\/.*$/, "");
+    document.getElementById("sub").href = "webcal://" + host + "data/" + scope + ".ics";
+    document.getElementById("substate").textContent = scope === "island" ? "Whole Island" : "Greater Victoria";
+  }
+
+  function renderStamp(){
+    if (!META || !META.generated_at){ document.getElementById("stamp").textContent = ""; return; }
+    var when = new Date(META.generated_at);
+    var hrs = (Date.now() - when.getTime()) / 3600000;
+    var s = document.getElementById("stamp");
+    s.innerHTML = "";
+    var lead = document.createTextNode("Events read from the official Riftbound locator. Last checked ");
+    var b = document.createElement("b");
+    b.textContent = when.toLocaleString(undefined, {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+    s.appendChild(lead); s.appendChild(b);
+    s.appendChild(document.createTextNode(hrs > 30 ? ". This may be out of date." : "."));
+  }
+
+  function renderAll(){ renderMonth(); renderList(); renderKey(); renderSub(); renderStamp(); }
+
+  grid.addEventListener("click", function(e){
+    var el = e.target;
+    while (el && el !== grid && !(el.className && String(el.className).indexOf("cell") === 0)) el = el.parentNode;
+    if (!el || el === grid) return;
+    var k = el.getAttribute("data-key");
+    if (!k) return;
+    selected = (selected === k) ? null : k;
+    renderMonth(); renderList();
+  });
+
+  document.getElementById("clr").onclick = function(){ selected = null; renderMonth(); renderList(); };
+
+  document.getElementById("prev").onclick = function(){
+    var m = cursor.m - 1, y = cursor.y;
+    if (m < 0){ m = 11; y--; }
+    cursor = {y:y, m:m}; selected = null; renderMonth(); renderList();
+  };
+  document.getElementById("next").onclick = function(){
+    var m = cursor.m + 1, y = cursor.y;
+    if (m > 11){ m = 0; y++; }
+    cursor = {y:y, m:m}; selected = null; renderMonth(); renderList();
+  };
+
+  var sc = document.querySelectorAll(".scope button");
+  for (var i = 0; i < sc.length; i++){
+    sc[i].onclick = function(){
+      scope = this.getAttribute("data-scope");
+      for (var j = 0; j < sc.length; j++){
+        sc[j].setAttribute("aria-pressed", sc[j] === this ? "true" : "false");
+      }
+      selected = null;
+      renderAll();
+    };
+  }
+
+  fetch("../data/events.json").then(function(r){
+    if (!r.ok) throw new Error("http " + r.status);
+    return r.json();
+  }).then(function(j){
+    META = j;
+    EVENTS = j.events || [];
+    if (!seenSet()) seedSeen(visible());
+    var first = visible()[0];
+    cursor = first ? (function(){ var p = parseKey(first.day); return {y:p.y, m:p.m}; })()
+                   : (function(){ var d = new Date(); return {y:d.getFullYear(), m:d.getMonth()}; })();
+    renderAll();
+  }).catch(function(){
+    var f = document.createElement("div");
+    f.className = "fail";
+    f.innerHTML = "The event feed did not load. Try the " +
+      "<a href='https://locator.riftbound.uvsgames.com/' target='_blank' rel='noopener'>official locator</a> in the meantime.";
+    list.appendChild(f);
+  });
+})();
+</script>
+</body>
+</html>
