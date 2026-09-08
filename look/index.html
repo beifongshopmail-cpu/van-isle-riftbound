@@ -55,6 +55,9 @@ body{
   font-family:'ArchivoV',system-ui,sans-serif;
   font-size:15px;line-height:1.4;font-stretch:100%;
   -webkit-font-smoothing:antialiased;
+  /* double-tap-to-zoom is a TOUCH behaviour, not a selection one.
+     user-select does not affect it; touch-action does. */
+  touch-action:manipulation;
 }
 body.lock{position:fixed;left:0;right:0;overflow:hidden}
 button{font-family:inherit;color:inherit;background:none;border:0;padding:0}
@@ -71,28 +74,33 @@ a{color:inherit;text-decoration:none}
   transform:translateZ(0);
   will-change:transform;
 }
-/* the seam is a lit edge, not a line */
-/* the seam IS the container's bottom edge, so it must follow the
-   corner radius rather than sit near it as a straight bar */
+/* The seam is the container's bottom edge and must follow its corner.
+   A mask cannot be used here: box-shadow on a masked element is masked
+   with it, which leaves a bright line and no bloom. Instead the side
+   borders are transparent, so the drawn stroke tapers away around each
+   corner on its own, and drop-shadow glows the RENDERED SHAPE rather
+   than the element's box. */
 .hdr::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:var(--round);
-  border:2px solid #FFFFFF;border-top:0;
+  border:2px solid transparent;border-top:0;
+  border-bottom-color:#FFFFFF;
   border-radius:0 0 var(--round) var(--round);
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.75),
-    0 0 11px 0 rgba(242,243,245,.35);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 55%,#000 82%,#000 100%);
-  mask-image:linear-gradient(180deg,transparent 0,transparent 55%,#000 82%,#000 100%);
+  filter:
+    drop-shadow(0 0 2px rgba(242,243,245,.85))
+    drop-shadow(0 0 7px rgba(242,243,245,.45));
   pointer-events:none;
 }
 
 /* the clip box must not crop the glow that leaves a cell, so the
    grid is inset and the padding absorbs the bloom */
+/* the clip box crops at its PADDING edge, so this padding is the room
+   a selected cell's glow needs at the screen edges. 6px was not enough
+   for a 22px bloom. */
 .clip{
-  overflow:hidden;padding:0 6px;
+  overflow:hidden;padding:0 16px;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
 }
-.stack{padding:0 calc(var(--gut) - 6px)}
+.stack{padding:0}
 
 .brand{padding-bottom:12px}
 .brand h1{margin:0;font-size:20px;font-weight:700;font-stretch:118%;letter-spacing:-.01em;line-height:1.1}
@@ -173,13 +181,21 @@ a{color:inherit;text-decoration:none}
   border:2px solid rgb(var(--cl));width:8px;height:8px;
 }
 
-.grab{display:block;width:100%;height:22px;position:relative}
+/* the visible bar stays 38x4; the TOUCH TARGET is the full-width strip
+   around it, and it extends past the header's bottom edge so it is
+   still easy to catch when the header is collapsed */
+.grab{
+  display:block;width:100%;height:34px;position:relative;z-index:2;
+  margin-bottom:-8px;
+  touch-action:none;
+}
 .grab i{
-  position:absolute;left:50%;top:7px;margin-left:-19px;
+  position:absolute;left:50%;top:9px;margin-left:-19px;
   width:38px;height:4px;border-radius:2px;
   background:rgba(242,243,245,.3);
+  transition:background .14s var(--ease),box-shadow .14s var(--ease);
 }
-.grab:active i{background:#FFFFFF;box-shadow:0 0 8px 0 rgba(242,243,245,.7)}
+.grab:active i,.grab.pull i{background:#FFFFFF;box-shadow:0 0 8px 0 rgba(242,243,245,.7)}
 
 /* ===================== agenda ===================== */
 
@@ -252,19 +268,18 @@ a{color:inherit;text-decoration:none}
 }
 .tabs::before{
   content:"";position:absolute;left:0;right:0;top:0;height:var(--round);
-  border:2px solid #FFFFFF;border-bottom:0;
+  border:2px solid transparent;border-bottom:0;
+  border-top-color:#FFFFFF;
   border-radius:var(--round) var(--round) 0 0;
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.7),
-    0 0 11px 0 rgba(242,243,245,.3);
-  -webkit-mask-image:linear-gradient(0deg,transparent 0,transparent 55%,#000 82%,#000 100%);
-  mask-image:linear-gradient(0deg,transparent 0,transparent 55%,#000 82%,#000 100%);
+  filter:
+    drop-shadow(0 0 2px rgba(242,243,245,.8))
+    drop-shadow(0 0 7px rgba(242,243,245,.4));
   pointer-events:none;
 }
+.tabs.idle::before{filter:none;border-top-color:rgba(242,243,245,.3)}
 /* resting: the bar keeps its own black so nothing shows through.
    only the contents fade, and the seam loses its light. */
 .tabs.idle{transform:scale(.97) translateY(2px)}
-.tabs.idle::before{box-shadow:none;border-color:rgba(242,243,245,.28)}
 .tabs.idle .tab{opacity:.42}
 .tab{transition:opacity .45s var(--ease)}
 .tab{flex:1 1 0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
@@ -287,10 +302,12 @@ a{color:inherit;text-decoration:none}
 }
 .scrim.on{opacity:1;pointer-events:auto}
 
+/* pinned to BOTH gutters. An earlier version set width plus a right
+   offset taken from the gear's position, which pushed the panel off
+   the left edge of the screen. */
 .panel{
   position:fixed;z-index:31;
-  width:calc(100vw - 2 * var(--gut));
-  max-width:420px;
+  left:var(--gut);right:var(--gut);
   background:var(--ground);
   border:1px solid rgba(242,243,245,.9);
   border-radius:18px;
@@ -829,10 +846,49 @@ a{color:inherit;text-decoration:none}
   document.addEventListener("click", wake);
   wake();
 
-  document.getElementById("grab").onclick = function(){
-    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    window.scrollTo({top: y > 4 ? 0 : M.range, behavior:"smooth"});
-  };
+  /* The handle LOOKED like a drag control and was only a button that
+     scrolled to top. It now drags in both directions, and a tap with no
+     movement still toggles. */
+  (function(){
+    var grab = document.getElementById("grab");
+    var dragging = false, startY = 0, startScroll = 0, moved = 0;
+
+    function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
+    function toggle(){
+      var y = scrollNow();
+      window.scrollTo({top: y > 4 ? 0 : M.range, behavior:"smooth"});
+    }
+
+    grab.addEventListener("touchstart", function(e){
+      dragging = true; moved = 0;
+      startY = e.touches[0].clientY;
+      startScroll = scrollNow();
+      grab.className = "grab pull";
+    }, {passive:true});
+
+    grab.addEventListener("touchmove", function(e){
+      if (!dragging) return;
+      var dy = e.touches[0].clientY - startY;
+      if (Math.abs(dy) > moved) moved = Math.abs(dy);
+      window.scrollTo(0, clamp(startScroll - dy, 0, M.range));
+      e.preventDefault();
+    }, {passive:false});
+
+    function release(){
+      if (!dragging) return;
+      dragging = false;
+      grab.className = "grab";
+      if (moved < 6) toggle();
+    }
+    grab.addEventListener("touchend", release);
+    grab.addEventListener("touchcancel", release);
+
+    /* pointer devices, and the keyboard path through the button */
+    grab.addEventListener("click", function(e){
+      e.preventDefault();
+      if (moved < 6 && !dragging) toggle();
+    });
+  })();
 
   function refresh(remeasure){
     renderMonth(); renderList(); renderTypes();
