@@ -16,10 +16,15 @@
                      active tab, the two structural seams
      lit while on -- the settings button when filters are set, the
                      chosen segment
-     lit on press -- anything that stays on this page when tapped
-     never lit    -- plain actions at rest, AND anything that navigates
-                     away, because the page is gone before a flare can
-                     be seen. Add to calendar is the case in point. */
+     lit on press -- EVERY pressable thing, with no exceptions
+     never lit    -- plain actions at rest
+
+   CORRECTED 2026-09-08. An earlier version of this rule exempted
+   controls that navigate away, on the grounds that the page leaves
+   before a flare is visible. That was wrong. Press feedback exists to
+   confirm the tap was REGISTERED, which matters MOST when the device
+   is lagging or the network is slow -- exactly the case where the
+   destination has not arrived yet. Every button flares. */
 
 @font-face{
   font-family:'ArchivoV';
@@ -67,15 +72,26 @@ a{color:inherit;text-decoration:none}
   will-change:transform;
 }
 /* the seam is a lit edge, not a line */
+/* the seam IS the container's bottom edge, so it must follow the
+   corner radius rather than sit near it as a straight bar */
 .hdr::after{
-  content:"";position:absolute;left:26px;right:26px;bottom:0;height:2px;
-  background:#FFFFFF;border-radius:2px;
-  box-shadow:0 0 3px 0 rgba(242,243,245,.8), 0 0 11px 0 rgba(242,243,245,.4);
+  content:"";position:absolute;left:0;right:0;bottom:0;height:var(--round);
+  border:2px solid #FFFFFF;border-top:0;
+  border-radius:0 0 var(--round) var(--round);
+  box-shadow:
+    0 0 3px 0 rgba(242,243,245,.75),
+    0 0 11px 0 rgba(242,243,245,.35);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 55%,#000 82%,#000 100%);
+  mask-image:linear-gradient(180deg,transparent 0,transparent 55%,#000 82%,#000 100%);
+  pointer-events:none;
 }
 
 /* the clip box must not crop the glow that leaves a cell, so the
    grid is inset and the padding absorbs the bloom */
-.clip{overflow:hidden;padding:0 6px}
+.clip{
+  overflow:hidden;padding:0 6px;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
 .stack{padding:0 calc(var(--gut) - 6px)}
 
 .brand{padding-bottom:12px}
@@ -119,7 +135,10 @@ a{color:inherit;text-decoration:none}
   border:1px solid transparent;
   transition:box-shadow .18s var(--ease),border-color .18s var(--ease);
 }
-.cell .d{font-size:15px;font-weight:600;color:var(--dim);line-height:1}
+.cell .d{
+  font-size:15px;font-weight:600;color:var(--dim);line-height:1;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
 .cell.out .d{color:var(--off)}
 .cell.today{border-color:var(--edge)}
 .cell.today .d{color:var(--bone)}
@@ -232,11 +251,22 @@ a{color:inherit;text-decoration:none}
   transition:transform .45s var(--ease),opacity .45s var(--ease);
 }
 .tabs::before{
-  content:"";position:absolute;left:26px;right:26px;top:0;height:2px;
-  background:#FFFFFF;border-radius:2px;
-  box-shadow:0 0 3px 0 rgba(242,243,245,.75), 0 0 11px 0 rgba(242,243,245,.35);
+  content:"";position:absolute;left:0;right:0;top:0;height:var(--round);
+  border:2px solid #FFFFFF;border-bottom:0;
+  border-radius:var(--round) var(--round) 0 0;
+  box-shadow:
+    0 0 3px 0 rgba(242,243,245,.7),
+    0 0 11px 0 rgba(242,243,245,.3);
+  -webkit-mask-image:linear-gradient(0deg,transparent 0,transparent 55%,#000 82%,#000 100%);
+  mask-image:linear-gradient(0deg,transparent 0,transparent 55%,#000 82%,#000 100%);
+  pointer-events:none;
 }
-.tabs.idle{transform:scale(.965) translateY(3px);opacity:.5}
+/* resting: the bar keeps its own black so nothing shows through.
+   only the contents fade, and the seam loses its light. */
+.tabs.idle{transform:scale(.97) translateY(2px)}
+.tabs.idle::before{box-shadow:none;border-color:rgba(242,243,245,.28)}
+.tabs.idle .tab{opacity:.42}
+.tab{transition:opacity .45s var(--ease)}
 .tab{flex:1 1 0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
 .tab svg{width:20px;height:20px;stroke:var(--mute);stroke-width:1.6;fill:none;transition:stroke .16s var(--ease)}
 .tab span{font-size:9.5px;font-weight:600;color:var(--mute);transition:color .16s var(--ease)}
@@ -259,7 +289,8 @@ a{color:inherit;text-decoration:none}
 
 .panel{
   position:fixed;z-index:31;
-  width:min(330px, calc(100vw - 24px));
+  width:calc(100vw - 2 * var(--gut));
+  max-width:420px;
   background:var(--ground);
   border:1px solid rgba(242,243,245,.9);
   border-radius:18px;
@@ -330,6 +361,14 @@ a{color:inherit;text-decoration:none}
   height:48px;padding:0 14px;
   border:1px solid var(--edge-hi);border-radius:13px;
   font-size:13.5px;font-weight:600;
+  transition:box-shadow .16s var(--ease),border-color .16s var(--ease);
+}
+/* feedback fires even on controls that navigate away: its job is to
+   confirm the tap REGISTERED, which matters most when the device is
+   slow or the network is bad */
+.addcal:active{
+  border-color:rgba(242,243,245,.85);
+  box-shadow:0 0 3px 0 rgba(242,243,245,.7), 0 0 14px -2px rgba(242,243,245,.35);
 }
 .addcal svg.ic{flex:0 0 auto;width:17px;height:17px;stroke:var(--bone);stroke-width:1.6;fill:none}
 .addcal .t{flex:1}
