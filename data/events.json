@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-07T18:09:01.634Z",
- "generated_local": "2026-09-07T11:09:01-07:00",
+ "generated_at": "2026-09-08T05:40:40.270Z",
+ "generated_local": "2026-09-07T22:40:40-07:00",
  "window_start": "2026-09-07T07:00:00.000Z",
  "anchors": [
   {
@@ -18,13 +18,13 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 17,
-   "added": 17
+   "returned": 18,
+   "added": 18
   }
  ],
  "totals": {
-  "fetched": 47,
-  "unique": 47,
+  "fetched": 48,
+  "unique": 48,
   "prev_unique": 47
  },
  "unknown_templates": {},
@@ -874,6 +874,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-09-06T05:01:08+00:00"
+  },
+  {
+   "id": 925474,
+   "name": "Tuesday Riftbound Playnight",
+   "type": "learn",
+   "start": "2026-11-03T18:00:00-08:00",
+   "end": "2026-11-03T21:30:00-08:00",
+   "day": "2026-11-03",
+   "time": "6:00 PM",
+   "venue": "Giddy-Up Games",
+   "city": "Campbell River",
+   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
+   "region": "island",
+   "cap": 8,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-09-08T05:03:43+00:00"
   }
  ]
 }
