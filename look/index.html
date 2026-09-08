@@ -8,9 +8,18 @@
 <link rel="stylesheet" href="/van-isle-riftbound/fonts.css">
 <style>
 /* Exploration page, unlinked. Deleted once the direction is settled.
-   Judged this round: a header that collapses as one piece, type told by
-   shape and lightness as well as hue, light as press feedback, and a
-   panel that grows out of the control that opened it. */
+
+   THE GLOW RULE, as settled 2026-09-08:
+   Light means LIVE. A thing that carries data or is currently doing
+   something is lit; a thing merely waiting to be used is not.
+     lit always   -- event blocks, type marks, the selected day, the
+                     active tab, the two structural seams
+     lit while on -- the settings button when filters are set, the
+                     chosen segment
+     lit on press -- anything that stays on this page when tapped
+     never lit    -- plain actions at rest, AND anything that navigates
+                     away, because the page is gone before a flare can
+                     be seen. Add to calendar is the case in point. */
 
 @font-face{
   font-family:'ArchivoV';
@@ -59,14 +68,15 @@ a{color:inherit;text-decoration:none}
 }
 /* the seam is a lit edge, not a line */
 .hdr::after{
-  content:"";position:absolute;left:14px;right:14px;bottom:0;height:1px;
-  background:rgba(242,243,245,.5);
-  box-shadow:0 0 3px 0 rgba(242,243,245,.45), 0 0 10px 0 rgba(242,243,245,.22);
-  border-radius:1px;
+  content:"";position:absolute;left:26px;right:26px;bottom:0;height:2px;
+  background:#FFFFFF;border-radius:2px;
+  box-shadow:0 0 3px 0 rgba(242,243,245,.8), 0 0 11px 0 rgba(242,243,245,.4);
 }
 
-.clip{overflow:hidden}
-.stack{padding:0 var(--gut)}
+/* the clip box must not crop the glow that leaves a cell, so the
+   grid is inset and the padding absorbs the bloom */
+.clip{overflow:hidden;padding:0 6px}
+.stack{padding:0 calc(var(--gut) - 6px)}
 
 .brand{padding-bottom:12px}
 .brand h1{margin:0;font-size:20px;font-weight:700;font-stretch:118%;letter-spacing:-.01em;line-height:1.1}
@@ -100,7 +110,7 @@ a{color:inherit;text-decoration:none}
 .dow{display:grid;grid-template-columns:repeat(7,1fr);padding-bottom:4px}
 .dow span{text-align:center;font-size:9.5px;font-weight:600;color:var(--mute);letter-spacing:.06em}
 
-.weeks{overflow:hidden}
+.weeks{overflow:hidden;padding:0 2px;margin:0 -2px}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
 
 .cell{
@@ -222,10 +232,9 @@ a{color:inherit;text-decoration:none}
   transition:transform .45s var(--ease),opacity .45s var(--ease);
 }
 .tabs::before{
-  content:"";position:absolute;left:16px;right:16px;top:0;height:1px;
-  background:rgba(242,243,245,.42);
-  box-shadow:0 0 3px 0 rgba(242,243,245,.4), 0 0 11px 0 rgba(242,243,245,.18);
-  border-radius:1px;
+  content:"";position:absolute;left:26px;right:26px;top:0;height:2px;
+  background:#FFFFFF;border-radius:2px;
+  box-shadow:0 0 3px 0 rgba(242,243,245,.75), 0 0 11px 0 rgba(242,243,245,.35);
 }
 .tabs.idle{transform:scale(.965) translateY(3px);opacity:.5}
 .tab{flex:1 1 0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
@@ -252,13 +261,15 @@ a{color:inherit;text-decoration:none}
   position:fixed;z-index:31;
   width:min(330px, calc(100vw - 24px));
   background:var(--ground);
-  border:1px solid var(--edge-hi);
+  border:1px solid rgba(242,243,245,.9);
   border-radius:18px;
   box-shadow:
-    0 0 3px 0 rgba(242,243,245,.35),
-    0 0 16px -2px rgba(242,243,245,.16),
-    0 20px 40px -12px rgba(0,0,0,1);
-  padding:4px 15px 15px 15px;
+    0 0 3px 0 rgba(242,243,245,.8),
+    0 0 10px -1px rgba(242,243,245,.45),
+    0 0 24px -4px rgba(242,243,245,.25),
+    0 20px 40px -12px rgba(0,0,0,1),
+    inset 0 0 10px -5px rgba(242,243,245,.7);
+  padding:0 15px 15px 15px;
   opacity:0;transform:scale(.24);pointer-events:none;
   transform-origin:var(--ox,90%) 0;
   transition:transform .28s var(--ease),opacity .16s linear;
@@ -266,16 +277,35 @@ a{color:inherit;text-decoration:none}
 }
 .panel.on{opacity:1;transform:scale(1);pointer-events:auto}
 .panel h3{margin:14px 0 8px 0;font-size:11.5px;font-weight:600;color:var(--mute)}
-.panel h3:first-child{margin-top:12px}
-
-.seg{display:flex;border:1px solid var(--edge);border-radius:11px;overflow:hidden}
-.seg button{flex:1 1 0;height:38px;font-size:12.5px;font-weight:600;color:var(--dim);transition:box-shadow .16s var(--ease)}
-.seg button + button{border-left:1px solid var(--edge)}
-.seg button[aria-pressed="true"]{
-  color:#FFFFFF;
-  box-shadow:inset 0 0 0 1px rgba(242,243,245,.75), inset 0 0 14px -6px rgba(242,243,245,.9);
+.phead{display:flex;align-items:center;height:44px;margin:0 -4px 0 0}
+.phead .pt{flex:1;font-size:15px;font-weight:700;font-stretch:112%;letter-spacing:-.01em}
+.pclose{
+  width:30px;height:30px;border-radius:9px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--edge);
+  transition:box-shadow .16s var(--ease),border-color .16s var(--ease);
 }
-.seg button:active{box-shadow:inset 0 0 0 1px rgba(242,243,245,.5)}
+.pclose svg{width:12px;height:12px;stroke:var(--dim);stroke-width:2.2;fill:none}
+.pclose:active{
+  border-color:rgba(242,243,245,.85);
+  box-shadow:0 0 3px 0 rgba(242,243,245,.7), 0 0 12px -2px rgba(242,243,245,.35);
+}
+.pclose:active svg{stroke:var(--bone)}
+
+.seg{display:flex;gap:8px}
+.seg button{
+  flex:1 1 0;height:38px;font-size:12.5px;font-weight:600;color:var(--dim);
+  border:1px solid var(--edge);border-radius:11px;
+  transition:box-shadow .16s var(--ease),border-color .16s var(--ease),color .16s var(--ease);
+}
+.seg button[aria-pressed="true"]{
+  color:#FFFFFF;border-color:rgba(242,243,245,.9);
+  box-shadow:
+    0 0 3px 0 rgba(242,243,245,.7),
+    0 0 10px -1px rgba(242,243,245,.35),
+    inset 0 0 12px -6px rgba(242,243,245,.9);
+}
+.seg button:active{border-color:rgba(242,243,245,.55)}
 
 .tyrow{
   display:flex;align-items:center;gap:11px;width:100%;
@@ -300,9 +330,7 @@ a{color:inherit;text-decoration:none}
   height:48px;padding:0 14px;
   border:1px solid var(--edge-hi);border-radius:13px;
   font-size:13.5px;font-weight:600;
-  transition:box-shadow .16s var(--ease);
 }
-.addcal:active{box-shadow:0 0 3px 0 rgba(242,243,245,.6), 0 0 14px -2px rgba(242,243,245,.35)}
 .addcal svg.ic{flex:0 0 auto;width:17px;height:17px;stroke:var(--bone);stroke-width:1.6;fill:none}
 .addcal .t{flex:1}
 .addcal svg.ch{flex:0 0 auto;width:12px;height:12px;stroke:var(--dim);stroke-width:2.2;fill:none}
@@ -322,8 +350,8 @@ a{color:inherit;text-decoration:none}
         <span class="m" id="mname">&nbsp;</span>
         <span class="y mono" id="myear"></span>
         <span class="sp"></span>
-        <button type="button" class="icb" id="filt" aria-label="Filters">
-          <svg viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="9" r="2.6" fill="currentColor" stroke="none"/><circle cx="9" cy="16" r="2.6" fill="currentColor" stroke="none"/></svg>
+        <button type="button" class="icb" id="filt" aria-label="Calendar settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
         </button>
         <button type="button" class="icb" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
         <button type="button" class="icb" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
@@ -367,6 +395,13 @@ a{color:inherit;text-decoration:none}
 
 <div class="scrim" id="scrim"></div>
 <section class="panel" id="panel" aria-hidden="true">
+  <div class="phead">
+    <span class="pt">Calendar settings</span>
+    <button type="button" class="pclose" id="pclose" aria-label="Close">
+      <svg viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+    </button>
+  </div>
+
   <h3>Area</h3>
   <div class="seg" role="group" aria-label="Area">
     <button type="button" data-scope="victoria" aria-pressed="true">Greater Victoria</button>
@@ -791,13 +826,11 @@ a{color:inherit;text-decoration:none}
   function openPanel(v){
     if (v){
       var r = filt.getBoundingClientRect();
-      var w = Math.min(330, window.innerWidth - 24);
-      var right = Math.max(12, window.innerWidth - r.right - 4);
-      panel.style.top = (r.bottom + 8) + "px";
+      var right = Math.max(12, window.innerWidth - r.right);
+      panel.style.top = (r.bottom + 10) + "px";
       panel.style.right = right + "px";
       panel.style.left = "auto";
-      panel.style.setProperty("--ox", (w - (r.width / 2) - right + right) + "px");
-      panel.style.transformOrigin = "calc(100% - " + (r.width / 2) + "px) 0";
+      panel.style.transformOrigin = "calc(100% - " + Math.round(r.width / 2) + "px) 0";
 
       lockY = window.pageYOffset || document.documentElement.scrollTop || 0;
       locked = true;
@@ -815,6 +848,7 @@ a{color:inherit;text-decoration:none}
   }
   filt.addEventListener("click", function(){ openPanel(true); });
   scrim.addEventListener("click", function(){ openPanel(false); });
+  document.getElementById("pclose").addEventListener("click", function(){ openPanel(false); });
 
   document.getElementById("tylist").addEventListener("click", function(e){
     var el = e.target;
