@@ -235,7 +235,10 @@ a{color:inherit;text-decoration:none}
 
 /* ===================== agenda ===================== */
 
-.body{padding:0 var(--gut) 30px var(--gut)}
+.body{
+  padding:0 var(--gut) 30px var(--gut);
+  will-change:transform;
+}
 
 .ahead{display:flex;align-items:baseline;gap:10px;margin:0 0 12px 0}
 .ahead h2{margin:0;font-size:17px;font-weight:700;font-stretch:112%;letter-spacing:-.01em}
@@ -855,7 +858,11 @@ a{color:inherit;text-decoration:none}
     M.stride = M.row + 3;
     M.range = M.brand + Math.max(0, M.weeks - M.row);
 
-    main.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
+    /* set ONCE per measure, never per frame: paddingTop reserves room
+       for the header at its FULL height, and apply() slides the whole
+       block up by however far the header has collapsed. */
+    main.style.paddingTop = (M.hdrFull + 22) + "px";
+    main.style.paddingBottom = (tabs.offsetHeight + 34 + M.range) + "px";
     apply();
   }
 
@@ -884,14 +891,14 @@ a{color:inherit;text-decoration:none}
 
     hdr.style.setProperty("--p", M.range ? String(left / M.range) : "0");
 
-    /* THE CONTENT FOLLOWS THE HEADER. Top padding was measured once,
-       so a drawer-driven collapse shrank the header and left a blank
-       band behind it. Deriving it every frame keeps the agenda exactly
-       one gap below the header's bottom edge in every state. */
-    main.style.paddingTop = (y + M.hdrFull - left + 22) + "px";
+    /* PADDING MUST NOT BE SET FROM HERE. Writing paddingTop inside
+       apply() changes the document height, which fires scroll, which
+       calls apply() again -- a loop that fought every scroll gesture
+       and yanked the list back up. The content is instead pushed down
+       by a TRANSFORM, which never affects layout and so never feeds
+       back into scrolling. */
+    main.style.transform = "translate3d(0," + (-left) + "px,0)";
 
-    /* nothing needs clipping when the calendar is fully open, and that
-       clip is what was cutting the top and bottom rows' glow */
     var open = left < 1;
     clip.style.clipPath = open ? "none" : "inset(0 -100vw)";
     weeksBox.style.clipPath = open ? "none" : "inset(0 -100vw)";
