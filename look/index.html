@@ -43,7 +43,13 @@
   --dim:#98A0AD;
   --mute:#586070;
   --off:#22262D;
-  --gut:16px;
+  /* THE PAGE MARGIN MUST BE AT LEAST AS WIDE AS THE WIDEST GLOW.
+     Nothing was ever clipping the edge bloom -- a diagnostic at
+     2026-09-08 proved every container innocent. The light was simply
+     falling off the SCREEN, because a 22px bloom cannot fit in a 16px
+     margin. Any surface that emits light needs room to emit it. */
+  --gut:24px;
+  --glow-max:22px;
   --round:26px;
   --ease:cubic-bezier(.22,.72,.2,1);
 }
@@ -82,7 +88,7 @@ a{color:inherit;text-decoration:none}
    corner on its own, and drop-shadow glows the RENDERED SHAPE rather
    than the element's box. */
 .hdr::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:var(--round);
+  content:"";position:absolute;left:10px;right:10px;bottom:0;height:var(--round);
   border:2px solid transparent;border-top:0;
   border-bottom-color:#FFFFFF;
   border-radius:0 0 var(--round) var(--round);
@@ -253,37 +259,6 @@ a{color:inherit;text-decoration:none}
 
 .empty{padding:28px 0;color:var(--mute);font-size:13.5px;text-align:center}
 
-/* ===== TEMPORARY DIAGNOSTIC, removed next step =====
-   Five identical lit boxes hard against the left edge. Each sits in a
-   container with one suspected clipper removed. Whichever row shows a
-   full round bloom on its LEFT side identifies what is cutting the
-   selected day's ring and the header seam. */
-.dg{margin:30px 0;padding:0}
-.dg .lbl{font-size:11px;color:var(--dim);margin:0 0 6px 0;font-family:"IBM Plex Mono",monospace}
-.dg .row{height:56px;display:flex;align-items:center;margin:0 0 22px 0}
-.dg .box{
-  width:54px;height:38px;border-radius:12px;margin-left:0;
-  border:1px solid #FFFFFF;
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.9),
-    0 0 10px -1px rgba(242,243,245,.5),
-    0 0 22px -4px rgba(242,243,245,.35);
-}
-/* A: inside the page body as everything else is */
-/* B: pulled outside the body's horizontal padding */
-.dg .rowB{margin-left:calc(-1 * var(--gut))}
-/* C: no transform anywhere in the chain */
-.dg .rowC{transform:none}
-/* D: element promoted to its own layer */
-.dg .rowD .box{transform:translateZ(0)}
-/* E: glow drawn with filter instead of box-shadow */
-.dg .rowE .box{
-  box-shadow:none;
-  filter:
-    drop-shadow(0 0 3px rgba(242,243,245,.9))
-    drop-shadow(0 0 10px rgba(242,243,245,.5))
-    drop-shadow(0 0 20px rgba(242,243,245,.35));
-}
 .foot{margin:24px 0 0 0;padding:18px 0 0 0;border-top:1px solid var(--edge)}
 .foot p{margin:0 0 9px 0;font-size:11.5px;line-height:1.55;color:var(--mute);font-weight:400}
 .foot b{color:var(--dim);font-weight:500}
@@ -303,7 +278,7 @@ a{color:inherit;text-decoration:none}
   transition:transform .45s var(--ease),opacity .45s var(--ease);
 }
 .tabs::before{
-  content:"";position:absolute;left:0;right:0;top:0;height:var(--round);
+  content:"";position:absolute;left:10px;right:10px;top:0;height:var(--round);
   border:2px solid transparent;border-bottom:0;
   border-top-color:#FFFFFF;
   border-radius:var(--round) var(--round) 0 0;
@@ -469,19 +444,6 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div id="list"></div>
-
-  <div class="dg">
-    <p class="lbl">A in-flow</p>
-    <div class="row rowA"><span class="box"></span></div>
-    <p class="lbl">B outside gutter</p>
-    <div class="row rowB"><span class="box"></span></div>
-    <p class="lbl">C no transform</p>
-    <div class="row rowC"><span class="box"></span></div>
-    <p class="lbl">D own layer</p>
-    <div class="row rowD"><span class="box"></span></div>
-    <p class="lbl">E drop-shadow</p>
-    <div class="row rowE"><span class="box"></span></div>
-  </div>
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
@@ -923,9 +885,15 @@ a{color:inherit;text-decoration:none}
       if (!dragging) return;
       var dy = e.touches[0].clientY - startY;
       if (Math.abs(dy) > moved) moved = Math.abs(dy);
-      var lim = M.range || 0;
+      /* Dragging DOWN must be able to bring the page all the way back
+         to the top, not merely to the collapse range -- if the agenda
+         is scrolled well past it, clamping to M.range meant the handle
+         could not move at all. Dragging UP still stops at the point
+         the header is fully collapsed. */
       var docMax = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      window.scrollTo(0, clamp(startScroll - dy, 0, Math.min(lim, docMax)));
+      var up = Math.min(M.range || 0, docMax);
+      var top = Math.max(startScroll, up);
+      window.scrollTo(0, clamp(startScroll - dy, 0, top));
       e.preventDefault();
     }, {passive:false});
 
