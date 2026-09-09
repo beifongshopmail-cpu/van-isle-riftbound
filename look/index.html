@@ -95,11 +95,9 @@ a{color:inherit;text-decoration:none}
 .hdr::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:var(--round);
   border-radius:0 0 var(--round) var(--round);
-  background:linear-gradient(90deg,
-    rgba(255,255,255,0) 0,
-    rgba(255,255,255,.95) 18%,
-    rgba(255,255,255,.95) 82%,
-    rgba(255,255,255,0) 100%);
+  /* no fade along its length: the stroke should leave the screen at
+     full strength, so its only visible ends are the corner curves */
+  background:#FFFFFF;
   -webkit-mask:
     radial-gradient(#000,#000) content-box content-box,
     radial-gradient(#000,#000);
@@ -114,11 +112,7 @@ a{color:inherit;text-decoration:none}
 }
 .hdr::before{
   content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
-  background:linear-gradient(90deg,
-    rgba(255,255,255,0) 0,
-    rgba(242,243,245,.55) 20%,
-    rgba(242,243,245,.55) 80%,
-    rgba(255,255,255,0) 100%);
+  background:rgba(242,243,245,.55);
   filter:blur(5px);
   pointer-events:none;
 }
@@ -161,7 +155,12 @@ a{color:inherit;text-decoration:none}
   box-shadow:0 0 3px 0 rgba(242,243,245,.8), 0 0 12px -1px rgba(242,243,245,.4);
 }
 .icb:active svg{stroke:var(--bone)}
-.icb[hidden]{display:none}
+/* A control that cannot be used DIMS; it does not vanish. Buttons that
+   disappear move the ones beside them, which turns fast tapping
+   through months into mis-taps. The resting nav bar is the one stated
+   exception to dim-means-disabled. */
+.mrow .icb[disabled]{opacity:.3;pointer-events:none;border-color:var(--edge)}
+.mrow .icb[disabled] svg{stroke:var(--dim)}
 #filt svg{width:19px;height:19px}
 #prev svg,#next svg{width:13px;height:13px}
 #filt.on{border-color:rgba(242,243,245,.5);box-shadow:0 0 8px -2px rgba(242,243,245,.5)}
@@ -172,6 +171,7 @@ a{color:inherit;text-decoration:none}
 
 .weeks{clip-path:inset(0 -100vw)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+.week:last-child{margin-bottom:0}
 
 .cell{
   position:relative;height:52px;border-radius:12px;
@@ -221,12 +221,12 @@ a{color:inherit;text-decoration:none}
    around it, and it extends past the header's bottom edge so it is
    still easy to catch when the header is collapsed */
 .grab{
-  display:block;width:100%;height:34px;position:relative;z-index:2;
-  margin-bottom:-8px;
+  display:block;width:100%;height:30px;position:relative;z-index:2;
+  margin-bottom:-10px;
   touch-action:none;
 }
 .grab i{
-  position:absolute;left:50%;top:9px;margin-left:-19px;
+  position:absolute;left:50%;top:8px;margin-left:-19px;
   width:38px;height:4px;border-radius:2px;
   background:rgba(242,243,245,.3);
   transition:background .14s var(--ease),box-shadow .14s var(--ease);
@@ -305,11 +305,7 @@ a{color:inherit;text-decoration:none}
 .tabs::before{
   content:"";position:absolute;left:0;right:0;top:0;height:var(--round);
   border-radius:var(--round) var(--round) 0 0;
-  background:linear-gradient(90deg,
-    rgba(255,255,255,0) 0,
-    rgba(255,255,255,.9) 18%,
-    rgba(255,255,255,.9) 82%,
-    rgba(255,255,255,0) 100%);
+  background:#FFFFFF;
   -webkit-mask:
     radial-gradient(#000,#000) content-box content-box,
     radial-gradient(#000,#000);
@@ -324,11 +320,7 @@ a{color:inherit;text-decoration:none}
 }
 .tabs::after{
   content:"";position:absolute;left:0;right:0;top:-1px;height:3px;
-  background:linear-gradient(90deg,
-    rgba(255,255,255,0) 0,
-    rgba(242,243,245,.5) 20%,
-    rgba(242,243,245,.5) 80%,
-    rgba(255,255,255,0) 100%);
+  background:rgba(242,243,245,.5);
   filter:blur(5px);
   pointer-events:none;
 }
@@ -364,7 +356,7 @@ a{color:inherit;text-decoration:none}
    the left edge of the screen. */
 .panel{
   position:fixed;z-index:31;
-  left:6px;right:6px;
+  left:12px;right:12px;
   background:var(--ground);
   border:1px solid rgba(242,243,245,.9);
   border-radius:18px;
@@ -576,7 +568,7 @@ a{color:inherit;text-decoration:none}
   var scrim = document.getElementById("scrim");
   var filt = document.getElementById("filt");
 
-  var M = {brand:0, full:0, weeks:0, row:0, stride:0, range:0};
+  var M = {brand:0, full:0, weeks:0, row:0, stride:0, range:0, hdrFull:0};
   var anchorRow = 0;
 
   function pad(n){ return (n < 10 ? "0" : "") + n; }
@@ -701,8 +693,8 @@ a{color:inherit;text-decoration:none}
 
     var ms = monthsWithEvents();
     var p0 = document.getElementById("prev"), n0 = document.getElementById("next");
-    p0.hidden = !ms.some(function(x){ return x.y < y || (x.y === y && x.m < m); });
-    n0.hidden = !ms.some(function(x){ return x.y > y || (x.y === y && x.m > m); });
+    p0.disabled = !ms.some(function(x){ return x.y < y || (x.y === y && x.m < m); });
+    n0.disabled = !ms.some(function(x){ return x.y > y || (x.y === y && x.m > m); });
   }
 
   function money(ev){
@@ -851,15 +843,18 @@ a{color:inherit;text-decoration:none}
     weeksInner.style.transform = "";
     hdr.style.setProperty("--p", 0);
 
+    clip.style.clipPath = "";
+    weeksBox.style.clipPath = "";
+
     M.brand = brand.offsetHeight;
     M.full = stack.offsetHeight;
     M.weeks = weeksBox.offsetHeight;
+    M.hdrFull = hdr.offsetHeight;
     var wk = weeksInner.firstChild;
     M.row = wk ? wk.offsetHeight : 55;
     M.stride = M.row + 3;
     M.range = M.brand + Math.max(0, M.weeks - M.row);
 
-    main.style.paddingTop = (hdr.offsetHeight + 22) + "px";
     main.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
     apply();
   }
@@ -888,6 +883,18 @@ a{color:inherit;text-decoration:none}
     weeksInner.style.transform = "translate3d(0," + (-off) + "px,0)";
 
     hdr.style.setProperty("--p", M.range ? String(left / M.range) : "0");
+
+    /* THE CONTENT FOLLOWS THE HEADER. Top padding was measured once,
+       so a drawer-driven collapse shrank the header and left a blank
+       band behind it. Deriving it every frame keeps the agenda exactly
+       one gap below the header's bottom edge in every state. */
+    main.style.paddingTop = (y + M.hdrFull - left + 22) + "px";
+
+    /* nothing needs clipping when the calendar is fully open, and that
+       clip is what was cutting the top and bottom rows' glow */
+    var open = left < 1;
+    clip.style.clipPath = open ? "none" : "inset(0 -100vw)";
+    weeksBox.style.clipPath = open ? "none" : "inset(0 -100vw)";
   }
 
   var ticking = false;
@@ -1009,7 +1016,7 @@ a{color:inherit;text-decoration:none}
       var r = filt.getBoundingClientRect();
       panel.style.top = (r.bottom + 10) + "px";
       panel.style.transformOrigin =
-        Math.round(r.left + r.width / 2 - 6) + "px 0";
+        Math.round(r.left + r.width / 2 - 12) + "px 0";
 
       lockY = window.pageYOffset || document.documentElement.scrollTop || 0;
       locked = true;
