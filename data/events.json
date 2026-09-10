@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-09T17:03:43.341Z",
- "generated_local": "2026-09-09T10:03:43-07:00",
+ "generated_at": "2026-09-10T05:40:59.220Z",
+ "generated_local": "2026-09-09T22:40:59-07:00",
  "window_start": "2026-09-09T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 28,
-   "added": 28
+   "returned": 27,
+   "added": 27
   },
   {
    "name": "Courtenay",
@@ -23,30 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 49,
-  "unique": 49,
+  "fetched": 48,
+  "unique": 48,
   "prev_unique": 49
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 903316,
-   "name": "Wednesday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-09T18:00:00-07:00",
-   "end": "2026-09-09T21:00:00-07:00",
-   "day": "2026-09-09",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 2,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-08-31T18:24:41+00:00"
-  },
   {
    "id": 774317,
    "name": "Thursday Evening Nexus Nights - 1v1",
