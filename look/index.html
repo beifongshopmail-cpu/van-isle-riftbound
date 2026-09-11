@@ -858,20 +858,18 @@ a{color:inherit;text-decoration:none}
     M.stride = M.row + 3;
     M.range = M.brand + Math.max(0, M.weeks - M.row);
 
-    /* set ONCE per measure, never per frame: paddingTop reserves room
-       for the header at its FULL height, and apply() slides the whole
-       block up by however far the header has collapsed. */
-    /* THE AGENDA DOES NOT MOVE. It is parked once, below the header at
-       its COLLAPSED height, and stays there; an open calendar simply
-       covers its top, as a drawer does.
-       SLIDING IT WITH A TRANSFORM WAS TRIED FIRST AND IS WHAT LEFT A
-       SCREEN OF BLACK AT THE BOTTOM. A transform lifts the content off
-       the end of the document without shortening the document, so the
-       gap above the bar grew by exactly the collapse -- measured at 43px
-       open against 333px closed, a difference of one M.range. A negative
-       bottom margin does not shorten it either: scrollable overflow
-       ignores one, and the page height did not move by a single pixel. */
-    main.style.paddingTop = (M.hdrFull - M.range + 22) + "px";
+    /* SET ONCE PER MEASURE, NEVER PER FRAME. The agenda reserves room for
+       the header at its FULL height and then never moves again: scrolling
+       carries it up while the header collapses by the same amount, so the
+       two stay 22px apart on their own.
+       SLIDING IT WITH A TRANSFORM WAS TRIED AND IS WHAT LEFT A SCREEN OF
+       BLACK AT THE BOTTOM. A transform lifts the content off the end of
+       the document without shortening the document, so the gap above the
+       bar grew by exactly the collapse -- measured at 43px open against
+       333px closed, a difference of one M.range. A negative bottom margin
+       does not shorten it either: scrollable overflow ignores one, and
+       the page height did not move by a single pixel. */
+    main.style.paddingTop = (M.hdrFull + 22) + "px";
     main.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
     main.style.marginBottom = "";
     main.style.transform = "";
@@ -966,10 +964,24 @@ a{color:inherit;text-decoration:none}
     var grab = document.getElementById("grab");
     var startY = 0, startCol = 0, moved = 0;
 
+    /* NEAR THE TOP, THE PULL IS THE SCROLL. Within the first M.range of
+       the page the handle moves the scroll position itself, so the agenda
+       rides up and down with the header and its first heading stays
+       pinned below the calendar whether it is open or shut. Past that the
+       page stays exactly where it is and the calendar opens OVER the
+       list, as a drawer does. */
+    var coupled = false;
+
     function hold(v){
       col = clamp(v, 0, M.range);
-      held = col;
-      lastWant = clamp(scrollNow(), 0, M.range);
+      if (coupled){
+        window.scrollTo(0, Math.round(col));
+        held = null;
+        lastWant = col;
+      } else {
+        held = col;
+        lastWant = clamp(scrollNow(), 0, M.range);
+      }
       apply();
     }
 
@@ -988,6 +1000,7 @@ a{color:inherit;text-decoration:none}
         if (!t0) t0 = ts;
         var k = Math.min(1, (ts - t0) / 220);
         col = from + d * (1 - Math.pow(1 - k, 3));
+        if (coupled) window.scrollTo(0, Math.round(col));
         apply();
         if (k < 1) glideRaf = requestAnimationFrame(step);
         else { glideRaf = null; hold(to); }
@@ -1003,6 +1016,7 @@ a{color:inherit;text-decoration:none}
       window.scrollTo(0, scrollNow());
       if (glideRaf){ cancelAnimationFrame(glideRaf); glideRaf = null; }
       window.DBG_TS = (window.DBG_TS || 0) + 1; window.DBG_TM = 0; window.DBG_T0 = Date.now(); window.DBG_DT = -1;
+      coupled = scrollNow() <= M.range;
       dragging = true; moved = 0;
       startY = e.touches[0].clientY;
       if (!M.range) measure();
@@ -1019,6 +1033,7 @@ a{color:inherit;text-decoration:none}
          The scroll position is NOT read here: the pull is measured
          against the value the gesture started from and nothing else. */
       col = clamp(startCol - dy, 0, M.range);
+      if (coupled) window.scrollTo(0, Math.round(col));
       apply();
       e.preventDefault();
     }, {passive:false});
@@ -1037,7 +1052,10 @@ a{color:inherit;text-decoration:none}
 
     grab.addEventListener("click", function(e){
       e.preventDefault();
-      if (moved < 6 && !dragging) glide(col > 4 ? 0 : M.range);
+      if (moved < 6 && !dragging){
+        coupled = scrollNow() <= M.range;
+        glide(col > 4 ? 0 : M.range);
+      }
     });
   })();
 
