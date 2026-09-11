@@ -861,13 +861,20 @@ a{color:inherit;text-decoration:none}
     /* set ONCE per measure, never per frame: paddingTop reserves room
        for the header at its FULL height, and apply() slides the whole
        block up by however far the header has collapsed. */
-    main.style.paddingTop = (M.hdrFull + 22) + "px";
-    /* the block is slid UP by as much as M.range, which leaves that much
-       empty document below the last event. The negative margin takes the
-       same amount back off the page height, so the end of the agenda
-       lands just above the bar instead of over a screen of black. */
+    /* THE AGENDA DOES NOT MOVE. It is parked once, below the header at
+       its COLLAPSED height, and stays there; an open calendar simply
+       covers its top, as a drawer does.
+       SLIDING IT WITH A TRANSFORM WAS TRIED FIRST AND IS WHAT LEFT A
+       SCREEN OF BLACK AT THE BOTTOM. A transform lifts the content off
+       the end of the document without shortening the document, so the
+       gap above the bar grew by exactly the collapse -- measured at 43px
+       open against 333px closed, a difference of one M.range. A negative
+       bottom margin does not shorten it either: scrollable overflow
+       ignores one, and the page height did not move by a single pixel. */
+    main.style.paddingTop = (M.hdrFull - M.range + 22) + "px";
     main.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
-    main.style.marginBottom = (-M.range) + "px";
+    main.style.marginBottom = "";
+    main.style.transform = "";
     col = clamp(col, 0, M.range);
     lastWant = clamp(scrollNow(), 0, M.range);
     apply();
@@ -908,13 +915,12 @@ a{color:inherit;text-decoration:none}
 
     hdr.style.setProperty("--p", M.range ? String(left / M.range) : "0");
 
-    /* PADDING MUST NOT BE SET FROM HERE. Writing paddingTop inside
-       apply() changes the document height, which fires scroll, which
-       calls apply() again -- a loop that fought every scroll gesture
-       and yanked the list back up. The content is instead pushed down
-       by a TRANSFORM, which never affects layout and so never feeds
-       back into scrolling. */
-    main.style.transform = "translate3d(0," + (-left) + "px,0)";
+    /* NO LAYOUT PROPERTY MAY BE WRITTEN FROM HERE. Writing paddingTop
+       inside apply() changes the document height, which fires scroll,
+       which calls apply() again -- a loop that fought every scroll
+       gesture and yanked the list back up. apply() now moves the header
+       and nothing else: the agenda below it is never touched, by a
+       transform or otherwise. */
 
     var open = left < 1;
     clip.style.clipPath = open ? "none" : "inset(0 -100vw)";
