@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-10T16:55:18.357Z",
- "generated_local": "2026-09-10T09:55:18-07:00",
+ "generated_at": "2026-09-11T05:40:23.717Z",
+ "generated_local": "2026-09-10T22:40:23-07:00",
  "window_start": "2026-09-10T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 27,
-   "added": 27
+   "returned": 32,
+   "added": 32
   },
   {
    "name": "Courtenay",
@@ -18,35 +18,17 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 17,
-   "added": 17
+   "returned": 18,
+   "added": 18
   }
  ],
  "totals": {
-  "fetched": 48,
-  "unique": 48,
+  "fetched": 54,
+  "unique": 54,
   "prev_unique": 48
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 774317,
-   "name": "Thursday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-10T18:00:00-07:00",
-   "end": "2026-09-10T21:20:00-07:00",
-   "day": "2026-09-10",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 1,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-16T05:03:46+00:00"
-  },
   {
    "id": 777203,
    "name": "Tuesday Riftbound Playnight",
@@ -64,6 +46,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-07-17T05:04:07+00:00"
+  },
+  {
+   "id": 932473,
+   "name": "Friday Learn to Play",
+   "type": "learn",
+   "start": "2026-09-11T18:00:00-07:00",
+   "end": "2026-09-11T21:30:00-07:00",
+   "day": "2026-09-11",
+   "time": "6:00 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-09-10T18:00:25+00:00"
   },
   {
    "id": 779809,
@@ -84,13 +84,31 @@
    "updated": "2026-07-18T05:02:57+00:00"
   },
   {
+   "id": 932897,
+   "name": "Saturday Nexus Night",
+   "type": "nexus",
+   "start": "2026-09-12T16:00:00-07:00",
+   "end": "2026-09-12T18:30:00-07:00",
+   "day": "2026-09-12",
+   "time": "4:00 PM",
+   "venue": "Elite4 Games",
+   "city": "Victoria",
+   "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 5,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-10T20:44:45+00:00"
+  },
+  {
    "id": 805044,
    "name": "Saturday Afternoon Nexus Nights - 1v1",
    "type": "nexus",
-   "start": "2026-09-12T13:30:00-07:00",
-   "end": "2026-09-12T16:50:00-07:00",
+   "start": "2026-09-12T17:00:00-07:00",
+   "end": "2026-09-12T20:20:00-07:00",
    "day": "2026-09-12",
-   "time": "1:30 PM",
+   "time": "5:00 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
    "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
@@ -99,7 +117,7 @@
    "reg": 0,
    "cents": 500,
    "currency": "CAD",
-   "updated": "2026-07-27T20:12:40+00:00"
+   "updated": "2026-09-10T21:14:42+00:00"
   },
   {
    "id": 817587,
@@ -136,6 +154,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-01T18:13:15+00:00"
+  },
+  {
+   "id": 932475,
+   "name": "Sunday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-13T17:00:00-07:00",
+   "end": "2026-09-13T21:10:00-07:00",
+   "day": "2026-09-13",
+   "time": "5:00 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-10T18:01:23+00:00"
   },
   {
    "id": 786833,
@@ -265,12 +301,12 @@
   },
   {
    "id": 805048,
-   "name": "Saturday Afternoon Nexus Nights - 1v1",
+   "name": "Saturday Evening Nexus Nights - 1v1",
    "type": "nexus",
-   "start": "2026-09-19T13:30:00-07:00",
-   "end": "2026-09-19T16:50:00-07:00",
+   "start": "2026-09-19T17:00:00-07:00",
+   "end": "2026-09-19T20:20:00-07:00",
    "day": "2026-09-19",
-   "time": "1:30 PM",
+   "time": "5:00 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
    "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
@@ -279,7 +315,7 @@
    "reg": 0,
    "cents": 500,
    "currency": "CAD",
-   "updated": "2026-07-27T20:13:09+00:00"
+   "updated": "2026-09-10T21:17:00+00:00"
   },
   {
    "id": 817589,
@@ -334,6 +370,24 @@
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:28:13+00:00"
+  },
+  {
+   "id": 932478,
+   "name": "Sunday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-20T17:00:00-07:00",
+   "end": "2026-09-20T21:10:00-07:00",
+   "day": "2026-09-20",
+   "time": "5:00 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-10T18:02:02+00:00"
   },
   {
    "id": 806489,
@@ -516,6 +570,24 @@
    "updated": "2026-08-02T05:01:08+00:00"
   },
   {
+   "id": 932479,
+   "name": "Sunday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-09-27T17:30:00-07:00",
+   "end": "2026-09-27T21:40:00-07:00",
+   "day": "2026-09-27",
+   "time": "5:30 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-10T18:02:48+00:00"
+  },
+  {
    "id": 827959,
    "name": "Tuesday Riftbound Playnight",
    "type": "learn",
@@ -694,6 +766,24 @@
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-16T05:00:57+00:00"
+  },
+  {
+   "id": 932482,
+   "name": "Sunday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-10-11T17:00:00-07:00",
+   "end": "2026-10-11T21:10:00-07:00",
+   "day": "2026-10-11",
+   "time": "5:00 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-10T18:03:37+00:00"
   },
   {
    "id": 866184,
@@ -892,6 +982,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-09-08T05:03:43+00:00"
+  },
+  {
+   "id": 934751,
+   "name": "Tuesday Riftbound Playnight",
+   "type": "learn",
+   "start": "2026-11-06T18:00:00-08:00",
+   "end": "2026-11-06T21:30:00-08:00",
+   "day": "2026-11-06",
+   "time": "6:00 PM",
+   "venue": "Giddy-Up Games",
+   "city": "Campbell River",
+   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
+   "region": "island",
+   "cap": 8,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": "2026-09-11T05:04:02+00:00"
   }
  ]
 }
