@@ -862,21 +862,38 @@ a{color:inherit;text-decoration:none}
        for the header at its FULL height, and apply() slides the whole
        block up by however far the header has collapsed. */
     main.style.paddingTop = (M.hdrFull + 22) + "px";
-    main.style.paddingBottom = (tabs.offsetHeight + 34 + M.range) + "px";
+    /* the block is slid UP by as much as M.range, which leaves that much
+       empty document below the last event. The negative margin takes the
+       same amount back off the page height, so the end of the agenda
+       lands just above the bar instead of over a screen of black. */
+    main.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
+    main.style.marginBottom = (-M.range) + "px";
+    col = clamp(col, 0, M.range);
+    lastWant = clamp(scrollNow(), 0, M.range);
     apply();
   }
 
-  /* THE DRAWER OFFSET. The handle no longer scrolls the page: it holds
-     its own value, which the scroll position is added to. Pulling the
-     calendar open while the agenda sits far down the list therefore
-     works without unwinding that scroll first -- the calendar opens
-     OVER the list, as a drawer does. Nothing auto-collapses. */
-  var drawer = 0;
+  /* THE COLLAPSE IS AN ABSOLUTE AMOUNT, 0 to M.range, and it is the only
+     thing apply() reads. It used to be stored as an offset ADDED to the
+     live scroll position, which is why scrolling up re-expanded the
+     calendar partway down the agenda instead of at its top, and why a
+     fast scroll could pull it open on its own. */
+  var col = 0;
+
+  /* HELD carries a value a pull set by hand, or null when the scroll
+     owns the collapse. A pull holds until the scroll position catches up
+     with it, so the calendar can be opened OVER a list that stays put and
+     still behaves normally once the reader gets back to the top of it.
+     Nothing auto-collapses. */
+  var held = null;
+  var lastWant = 0;
+  var dragging = false;
+
+  function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
   function apply(){
     if (locked) return;
-    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    var left = clamp(y + drawer, 0, M.range);
+    var left = clamp(col, 0, M.range);
     var t1 = Math.min(left, M.brand);
     var t2 = Math.min(left - t1, Math.max(0, M.weeks - M.row));
 
@@ -904,12 +921,24 @@ a{color:inherit;text-decoration:none}
     weeksBox.style.clipPath = open ? "none" : "inset(0 -100vw)";
   }
 
+  /* the scroll owns the collapse only while no pull is being held, and
+     hands back the moment its own value crosses the held one */
+  function fromScroll(){
+    var want = clamp(scrollNow(), 0, M.range);
+    if (held !== null && (lastWant - held) * (want - held) <= 0) held = null;
+    lastWant = want;
+    if (held === null) col = want;
+  }
+
   var ticking = false;
   window.addEventListener("scroll", function(){
     wake();
+    /* a scroll still settling under the finger must not move the
+       collapse mid-drag */
+    if (dragging) return;
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(function(){ apply(); ticking = false; });
+    requestAnimationFrame(function(){ fromScroll(); apply(); ticking = false; });
   }, {passive:true});
   window.addEventListener("resize", function(){ measure(); });
 
@@ -929,21 +958,26 @@ a{color:inherit;text-decoration:none}
      movement still toggles. */
   (function(){
     var grab = document.getElementById("grab");
-    var dragging = false, startY = 0, startScroll = 0, moved = 0;
+    var startY = 0, startCol = 0, moved = 0;
 
-    function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
-    function toggle(){
-      var y = scrollNow();
-      window.scrollTo({top: y > 4 ? 0 : M.range, behavior:"smooth"});
+    function hold(v){
+      col = clamp(v, 0, M.range);
+      held = col;
+      lastWant = clamp(scrollNow(), 0, M.range);
+      apply();
     }
 
-    var startDrawer = 0;
-
     grab.addEventListener("touchstart", function(e){
+      /* HALT ANY MOMENTUM FIRST. During a flick iOS spends the next touch
+         stopping the scroll and delivers no touchmove at all, which is why
+         the first pull after a scroll did nothing. Parking the page at the
+         offset it is already at ends the momentum here instead, so the
+         gesture is live immediately. */
+      window.scrollTo(0, scrollNow());
       dragging = true; moved = 0;
       startY = e.touches[0].clientY;
-      startDrawer = drawer;
       if (!M.range) measure();
+      startCol = clamp(col, 0, M.range);
       grab.className = "grab pull";
     }, {passive:true});
 
@@ -951,9 +985,10 @@ a{color:inherit;text-decoration:none}
       if (!dragging) return;
       var dy = e.touches[0].clientY - startY;
       if (Math.abs(dy) > moved) moved = Math.abs(dy);
-      /* pulling DOWN opens the calendar, so it decreases the offset */
-      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-      drawer = clamp(startDrawer - dy, -y, (M.range || 0) - y);
+      /* pulling DOWN opens the calendar, so it decreases the collapse.
+         The scroll position is NOT read here: the pull is measured
+         against the value the gesture started from and nothing else. */
+      col = clamp(startCol - dy, 0, M.range);
       apply();
       e.preventDefault();
     }, {passive:false});
@@ -964,26 +999,15 @@ a{color:inherit;text-decoration:none}
       grab.className = "grab";
       /* settle to whichever end it is nearer, so it never rests
          half open */
-      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-      var at = clamp(y + drawer, 0, M.range || 0);
-      if (moved < 6){
-        drawer = (at > 4) ? -y : (M.range || 0) - y;
-      } else {
-        drawer = (at > (M.range || 0) / 2) ? (M.range || 0) - y : -y;
-      }
-      apply();
+      if (moved < 6) hold(col > 4 ? 0 : M.range);
+      else hold(col > (M.range || 0) / 2 ? M.range : 0);
     }
     grab.addEventListener("touchend", release);
     grab.addEventListener("touchcancel", release);
 
     grab.addEventListener("click", function(e){
       e.preventDefault();
-      if (moved < 6 && !dragging){
-        var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-        var at = clamp(y + drawer, 0, M.range || 0);
-        drawer = (at > 4) ? -y : (M.range || 0) - y;
-        apply();
-      }
+      if (moved < 6 && !dragging) hold(col > 4 ? 0 : M.range);
     });
   })();
 
