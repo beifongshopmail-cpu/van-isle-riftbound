@@ -61,8 +61,13 @@ body{
   font-family:'ArchivoV',system-ui,sans-serif;
   font-size:15px;line-height:1.4;font-stretch:100%;
   -webkit-font-smoothing:antialiased;
-  /* double-tap-to-zoom is a TOUCH behaviour, not a selection one.
-     user-select does not affect it; touch-action does. */
+  /* THIS DOES NOT STOP DOUBLE-TAP ZOOM AND NEVER DID. Six rounds of
+     device testing in milestone 8.9 proved it: no CSS property reaches
+     that gesture. The core app is clean because nearly everything on it
+     is a BUTTON, and buttons are immune -- plus a document-level
+     touchend guard that cancels a second tap within 320ms and 30px.
+     This declaration is correct and costs nothing, so it stays; do not
+     read it as the fix, and do not delete it expecting a change. */
   touch-action:manipulation;
 }
 body.lock{position:fixed;left:0;right:0;overflow:hidden}
@@ -81,47 +86,32 @@ a{color:inherit;text-decoration:none}
   will-change:transform;
   overflow:visible;
 }
-/* THE SEAM IS AN EVENT BLOCK. Fifth approach, and the first that stops
-   treating the seam as a special case -- a real rounded box with a lit
-   border and the same three-shadow stack every other lit surface uses.
-   WHY THE PREVIOUS FOUR COULD NOT WORK, whatever their construction: a
-   masked bordered box, a transparent-side-border taper, a gradient fill
-   and a solid fill all masked or clipped the shape down to one edge,
-   AND A MASK CUTS THE BLOOM OFF WITH IT. Light escapes a closed box on
-   all four sides; a one-edge shape has no sides to escape from, so no
-   amount of shadow tuning could ever have reached past the mask.
-   THE BOX KEEPS ALL FOUR SIDES AND THREE OF THEM ARE OFF SCREEN. It is
-   wider than the viewport and starts above it, so only the bottom edge
-   is ever visible and the stroke leaves the screen at full strength --
-   no fade, no visible end, only the corner curves.
-   HIDING THEM BEHIND THE HEADER WAS TRIED FIRST AND BROKE THE PAGE. A
-   z-index of -1 does NOT paint a pseudo-element behind its parent's own
-   background: it paints above the background and below the content, so
-   every edge stayed visible, and the black covers added to hide them
-   landed on top of the last week row and the whole nav bar instead.
-   PUT UNWANTED EDGES OUT OF THE VIEWPORT. Do not cover them, and do not
-   mask them -- a mask would cut the bloom off with the shape.
-   THE STROKE TRACES THE CORNER AND THEN LEAVES THE SCREEN. The box is
-   the SAME WIDTH as the header and carries the same corner radius, so
-   its bottom edge follows that curve exactly. The curve then turns
-   upward into the box's side -- which would read as a hook if it ever
-   stopped, so it does not: the box runs 400px past the top of the
-   viewport, and the header is fixed at the top, so neither side has
-   anywhere visible to end. Curve, straighten, gone.
-   A WIDER BOX WAS TRIED AND IS WRONG. Pushing the sides off screen kept
-   the light straight across and left the header's corners black behind
-   it, which reads as a line laid over the shape rather than the shape
-   itself being lit.
-   ONLY ONE EDGE IS DRAWN. A four-sided box ran its two sides up the
-   whole screen as visible strokes -- the header's own black cannot
-   cover them, because a pseudo-element paints ABOVE its parent's
-   background. So the stroke is a border-bottom ALONE, which still
-   follows the corner radius: the radius applies to the border box
-   whether the other three sides are drawn or not.
-   THE BLOOM COMES FROM A SECOND COPY BEHIND IT. A box-shadow would hug
-   all four sides of the box, sides included, so the glow is a separate
-   shape offset upward far enough that only its bottom bloom reaches the
-   screen. Two elements, one edge each, same light. */
+/* THE SEAM, AFTER SEVEN CONSTRUCTIONS. Two elements: this one draws a
+   single lit edge, and .hdr .glow below carries the bloom. Both are the
+   full width of the header, both keep its corner radius, and both run
+   400px past the top of the viewport.
+   WHAT EACH PART IS FOR, because every one of them was earned:
+   - ONE EDGE, NOT FOUR. A bordered box drew its two sides straight up
+     the screen. A pseudo-element paints ABOVE its parent's background,
+     not behind it, so the header's own black cannot hide them and a
+     z-index of -1 does not help. border-bottom alone still follows the
+     corner radius: the radius applies to the border box whether the
+     other sides are drawn or not.
+   - THE BLOOM IS A SEPARATE SHAPE. A box-shadow hugs all four sides of
+     its box, so it would light the sides too. The glow element is
+     offset upward until only its bottom bloom is on screen.
+   - RUNNING 400px PAST THE TOP is what makes the stroke continuous. It
+     traces the corner, turns upward, and leaves the screen; the header
+     being fixed at the top means neither end has anywhere to stop.
+   FOUR EARLIER ATTEMPTS ALL MASKED OR CLIPPED THE SHAPE DOWN TO ONE
+   EDGE -- a masked bordered box, a transparent-side-border taper, a
+   gradient fill, a solid fill. A MASK CUTS THE BLOOM OFF WITH THE
+   SHAPE, so none of them could ever have glowed however the shadows
+   were tuned. Do not reach for a mask here.
+   A FIFTH MADE THE BOX WIDER THAN THE HEADER to hide its own corners
+   off screen. The light then ran straight across while the header's
+   corners stayed black behind it, which reads as a line laid over the
+   shape rather than the shape being lit. */
 .hdr::after{
   content:"";position:absolute;
   left:0;right:0;bottom:0;top:-400px;
@@ -994,9 +984,15 @@ a{color:inherit;text-decoration:none}
   document.addEventListener("click", wake);
   wake();
 
-  /* The handle LOOKED like a drag control and was only a button that
-     scrolled to top. It now drags in both directions, and a tap with no
-     movement still toggles. */
+  /* The handle drags in both directions and a tap with no movement
+     toggles. It was once only a button that scrolled to the top.
+     THE MECHANISM IS RIGHT AND IS NOT THE PLACE TO LOOK when something
+     feels wrong around scrolling -- rewriting the collapse onto a CSS
+     scroll-timeline was proposed once and correctly rejected. The three
+     causes that did make it fight the scroll were all in this handler
+     and are all fixed: no momentum halt on touchstart, reading the live
+     scroll position mid-drag, and storing the collapse as an offset
+     relative to scroll instead of an absolute amount. */
   (function(){
     var grab = document.getElementById("grab");
     var startY = 0, startCol = 0, moved = 0;
@@ -1030,15 +1026,16 @@ a{color:inherit;text-decoration:none}
 
     /* THE PULL SETTLES, IT DOES NOT JUMP. The drag tracks the finger one
        to one; on release the collapse glides to whichever end it is
-       nearer, over 220ms. It never rests half open on purpose -- a
-       partly collapsed header cuts a week row through the middle, which
-       reads as broken rather than as a chosen state. Open and anchored
-       week are the only two the design means. */
+       nearer. It never rests half open on purpose -- a partly collapsed
+       header cuts a week row through the middle, which reads as broken
+       rather than as a chosen state. Open and anchored week are the only
+       two states the design means.
+       THE DURATION COMES FROM THE DISTANCE, roughly 1.15ms per pixel,
+       floored at 150 and capped at 420. A FIXED 220ms WAS TRIED AND IS
+       WHY CLOSING READ AS A SNAP: a close had the whole M.range to cover
+       in the time a short nudge got. It also made the glide too quick to
+       catch mid-flight, and showed its frames on the way open. */
     var glideRaf = null;
-    /* THE SETTLE TAKES ITS TIME FROM THE DISTANCE, not a fixed 220ms.
-       A close had the whole M.range to cover in the same time a short
-       nudge got, which is why closing read as a snap while opening did
-       not. Roughly 1.15ms per pixel, floored at 150 and capped at 420. */
     function glide(to){
       if (glideRaf) cancelAnimationFrame(glideRaf);
       var from = clamp(col, 0, M.range), d = to - from, t0 = 0;
