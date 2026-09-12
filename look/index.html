@@ -1063,7 +1063,6 @@ a{color:inherit;text-decoration:none}
          gesture is live immediately. */
       window.scrollTo(0, scrollNow());
       if (glideRaf){ cancelAnimationFrame(glideRaf); glideRaf = null; }
-      window.DBG_TS = (window.DBG_TS || 0) + 1; window.DBG_TM = 0; window.DBG_T0 = Date.now(); window.DBG_DT = -1;
       coupled = scrollNow() <= M.range;
       dragging = true; moved = 0;
       lastMoveY = e.touches[0].clientY; lastMoveT = Date.now(); vel = 0;
@@ -1075,7 +1074,6 @@ a{color:inherit;text-decoration:none}
 
     grab.addEventListener("touchmove", function(e){
       if (!dragging) return;
-      if (window.DBG_DT < 0) window.DBG_DT = Date.now() - window.DBG_T0; window.DBG_TM = (window.DBG_TM || 0) + 1;
       var ny = e.touches[0].clientY, nt = Date.now(), dt = nt - lastMoveT;
       /* smoothed so one stuttering frame cannot decide the gesture */
       if (dt > 0) vel = vel * 0.4 + ((ny - lastMoveY) / dt) * 0.6;
@@ -1114,25 +1112,6 @@ a{color:inherit;text-decoration:none}
     });
   })();
 
-  /* TEMPORARY DIAGNOSTIC. Measures the bottom gap and whether a pull
-     after a scroll receives any touchmove at all. IT COMES OUT IN THE
-     NEXT COMMIT -- do not build anything on top of it. */
-  (function(){
-    var box = document.createElement("div");
-    box.id = "dbg";
-    box.style.cssText = "position:fixed;left:8px;bottom:112px;z-index:99;font:10px ui-monospace,monospace;color:#7CFF9B;background:rgba(0,0,0,.75);padding:5px 7px;border-radius:6px;white-space:pre;pointer-events:none;line-height:1.35";
-    document.body.appendChild(box);
-    var foot = document.querySelector(".foot");
-    setInterval(function(){
-      var de = document.documentElement;
-      var win = window.innerHeight;
-      var doc = de.scrollHeight;
-      var y = Math.round(window.pageYOffset || de.scrollTop || 0);
-      var fb = foot ? Math.round(foot.getBoundingClientRect().bottom) : -1;
-      var tt = Math.round(tabs.getBoundingClientRect().top);
-      box.textContent = "win " + win + "  doc " + doc + "\n" + "y " + y + "  ymax " + Math.round(doc - win) + "\n" + "col " + Math.round(col) + "  range " + Math.round(M.range) + "\n" + "padT " + main.style.paddingTop + "  padB " + main.style.paddingBottom + "\n" + "marg " + main.style.marginBottom + "  mainH " + main.offsetHeight + "\n" + "footBot " + fb + "  tabsTop " + tt + "\n" + "ts " + (window.DBG_TS || 0) + "  tm " + (window.DBG_TM || 0) + "  dt " + (window.DBG_DT || 0);
-    }, 250);
-  })();
 
   function refresh(remeasure){
     renderMonth(); renderList(); renderTypes();
