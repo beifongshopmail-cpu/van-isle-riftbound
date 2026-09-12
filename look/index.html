@@ -359,15 +359,17 @@ a{color:inherit;text-decoration:none}
    The stroke element did the same; only its bloom showed it, because
    its sides are not drawn. Countering the scale on the glow alone keeps
    the light where it is while the contents rest. */
-.tabs.idle .glow{transform:scale(1.031) translateY(-2px);opacity:.35}
-/* TEMPORARY DIAGNOSTIC, one commit only. The resting bar shows a second
-   rounded outline above and outside itself. Two candidates, opposite
-   fixes: the counter-scale on the glow is arithmetically off, or the
-   STROKE is shrinking with the bar while the glow holds still. Colouring
-   the two differently at rest names which one the ghost is. */
-.tabs.idle .glow{box-shadow:0 0 3px 0 rgba(255,0,0,.9), 0 0 12px 0 rgba(255,0,0,.6);opacity:1}
-.tabs.idle::before{border-top-color:#00FF66;opacity:1}
-.glow{transform-origin:50% 100%;transition:transform .45s var(--ease),opacity .45s var(--ease)}
+/* BOTH HALVES OF THE SEAM HOLD STILL. The bar shrinks at rest, and its
+   children shrink with it -- which pulled both the stroke and its bloom
+   in from the screen edges and showed their sides. Undoing the scale on
+   each keeps the light exactly where it is while the contents rest.
+   A DIAGNOSTIC SETTLED THIS RATHER THAN A SECOND GUESS: the glow was
+   coloured red and the stroke green at rest, and they landed in clearly
+   different places, which named the stroke as the one still moving.
+   1.031 is 1 divided by .97; the translate cancels the bar's own 2px. */
+.tabs.idle .glow,.tabs.idle::before{transform:scale(1.031) translateY(-2px)}
+.tabs.idle .glow{opacity:.35}
+.glow,.tabs::before{transform-origin:50% 100%;transition:transform .45s var(--ease),opacity .45s var(--ease)}
 .tabs.idle .tab{opacity:.42}
 .tab{transition:opacity .45s var(--ease)}
 .tab{flex:1 1 0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
