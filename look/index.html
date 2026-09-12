@@ -101,20 +101,21 @@ a{color:inherit;text-decoration:none}
    landed on top of the last week row and the whole nav bar instead.
    PUT UNWANTED EDGES OUT OF THE VIEWPORT. Do not cover them, and do not
    mask them -- a mask would cut the bloom off with the shape.
-   THE SIDES GO OUT BY TWICE THE CORNER RADIUS, not by a round 40px. At
-   40 the box's own corner curves were still on screen and read as a
-   hook turning up at each end of the stroke. Anything less than the
-   radius brings them back, so this is tied to --round and must move
-   with it.
-   THE LIGHT DOES NOT TRACE THE CONTAINER'S CORNER. A box wide enough to
-   hide its own corners is wider than the header, so the stroke crosses
-   the screen straight while the header's rounded corners stay black
-   behind it. That is a deliberate trade, not an oversight. */
+   THE STROKE TRACES THE CORNER AND THEN LEAVES THE SCREEN. The box is
+   the SAME WIDTH as the header and carries the same corner radius, so
+   its bottom edge follows that curve exactly. The curve then turns
+   upward into the box's side -- which would read as a hook if it ever
+   stopped, so it does not: the box runs 400px past the top of the
+   viewport, and the header is fixed at the top, so neither side has
+   anywhere visible to end. Curve, straighten, gone.
+   A WIDER BOX WAS TRIED AND IS WRONG. Pushing the sides off screen kept
+   the light straight across and left the header's corners black behind
+   it, which reads as a line laid over the shape rather than the shape
+   itself being lit. */
 .hdr::after{
   content:"";position:absolute;
-  left:calc(var(--round) * -2);right:calc(var(--round) * -2);
-  bottom:0;top:-80px;
-  border-radius:var(--round);
+  left:0;right:0;bottom:0;top:-400px;
+  border-radius:0 0 var(--round) var(--round);
   border:1px solid #FFFFFF;
   box-shadow:
     0 0 3px 0 rgba(242,243,245,.85),
@@ -316,9 +317,8 @@ a{color:inherit;text-decoration:none}
    read that comment first; the reasoning is there and is not repeated. */
 .tabs::before{
   content:"";position:absolute;
-  left:calc(var(--round) * -2);right:calc(var(--round) * -2);
-  top:0;bottom:-80px;
-  border-radius:var(--round);
+  left:0;right:0;top:0;bottom:-400px;
+  border-radius:var(--round) var(--round) 0 0;
   border:1px solid #FFFFFF;
   box-shadow:
     0 0 3px 0 rgba(242,243,245,.85),
