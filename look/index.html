@@ -81,39 +81,36 @@ a{color:inherit;text-decoration:none}
   will-change:transform;
   overflow:visible;
 }
-/* The seam is the container's bottom edge and must follow its corner.
-   A mask cannot be used here: box-shadow on a masked element is masked
-   with it, which leaves a bright line and no bloom. Instead the side
-   borders are transparent, so the drawn stroke tapers away around each
-   corner on its own, and drop-shadow glows the RENDERED SHAPE rather
-   than the element's box. */
-/* THIRD approach to this seam. The first two drew a stroke that simply
-   STOPPED at its ends, which reads as a blunt stub. A border cannot
-   fade along its length, so the stroke is now a gradient-filled shape:
-   a rounded box whose background runs transparent at both ends to full
-   white in the middle, masked down to just the bottom edge. */
+/* THE SEAM IS AN EVENT BLOCK. Fifth approach, and the first that stops
+   treating the seam as a special case -- a real rounded box with a lit
+   border and the same three-shadow stack every other lit surface uses.
+   WHY THE PREVIOUS FOUR COULD NOT WORK, whatever their construction: a
+   masked bordered box, a transparent-side-border taper, a gradient fill
+   and a solid fill all masked or clipped the shape down to one edge,
+   AND A MASK CUTS THE BLOOM OFF WITH IT. Light escapes a closed box on
+   all four sides; a one-edge shape has no sides to escape from, so no
+   amount of shadow tuning could ever have reached past the mask.
+   THE BOX KEEPS ALL FOUR SIDES. Only its bottom edge is visible: the
+   rest sits behind the header, which paints its own black over it. It
+   is wider than the viewport, so the stroke leaves the screen at full
+   strength with no fade and no visible end -- only the corner curves. */
 .hdr::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:var(--round);
-  border-radius:0 0 var(--round) var(--round);
-  /* no fade along its length: the stroke should leave the screen at
-     full strength, so its only visible ends are the corner curves */
-  background:#FFFFFF;
-  -webkit-mask:
-    radial-gradient(#000,#000) content-box content-box,
-    radial-gradient(#000,#000);
-  -webkit-mask-composite:xor;
-  mask:
-    linear-gradient(#000,#000) content-box content-box,
-    linear-gradient(#000,#000);
-  mask-composite:exclude;
-  padding:0 0 2px 0;
-  box-sizing:border-box;
+  content:"";position:absolute;
+  left:-40px;right:-40px;bottom:0;height:calc(var(--round) * 2);
+  border-radius:var(--round);
+  border:1px solid #FFFFFF;
+  box-shadow:
+    0 0 3px 0 rgba(242,243,245,.85),
+    0 0 9px -1px rgba(242,243,245,.45),
+    0 0 20px -4px rgba(242,243,245,.28);
   pointer-events:none;
+  z-index:-1;
 }
 .hdr::before{
-  content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;
-  background:rgba(242,243,245,.55);
-  filter:blur(5px);
+  content:"";position:absolute;left:0;right:0;bottom:0;
+  height:calc(var(--round) * 2);
+  background:var(--ground);
+  border-radius:0 0 var(--round) var(--round);
   pointer-events:none;
 }
 
@@ -305,30 +302,30 @@ a{color:inherit;text-decoration:none}
   transform-origin:50% 100%;
   transition:transform .45s var(--ease),opacity .45s var(--ease);
 }
+/* THE SAME BOX, INVERTED. Built exactly like the header's seam above --
+   read that comment first; the reasoning is there and is not repeated. */
 .tabs::before{
-  content:"";position:absolute;left:0;right:0;top:0;height:var(--round);
-  border-radius:var(--round) var(--round) 0 0;
-  background:#FFFFFF;
-  -webkit-mask:
-    radial-gradient(#000,#000) content-box content-box,
-    radial-gradient(#000,#000);
-  -webkit-mask-composite:xor;
-  mask:
-    linear-gradient(#000,#000) content-box content-box,
-    linear-gradient(#000,#000);
-  mask-composite:exclude;
-  padding:2px 0 0 0;
-  box-sizing:border-box;
+  content:"";position:absolute;
+  left:-40px;right:-40px;top:0;height:calc(var(--round) * 2);
+  border-radius:var(--round);
+  border:1px solid #FFFFFF;
+  box-shadow:
+    0 0 3px 0 rgba(242,243,245,.85),
+    0 0 9px -1px rgba(242,243,245,.45),
+    0 0 20px -4px rgba(242,243,245,.28);
   pointer-events:none;
+  z-index:-1;
 }
 .tabs::after{
-  content:"";position:absolute;left:0;right:0;top:-1px;height:3px;
-  background:rgba(242,243,245,.5);
-  filter:blur(5px);
+  content:"";position:absolute;left:0;right:0;top:0;
+  height:calc(var(--round) * 2);
+  background:#000000;
+  border-radius:var(--round) var(--round) 0 0;
   pointer-events:none;
 }
+/* resting, the seam loses its light. The ::after is the bar's own black
+   cover, not a glow -- it must NOT fade, or the agenda shows through. */
 .tabs.idle::before{opacity:.35}
-.tabs.idle::after{opacity:0}
 /* resting: the bar keeps its own black so nothing shows through.
    only the contents fade, and the seam loses its light. */
 .tabs.idle{transform:scale(.97) translateY(2px)}
