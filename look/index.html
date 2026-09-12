@@ -111,18 +111,34 @@ a{color:inherit;text-decoration:none}
    A WIDER BOX WAS TRIED AND IS WRONG. Pushing the sides off screen kept
    the light straight across and left the header's corners black behind
    it, which reads as a line laid over the shape rather than the shape
-   itself being lit. */
+   itself being lit.
+   ONLY ONE EDGE IS DRAWN. A four-sided box ran its two sides up the
+   whole screen as visible strokes -- the header's own black cannot
+   cover them, because a pseudo-element paints ABOVE its parent's
+   background. So the stroke is a border-bottom ALONE, which still
+   follows the corner radius: the radius applies to the border box
+   whether the other three sides are drawn or not.
+   THE BLOOM COMES FROM A SECOND COPY BEHIND IT. A box-shadow would hug
+   all four sides of the box, sides included, so the glow is a separate
+   shape offset upward far enough that only its bottom bloom reaches the
+   screen. Two elements, one edge each, same light. */
 .hdr::after{
   content:"";position:absolute;
   left:0;right:0;bottom:0;top:-400px;
   border-radius:0 0 var(--round) var(--round);
-  border:1px solid #FFFFFF;
+  border-bottom:1px solid #FFFFFF;
+  pointer-events:none;
+}
+/* the bloom, offset up so only its bottom light is on screen */
+.hdr .glow{
+  content:"";position:absolute;
+  left:0;right:0;bottom:0;top:-400px;
+  border-radius:0 0 var(--round) var(--round);
   box-shadow:
     0 0 3px 0 rgba(242,243,245,.85),
     0 0 9px -1px rgba(242,243,245,.45),
     0 0 20px -4px rgba(242,243,245,.28);
   pointer-events:none;
-  z-index:-1;
 }
 
 /* the clip box must not crop the glow that leaves a cell, so the
@@ -319,13 +335,19 @@ a{color:inherit;text-decoration:none}
   content:"";position:absolute;
   left:0;right:0;top:0;bottom:-400px;
   border-radius:var(--round) var(--round) 0 0;
-  border:1px solid #FFFFFF;
+  border-top:1px solid #FFFFFF;
+  pointer-events:none;
+}
+/* the bloom, offset down so only its top light is on screen */
+.tabs .glow{
+  content:"";position:absolute;
+  left:0;right:0;top:0;bottom:-400px;
+  border-radius:var(--round) var(--round) 0 0;
   box-shadow:
     0 0 3px 0 rgba(242,243,245,.85),
     0 0 9px -1px rgba(242,243,245,.45),
     0 0 20px -4px rgba(242,243,245,.28);
   pointer-events:none;
-  z-index:-1;
 }
 /* resting: the bar keeps its own black so nothing shows through, only
    the contents fade, and the seam loses its light */
@@ -473,6 +495,7 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <button class="grab" id="grab" type="button" aria-label="Expand or collapse the calendar"><i></i></button>
+  <b class="glow" aria-hidden="true"></b>
 </header>
 
 <main class="body" id="main">
@@ -493,6 +516,7 @@ a{color:inherit;text-decoration:none}
 </main>
 
 <nav class="tabs" id="tabs">
+  <b class="glow" aria-hidden="true"></b>
   <a class="tab" href="#" aria-label="Home"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Home</span></a>
   <a class="tab" href="#" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg><span>Calendar</span></a>
   <a class="tab" href="../counter/"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/></svg><span>Counter</span></a>
