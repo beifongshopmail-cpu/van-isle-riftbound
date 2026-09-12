@@ -52,6 +52,40 @@
   --glow-max:22px;
   --round:26px;
   --ease:cubic-bezier(.22,.72,.2,1);
+
+  /* THE LIGHT, IN ONE PLACE. Every lit surface in the app is the same
+     construction -- a near-white border plus a stacked shadow, hue in
+     the halo and not in the stroke. What differs by role is HOW MUCH
+     of the stack the role gets, never how it is built:
+       three layers -- the two seams, event blocks, the selected day,
+                       the settings panel
+       two layers   -- every press flare and the chosen segment
+       one layer    -- small on-states: the lit gear, a ticked box,
+                       the pulled handle
+       scaled       -- the five type marks, which are 6px and would be
+                       flooded by the full radii
+     These numbers were previously typed out at each site and had
+     drifted apart by a few points in a dozen places. Nobody chose
+     those differences and they are below what can be judged by eye. */
+  --c:242,243,245;
+  --g1:3px;  --g1a:.85;
+  --g2:9px;  --g2a:.45;
+  --g3:20px; --g3a:.28;
+  --glow-1:0 0 calc(var(--g2) * .9) -2px rgba(var(--c),.65);
+  --glow-2:0 0 var(--g1) 0 rgba(var(--c),var(--g1a)), 0 0 var(--g2) -1px rgba(var(--c),var(--g2a));
+  --glow-3:0 0 var(--g1) 0 rgba(var(--c),var(--g1a)), 0 0 var(--g2) -1px rgba(var(--c),var(--g2a)), 0 0 var(--g3) -4px rgba(var(--c),var(--g3a));
+  --glow-m:0 0 calc(var(--g1) * .7) 0 rgba(var(--c),.95), 0 0 calc(var(--g2) * .7) 0 rgba(var(--c),.5);
+  --glow-p:0 0 calc(var(--g1) + 1px) 0 rgba(var(--c),1), 0 0 calc(var(--g2) * 1.5) 0 rgba(var(--c),.65), 0 0 calc(var(--g3) * 1.5) -4px rgba(var(--c),.4);
+}
+
+/* TEMPORARY. THIS BLOCK AND THE PILL AT THE END OF THE FILE COME OUT
+   AS SOON AS A VARIANT IS CHOSEN. DO NOT BUILD ANYTHING ON THEM AND
+   DO NOT COPY THEM TO ANOTHER PAGE. The defaults above are variant A,
+   which is what shipped. B is tighter and hotter. */
+html[data-neon="b"]{
+  --g1:2px;  --g1a:.95;
+  --g2:7px;  --g2a:.55;
+  --g3:14px; --g3a:.20;
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -124,10 +158,7 @@ a{color:inherit;text-decoration:none}
   content:"";position:absolute;
   left:0;right:0;bottom:0;top:-400px;
   border-radius:0 0 var(--round) var(--round);
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.85),
-    0 0 9px -1px rgba(242,243,245,.45),
-    0 0 20px -4px rgba(242,243,245,.28);
+  box-shadow:var(--glow-3);
   pointer-events:none;
 }
 
@@ -166,7 +197,7 @@ a{color:inherit;text-decoration:none}
 .icb svg{stroke:var(--dim);stroke-width:1.7;fill:none;transition:stroke .18s var(--ease)}
 .icb:active{
   border-color:rgba(242,243,245,.85);
-  box-shadow:0 0 3px 0 rgba(242,243,245,.8), 0 0 12px -1px rgba(242,243,245,.4);
+  box-shadow:var(--glow-2);
 }
 .icb:active svg{stroke:var(--bone)}
 /* A control that cannot be used DIMS; it does not vanish. Buttons that
@@ -177,7 +208,7 @@ a{color:inherit;text-decoration:none}
 .mrow .icb[disabled] svg{stroke:var(--dim)}
 #filt svg{width:19px;height:19px}
 #prev svg,#next svg{width:13px;height:13px}
-#filt.on{border-color:rgba(242,243,245,.5);box-shadow:0 0 8px -2px rgba(242,243,245,.5)}
+#filt.on{border-color:rgba(242,243,245,.5);box-shadow:var(--glow-1)}
 #filt.on svg{stroke:var(--bone)}
 
 .dow{display:grid;grid-template-columns:repeat(7,1fr);padding-bottom:4px}
@@ -202,16 +233,12 @@ a{color:inherit;text-decoration:none}
 .cell.today .d{color:var(--bone)}
 .cell:active{
   border-color:rgba(242,243,245,.55);
-  box-shadow:0 0 3px 0 rgba(242,243,245,.5), 0 0 14px -2px rgba(242,243,245,.3);
+  box-shadow:var(--glow-2);
 }
 /* selection is lit, not filled */
 .cell[aria-pressed="true"]{
   border-color:#FFFFFF;
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.9),
-    0 0 10px -1px rgba(242,243,245,.5),
-    0 0 22px -4px rgba(242,243,245,.3),
-    inset 0 0 10px -5px rgba(242,243,245,.8);
+  box-shadow:var(--glow-3), inset 0 0 10px -5px rgba(var(--c),.8);
 }
 .cell[aria-pressed="true"] .d{color:#FFFFFF;font-weight:700}
 
@@ -220,7 +247,7 @@ a{color:inherit;text-decoration:none}
 .mk{
   width:6px;height:6px;flex:0 0 auto;
   background:rgb(var(--cl));
-  box-shadow:0 0 2px 0 rgba(var(--c),.95), 0 0 6px 0 rgba(var(--c),.5);
+  box-shadow:var(--glow-m);
 }
 .mk.s-circle{border-radius:50%}
 .mk.s-diamond{border-radius:1px;transform:rotate(45deg)}
@@ -245,7 +272,7 @@ a{color:inherit;text-decoration:none}
   background:rgba(242,243,245,.3);
   transition:background .14s var(--ease),box-shadow .14s var(--ease);
 }
-.grab:active i,.grab.pull i{background:#FFFFFF;box-shadow:0 0 8px 0 rgba(242,243,245,.7)}
+.grab:active i,.grab.pull i{background:#FFFFFF;box-shadow:var(--glow-1)}
 
 /* ===================== agenda ===================== */
 
@@ -266,21 +293,11 @@ a{color:inherit;text-decoration:none}
   border:1px solid rgb(var(--cl));
   border-radius:15px;
   padding:12px 14px 13px 14px;margin:0 0 10px 0;
-  box-shadow:
-    0 0 3px 0 rgba(var(--c),.85),
-    0 0 9px -1px rgba(var(--c),.45),
-    0 0 20px -4px rgba(var(--c),.28),
-    inset 0 1px 0 0 var(--top),
-    inset 0 0 8px -4px rgba(var(--c),.7);
+  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top), inset 0 0 8px -4px rgba(var(--c),.7);
   transition:box-shadow .16s var(--ease);
 }
 .ev:active{
-  box-shadow:
-    0 0 4px 0 rgba(var(--c),1),
-    0 0 14px 0 rgba(var(--c),.65),
-    0 0 30px -4px rgba(var(--c),.4),
-    inset 0 1px 0 0 var(--top),
-    inset 0 0 14px -5px rgba(var(--c),.9);
+  box-shadow:var(--glow-p), inset 0 1px 0 0 var(--top), inset 0 0 14px -5px rgba(var(--c),.9);
 }
 .ev .l1{display:flex;align-items:center;gap:8px}
 .ev .l1 .mk{margin-right:1px}
@@ -333,10 +350,7 @@ a{color:inherit;text-decoration:none}
   content:"";position:absolute;
   left:0;right:0;top:0;bottom:-400px;
   border-radius:var(--round) var(--round) 0 0;
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.85),
-    0 0 9px -1px rgba(242,243,245,.45),
-    0 0 20px -4px rgba(242,243,245,.28);
+  box-shadow:var(--glow-3);
   pointer-events:none;
 }
 /* RESTING IS A FADE, NOT A SHRINK, AND THE BAR ITSELF NEVER MOVES.
@@ -368,7 +382,7 @@ a{color:inherit;text-decoration:none}
 .tab[aria-current="page"]::after{
   content:"";position:absolute;top:7px;left:50%;margin-left:-13px;
   width:26px;height:2px;border-radius:1px;background:#FFFFFF;
-  box-shadow:0 0 3px 0 rgba(242,243,245,.9), 0 0 10px 0 rgba(242,243,245,.55);
+  box-shadow:var(--glow-2);
 }
 
 /* ===================== panel, grows from its button ===================== */
@@ -388,12 +402,7 @@ a{color:inherit;text-decoration:none}
   background:var(--ground);
   border:1px solid rgba(242,243,245,.9);
   border-radius:18px;
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.8),
-    0 0 10px -1px rgba(242,243,245,.45),
-    0 0 24px -4px rgba(242,243,245,.25),
-    0 20px 40px -12px rgba(0,0,0,1),
-    inset 0 0 10px -5px rgba(242,243,245,.7);
+  box-shadow:var(--glow-3), 0 20px 40px -12px rgba(0,0,0,1), inset 0 0 10px -5px rgba(var(--c),.7);
   padding:0 15px 15px 15px;
   opacity:0;transform:scale(.24);pointer-events:none;
   transform-origin:var(--ox,90%) 0;
@@ -413,7 +422,7 @@ a{color:inherit;text-decoration:none}
 .pclose svg{width:12px;height:12px;stroke:var(--dim);stroke-width:2.2;fill:none}
 .pclose:active{
   border-color:rgba(242,243,245,.85);
-  box-shadow:0 0 3px 0 rgba(242,243,245,.7), 0 0 12px -2px rgba(242,243,245,.35);
+  box-shadow:var(--glow-2);
 }
 .pclose:active svg{stroke:var(--bone)}
 
@@ -425,10 +434,7 @@ a{color:inherit;text-decoration:none}
 }
 .seg button[aria-pressed="true"]{
   color:#FFFFFF;border-color:rgba(242,243,245,.9);
-  box-shadow:
-    0 0 3px 0 rgba(242,243,245,.7),
-    0 0 10px -1px rgba(242,243,245,.35),
-    inset 0 0 12px -6px rgba(242,243,245,.9);
+  box-shadow:var(--glow-2), inset 0 0 12px -6px rgba(var(--c),.9);
 }
 .seg button:active{border-color:rgba(242,243,245,.55)}
 
@@ -445,7 +451,7 @@ a{color:inherit;text-decoration:none}
   display:flex;align-items:center;justify-content:center;
 }
 .tyrow .box svg{width:12px;height:12px;stroke:#000;stroke-width:3;fill:none}
-.tyrow[aria-pressed="true"] .box{background:#FFFFFF;border-color:#FFFFFF;box-shadow:0 0 8px -2px rgba(242,243,245,.8)}
+.tyrow[aria-pressed="true"] .box{background:#FFFFFF;border-color:#FFFFFF;box-shadow:var(--glow-1)}
 .tyrow[aria-pressed="false"] .lab{color:var(--mute)}
 .tyrow[aria-pressed="false"] .box svg{visibility:hidden}
 .tyrow[aria-pressed="false"] .mk{background:var(--off);border-color:var(--off);box-shadow:none}
@@ -462,11 +468,23 @@ a{color:inherit;text-decoration:none}
    slow or the network is bad */
 .addcal:active{
   border-color:rgba(242,243,245,.85);
-  box-shadow:0 0 3px 0 rgba(242,243,245,.7), 0 0 14px -2px rgba(242,243,245,.35);
+  box-shadow:var(--glow-2);
 }
 .addcal svg.ic{flex:0 0 auto;width:17px;height:17px;stroke:var(--bone);stroke-width:1.6;fill:none}
 .addcal .t{flex:1}
 .addcal svg.ch{flex:0 0 auto;width:12px;height:12px;stroke:var(--dim);stroke-width:2.2;fill:none}
+
+/* TEMPORARY -- COMES OUT WITH THE VARIANT BLOCK NEAR THE TOP OF THE
+   FILE. Deliberately plain: no lit border, no shadow, nothing this
+   app's own language uses, so it is never mistaken for a control that
+   belongs here. */
+#neon{
+  position:fixed;z-index:40;right:10px;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 64px);
+  height:28px;padding:0 10px;border-radius:8px;
+  border:1px solid #444;background:#111;color:#BBB;
+  font-size:11px;font-weight:600;letter-spacing:.06em;
+}
 </style>
 </head>
 <body>
@@ -552,6 +570,8 @@ a{color:inherit;text-decoration:none}
     <svg class="ch" viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg>
   </a>
 </section>
+
+<button id="neon" type="button">NEON A</button>
 
 <script>
 (function(){
@@ -1208,6 +1228,20 @@ a{color:inherit;text-decoration:none}
     listEl.appendChild(f);
     requestAnimationFrame(measure);
   });
+})();
+
+/* TEMPORARY -- REMOVED WHEN A VARIANT IS CHOSEN. */
+(function(){
+  var n=document.getElementById('neon'),v='a';
+  try{v=localStorage.getItem('look.neon')||'a'}catch(e){}
+  function set(x){
+    v=x;
+    document.documentElement.setAttribute('data-neon',x);
+    n.textContent='NEON '+x.toUpperCase();
+    try{localStorage.setItem('look.neon',x)}catch(e){}
+  }
+  n.onclick=function(){set(v==='a'?'b':'a')};
+  set(v);
 })();
 </script>
 </body>
