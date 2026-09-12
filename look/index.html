@@ -68,24 +68,14 @@
      drifted apart by a few points in a dozen places. Nobody chose
      those differences and they are below what can be judged by eye. */
   --c:242,243,245;
-  --g1:3px;  --g1a:.85;
-  --g2:9px;  --g2a:.45;
-  --g3:20px; --g3a:.28;
+  --g1:2px;  --g1a:.95;
+  --g2:7px;  --g2a:.55;
+  --g3:14px; --g3a:.20;
   --glow-1:0 0 calc(var(--g2) * .9) -2px rgba(var(--c),.65);
   --glow-2:0 0 var(--g1) 0 rgba(var(--c),var(--g1a)), 0 0 var(--g2) -1px rgba(var(--c),var(--g2a));
   --glow-3:0 0 var(--g1) 0 rgba(var(--c),var(--g1a)), 0 0 var(--g2) -1px rgba(var(--c),var(--g2a)), 0 0 var(--g3) -4px rgba(var(--c),var(--g3a));
   --glow-m:0 0 calc(var(--g1) * .7) 0 rgba(var(--c),.95), 0 0 calc(var(--g2) * .7) 0 rgba(var(--c),.5);
   --glow-p:0 0 calc(var(--g1) + 1px) 0 rgba(var(--c),1), 0 0 calc(var(--g2) * 1.5) 0 rgba(var(--c),.65), 0 0 calc(var(--g3) * 1.5) -4px rgba(var(--c),.4);
-}
-
-/* TEMPORARY. THIS BLOCK AND THE PILL AT THE END OF THE FILE COME OUT
-   AS SOON AS A VARIANT IS CHOSEN. DO NOT BUILD ANYTHING ON THEM AND
-   DO NOT COPY THEM TO ANOTHER PAGE. The defaults above are variant A,
-   which is what shipped. B is tighter and hotter. */
-html[data-neon="b"]{
-  --g1:2px;  --g1a:.95;
-  --g2:7px;  --g2a:.55;
-  --g3:14px; --g3a:.20;
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -473,18 +463,6 @@ a{color:inherit;text-decoration:none}
 .addcal svg.ic{flex:0 0 auto;width:17px;height:17px;stroke:var(--bone);stroke-width:1.6;fill:none}
 .addcal .t{flex:1}
 .addcal svg.ch{flex:0 0 auto;width:12px;height:12px;stroke:var(--dim);stroke-width:2.2;fill:none}
-
-/* TEMPORARY -- COMES OUT WITH THE VARIANT BLOCK NEAR THE TOP OF THE
-   FILE. Deliberately plain: no lit border, no shadow, nothing this
-   app's own language uses, so it is never mistaken for a control that
-   belongs here. */
-#neon{
-  position:fixed;z-index:40;right:10px;
-  bottom:calc(env(safe-area-inset-bottom,0px) + 64px);
-  height:28px;padding:0 10px;border-radius:8px;
-  border:1px solid #444;background:#111;color:#BBB;
-  font-size:11px;font-weight:600;letter-spacing:.06em;
-}
 </style>
 </head>
 <body>
@@ -570,8 +548,6 @@ a{color:inherit;text-decoration:none}
     <svg class="ch" viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg>
   </a>
 </section>
-
-<button id="neon" type="button">NEON A</button>
 
 <script>
 (function(){
@@ -1228,20 +1204,6 @@ a{color:inherit;text-decoration:none}
     listEl.appendChild(f);
     requestAnimationFrame(measure);
   });
-})();
-
-/* TEMPORARY -- REMOVED WHEN A VARIANT IS CHOSEN. */
-(function(){
-  var n=document.getElementById('neon'),v='a';
-  try{v=localStorage.getItem('look.neon')||'a'}catch(e){}
-  function set(x){
-    v=x;
-    document.documentElement.setAttribute('data-neon',x);
-    n.textContent='NEON '+x.toUpperCase();
-    try{localStorage.setItem('look.neon',x)}catch(e){}
-  }
-  n.onclick=function(){set(v==='a'?'b':'a')};
-  set(v);
 })();
 </script>
 </body>
