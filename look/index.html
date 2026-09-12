@@ -90,13 +90,20 @@ a{color:inherit;text-decoration:none}
    AND A MASK CUTS THE BLOOM OFF WITH IT. Light escapes a closed box on
    all four sides; a one-edge shape has no sides to escape from, so no
    amount of shadow tuning could ever have reached past the mask.
-   THE BOX KEEPS ALL FOUR SIDES. Only its bottom edge is visible: the
-   rest sits behind the header, which paints its own black over it. It
-   is wider than the viewport, so the stroke leaves the screen at full
-   strength with no fade and no visible end -- only the corner curves. */
+   THE BOX KEEPS ALL FOUR SIDES AND THREE OF THEM ARE OFF SCREEN. It is
+   wider than the viewport and starts above it, so only the bottom edge
+   is ever visible and the stroke leaves the screen at full strength --
+   no fade, no visible end, only the corner curves.
+   HIDING THEM BEHIND THE HEADER WAS TRIED FIRST AND BROKE THE PAGE. A
+   z-index of -1 does NOT paint a pseudo-element behind its parent's own
+   background: it paints above the background and below the content, so
+   every edge stayed visible, and the black covers added to hide them
+   landed on top of the last week row and the whole nav bar instead.
+   PUT UNWANTED EDGES OUT OF THE VIEWPORT. Do not cover them, and do not
+   mask them -- a mask would cut the bloom off with the shape. */
 .hdr::after{
   content:"";position:absolute;
-  left:-40px;right:-40px;bottom:0;height:calc(var(--round) * 2);
+  left:-40px;right:-40px;bottom:0;top:-80px;
   border-radius:var(--round);
   border:1px solid #FFFFFF;
   box-shadow:
@@ -105,13 +112,6 @@ a{color:inherit;text-decoration:none}
     0 0 20px -4px rgba(242,243,245,.28);
   pointer-events:none;
   z-index:-1;
-}
-.hdr::before{
-  content:"";position:absolute;left:0;right:0;bottom:0;
-  height:calc(var(--round) * 2);
-  background:var(--ground);
-  border-radius:0 0 var(--round) var(--round);
-  pointer-events:none;
 }
 
 /* the clip box must not crop the glow that leaves a cell, so the
@@ -306,7 +306,7 @@ a{color:inherit;text-decoration:none}
    read that comment first; the reasoning is there and is not repeated. */
 .tabs::before{
   content:"";position:absolute;
-  left:-40px;right:-40px;top:0;height:calc(var(--round) * 2);
+  left:-40px;right:-40px;top:0;bottom:-80px;
   border-radius:var(--round);
   border:1px solid #FFFFFF;
   box-shadow:
@@ -316,18 +316,9 @@ a{color:inherit;text-decoration:none}
   pointer-events:none;
   z-index:-1;
 }
-.tabs::after{
-  content:"";position:absolute;left:0;right:0;top:0;
-  height:calc(var(--round) * 2);
-  background:#000000;
-  border-radius:var(--round) var(--round) 0 0;
-  pointer-events:none;
-}
-/* resting, the seam loses its light. The ::after is the bar's own black
-   cover, not a glow -- it must NOT fade, or the agenda shows through. */
+/* resting: the bar keeps its own black so nothing shows through, only
+   the contents fade, and the seam loses its light */
 .tabs.idle::before{opacity:.35}
-/* resting: the bar keeps its own black so nothing shows through.
-   only the contents fade, and the seam loses its light. */
 .tabs.idle{transform:scale(.97) translateY(2px)}
 .tabs.idle .tab{opacity:.42}
 .tab{transition:opacity .45s var(--ease)}
