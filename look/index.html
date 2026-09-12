@@ -100,10 +100,20 @@ a{color:inherit;text-decoration:none}
    every edge stayed visible, and the black covers added to hide them
    landed on top of the last week row and the whole nav bar instead.
    PUT UNWANTED EDGES OUT OF THE VIEWPORT. Do not cover them, and do not
-   mask them -- a mask would cut the bloom off with the shape. */
+   mask them -- a mask would cut the bloom off with the shape.
+   THE SIDES GO OUT BY TWICE THE CORNER RADIUS, not by a round 40px. At
+   40 the box's own corner curves were still on screen and read as a
+   hook turning up at each end of the stroke. Anything less than the
+   radius brings them back, so this is tied to --round and must move
+   with it.
+   THE LIGHT DOES NOT TRACE THE CONTAINER'S CORNER. A box wide enough to
+   hide its own corners is wider than the header, so the stroke crosses
+   the screen straight while the header's rounded corners stay black
+   behind it. That is a deliberate trade, not an oversight. */
 .hdr::after{
   content:"";position:absolute;
-  left:-40px;right:-40px;bottom:0;top:-80px;
+  left:calc(var(--round) * -2);right:calc(var(--round) * -2);
+  bottom:0;top:-80px;
   border-radius:var(--round);
   border:1px solid #FFFFFF;
   box-shadow:
@@ -306,7 +316,8 @@ a{color:inherit;text-decoration:none}
    read that comment first; the reasoning is there and is not repeated. */
 .tabs::before{
   content:"";position:absolute;
-  left:-40px;right:-40px;top:0;bottom:-80px;
+  left:calc(var(--round) * -2);right:calc(var(--round) * -2);
+  top:0;bottom:-80px;
   border-radius:var(--round);
   border:1px solid #FFFFFF;
   box-shadow:
