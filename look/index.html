@@ -349,27 +349,24 @@ a{color:inherit;text-decoration:none}
     0 0 20px -4px rgba(242,243,245,.28);
   pointer-events:none;
 }
-/* resting: the bar keeps its own black so nothing shows through, only
-   the contents fade, and the seam loses its light */
+/* RESTING IS A FADE, NOT A SHRINK, AND THE BAR ITSELF NEVER MOVES.
+   THREE ATTEMPTS AT SHRINKING IT ALL FAILED IN THE SAME PLACE, so the
+   shrink is gone rather than corrected again:
+   1. scale(.97) on .tabs scaled its children too, pulling the stroke
+      and its bloom in from the screen edges and showing their sides as
+      two vertical strokes at rest.
+   2. Countering that scale on the glow alone left the stroke still
+      shrinking, so the two separated -- a diagnostic colouring them red
+      and green named the stroke as the one still moving.
+   3. Countering it on both left the bar's own BLACK shrinking while the
+      light held still, opening a transparent strip at the top of the
+      bar with the agenda visible through it.
+   The 3% was never what read as resting: the contents fading and the
+   seam dimming already do that, and the bottom bar is the one surface
+   that must stay put on every page. */
 .tabs.idle::before{opacity:.35}
-.tabs.idle{transform:scale(.97) translateY(2px)}
-/* THE LIGHT DOES NOT SHRINK WITH THE BAR. scale(.97) on .tabs scales
-   its children too, which pulled the glow shape's sides in from the
-   screen edges and made them visible as two vertical strokes at rest.
-   The stroke element did the same; only its bloom showed it, because
-   its sides are not drawn. Countering the scale on the glow alone keeps
-   the light where it is while the contents rest. */
-/* BOTH HALVES OF THE SEAM HOLD STILL. The bar shrinks at rest, and its
-   children shrink with it -- which pulled both the stroke and its bloom
-   in from the screen edges and showed their sides. Undoing the scale on
-   each keeps the light exactly where it is while the contents rest.
-   A DIAGNOSTIC SETTLED THIS RATHER THAN A SECOND GUESS: the glow was
-   coloured red and the stroke green at rest, and they landed in clearly
-   different places, which named the stroke as the one still moving.
-   1.031 is 1 divided by .97; the translate cancels the bar's own 2px. */
-.tabs.idle .glow,.tabs.idle::before{transform:scale(1.031) translateY(-2px)}
 .tabs.idle .glow{opacity:.35}
-.glow,.tabs::before{transform-origin:50% 100%;transition:transform .45s var(--ease),opacity .45s var(--ease)}
+.glow,.tabs::before{transition:opacity .45s var(--ease)}
 .tabs.idle .tab{opacity:.42}
 .tab{transition:opacity .45s var(--ease)}
 .tab{flex:1 1 0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
