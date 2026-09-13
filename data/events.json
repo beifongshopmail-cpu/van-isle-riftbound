@@ -1,19 +1,19 @@
 {
- "generated_at": "2026-09-12T16:04:03.881Z",
- "generated_local": "2026-09-12T09:04:03-07:00",
+ "generated_at": "2026-09-13T05:43:25.154Z",
+ "generated_local": "2026-09-12T22:43:25-07:00",
  "window_start": "2026-09-12T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 31,
-   "added": 31
+   "returned": 29,
+   "added": 29
   },
   {
    "name": "Courtenay",
    "region": "island",
-   "returned": 4,
-   "added": 4
+   "returned": 3,
+   "added": 3
   },
   {
    "name": "Campbell River",
@@ -23,84 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 52,
-  "unique": 52,
+  "fetched": 49,
+  "unique": 49,
   "prev_unique": 52
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 779809,
-   "name": "Saturday Afternoon Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-12T12:00:00-07:00",
-   "end": "2026-09-12T16:10:00-07:00",
-   "day": "2026-09-12",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 2,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-18T05:02:57+00:00"
-  },
-  {
-   "id": 932897,
-   "name": "Saturday Nexus Night",
-   "type": "nexus",
-   "start": "2026-09-12T16:00:00-07:00",
-   "end": "2026-09-12T18:30:00-07:00",
-   "day": "2026-09-12",
-   "time": "4:00 PM",
-   "venue": "Elite4 Games",
-   "city": "Victoria",
-   "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 5,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-09-10T20:44:45+00:00"
-  },
-  {
-   "id": 805044,
-   "name": "Saturday Afternoon Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-12T17:00:00-07:00",
-   "end": "2026-09-12T20:20:00-07:00",
-   "day": "2026-09-12",
-   "time": "5:00 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
-   "region": "island",
-   "cap": 16,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-09-10T21:14:42+00:00"
-  },
-  {
-   "id": 817587,
-   "name": "Saturday evening nexus night",
-   "type": "nexus",
-   "start": "2026-09-12T18:00:00-07:00",
-   "end": "2026-09-12T22:10:00-07:00",
-   "day": "2026-09-12",
-   "time": "6:00 PM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 2,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-08-01T18:16:27+00:00"
-  },
   {
    "id": 820774,
    "name": "Sunday morning \"nexus Night\"",
@@ -964,6 +892,24 @@
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-09-11T05:04:02+00:00"
+  },
+  {
+   "id": 939671,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-11-08T11:30:00-08:00",
+   "end": "2026-11-08T15:40:00-08:00",
+   "day": "2026-11-08",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-09-13T05:01:16+00:00"
   }
  ]
 }
