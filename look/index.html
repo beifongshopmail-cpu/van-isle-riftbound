@@ -32,7 +32,29 @@
   font-weight:100 900;font-stretch:62% 125%;font-style:normal;font-display:swap;
 }
 
+/* ==================================================================
+   TEMPORARY FACE SPECIMEN -- DO NOT BUILD ON THIS.
+   Added for ONE round of judgement and REMOVED IN THE NEXT COMMIT,
+   along with the pill script at the end of this file and the whole
+   temporary font folder beside it. The winning pair gets folded into
+   the two defaults below and every trace of this goes.
+   These faces carry the latin range only. An accented character in a
+   venue name falls back to the control face for that one glyph.
+   That is expected here and is not a defect.
+   ================================================================== */
+@font-face{font-family:'ChivoV';src:url(./typetemp/chivo-3.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'ChivoMonoV';src:url(./typetemp/chivomono-3.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'SpaceGroteskV';src:url(./typetemp/spacegrotesk-3.woff2) format('woff2');font-weight:300 700;font-style:normal;font-display:swap}
+@font-face{font-family:'JetBrainsMonoV';src:url(./typetemp/jetbrainsmono-6.woff2) format('woff2');font-weight:100 800;font-style:normal;font-display:swap}
+@font-face{font-family:'InterV';src:url(./typetemp/inter-7.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+
+html[data-type="b"]{--fsans:'ChivoV','ArchivoV',system-ui,sans-serif;--fmono:'ChivoMonoV',ui-monospace,monospace}
+html[data-type="c"]{--fsans:'SpaceGroteskV','ArchivoV',system-ui,sans-serif;--fmono:'JetBrainsMonoV',ui-monospace,monospace}
+html[data-type="d"]{--fsans:'InterV','ArchivoV',system-ui,sans-serif;--fmono:"IBM Plex Mono",ui-monospace,monospace}
+
 :root{
+  --fsans:'ArchivoV',system-ui,sans-serif;
+  --fmono:"IBM Plex Mono",ui-monospace,monospace;
   --ground:#000000;
   --block:#0B0D11;
   --block-hi:#12151A;
@@ -82,7 +104,7 @@
 html{background:var(--ground)}
 body{
   margin:0;background:var(--ground);color:var(--bone);
-  font-family:'ArchivoV',system-ui,sans-serif;
+  font-family:var(--fsans);
   font-size:15px;line-height:1.4;font-stretch:100%;
   -webkit-font-smoothing:antialiased;
   /* THIS DOES NOT STOP DOUBLE-TAP ZOOM AND NEVER DID. Six rounds of
@@ -97,7 +119,7 @@ body{
 body.lock{position:fixed;left:0;right:0;overflow:hidden}
 button{font-family:inherit;color:inherit;background:none;border:0;padding:0}
 a{color:inherit;text-decoration:none}
-.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.mono{font-family:var(--fmono);font-variant-numeric:tabular-nums}
 
 /* ===================== header, one piece ===================== */
 
@@ -1226,6 +1248,36 @@ a{color:inherit;text-decoration:none}
     listEl.appendChild(f);
     requestAnimationFrame(measure);
   });
+})();
+</script>
+<script>
+/* TEMPORARY FACE SPECIMEN PILL -- DO NOT BUILD ON THIS.
+   REMOVED IN THE NEXT COMMIT together with the rules above.
+   Wrapped in its own function scope so it leaks no names into the
+   page. The pill itself is deliberately drawn in the system face so
+   it does not change as the candidates cycle. */
+(function(){
+  var KEYS = ["a","b","c","d"];
+  var NAMES = {
+    a:"Archivo + Plex Mono",
+    b:"Chivo + Chivo Mono",
+    c:"Space Grotesk + JetBrains",
+    d:"Inter + Plex Mono"
+  };
+  var de = document.documentElement, cur = "a";
+  try { var s = localStorage.getItem("vir.look.face"); if (s && NAMES[s]) cur = s; } catch(e){}
+  var pill = document.createElement("button");
+  pill.type = "button";
+  pill.style.cssText = "position:fixed;left:12px;bottom:96px;z-index:9999;padding:8px 12px;border-radius:999px;background:#12151A;color:#F2F3F5;border:1px solid rgba(242,243,245,.22);font:600 11px/1 system-ui,sans-serif;letter-spacing:.02em";
+  function put(v){
+    cur = v;
+    de.setAttribute("data-type", v);
+    pill.textContent = v.toUpperCase() + "  " + NAMES[v];
+    try { localStorage.setItem("vir.look.face", v); } catch(e){}
+  }
+  pill.onclick = function(){ put(KEYS[(KEYS.indexOf(cur) + 1) % KEYS.length]); };
+  document.body.appendChild(pill);
+  put(cur);
 })();
 </script>
 </body>
