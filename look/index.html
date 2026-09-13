@@ -1280,5 +1280,81 @@ a{color:inherit;text-decoration:none}
   put(cur);
 })();
 </script>
+<script>
+/* TEMPORARY TYPE SPECIMEN -- DO NOT BUILD ON THIS.
+   Added for ONE round of judgement and REMOVED IN THE NEXT COMMIT,
+   together with the face switcher pill, its rules, and the whole
+   temporary font folder. Nothing here is a proposed value: it is a
+   ladder to look at. The chosen values get written as real rules.
+   It appends to the end of the document on purpose, so it scrolls in
+   the real page at the real viewport. It follows whichever face the
+   pill has selected. */
+(function(){
+  var SZ = [[9,"tab label"],[11,"meta line"],[12,"venue"],[13,"secondary"],[15,"body, day numeral"],[17,"agenda heading"],[20,"masthead"],[28,"month"]];
+  var WT = [300,400,500,600,700];
+  var NUM = [[40,500],[40,700],[72,500],[72,700],[120,500],[120,700]];
+  var TAB = ["22 of 24","8 of 24","124 of 200","11:30 AM","$6","$120"];
+  var i, h = [];
+
+  h.push('<h3>TYPE SPECIMEN, TEMPORARY</h3>');
+
+  h.push('<h4>WEIGHT, 15PX</h4>');
+  for (i=0;i<WT.length;i++){
+    h.push('<div class="r"><span class="l">'+WT[i]+'</span><span style="font-size:15px;font-weight:'+WT[i]+'">Nexus Nights, Everything Games</span></div>');
+  }
+
+  h.push('<h4>WEIGHT, 20PX</h4>');
+  for (i=0;i<WT.length;i++){
+    h.push('<div class="r"><span class="l">'+WT[i]+'</span><span style="font-size:20px;font-weight:'+WT[i]+'">Van Isle Riftbound</span></div>');
+  }
+
+  h.push('<h4>SIZE LADDER, WEIGHT 400</h4>');
+  for (i=0;i<SZ.length;i++){
+    h.push('<div class="r"><span class="l">'+SZ[i][0]+'</span><span style="font-size:'+SZ[i][0]+'px;font-weight:400">'+SZ[i][1]+'</span></div>');
+  }
+
+  h.push('<h4>SIZE LADDER, WEIGHT 600</h4>');
+  for (i=0;i<SZ.length;i++){
+    h.push('<div class="r"><span class="l">'+SZ[i][0]+'</span><span style="font-size:'+SZ[i][0]+'px;font-weight:600">'+SZ[i][1]+'</span></div>');
+  }
+
+  h.push('<h4>COUNTER NUMERALS, READ THESE AT ARM LENGTH</h4>');
+  for (i=0;i<NUM.length;i++){
+    var s = NUM[i][0], w = NUM[i][1], smp = (s >= 120) ? "8 0" : "8 6 0";
+    h.push('<div class="n"><span class="c">SANS '+s+' / '+w+'</span>'
+      + '<span style="display:block;font-size:'+s+'px;font-weight:'+w+';line-height:1.05">'+smp+'</span>'
+      + '<span class="c">MONO '+s+' / '+w+'</span>'
+      + '<span style="display:block;font-family:var(--fmono);font-size:'+s+'px;font-weight:'+w+';line-height:1.05">'+smp+'</span></div>');
+  }
+
+  h.push('<h4>TIMER, 34PX</h4>');
+  h.push('<div class="n"><span class="c">SANS 500</span>'
+    + '<span style="display:block;font-size:34px;font-weight:500;line-height:1.1">12:34 &nbsp; -15:00</span>'
+    + '<span class="c">MONO 500</span>'
+    + '<span style="display:block;font-family:var(--fmono);font-size:34px;font-weight:500;line-height:1.1">12:34 &nbsp; -15:00</span></div>');
+
+  h.push('<h4>TABULAR COLUMN, MONO 13PX</h4>');
+  for (i=0;i<TAB.length;i++){
+    h.push('<div class="t" style="font-family:var(--fmono);font-size:13px;font-variant-numeric:tabular-nums">'+TAB[i]+'</div>');
+  }
+
+  var css = document.createElement("style");
+  css.textContent =
+      "#tspec{padding:40px 24px 200px 24px;margin-top:40px;border-top:1px solid rgba(242,243,245,.22)}"
+    + "#tspec h3{font-size:11px;font-weight:700;letter-spacing:.14em;color:#98A0AD;margin:0}"
+    + "#tspec h4{font-size:10px;font-weight:600;letter-spacing:.12em;color:#586070;margin:26px 0 8px 0}"
+    + "#tspec .r{display:flex;align-items:baseline;gap:12px;padding:5px 0;border-bottom:1px solid rgba(242,243,245,.06)}"
+    + "#tspec .l{flex:0 0 46px;font-family:var(--fmono);font-size:9px;color:#586070}"
+    + "#tspec .n{padding:12px 0;border-bottom:1px solid rgba(242,243,245,.06)}"
+    + "#tspec .c{display:block;margin:8px 0 2px 0;font-family:var(--fmono);font-size:9px;color:#586070}"
+    + "#tspec .t{padding:6px 0}";
+  document.head.appendChild(css);
+
+  var P = document.createElement("section");
+  P.id = "tspec";
+  P.innerHTML = h.join("");
+  document.body.appendChild(P);
+})();
+</script>
 </body>
 </html>
