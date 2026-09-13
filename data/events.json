@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-09-13T05:43:25.154Z",
- "generated_local": "2026-09-12T22:43:25-07:00",
- "window_start": "2026-09-12T07:00:00.000Z",
+ "generated_at": "2026-09-13T16:52:34.373Z",
+ "generated_local": "2026-09-13T09:52:34-07:00",
+ "window_start": "2026-09-13T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -25,7 +25,7 @@
  "totals": {
   "fetched": 49,
   "unique": 49,
-  "prev_unique": 52
+  "prev_unique": 49
  },
  "unknown_templates": {},
  "events": [
@@ -60,7 +60,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-09-10T18:01:23+00:00"
