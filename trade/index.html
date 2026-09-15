@@ -28,9 +28,8 @@
     --s2:#FF4F9A;
     --r:9px;
     --r-xs:2px;
-    --display:"Archivo",system-ui,sans-serif;
-    --body:"IBM Plex Sans",system-ui,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --display:"Poppins",system-ui,sans-serif;
+    --mono:"Nunito",ui-monospace,monospace;
     --gut:16px;
     --tap:44px;
   }
@@ -43,6 +42,7 @@
     font-size:13px;line-height:1.45;
     -webkit-font-smoothing:antialiased;
     -webkit-tap-highlight-color:transparent;
+    font-variant-numeric:tabular-nums;
   }
   .wrap{
     max-width:600px;margin:0 auto;
@@ -58,7 +58,7 @@
   }
   .mast .stamp{
     margin-top:12px;
-    font-family:var(--mono);font-weight:500;font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
@@ -93,13 +93,13 @@
   .mast .nvpan [aria-current="page"]{color:var(--bone);}
   .mast .by{
     margin-top:10px;
-    font-family:var(--mono);font-weight:500;font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .mast .by a{color:var(--dim);text-decoration:none;}
 
   .boot{
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--mute);padding:24px 0;
   }
   .boot.bad{color:var(--warn);}
@@ -124,13 +124,13 @@
   .dltbar{margin-bottom:6px;}
   .dltbar .seg{flex:1 1 auto;}
   .dltnote{
-    font-family:var(--mono);font-weight:500;font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
     margin-bottom:14px;min-height:12px;
   }
   .dltc{
     display:inline-block;margin-left:6px;flex:0 0 auto;
-    font-family:var(--mono);font-weight:500;font-size:10px;
+    font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.08em;color:var(--dim);
   }
   .bar .clear{
@@ -167,7 +167,7 @@
   .results .meta{min-width:0;flex:1;}
   .results .nm{font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .results .sub{
-    margin-top:3px;font-family:var(--mono);font-weight:500;font-size:10px;
+    margin-top:3px;font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
   }
   .results .buys{display:flex;gap:6px;flex:0 0 auto;}
@@ -178,13 +178,13 @@
   }
   .results .buys button:active{background:var(--bone);color:#000;}
   .results .buys button .pl{
-    display:block;font-size:10px;letter-spacing:.1em;
+    display:block;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);
   }
   .results .buys button:active .pl{color:#000;}
   .results .none{
     padding:12px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--mute);
   }
 
@@ -201,7 +201,7 @@
   .panel[data-side="2"] .head .lb{color:var(--s2);}
   .panel .head .tot{font-family:var(--mono);font-weight:500;font-size:15px;color:var(--bone);}
   .panel .empty{
-    padding:16px 14px;font-family:var(--mono);font-weight:500;font-size:10px;
+    padding:16px 14px;font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
   }
   .line{padding:10px 14px;display:flex;align-items:center;gap:10px;}
@@ -217,7 +217,7 @@
   .line .amt{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:13px;text-align:right;}
   .line .bot{display:flex;align-items:center;gap:8px;margin-top:7px;}
   .line .sub{
-    flex:1;min-width:0;font-family:var(--mono);font-weight:500;font-size:10px;
+    flex:1;min-width:0;font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.08em;text-transform:uppercase;color:var(--mute);
     white-space:nowrap;overflow:hidden;text-overflow:clip;
   }
@@ -246,7 +246,7 @@
     text-align:center;
   }
   .verdict .lb{
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);
   }
   .verdict .big{
@@ -255,7 +255,7 @@
   }
   .verdict .who{
     margin-top:12px;display:flex;align-items:baseline;gap:10px;
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;
   }
   .verdict .who .w1{color:var(--s1);}
@@ -319,7 +319,7 @@
   }
   .udpan .rt{flex:0 0 auto;color:var(--dim);white-space:nowrap;}
   .udpan .rt b{
-    font-weight:500;color:var(--bone);font-size:10px;letter-spacing:.1em;
+    font-weight:500;color:var(--bone);font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;
   }
   .udpan li.e1 .rt b{color:var(--s1);}
@@ -329,7 +329,7 @@
   .fdbklink{margin:6px 0 0;}
   .fdbklink a{color:var(--dim);}
   .src{
-    margin-top:22px;font-family:var(--mono);font-weight:500;font-size:10px;
+    margin-top:22px;font-family:var(--mono);font-weight:500;font-size:12px;
     letter-spacing:.08em;line-height:1.7;color:var(--mute);
   }
 
@@ -362,7 +362,7 @@
   .setpan .rcap{margin-top:16px;padding-top:16px;border-top:1px solid var(--rule);}
   .setpan .dltbar{margin-bottom:6px;}
   .rcap{
-    font-family:var(--mono);font-weight:500;font-size:10px;letter-spacing:.1em;
+    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
     text-transform:uppercase;color:var(--dim);margin-bottom:10px;
   }
   .rfs{display:flex;gap:10px;}
@@ -386,7 +386,7 @@
   .rf input:focus{outline:none;border-color:var(--bone);}
   .rf .pcs{
     position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none;
-    font-family:var(--mono);font-size:10px;font-weight:500;color:var(--dim);
+    font-family:var(--mono);font-size:12px;font-weight:500;color:var(--dim);
   }
   .rreset{
     margin-top:14px;width:100%;min-height:var(--tap);
