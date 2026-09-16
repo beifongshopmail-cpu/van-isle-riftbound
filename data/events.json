@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-15T17:31:07.536Z",
- "generated_local": "2026-09-15T10:31:07-07:00",
+ "generated_at": "2026-09-16T05:42:40.400Z",
+ "generated_local": "2026-09-15T22:42:40-07:00",
  "window_start": "2026-09-15T07:00:00.000Z",
  "anchors": [
   {
@@ -18,35 +18,17 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 18,
-   "added": 18
+   "returned": 17,
+   "added": 17
   }
  ],
  "totals": {
-  "fetched": 48,
-  "unique": 48,
+  "fetched": 47,
+  "unique": 47,
   "prev_unique": 48
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 786833,
-   "name": "Tuesday Riftbound Playnight",
-   "type": "learn",
-   "start": "2026-09-15T18:00:00-07:00",
-   "end": "2026-09-15T21:30:00-07:00",
-   "day": "2026-09-15",
-   "time": "6:00 PM",
-   "venue": "Giddy-Up Games",
-   "city": "Campbell River",
-   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
-   "region": "island",
-   "cap": 8,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-21T05:03:39+00:00"
-  },
   {
    "id": 903317,
    "name": "Wednesday Evening Nexus Nights - 1v1",
@@ -60,7 +42,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 3,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-31T18:24:59+00:00"
@@ -106,18 +88,18 @@
    "name": "Summoner Skirmish - September 19th",
    "type": "skirmish",
    "start": "2026-09-19T10:30:00-07:00",
-   "end": "2026-09-19T16:20:00-07:00",
+   "end": "2026-09-19T17:10:00-07:00",
    "day": "2026-09-19",
    "time": "10:30 AM",
    "venue": "Elite4 Games",
    "city": "Victoria",
    "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
-   "cap": 16,
-   "reg": 0,
+   "cap": 24,
+   "reg": 1,
    "cents": 2000,
    "currency": "CAD",
-   "updated": "2026-08-29T17:35:34+00:00"
+   "updated": "2026-09-15T18:01:35+00:00"
   },
   {
    "id": 507748,
@@ -222,7 +204,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 32,
-   "reg": 2,
+   "reg": 4,
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:28:13+00:00"
@@ -330,7 +312,7 @@
    "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 0,
+   "reg": 1,
    "cents": 1000,
    "currency": "CAD",
    "updated": "2026-04-30T20:30:31+00:00"
