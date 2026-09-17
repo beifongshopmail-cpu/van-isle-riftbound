@@ -11,28 +11,66 @@
 <title>Trade calculator - Van Isle Riftbound</title>
 <link rel="stylesheet" href="../fonts.css">
 <style>
-  :root{
-    --mo-fast:.16s;
-    --mo-tap:.22s;
-    --mo-rise:.32s;
-    --mo-ease:cubic-bezier(.22,.72,.2,1);
-    --ground:#000000;
-    --rule:#212429;
-    --rule-hi:#343A44;
-    --bone:#F2F3F5;
-    --dim:#828A97;
-    --mute:#4E5561;
-    --warn:#FFB020;
-    --plate:#14171D;
-    --s1:#3FA9F5;
-    --s2:#FF4F9A;
-    --r:9px;
-    --r-xs:2px;
-    --display:"Poppins",system-ui,sans-serif;
-    --mono:"Nunito",ui-monospace,monospace;
-    --gut:16px;
-    --tap:44px;
-  }
+:root{
+  --mo-fast:.16s;
+  --mo-tap:.22s;
+  --mo-rise:.32s;
+  --mo-ease:cubic-bezier(.22,.72,.2,1);
+  --ease:cubic-bezier(.22,.72,.2,1);
+
+  --ground:#000000;
+  --plate:#0B0D11;
+  --block:#0B0D11;
+  --block-hi:#12151A;
+  --rule:rgba(242,243,245,.10);
+  --rule-hi:rgba(242,243,245,.22);
+  --edge:rgba(242,243,245,.10);
+  --edge-hi:rgba(242,243,245,.22);
+  --top:rgba(242,243,245,.07);
+  --off:#22262D;
+
+  --bone:#F2F3F5;
+  --dim:#98A0AD;
+  --mute:#586070;
+  --warn:#FFB020;
+  --s1:#3FA9F5;
+  --s2:#FF4F9A;
+
+  --r:9px;
+  --r-xs:2px;
+  --round:26px;
+  --tap:44px;
+
+  /* THE PAGE MARGIN MUST BE AT LEAST AS WIDE AS THE WIDEST GLOW.
+     A 22px bloom cannot fit in a 16px margin -- the light falls off
+     the screen and nothing appears to be clipping it. Raised from
+     16px with the glow tokens below. */
+  --gut:24px;
+  --glow-max:22px;
+
+  --display:"Poppins",system-ui,sans-serif;
+  --mono:"Nunito",ui-monospace,monospace;
+
+  /* THE LIGHT, IN ONE PLACE. One construction: a near-white border
+     plus a stacked shadow, hue in the halo and not in the stroke.
+     Roles differ in HOW MUCH of the stack they get, never in how it
+     is built.
+       three layers -- the two seams, lit blocks, the gear panel
+       two layers   -- every press flare, the chosen segment
+       one layer    -- small on-states: the lit gear, a ticked box
+       scaled       -- small marks the full radii would flood
+       press        -- --glow-p, a louder burst on an already-lit
+                       block while pressed */
+  --c:242,243,245;
+  --g1:2px;  --g1a:.95;
+  --g2:7px;  --g2a:.55;
+  --g3:14px; --g3a:.20;
+  --glow-1:0 0 calc(var(--g2) * .9) -2px rgba(var(--c),.65);
+  --glow-2:0 0 var(--g1) 0 rgba(var(--c),var(--g1a)), 0 0 var(--g2) -1px rgba(var(--c),var(--g2a));
+  --glow-3:0 0 var(--g1) 0 rgba(var(--c),var(--g1a)), 0 0 var(--g2) -1px rgba(var(--c),var(--g2a)), 0 0 var(--g3) -4px rgba(var(--c),var(--g3a));
+  --glow-m:0 0 calc(var(--g1) * .7) 0 rgba(var(--c),.95), 0 0 calc(var(--g2) * .7) 0 rgba(var(--c),.5);
+  --glow-p:0 0 calc(var(--g1) + 1px) 0 rgba(var(--c),1), 0 0 calc(var(--g2) * 1.5) 0 rgba(var(--c),.65), 0 0 calc(var(--g3) * 1.5) -4px rgba(var(--c),.4);
+}
   *{box-sizing:border-box;touch-action:manipulation;}
   html,body{margin:0;padding:0;background:var(--ground);touch-action:manipulation;}
   body{
