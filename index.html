@@ -3,8 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Riftbound events on Vancouver Island. Victoria, Courtenay and Campbell River, updated twice a day.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Van Isle Riftbound</title>
-<meta name="apple-mobile-web-app-title" content="RB Look">
+<meta name="apple-mobile-web-app-title" content="Van Isle RB">
 <link rel="stylesheet" href="fonts.css">
 <style>
 /* Exploration page, unlinked. Deleted once the direction is settled.
@@ -483,6 +487,9 @@ a{color:inherit;text-decoration:none}
 .addcal svg.ic{flex:0 0 auto;width:17px;height:17px;stroke:var(--bone);stroke-width:1.6;fill:none}
 .addcal .t{flex:1}
 .addcal svg.ch{flex:0 0 auto;width:12px;height:12px;stroke:var(--dim);stroke-width:2.2;fill:none}
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important;scroll-behavior:auto !important;}
+  }
 </style>
 </head>
 <body>
@@ -531,6 +538,11 @@ a{color:inherit;text-decoration:none}
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
     <p>A community calendar covering every store on the island. It is not a contact form or a storefront for any of them.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Free for any island store or player to use or link.<br>
+        Something wrong or missing? <a href="feedback/">Tell us</a>.
+    </p>
     <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
   </footer>
 </main>
@@ -1204,7 +1216,7 @@ a{color:inherit;text-decoration:none}
     };
   }
 
-  fetch("data/events.json").then(function(r){
+  fetch("data/events.json", {cache:"no-cache"}).then(function(r){
     if (!r.ok) throw new Error("http " + r.status);
     return r.json();
   }).then(function(j){
@@ -1220,10 +1232,49 @@ a{color:inherit;text-decoration:none}
     var f = document.createElement("div");
     f.className = "fail";
     f.innerHTML = "The event feed did not load. Try the " +
-      "<a href='https://locator.riftbound.uvsgames.com/' target='_blank' rel='noopener'>official locator</a> in the meantime.";
+      "<a href='https://locator.riftbound.uvsgames.com/events' target='_blank' rel='noopener'>official locator</a> in the meantime.";
     listEl.appendChild(f);
     requestAnimationFrame(measure);
   });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
 })();
 </script>
 </body>
