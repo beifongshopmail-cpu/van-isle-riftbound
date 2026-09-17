@@ -597,6 +597,48 @@
 }
 .navpan a+a{border-top:1px solid var(--edge)}
 .navpan [aria-current="page"]{color:var(--bone)}
+
+/* TEMPORARY APPEARANCE SWITCHER. DO NOT BUILD ON THIS. REMOVED IN A
+   LATER COMMIT WITH THE WINNING VALUES WRITTEN INTO THE REAL RULES.
+   Three independent axes, cycled by three pills:
+     data-rowlit  card rows: flat / lit neutral / lit in the side hue
+     data-chip    the delta chip's colour, IDENTICAL for a rise and a
+                  fall - direction is the arrow, never the colour
+     data-vbar    the verdict surface */
+html[data-rowlit="lit"] .line{
+  background:linear-gradient(180deg,var(--block-hi),var(--block));
+  border:1px solid var(--edge-hi);border-radius:var(--r);
+  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
+  padding:12px 14px 13px 14px;margin:0 0 10px 0;
+}
+html[data-rowlit="hue"] .line{
+  background:linear-gradient(180deg,var(--block-hi),var(--block));
+  border:1px solid rgba(var(--c),.45);border-radius:var(--r);
+  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
+  padding:12px 14px 13px 14px;margin:0 0 10px 0;
+}
+html[data-rowlit="hue"] #side1 .line{--c:63,169,245}
+html[data-rowlit="hue"] #side2 .line{--c:255,79,154}
+html[data-chip="bone"] .dltc{color:var(--dim)}
+html[data-chip="warm"] .dltc{color:#C8A96A}
+html[data-chip="cool"] .dltc{color:#7FA6C4}
+html[data-vbar="lit"] .vwrap,html[data-vbar="lit"] .verdict{
+  background:linear-gradient(180deg,var(--block-hi),var(--block));
+  border:1px solid var(--edge-hi);border-radius:var(--r);
+  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
+  padding:14px;
+}
+.apsw{
+  position:fixed;z-index:40;left:10px;bottom:120px;
+  display:flex;flex-direction:column;gap:6px;align-items:flex-start;
+}
+.apsw button{
+  min-height:30px;padding:0 10px;
+  background:#000;color:#F2F3F5;
+  border:1px solid #555;border-radius:6px;
+  font-family:var(--mono);font-size:12px;font-weight:500;
+  cursor:pointer;
+}
 </style>
 </head>
 <body>
@@ -2082,6 +2124,34 @@
     if (b.getAttribute("aria-expanded") === "true") b.scrollIntoView({block:"center"});
   }
   document.getElementById("tbsave").addEventListener("click", function(){ reach("tltog"); });
+})();
+</script>
+<script>
+/* TEMPORARY APPEARANCE SWITCHER. DO NOT BUILD ON THIS. REMOVED IN A
+   LATER COMMIT. Keys are its own and are deleted with it. */
+(function(){
+  function g(k,d){ try{ return localStorage.getItem(k) || d; }catch(e){ return d; } }
+  function p(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  var KL="vir.trade.apsw.lit", KC="vir.trade.apsw.chip", KV="vir.trade.apsw.vbar";
+  var L=g(KL,"flat"), C=g(KC,"bone"), V=g(KV,"flat");
+  var LS=["flat","lit","hue"], CS=["bone","warm","cool"], VS=["flat","lit"];
+  var box=document.createElement("div");
+  box.className="apsw";
+  box.innerHTML='<button type="button" id="apl"></button><button type="button" id="apc"></button><button type="button" id="apv"></button>';
+  document.body.appendChild(box);
+  function paint(){
+    document.documentElement.setAttribute("data-rowlit",L);
+    document.documentElement.setAttribute("data-chip",C);
+    document.documentElement.setAttribute("data-vbar",V);
+    document.getElementById("apl").textContent="Rows: "+L;
+    document.getElementById("apc").textContent="Chip: "+C;
+    document.getElementById("apv").textContent="Verdict: "+V;
+  }
+  function next(a,v){ return a[(a.indexOf(v)+1) % a.length]; }
+  document.getElementById("apl").addEventListener("click",function(){ L=next(LS,L); p(KL,L); paint(); });
+  document.getElementById("apc").addEventListener("click",function(){ C=next(CS,C); p(KC,C); paint(); });
+  document.getElementById("apv").addEventListener("click",function(){ V=next(VS,V); p(KV,V); paint(); });
+  paint();
 })();
 </script>
 </body>
