@@ -87,10 +87,15 @@
     padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
   }
 
+  /* IT SCROLLS AWAY. Unlike the calendar there is nothing in this
+     header worth keeping on screen, and the collapse does not port.
+     The negative margins bleed it to the edges of .wrap so the seam
+     still reaches the screen edges and turns the corner. */
   .mast{
-    position:fixed;z-index:18;left:0;right:0;top:0;
+    position:relative;
     background:#000000;
     border-radius:0 0 var(--round) var(--round);
+    margin:0 calc(-1 * max(var(--gut),env(safe-area-inset-right))) 0 calc(-1 * max(var(--gut),env(safe-area-inset-left)));
     padding:calc(env(safe-area-inset-top,0px) + 18px) var(--gut) 14px;
   }
   /* THE SEAM. One lit edge drawn by ::after, a sibling .glow carrying
@@ -1894,6 +1899,7 @@ html[data-vbar="lit"] .verdict{
     tlRender();
     el("tlsh").addEventListener("click", onClick);
     el("rcpwrap").addEventListener("click", onClick);
+    el("setpan").addEventListener("click", onClick);
     el("tlfile").addEventListener("change", function(){
       var f = this.files && this.files[0], rd;
       if(!f) return;
@@ -2085,10 +2091,8 @@ html[data-vbar="lit"] .verdict{
   var tnav = document.getElementById("tbnav");
 
   function measure(){
-    if (!wrap) return;
-    if (tabs) wrap.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
-    var mast = document.querySelector(".mast");
-    if (mast) wrap.style.paddingTop = (mast.offsetHeight + 22) + "px";
+    if (!wrap || !tabs) return;
+    wrap.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
   }
   measure();
   window.addEventListener("load", measure);
