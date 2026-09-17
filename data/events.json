@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-16T17:31:16.573Z",
- "generated_local": "2026-09-16T10:31:16-07:00",
+ "generated_at": "2026-09-17T05:51:25.815Z",
+ "generated_local": "2026-09-16T22:51:25-07:00",
  "window_start": "2026-09-16T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 27,
-   "added": 27
+   "returned": 26,
+   "added": 26
   },
   {
    "name": "Courtenay",
@@ -23,30 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 47,
-  "unique": 47,
+  "fetched": 46,
+  "unique": 46,
   "prev_unique": 47
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 903317,
-   "name": "Wednesday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-16T18:00:00-07:00",
-   "end": "2026-09-16T21:00:00-07:00",
-   "day": "2026-09-16",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 2,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-08-31T18:24:59+00:00"
-  },
   {
    "id": 792667,
    "name": "Thursday Evening Nexus Nights - 1v1",
@@ -114,7 +96,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 2,
+   "reg": 3,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-17T04:47:25+00:00"
