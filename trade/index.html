@@ -101,34 +101,6 @@
   }
   .mast .stamp b{color:var(--dim);font-weight:400;}
   .mast .stamp .stale{color:var(--warn);}
-  .mast .nvw{margin-top:14px;}
-  .mast .nvtog{
-    display:flex;width:100%;align-items:center;gap:10px;
-    min-height:44px;padding:0 14px;background:none;
-    border:1px solid var(--rule);border-radius:6px;
-    color:var(--dim);cursor:pointer;text-align:left;
-    font-family:var(--display);font-weight:600;font-size:15px;
-    letter-spacing:.1em;text-transform:uppercase;
-    transition:color var(--mo-fast) ease,border-color var(--mo-fast) ease;
-  }
-  .mast .nvtog:active{border-color:var(--rule-hi);}
-  .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
-  .mast .nvtog .nvcar{margin-left:auto;flex:0 0 auto;display:block;transition:transform var(--mo-fast) var(--mo-ease);}
-  .mast .nvtog[aria-expanded="true"] .nvcar{transform:rotate(180deg);}
-  .mast .nvpan{
-    margin-top:6px;border:1px solid var(--rule-hi);
-    border-radius:6px;overflow:hidden;
-  }
-  .mast .nvpan a{
-    display:flex;width:100%;align-items:center;min-height:44px;
-    padding:0 14px;background:none;color:var(--dim);text-decoration:none;
-    font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase;
-    transition:color var(--mo-fast);
-  }
-  .mast .nvpan a+a{border-top:1px solid var(--rule);}
-  .mast .nvpan a:hover{color:var(--bone);}
-  .mast .nvpan [aria-current="page"]{color:var(--bone);}
   .mast .by{
     margin-top:10px;
     font-family:var(--mono);font-weight:500;font-size:12px;
@@ -514,6 +486,87 @@
   .rcpx{margin-left:auto;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.1em;text-transform:uppercase;min-height:38px;padding:0 12px;cursor:pointer}
   .rcpimgs img{width:100%;height:auto;display:block;margin-bottom:12px;border:1px solid var(--rule)}
   .rcphint{margin-bottom:12px}
+
+/* THE BOTTOM BAR. Copied from the calendar so every page carries the
+   same component: black, ONE lit edge drawn by ::before, a sibling
+   .glow carrying the bloom, both running 400px past the edge so the
+   stroke traces the corner and leaves the screen with nowhere to
+   stop. Resting LOWERS the bar rather than scaling it - a scale
+   reaches the children and pulls the stroke in from the screen
+   edges. offsetHeight does not change under a transform, so the
+   measured bottom padding stays correct.
+   ASLEEP SLOWLY, AWAKE INSTANTLY: the 1.1s is the fade-OUT and the
+   .2s base overrides it on wake, because a confirmation that the
+   touch registered may never be slow. */
+.tabs{
+  position:fixed;z-index:20;left:0;right:0;bottom:0;
+  display:flex;
+  background:#000000;
+  border-radius:var(--round) var(--round) 0 0;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  transform-origin:50% 100%;
+  transition:transform .2s var(--ease),opacity .2s var(--ease);
+}
+.tabs::before{
+  content:"";position:absolute;
+  left:0;right:0;top:0;bottom:-400px;
+  border-radius:var(--round) var(--round) 0 0;
+  border-top:1px solid #FFFFFF;
+  pointer-events:none;
+}
+.tabs .glow{
+  content:"";position:absolute;
+  left:0;right:0;top:0;bottom:-400px;
+  border-radius:var(--round) var(--round) 0 0;
+  box-shadow:var(--glow-3);
+  pointer-events:none;
+}
+.tabs.idle{transform:translateY(38px)}
+.tabs.idle::before{opacity:.18}
+.tabs.idle .glow{opacity:.18}
+.tabs.idle .tab{opacity:.22}
+.tabs.idle,.tabs.idle::before,.tabs.idle .glow,.tabs.idle .tab{
+  transition-duration:1.1s;
+}
+.tabs .glow,.tabs::before{transition:opacity .2s var(--ease)}
+.tab{
+  flex:1 1 0;height:56px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  position:relative;
+  background:none;border:0;padding:0;margin:0;
+  text-decoration:none;cursor:pointer;
+  transition:opacity .2s var(--ease);
+}
+.tab svg{width:20px;height:20px;stroke:var(--mute);stroke-width:1.6;fill:none;transition:stroke .16s var(--ease)}
+.tab span{font-family:var(--display);font-size:12px;font-weight:600;color:var(--mute);transition:color .16s var(--ease)}
+.tab:active svg{stroke:var(--bone)}
+.tab[aria-expanded="true"] svg{stroke:var(--bone)}
+.tab[aria-expanded="true"] span{color:var(--bone)}
+.tab[aria-expanded="true"]::after{
+  content:"";position:absolute;top:7px;left:50%;margin-left:-13px;
+  width:26px;height:2px;border-radius:1px;background:#FFFFFF;
+  box-shadow:var(--glow-2);
+}
+
+/* the page switcher, opened from the bar's Nav slot */
+.navpan{
+  position:fixed;z-index:19;
+  left:var(--gut);right:var(--gut);bottom:96px;
+  background:linear-gradient(180deg,var(--block-hi),var(--block));
+  border:1px solid var(--edge-hi);border-radius:var(--r);
+  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
+  overflow:hidden;
+}
+.navpan[hidden]{display:none}
+.navpan a{
+  display:flex;width:100%;align-items:center;min-height:var(--tap);
+  padding:0 14px;background:none;color:var(--dim);text-decoration:none;
+  font-family:var(--display);font-weight:600;font-size:13px;
+  letter-spacing:.1em;text-transform:uppercase;
+  transition:color .16s var(--ease);
+}
+.navpan a+a{border-top:1px solid var(--edge)}
+.navpan [aria-current="page"]{color:var(--bone)}
 </style>
 </head>
 <body>
@@ -523,15 +576,6 @@
     <h1>Trade</h1>
     <div class="stamp" id="stamp">Loading</div>
     <div class="by">Kept by <a href="https://beifonghithouse.com">Beifong's Hit-House</a></div>
-    <div class="nvw">
-      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<svg class="nvcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-      <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
-        <a href="../">Calendar</a>
-        <a href="../counter/">Point counter</a>
-        <a aria-current="page" href="./">Trade calculator</a>
-        <a href="../feedback/">Feedback</a>
-      </nav>
-    </div>
   </header>
 
   <div id="boot" class="boot">Loading prices</div>
@@ -1874,16 +1918,6 @@
 
   document.addEventListener("DOMContentLoaded", boot);
 })();
-
-(function(){
-  var t = document.getElementById("nvtog"), p = document.getElementById("nvpan");
-  if(!t || !p){ return; }
-  t.addEventListener("click", function(){
-    var open = p.hasAttribute("hidden");
-    if(open){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); }
-    t.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-})();
 </script>
 <div class="tlsh" id="tlsh" hidden></div>
     <div class="rcpwrap" id="rcpwrap" hidden></div>
@@ -1946,6 +1980,69 @@
     }
     lastT = now; lastX = tch.clientX; lastY = tch.clientY;
   }, {passive:false});
+})();
+</script>
+<nav class="navpan" id="nvpan" aria-label="Pages" hidden>
+  <a href="../">Calendar</a>
+  <a href="../counter/">Point counter</a>
+  <a aria-current="page" href="./">Trade calculator</a>
+  <a href="../feedback/">Feedback</a>
+</nav>
+<nav class="tabs" id="tabs" aria-label="Main">
+  <b class="glow" aria-hidden="true"></b>
+  <a class="tab" href="#" aria-label="Hub"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Hub</span></a>
+  <button type="button" class="tab" id="tbnav" aria-expanded="false" aria-controls="nvpan"><svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg><span>Nav</span></button>
+  <button type="button" class="tab" id="tbsave"><svg viewBox="0 0 24 24"><path d="M5 4h14v17l-7-4-7 4z"/></svg><span>Saved</span></button>
+  <button type="button" class="tab" id="tbset"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M6 6l1.5 1.5M16.5 16.5L18 18M18 6l-1.5 1.5M7.5 16.5L6 18"/></svg><span>Settings</span></button>
+</nav>
+<script>
+/* THE BAR. Its own listener: the page's delegated onClick is bound to
+   #app, #tlsh and #rcpwrap, and the bar sits outside all three.
+   Nav, Saved and Settings drive the controls that already exist -
+   the bar is a second door to them, not a second copy. */
+(function(){
+  var tabs = document.getElementById("tabs");
+  var wrap = document.querySelector(".wrap");
+  var np   = document.getElementById("nvpan");
+  var tnav = document.getElementById("tbnav");
+
+  function measure(){
+    if (wrap && tabs) wrap.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
+  }
+  measure();
+  window.addEventListener("resize", measure);
+
+  var idleT = null;
+  function wake(){
+    tabs.className = "tabs";
+    if (idleT) clearTimeout(idleT);
+    idleT = setTimeout(function(){ tabs.className = "tabs idle"; }, 3200);
+  }
+  document.addEventListener("touchstart", wake, {passive:true});
+  document.addEventListener("click", wake);
+  window.addEventListener("scroll", wake, {passive:true});
+  wake();
+
+  function navOpen(on){
+    if (on) { np.removeAttribute("hidden"); } else { np.setAttribute("hidden",""); }
+    tnav.setAttribute("aria-expanded", on ? "true" : "false");
+  }
+  navOpen(false);
+  tnav.addEventListener("click", function(){
+    navOpen(np.hasAttribute("hidden"));
+  });
+
+  /* reach the existing control by its act attribute rather than by an
+     id, so nothing here depends on an identifier this file may rename */
+  function reach(act){
+    var b = document.querySelector('[data-act="' + act + '"]');
+    if (!b) return;
+    navOpen(false);
+    b.click();
+    if (b.getAttribute("aria-expanded") === "true") b.scrollIntoView({block:"center"});
+  }
+  document.getElementById("tbsave").addEventListener("click", function(){ reach("tltog"); });
+  document.getElementById("tbset").addEventListener("click", function(){ reach("settog"); });
 })();
 </script>
 </body>
