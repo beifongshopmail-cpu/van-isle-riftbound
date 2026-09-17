@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="Van Isle RB">
 <link rel="stylesheet" href="fonts.css">
 <style>
-/* Exploration page, unlinked. Deleted once the direction is settled.
+/* The calendar, at the site root. Moved here from look/ on 2026-09-16.
 
    THE GLOW RULE, as settled 2026-09-08:
    Light means LIVE. A thing that carries data or is currently doing
@@ -631,7 +631,7 @@ a{color:inherit;text-decoration:none}
 
   function pad(n){ return (n < 10 ? "0" : "") + n; }
   function keyOf(y,m,d){ return y + "-" + pad(m+1) + "-" + pad(d); }
-  function todayKey(){ var d = new Date(); return keyOf(d.getFullYear(), d.getMonth(), d.getDate()); }
+  function todayKey(){ return new Intl.DateTimeFormat("en-CA", {timeZone:"America/Vancouver", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date()); }
   function parseKey(s){ var p = s.split("-"); return {y:+p[0], m:+p[1]-1, d:+p[2]}; }
   function clamp(v,a,b){ return v < a ? a : (v > b ? b : v); }
 
