@@ -597,7 +597,7 @@ a{color:inherit;text-decoration:none}
   var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   var MONTH = ["January","February","March","April","May","June",
                "July","August","September","October","November","December"];
-  var SEEN_KEY = "vir.seen.v2";
+  var SEEN_KEY = "vir.seen.v3";
 
   function lighten(rgb, amt){
     var p = rgb.split(","), o = [];
@@ -648,7 +648,7 @@ a{color:inherit;text-decoration:none}
     return s && s.length ? s : null;
   }
   function seedSeen(all){
-    var ids = []; for (var i = 3; i < all.length; i++) ids.push(all[i].id);
+    var ids = []; for (var i = 0; i < all.length; i++) ids.push(all[i].id);
     try{ localStorage.setItem(SEEN_KEY, JSON.stringify(ids)); }catch(e){}
     return ids;
   }
