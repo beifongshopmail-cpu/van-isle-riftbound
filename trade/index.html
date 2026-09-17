@@ -84,7 +84,7 @@
   }
   .wrap{
     max-width:600px;margin:0 auto;
-    padding:env(safe-area-inset-top) max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
+    padding:0 max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
   }
 
   .mast{
@@ -327,6 +327,10 @@
     text-transform:uppercase;cursor:pointer;
   }
   .udtog[aria-expanded="true"]{border-color:var(--rule-hi);}
+  .rcar{
+    flex:0 0 auto;display:block;
+    transition:transform var(--mo-fast) var(--mo-ease);
+  }
   .udtog[aria-expanded="true"] .rcar{transform:rotate(180deg);}
   .udlb{
     flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
@@ -1907,7 +1911,21 @@
     el("app").addEventListener("click", onClick);
   }
 
-  document.addEventListener("DOMContentLoaded", boot);
+  document.addEventListener("DOMContentLoaded", function(){
+    boot();
+    /* THE GEAR PANEL IS DRIVEN FROM INSIDE THIS CLOSURE. pcOpen is
+       local to this IIFE and the bottom bar is a separate script, so
+       the bar's Settings tab is wired here where pcOpen is in scope
+       rather than exposing a global. */
+    var t = document.getElementById("tbset");
+    if(t) t.addEventListener("click", function(){
+      pcOpen(el("setpan").className.indexOf("on") === -1);
+    });
+    var c = document.getElementById("pclose");
+    if(c) c.addEventListener("click", function(){ pcOpen(false); });
+    var s = document.getElementById("scrim");
+    if(s) s.addEventListener("click", function(){ pcOpen(false); });
+  });
 })();
 </script>
 <div class="tlsh" id="tlsh" hidden></div>
@@ -2025,9 +2043,13 @@
   var tnav = document.getElementById("tbnav");
 
   function measure(){
-    if (wrap && tabs) wrap.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
+    if (!wrap) return;
+    if (tabs) wrap.style.paddingBottom = (tabs.offsetHeight + 34) + "px";
+    var mast = document.querySelector(".mast");
+    if (mast) wrap.style.paddingTop = (mast.offsetHeight + 22) + "px";
   }
   measure();
+  window.addEventListener("load", measure);
   window.addEventListener("resize", measure);
 
   var idleT = null;
@@ -2060,7 +2082,6 @@
     if (b.getAttribute("aria-expanded") === "true") b.scrollIntoView({block:"center"});
   }
   document.getElementById("tbsave").addEventListener("click", function(){ reach("tltog"); });
-  document.getElementById("tbset").addEventListener("click", function(){ reach("settog"); });
 })();
 </script>
 </body>
