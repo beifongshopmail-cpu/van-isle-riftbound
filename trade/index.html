@@ -144,16 +144,20 @@
   }
   .boot.bad{color:var(--warn);}
 
-  .seg{display:flex;border:1px solid var(--rule);border-radius:5px;overflow:hidden;}
+  .seg{display:flex;gap:8px;}
   .seg button{
-    flex:1;border:0;border-radius:0;background:none;
-    min-height:38px;padding:6px 10px;
-    font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;
-    transition:background var(--mo-fast) ease,color var(--mo-fast) ease;
+    flex:1 1 0;min-height:var(--tap);padding:0 12px;
+    background:none;color:var(--dim);
+    border:1px solid var(--edge);border-radius:var(--r);
+    font-family:var(--display);font-weight:600;font-size:13px;
+    letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+    transition:box-shadow .16s var(--ease),border-color .16s var(--ease),color .16s var(--ease);
   }
-  .seg button+button{border-left:1px solid var(--rule);}
-  .seg button[aria-pressed="true"]{background:var(--bone);color:#000;}
+  .seg button:active{box-shadow:var(--glow-2);border-color:var(--edge-hi);}
+  .seg button[aria-pressed="true"]{
+    color:var(--bone);border-color:rgba(var(--c),.6);
+    box-shadow:var(--glow-2);
+  }
   #target button[data-side="1"][aria-pressed="true"]{background:var(--s1);color:#000;}
   #target button[data-side="2"][aria-pressed="true"]{background:var(--s2);color:#000;}
   #q:focus{border-color:var(--s1);}
@@ -171,7 +175,7 @@
   .dltc{
     display:inline-block;margin-left:6px;flex:0 0 auto;
     font-family:var(--mono);font-weight:500;font-size:12px;
-    letter-spacing:.08em;color:var(--dim);
+    color:var(--dim);
   }
   .bar .clear{
     margin-left:auto;
@@ -182,7 +186,7 @@
   }
   .bar .clear:active{border-color:var(--rule-hi);color:var(--bone);}
 
-  .find{margin-bottom:14px;}
+  .find{margin-top:18px;margin-bottom:14px;}
   .findw{
     height:44px;overflow:hidden;border-radius:6px;
   }
@@ -606,17 +610,17 @@
                   fall - direction is the arrow, never the colour
      data-vbar    the verdict surface */
 html[data-rowlit="lit"] .panel{
-  background:linear-gradient(180deg,var(--block-hi),var(--block));
-  border:1px solid var(--edge-hi);border-radius:var(--r);
-  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
-}
-html[data-rowlit="hue"] .panel{
-  background:linear-gradient(180deg,var(--block-hi),var(--block));
-  border:1px solid rgba(var(--c),.45);border-radius:var(--r);
-  box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
+  background:transparent;
+  border:1px solid rgba(var(--c),.55);border-radius:var(--r);
+  box-shadow:var(--glow-3);
 }
 html[data-rowlit="hue"] .panel[data-side="1"]{--c:63,169,245}
 html[data-rowlit="hue"] .panel[data-side="2"]{--c:255,79,154}
+html[data-rowlit="hue"] .panel{
+  background:transparent;
+  border:1px solid rgba(var(--c),.75);border-radius:var(--r);
+  box-shadow:var(--glow-3);
+}
 /* TEMPORARY. DO NOT BUILD ON THIS. the divider between cards */
 html[data-div="lit"] .line+.line{
   border-top:1px solid rgba(var(--c),.5);
@@ -630,7 +634,7 @@ html[data-vbar="lit"] .verdict[data-lean="1"]{--c:63,169,245}
 html[data-vbar="lit"] .verdict[data-lean="2"]{--c:255,79,154}
 html[data-vbar="lit"] .verdict{
   background:linear-gradient(180deg,var(--block-hi),var(--block));
-  border:1px solid rgba(var(--c),.5);
+  border:1px solid rgba(var(--c),.75);
   box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
   padding:14px;
 }
