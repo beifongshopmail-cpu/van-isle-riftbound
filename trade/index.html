@@ -265,7 +265,7 @@
   .line .lfin{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--mute);white-space:nowrap;}
   .line .lgap{flex:1 1 auto;min-width:0;}
   .line .lunit{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--mute);white-space:nowrap;text-align:right;}
-  .line .bot .dltc{display:inline-block;}
+  .line .bot .dltc{display:inline-block;margin-left:0;}
   .line .top .dltc{display:none;}
   .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:6px;flex:0 0 auto;}
   .qty button{
@@ -605,29 +605,38 @@
      data-chip    the delta chip's colour, IDENTICAL for a rise and a
                   fall - direction is the arrow, never the colour
      data-vbar    the verdict surface */
-html[data-rowlit="lit"] .line{
+html[data-rowlit="lit"] .panel{
   background:linear-gradient(180deg,var(--block-hi),var(--block));
   border:1px solid var(--edge-hi);border-radius:var(--r);
   box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
-  padding:12px 14px 13px 14px;margin:0 0 10px 0;
 }
-html[data-rowlit="hue"] .line{
+html[data-rowlit="hue"] .panel{
   background:linear-gradient(180deg,var(--block-hi),var(--block));
   border:1px solid rgba(var(--c),.45);border-radius:var(--r);
   box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
-  padding:12px 14px 13px 14px;margin:0 0 10px 0;
 }
-html[data-rowlit="hue"] .panel[data-side="1"] .line{--c:63,169,245}
-html[data-rowlit="hue"] .panel[data-side="2"] .line{--c:255,79,154}
-html[data-chip="bone"] .dltc{color:var(--dim)}
-html[data-chip="warm"] .dltc{color:#C8A96A}
-html[data-chip="cool"] .dltc{color:#7FA6C4}
+html[data-rowlit="hue"] .panel[data-side="1"]{--c:63,169,245}
+html[data-rowlit="hue"] .panel[data-side="2"]{--c:255,79,154}
+/* TEMPORARY. DO NOT BUILD ON THIS. the divider between cards */
+html[data-div="lit"] .line+.line{
+  border-top:1px solid rgba(var(--c),.5);
+  box-shadow:0 -1px 0 0 rgba(var(--c),.18);
+}
+html[data-div="none"] .line+.line{border-top:0}
+/* THE VERDICT TAKES THE LEADING SIDE'S HUE. The words already say
+   which side is worth more, so the colour is not carrying the
+   meaning alone. Even means bone. */
+html[data-vbar="lit"] .verdict[data-lean="1"]{--c:63,169,245}
+html[data-vbar="lit"] .verdict[data-lean="2"]{--c:255,79,154}
 html[data-vbar="lit"] .verdict{
   background:linear-gradient(180deg,var(--block-hi),var(--block));
-  border:1px solid var(--edge-hi);border-radius:var(--r);
+  border:1px solid rgba(var(--c),.5);
   box-shadow:var(--glow-3), inset 0 1px 0 0 var(--top);
   padding:14px;
 }
+html[data-chip="bone"] .dltc{color:var(--dim)}
+html[data-chip="warm"] .dltc{color:#C8A96A}
+html[data-chip="cool"] .dltc{color:#7FA6C4}
 .apsw{
   position:fixed;z-index:40;left:10px;bottom:120px;
   display:flex;flex-direction:column;gap:6px;align-items:flex-start;
@@ -1148,6 +1157,10 @@ html[data-vbar="lit"] .verdict{
     } else {
       w.innerHTML = '<span class="w2">Theirs is worth more</span>';
     }
+
+    var lean = gap < 0.005 ? "0" : (a > b ? "1" : "2");
+    var vd = document.querySelector(".verdict");
+    if(vd) vd.setAttribute("data-lean", lean);
   }
 
   // Deliberately NOT part of renderSide, which returns early on an empty
@@ -2109,25 +2122,28 @@ html[data-vbar="lit"] .verdict{
 (function(){
   function g(k,d){ try{ return localStorage.getItem(k) || d; }catch(e){ return d; } }
   function p(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-  var KL="vir.trade.apsw.lit", KC="vir.trade.apsw.chip", KV="vir.trade.apsw.vbar";
-  var L=g(KL,"flat"), C=g(KC,"bone"), V=g(KV,"flat");
-  var LS=["flat","lit","hue"], CS=["bone","warm","cool"], VS=["flat","lit"];
+  var KL="vir.trade.apsw.lit", KC="vir.trade.apsw.chip", KV="vir.trade.apsw.vbar", KD="vir.trade.apsw.div";
+  var L=g(KL,"flat"), C=g(KC,"bone"), V=g(KV,"flat"), D=g(KD,"plain");
+  var LS=["flat","lit","hue"], CS=["bone","warm","cool"], VS=["flat","lit"], DS=["plain","lit","none"];
   var box=document.createElement("div");
   box.className="apsw";
-  box.innerHTML='<button type="button" id="apl"></button><button type="button" id="apc"></button><button type="button" id="apv"></button>';
+  box.innerHTML='<button type="button" id="apl"></button><button type="button" id="apc"></button><button type="button" id="apv"></button><button type="button" id="apd"></button>';
   document.body.appendChild(box);
   function paint(){
     document.documentElement.setAttribute("data-rowlit",L);
     document.documentElement.setAttribute("data-chip",C);
     document.documentElement.setAttribute("data-vbar",V);
+    document.documentElement.setAttribute("data-div",D);
     document.getElementById("apl").textContent="Rows: "+L;
     document.getElementById("apc").textContent="Chip: "+C;
     document.getElementById("apv").textContent="Verdict: "+V;
+    document.getElementById("apd").textContent="Divider: "+D;
   }
   function next(a,v){ return a[(a.indexOf(v)+1) % a.length]; }
   document.getElementById("apl").addEventListener("click",function(){ L=next(LS,L); p(KL,L); paint(); });
   document.getElementById("apc").addEventListener("click",function(){ C=next(CS,C); p(KC,C); paint(); });
   document.getElementById("apv").addEventListener("click",function(){ V=next(VS,V); p(KV,V); paint(); });
+  document.getElementById("apd").addEventListener("click",function(){ D=next(DS,D); p(KD,D); paint(); });
   paint();
 })();
 </script>
