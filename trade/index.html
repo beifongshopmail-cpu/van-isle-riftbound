@@ -481,7 +481,6 @@
     text-transform:uppercase;cursor:pointer;
   }
   .rreset:active{background:rgba(255,255,255,.06);}
-  .tltog[aria-expanded="true"] .tlcount{color:var(--bone);}
   .pcx{font-family:var(--mono);font-weight:500;font-size:15px;letter-spacing:.08em;}
   .pcx:empty{display:none;}
   .panel[data-side="1"] .pcx{color:var(--s1);}
@@ -489,12 +488,11 @@
   .panel .head .pcx{margin-left:auto;}
   .panel .head .pcx:empty + .tot{margin-left:auto;}
 
-  .tlwrap{margin-top:14px}
-  .tltog{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--tap);padding:0 14px;background:none;border:1px solid var(--rule);border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;text-align:left;cursor:pointer}
-  .tlcar{transition:transform var(--mo-fast) var(--mo-ease)}
-  .tltog[aria-expanded="true"] .tlcar{transform:rotate(180deg)}
-  .tltog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi)}
-  .tlcount{margin-left:auto;color:var(--dim);font-family:var(--mono);font-weight:500;font-size:13px;letter-spacing:.08em}
+  .tlcount{
+    margin-left:10px;
+    font-family:var(--mono);font-weight:500;font-size:12px;
+    letter-spacing:.1em;color:var(--dim);
+  }
   .tlpan{margin-top:6px;padding:14px;border:1px solid var(--rule-hi);border-radius:var(--r)}
   .tlnotew{height:44px;overflow:hidden;border-radius:6px;}
   .tlnotew input{display:block;width:123.0769%;height:54.1538px;font-family:var(--mono);font-weight:500;font-size:16px;letter-spacing:.1em;text-transform:uppercase;padding:0 17.2px;background:none;border:1px solid var(--rule-hi);border-radius:6px;color:inherit;box-sizing:border-box;transform:scale(.8125);transform-origin:top left}
@@ -731,9 +729,6 @@ html[data-chip="cool"] .dltc{color:#7FA6C4}
       </div>
       <ol class="udpan" id="udpan" hidden></ol>
     </div>
-
-    <section class="tlwrap">
-    </section>
 
     <div class="src" id="src"></div>
     <p class="src fdbklink">Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
@@ -2079,7 +2074,7 @@ html[data-chip="cool"] .dltc{color:#7FA6C4}
 </div>
 <div class="scrim" id="savscrim"></div>
 <div class="tlpan savpan" id="tlpan">
-  <div class="phead"><span class="pt">Saved trades</span><button type="button" class="pclose" id="savclose">Done</button></div>
+  <div class="phead"><span class="pt">Saved trades</span><span class="tlcount" id="tlcount"></span><button type="button" class="pclose" id="savclose">Done</button></div>
   <div class="tlnotew"><input id="tlnote" class="tlnote" type="text" maxlength="60" placeholder="Label this trade (optional)"></div>
   <button type="button" class="tlsave" id="tlsave" data-act="tlsave">Save this trade</button>
   <div id="tllist"></div>
