@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-17T17:31:06.604Z",
- "generated_local": "2026-09-17T10:31:06-07:00",
+ "generated_at": "2026-09-18T05:36:33.877Z",
+ "generated_local": "2026-09-17T22:36:33-07:00",
  "window_start": "2026-09-17T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 26,
-   "added": 26
+   "returned": 25,
+   "added": 25
   },
   {
    "name": "Courtenay",
@@ -23,30 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 46,
-  "unique": 46,
+  "fetched": 45,
+  "unique": 45,
   "prev_unique": 46
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 792667,
-   "name": "Thursday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-17T18:00:00-07:00",
-   "end": "2026-09-17T21:20:00-07:00",
-   "day": "2026-09-17",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 2,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-23T05:03:34+00:00"
-  },
   {
    "id": 795635,
    "name": "Tuesday Riftbound Playnight",
@@ -78,7 +60,7 @@
    "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 3,
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-09-15T18:01:35+00:00"
@@ -96,7 +78,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 3,
+   "reg": 4,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-17T04:47:25+00:00"
@@ -156,24 +138,6 @@
    "updated": "2026-08-01T18:16:00+00:00"
   },
   {
-   "id": 821776,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-09-20T11:30:00-07:00",
-   "end": "2026-09-20T15:40:00-07:00",
-   "day": "2026-09-20",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-02T05:01:08+00:00"
-  },
-  {
    "id": 498188,
    "name": "Sunday Morning Vendetta Summoner Skirmish II",
    "type": "skirmish",
@@ -190,6 +154,24 @@
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:28:13+00:00"
+  },
+  {
+   "id": 821776,
+   "name": "Sunday morning \"nexus Night\"",
+   "type": "nexus",
+   "start": "2026-09-20T11:30:00-07:00",
+   "end": "2026-09-20T15:40:00-07:00",
+   "day": "2026-09-20",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": "2026-08-02T05:01:08+00:00"
   },
   {
    "id": 932478,
