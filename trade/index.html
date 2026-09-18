@@ -262,16 +262,11 @@
     white-space:nowrap;overflow:hidden;text-overflow:clip;
   }
   .line .top .dltc{margin-left:0;}
-  /* TEMPORARY ROW SWITCHER. DO NOT BUILD ON THIS. REMOVED IN THE NEXT COMMIT. */
   .line .lfin{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--mute);white-space:nowrap;}
-  html[data-rowf="bright"] .line .lfin{color:var(--bone);}
   .line .lgap{flex:1 1 auto;min-width:0;}
   .line .lunit{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--mute);white-space:nowrap;text-align:right;}
-  .line .bot .dltc{display:none;margin-left:0;}
-  html[data-rowd="each"] .line .bot .dltc{display:inline-block;}
-  html[data-rowd="each"] .line .top .dltc{display:none;}
-  .rowsw{position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9999;display:flex;gap:6px;}
-  .rowsw button{font-family:var(--mono);font-weight:500;font-size:12px;padding:8px 12px;min-height:36px;border-radius:999px;border:1px solid var(--bone);background:#000;color:var(--bone);cursor:pointer;}
+  .line .bot .dltc{display:inline-block;}
+  .line .top .dltc{display:none;}
   .qty{display:flex;align-items:center;border:1px solid var(--rule);border-radius:6px;flex:0 0 auto;}
   .qty button{
     width:32px;min-height:32px;border:0;background:none;color:var(--bone);
@@ -1978,28 +1973,6 @@ html[data-vbar="lit"] .verdict{
 </script>
 <div class="tlsh" id="tlsh" hidden></div>
     <div class="rcpwrap" id="rcpwrap" hidden></div>
-<script>
-/* TEMPORARY ROW SWITCHER. DO NOT BUILD ON THIS. REMOVED IN THE NEXT COMMIT. */
-(function(){
-  var R = document.documentElement, K1 = "vir.trade.rowsw.d", K2 = "vir.trade.rowsw.f";
-  function get(k, d){ try{ return localStorage.getItem(k) || d; }catch(e){ return d; } }
-  function put(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
-  var d = get(K1, "total"), f = get(K2, "dim");
-  var box = document.createElement("div");
-  box.className = "rowsw";
-  box.innerHTML = '<button type="button" id="rowswd"></button><button type="button" id="rowswf"></button>';
-  document.body.appendChild(box);
-  function paint(){
-    R.setAttribute("data-rowd", d);
-    R.setAttribute("data-rowf", f);
-    document.getElementById("rowswd").textContent = "Delta: " + d;
-    document.getElementById("rowswf").textContent = "Foil: " + f;
-  }
-  document.getElementById("rowswd").addEventListener("click", function(){ d = (d === "total") ? "each" : "total"; put(K1, d); paint(); });
-  document.getElementById("rowswf").addEventListener("click", function(){ f = (f === "dim") ? "bright" : "dim"; put(K2, f); paint(); });
-  paint();
-})();
-</script>
 <script>
 (function(){
   // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
