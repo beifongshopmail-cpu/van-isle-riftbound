@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-18T16:58:40.092Z",
- "generated_local": "2026-09-18T09:58:40-07:00",
+ "generated_at": "2026-09-19T05:32:18.509Z",
+ "generated_local": "2026-09-18T22:32:18-07:00",
  "window_start": "2026-09-18T07:00:00.000Z",
  "anchors": [
   {
@@ -18,35 +18,17 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 17,
-   "added": 17
+   "returned": 16,
+   "added": 16
   }
  ],
  "totals": {
-  "fetched": 45,
-  "unique": 45,
+  "fetched": 44,
+  "unique": 44,
   "prev_unique": 45
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 795635,
-   "name": "Tuesday Riftbound Playnight",
-   "type": "learn",
-   "start": "2026-09-18T18:00:00-07:00",
-   "end": "2026-09-18T21:30:00-07:00",
-   "day": "2026-09-18",
-   "time": "6:00 PM",
-   "venue": "Giddy-Up Games",
-   "city": "Campbell River",
-   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
-   "region": "island",
-   "cap": 8,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-07-24T05:04:06+00:00"
-  },
   {
    "id": 500945,
    "name": "Summoner Skirmish - September 19th",
@@ -60,7 +42,7 @@
    "address": "2770 Leigh Rd, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 4,
+   "reg": 5,
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-09-15T18:01:35+00:00"
@@ -150,7 +132,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 32,
-   "reg": 4,
+   "reg": 5,
    "cents": 2000,
    "currency": "CAD",
    "updated": "2026-04-14T00:28:13+00:00"
