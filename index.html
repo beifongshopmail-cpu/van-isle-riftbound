@@ -660,7 +660,11 @@ a{color:inherit;text-decoration:none}
     M.hdrFull = hdr.offsetHeight;
     var wk = weeksInner.firstChild;
     M.row = wk ? wk.offsetHeight : 55;
-    M.stride = M.row + 3;
+    /* MEASURED, NEVER TYPED. This was M.row + 3 while the week rows had a
+       3px gap; rows now carry their own padding and a 2px margin, and the
+       one-pixel error accumulated one row at a time until a collapsed
+       grid cut the top off the day circles. Read the real distance. */
+    M.stride = (wk && wk.nextSibling) ? (wk.nextSibling.offsetTop - wk.offsetTop) : (M.row + 2);
     M.range = M.brand + Math.max(0, M.weeks - M.row);
 
     /* SET ONCE PER MEASURE, NEVER PER FRAME. The agenda reserves room for
