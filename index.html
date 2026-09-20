@@ -143,7 +143,7 @@ a{color:inherit;text-decoration:none}
 .grab{
   display:block;width:100%;height:30px;position:relative;z-index:2;
   margin-top:6px;margin-bottom:-10px;
-  touch-action:none;
+  touch-action:manipulation;
 }
 .grab:active{transform:none}
 .grab i{
@@ -152,7 +152,7 @@ a{color:inherit;text-decoration:none}
   background:rgba(237,234,227,.3);
   transition:background .14s var(--ease);
 }
-.grab:active i,.grab.pull i{background:var(--bone)}
+.grab:active i{background:var(--bone)}
 
 /* ===================== agenda ===================== */
 
@@ -666,8 +666,6 @@ a{color:inherit;text-decoration:none}
     weeksInner.style.transform = "";
     hdr.style.setProperty("--p", 0);
 
-    /* the clip-path these two lines used to reset is gone; see apply() */
-    clip.style.height = "";
 
     M.brand = brand.offsetHeight;
     M.full = stack.offsetHeight;
@@ -697,8 +695,8 @@ a{color:inherit;text-decoration:none}
     main.style.paddingBottom = "calc(" + (tabs.offsetHeight + 36) + "px + env(safe-area-inset-bottom,0px))";
     main.style.marginBottom = "";
     main.style.transform = "";
-    col = clamp(col, 0, M.range);
-    lastWant = clamp(scrollNow(), 0, M.range);
+    target = scrollNow() <= 2 ? 0 : M.range;
+    col = target;
     apply();
   }
 
@@ -709,14 +707,9 @@ a{color:inherit;text-decoration:none}
      fast scroll could pull it open on its own. */
   var col = 0;
 
-  /* HELD carries a value a pull set by hand, or null when the scroll
-     owns the collapse. A pull holds until the scroll position catches up
-     with it, so the calendar can be opened OVER a list that stays put and
-     still behaves normally once the reader gets back to the top of it.
-     Nothing auto-collapses. */
-  var held = null;
-  var lastWant = 0;
-  var dragging = false;
+  /* TARGET is the state the calendar is settling toward: 0 open, M.range
+     collapsed. Nothing writes col except glide(). */
+  var target = 0;
 
   function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
@@ -752,150 +745,62 @@ a{color:inherit;text-decoration:none}
        now that nothing on this page throws light outside its own box. */
   }
 
-  /* the scroll owns the collapse only while no pull is being held, and
-     hands back the moment its own value crosses the held one */
-  function fromScroll(){
-    var want = clamp(scrollNow(), 0, M.range);
-    if (held !== null && (lastWant - held) * (want - held) <= 0) held = null;
-    lastWant = want;
-    if (held === null) col = want;
+  /* THE COLLAPSE FOLLOWS THE SCROLL, AND A TAP OVERRIDES IT.
+     At the very top of the page the calendar is open; anywhere below it is
+     collapsed; tapping the handle toggles it and holds until the next
+     scroll changes the state again.
+     THE DRAG IS GONE ON PURPOSE, and its whole apparatus with it: the
+     scroll coupling, the momentum halt, the velocity read, the held
+     value. It tracked the finger one to one and then snapped to an end on
+     release, so it never had a partial state to offer -- and the coupling
+     was what made a scroll-driven collapse stutter. Do not rebuild it. */
+  var glideRaf = null;
+  /* THE DURATION COMES FROM THE DISTANCE, roughly 1.15ms per pixel,
+     floored at 150 and capped at 420. A fixed 220ms was tried and is why
+     closing read as a snap: a full close had the whole M.range to cover in
+     the time a short nudge got. */
+  function glide(to){
+    if (glideRaf) cancelAnimationFrame(glideRaf);
+    var from = clamp(col, 0, M.range), d = to - from, t0 = 0;
+    if (!d){ glideRaf = null; col = to; apply(); return; }
+    var ms = Math.max(150, Math.min(420, Math.abs(d) * 1.15));
+    glideRaf = requestAnimationFrame(function step(ts){
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / ms);
+      col = from + d * (1 - Math.pow(1 - k, 3));
+      apply();
+      if (k < 1) glideRaf = requestAnimationFrame(step);
+      else { glideRaf = null; col = to; apply(); }
+    });
+  }
+
+  /* one entry point, so a scroll cannot restart a glide that is already
+     heading where it asks for */
+  function settle(to){
+    if (to === target) return;
+    target = to;
+    glide(to);
   }
 
   var ticking = false;
   window.addEventListener("scroll", function(){
-    /* a scroll still settling under the finger must not move the
-       collapse mid-drag */
-    if (dragging) return;
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(function(){ fromScroll(); apply(); ticking = false; });
+    requestAnimationFrame(function(){
+      /* AT THE TOP MEANS AT THE TOP, not merely moving upward: an agenda
+         scrolled up from its bottom stays collapsed until the reader
+         actually arrives. */
+      settle(scrollNow() <= 2 ? 0 : M.range);
+      ticking = false;
+    });
   }, {passive:true});
   window.addEventListener("resize", function(){ measure(); });
 
-  /* The handle drags in both directions and a tap with no movement
-     toggles. It was once only a button that scrolled to the top.
-     THE MECHANISM IS RIGHT AND IS NOT THE PLACE TO LOOK when something
-     feels wrong around scrolling -- rewriting the collapse onto a CSS
-     scroll-timeline was proposed once and correctly rejected. The three
-     causes that did make it fight the scroll were all in this handler
-     and are all fixed: no momentum halt on touchstart, reading the live
-     scroll position mid-drag, and storing the collapse as an offset
-     relative to scroll instead of an absolute amount. */
-  (function(){
-    var grab = document.getElementById("grab");
-    var startY = 0, startCol = 0, moved = 0;
-    /* THE FLICK IS READ BY SPEED, NOT BY DISTANCE. Judging the release on
-       position alone meant a fast short throw was returned to where it
-       started -- it had not crossed halfway -- which is the extra oomph a
-       flick seemed to need. Anything faster than 0.4px/ms commits in the
-       direction it was thrown, however far it got. */
-    var lastMoveY = 0, lastMoveT = 0, vel = 0;
-
-    /* NEAR THE TOP, THE PULL IS THE SCROLL. Within the first M.range of
-       the page the handle moves the scroll position itself, so the agenda
-       rides up and down with the header and its first heading stays
-       pinned below the calendar whether it is open or shut. Past that the
-       page stays exactly where it is and the calendar opens OVER the
-       list, as a drawer does. */
-    var coupled = false;
-
-    function hold(v){
-      col = clamp(v, 0, M.range);
-      if (coupled){
-        window.scrollTo(0, Math.round(col));
-        held = null;
-        lastWant = col;
-      } else {
-        held = col;
-        lastWant = clamp(scrollNow(), 0, M.range);
-      }
-      apply();
-    }
-
-    /* THE PULL SETTLES, IT DOES NOT JUMP. The drag tracks the finger one
-       to one; on release the collapse glides to whichever end it is
-       nearer. It never rests half open on purpose -- a partly collapsed
-       header cuts a week row through the middle, which reads as broken
-       rather than as a chosen state. Open and anchored week are the only
-       two states the design means.
-       THE DURATION COMES FROM THE DISTANCE, roughly 1.15ms per pixel,
-       floored at 150 and capped at 420. A FIXED 220ms WAS TRIED AND IS
-       WHY CLOSING READ AS A SNAP: a close had the whole M.range to cover
-       in the time a short nudge got. It also made the glide too quick to
-       catch mid-flight, and showed its frames on the way open. */
-    var glideRaf = null;
-    function glide(to){
-      if (glideRaf) cancelAnimationFrame(glideRaf);
-      var from = clamp(col, 0, M.range), d = to - from, t0 = 0;
-      if (!d){ glideRaf = null; hold(to); return; }
-      var ms = Math.max(150, Math.min(420, Math.abs(d) * 1.15));
-      glideRaf = requestAnimationFrame(function step(ts){
-        if (!t0) t0 = ts;
-        var k = Math.min(1, (ts - t0) / ms);
-        col = from + d * (1 - Math.pow(1 - k, 3));
-        if (coupled) window.scrollTo(0, Math.round(col));
-        apply();
-        if (k < 1) glideRaf = requestAnimationFrame(step);
-        else { glideRaf = null; hold(to); }
-      });
-    }
-
-    grab.addEventListener("touchstart", function(e){
-      /* HALT ANY MOMENTUM FIRST. During a flick iOS spends the next touch
-         stopping the scroll and delivers no touchmove at all, which is why
-         the first pull after a scroll did nothing. Parking the page at the
-         offset it is already at ends the momentum here instead, so the
-         gesture is live immediately. */
-      window.scrollTo(0, scrollNow());
-      if (glideRaf){ cancelAnimationFrame(glideRaf); glideRaf = null; }
-      coupled = scrollNow() <= M.range;
-      dragging = true; moved = 0;
-      lastMoveY = e.touches[0].clientY; lastMoveT = Date.now(); vel = 0;
-      startY = e.touches[0].clientY;
-      if (!M.range) measure();
-      startCol = clamp(col, 0, M.range);
-      grab.className = "grab pull";
-    }, {passive:true});
-
-    grab.addEventListener("touchmove", function(e){
-      if (!dragging) return;
-      var ny = e.touches[0].clientY, nt = Date.now(), dt = nt - lastMoveT;
-      /* smoothed so one stuttering frame cannot decide the gesture */
-      if (dt > 0) vel = vel * 0.4 + ((ny - lastMoveY) / dt) * 0.6;
-      lastMoveY = ny; lastMoveT = nt;
-      var dy = ny - startY;
-      if (Math.abs(dy) > moved) moved = Math.abs(dy);
-      /* pulling DOWN opens the calendar, so it decreases the collapse.
-         The scroll position is NOT read here: the pull is measured
-         against the value the gesture started from and nothing else. */
-      col = clamp(startCol - dy, 0, M.range);
-      if (coupled) window.scrollTo(0, Math.round(col));
-      apply();
-      e.preventDefault();
-    }, {passive:false});
-
-    function release(){
-      if (!dragging) return;
-      dragging = false;
-      grab.className = "grab";
-      /* settle to whichever end it is nearer, so it never rests
-         half open */
-      if (moved < 6) glide(col > 4 ? 0 : M.range);
-      else if (Date.now() - lastMoveT < 120 && vel > 0.4) glide(0);
-      else if (Date.now() - lastMoveT < 120 && vel < -0.4) glide(M.range);
-      else glide(col > (M.range || 0) / 2 ? M.range : 0);
-    }
-    grab.addEventListener("touchend", release);
-    grab.addEventListener("touchcancel", release);
-
-    grab.addEventListener("click", function(e){
-      e.preventDefault();
-      if (moved < 6 && !dragging){
-        coupled = scrollNow() <= M.range;
-        glide(col > 4 ? 0 : M.range);
-      }
-    });
-  })();
+  /* the handle is a tap target and a lip on the card's edge, nothing more */
+  document.getElementById("grab").addEventListener("click", function(){
+    if (!M.range) measure();
+    settle(target ? 0 : M.range);
+  });
 
 
   function refresh(remeasure){
