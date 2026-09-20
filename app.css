@@ -1,0 +1,115 @@
+/* =====================================================================
+   app.css -- THE CARD SYSTEM'S SHARED LAYER.
+   Lifted close to verbatim from the reference page agreed with Mako on
+   device, 2026-09-19 (claude.ai artifact "RAVI card system, reference").
+   Every value below is the agreed value. The reference is the spec.
+
+   HOW IT IS LINKED: by relative path, AFTER fonts.css and BEFORE the
+   page's own <style>, so a page rule of equal specificity still wins.
+   A page links this file only when that page is converted.
+
+   LEFT OUT ON PURPOSE, and nothing else: the reference's :root
+   safe-area padding, html scroll-padding-top and html/body height:100%.
+   Those are layout, not surface, and each page keeps its own.
+   ===================================================================== */
+
+:root{
+  color-scheme:dark;
+  /* ground and ink */
+  --ground:#08090A;            /* near-void. Chosen over #121316 and #17191C */
+  --bone:#EDEAE3; --ink:#121316; --muted:#A4A7AD; --faint:#4A4E55; --track:#2A2D32; --hi:#34383E;
+  /* identity colours: players, event types, over-time */
+  --p1:#EE5F9C; --p2:#5DA5EE;
+  --p1t:rgba(238,95,156,.14); --p2t:rgba(93,165,238,.14);   /* score-button stain ("light") */
+  --p1r:rgba(238,95,156,.50); --p2r:rgba(93,165,238,.50);   /* score-button press */
+  --nx:#8FBDF7; --sk:#F2CC5C;                               /* type word and marks */
+  --nxg:rgba(143,189,247,.26); --skg:rgba(242,204,92,.24);  /* event-card glass body */
+  --over:#E5484D;
+  /* THE GLASS RECIPE ("specular"): near-clear body, light caught along the top curve fading
+     down the sides, a faint return at the base, a soft glow inside the base. No full outline. */
+  --glass:rgba(255,255,255,.045);
+  --glass-press:rgba(255,255,255,.14);
+  --glass-base:inset 0 -10px 18px -14px rgba(255,255,255,.14);
+  --rim-light:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,.10) 30%,rgba(255,255,255,0) 55%,rgba(255,255,255,.10));
+  /* FROSTED CHROME: the bar, the counter's strip, menus. Real blur, "clearest" strength. */
+  --frost:rgba(36,37,38,.22);
+  --frost-rim:rgba(255,255,255,.10);
+  --on:rgba(255,255,255,.14);      /* the bar's "you are here" pill */
+  --recess:rgba(0,0,0,.35);        /* tracks that hold options: segmented controls, pick lists */
+  --scrim:rgba(0,0,0,.35);
+  /* type: faces and rungs unchanged from the type-scale ARCH item */
+  --disp:"Poppins",system-ui,-apple-system,sans-serif;
+  --text:"Nunito",system-ui,-apple-system,sans-serif;
+  --barH:56px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground);color:var(--bone);font-family:var(--text);font-size:15px;line-height:1.4;
+  font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+.ttl{font-family:var(--disp);font-weight:700;margin:0;letter-spacing:-.005em}   /* titles are SENTENCE CASE */
+
+/* press feedback, every button */
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;
+  transition:transform .16s ease,background-color .16s ease}
+button:active{transform:scale(.96);transition-duration:.08s}
+button:disabled{opacity:.4;pointer-events:none}                   /* dim means disabled, holds its place */
+button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
+
+/* .glass: the one glass recipe. Buttons, surfaces and event cards all use it. */
+.glass{position:relative;background:var(--glass);box-shadow:var(--glass-base)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
+.btn{border-radius:999px}
+.btn:active{background:var(--glass-press)}
+.circ{width:36px;height:36px;display:grid;place-items:center}
+.circ svg{width:18px;height:18px}
+
+/* .frost: see-through chrome that blurs what passes behind it */
+.frost{background:var(--frost);border:1px solid var(--frost-rim);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+
+/* the bar: Facebook's floating pill, icons only */
+.bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;
+  height:var(--barH);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:20;padding:5px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.tab{border-radius:999px;display:grid;place-items:center}
+.tab svg{width:24px;height:24px}
+.tab:active,.tab.on{background:var(--on)}
+.tab.on svg .fillon{fill:currentColor}   /* the active slot's icon goes filled: shape as well as shade */
+
+/* menus: frosted panel rising from the bottom over a light scrim */
+.scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:30}
+.scrim.show{opacity:1;pointer-events:auto}
+.panel{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;
+  border-radius:24px;padding:16px;z-index:40;box-shadow:0 14px 36px rgba(0,0,0,.5);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+  max-height:calc(100% - 32px - env(safe-area-inset-top,0px));overflow-y:auto;
+  transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
+.panel.show{transform:none;opacity:1;pointer-events:auto}
+.phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.phead h4{font-size:20px}
+.row{margin-bottom:14px}
+.row .lb{font-size:13px;font-weight:600;margin:0 0 6px}
+
+/* option tracks: a recessed track, borderless options, the chosen one in bone */
+.seg{display:flex;background:var(--recess);border-radius:999px;padding:3px;gap:2px}
+.seg button{flex:1;height:34px;border-radius:999px;font-size:13px;font-weight:600;font-family:var(--disp)}
+.seg button:active{background:var(--hi)}
+.seg button.on{background:var(--bone);color:var(--ink)}
+.pick{background:var(--recess);border-radius:24px;padding:4px;display:flex;flex-direction:column;gap:2px}
+.pick button{display:flex;align-items:center;gap:10px;width:100%;height:48px;padding:0 16px;border-radius:999px;
+  font-family:var(--disp);font-weight:600;font-size:15px}
+.pick button:active{background:var(--hi)}
+.pick button.on{background:var(--bone);color:var(--ink)}
+.pick .sp{flex:1}
+.pick small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.pick button.on small{color:rgba(18,19,22,.62)}
+
+/* flashes that confirm a tap */
+.flash-p{animation:flp .42s ease}
+@keyframes flp{0%{background:var(--pc);color:var(--ink)}100%{}}
+.flash-n{animation:fln .42s ease}
+@keyframes fln{0%{background:rgba(237,234,227,.85);color:var(--ink)}100%{}}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
