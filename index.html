@@ -79,9 +79,12 @@ a{color:inherit;text-decoration:none}
    colour happens to be passing underneath. */
 .card{
   border-radius:24px;padding:14px 12px 12px 12px;
-  background:rgba(10,11,13,.62);
-  -webkit-backdrop-filter:blur(24px) saturate(140%);backdrop-filter:blur(24px) saturate(140%);
-  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45);
+  background:rgba(10,11,13,.5);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  /* NO DROP SHADOW. .clip crops this card with overflow:hidden, and a
+     shadow cannot leave an overflow:hidden parent -- it was sliced into a
+     straight dark line across the agenda. The frosted edge is enough. */
+  box-shadow:var(--glass-base);
 }
 
 .mrow{display:flex;align-items:center;gap:6px;padding-bottom:10px}
@@ -100,7 +103,7 @@ a{color:inherit;text-decoration:none}
 .dow{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding-bottom:4px}
 .dow span{text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
 
-.weeks{clip-path:inset(0 -100vw)}
+.weeks{overflow:hidden}
 /* THE ROW NEEDS HEADROOM. A 46px circle in a 46px row loses a pixel of its
    ring to the crop the moment anything rounds. The 2px is read back out of
    the DOM by measure(), so the collapse follows it with no number to keep
@@ -139,7 +142,7 @@ a{color:inherit;text-decoration:none}
    finger would jitter the whole strip. */
 .grab{
   display:block;width:100%;height:30px;position:relative;z-index:2;
-  margin-top:-6px;margin-bottom:-10px;
+  margin-top:6px;margin-bottom:-10px;
   touch-action:none;
 }
 .grab:active{transform:none}
@@ -663,8 +666,8 @@ a{color:inherit;text-decoration:none}
     weeksInner.style.transform = "";
     hdr.style.setProperty("--p", 0);
 
-    clip.style.clipPath = "";
-    weeksBox.style.clipPath = "";
+    /* the clip-path these two lines used to reset is gone; see apply() */
+    clip.style.height = "";
 
     M.brand = brand.offsetHeight;
     M.full = stack.offsetHeight;
@@ -741,9 +744,12 @@ a{color:inherit;text-decoration:none}
        and nothing else: the agenda below it is never touched, by a
        transform or otherwise. */
 
-    var open = left < 1;
-    clip.style.clipPath = open ? "none" : "inset(0 -100vw)";
-    weeksBox.style.clipPath = open ? "none" : "inset(0 -100vw)";
+    /* NO CLIP-PATH ON EITHER BOX, EVER. A clip-path makes an element a
+       BACKDROP ROOT, so while the calendar was collapsed the frosted card
+       had only its own parent behind it and blurred nothing at all. Both
+       boxes crop with overflow:hidden instead, which does not. Do not
+       reintroduce one here; the sideways bleed it allowed is not needed
+       now that nothing on this page throws light outside its own box. */
   }
 
   /* the scroll owns the collapse only while no pull is being held, and
