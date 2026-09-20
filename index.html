@@ -18,13 +18,12 @@
    holds only what is the calendar's own. The reference page is the spec:
    claude.ai artifact "RAVI card system, reference".
 
-   THE COLLAPSE, THE PULL AND THE HEADER'S ONE-EDGE CONSTRUCTION ARE
-   UNCHANGED MECHANICS. Only their surface changed. The ARCH item on the
-   collapse, the pull and the seam carries why each part exists. */
+   THE COLLAPSE AND THE PULL ARE UNCHANGED MECHANICS. Only their surface
+   changed. The ARCH item on the collapse, the pull and the seam carries
+   why each moving part exists -- but the SEAM ITSELF IS GONE, along with
+   the whole glow language it belonged to. Do not rebuild it. */
 
 :root{
-  /* the header grid's inset from the screen edge */
-  --gut:24px;
   --ease:cubic-bezier(.22,.72,.2,1);
 }
 
@@ -40,42 +39,39 @@ body.lock{position:fixed;left:0;right:0;overflow:hidden}
 a{color:inherit;text-decoration:none}
 .mono{font-variant-numeric:tabular-nums}
 
-/* ===================== header, one piece ===================== */
+/* ===================== header: a plane holding a card ===================== */
 
-/* OPAQUE, so the grid never reads through blurred event cards. Its tone
-   is the reference's month card: the glass layer over the ground. */
+/* THE PLANE IS INVISIBLE ON PURPOSE. It is the page's own ground, so the
+   only thing that reads as a surface is the card inside it. Its last 16px
+   fade to nothing, so the agenda passing underneath dissolves instead of
+   meeting a hard edge where the old lit seam used to explain the line. */
 .hdr{
   position:fixed;top:0;left:0;right:0;z-index:10;
-  background:linear-gradient(var(--glass),var(--glass)),var(--ground);
-  border-radius:0 0 24px 24px;
-  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.5);
-  padding:calc(env(safe-area-inset-top,0px) + 12px) 0 0 0;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 0 12px;
+  background:linear-gradient(180deg,var(--ground) calc(100% - 16px),rgba(8,9,10,0));
   transform:translateZ(0);
   will-change:transform;
-  overflow:visible;
-}
-/* ONE EDGE, NOT FOUR. Same construction as before: border-bottom only,
-   running 400px past the top so the stroke traces the corners and leaves
-   the screen. Now in the glass rim's base colour rather than lit white. */
-.hdr::after{
-  content:"";position:absolute;
-  left:0;right:0;bottom:0;top:-400px;
-  border-radius:0 0 24px 24px;
-  border-bottom:1px solid var(--frost-rim);
-  pointer-events:none;
 }
 
-/* the vertical clip is clip-path so the sides stay unbounded */
+/* THE COLLAPSE CROPS HERE, and it crops with overflow plus a radius
+   rather than with clip-path, SO THE CARD'S TOP CORNERS SURVIVE. Once the
+   brand has scrolled away the card's top edge sits exactly on this box's
+   top edge; both are rounded by the same amount, so the crop follows the
+   card instead of slicing it square. Nothing needs to bleed sideways any
+   more -- no surface on this page throws light outside its own box. */
 .clip{
-  padding:0 var(--gut);
-  clip-path:inset(0 -100vw);
+  overflow:hidden;
+  border-radius:24px;
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
 }
 .stack{padding:0}
 
-.brand{padding-bottom:12px}
+.brand{padding-bottom:14px}
 .brand h1{margin:0;font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.005em;line-height:1.1}
 .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
+
+/* the calendar itself: a card, clear of both screen edges */
+.card{border-radius:24px;padding:14px 12px 12px 12px}
 
 .mrow{display:flex;align-items:center;gap:6px;padding-bottom:10px}
 .mrow .m{
@@ -94,7 +90,11 @@ a{color:inherit;text-decoration:none}
 .dow span{text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
 
 .weeks{clip-path:inset(0 -100vw)}
-.week{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;margin-bottom:4px}
+/* THE ROW NEEDS HEADROOM. A 46px circle in a 46px row loses a pixel of its
+   ring to the crop the moment anything rounds. The 2px is read back out of
+   the DOM by measure(), so the collapse follows it with no number to keep
+   in step. */
+.week{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding:2px 0;margin-bottom:2px}
 .week:last-child{margin-bottom:0}
 
 /* days are CIRCLES, 46 across, shrinking to the column on a narrow phone */
@@ -155,17 +155,21 @@ a{color:inherit;text-decoration:none}
 
 /* event cards: the glass recipe with the type colour as the body.
    Body strengths are the reference's: Nexus .26, Skirmish .24; the
-   three types it did not mock take .25. */
+   three types it did not mock take .25.
+   THEY SINK ON PRESS LIKE EVERY OTHER CONTROL. They are LINKS, not
+   buttons, so app.css's press shrink does not reach them and they carry
+   their own -- and iOS needs the document-level touch listener in the
+   script before it will fire a pressed state on a link at all. */
 .ev{
   display:block;position:relative;color:var(--bone);
   border-radius:18px;padding:12px 14px;margin:0 0 8px 0;
   background:rgba(var(--cl),var(--ga,.25));
   box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16);
-  transition:filter .16s ease;
+  transition:transform .16s ease,filter .16s ease;
 }
 .ev.t-nexus{--ga:.26}
 .ev.t-skirmish{--ga:.24}
-.ev:active{filter:brightness(1.2)}
+.ev:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
 .ev .l1,.ev .l3{display:flex;align-items:center;gap:8px;font-size:12px}
 .ev .l1 .mk{width:8px;height:8px}
 .ev .l1 .mk.s-bar{width:11px;height:5px}
@@ -238,6 +242,7 @@ a{color:inherit;text-decoration:none}
         <p>Riftbound events on Vancouver Island. Kept by Beifong's Hit-House.</p>
       </div>
 
+      <section class="card glass">
       <div class="mrow">
         <span class="m" id="mname">&nbsp;</span>
         <span class="y mono" id="myear"></span>
@@ -254,6 +259,7 @@ a{color:inherit;text-decoration:none}
       </div>
 
       <div class="weeks" id="weeks"><div id="weeksInner"></div></div>
+      </section>
     </div>
   </div>
 
@@ -928,13 +934,16 @@ a{color:inherit;text-decoration:none}
       scrim.className = "scrim";
     }
   }
-  filt.addEventListener("click", function(){ openPanel(panel); });
-  document.getElementById("tabset").addEventListener("click", function(){ openPanel(panel); });
-  document.getElementById("tabnav").addEventListener("click", function(){ openPanel(pnav); });
+  filt.addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
+  document.getElementById("tabset").addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
+  document.getElementById("tabnav").addEventListener("click", function(){ openPanel(openP === pnav ? null : pnav); });
   document.getElementById("pnhere").addEventListener("click", function(){ openPanel(null); });
   scrim.addEventListener("click", function(){ openPanel(null); });
   document.getElementById("pclose").addEventListener("click", function(){ openPanel(null); });
   document.getElementById("pnclose").addEventListener("click", function(){ openPanel(null); });
+  /* iOS only fires the pressed state on non-button elements while a touch
+     listener exists at document level. The event cards are links. */
+  document.addEventListener("touchstart", function(){}, {passive:true});
 
   document.getElementById("tylist").addEventListener("click", function(e){
     var el = e.target;
