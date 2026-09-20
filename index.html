@@ -39,51 +39,38 @@ body.lock{position:fixed;left:0;right:0;overflow:hidden}
 a{color:inherit;text-decoration:none}
 .mono{font-variant-numeric:tabular-nums}
 
-/* ============== the brand, the spacer and the card ============== */
+/* ============== the wordmark row and the card ============== */
 
-/* THE BRAND IS IN THE PAGE, NOT IN A FIXED BOX. It used to sit inside a
-   fixed header, which is the only reason it could ever snap in and out of
-   existence. In the flow it scrolls away like anything else does. */
-.top{padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 0 14px}
-.brand{padding-bottom:14px}
-.brand h1{margin:0;font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.005em;line-height:1.1}
-.brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
+/* APP CHROME, NOT A TITLE BLOCK. A thin row carrying the name and nothing
+   else, scrolling away with the page the way every phone app's header
+   does. The tagline it used to carry read as a website masthead; the
+   footer already says who keeps this. */
+.top{padding:calc(env(safe-area-inset-top,0px) + 10px) 18px 10px 18px}
+.wm{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em;line-height:1.2}
 
-/* THE SPACER HOLDS THE OPEN CARD'S PLACE. The card is fixed and takes no
-   room of its own, so this box carries its open height, written by
-   measure(). THIS IS WHY THERE IS NO DEAD ZONE: the agenda follows this
-   box in normal flow, so it rises one pixel per pixel scrolled, exactly
-   as the card shrinks one pixel per pixel scrolled. The distance from the
-   card's bottom edge to the first event is the same in every state. */
-.hold{height:0}
-
-/* THE CARD RIDES UP, THEN PINS. Its top is written every frame: the flow
-   position while the page is near the top, the pin once it arrives. THE
-   PIN IS THE VALUE BELOW and measure() reads it back out of the computed
-   style, so it is written in exactly one place. */
+/* THE CARD IS STICKY AND THE BROWSER DOES THE WHOLE JOB: it sits in the
+   page under the wordmark, scrolls up with it, and parks at the top.
+   SCRIPT DROVE THIS PIN THREE TIMES -- a drag, a frame loop, a fixed box
+   with a spacer -- and every one of them fought iOS for the frames it was
+   already using to scroll. Nothing needs to. Do not make this fixed. */
 .card{
-  position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 12px);
-  max-width:456px;margin:0 auto;z-index:10;
+  position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:10;
+  width:calc(100% - 24px);max-width:456px;margin:0 auto 14px auto;
   border-radius:24px;padding:14px 12px 12px 12px;
   background:rgba(10,11,13,.5);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45);
 }
 
-/* the month name IS the toggle: a chevron beside it, the way both phone
-   calendars do it. Four circles and a month name do not fit 375px. */
+/* the month name holds one size. It shrank as the calendar collapsed back
+   when the collapse was a continuous amount; there are two states now. */
 .mrow{display:flex;align-items:center;gap:6px;padding:0 2px 10px 2px}
-.mtog{display:flex;align-items:baseline;gap:6px;border-radius:12px;padding:3px 7px;margin-left:-7px}
-.mtog:active{background:var(--hi)}
-.mrow .m{
-  font-family:var(--disp);font-weight:700;letter-spacing:-.005em;line-height:1;
-  font-size:calc(20px + 8px * (1 - var(--p,0)));
-}
+.mrow .m{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.005em;line-height:1}
 .mrow .y{font-size:12px;color:var(--muted)}
-.chev{width:14px;height:14px;flex:0 0 auto;align-self:center;color:var(--muted);transition:transform .22s var(--ease)}
-.mtog[aria-expanded="false"] .chev{transform:rotate(-90deg)}
 .mrow .sp{flex:1}
 .mrow .circ svg{stroke:currentColor;stroke-width:1.8;fill:none}
+.chev{width:16px;height:16px;stroke-width:2.4;transition:transform .28s var(--ease)}
+#mtog[aria-expanded="false"] .chev{transform:rotate(-90deg)}
 #filt svg{width:19px;height:19px}
 #prev svg,#next svg{width:14px;height:14px;stroke-width:2.4}
 /* filters set: the same glass fill as a selected day */
@@ -92,7 +79,12 @@ a{color:inherit;text-decoration:none}
 .dow{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding-bottom:4px}
 .dow span{text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
 
-.weeks{overflow:hidden}
+/* THE COLLAPSE IS THESE TWO TRANSITIONS AND NOTHING ELSE MOVES. The
+   script writes the end values once per toggle and the browser tweens
+   them; the agenda follows on its own because a sticky card keeps its
+   place in normal flow. */
+.weeks{overflow:hidden;transition:height .28s var(--ease)}
+#weeksInner{transition:transform .28s var(--ease)}
 /* THE ROW NEEDS HEADROOM. A 46px circle in a 46px row loses a pixel of its
    ring to the crop the moment anything rounds. The 2px is read back out of
    the DOM by measure(), so the collapse follows it with no number to keep
@@ -128,10 +120,10 @@ a{color:inherit;text-decoration:none}
 
 /* ===================== agenda ===================== */
 
-/* THE GAP UNDER THE CARD IS THIS PADDING AND NOTHING ELSE. It holds in
-   every state because the spacer above shrinks in step with the card. */
+/* no top padding: the card's own bottom margin is the gap, in every
+   state, because the card sits in normal flow. */
 .body{
-  padding:14px 12px 30px 12px;
+  padding:0 12px 30px 12px;
 }
 
 .ahead{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:0 4px;min-height:32px}
@@ -222,22 +214,16 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<div class="top" id="top">
-  <div class="brand" id="brand">
-    <h1>Van Isle Riftbound</h1>
-    <p>Riftbound events on Vancouver Island. Kept by Beifong's Hit-House.</p>
-  </div>
-  <div class="hold" id="hold"></div>
+<div class="top">
+  <h1 class="wm">Van Isle Riftbound</h1>
 </div>
 
 <section class="card glass" id="card">
   <div class="mrow">
-    <button type="button" class="mtog" id="mtog" aria-expanded="true" aria-label="Expand or collapse the calendar">
-      <span class="m" id="mname">&nbsp;</span>
-      <span class="y mono" id="myear"></span>
-      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
+    <span class="m" id="mname">&nbsp;</span>
+    <span class="y mono" id="myear"></span>
     <span class="sp"></span>
+    <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
     <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
     </button>
@@ -348,9 +334,6 @@ a{color:inherit;text-decoration:none}
   var scope = "victoria", selected = null, cursor = null, hidden = {};
   var locked = false, lockY = 0;
 
-  var top = document.getElementById("top");
-  var brand = document.getElementById("brand");
-  var hold = document.getElementById("hold");
   var card = document.getElementById("card");
   var mtog = document.getElementById("mtog");
   var weeksBox = document.getElementById("weeks");
@@ -364,7 +347,6 @@ a{color:inherit;text-decoration:none}
 
   var M = {brand:0, full:0, weeks:0, row:0, stride:0, range:0, hdrFull:0};
   var anchorRow = 0;
-  var locked = false;
 
   function pad(n){ return (n < 10 ? "0" : "") + n; }
   function keyOf(y,m,d){ return y + "-" + pad(m+1) + "-" + pad(d); }
@@ -633,103 +615,76 @@ a{color:inherit;text-decoration:none}
   /* ---- collapse: ONE clipping box, transforms only ---- */
 
   /* ================== the collapse ==================
-     THE CARD RIDES THE PAGE, THEN PINS, AND THE COLLAPSE IS SIMPLY HOW FAR
-     THE PAGE HAS SCROLLED PAST THAT PIN. Three numbers, read fresh on every
-     measure:
-       PIN   where the card stops, from its own CSS top -- never typed here
-       FLOW  where the card would sit in the page if it were not fixed
-       RANGE how much height the calendar can give up: the brand's height
-             does not enter into it any more, only the weeks
-     Everything follows from col = clamp(scroll - (FLOW - PIN), 0, RANGE).
-
-     WHY THERE IS NO DEAD ZONE. The spacer's height is (open height - col),
-     so as the card loses a pixel the spacer gives one back in the same
-     frame. The agenda sits below the spacer in normal flow, so the gap
-     between the card's bottom edge and the first event never changes --
-     open, collapsed, or anywhere between. An earlier build reserved a
-     CONSTANT gap for the header at its full height, which is exactly the
-     black band that appeared once the card shrank. */
-  var M = {open:0, weeks:0, row:0, stride:0, range:0, pin:0, flow:0};
-  var col = 0;
-
-  function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
+     NOTHING HERE LISTENS TO SCROLL, and nothing here positions the card.
+     The card is position:sticky; the browser parks it. Three earlier
+     versions drove that pin from script -- a drag, a frame loop, a fixed
+     box with a spacer in the flow -- and each one fought iOS for the
+     frames it was already using to scroll, which is what read as twitchy
+     on a slow scroll and choppy on a fast one. Do not add a scroll
+     listener here, and do not make the card fixed.
+     THE AGENDA NEEDS NO ALIGNMENT EITHER. A sticky element keeps its
+     place in normal flow, so the agenda follows the card by itself and
+     the gap below it is the card's own margin in every state. */
+  var M = {weeks:0, row:0, stride:0, flow:0};
+  var shut = false;
 
   function measure(){
     weeksBox.style.height = "";
     weeksInner.style.transform = "";
-    hold.style.height = "";
 
-    M.pin = parseFloat(getComputedStyle(card).top) || 0;
-    M.flow = top.offsetHeight;
-    M.open = card.offsetHeight;
     M.weeks = weeksBox.offsetHeight;
     var wk = weeksInner.firstChild;
     M.row = wk ? wk.offsetHeight : 55;
     M.stride = (wk && wk.nextSibling) ? (wk.nextSibling.offsetTop - wk.offsetTop) : (M.row + 2);
-    M.range = Math.max(0, M.weeks - M.row);
+    M.flow = card.offsetTop;
 
     main.style.paddingBottom = "calc(" + (tabs.offsetHeight + 36) + "px + env(safe-area-inset-bottom,0px))";
-    apply();
+    apply(true);
   }
 
-  /* NO LAYOUT PROPERTY MAY BE WRITTEN FROM HERE THAT THE AGENDA READS as
-     its own position. Writing the agenda's paddingTop inside apply()
-     changes the document height, which fires scroll, which calls apply()
-     again -- a loop that fought every gesture. The spacer is a sibling
-     ABOVE the agenda, so writing its height moves the agenda without the
-     agenda ever being touched. */
-  function apply(){
-    if (locked) return;
-    var pass = scrollNow() - (M.flow - M.pin);
-    col = clamp(pass, 0, M.range);
-
-    card.style.top = Math.max(M.pin, M.flow - scrollNow()) + "px";
-
-    var winH = M.weeks - col;
-    weeksBox.style.height = winH + "px";
+  /* apply(now) draws whichever state the calendar is in. now=true jumps
+     straight there with no tween, which is what a re-render or a rotation
+     wants: tweening from a stale height is a stutter, not motion. */
+  function apply(now){
+    var winH = shut ? M.row : M.weeks;
     var anchorTop = anchorRow * M.stride;
-    var off = clamp(anchorTop + M.row - winH, 0, anchorTop);
+    var off = shut ? clamp(anchorTop + M.row - winH, 0, anchorTop) : 0;
+
+    if (now){
+      weeksBox.style.transition = "none";
+      weeksInner.style.transition = "none";
+    }
+
+    weeksBox.style.height = winH + "px";
     weeksInner.style.transform = "translate3d(0," + (-off) + "px,0)";
 
-    hold.style.height = (M.open - col) + "px";
-    card.style.setProperty("--p", M.range ? String(col / M.range) : "0");
-    mtog.setAttribute("aria-expanded", col < M.range / 2 ? "true" : "false");
+    if (now){
+      void weeksBox.offsetHeight;
+      weeksBox.style.transition = "";
+      weeksInner.style.transition = "";
+    }
+
+    mtog.setAttribute("aria-expanded", shut ? "false" : "true");
+    mtog.setAttribute("aria-label", shut ? "Expand the calendar" : "Collapse the calendar");
   }
 
-  /* A FRAME LOOP, NOT A SCROLL EVENT. iOS throttles scroll events hard
-     during momentum but keeps animation frames coming at full rate, which
-     is why a scroll-driven collapse arrived in three or four visible
-     jumps. The loop runs only while the page is still moving and stops
-     itself once it has settled, so nothing spins when nothing happens. */
-  var running = false, lastY = -1, still = 0;
-  function loop(){
-    var y = scrollNow();
-    still = (y === lastY) ? still + 1 : 0;
-    lastY = y;
-    apply();
-    if (still > 6){ running = false; return; }
-    requestAnimationFrame(loop);
-  }
-  function kick(){
-    if (running) return;
-    running = true; still = 0; lastY = -1;
-    requestAnimationFrame(loop);
-  }
-  window.addEventListener("scroll", kick, {passive:true});
-  window.addEventListener("touchmove", kick, {passive:true});
-  window.addEventListener("resize", function(){ measure(); });
+  function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
 
-  /* THE TOGGLE SCROLLS THE PAGE; IT DOES NOT ANIMATE THE CARD ITSELF.
-     Anything that moved the card on its own became a second source of
-     truth fighting the scroll, which is what made the old handle hard.
-     Scrolling to an anchor leaves the scroll position as the only state
-     there is, and the loop above draws the rest. */
+  /* WHILE THE CARD IS PARKED AT THE TOP, CHANGING ITS HEIGHT MOVES
+     EVERYTHING BELOW IT, because a sticky element still occupies its flow
+     space. The page is scrolled by the same amount in the same breath, so
+     the agenda does not appear to jump -- and the tween is skipped there,
+     because a 280ms height change against an instant scroll change reads
+     as a slide rather than a settle. At the top of the page none of this
+     applies and the toggle simply tweens. */
   mtog.addEventListener("click", function(){
-    if (!M.range) measure();
-    var shut = M.flow - M.pin + M.range;
-    window.scrollTo({top: col > M.range / 2 ? 0 : shut, behavior: "smooth"});
-    kick();
+    if (!M.weeks) measure();
+    var stuck = scrollNow() > M.flow;
+    shut = !shut;
+    apply(stuck);
+    if (stuck) window.scrollBy(0, (shut ? -1 : 1) * (M.weeks - M.row));
   });
+  window.addEventListener("resize", function(){ measure(); });
 
 
   function refresh(remeasure){
