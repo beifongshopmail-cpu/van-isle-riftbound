@@ -42,7 +42,7 @@
   --text:"Nunito",system-ui,-apple-system,sans-serif;
   --barH:56px;
 }
-*,*::before,*::after{box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
 body{background:var(--ground);color:var(--bone);font-family:var(--text);font-size:15px;line-height:1.4;
   font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
