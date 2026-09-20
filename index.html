@@ -39,60 +39,49 @@ body.lock{position:fixed;left:0;right:0;overflow:hidden}
 a{color:inherit;text-decoration:none}
 .mono{font-variant-numeric:tabular-nums}
 
-/* ===================== header: a plane holding a card ===================== */
+/* ============== the brand, the spacer and the card ============== */
 
-/* THE PLANE HAS NO SURFACE AT ALL. Twice it was given one -- a fade, then
-   solid ground -- and both read as a black shelf the agenda vanished
-   under. The only surface here is the card, and the card is frosted, so
-   the agenda blurs as it passes behind it and stays visible the whole
-   way. The one place content shows through unblurred is the strip above
-   the card, under the status bar, which is how every iOS app behaves. */
-.hdr{
-  position:fixed;top:0;left:0;right:0;z-index:10;
-  padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 0 12px;
-  /* NO TRANSFORM AND NO COMPOSITING HINT HERE. Either one can make this
-     box the backdrop root, and a card whose backdrop root is its own
-     parent blurs nothing. The header does not animate itself -- .stack
-     and the weeks inside it carry the transforms. */
-  background:none;
-}
-
-/* THE COLLAPSE CROPS HERE, with plain overflow and NO RADIUS. A rounded
-   crop cut the corners off the brand heading, which sits at this box's
-   top edge while the calendar is open. The card's own top corners are
-   safe without one: the collapse slides the brand out and shrinks the
-   weeks INSIDE the card, so the card's top edge and this box's top edge
-   meet exactly and never cross. */
-.clip{
-  overflow:hidden;
-  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
-}
-.stack{padding:0}
-
+/* THE BRAND IS IN THE PAGE, NOT IN A FIXED BOX. It used to sit inside a
+   fixed header, which is the only reason it could ever snap in and out of
+   existence. In the flow it scrolls away like anything else does. */
+.top{padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 0 14px}
 .brand{padding-bottom:14px}
 .brand h1{margin:0;font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.005em;line-height:1.1}
 .brand p{margin:2px 0 0 0;font-size:12px;color:var(--muted)}
 
-/* the calendar itself: a card, clear of both screen edges */
-/* THE CARD IS FROSTED, not a solid plate: the agenda blurs behind it. The
-   tint is heavier than the bar's because day numbers sit over whatever
-   colour happens to be passing underneath. */
+/* THE SPACER HOLDS THE OPEN CARD'S PLACE. The card is fixed and takes no
+   room of its own, so this box carries its open height, written by
+   measure(). THIS IS WHY THERE IS NO DEAD ZONE: the agenda follows this
+   box in normal flow, so it rises one pixel per pixel scrolled, exactly
+   as the card shrinks one pixel per pixel scrolled. The distance from the
+   card's bottom edge to the first event is the same in every state. */
+.hold{height:0}
+
+/* THE CARD RIDES UP, THEN PINS. Its top is written every frame: the flow
+   position while the page is near the top, the pin once it arrives. THE
+   PIN IS THE VALUE BELOW and measure() reads it back out of the computed
+   style, so it is written in exactly one place. */
 .card{
+  position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 12px);
+  max-width:456px;margin:0 auto;z-index:10;
   border-radius:24px;padding:14px 12px 12px 12px;
   background:rgba(10,11,13,.5);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
-  /* NO DROP SHADOW. .clip crops this card with overflow:hidden, and a
-     shadow cannot leave an overflow:hidden parent -- it was sliced into a
-     straight dark line across the agenda. The frosted edge is enough. */
-  box-shadow:var(--glass-base);
+  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45);
 }
 
-.mrow{display:flex;align-items:center;gap:6px;padding-bottom:10px}
+/* the month name IS the toggle: a chevron beside it, the way both phone
+   calendars do it. Four circles and a month name do not fit 375px. */
+.mrow{display:flex;align-items:center;gap:6px;padding:0 2px 10px 2px}
+.mtog{display:flex;align-items:baseline;gap:6px;border-radius:12px;padding:3px 7px;margin-left:-7px}
+.mtog:active{background:var(--hi)}
 .mrow .m{
   font-family:var(--disp);font-weight:700;letter-spacing:-.005em;line-height:1;
   font-size:calc(20px + 8px * (1 - var(--p,0)));
 }
-.mrow .y{font-size:12px;color:var(--muted);align-self:flex-end;padding-bottom:3px}
+.mrow .y{font-size:12px;color:var(--muted)}
+.chev{width:14px;height:14px;flex:0 0 auto;align-self:center;color:var(--muted);transition:transform .22s var(--ease)}
+.mtog[aria-expanded="false"] .chev{transform:rotate(-90deg)}
 .mrow .sp{flex:1}
 .mrow .circ svg{stroke:currentColor;stroke-width:1.8;fill:none}
 #filt svg{width:19px;height:19px}
@@ -137,28 +126,12 @@ a{color:inherit;text-decoration:none}
 .mk.s-bar{width:10px;height:4px;border-radius:2px}
 .mk.s-ring{border-radius:50%;background:transparent;border:2px solid rgb(var(--cl))}
 
-/* the visible bar stays 38x4; the TOUCH TARGET is the full-width strip.
-   EXEMPT FROM THE PRESS SHRINK: it is dragged, and a 4% shrink under the
-   finger would jitter the whole strip. */
-.grab{
-  display:block;width:100%;height:30px;position:relative;z-index:2;
-  margin-top:6px;margin-bottom:-10px;
-  touch-action:manipulation;
-}
-.grab:active{transform:none}
-.grab i{
-  position:absolute;left:50%;top:8px;margin-left:-19px;
-  width:38px;height:4px;border-radius:2px;
-  background:rgba(237,234,227,.3);
-  transition:background .14s var(--ease);
-}
-.grab:active i{background:var(--bone)}
-
 /* ===================== agenda ===================== */
 
+/* THE GAP UNDER THE CARD IS THIS PADDING AND NOTHING ELSE. It holds in
+   every state because the spacer above shrinks in step with the card. */
 .body{
-  padding:0 12px 30px 12px;
-  will-change:transform;
+  padding:14px 12px 30px 12px;
 }
 
 .ahead{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:0 4px;min-height:32px}
@@ -249,37 +222,35 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<header class="hdr" id="hdr">
-  <div class="clip" id="clip">
-    <div class="stack" id="stack">
-      <div class="brand" id="brand">
-        <h1>Van Isle Riftbound</h1>
-        <p>Riftbound events on Vancouver Island. Kept by Beifong's Hit-House.</p>
-      </div>
+<div class="top" id="top">
+  <div class="brand" id="brand">
+    <h1>Van Isle Riftbound</h1>
+    <p>Riftbound events on Vancouver Island. Kept by Beifong's Hit-House.</p>
+  </div>
+  <div class="hold" id="hold"></div>
+</div>
 
-      <section class="card glass">
-      <div class="mrow">
-        <span class="m" id="mname">&nbsp;</span>
-        <span class="y mono" id="myear"></span>
-        <span class="sp"></span>
-        <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
-        </button>
-        <button type="button" class="circ btn glass" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
-        <button type="button" class="circ btn glass" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
-      </div>
-
-      <div class="dow" aria-hidden="true">
-        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-      </div>
-
-      <div class="weeks" id="weeks"><div id="weeksInner"></div></div>
-      </section>
-    </div>
+<section class="card glass" id="card">
+  <div class="mrow">
+    <button type="button" class="mtog" id="mtog" aria-expanded="true" aria-label="Expand or collapse the calendar">
+      <span class="m" id="mname">&nbsp;</span>
+      <span class="y mono" id="myear"></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <span class="sp"></span>
+    <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
+    </button>
+    <button type="button" class="circ btn glass" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
+    <button type="button" class="circ btn glass" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
   </div>
 
-  <button class="grab" id="grab" type="button" aria-label="Expand or collapse the calendar"><i></i></button>
-</header>
+  <div class="dow" aria-hidden="true">
+    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+  </div>
+
+  <div class="weeks" id="weeks"><div id="weeksInner"></div></div>
+</section>
 
 <main class="body" id="main">
   <div class="ahead">
