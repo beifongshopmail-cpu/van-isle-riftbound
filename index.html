@@ -48,21 +48,22 @@ a{color:inherit;text-decoration:none}
 .top{padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 10px 18px}
 .wm{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em;line-height:1.2}
 
-/* THE CARD IS FIXED AND TOUCHES NOTHING. It is out of the page's flow
-   entirely, exactly like the bar at the bottom, so opening or closing it
-   moves no other element -- there is nothing to compensate for, nothing
-   to synchronise, and nothing that can twitch.
-   THE SPACER ABOVE THE AGENDA HOLDS ITS PLACE, and the script writes that
-   spacer's height. At the top of the page the spacer is on screen, so the
-   agenda hugs the card and follows it. Scrolled down, the spacer is off
-   screen above and changing its height moves nothing anyone can see.
-   STICKY WAS TRIED AND IS WHY THE AGENDA TWITCHED: a sticky box still
-   occupies flow space, so every collapse dragged the whole list with it
-   and the script had to scroll the page back by the same amount, against
-   the browser's own scroll anchoring. Do not go back to it. */
-.hold{height:0}
+/* THE CARD PARKS IN A HOLDER THAT TAKES NO ROOM. The holder is sticky and
+   zero height, so the browser parks it under the wordmark and then at
+   the top of the screen with no script involved, and the card inside it
+   can grow or shrink without moving a single other element.
+   THE SPACER UNDER IT CARRIES THE CARD'S HEIGHT. At the top of the page
+   the spacer animates with the card, so the agenda hugs it. Lower down
+   the spacer changes instantly while the page scrolls by the same amount
+   in the same frame, so nothing on screen moves.
+   THE SPACER'S HEIGHT IS ARITHMETIC. An earlier build read the card's
+   height mid-animation, got the old value every time, and left the
+   spacer one toggle behind: no hug at the top, and a false stillness
+   below that was the bug rather than a fix. */
+.stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 18px);height:0;z-index:10}
+.hold{height:0;transition:height .28s var(--ease)}
 .card{
-  position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:10;
+  position:relative;width:calc(100% - 24px);
   max-width:456px;margin:0 auto;
   border-radius:24px;padding:14px 12px 12px 12px;
   background:rgba(10,11,13,.5);
@@ -189,7 +190,7 @@ a{color:inherit;text-decoration:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
-.foot{margin:0;padding:30px 4px 0 4px;border-top:1px solid var(--frost-rim)}
+.foot{margin:30px 0 0 0;padding:26px 4px 0 4px;border-top:1px solid var(--frost-rim)}
 .foot p{margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .foot b{color:var(--bone);font-weight:600}
 
@@ -234,11 +235,11 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<div class="hold" id="hold"></div>
 <div class="top">
   <h1 class="wm">Van Isle Riftbound</h1>
 </div>
 
+<div class="stick" id="stick">
 <section class="card glass" id="card">
   <div class="mrow">
     <span class="m" id="mname">&nbsp;</span>
@@ -258,6 +259,8 @@ a{color:inherit;text-decoration:none}
 
   <div class="weeks" id="weeks"><div id="weeksInner"></div></div>
 </section>
+</div>
+<div class="hold" id="hold"></div>
 
 <main class="body" id="main">
   <div class="ahead">
@@ -357,6 +360,7 @@ a{color:inherit;text-decoration:none}
   var card = document.getElementById("card");
   var mtog = document.getElementById("mtog");
   var hold = document.getElementById("hold");
+  var stick = document.getElementById("stick");
   var weeksBox = document.getElementById("weeks");
   var weeksInner = document.getElementById("weeksInner");
   var main = document.getElementById("main");
@@ -512,7 +516,7 @@ a{color:inherit;text-decoration:none}
       rows = visible().filter(function(ev){
         var q = parseKey(ev.day); return q.y === cursor.y && q.m === cursor.m;
       });
-      document.getElementById("atitle").textContent = "Upcoming";
+      document.getElementById("atitle").textContent = "Whole month";
     }
     document.getElementById("acount").textContent =
       rows.length ? rows.length + (rows.length === 1 ? " event" : " events") : "";
@@ -655,6 +659,8 @@ a{color:inherit;text-decoration:none}
     var wk = weeksInner.firstChild;
     M.row = wk ? wk.offsetHeight : 55;
     M.stride = (wk && wk.nextSibling) ? (wk.nextSibling.offsetTop - wk.offsetTop) : (M.row + 2);
+    M.card = card.offsetHeight;
+    M.pin = hold.offsetTop - (parseFloat(getComputedStyle(stick).top) || 0);
 
     main.style.paddingBottom = "calc(" + (tabs.offsetHeight + 36) + "px + env(safe-area-inset-bottom,0px))";
     apply(true);
@@ -675,7 +681,7 @@ a{color:inherit;text-decoration:none}
 
     weeksBox.style.height = winH + "px";
     weeksInner.style.transform = "translate3d(0," + (-off) + "px,0)";
-    hold.style.height = (card.offsetHeight + 14) + "px";
+    if (now) setHold(false, 0);
 
     if (now){
       void weeksBox.offsetHeight;
@@ -695,10 +701,31 @@ a{color:inherit;text-decoration:none}
      the height change still landed -- which is what jumped, snapped, and
      popped a beat later. Down there the browser holds the bottom edge on
      its own, so there was nothing to compensate for anyway. */
+  /* the spacer's height for the state the card is heading to: the card's
+     open height, less what the weeks give up, plus the gap */
+  function holdH(){ return M.card - (shut ? (M.weeks - M.row) : 0) + 14; }
+
+  /* tween=true animates the spacer, which is the hug. tween=false changes
+     it in one frame alongside a scroll of d. WHEN SHRINKING, SCROLL FIRST:
+     near the bottom of the page a shorter document clamps the scroll, and
+     scrolling after the shrink would move twice. When growing, grow first
+     so there is room to scroll into. */
+  function setHold(tween, d){
+    if (!tween) hold.style.transition = "none";
+    if (d < 0) window.scrollBy(0, d);
+    hold.style.height = holdH() + "px";
+    if (d > 0) window.scrollBy(0, d);
+    if (!tween){ void hold.offsetHeight; hold.style.transition = ""; }
+  }
+
   mtog.addEventListener("click", function(){
     if (!M.weeks) measure();
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var from = holdH();
     shut = !shut;
     apply(false);
+    if (y <= M.pin) setHold(true, 0);
+    else setHold(false, holdH() - from);
   });
   window.addEventListener("resize", function(){ measure(); });
 

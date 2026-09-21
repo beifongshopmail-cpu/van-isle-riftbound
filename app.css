@@ -75,7 +75,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
   -webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 
 /* the bar: Facebook's floating pill, icons only */
-.bar{position:fixed;left:12px;right:12px;bottom:env(safe-area-inset-bottom,0px);max-width:456px;margin:0 auto;
+.bar{position:fixed;left:12px;right:12px;bottom:max(4px,calc(env(safe-area-inset-bottom,0px) - 12px));max-width:456px;margin:0 auto;
   height:var(--barH);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:20;padding:5px;
   display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .tab{border-radius:999px;display:grid;place-items:center}
@@ -86,7 +86,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 /* menus: frosted panel rising from the bottom over a light scrim */
 .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:30}
 .scrim.show{opacity:1;pointer-events:auto}
-.panel{position:fixed;left:12px;right:12px;bottom:calc(var(--barH) + 20px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;
+.panel{position:fixed;left:12px;right:12px;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);max-width:456px;margin:0 auto;
   border-radius:24px;padding:16px;z-index:40;box-shadow:0 14px 36px rgba(0,0,0,.5);
   -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
   max-height:calc(100% - 32px - env(safe-area-inset-top,0px));overflow-y:auto;
