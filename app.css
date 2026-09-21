@@ -75,7 +75,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
   -webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 
 /* the bar: Facebook's floating pill, icons only */
-.bar{position:fixed;left:12px;right:12px;bottom:calc(4px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;
+.bar{position:fixed;left:12px;right:12px;bottom:env(safe-area-inset-bottom,0px);max-width:456px;margin:0 auto;
   height:var(--barH);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:20;padding:5px;
   display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .tab{border-radius:999px;display:grid;place-items:center}

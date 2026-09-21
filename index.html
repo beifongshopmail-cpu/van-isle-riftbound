@@ -45,7 +45,7 @@ a{color:inherit;text-decoration:none}
    else, scrolling away with the page the way every phone app's header
    does. The tagline it used to carry read as a website masthead; the
    footer already says who keeps this. */
-.top{padding:calc(env(safe-area-inset-top,0px) + 10px) 18px 10px 18px}
+.top{padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 10px 18px}
 .wm{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em;line-height:1.2}
 
 /* THE CARD IS STICKY AND THE BROWSER DOES THE WHOLE JOB: it sits in the
@@ -74,8 +74,8 @@ a{color:inherit;text-decoration:none}
    They sit LEFT OF SETTINGS so they never move as the month name
    changes length. */
 .hemi{width:34px;height:36px;display:grid;place-items:center}
-.hemi svg{width:14px;height:14px;stroke:var(--bone);stroke-width:2.4;fill:none}
-.hl{border-radius:999px 5px 5px 999px}
+.hemi svg{width:16px;height:16px;stroke:var(--bone);stroke-width:2.4;fill:none}
+.hl{border-radius:999px 5px 5px 999px;margin-right:-4px}
 .hr{border-radius:5px 999px 999px 5px}
 .mrow .circ svg{stroke:currentColor;stroke-width:1.8;fill:none}
 /* THE CHEVRON POINTS AT WHAT THE TAP WILL DO, not at the state it is in:
@@ -142,7 +142,6 @@ a{color:inherit;text-decoration:none}
 .ahead h2{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em}
 .ahead .sp{flex:1}
 .ahead .cnt{font-size:12px;color:var(--muted)}
-.ahead .clr{height:32px;padding:0 12px;font-family:var(--disp);font-size:13px;font-weight:600}
 
 /* event cards: the glass recipe with the type colour as the body.
    Body strengths are the reference's: Nexus .26, Skirmish .24; the
@@ -181,7 +180,7 @@ a{color:inherit;text-decoration:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
-.foot{margin:24px 0 0 0;padding:0 4px}
+.foot{margin:0;padding:22px 4px 0 4px;border-top:1px solid var(--frost-rim)}
 .foot p{margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .foot b{color:var(--bone);font-weight:600}
 
@@ -255,7 +254,6 @@ a{color:inherit;text-decoration:none}
     <h2 id="atitle">&nbsp;</h2>
     <span class="sp"></span>
     <span class="cnt mono" id="acount"></span>
-    <button type="button" class="clr btn glass" id="clr" hidden>Whole month</button>
   </div>
 
   <div id="list"></div>
@@ -499,13 +497,11 @@ a{color:inherit;text-decoration:none}
       var p = parseKey(selected);
       document.getElementById("atitle").textContent =
         DOW[new Date(p.y,p.m,p.d).getDay()] + " " + p.d + " " + MONTH[p.m];
-      document.getElementById("clr").hidden = false;
     } else {
       rows = visible().filter(function(ev){
         var q = parseKey(ev.day); return q.y === cursor.y && q.m === cursor.m;
       });
-      document.getElementById("atitle").textContent = MONTH[cursor.m];
-      document.getElementById("clr").hidden = true;
+      document.getElementById("atitle").textContent = "Upcoming";
     }
     document.getElementById("acount").textContent =
       rows.length ? rows.length + (rows.length === 1 ? " event" : " events") : "";
@@ -688,10 +684,26 @@ a{color:inherit;text-decoration:none}
      the height change still landed -- which is what jumped, snapped, and
      popped a beat later. Down there the browser holds the bottom edge on
      its own, so there was nothing to compensate for anyway. */
+  /* THE PAGE IS SCROLLED BY WHAT THE CARD JUST LOST, IN THE SAME FRAME.
+     A sticky card still occupies its flow space, so shrinking it pulls
+     the whole agenda up with it. At the top of the page that is right --
+     the agenda hugs the card. Anywhere else it reads as the list jumping
+     under the reader, so the scroll moves by the same amount to hold it
+     still. THE ORDER MATTERS: the height is written, then a layout read
+     forces the browser to apply it, THEN the scroll moves. An earlier
+     version moved the scroll first, against a height the browser had not
+     applied yet, and near the bottom the scroll was clamped while the
+     height still landed -- which is what jumped. */
+  function scrollTop(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
   mtog.addEventListener("click", function(){
     if (!M.weeks) measure();
+    var y = scrollTop(), before = card.getBoundingClientRect().top;
     shut = !shut;
     apply(false);
+    if (y > 0){
+      void document.body.offsetHeight;
+      window.scrollTo(0, y - (card.getBoundingClientRect().top - before));
+    }
   });
   window.addEventListener("resize", function(){ measure(); });
 
@@ -711,7 +723,6 @@ a{color:inherit;text-decoration:none}
     refresh(false);
   });
 
-  document.getElementById("clr").onclick = function(){ selected = null; refresh(false); };
   document.getElementById("prev").onclick = function(){
     var m = cursor.m - 1, y = cursor.y;
     if (m < 0){ m = 11; y--; }
