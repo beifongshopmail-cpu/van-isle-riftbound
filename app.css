@@ -44,6 +44,11 @@
 }
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
+/* THE SCROLLBAR STAYS PUT. Without this, a page that stops being
+   scrollable -- a list collapsing, a filter narrowing it -- loses its
+   scrollbar, the viewport widens by its width, and everything reflows
+   mid-animation. That is a jump, and it is not worth the 15px. */
+html{scrollbar-gutter:stable;overflow-y:scroll}
 body{background:var(--ground);color:var(--bone);font-family:var(--text);font-size:15px;line-height:1.4;
   font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 .ttl{font-family:var(--disp);font-weight:700;margin:0;letter-spacing:-.005em}   /* titles are SENTENCE CASE */
@@ -70,7 +75,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
   -webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 
 /* the bar: Facebook's floating pill, icons only */
-.bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;
+.bar{position:fixed;left:12px;right:12px;bottom:calc(4px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;
   height:var(--barH);border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:20;padding:5px;
   display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .tab{border-radius:999px;display:grid;place-items:center}

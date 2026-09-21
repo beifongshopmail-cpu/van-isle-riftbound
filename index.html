@@ -68,14 +68,15 @@ a{color:inherit;text-decoration:none}
 .mrow .m{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.005em;line-height:1}
 .mrow .y{font-size:12px;color:var(--muted);margin-right:4px}
 .mrow .sp{flex:1}
-/* the two months sit together as ONE control, split by a hairline: they
-   are a pair, and the eye should not have to decide that twice */
-.pill{display:flex;align-items:center;height:36px;border-radius:999px}
-.pill button{width:34px;height:36px;display:grid;place-items:center;border-radius:999px}
-.pill button:first-child{border-radius:999px 0 0 999px}
-.pill button:last-child{border-radius:0 999px 999px 0}
-.pill button:active{background:var(--glass-press)}
-.pill i{width:1px;height:18px;background:var(--frost-rim);flex:0 0 auto}
+/* TWO HALVES OF ONE PILL, genuinely separate buttons: each keeps the
+   pill's outer curve and takes a straight edge where they meet, with a
+   real gap between them. They read as a pair without being one target.
+   They sit LEFT OF SETTINGS so they never move as the month name
+   changes length. */
+.hemi{width:34px;height:36px;display:grid;place-items:center}
+.hemi svg{width:14px;height:14px;stroke:var(--bone);stroke-width:2.4;fill:none}
+.hl{border-radius:999px 5px 5px 999px}
+.hr{border-radius:5px 999px 999px 5px}
 .mrow .circ svg{stroke:currentColor;stroke-width:1.8;fill:none}
 /* THE CHEVRON POINTS AT WHAT THE TAP WILL DO, not at the state it is in:
    up while open, because tapping closes it. The markup draws it pointing
@@ -233,12 +234,9 @@ a{color:inherit;text-decoration:none}
   <div class="mrow">
     <span class="m" id="mname">&nbsp;</span>
     <span class="y mono" id="myear"></span>
-    <div class="pill glass">
-      <button type="button" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
-      <i></i>
-      <button type="button" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
-    </div>
     <span class="sp"></span>
+    <button type="button" class="hemi hl btn glass" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
+    <button type="button" class="hemi hr btn glass" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
     <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
     </button>
