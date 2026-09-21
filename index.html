@@ -48,14 +48,22 @@ a{color:inherit;text-decoration:none}
 .top{padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 10px 18px}
 .wm{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em;line-height:1.2}
 
-/* THE CARD IS STICKY AND THE BROWSER DOES THE WHOLE JOB: it sits in the
-   page under the wordmark, scrolls up with it, and parks at the top.
-   SCRIPT DROVE THIS PIN THREE TIMES -- a drag, a frame loop, a fixed box
-   with a spacer -- and every one of them fought iOS for the frames it was
-   already using to scroll. Nothing needs to. Do not make this fixed. */
+/* THE CARD IS FIXED AND TOUCHES NOTHING. It is out of the page's flow
+   entirely, exactly like the bar at the bottom, so opening or closing it
+   moves no other element -- there is nothing to compensate for, nothing
+   to synchronise, and nothing that can twitch.
+   THE SPACER ABOVE THE AGENDA HOLDS ITS PLACE, and the script writes that
+   spacer's height. At the top of the page the spacer is on screen, so the
+   agenda hugs the card and follows it. Scrolled down, the spacer is off
+   screen above and changing its height moves nothing anyone can see.
+   STICKY WAS TRIED AND IS WHY THE AGENDA TWITCHED: a sticky box still
+   occupies flow space, so every collapse dragged the whole list with it
+   and the script had to scroll the page back by the same amount, against
+   the browser's own scroll anchoring. Do not go back to it. */
+.hold{height:0}
 .card{
-  position:sticky;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:10;
-  width:calc(100% - 24px);max-width:456px;margin:0 auto 14px auto;
+  position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:10;
+  max-width:456px;margin:0 auto;
   border-radius:24px;padding:14px 12px 12px 12px;
   background:rgba(10,11,13,.5);
   -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
@@ -134,6 +142,7 @@ a{color:inherit;text-decoration:none}
 
 /* no top padding: the card's own bottom margin is the gap, in every
    state, because the card sits in normal flow. */
+/* the spacer above carries the card's height; this is the gap below it */
 .body{
   padding:0 12px 30px 12px;
 }
@@ -180,7 +189,7 @@ a{color:inherit;text-decoration:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
-.foot{margin:0;padding:22px 4px 0 4px;border-top:1px solid var(--frost-rim)}
+.foot{margin:0;padding:30px 4px 0 4px;border-top:1px solid var(--frost-rim)}
 .foot p{margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .foot b{color:var(--bone);font-weight:600}
 
@@ -225,6 +234,7 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
+<div class="hold" id="hold"></div>
 <div class="top">
   <h1 class="wm">Van Isle Riftbound</h1>
 </div>
@@ -346,6 +356,7 @@ a{color:inherit;text-decoration:none}
 
   var card = document.getElementById("card");
   var mtog = document.getElementById("mtog");
+  var hold = document.getElementById("hold");
   var weeksBox = document.getElementById("weeks");
   var weeksInner = document.getElementById("weeksInner");
   var main = document.getElementById("main");
@@ -644,7 +655,6 @@ a{color:inherit;text-decoration:none}
     var wk = weeksInner.firstChild;
     M.row = wk ? wk.offsetHeight : 55;
     M.stride = (wk && wk.nextSibling) ? (wk.nextSibling.offsetTop - wk.offsetTop) : (M.row + 2);
-    M.flow = card.offsetTop;
 
     main.style.paddingBottom = "calc(" + (tabs.offsetHeight + 36) + "px + env(safe-area-inset-bottom,0px))";
     apply(true);
@@ -665,6 +675,7 @@ a{color:inherit;text-decoration:none}
 
     weeksBox.style.height = winH + "px";
     weeksInner.style.transform = "translate3d(0," + (-off) + "px,0)";
+    hold.style.height = (card.offsetHeight + 14) + "px";
 
     if (now){
       void weeksBox.offsetHeight;
@@ -684,26 +695,10 @@ a{color:inherit;text-decoration:none}
      the height change still landed -- which is what jumped, snapped, and
      popped a beat later. Down there the browser holds the bottom edge on
      its own, so there was nothing to compensate for anyway. */
-  /* THE PAGE IS SCROLLED BY WHAT THE CARD JUST LOST, IN THE SAME FRAME.
-     A sticky card still occupies its flow space, so shrinking it pulls
-     the whole agenda up with it. At the top of the page that is right --
-     the agenda hugs the card. Anywhere else it reads as the list jumping
-     under the reader, so the scroll moves by the same amount to hold it
-     still. THE ORDER MATTERS: the height is written, then a layout read
-     forces the browser to apply it, THEN the scroll moves. An earlier
-     version moved the scroll first, against a height the browser had not
-     applied yet, and near the bottom the scroll was clamped while the
-     height still landed -- which is what jumped. */
-  function scrollTop(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
   mtog.addEventListener("click", function(){
     if (!M.weeks) measure();
-    var y = scrollTop(), before = card.getBoundingClientRect().top;
     shut = !shut;
     apply(false);
-    if (y > 0){
-      void document.body.offsetHeight;
-      window.scrollTo(0, y - (card.getBoundingClientRect().top - before));
-    }
   });
   window.addEventListener("resize", function(){ measure(); });
 
