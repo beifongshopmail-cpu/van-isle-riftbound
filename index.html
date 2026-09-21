@@ -18,14 +18,11 @@
    holds only what is the calendar's own. The reference page is the spec:
    claude.ai artifact "RAVI card system, reference".
 
-   THE COLLAPSE AND THE PULL ARE UNCHANGED MECHANICS. Only their surface
-   changed. The ARCH item on the collapse, the pull and the seam carries
-   why each moving part exists -- but the SEAM ITSELF IS GONE, along with
-   the whole glow language it belonged to. Do not rebuild it. */
-
-:root{
-  --ease:cubic-bezier(.22,.72,.2,1);
-}
+   THE COLLAPSE IS TWO STATES AND A BUTTON. The pull handle and the seam
+   are gone, along with the glow language they belonged to; do not rebuild
+   either. The ARCH item "the calendar card: a zero-height sticky holder,
+   an arithmetic spacer, two states" carries how it is built and the five
+   constructions that failed first. */
 
 html{background:var(--ground)}
 body{
@@ -39,14 +36,7 @@ body.lock{position:fixed;left:0;right:0;overflow:hidden}
 a{color:inherit;text-decoration:none}
 .mono{font-variant-numeric:tabular-nums}
 
-/* ============== the wordmark row and the card ============== */
-
-/* APP CHROME, NOT A TITLE BLOCK. A thin row carrying the name and nothing
-   else, scrolling away with the page the way every phone app's header
-   does. The tagline it used to carry read as a website masthead; the
-   footer already says who keeps this. */
-.top{padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 10px 18px}
-.wm{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em;line-height:1.2}
+/* ============== the card ============== */
 
 /* THE CARD PARKS IN A HOLDER THAT TAKES NO ROOM. The holder is sticky and
    zero height, so the browser parks it under the wordmark and then at
@@ -87,11 +77,6 @@ a{color:inherit;text-decoration:none}
 .hl{border-radius:999px 5px 5px 999px;margin-right:-4px}
 .hr{border-radius:5px 999px 999px 5px}
 .mrow .circ svg{stroke:currentColor;stroke-width:1.8;fill:none}
-/* THE CHEVRON POINTS AT WHAT THE TAP WILL DO, not at the state it is in:
-   up while open, because tapping closes it. The markup draws it pointing
-   up, so the collapsed state is the flipped one. */
-.chev{width:16px;height:16px;stroke-width:2.4;transition:transform .28s var(--ease)}
-#mtog[aria-expanded="false"] .chev{transform:rotate(180deg)}
 #filt svg{width:19px;height:19px}
 #prev svg,#next svg{width:14px;height:14px;stroke-width:2.4}
 /* filters set: the same glass fill as a selected day */
@@ -100,10 +85,10 @@ a{color:inherit;text-decoration:none}
 .dow{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding-bottom:4px}
 .dow span{text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
 
-/* THE COLLAPSE IS THESE TWO TRANSITIONS AND NOTHING ELSE MOVES. The
-   script writes the end values once per toggle and the browser tweens
-   them; the agenda follows on its own because a sticky card keeps its
-   place in normal flow. */
+/* THE COLLAPSE IS THESE TWO TRANSITIONS, plus the spacer's height when the
+   page is at the top. The script writes the end values once per toggle and
+   the browser tweens them. The agenda is held by the spacer (.hold), not by
+   the card: the card sits in a zero-height holder and takes no room. */
 .weeks{overflow:hidden;transition:height .28s var(--ease)}
 #weeksInner{transition:transform .28s var(--ease)}
 /* THE ROW NEEDS HEADROOM. A 46px circle in a 46px row loses a pixel of its
@@ -141,17 +126,10 @@ a{color:inherit;text-decoration:none}
 
 /* ===================== agenda ===================== */
 
-/* no top padding: the card's own bottom margin is the gap, in every
-   state, because the card sits in normal flow. */
-/* the spacer above carries the card's height; this is the gap below it */
+/* no top padding: the spacer above (.hold) carries the card's height and the gap below it */
 .body{
   padding:0 12px 30px 12px;
 }
-
-.ahead{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:0 4px;min-height:32px}
-.ahead h2{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em}
-.ahead .sp{flex:1}
-.ahead .cnt{font-size:12px;color:var(--muted)}
 
 /* event cards: the glass recipe with the type colour as the body.
    Body strengths are the reference's: Nexus .26, Skirmish .24; the
@@ -190,23 +168,12 @@ a{color:inherit;text-decoration:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
-.foot{position:relative;margin:30px 0 0 0;padding:26px 4px 0 4px}
-.foot::before{content:"";position:absolute;top:0;left:24px;right:24px;height:1px;background:rgba(255,255,255,.06)}
-.foot p{margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-.foot b{color:var(--bone);font-weight:600}
-
 .fail{margin:14px 0;padding:16px;border-radius:18px;color:var(--muted);font-size:15px}
 .fail a{color:var(--bone);text-decoration:underline}
 
 /* ===================== panels ===================== */
 /* The bar, the scrim and both panels are app.css. Only the calendar's
    own rows are here. */
-
-.addcal{
-  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:44px;
-  font-family:var(--disp);font-size:13px;font-weight:600;
-}
-.addcal svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.6;fill:none}
 
 /* the area switch keeps aria-pressed as its state; shown as the track's bone option */
 .seg button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
@@ -236,7 +203,7 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<div class="top">
+<div class="wmrow">
   <h1 class="wm">Van Isle Riftbound</h1>
 </div>
 
@@ -264,7 +231,7 @@ a{color:inherit;text-decoration:none}
 <div class="hold" id="hold"></div>
 
 <main class="body" id="main">
-  <div class="ahead">
+  <div class="shead">
     <h2 id="atitle">&nbsp;</h2>
     <span class="sp"></span>
     <span class="cnt mono" id="acount"></span>
@@ -320,7 +287,7 @@ a{color:inherit;text-decoration:none}
     <p class="lb">Event types</p>
     <div class="tylist" id="tylist"></div>
   </div>
-  <a class="addcal btn glass" id="sub" href="#">
+  <a class="pact btn glass" id="sub" href="#">
     <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
     <span>Add to calendar</span>
   </a>
@@ -371,7 +338,6 @@ a{color:inherit;text-decoration:none}
   var scrim = document.getElementById("scrim");
   var filt = document.getElementById("filt");
 
-  var M = {brand:0, full:0, weeks:0, row:0, stride:0, range:0, hdrFull:0};
   var anchorRow = 0;
 
   function pad(n){ return (n < 10 ? "0" : "") + n; }
@@ -640,16 +606,18 @@ a{color:inherit;text-decoration:none}
 
   /* ================== the collapse ==================
      NOTHING HERE LISTENS TO SCROLL, and nothing here positions the card.
-     The card is position:sticky; the browser parks it. Three earlier
-     versions drove that pin from script -- a drag, a frame loop, a fixed
-     box with a spacer in the flow -- and each one fought iOS for the
-     frames it was already using to scroll, which is what read as twitchy
-     on a slow scroll and choppy on a fast one. Do not add a scroll
-     listener here, and do not make the card fixed.
-     THE AGENDA NEEDS NO ALIGNMENT EITHER. A sticky element keeps its
-     place in normal flow, so the agenda follows the card by itself and
-     the gap below it is the card's own margin in every state. */
-  var M = {weeks:0, row:0, stride:0, flow:0};
+     The HOLDER (.stick) is position:sticky and zero height; the browser
+     parks it, and the card inside can change height without moving
+     anything else. Earlier versions drove the pin from script -- a drag,
+     a frame loop, a fixed card with a spacer -- and each fought iOS for
+     the frames it was using to scroll. Do not add a scroll listener, do
+     not make the card or the holder fixed, and do not put the card back
+     in the flow.
+     THE AGENDA IS HELD BY THE SPACER (.hold). Its height is ARITHMETIC:
+     the card's height for the state it is heading to, plus the gap. Never
+     read the card's height mid-transition, and never scroll to compensate
+     -- Safari already holds the view when something above it changes. */
+  var M = {weeks:0, row:0, stride:0};
   var shut = false;
 
   function measure(){
