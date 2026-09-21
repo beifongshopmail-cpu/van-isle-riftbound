@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-20T16:42:24.285Z",
- "generated_local": "2026-09-20T09:42:24-07:00",
+ "generated_at": "2026-09-21T05:57:59.132Z",
+ "generated_local": "2026-09-20T22:57:59-07:00",
  "window_start": "2026-09-20T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 21,
-   "added": 21
+   "returned": 18,
+   "added": 18
   },
   {
    "name": "Courtenay",
@@ -23,66 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 39,
-  "unique": 39,
+  "fetched": 36,
+  "unique": 36,
   "prev_unique": 39
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 821776,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-09-20T11:30:00-07:00",
-   "end": "2026-09-20T15:40:00-07:00",
-   "day": "2026-09-20",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-02T05:01:08+00:00"
-  },
-  {
-   "id": 498188,
-   "name": "Sunday Morning Vendetta Summoner Skirmish II",
-   "type": "skirmish",
-   "start": "2026-09-20T11:30:00-07:00",
-   "end": "2026-09-20T18:10:00-07:00",
-   "day": "2026-09-20",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 9,
-   "cents": 2000,
-   "currency": "CAD",
-   "updated": "2026-04-14T00:28:13+00:00"
-  },
-  {
-   "id": 932478,
-   "name": "Sunday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-20T17:00:00-07:00",
-   "end": "2026-09-20T21:10:00-07:00",
-   "day": "2026-09-20",
-   "time": "5:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-09-10T18:02:02+00:00"
-  },
   {
    "id": 806489,
    "name": "Tuesday Riftbound Playnight",
