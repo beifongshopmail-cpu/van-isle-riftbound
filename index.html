@@ -66,11 +66,22 @@ a{color:inherit;text-decoration:none}
    when the collapse was a continuous amount; there are two states now. */
 .mrow{display:flex;align-items:center;gap:6px;padding:0 2px 10px 2px}
 .mrow .m{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:-.005em;line-height:1}
-.mrow .y{font-size:12px;color:var(--muted)}
+.mrow .y{font-size:12px;color:var(--muted);margin-right:4px}
 .mrow .sp{flex:1}
+/* the two months sit together as ONE control, split by a hairline: they
+   are a pair, and the eye should not have to decide that twice */
+.pill{display:flex;align-items:center;height:36px;border-radius:999px}
+.pill button{width:34px;height:36px;display:grid;place-items:center;border-radius:999px}
+.pill button:first-child{border-radius:999px 0 0 999px}
+.pill button:last-child{border-radius:0 999px 999px 0}
+.pill button:active{background:var(--glass-press)}
+.pill i{width:1px;height:18px;background:var(--frost-rim);flex:0 0 auto}
 .mrow .circ svg{stroke:currentColor;stroke-width:1.8;fill:none}
+/* THE CHEVRON POINTS AT WHAT THE TAP WILL DO, not at the state it is in:
+   up while open, because tapping closes it. The markup draws it pointing
+   up, so the collapsed state is the flipped one. */
 .chev{width:16px;height:16px;stroke-width:2.4;transition:transform .28s var(--ease)}
-#mtog[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+#mtog[aria-expanded="false"] .chev{transform:rotate(180deg)}
 #filt svg{width:19px;height:19px}
 #prev svg,#next svg{width:14px;height:14px;stroke-width:2.4}
 /* filters set: the same glass fill as a selected day */
@@ -222,13 +233,16 @@ a{color:inherit;text-decoration:none}
   <div class="mrow">
     <span class="m" id="mname">&nbsp;</span>
     <span class="y mono" id="myear"></span>
+    <div class="pill glass">
+      <button type="button" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
+      <i></i>
+      <button type="button" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
+    </div>
     <span class="sp"></span>
-    <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
     <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
     </button>
-    <button type="button" class="circ btn glass" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
-    <button type="button" class="circ btn glass" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
+    <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
   </div>
 
   <div class="dow" aria-hidden="true">
@@ -668,21 +682,18 @@ a{color:inherit;text-decoration:none}
     mtog.setAttribute("aria-label", shut ? "Expand the calendar" : "Collapse the calendar");
   }
 
-  function scrollNow(){ return window.pageYOffset || document.documentElement.scrollTop || 0; }
-
-  /* WHILE THE CARD IS PARKED AT THE TOP, CHANGING ITS HEIGHT MOVES
-     EVERYTHING BELOW IT, because a sticky element still occupies its flow
-     space. The page is scrolled by the same amount in the same breath, so
-     the agenda does not appear to jump -- and the tween is skipped there,
-     because a 280ms height change against an instant scroll change reads
-     as a slide rather than a settle. At the top of the page none of this
-     applies and the toggle simply tweens. */
+  /* THE TOGGLE DOES NOT TOUCH THE SCROLL POSITION. It used to scroll the
+     page by the height the card was about to lose, so that content under
+     a parked card would not appear to move. That compensation fired
+     against a height change the browser had not rendered yet, and near
+     the end of a long agenda the scroll was clamped at the bottom while
+     the height change still landed -- which is what jumped, snapped, and
+     popped a beat later. Down there the browser holds the bottom edge on
+     its own, so there was nothing to compensate for anyway. */
   mtog.addEventListener("click", function(){
     if (!M.weeks) measure();
-    var stuck = scrollNow() > M.flow;
     shut = !shut;
-    apply(stuck);
-    if (stuck) window.scrollBy(0, (shut ? -1 : 1) * (M.weeks - M.row));
+    apply(false);
   });
   window.addEventListener("resize", function(){ measure(); });
 
