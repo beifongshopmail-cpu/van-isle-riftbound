@@ -32,7 +32,6 @@ body{
      is correct and free, so it stays; do not read it as the fix. */
   touch-action:manipulation;
 }
-body.lock{position:fixed;left:0;right:0;overflow:hidden}
 a{color:inherit;text-decoration:none}
 .mono{font-variant-numeric:tabular-nums}
 
@@ -261,18 +260,19 @@ a{color:inherit;text-decoration:none}
     <h4 class="ttl">Go to</h4>
     <button type="button" class="circ btn glass" id="pnclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-  <div class="pick">
+  <div class="pbody"><div class="pick">
     <button type="button" class="on" id="pnhere">Events<span class="sp"></span><small>Calendar</small></button>
     <a href="counter/">Game<span class="sp"></span><small>Point counter</small></a>
     <a href="trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
     <a href="feedback/">Feedback<span class="sp"></span><small>Tell us</small></a>
-  </div>
+  </div></div>
 </section>
 <section class="panel frost" id="panel" aria-hidden="true" aria-label="Calendar settings">
   <div class="phead">
     <h4 class="ttl">Calendar settings</h4>
     <button type="button" class="circ btn glass" id="pclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
+  <div class="pbody">
   <div class="row">
     <p class="lb">Area</p>
     <div class="seg" role="group" aria-label="Area">
@@ -288,6 +288,7 @@ a{color:inherit;text-decoration:none}
     <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
     <span>Add to calendar</span>
   </a>
+  </div>
 </section>
 
 <script>
@@ -320,7 +321,7 @@ a{color:inherit;text-decoration:none}
 
   var EVENTS = [], META = null;
   var scope = "victoria", selected = null, cursor = null, hidden = {};
-  var locked = false, lockY = 0;
+  var locked = false;
 
   var card = document.getElementById("card");
   var mtog = document.getElementById("mtog");
@@ -723,7 +724,8 @@ a{color:inherit;text-decoration:none}
   };
 
   /* ---- panels rise from the bottom (app.css); one open at a time.
-     The page scroll is locked while one is open, as before. ---- */
+     The page is locked at the root while one is open (app.css,
+     html.lock). Nothing is saved or restored. ---- */
   var pnav = document.getElementById("pnav");
   var openP = null;
   function openPanel(p){
@@ -734,10 +736,8 @@ a{color:inherit;text-decoration:none}
     }
     if (p){
       if (!locked){
-        lockY = window.pageYOffset || document.documentElement.scrollTop || 0;
         locked = true;
-        document.body.style.top = (-lockY) + "px";
-        document.body.className = "lock";
+        document.documentElement.classList.add("lock");
       }
       p.className = "panel frost show";
       p.setAttribute("aria-hidden", "false");
@@ -745,10 +745,8 @@ a{color:inherit;text-decoration:none}
       scrim.className = "scrim show";
     } else {
       if (locked){
-        document.body.className = "";
-        document.body.style.top = "";
         locked = false;
-        window.scrollTo(0, lockY);
+        document.documentElement.classList.remove("lock");
       }
       scrim.className = "scrim";
     }

@@ -93,11 +93,33 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 .panel{position:fixed;left:12px;right:12px;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);max-width:456px;margin:0 auto;
   border-radius:24px;padding:16px;z-index:40;box-shadow:0 14px 36px rgba(0,0,0,.5);
   -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
-  max-height:calc(100% - 32px - env(safe-area-inset-top,0px));overflow-y:auto;
+  /* THE CAP COUNTS THE BAR. The panel sits above the bar, so a cap of the
+     whole screen let a tall menu run off the top by the bar's height. */
+  max-height:calc(100% - max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) - var(--barH) - 8px - 16px - env(safe-area-inset-top,0px));
+  display:flex;flex-direction:column;overflow:hidden;
   transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
 .panel.show{transform:none;opacity:1;pointer-events:auto}
-.phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex:0 0 auto}
 .phead h4{font-size:20px}
+/* EVERY OVERLAY IS THIS MENU, and every menu is a head, a body and an
+   optional foot. The head and foot hold still and only the body scrolls,
+   so the rim and the actions never travel with the content. A deeper menu
+   takes the place of the one it came from and carries a back arrow in its
+   head; the X closes the whole stack. There are no full-screen sheets. */
+.pbody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;margin:0 -16px;padding:0 16px}
+.pbody > .row:last-child{margin-bottom:0}
+.pfoot{flex:0 0 auto;padding-top:12px}
+.phead .ht{display:flex;align-items:center;gap:8px;min-width:0}
+.phead .ht h4{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phead .cnt{flex:0 0 auto;font-size:12px;color:var(--muted)}
+.phead .back{flex:0 0 auto;margin-left:-4px}
+/* THE PAGE HOLDS STILL UNDER AN OPEN MENU BY SWITCHING SCROLLING OFF AT
+   THE ROOT. Pinning the body with position:fixed was the first lock and,
+   in the installed app with the status bar drawn over the page, it lifted
+   the bar and left a black band under it (2026-09-22, four-lock test).
+   Nothing is saved or restored, so the page cannot come back somewhere
+   else. The page script adds and removes the class on <html>. */
+html.lock,html.lock body{overflow:hidden}
 .row{margin-bottom:14px}
 .row .lb{font-size:13px;font-weight:600;margin:0 0 6px}
 
