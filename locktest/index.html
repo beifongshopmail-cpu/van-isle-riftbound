@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<title>Scroll lock test - Van Isle Riftbound</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<style>
+/* THROWAWAY. An unlinked test page for the bar-lifting bug. It carries
+   the live pages' bar, scrim and menu from app.css, and four ways of
+   stopping the page from scrolling behind an open menu. Delete this
+   folder once a lock is chosen. */
+html{background:var(--ground)}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+/* A: what the calendar and trade pages do today */
+body.lock{position:fixed;left:0;right:0;overflow:hidden}
+/* B: stop the scroll at the root instead; app.css forces overflow-y
+   on html, so this has to beat it */
+html.lockb,html.lockb body{overflow:hidden}
+/* C: leave the page alone; the scrim refuses touches and the menu
+   keeps its own scroll to itself */
+.scrim.lockc{touch-action:none}
+.panel.lockc{overscroll-behavior:contain}
+/* the fixed menu height, so a tall menu cannot run off the top here */
+.panel{max-height:calc(100% - max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) - var(--barH) - 8px - 16px - env(safe-area-inset-top,0px))}
+.pg{max-width:480px;margin:0 auto;padding:0 12px calc(var(--barH) + 44px + env(safe-area-inset-bottom,0px))}
+.pg h2{font-family:var(--disp);font-size:17px;margin:4px 4px 8px}
+.pg p{font-size:13px;color:var(--muted);margin:0 4px 12px}
+.tests{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 16px}
+.tests .pact{height:52px;flex-direction:column;gap:0;line-height:1.2}
+.tests small{font-family:var(--text);font-size:12px;color:var(--muted);font-weight:600}
+.last{font-size:13px;margin:0 4px 16px;color:var(--bone)}
+.n{display:flex;align-items:center;height:48px;padding:0 16px;margin-bottom:6px;border-radius:14px;background:rgba(255,255,255,.04);font-size:15px}
+.pr{display:flex;align-items:center;height:44px;padding:0 4px;border-top:1px solid rgba(255,255,255,.07);font-size:15px}
+</style>
+</head>
+<body>
+<div class="wmrow"><h1 class="wm">Scroll lock test</h1></div>
+<main class="pg">
+  <p>Scroll down a bit, then open a menu with each button. Watch the bar, drag on the dimmed page, scroll the menu's list to its end, then close it.</p>
+  <div class="tests">
+    <button type="button" class="pact btn glass" data-lock="a">A<small>today's lock</small></button>
+    <button type="button" class="pact btn glass" data-lock="b">B<small>root lock</small></button>
+    <button type="button" class="pact btn glass" data-lock="c">C<small>touch lock</small></button>
+    <button type="button" class="pact btn glass" data-lock="d">D<small>no lock</small></button>
+  </div>
+  <p class="last" id="last">No menu opened yet.</p>
+  <div id="rows"></div>
+</main>
+
+<nav class="bar frost" id="tabs">
+  <a class="tab" href="#" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
+  <button type="button" class="tab on" data-lock="a" aria-label="Open with lock A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect class="fillon" x="4" y="4" width="16" height="16" rx="3"/></svg></button>
+  <button type="button" class="tab" data-lock="b" aria-label="Open with lock B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6.5 3.5h11v17l-5.5-4-5.5 4z"/></svg></button>
+  <button type="button" class="tab" data-lock="c" aria-label="Open with lock C"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost" id="panel" aria-hidden="true" aria-label="Test menu">
+  <div class="phead"><h4 class="ttl" id="ptitle">Menu</h4><button type="button" class="circ btn glass" id="pclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div id="plist"></div>
+</section>
+
+<script>
+(function(){
+  var NAMES = { a: "A, today's lock", b: "B, root lock", c: "C, touch lock", d: "D, no lock" };
+  var rows = "", k;
+  for(k = 1; k <= 80; k++) rows += '<div class="n">Page row ' + k + '</div>';
+  document.getElementById("rows").innerHTML = rows;
+  rows = "";
+  for(k = 1; k <= 30; k++) rows += '<div class="pr">Menu row ' + k + '</div>';
+  document.getElementById("plist").innerHTML = rows;
+
+  var panel = document.getElementById("panel"), scrim = document.getElementById("scrim");
+  var MODE = "", Y = 0;
+
+  function rowAt(){
+    var r = document.querySelectorAll(".n"), i;
+    for(i = 0; i < r.length; i++) if(r[i].getBoundingClientRect().top > 60) return i + 1;
+    return 0;
+  }
+
+  function open(m){
+    Y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    MODE = m;
+    if(m === "a"){ document.body.style.top = (-Y) + "px"; document.body.className = "lock"; }
+    if(m === "b") document.documentElement.classList.add("lockb");
+    panel.className = "panel frost show" + (m === "c" ? " lockc" : "");
+    scrim.className = "scrim show" + (m === "c" ? " lockc" : "");
+    panel.setAttribute("aria-hidden", "false");
+    document.getElementById("ptitle").textContent = NAMES[m];
+    document.getElementById("plist").parentNode.scrollTop = 0;
+    document.getElementById("last").textContent = "Opened " + NAMES[m] + " at page row " + rowAt() + ".";
+  }
+
+  function close(){
+    if(!MODE) return;
+    if(MODE === "a"){ document.body.className = ""; document.body.style.top = ""; window.scrollTo(0, Y); }
+    if(MODE === "b") document.documentElement.classList.remove("lockb");
+    panel.className = "panel frost";
+    scrim.className = "scrim";
+    panel.setAttribute("aria-hidden", "true");
+    document.getElementById("last").textContent += " Closed at page row " + rowAt() + ".";
+    MODE = "";
+  }
+
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest ? ev.target.closest("[data-lock]") : null;
+    if(!t) return;
+    if(MODE){ close(); return; }
+    open(t.getAttribute("data-lock"));
+  });
+  scrim.addEventListener("click", close);
+  document.getElementById("pclose").addEventListener("click", close);
+})();
+</script>
+</body>
+</html>
