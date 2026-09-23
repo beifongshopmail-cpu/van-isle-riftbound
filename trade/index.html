@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RB Trade">
+<link rel="manifest" href="../manifest.webmanifest">
 <title>Trade calculator - Van Isle Riftbound</title>
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
@@ -294,7 +295,7 @@ a{color:inherit;text-decoration:none}
 </div>
 
 <nav class="bar frost" id="tabs">
-  <a class="tab" href="#" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
+  <a class="tab" href="../?hub" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
   <button type="button" class="tab on" id="tabnav" data-open="pnav" aria-label="Pages, you are on Trade"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="11" height="15" rx="2.5"/><rect class="fillon" x="10" y="3" width="11" height="15" rx="2.5"/></svg></button>
   <button type="button" class="tab" id="tabsav" data-open="psav" aria-label="Saved trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6.5 3.5h11v17l-5.5-4-5.5 4z"/></svg></button>
   <button type="button" class="tab" id="tabset" data-open="pset" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
@@ -305,7 +306,7 @@ a{color:inherit;text-decoration:none}
 <section class="panel frost" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="phead"><h4 class="ttl">Go to</h4><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pick">
-    <a href="../">Events<span class="sp"></span><small>Calendar</small></a>
+    <a href="../calendar/">Events<span class="sp"></span><small>Calendar</small></a>
     <a href="../counter/">Game<span class="sp"></span><small>Point counter</small></a>
     <button type="button" class="on" data-close>Trade<span class="sp"></span><small>Trade calculator</small></button>
     <a href="../feedback/">Feedback<span class="sp"></span><small>Tell us</small></a>

@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RB Feedback">
+<link rel="manifest" href="../manifest.webmanifest">
 <title>Feedback - Van Isle Riftbound</title>
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
@@ -80,7 +81,7 @@ body{-webkit-font-smoothing:antialiased;
 <!-- THE STANDARD BAR. Slots never move between pages: Settings is here,
      dimmed in place, because this page has none. -->
 <nav class="bar frost" id="tabs">
-  <a class="tab" href="#" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
+  <a class="tab" href="../?hub" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
   <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path class="fillon" d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17h0A1.5 1.5 0 0 1 4 15.5z"/></svg></button>
   <a class="tab" href="https://tally.so/r/QKlGxX" aria-label="Open the form on its own page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
   <button type="button" class="tab" disabled aria-label="No settings on this page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
@@ -93,7 +94,7 @@ body{-webkit-font-smoothing:antialiased;
     <button type="button" class="circ btn glass" id="pnclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="pbody"><div class="pick">
-    <a href="../">Events<span class="sp"></span><small>Calendar</small></a>
+    <a href="../calendar/">Events<span class="sp"></span><small>Calendar</small></a>
     <a href="../counter/">Game<span class="sp"></span><small>Point counter</small></a>
     <a href="../trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
     <button type="button" class="on" id="pnhere">Feedback<span class="sp"></span><small>Tell us</small></button>
