@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Van Isle Riftbound</title>
 <meta name="apple-mobile-web-app-title" content="Van Isle RB">
-<link rel="stylesheet" href="fonts.css">
-<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
 <style>
 /* The calendar, at the site root. CARD SYSTEM, converted 2026-09-19.
    The shared layer (tokens, glass, frost, bar, panels, option tracks,
@@ -241,7 +241,7 @@ a{color:inherit;text-decoration:none}
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Free for any island store or player to use or link.<br>
-        Something wrong or missing? <a href="feedback/">Tell us</a>.
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
     </p>
     <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
   </footer>
@@ -262,9 +262,9 @@ a{color:inherit;text-decoration:none}
   </div>
   <div class="pbody"><div class="pick">
     <button type="button" class="on" id="pnhere">Events<span class="sp"></span><small>Calendar</small></button>
-    <a href="counter/">Game<span class="sp"></span><small>Point counter</small></a>
-    <a href="trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
-    <a href="feedback/">Feedback<span class="sp"></span><small>Tell us</small></a>
+    <a href="../counter/">Game<span class="sp"></span><small>Point counter</small></a>
+    <a href="../trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
+    <a href="../feedback/">Feedback<span class="sp"></span><small>Tell us</small></a>
   </div></div>
 </section>
 <section class="panel frost" id="panel" aria-hidden="true" aria-label="Calendar settings">
@@ -583,7 +583,7 @@ a{color:inherit;text-decoration:none}
 
   function renderSub(){
     var base = location.host + location.pathname.replace(/[^\/]*$/, "");
-    document.getElementById("sub").href = "webcal://" + base + "data/" + scope + ".ics";
+    document.getElementById("sub").href = "webcal://" + base + "../data/" + scope + ".ics";
     document.getElementById("subtab").href = document.getElementById("sub").href;
   }
 
@@ -784,7 +784,7 @@ a{color:inherit;text-decoration:none}
     };
   }
 
-  fetch("data/events.json", {cache:"no-cache"}).then(function(r){
+  fetch("../data/events.json", {cache:"no-cache"}).then(function(r){
     if (!r.ok) throw new Error("http " + r.status);
     return r.json();
   }).then(function(j){
