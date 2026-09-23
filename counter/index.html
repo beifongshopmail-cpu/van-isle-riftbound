@@ -32,19 +32,20 @@
     --mo-pulse:1.8s;
     --mo-ease:cubic-bezier(.22,.72,.2,1);
   }
-  /* THE BODY IS LEFT ALONE AND THE STAGE IS FIXED TO THE SCREEN. With html
-     and body held at height:100%, the installed app on an iPhone with the
-     status bar drawn over the page sized the page to the 812px it reports
-     as its height on an 874px screen, and the floating strip rode up by
-     the difference. A probe page (2026-09-22) found the bar right under
-     every layout applied after load, and every page whose bar sits right
-     leaves the body alone, so the counter now does too. */
-  html,body{touch-action:manipulation;overscroll-behavior:none}
-  body{-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+  /* THE PAGE IS AT LEAST ONE FULL SCREEN TALL. In the installed app, with
+     the status bar drawn over the page, a document shorter than the screen
+     is laid out against the 812px the app reports as its height on an
+     874px screen, and the floating strip rides up by the difference. Every
+     page whose bar sits right is taller than the screen; the counter was
+     the one that was not. 100vh is the full screen there. Scrolling is off,
+     so the extra height can never move anything. The stage is fixed to the
+     screen and carries the layout. */
+  html,body{touch-action:manipulation;overscroll-behavior:none;overflow:hidden}
+  body{min-height:100vh;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
   /* The stage starts where the other pages' wordmark row puts their first
      line, clear of the status bar, and stops above the floating strip. */
   .stage{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;
-    padding-top:calc(env(safe-area-inset-top,0px) + 24px);
+    padding-top:calc(env(safe-area-inset-top,0px) + 30px);
     padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 10px)}
 
   /* THE STRIP IS THE BAR'S SHELL holding the counter's own four controls.
@@ -90,13 +91,13 @@
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
   .side[data-role="minor"] .num{font-size:40px}
   /* SPLIT MUST FIT. The split numeral takes the height each half has left
-     once everything else in the column is counted: 208px of fixed parts
+     once everything else in the column is counted: 214px of fixed parts
      (the stage's top and bottom room, the pass button, two timer lines),
      split two ways, less the 118px each half's name, rail and buttons use,
      over the numeral's .82 line height. The status bar and home bar come
      off first. On a tall phone the width cap (44vw) decides instead; on an
      installed iPhone 7 this comes to about 124px. */
-  .side[data-role="equal"] .num{font-size:min(44vw,calc((100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 208px) * .61 - 144px))}
+  .side[data-role="equal"] .num{font-size:min(44vw,calc((100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 214px) * .61 - 144px))}
 
   /* THE RAIL: eight lines, each point's letter under its line */
   .rail{align-self:stretch;display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:22px;
@@ -162,9 +163,9 @@
   .side[data-role="equal"] .lgarune img{width:40px;height:40px}
   .side[data-role="minor"] .lgarune{display:none}
 
-  /* ======== the victory banner: frosted, where the strip is, and it
-     blocks the strip on purpose ======== */
-  .win{position:fixed;left:12px;right:12px;bottom:max(4px,calc(env(safe-area-inset-bottom,0px) - 12px));
+  /* ======== the victory banner: frosted, and it sits where a menu does,
+     above the strip, so the strip stays usable under it ======== */
+  .win{position:fixed;left:12px;right:12px;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);
     max-width:456px;margin:0 auto;z-index:25;border-radius:24px;padding:14px;
     display:none;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
   .stage[data-won="1"] ~ .win{display:flex}
