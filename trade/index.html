@@ -39,9 +39,9 @@ a{color:inherit;text-decoration:none}
    the page to show results without moving anything under it. */
 .stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);height:0;z-index:10}
 .plate{width:calc(100% - 24px);max-width:456px;margin:0 auto;border-radius:24px;padding:10px;
-  background:rgba(10,11,13,.5);
-  -webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);
+  background:rgba(10,11,13,.94);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .hold{height:122px}   /* plate at rest: 10 + 40 + 8 + 40 + 10 = 108, plus a 14 gap */
 .sf{display:flex;align-items:center;gap:8px;height:40px;border-radius:999px;padding:0 2px 0 14px;background:rgba(255,255,255,.07)}
 .sf>svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}

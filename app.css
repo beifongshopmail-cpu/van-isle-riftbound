@@ -36,6 +36,7 @@
   --rim-light:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,.10) 30%,rgba(255,255,255,0) 55%,rgba(255,255,255,.10));
   /* FROSTED CHROME: the bar, the counter's strip, menus. Real blur, "clearest" strength. */
   --frost:rgba(36,37,38,.22);
+  --frost-solid:rgba(36,37,38,.94);
   --frost-rim:rgba(255,255,255,.10);
   --on:rgba(255,255,255,.14);      /* the bar's "you are here" pill */
   --recess:rgba(0,0,0,.35);        /* tracks that hold options: segmented controls, pick lists */
@@ -81,8 +82,9 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 .circ svg{width:18px;height:18px}
 
 /* .frost: see-through chrome that blurs what passes behind it */
-.frost{background:var(--frost);border:1px solid var(--frost-rim);
-  -webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+.frost{background:var(--frost-solid);border:1px solid var(--frost-rim)}
+/* Blur is an enhancement. Without it the chrome is near-opaque, so text behind stays readable. */
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.frost{background:var(--frost);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}}
 
 /* the bar: Facebook's floating pill, icons only */
 .bar{position:fixed;left:12px;right:12px;bottom:max(4px,calc(env(safe-area-inset-bottom,0px) - 12px));max-width:456px;margin:0 auto;
@@ -98,12 +100,12 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 .scrim.show{opacity:1;pointer-events:auto}
 .panel{position:fixed;left:12px;right:12px;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);max-width:456px;margin:0 auto;
   border-radius:24px;padding:16px;z-index:40;box-shadow:0 14px 36px rgba(0,0,0,.5);
-  -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
   /* THE CAP COUNTS THE BAR. The panel sits above the bar, so a cap of the
      whole screen let a tall menu run off the top by the bar's height. */
   max-height:calc(100% - max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) - var(--barH) - 8px - 16px - env(safe-area-inset-top,0px));
   display:flex;flex-direction:column;overflow:hidden;
   transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.panel{-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}}
 .panel.show{transform:none;opacity:1;pointer-events:auto}
 .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex:0 0 auto}
 .phead h4{font-size:20px}
