@@ -53,6 +53,12 @@ html,body{margin:0}
    scrollbar, the viewport widens by its width, and everything reflows
    mid-animation. That is a jump, and it is not worth the 15px. */
 html{scrollbar-gutter:stable;overflow-y:scroll}
+/* EVERY PAGE IS AT LEAST ONE FULL SCREEN TALL. In the installed app, with
+   the status bar drawn over the page, a document shorter than the screen
+   is laid out against the height the app reports (the screen less the
+   status bar), and the floating bar rides up by the difference. Found on
+   the counter, 2026-09-22. 100vh is the full screen there. */
+body{min-height:100vh}
 body{background:var(--ground);color:var(--bone);font-family:var(--text);font-size:15px;line-height:1.4;
   font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 .ttl{font-family:var(--disp);font-weight:700;margin:0;letter-spacing:-.005em}   /* titles are SENTENCE CASE */

@@ -32,16 +32,12 @@
     --mo-pulse:1.8s;
     --mo-ease:cubic-bezier(.22,.72,.2,1);
   }
-  /* THE PAGE IS AT LEAST ONE FULL SCREEN TALL. In the installed app, with
-     the status bar drawn over the page, a document shorter than the screen
-     is laid out against the 812px the app reports as its height on an
-     874px screen, and the floating strip rides up by the difference. Every
-     page whose bar sits right is taller than the screen; the counter was
-     the one that was not. 100vh is the full screen there. Scrolling is off,
-     so the extra height can never move anything. The stage is fixed to the
-     screen and carries the layout. */
+  /* The page is at least one full screen tall by app.css's rule, which
+     keeps the strip where every page's bar sits in the installed app.
+     Scrolling is off here, so that height never moves anything, and the
+     stage is fixed to the screen and carries the layout. */
   html,body{touch-action:manipulation;overscroll-behavior:none;overflow:hidden}
-  body{min-height:100vh;-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+  body{-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
   /* The stage starts where the other pages' wordmark row puts their first
      line, clear of the status bar, and stops above the floating strip. */
   .stage{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;
@@ -90,6 +86,17 @@
   .num{font-family:var(--disp);font-weight:800;line-height:.82;letter-spacing:-.03em;color:var(--c);
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
   .side[data-role="minor"] .num{font-size:40px}
+  /* FOCUS FILLS THE SPACE. A score never has two digits (the goal is 8), so
+     the big numeral can run wider than the old 64vw cap. It takes the height
+     the major half has left once the status bar and home bar, the stage's
+     top and bottom room, the slim row, the pass button, a timer line, the
+     name, the rail and the buttons are counted (404px of fixed parts, over
+     the .82 line height), up to 80vw. */
+  .side[data-role="major"] .num{font-size:min(80vw,calc((100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 404px) * 1.22))}
+  /* Whatever height is still spare goes ABOVE the numeral, where the card
+     art sits, not under the buttons: the buttons stay low, in thumb reach,
+     and the band of black over the strip is gone. */
+  .side[data-role="major"]{justify-content:flex-end;padding-bottom:6px}
   /* SPLIT MUST FIT. The split numeral takes the height each half has left
      once everything else in the column is counted: 214px of fixed parts
      (the stage's top and bottom room, the pass button, two timer lines),
