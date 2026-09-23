@@ -4,190 +4,135 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<meta name="description" content="Offline point counter for Riftbound. Tracks points, how they were scored, and which turn they landed on.">
+<meta name="description" content="Point counter for Riftbound. Tracks points, how they were scored, and which turn they landed on.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RB Counter">
 <title>Point Counter - Van Isle Riftbound</title>
 <link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
 <style>
+/* The point counter. CARD SYSTEM, converted 2026-09-22. The shared layer
+   (tokens, glass, frost, the bar, menus, option tracks, press feedback)
+   is app.css, linked above. This block holds only the counter's own rules.
+   The spec is the round-2 mockup, "RAVI counter and feedback mockup"; the
+   main face is the card system reference page's counter. The layout of
+   the main face is unchanged: focus and split, the legend art and runes,
+   the timer lines. STYLE.md section 9 still protects its control sizes. */
   :root{
-    --bone:#F2F3F5;
-    --dim:#828A97;
-    --mute:#4E5561;
-    --rule:#212429;
-    --rule-hi:#343A44;
-    --p1:#3FA9F5;
-    --p2:#FF4F9A;
-    --over:#FF453A;
+    /* PLAYER 1 IS BLUE AND PLAYER 2 IS PINK on this page, the trade page's
+       two hues. app.css names them the other way round (--p1 pink, --p2
+       blue) and the trade page reads those names, so they are redeclared
+       here, not swapped at the source. The log and past matches read them. */
+    --p1:#5DA5EE;
+    --p2:#EE5F9C;
     --over-deep:#8C1F19;
-    --mo-fast:.16s;
-    --mo-tap:.22s;
     --mo-rise:.32s;
-    --mo-seam:.42s;
-    --mo-settle:.7s;
     --mo-travel:.42s;
     --mo-pulse:1.8s;
     --mo-ease:cubic-bezier(.22,.72,.2,1);
-    --display:"Poppins",system-ui,sans-serif;
-    --mono:"Nunito",system-ui,sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{height:100%;overflow:hidden;touch-action:manipulation}
-  body{background:#000;color:var(--bone);font-family:var(--mono);font-variant-numeric:tabular-nums;
-    display:flex;flex-direction:column;overscroll-behavior:none;
-    -webkit-user-select:none;user-select:none;
-    padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  body{display:flex;flex-direction:column;overscroll-behavior:none;
+    -webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top,0px)}
 
-  .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden}
+  /* the stage stops above the floating strip */
+  .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden;
+    padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 10px)}
 
-  .strip{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 8px 4px;
-    border-top:1px solid var(--rule);
-    min-height:46px;
-    transition:border-color var(--mo-settle) ease}
-  .strip .turn{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--dim);margin-left:10px}
-  .strip .sp{margin-left:auto}
-  .strip button{flex:0 0 44px;height:34px;display:flex;align-items:center;justify-content:center;
-    color:var(--bone);background:none;border:1px solid transparent;border-radius:5px;padding:0;
-    transition:color var(--mo-settle) ease,height var(--mo-settle) ease}
-  .strip button:disabled{opacity:.25}
-  .strip button:active{border-color:var(--rule-hi);background:rgba(255,255,255,.05)}
-  .strip button svg{width:20px;height:20px;display:block}
-  .modes{display:flex;flex:1;border:1px solid var(--rule);border-radius:5px;overflow:hidden;
-    transition:border-color var(--mo-settle) ease}
-  .modes button{flex:1;border:0;border-radius:0;min-height:32px;padding:5px 4px;background:none;
-    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
-    transition:background var(--mo-settle) ease,color var(--mo-settle) ease,
-    min-height var(--mo-settle) ease,padding var(--mo-settle) ease,
-    letter-spacing var(--mo-settle) ease}
-  .modes button+button{border-left:1px solid var(--rule)}
-  .modes button[aria-pressed="true"]{background:var(--bone);color:#000}
-  .strip.settled{border-color:#15171b}
-  .strip.settled button{color:var(--mute);height:28px}
-  .strip.settled .modes{border-color:#15171b}
-  .strip.settled .modes button{min-height:24px;padding:2px 4px;
-    letter-spacing:.06em;color:var(--mute)}
-  .strip.settled .modes button[aria-pressed="true"]{background:#2B3038;
-    color:var(--bone)}
+  /* THE STRIP IS THE BAR'S SHELL holding the counter's own four controls.
+     It does not rest: the card system's bar never dims, so the old
+     dim-after-touch is gone. */
+  .strip{display:flex;align-items:center;gap:4px}
+  .strip .seg{flex:1.7;height:44px;min-width:0}
+  .strip .seg button{height:38px;min-width:0}
+  .strip .ic{flex:1;height:44px;border-radius:999px;display:grid;place-items:center}
+  .strip .ic:active{background:var(--on)}
+  .strip .ic svg{width:22px;height:22px}
 
-  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px 6px}
+  /* ======== the field ======== */
+  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 12px 0}
   .side{min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;overflow:hidden;border-radius:10px;
-    transition:flex-grow var(--mo-travel) var(--mo-ease),
-    flex-basis var(--mo-travel) var(--mo-ease),
-    padding var(--mo-travel) var(--mo-ease),
-    background var(--mo-travel) var(--mo-ease),
-    border-color var(--mo-travel) var(--mo-ease)}
-  .side[data-role="major"]{flex:1}
-  .side[data-role="minor"]{flex:0 1 62px;flex-direction:row;gap:14px;padding:10px 14px;
-    justify-content:center;background:#07080A;border:1px solid var(--rule);
-    align-items:center}
-  .side[data-role="minor"]:has(.lgathumb){flex:0 1 78px}
-  .side[data-role="equal"]{flex:1}
-  .side[data-role="minor"]{border-color:color-mix(in srgb, var(--c) 30%, transparent)}
+    justify-content:center;overflow:hidden;padding:4px 2px;
+    transition:flex-grow var(--mo-travel) var(--mo-ease),flex-basis var(--mo-travel) var(--mo-ease)}
+  .side[data-role="major"],.side[data-role="equal"]{flex:1 1 0}
+  /* THE SLIM BANNER HAS NO CONTAINER: the score, the name and the cut pill. */
+  .side[data-role="minor"]{flex:0 0 auto;flex-direction:row;gap:10px;padding:2px 0 2px 6px;min-height:52px}
   .far{transform:rotate(180deg)}
 
-  .name{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--mute);position:relative;z-index:3}
-  .side .name{color:color-mix(in srgb, var(--c) 72%, #000);order:2;margin-top:18px;
-    max-width:100%;display:flex;align-items:center;min-width:0}
-  .side .name .nm{min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .side[data-role="minor"] .name{margin-top:0;flex:1 1 auto;min-width:0;display:flex;
-    align-items:center;gap:9px;text-overflow:clip;line-height:1}
+  .name{font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+    position:relative;z-index:3;order:2;margin-top:18px;max-width:100%;
+    display:flex;align-items:center;min-width:0}
+  .name .nm{min-width:0;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    color:var(--c);font-weight:600}
+  .legend{color:var(--muted);font-weight:500}
+  .legend::before{content:"|";margin:0 7px;color:var(--faint)}
+  .pips{display:inline-flex;gap:4px;margin-left:8px;flex:0 0 auto}
+  .pips i{width:6px;height:6px;border-radius:999px;background:var(--track);display:block}
+  .pips i.on{background:var(--c)}
+  .side[data-role="minor"] .pn{display:flex;flex:1 1 auto;min-width:0;flex-direction:row;align-items:center;gap:10px}
+  .side[data-role="minor"] .name{margin-top:0;flex:1 1 auto;min-width:0;gap:8px;line-height:1}
+  .side[data-role="minor"] .name .nm{text-overflow:clip}
   .side[data-role="minor"] .pips{margin-left:0}
-  .side[data-role="minor"] .pn{display:flex;flex:1 1 auto;min-width:0;
-    flex-direction:row;align-items:center;gap:12px}
-  .side[data-role="minor"] .lgathumb ~ .pn{flex-direction:row;align-items:center;
-    gap:10px}
+  .side[data-role="minor"] .legend{display:none}
   .side[data-role="minor"] .lgathumb ~ .pn .nm{display:none}
-  .side[data-role="minor"] .name .nm{min-width:0;overflow:hidden;text-overflow:clip;
-    white-space:nowrap;flex:0 1 auto}
   .side[data-role="minor"] .num,.side[data-role="minor"] .acts{flex:0 0 auto}
-  .pips{display:inline-flex;gap:4px;margin-left:9px;vertical-align:middle;flex:0 0 auto}
-  .pips i{width:6px;height:6px;border-radius:50%;background:#1B1E24;display:block}
-  .side .pips i.on{background:var(--c)}
-  .num{font-family:var(--display);font-weight:800;line-height:.72;letter-spacing:-.03em;
-    font-size:min(42vh,64vw);position:relative;z-index:3;order:1;
-    transition:font-size var(--mo-travel) var(--mo-ease)}
-  .side .num{color:var(--c)}
+
+  .num{font-family:var(--disp);font-weight:800;line-height:.82;letter-spacing:-.03em;color:var(--c);
+    font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
   .side[data-role="minor"] .num{font-size:40px}
-  .side[data-role="equal"] .num{font-size:min(26vh,44vw)}
+  /* SPLIT MUST FIT on the device floor: an installed iPhone 7 is 375 by 667
+     less a 20px status bar. At 26vh the split numeral overflowed its side
+     there by 15px, into the timer line and under the strip. 20vh fits; on a
+     taller phone the width cap (44vw) still decides, as before. */
+  .side[data-role="equal"] .num{font-size:min(20vh,44vw)}
 
-  .track{position:relative;z-index:3;margin-top:26px;width:min(62vw,330px);order:3}
-  .side[data-role="minor"] .track{opacity:0;max-height:0;margin-top:0;overflow:hidden;
-    pointer-events:none;position:absolute;width:0;min-width:0;flex:0 0 0;left:0;top:0}
-  .side .track{transition:opacity var(--mo-travel) var(--mo-ease),
-    max-height var(--mo-travel) var(--mo-ease),
-    margin-top var(--mo-travel) var(--mo-ease);max-height:40px}
-  .side[data-role="equal"] .name{margin-top:12px}
-  .side[data-role="equal"] .track{margin-top:18px}
-  .side:not([data-role="minor"]) .track{align-self:stretch;width:auto}
-  .track .segs{display:flex;gap:3px}
-  .track .segs i{flex:1;height:3px;background:#1B1E24;display:block}
-  .side .track .segs i.on{background:var(--c)}
-  .track .keys{display:flex;gap:3px;margin-top:5px}
-  .track .keys b{flex:1;text-align:center;font-family:var(--mono);font-weight:500;font-size:12px;
-    letter-spacing:.08em;color:var(--mute);line-height:1}
-  .side .track .keys b.on{color:color-mix(in srgb, var(--c) 85%, transparent)}
-  .side[data-role="minor"] .track .keys{display:none}
+  /* THE RAIL: eight lines, each point's letter under its line */
+  .rail{align-self:stretch;display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:22px;
+    order:3;position:relative;z-index:3}
+  .rail span{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;
+    line-height:1;color:var(--c)}
+  .rail span::before{content:"";display:block;width:100%;height:4px;border-radius:2px;background:var(--track)}
+  .rail span.f::before{background:var(--c)}
+  .rail span.e{color:var(--faint)}
+  /* split spacing is tighter than focus, for the same device-floor reason */
+  .side[data-role="equal"]{padding:2px}
+  .side[data-role="equal"] .name{margin-top:8px}
+  .side[data-role="equal"] .rail{margin-top:10px}
+  .side[data-role="minor"] .rail{display:none}
 
-  .acts{display:flex;gap:10px;position:relative;z-index:3;margin-top:22px;order:4}
-  .acts button{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:.06em;
-    text-transform:uppercase;padding:14px 15px 7px;min-height:48px;background:none;border:0;
-    border-bottom:2px solid transparent;color:var(--bone);border-radius:6px 6px 0 0;
-    transition:font-size var(--mo-travel) var(--mo-ease),
-    padding var(--mo-travel) var(--mo-ease),
-    min-height var(--mo-travel) var(--mo-ease)}
-  .side .acts button{border-bottom-color:color-mix(in srgb, var(--c) 60%, transparent)}
-  .side:not([data-role="minor"]) .acts{align-self:stretch}
-  .side:not([data-role="minor"]) .acts button{flex:1;padding-left:0;padding-right:0}
-  .side .acts button:active{color:var(--c);
-    text-shadow:0 0 20px color-mix(in srgb, var(--c) 70%, transparent)}
-  .acts button:disabled{opacity:.25}
-  .side[data-role="minor"] .acts{margin-top:0}
-  .side[data-role="minor"] .acts button{min-height:32px;padding:7px 9px;font-size:12px}
-  .side[data-role="equal"] .acts{margin-top:14px}
+  /* THE SCORE BUTTONS ARE ONE PILL CUT TWICE: round outer ends, 2px inner
+     corners, 3px apart. The outer radius is the real half-height, never
+     999px, which shrinks every corner together and flattens the cuts. The
+     stain (.14) and press (.50) are the player's own colour, set by
+     script as --pct and --pcr. */
+  .acts{align-self:stretch;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:18px;
+    order:4;position:relative;z-index:3}
+  .acts button{height:48px;min-width:0;font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:.06em;
+    text-transform:uppercase;background:var(--pct)}
+  .acts button:active{background:var(--pcr)}
+  .acts button:first-child{border-radius:24px 2px 2px 24px}
+  .acts button:nth-child(2){border-radius:2px}
+  .acts button:last-child{border-radius:2px 24px 24px 2px}
+  .side[data-role="equal"] .acts{margin-top:10px}
+  .side[data-role="minor"] .acts{display:flex;align-self:auto;margin:0}
+  .side[data-role="minor"] .acts button{height:38px;padding:0 10px;font-size:12px}
+  .side[data-role="minor"] .acts button:first-child{border-radius:19px 2px 2px 19px}
+  .side[data-role="minor"] .acts button:last-child{border-radius:2px 19px 19px 2px}
 
-  .seamwrap{flex:0 0 auto;padding:8px 0;position:relative}
-  .seam{width:100%;min-height:58px;border-radius:8px;background:none;border:1px solid var(--rule-hi);
-    color:var(--bone);font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;
-    text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:0;
-    position:relative;z-index:2}
-  .seam em{font-family:var(--display);font-style:normal;font-weight:600;font-size:15px;
-    letter-spacing:.1em;color:color-mix(in srgb, var(--bone) 45%, var(--dim));
-    border-left:1px solid var(--rule-hi);padding-left:14px;margin-left:14px;
-    display:flex;align-items:center;gap:.5ch;min-width:0}
-  .seam em b{font-weight:600;font-size:15px;color:var(--sc);
-    max-width:9ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .seam:active{background:rgba(255,255,255,.08)}
-  .seam:disabled{opacity:.3}
-  .seam.flash{animation:seamflash var(--mo-seam) ease-out}
-  .burst{position:absolute;left:0;right:0;top:8px;bottom:8px;z-index:0;
-    pointer-events:none;opacity:0;border-radius:8px;
-    border:1.5px solid var(--sc);
-    box-shadow:0 0 18px color-mix(in srgb, var(--sc) 55%, transparent)}
-  .burst.go{animation:burstrim var(--mo-seam) var(--mo-ease)}
-  @keyframes burstrim{
-    0%{opacity:0;transform:scale(.98)}
-    18%{opacity:1}
-    100%{opacity:0;transform:scale(1.14)}
-  }
-  @keyframes seamflash{
-    0%{background:rgba(242,243,245,.26);border-color:var(--bone);color:#000}
-    45%{background:rgba(242,243,245,.10);border-color:var(--bone)}
-    100%{background:none;border-color:var(--rule-hi)}
-  }
-  .acts button.actflash{animation:actflash var(--mo-tap) ease-out}
-  @keyframes actflash{
-    0%{background:color-mix(in srgb, var(--c) 30%, transparent);
-       text-shadow:0 0 24px color-mix(in srgb, var(--c) 85%, transparent)}
-    100%{background:none;text-shadow:none}
-  }
-  @media (prefers-reduced-motion:reduce){ *{transition:none !important;animation:none !important} }
-  .tmv{flex:0 0 auto;text-align:center;padding:2px 0 6px;font-family:var(--mono);
-    font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--dim);
-    font-variant-numeric:tabular-nums}
+  /* pass turn: neutral glass, the current player's name in their colour */
+  .seamwrap{flex:0 0 auto}
+  .pass{height:50px;margin:8px 0;display:flex;align-items:center;justify-content:center;gap:14px;width:100%;
+    font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
+  .pass .dv{flex:0 0 auto;width:2px;height:20px;background:var(--faint)}
+  .pass em{font-style:normal;display:flex;align-items:center;gap:.5ch;min-width:0}
+  .pass b{font-weight:700;color:var(--sc);max-width:9ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* the timer lines. The padding is SYMMETRIC on purpose: the far line is
+     rotated, so any one-sided padding lands on the opposite side for it. */
+  .tmv{flex:0 0 auto;text-align:center;padding:4px 0;font-size:13px;font-weight:500;letter-spacing:.08em;
+    color:var(--muted);line-height:1.2}
   .tmv.tmfar{transform:rotate(180deg)}
   .tmv.tmover{color:var(--over);animation:overpulse var(--mo-pulse) ease-in-out infinite}
   @keyframes overpulse{
@@ -195,345 +140,283 @@
     50%{color:var(--over-deep)}
     100%{color:var(--over)}
   }
-  #tmnow{font-family:var(--mono);font-size:13px;font-weight:500;
-    letter-spacing:.08em;color:var(--dim);font-variant-numeric:tabular-nums;
-    margin-bottom:8px}
+
+  /* the legend card and runes, pinned to the two top corners of a full side */
+  .lgathumb{position:absolute;top:0;left:0;z-index:3;width:86px;height:121px;border-radius:6px;padding:0;
+    background:#0E0F11 center/cover no-repeat}
+  .side[data-role="equal"] .lgathumb{width:66px;height:93px}
+  .side[data-role="minor"] .lgathumb{position:relative;flex:0 0 auto;width:40px;height:56px;border-radius:4px}
+  .lgarune{position:absolute;top:0;right:0;z-index:3;display:flex;flex-direction:column;gap:7px}
+  .lgarune img{width:52px;height:52px;display:block}
+  .side[data-role="equal"] .lgarune{gap:5px}
+  .side[data-role="equal"] .lgarune img{width:40px;height:40px}
+  .side[data-role="minor"] .lgarune{display:none}
+
+  /* ======== the victory banner: frosted, where the strip is, and it
+     blocks the strip on purpose ======== */
+  .win{position:fixed;left:12px;right:12px;bottom:max(4px,calc(env(safe-area-inset-bottom,0px) - 12px));
+    max-width:456px;margin:0 auto;z-index:25;border-radius:24px;padding:14px;
+    display:none;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .stage[data-won="1"] .win{display:flex}
+  #wintext{text-align:center;font-family:var(--disp);font-weight:700;font-size:17px;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .win .nextbox{display:flex;flex-direction:column;gap:10px}
+  .win[data-next="0"] .nextbox{display:none}
+  .win .nlab{text-align:center;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:-4px}
+  .winrow{display:flex;gap:8px}
+  .winrow > *{flex:1;min-width:0}
+  .win .pact{white-space:nowrap;overflow:hidden}
+  .win .pact.armed{background:var(--glass-press)}
+
+  /* A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE: the player's stain at
+     rest, their press when pressed or armed. */
+  .sidebtn{display:block;height:44px;line-height:44px;border-radius:999px;padding:0 12px;min-width:0;
+    font-family:var(--disp);font-weight:600;font-size:13px;text-align:center;
+    background:var(--pct);color:var(--pc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sidebtn:active,.sidebtn.armed{background:var(--pcr);color:var(--bone)}
+  #nextrow .sidebtn{display:flex;align-items:center;justify-content:center;gap:.5ch}
+  .sidebtn .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sidebtn .nsuf{flex:0 0 auto}
+
+  /* ======== the menus ======== */
+  .two{display:flex;gap:8px}
+  .two > *{flex:1;min-width:0}
+  .pfoot .two + .pact,.pfoot .pact + .pact{margin-top:8px}
+  .pick svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:var(--muted);stroke-width:2.2;
+    stroke-linecap:round;stroke-linejoin:round}
+  .pnote{font-size:12px;color:var(--muted);margin:8px 2px 0;line-height:1.5}
+  .cred{font-size:12px;color:var(--muted);line-height:1.5;margin:18px 2px 4px}
+
+  /* players */
+  .pgrp{margin-bottom:16px}
+  .pgrp:last-child{margin-bottom:0}
+  .pl1{color:var(--pc);font-family:var(--disp);font-weight:700;font-size:15px;margin:0 2px 8px}
+  .nf{display:flex;align-items:center;height:44px;border-radius:999px;background:var(--recess);
+    padding:0 16px;margin-bottom:8px}
+  .nf input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);
+    font-family:var(--text);font-size:16px;padding:0;-webkit-user-select:text;user-select:text}
+  .nf input::placeholder{color:var(--muted)}
+  .legrow{margin-bottom:10px}
+  .legrow button{height:44px}
+  .legrow .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .swatches{display:flex;gap:6px;justify-content:space-between;padding:0 4px}
+  .swatches button{width:34px;height:34px;border-radius:999px;display:grid;place-items:center}
+  .swatches button::after{content:"";width:26px;height:26px;border-radius:999px;background:var(--sw)}
+  .swatches button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--bone)}
+
+  /* who goes first wears each player's own colour */
+  .who1 button{color:var(--pc)}
+  .who1 button[aria-pressed="true"]{background:var(--pc);color:var(--ink)}
+
+  /* round timer */
+  #tmrow button.armed{background:var(--hi)}
+  #tmnow{font-size:12px;color:var(--muted);margin:8px 2px 0}
   #tmnow.tmover{color:var(--over)}
   #tmnow:empty{display:none}
-  .tmr{display:flex;gap:8px}
 
-  .sheet{position:absolute;inset:0;background:#000;z-index:30;display:none;
-    flex-direction:column;padding:12px}
-  .sheet.open{display:flex}
-  .sheet ol{list-style:none;flex:1;min-height:0;overflow:auto}
-  #log li,.mbody li{display:flex;gap:12px;align-items:baseline;padding:11px 0;
-    border-bottom:1px solid var(--rule);font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.08em}
-  #log li .lt,.mbody li .lt{flex:1;min-width:0;color:var(--mute);
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #log li .rt,.mbody li .rt{flex:0 0 auto;color:var(--dim);white-space:nowrap}
-  #log li .rt b,.mbody li .rt b{font-weight:500;color:var(--bone)}
+  /* show on the field: two independent switches */
+  .tglrow{display:flex;gap:8px}
+  .tglrow button{flex:1;min-width:0}
+  .tglrow button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
+  .tglrow button[aria-pressed="true"]::before{display:none}
+
+  /* START MATCH KEEPS ITS BONE FILL: the app's only primary commit button */
+  .start{height:48px;border-radius:999px;width:100%;background:var(--bone);color:var(--ink);
+    font-family:var(--disp);font-weight:700;font-size:15px}
+  .start:active{background:#d6d2c9}
+
+  /* the log: rows you only read, written on the glass */
+  #log{list-style:none;margin:0;padding:0}
+  #log li,.mbody li{display:flex;gap:12px;align-items:baseline;padding:10px 2px;
+    border-top:1px solid rgba(255,255,255,.07);font-size:13px}
+  #log li:first-child,.mbody li:first-child{border-top:0}
+  #log .lt,.mbody .lt{flex:1;min-width:0;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #log .rt,.mbody .rt{flex:0 0 auto;color:var(--muted);white-space:nowrap}
+  #log .rt b,.mbody .rt b{font-weight:700;color:var(--bone)}
   #log li.e1 .rt b,.mbody li.e1 .rt b{color:var(--p1)}
   #log li.e2 .rt b,.mbody li.e2 .rt b{color:var(--p2)}
-  #log li.et .rt b,.mbody li.et .rt b{color:var(--dim)}
-  .sheet li.empty{color:var(--mute);border:0;font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.5}
-  .sheet .close{min-height:44px;margin-top:10px;background:none;border:0;
-    border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
-    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
-  .faces{display:flex;border-bottom:1px solid var(--rule);margin-bottom:10px}
-  .faces button{flex:1;min-height:38px;background:none;border:0;border-bottom:2px solid transparent;
-    border-radius:0;margin-bottom:-1px;color:var(--mute);font-family:var(--display);font-weight:600;font-size:12px;
-    letter-spacing:.1em;text-transform:uppercase}
-  .faces button[aria-pressed="true"]{color:var(--bone);border-bottom-color:var(--bone)}
-  .sheet[data-face="now"] #past{display:none}
-  .sheet[data-face="past"] #log{display:none}
-  #past{list-style:none;flex:1;min-height:0;overflow:auto}
-  #past li{border-bottom:1px solid var(--rule);padding:0}
-  #past > li{display:block}
-  #past li.empty{padding:18px 0}
-  .mrow{display:flex;width:100%;min-height:44px;align-items:center;gap:10px;background:none;border:0;
-    border-radius:0;padding:13px 0;text-align:left;color:var(--bone)}
-  .res{flex:0 0 42px;font-family:var(--mono);font-weight:500;font-size:12px;
-    letter-spacing:.1em;text-transform:uppercase}
+  #log li.et .rt b,.mbody li.et .rt b{color:var(--muted)}
+  #log li.empty,#past li.empty{display:block;color:var(--muted);font-size:13px;line-height:1.5}
+
+  /* past matches: rows you pick from, in a recessed track; each expands in place */
+  #past{list-style:none;margin:0;padding:4px;background:var(--recess);border-radius:24px;
+    display:flex;flex-direction:column;gap:2px}
+  #past > li{display:block;border-radius:20px}
+  #past li.empty{padding:14px}
+  #past li.open{background:rgba(255,255,255,.04)}
+  .mrow{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 14px;
+    text-align:left;border-radius:20px}
+  .mrow:active{transform:none;background:var(--hi)}
+  .res{flex:0 0 40px;font-size:12px;font-weight:700}
   .res.rwin{color:var(--p1)}
   .res.rloss{color:var(--p2)}
-  .res.rdnf{color:var(--mute)}
-  .sco{flex:0 0 52px;display:flex;align-items:baseline;gap:2px;
-    font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.02em}
+  .res.rdnf{color:var(--muted)}
+  .sco{flex:0 0 52px;display:flex;align-items:baseline;gap:2px;font-family:var(--disp);font-weight:700;font-size:20px}
   .sco .s1{color:var(--p1)}
   .sco .s2{color:var(--p2)}
-  .sco .dash{color:var(--rule-hi);font-size:13px}
-  .fmt{flex:0 0 36px;font-family:var(--mono);font-weight:500;font-size:12px;
-    letter-spacing:.1em;color:var(--bone)}
-  .opp{flex:1;min-width:0;font-family:var(--mono);font-size:13px;font-weight:500;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sco .dash{color:var(--faint);font-size:13px}
+  .fmt{flex:0 0 32px;font-size:12px;font-weight:600;color:var(--muted)}
+  .opp{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .opp .them{color:var(--p2)}
-  .opp .vs{color:var(--mute)}
-  .mday{flex:0 0 auto;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--mute);
-    white-space:nowrap;letter-spacing:.1em}
-  .dtl{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--mute);padding:0 0 10px;line-height:1.7}
-  .mbody{display:none;padding:0 0 10px}
+  .opp .vs{color:var(--muted)}
+  .mday{flex:0 0 auto;font-size:12px;color:var(--muted);white-space:nowrap}
+  .mbody{display:none;padding:0 14px 10px}
   #past li.open .mbody{display:block}
-  .mbody ol{list-style:none}
-  .ghead{display:flex;align-items:baseline;gap:7px;padding:10px 0 4px;
-    border-top:1px solid var(--rule);
-    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--mute)}
-  .ghead b{font-weight:500}
+  .mbody ol{list-style:none;margin:0;padding:0}
+  .dtl{font-size:12px;color:var(--muted);padding:0 0 8px;line-height:1.6}
+  .ghead{display:flex;align-items:baseline;gap:7px;padding:10px 0 4px;border-top:1px solid rgba(255,255,255,.07);
+    font-size:12px;font-weight:600;color:var(--muted)}
+  .ghead b{font-weight:700}
   .ghead .g1{color:var(--p1)}
   .ghead .g2{color:var(--p2)}
-  .gsub{margin-left:auto;color:var(--mute);white-space:nowrap}
-  .clearpast{width:100%;min-height:44px;margin-top:10px;background:none;
-    border:1px solid var(--rule-hi);border-radius:6px;color:var(--mute);
-    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
-  .clearpast.armed{color:#FFB020;border-color:#FFB020}
-  #impmsg{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dim);padding:10px 2px 0;text-align:center}
+  .gsub{margin-left:auto;white-space:nowrap}
+  .clearpast.armed{background:var(--glass-press)}
+  #impmsg{font-size:12px;color:var(--muted);padding:8px 2px 0;text-align:center}
   #impmsg:empty{display:none}
 
-  .win{position:absolute;left:6px;right:6px;bottom:6px;z-index:25;display:none;
-    flex-direction:column;gap:10px;padding:12px;border-radius:8px;
-    background:#000;border:1px solid var(--rule-hi)}
-  .winrow{display:flex;gap:10px}
-  .stage[data-won="1"] .win{display:flex}
-  .legend{color:var(--dim)}
-  .legend::before{content:"|";margin:0 7px;color:var(--rule-hi)}
-  .side[data-role="minor"] .legend{display:none}
-  .setup{position:absolute;inset:0;background:#000;z-index:40;display:none;
-    flex-direction:column;padding:12px;overflow-y:auto}
-  .setup.open{display:flex}
-  .setup h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;
-    text-transform:uppercase;margin-bottom:14px}
-  .setup .grp{margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--rule)}
-  .setup .grp:last-of-type{border-bottom:0;margin-bottom:0;padding-bottom:0}
-  .setup .pair{display:flex;gap:8px}
-  .setup .pair input,.setup .pair select{flex:1;min-width:0}
-  .setup label{display:block;font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--mute);margin-bottom:6px}
-  .setup input,.setup select{width:100%;min-height:44px;background:#0A0B0E;color:var(--bone);
-    border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;font-family:var(--mono);
-    font-weight:500;font-size:16px;margin-bottom:8px;-webkit-appearance:none;appearance:none}
-  .swatches{display:flex;gap:8px}
-  .swatches button{flex:1;height:44px;border:0;border-radius:6px;padding:0;background:none;
-    display:flex;align-items:center;justify-content:center}
-  .swatches button::after{content:"";display:block;width:100%;height:30px;
-    border-radius:5px;background:var(--sw);box-shadow:0 0 0 2px transparent}
-  .swatches button[aria-pressed="true"]::after{box-shadow:0 0 0 2px var(--bone)}
-  .setup .done.top{position:sticky;top:-12px;z-index:2;background:#000;
-    margin:-12px -12px 16px;padding:12px;width:calc(100% + 24px);
-    min-height:68px}
-  .setup .done{min-height:44px;margin-top:10px;background:none;border:0;
-    border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;color:var(--bone);
-    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
-  .concede{display:flex;gap:10px;margin-top:10px}
-  .concede button{flex:1;min-height:44px;background:none;border:0;border-bottom:2px solid var(--cc);
-    border-radius:0;color:var(--bone);font-family:var(--display);font-weight:600;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase}
-  .concede button:active{color:var(--cc);text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
-  .concede button.armed{color:var(--cc);border-bottom-color:var(--cc);
-    text-shadow:0 0 20px color-mix(in srgb, var(--cc) 70%, transparent)}
-  .concede button:disabled{opacity:.32;color:var(--mute);border-bottom-color:var(--rule);
-    text-shadow:none;pointer-events:none}
-  .setup .wide{width:100%;min-height:44px;background:none;border:1px solid var(--rule-hi);
-    border-radius:6px;color:var(--bone);font-family:var(--display);font-weight:600;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase}
-  .setup[data-face="live"] [data-face="pre"]{display:none}
-  .setup[data-face="pre"] [data-face="live"]{display:none}
-  .setup[data-face="pre"] #firstgrp{border-bottom:0}
-  .first{display:flex;gap:10px}
-  .first button{flex:1;min-width:0;min-height:44px;background:none;border:1px solid var(--rule-hi);
-    border-radius:6px;color:var(--dim);font-family:var(--display);font-weight:600;font-size:12px;
-    letter-spacing:.1em;text-transform:uppercase;padding:0 8px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .first button[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
-  .first.who button[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#000}
-  .setup .label2{margin-top:12px}
-  .prefoot{margin-top:auto;display:flex;flex-direction:column}
-  .prefoot .done{margin-top:10px}
-  .setup .start{width:100%;min-height:44px;background:var(--bone);border:1px solid var(--bone);
-    border-radius:6px;color:#000;font-family:var(--display);font-weight:600;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase}
-.lgacred{font-family:var(--mono);font-weight:500;font-size:12px;line-height:1.5;color:var(--dim);
-  margin-top:14px;text-align:center}
-  .setup .home{display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;
-    margin-top:10px;border:1px solid var(--rule-hi);border-radius:6px;color:var(--bone);
-    font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.1em;
-    text-transform:uppercase;text-decoration:none}
-  .setup .navlab{margin-top:16px;}
-  .win b{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--bone);min-width:0;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap;text-align:center}
-  .win button{flex:1;min-width:0;min-height:44px;padding:0 6px;background:none;border:0;
-    border-bottom:2px solid rgba(242,243,245,.55);border-radius:0;
-    font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--bone);
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .win #unwin{border-bottom-color:transparent}
-  .win .nextbox{display:flex;flex-direction:column;gap:6px}
-  .win[data-next="0"] .nextbox{display:none}
-  .win .nlab{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--dim);text-align:center}
-  .win .nextbox button{border-bottom-color:var(--c);display:flex;
-    align-items:center;justify-content:center;gap:.5ch}
-  .win .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .win .nsuf{flex:0 0 auto}
-  .win .armed{color:#FFB020;border-bottom-color:#FFB020}
-/* On a major or equal side the card and the runes are pinned to the two top
-   corners, OUT of the vertical stack. As stack items they pushed the name row
-   and the control band past the bottom edge, which is what broke split. On a
-   minor side the banner is a horizontal row, so the card stays inline there
-   and the runes are hidden, matching the legend text which is already hidden. */
-.lgathumb{flex:0 0 auto;width:86px;height:121px;border-radius:5px;position:relative;z-index:3;
-  border:1px solid var(--rule-hi);background:#0E0F11 center/cover no-repeat;order:0;
-  align-self:flex-start;margin:0 0 10px}
-.lgathumb{border:0;padding:0;margin-top:0;background-color:transparent;color:inherit;font:inherit;-webkit-appearance:none;appearance:none;touch-action:manipulation;cursor:pointer}
-.side[data-role="major"] .lgathumb,.side[data-role="equal"] .lgathumb{position:absolute;
-  top:0;left:0;margin:0;align-self:auto}
-.side[data-role="equal"] .lgathumb{width:66px;height:93px}
-.side[data-role="minor"] .lgathumb{width:40px;height:56px;margin-bottom:0}
-.lgarune{position:absolute;top:0;right:0;z-index:3;display:flex;flex-direction:column;gap:7px}
-.lgarune img{width:52px;height:52px;display:block}
-.side[data-role="equal"] .lgarune img{width:40px;height:40px;gap:5px}
-.side[data-role="minor"] .lgarune{display:none}
-/* Runes never appear on a minor side, so the card image is the only thing that
-   can change this row's height -- which is what the :has(.lgathumb) rule keys
-   off. With art the score and name stack; without it they sit side by side and
-   the name takes whatever room is left. The pips are the match standing, not
-   decoration, so they sit outside the part that shrinks. */
-.lgpbtn{flex:1;min-width:0;height:44px;min-height:44px;background:#0A0B0E;color:var(--bone);
-  border:1px solid var(--rule-hi);border-radius:6px;padding:0 10px;text-align:left;
-  font-family:var(--mono);font-weight:500;font-size:13px;line-height:42px;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
-.lgp{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
-.lgp.open{display:flex}
-.spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);border:0;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
-.spot.open{display:flex}
-.spotpic{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
-@media (prefers-reduced-motion: no-preference){
-.spot.open .spotpic{animation:cardgrow var(--mo-rise) var(--mo-ease) both}
-}
-@keyframes cardgrow{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
-.lgphead{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:12px 12px 9px;
-  border-bottom:1px solid var(--rule)}
-.lgpt{flex:1;min-width:0;font-family:var(--display);font-weight:600;font-size:15px;
-  letter-spacing:.1em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lgpx{flex:0 0 auto;min-height:38px;background:none;color:var(--bone);
-  border:1px solid var(--rule-hi);border-radius:6px;padding:0 12px;
-  font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-.lgpfil{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--rule)}
-.lgpq{flex:1;min-width:0;min-height:38px;background:#14171D;color:var(--bone);border:1px solid var(--rule);border-radius:6px;padding:0 12px;font-family:var(--mono);font-size:16px;font-weight:500;-webkit-appearance:none;appearance:none}
-.lgpq:focus{outline:none;border-color:var(--rule-hi)}
-.lgpq::placeholder{color:var(--dim)}
-.lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
-.lgpsort{flex:0 0 auto;display:flex;gap:6px}
-.lgpsb{min-height:38px;background:none;color:var(--dim);border:1px solid var(--rule);border-radius:5px;padding:0 10px;font-family:var(--display);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
-.lgpsb[aria-pressed="true"]{color:var(--bone);border-color:var(--rule-hi)}
-.lgpgrid{flex:1;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding:12px;align-content:start}
-.lgpempty{grid-column:1/-1;padding:18px 0;text-align:center;font-family:var(--mono);font-size:13px;font-weight:500;color:var(--dim)}
-.lgptile{background:none;border:0;padding:0;color:var(--bone);text-align:center}
-.lgppic{width:100%;aspect-ratio:62/87;border-radius:5px;border:1px solid var(--rule);
-  background:#0E0F11 center/cover no-repeat}
-.lgptile[aria-pressed="true"] .lgppic{border-color:var(--bone);box-shadow:0 0 0 2px var(--bone)}
-.lgpn{font-family:var(--mono);font-weight:500;font-size:12px;line-height:1.15;margin-top:5px}
-.lgpsub{font-family:var(--mono);font-weight:500;font-size:12px;line-height:1.15;color:var(--dim);margin-top:1px}
-.lgppr{flex:0 0 auto;border-top:1px solid var(--rule);padding:10px 12px 16px;display:none}
-.lgppr.on{display:block}
-.lgpprh{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--dim);margin-bottom:7px}
-.lgpchips{display:flex;flex-wrap:wrap;gap:6px}
-.lgpchip{min-height:32px;background:#0A0B0E;border:1px solid var(--rule);border-radius:6px;color:var(--mute);
-  padding:8px 10px;font-family:var(--mono);font-size:13px;font-weight:500}
-.lgpchip[aria-pressed="true"]{background:var(--bone);border-color:var(--bone);color:#000}
+  /* the legend picker: search and sort hold still under the head */
+  .lpf{flex:0 0 auto;display:flex;gap:8px;margin:0 0 10px}
+  .sf{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:40px;border-radius:999px;padding:0 14px;
+    background:rgba(255,255,255,.07)}
+  .sf svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
+  .lgpq{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);font-family:var(--text);
+    font-size:16px;padding:0;-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
+  .lgpq::placeholder{color:var(--muted)}
+  .lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
+  .lpf .seg{flex:0 0 132px;height:40px}
+  .lpf .seg button{height:34px}
+  .lgpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;align-content:start}
+  .lgpempty{grid-column:1/-1;padding:18px 0;text-align:center;font-size:13px;color:var(--muted)}
+  .lgptile{text-align:center;border-radius:10px;padding:0 0 4px}
+  .lgppic{display:block;aspect-ratio:62/87;border-radius:8px;background:#0E0F11 center/cover no-repeat}
+  .lgptile[aria-pressed="true"] .lgppic{box-shadow:0 0 0 2px var(--bone)}
+  .lgpn{display:block;font-size:12px;font-weight:600;line-height:1.15;margin-top:5px}
+  .lgpsub{display:block;font-size:12px;color:var(--muted);line-height:1.15}
+  .lgppr{display:none;margin-bottom:10px}
+  .lgppr.on{display:block}
+  .lgpprh{font-size:13px;font-weight:600;margin:0 0 6px}
+  .lgpchips{flex-wrap:wrap;border-radius:20px}
+  .lgpchips button{flex:1 1 auto;padding:0 12px}
+
+  /* THE EXPANDED CARD STAYS A TAP-ANYWHERE IMAGE VIEWER, not a menu */
+  .spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.7);border:0;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));
+    font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+  .spot:active{transform:none}
+  .spot.open{display:flex}
+  .spotpic{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+  @media (prefers-reduced-motion: no-preference){
+    .spot.open .spotpic{animation:cardgrow var(--mo-rise) var(--mo-ease) both}
+  }
+  @keyframes cardgrow{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
 <div class="stage" id="stage" data-mode="focus" data-won="0">
   <div class="field" id="field"></div>
-  <div class="strip" id="strip">
-    <div class="modes" id="modes" role="group" aria-label="Layout">
-      <button data-mode="focus" aria-pressed="true">Focus</button>
-      <button data-mode="split" aria-pressed="false">Split</button>
+  <div class="win frost" id="win" data-next="0">
+    <b id="wintext">Player 1 wins</b>
+    <div class="nextbox">
+      <span class="nlab">Next game, who goes first</span>
+      <div class="winrow" id="nextrow"><button type="button" class="sidebtn" data-open="1">Player 1 first</button><button type="button" class="sidebtn" data-open="2">Player 2 first</button></div>
     </div>
-    <button id="undo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h10a5.5 5.5 0 0 1 0 11h-6"/><polyline points="8 4 4 8 8 12"/></svg></button>
-    <button id="logbtn" aria-label="Log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg></button>
-    <button id="setupbtn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 14.6a1.6 1.6 0 0 0 .32 1.77l.06.06a1.94 1.94 0 1 1-2.74 2.74l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47v.17a1.94 1.94 0 0 1-3.88 0v-.09a1.6 1.6 0 0 0-1.05-1.47 1.6 1.6 0 0 0-1.77.32l-.06.06a1.94 1.94 0 1 1-2.74-2.74l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97h-.17a1.94 1.94 0 0 1 0-3.88h.09a1.6 1.6 0 0 0 1.47-1.05 1.6 1.6 0 0 0-.32-1.77l-.06-.06a1.94 1.94 0 1 1 2.74-2.74l.06.06a1.6 1.6 0 0 0 1.77.32h.08a1.6 1.6 0 0 0 .97-1.47v-.17a1.94 1.94 0 0 1 3.88 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a1.94 1.94 0 1 1 2.74 2.74l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97h.17a1.94 1.94 0 0 1 0 3.88h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg></button>
-  </div>
-  <div class="sheet" id="sheet" data-face="now">
-    <div class="faces" id="faces" role="group" aria-label="History">
-      <button data-face="now" aria-pressed="true">This game</button>
-      <button data-face="past" aria-pressed="false">Past matches</button>
-    </div>
-    <ol id="log"></ol>
-    <ul id="past"></ul>
-    <button class="close" id="closelog">Back to the game</button>
-  </div>
-  <div class="win" id="win" data-next="0"><b id="wintext">Player 1 wins</b><div class="nextbox"><span class="nlab">Next game - who goes first</span><div class="winrow" id="nextrow"><button data-open="1">Player 1 first</button><button data-open="2">Player 2 first</button></div></div><div class="winrow"><button id="winlog">Log</button><button id="unwin">Undo</button><button id="again">New match</button></div></div>
-  <input type="file" id="impfile" accept="application/json,.json" style="display:none">
-  <div class="setup" id="setup" data-face="live">
-    <button class="done top" id="setupdone" data-face="live">Back to the game</button>
-    <button class="done top" id="preback" data-face="pre">Back to the game</button>
-    <h2 data-face="pre">Before the match</h2>
-    <div class="grp" data-face="live">
-      <label>End this game early</label>
-      <div class="concede">
-        <button data-concede="1" id="cc1">P1 concedes</button>
-        <button data-concede="2" id="cc2">P2 concedes</button>
-      </div>
-    </div>
-    <div class="grp" data-for="1">
-      <label>Player 1</label>
-      <div class="pair">
-        <input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name">
-        <button type="button" class="lgpbtn" id="lgp1" data-lgp="1">No legend</button>
-      </div>
-      <div class="swatches" id="c1"></div>
-    </div>
-    <div class="grp" data-for="2">
-      <label>Player 2</label>
-      <div class="pair">
-        <input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name">
-        <button type="button" class="lgpbtn" id="lgp2" data-lgp="2">No legend</button>
-      </div>
-      <div class="swatches" id="c2"></div>
-    </div>
-    <div class="grp" id="firstgrp" data-face="pre">
-      <label>Match length</label>
-      <div class="first" id="blen">
-        <button data-bo="1" aria-pressed="true">Single game</button>
-        <button data-bo="3" aria-pressed="false">Best of 3</button>
-      </div>
-      <label class="label2">Who goes first</label>
-      <div class="first who" id="first">
-        <button data-first="1" aria-pressed="true">Player 1</button>
-        <button data-first="2" aria-pressed="false">Player 2</button>
-      </div>
-    </div>
-    <div class="grp">
-      <label>Round timer</label>
-      <div id="tmnow"></div>
-      <div class="first tmr" id="tmrow"></div>
-    </div>
-    <div class="grp">
-      <label>Show on the field</label>
-      <div class="first" id="lgarow">
-        <button type="button" id="lgacard" aria-pressed="false">Legend art</button>
-        <button type="button" id="lgrrune" aria-pressed="false">Domains</button>
-      </div>
-    </div>
-    <div class="grp" data-face="live">
-      <button class="wide" id="reset">New match</button>
-      <label class="navlab">Go to</label>
-      <a class="home" href="../">Events calendar</a>
-      <a class="home" href="../trade/">Trade calculator</a>
-      <a class="home" href="../feedback/">Send feedback</a>
-    </div>
-    <section class="prefoot" data-face="pre">
-      <button class="start" id="startmatch">Start match</button>
-    </section>
-    <p class="lgacred">Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+    <div class="winrow"><button type="button" class="pact btn glass" id="winlog">Log</button><button type="button" class="pact btn glass" id="unwin">Undo</button><button type="button" class="pact btn glass" id="again">New match</button></div>
   </div>
 </div>
-<div class="lgp" id="lgpsheet">
-  <div class="lgphead">
-    <div class="lgpt" id="lgptitle">Legend</div>
-    <button type="button" class="lgpx" id="lgpnone">No legend</button>
-    <button type="button" class="lgpx" id="lgpdone">Done</button>
+
+<nav class="bar strip frost" id="strip" aria-label="Game controls">
+  <div class="seg" id="modes" role="group" aria-label="Layout">
+    <button type="button" data-mode="focus" aria-pressed="true">Focus</button>
+    <button type="button" data-mode="split" aria-pressed="false">Split</button>
   </div>
-  <div class="lgpfil">
-    <input type="search" class="lgpq" id="lgpq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends">
-    <div class="lgpsort" id="lgpsort" role="group" aria-label="Sort order">
-      <button type="button" class="lgpsb" data-lgps="rel" aria-pressed="true">Release</button>
-      <button type="button" class="lgpsb" data-lgps="az" aria-pressed="false">A-Z</button>
+  <button type="button" class="ic" id="undo" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+  <button type="button" class="ic" id="logbtn" aria-label="Log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+  <button type="button" class="ic" id="setupbtn" aria-label="Game settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+</nav>
+
+<input type="file" id="impfile" accept="application/json,.json" style="display:none">
+<div class="scrim" id="scrim"></div>
+
+<!-- GAME: the old setup sheet's live face, as a menu -->
+<section class="panel frost" id="pgame" aria-hidden="true" aria-label="Game">
+  <div class="phead"><h4 class="ttl">Game</h4><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="row"><p class="lb">End this game early</p><div class="two"><button type="button" class="sidebtn" data-concede="1" id="cc1">P1 concedes</button><button type="button" class="sidebtn" data-concede="2" id="cc2">P2 concedes</button></div></div>
+    <div data-slot>
+      <div id="shared">
+        <div class="row"><p class="lb">Players</p>
+          <div class="pgrp" id="grp1">
+            <p class="pl1">Player 1</p>
+            <div class="nf"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name"></div>
+            <div class="pick legrow"><button type="button" id="lgp1" data-lgp="1"><span class="t">No legend</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
+            <div class="swatches" id="c1"></div>
+          </div>
+          <div class="pgrp" id="grp2">
+            <p class="pl1">Player 2</p>
+            <div class="nf"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name"></div>
+            <div class="pick legrow"><button type="button" id="lgp2" data-lgp="2"><span class="t">No legend</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
+            <div class="swatches" id="c2"></div>
+          </div>
+        </div>
+        <div class="row"><p class="lb">Round timer</p><div class="seg" id="tmrow"></div><div id="tmnow"></div></div>
+        <div class="row"><p class="lb">Show on the field</p><div class="tglrow" id="lgarow"><button type="button" class="pact btn glass" id="lgacard" aria-pressed="false">Legend art</button><button type="button" class="pact btn glass" id="lgrrune" aria-pressed="false">Domains</button></div></div>
+      </div>
     </div>
+    <div class="row"><p class="lb">Go to</p><div class="pick">
+      <a href="../">Events<span class="sp"></span><small>Calendar</small></a>
+      <button type="button" class="on" data-close>Game<span class="sp"></span><small>Point counter</small></button>
+      <a href="../trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
+      <a href="../feedback/">Feedback<span class="sp"></span><small>Tell us</small></a>
+    </div></div>
+    <p class="cred">Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
   </div>
-  <div class="lgpgrid" id="lgpgrid"></div>
-  <div class="lgppr" id="lgppr">
-    <div class="lgpprh" id="lgpprh">Printing</div>
-    <div class="lgpchips" id="lgpchips"></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="reset">New match</button></div>
+</section>
+
+<!-- NEW MATCH: the old sheet's pre face. One deeper from Game, or its own menu from the banner -->
+<section class="panel frost" id="pnew" aria-hidden="true" aria-label="New match">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">New match</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="row"><p class="lb">Match length</p><div class="seg" id="blen"><button type="button" data-bo="1" aria-pressed="true">Single game</button><button type="button" data-bo="3" aria-pressed="false">Best of 3</button></div></div>
+    <div class="row"><p class="lb">Who goes first</p><div class="seg who1" id="first"><button type="button" data-first="1" aria-pressed="true">Player 1</button><button type="button" data-first="2" aria-pressed="false">Player 2</button></div></div>
+    <div data-slot></div>
+    <p class="cred">The game in progress stays as it is until you start the new one.</p>
   </div>
-</div>
+  <div class="pfoot"><button type="button" class="start" id="startmatch">Start match</button></div>
+</section>
+
+<!-- LEGEND: one deeper from a player's legend row -->
+<section class="panel frost" id="pleg" aria-hidden="true" aria-label="Legend">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl" id="lgptitle">Legend</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="lpf">
+    <label class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" class="lgpq" id="lgpq" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends"></label>
+    <div class="seg" id="lgpsort" role="group" aria-label="Sort order"><button type="button" class="lgpsb" data-lgps="rel" aria-pressed="true">Release</button><button type="button" class="lgpsb" data-lgps="az" aria-pressed="false">A-Z</button></div>
+  </div>
+  <div class="pbody"><div class="lgpgrid" id="lgpgrid"></div></div>
+  <div class="pfoot">
+    <div class="lgppr" id="lgppr"><p class="lgpprh" id="lgpprh">Printing</p><div class="seg lgpchips" id="lgpchips"></div></div>
+    <button type="button" class="pact btn glass" id="lgpnone">No legend</button>
+  </div>
+</section>
+
+<!-- LOG: this game, with the way into past matches always in the foot -->
+<section class="panel frost" id="plog" aria-hidden="true" aria-label="Log">
+  <div class="phead"><div class="ht"><h4 class="ttl">This game</h4><span class="cnt" id="logcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><ol id="log"></ol></div>
+  <div class="pfoot"><div class="pick"><button type="button" id="pastbtn">Past matches<span class="sp"></span><small id="pastn">0</small><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
+</section>
+
+<section class="panel frost" id="ppast" aria-hidden="true" aria-label="Past matches">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Past matches</h4><span class="cnt" id="pastcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><ul id="past"></ul></div>
+  <div class="pfoot">
+    <div class="two"><button type="button" class="pact btn glass" id="expjson">Export</button><button type="button" class="pact btn glass" id="impjson">Import</button></div>
+    <button type="button" class="pact btn glass clearpast" id="clearpast">Delete all past matches</button>
+    <div id="impmsg"></div>
+    <p class="pnote">Matches are kept on this phone. Export makes a file you can import on another.</p>
+  </div>
+</section>
+
 <button class="spot" id="spotsheet" type="button" aria-label="Close card"><img class="spotpic" id="spotpic" alt="" decoding="async"></button>
 <script src="../cards/legends.js"></script>
 <script>
@@ -678,9 +561,25 @@
     if(tmArm){ tmArm = 0; renderTimerRow(); }
   }
   var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var SWATCH = ["#3FA9F5","#FF4F9A","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
-  var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#3FA9F5" },
-                  2:{ name:"Player 2", legend:"", art:"", colour:"#FF4F9A" } };
+  // Player 1 is blue and player 2 pink by default: the trade page's hues.
+  var SWATCH = ["#5DA5EE","#EE5F9C","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
+  var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#5DA5EE" },
+                  2:{ name:"Player 2", legend:"", art:"", colour:"#EE5F9C" } };
+  // A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE. The stain (.14) and the
+  // press (.50) are computed here rather than with color-mix(), which the
+  // device floor cannot count on.
+  function rgbaOf(hex, a){
+    var n = parseInt(String(hex).slice(1), 16);
+    return "rgba(" + (n >> 16) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
+  }
+  function wearSide(el, p){
+    if (!el) { return; }
+    var c = players[p].colour;
+    el.style.setProperty("--c", c);
+    el.style.setProperty("--pc", c);
+    el.style.setProperty("--pct", rgbaOf(c, .14));
+    el.style.setProperty("--pcr", rgbaOf(c, .50));
+  }
   function nameOf(p){ return players[p].name || ("Player " + p); }
 
   var stage = document.getElementById("stage");
@@ -691,7 +590,13 @@
   var elWin = document.getElementById("wintext");
   var elBanner = document.getElementById("win");
   var elLog = document.getElementById("log");
-  var sheet = document.getElementById("sheet");
+  var plog = document.getElementById("plog");
+  var ppast = document.getElementById("ppast");
+  var pgame = document.getElementById("pgame");
+  var pnew = document.getElementById("pnew");
+  var pleg = document.getElementById("pleg");
+  var shared = document.getElementById("shared");
+  var scrim = document.getElementById("scrim");
   var elPast = document.getElementById("past");
 
   var ev = null;
@@ -931,16 +836,14 @@
   }
   function won(){ return winnerOf(ev); }
 
+  // THE RAIL: eight lines, each point's letter under its line.
   function trackOf(p){
-    var pts = pointsOf(p), segs = "", keys = "";
+    var pts = pointsOf(p), h = "";
     for (var i = 0; i < GOAL; i++) {
       var on = i < pts.length;
-      var k = on ? KEY[pts[i].src] : ".";
-      segs += "<i" + (on ? " class=\"on\"" : "") + "></i>";
-      keys += "<b" + (on ? " class=\"on\"" : "") + ">" + k + "</b>";
+      h += "<span class=\"" + (on ? "f" : "e") + "\">" + (on ? KEY[pts[i].src] : "&middot;") + "</span>";
     }
-    return "<div class=\"track\"><div class=\"segs\">" + segs + "</div>" +
-           "<div class=\"keys\">" + keys + "</div></div>";
+    return "<div class=\"rail\">" + h + "</div>";
   }
 
   function acts(p){
@@ -995,16 +898,15 @@
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
     el.className = "side p" + p + (far ? " far" : "");
     el.setAttribute("data-role", role);
-    el.style.setProperty("--c", players[p].colour);
+    wearSide(el, p);
     el.innerHTML = blockInner(p, role);
   }
 
   function seam(){
     var c = ctx(), d = won() ? " disabled" : "";
-    return "<div class=\"seamwrap\" style=\"--sc:" + players[c.p].colour + "\">" +
-      "<div class=\"burst\" id=\"burst\"></div>" +
-      "<button class=\"seam\" id=\"seam\"" + d +
-      " style=\"--sc:" + players[c.p].colour + "\">Pass turn" +
+    return "<div class=\"seamwrap\">" +
+      "<button type=\"button\" class=\"pass btn glass\" id=\"seam\"" + d +
+      " style=\"--sc:" + players[c.p].colour + "\">Pass turn<span class=\"dv\"></span>" +
       "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
   }
 
@@ -1057,13 +959,15 @@
   }
 
   function renderPast(){
-    var tools = "<li class=\"empty\" style=\"padding:0\">"
-      + (history.length ? "<button type=\"button\" class=\"clearpast\" id=\"expjson\">Export matches</button>" : "")
-      + "<button type=\"button\" class=\"clearpast\" id=\"impjson\">Import matches</button>"
-      + (history.length ? "<button class=\"clearpast\" id=\"clearpast\">Delete all past matches</button>" : "")
-      + "<div id=\"impmsg\"></div></li>";
-    if (!history.length) {
-      elPast.innerHTML = "<li class=\"empty\">No finished matches yet. A match is saved here when you start the next one.</li>" + tools;
+    // Export, Import and Delete live in the menu's foot. With nothing to
+    // act on, Export and Delete dim and hold their place.
+    var hn = history.length, tools = "";
+    document.getElementById("expjson").disabled = !hn;
+    document.getElementById("clearpast").disabled = !hn;
+    document.getElementById("pastn").textContent = String(hn);
+    document.getElementById("pastcnt").textContent = hn ? String(hn) : "";
+    if (!hn) {
+      elPast.innerHTML = "<li class=\"empty\">No finished matches yet. A match is saved here when you start the next one.</li>";
       return;
     }
     var out = "";
@@ -1140,6 +1044,7 @@
     document.getElementById("tmNear").innerHTML = tmLine(false);
 
     elLog.innerHTML = logHTML(ev, nameOf);
+    document.getElementById("logcnt").textContent = nameOf(c.p) + " turn " + c.n;
   }
 
   function keepAwake(){
@@ -1188,78 +1093,56 @@
       var fp = t.getAttribute("data-p"), fs = t.getAttribute("data-s");
       save(); render(); keepAwake();
       var nb = field.querySelector('.acts button[data-p="' + fp + '"][data-s="' + fs + '"]');
-      if (nb) { nb.classList.remove("actflash"); void nb.offsetWidth;
-                nb.classList.add("actflash"); }
+      if (nb) { nb.classList.remove("flash-p"); void nb.offsetWidth;
+                nb.classList.add("flash-p"); }
     }
   });
 
-  var stSettleT = null;
-  function stSettle(){
-    var sp = document.getElementById("strip");
-    if (sp) { sp.classList.add("settled"); }
-  }
-  function stWake(){
-    var sp = document.getElementById("strip");
-    if (!sp) { return; }
-    sp.classList.remove("settled");
-    if (stSettleT) { clearTimeout(stSettleT); }
-    stSettleT = setTimeout(stSettle, 1200);
-  }
+  // The strip does not rest: the card system's bar never dims, so the old
+  // dim-after-touch is gone. Screen wake was never tied to the strip;
+  // keepAwake runs on scoring and on passing the turn.
   elModes.addEventListener("click", function(e){
     var m = e.target.getAttribute && e.target.getAttribute("data-mode");
     if (!m || MODES.indexOf(m) < 0 || m === mode) { return; }
     mode = m;
-    saveMode(); render(); stWake();
+    saveMode(); render();
   });
-  document.getElementById("strip").addEventListener("pointerdown", stWake);
-  stSettleT = setTimeout(stSettle, 1200);
 
   function flashSeam(){
     var s = document.getElementById("seam");
     if (!s) { return; }
-    s.className = "seam";
+    // app.css's bone flash confirms the pass. A fuller pass-turn flash
+    // belongs to the motion pass.
+    s.classList.remove("flash-n");
     void s.offsetWidth;
-    s.className = "seam flash";
-    var bz = document.getElementById("burst");
-    if (bz) { bz.classList.remove("go"); void bz.offsetWidth;
-              bz.classList.add("go"); }
+    s.classList.add("flash-n");
     try { if (navigator.vibrate) { navigator.vibrate(16); } } catch (e) {}
   }
   elUndo.addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
-  elReset.addEventListener("click", function(){ openPre(); });
+  elReset.addEventListener("click", function(){ openPre(true); });
   var clearArmed = false, clearTimer = null;
   function disarmClear(){
     clearArmed = false;
     if (clearTimer) { clearTimeout(clearTimer); clearTimer = null; }
     var b = document.getElementById("clearpast");
-    if (b) { b.className = "clearpast"; b.textContent = "Delete all past matches"; }
+    if (b) { b.classList.remove("armed"); b.textContent = "Delete all past matches"; }
   }
   function openSheet(){
     disarmClear();
-    sheet.setAttribute("data-face", "now");
-    var fb = document.getElementById("faces").getElementsByTagName("button");
-    for (var i = 0; i < fb.length; i++) {
-      fb[i].setAttribute("aria-pressed", fb[i].getAttribute("data-face") === "now" ? "true" : "false");
-    }
     renderPast();
-    sheet.classList.add("open");
+    openPanel(plog);
   }
-  document.getElementById("faces").addEventListener("click", function(e){
-    var f = e.target.getAttribute && e.target.getAttribute("data-face");
-    if (!f) { return; }
+  document.getElementById("pastbtn").addEventListener("click", function(){
     disarmClear();
-    sheet.setAttribute("data-face", f);
-    var b = this.getElementsByTagName("button");
-    for (var i = 0; i < b.length; i++) {
-      b[i].setAttribute("aria-pressed", b[i].getAttribute("data-face") === f ? "true" : "false");
-    }
+    renderPast();
+    deeper(ppast);
   });
-  elPast.addEventListener("click", function(e){
+  ppast.addEventListener("click", function(e){
     var t = e.target;
-    while (t && t !== elPast && t.tagName !== "BUTTON") { t = t.parentNode; }
-    if (!t || t === elPast) { return; }
+    while (t && t !== ppast && t.tagName !== "BUTTON") { t = t.parentNode; }
+    if (!t || t === ppast) { return; }
     if (t.id === "impjson") {
       var fi = document.getElementById("impfile");
       if (fi) { fi.value = ""; fi.click(); }
@@ -1269,7 +1152,7 @@
     if (t.id === "clearpast") {
       if (!clearArmed) {
         clearArmed = true;
-        t.className = "clearpast armed";
+        t.classList.add("armed");
         t.textContent = "Sure? Tap again";
         clearTimer = setTimeout(disarmClear, 3000);
         return;
@@ -1286,10 +1169,7 @@
     if (li.className === "open") { li.className = ""; } else { li.className = "open"; }
   });
   document.getElementById("logbtn").addEventListener("click", openSheet);
-  document.getElementById("closelog").addEventListener("click", function(){
-    disarmClear();
-    sheet.classList.remove("open");
-  });
+
   var againArmed = false, againTimer = null;
   function syncNext(){
     var b = document.getElementById("nextrow").getElementsByTagName("button");
@@ -1297,7 +1177,7 @@
       var p = parseInt(b[i].getAttribute("data-open"), 10);
       b[i].innerHTML = "<span class=\"nnm\">" + esc(nameOf(p)) +
         "</span><span class=\"nsuf\">first</span>";
-      b[i].style.setProperty("--c", players[p].colour);
+      wearSide(b[i], p);
     }
   }
 
@@ -1305,7 +1185,7 @@
     var b = document.getElementById("again");
     if (!b) { return; }
     b.textContent = againArmed ? "Sure? Tap again" : "New match";
-    b.className = againArmed ? "armed" : "";
+    if (againArmed) { b.classList.add("armed"); } else { b.classList.remove("armed"); }
   }
   function disarmAgain(){
     againArmed = false;
@@ -1321,7 +1201,7 @@
       return;
     }
     disarmAgain();
-    openPre();
+    openPre(false);
   });
   document.getElementById("nextrow").addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest("button") : e.target;
@@ -1346,7 +1226,64 @@
     return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
   }
 
-  var setup = document.getElementById("setup");
+  // THE MENU STACK, the trade page's show/openPanel/deeper/back. Every
+  // overlay is a menu. A deeper menu replaces the one it came from and
+  // carries a back arrow; back returns to it where it was left; the X or
+  // the scrim closes the whole stack. An open menu locks the page at the
+  // root (html.lock in app.css); the body is never pinned.
+  // PLAYERS, ROUND TIMER AND SHOW ON THE FIELD EXIST ONCE, in #shared, and
+  // move into whichever of Game or New match is showing. Two copies would
+  // give two inputs one id.
+  var OPENP = null, STACK = [];
+  function show(p, keep){
+    if (OPENP && OPENP !== p) {
+      OPENP.classList.remove("show");
+      OPENP.setAttribute("aria-hidden", "true");
+    }
+    OPENP = p || null;
+    if (p) {
+      var slot = p.querySelector("[data-slot]");
+      if (slot && shared.parentNode !== slot) { slot.appendChild(shared); }
+      document.documentElement.classList.add("lock");
+      p.classList.add("show");
+      p.setAttribute("aria-hidden", "false");
+      var bd = p.querySelector(".pbody");
+      if (bd && !keep) { bd.scrollTop = 0; }
+      scrim.classList.add("show");
+    } else {
+      document.documentElement.classList.remove("lock");
+      scrim.classList.remove("show");
+    }
+  }
+  function syncBack(){
+    var bs = document.querySelectorAll(".phead .back"), i;
+    for (i = 0; i < bs.length; i++) {
+      bs[i].hidden = !(STACK.length > 1 && bs[i].closest(".panel") === OPENP);
+    }
+  }
+  function openPanel(p){ STACK = p ? [p] : []; show(p); syncBack(); }
+  function deeper(p){ STACK.push(p); show(p); syncBack(); }
+  function back(){
+    STACK.pop();
+    show(STACK.length ? STACK[STACK.length - 1] : null, true);
+    syncBack();
+  }
+  function closeMenus(){
+    tmDisarm(); disarmConcede(); disarmClear();
+    openPanel(null);
+  }
+  scrim.addEventListener("click", closeMenus);
+  (function(){
+    var ps = document.querySelectorAll(".panel"), i;
+    for (i = 0; i < ps.length; i++) {
+      ps[i].addEventListener("click", function(e){
+        var t = e.target.closest ? e.target.closest("button") : null;
+        if (!t) { return; }
+        if (t.hasAttribute("data-back")) { back(); return; }
+        if (t.hasAttribute("data-close")) { closeMenus(); }
+      });
+    }
+  })();
   var ccArmed = null;
   var ccTimer = null;
 
@@ -1354,8 +1291,8 @@
     ccArmed = null;
     if (ccTimer) { clearTimeout(ccTimer); ccTimer = null; }
     var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
-    if (b1) { b1.className = ""; b1.textContent = nameOf(1) + " concedes"; }
-    if (b2) { b2.className = ""; b2.textContent = nameOf(2) + " concedes"; }
+    if (b1) { b1.classList.remove("armed"); b1.textContent = nameOf(1) + " concedes"; }
+    if (b2) { b2.classList.remove("armed"); b2.textContent = nameOf(2) + " concedes"; }
   }
 
   function buildSetup(){
@@ -1373,13 +1310,13 @@
     var w = won();
     var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
     if (b1) {
-      if (b1.className !== "armed") { b1.textContent = nameOf(1) + " concedes"; }
-      b1.style.setProperty("--cc", players[1].colour);
+      if (!b1.classList.contains("armed")) { b1.textContent = nameOf(1) + " concedes"; }
+      wearSide(b1, 1);
       b1.disabled = w ? true : false;
     }
     if (b2) {
-      if (b2.className !== "armed") { b2.textContent = nameOf(2) + " concedes"; }
-      b2.style.setProperty("--cc", players[2].colour);
+      if (!b2.classList.contains("armed")) { b2.textContent = nameOf(2) + " concedes"; }
+      wearSide(b2, 2);
       b2.disabled = w ? true : false;
     }
   }
@@ -1397,12 +1334,15 @@
     for (var i = 0; i < b.length; i++) {
       var p = parseInt(b[i].getAttribute("data-first"), 10);
       b[i].textContent = nameOf(p);
-      b[i].style.setProperty("--c", players[p].colour);
+      wearSide(b[i], p);
       b[i].setAttribute("aria-pressed", p === firstP ? "true" : "false");
     }
   }
 
-  function openPre(){
+  // NEW MATCH is the old sheet's pre face. From the Game menu it goes one
+  // deeper, with a back arrow; from the victory banner it is its own menu.
+  // Opening it clears the round timer, as opening the pre face always has.
+  function openPre(fromGame){
     tmDisarm();
     stopTimer();
     disarmConcede();
@@ -1410,20 +1350,18 @@
     syncSetup();
     syncLen();
     syncFirst();
-    setup.setAttribute("data-face", "pre");
-    setup.classList.add("open");
+    if (fromGame) { deeper(pnew); } else { openPanel(pnew); }
   }
 
   function closeSetup(){
-    tmDisarm();
-    setup.classList.remove("open");
-    setup.setAttribute("data-face", "live");
+    closeMenus();
   }
 
   function syncSetup(){
     syncConcedeLabels();
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
+      wearSide(document.getElementById("grp" + p), p);
       lgpLabel(p);
       var bs = document.getElementById("c" + p).getElementsByTagName("button");
       for (var i = 0; i < bs.length; i++) {
@@ -1433,7 +1371,7 @@
     }
   }
 
-  setup.addEventListener("click", function(e){
+  function setupClick(e){
     // Walk to the button before reading anything. A direct e.target read
     // returns null the moment a button gains a child element, and the
     // failure is silent -- see commit dc3c13f, where the who-goes-first
@@ -1466,7 +1404,7 @@
       if (ccArmed !== cc) {
         disarmConcede();
         ccArmed = cc;
-        t.className = "armed";
+        t.classList.add("armed");
         t.textContent = "Sure? Tap again";
         ccTimer = setTimeout(disarmConcede, 3000);
         return;
@@ -1474,7 +1412,7 @@
       disarmConcede();
       ev.push({ t:"concede", p:parseInt(cc, 10) });
       save(); render();
-      setup.classList.remove("open");
+      closeMenus();
       return;
     }
     // The legend picker, merged in from a second click listener that was
@@ -1486,7 +1424,9 @@
     if (lg) {
       lgpOpen(parseInt(lg.getAttribute("data-lgp"), 10));
     }
-  });
+  }
+  pgame.addEventListener("click", setupClick);
+  pnew.addEventListener("click", setupClick);
 
   function onSetupField(e){
     var id = e.target.id;
@@ -1496,16 +1436,15 @@
     else { return; }
     savePlayers(); syncConcedeLabels(); syncFirst(); render();
   }
-  setup.addEventListener("input", onSetupField);
-  setup.addEventListener("change", onSetupField);
+  pgame.addEventListener("input", onSetupField);
+  pgame.addEventListener("change", onSetupField);
+  pnew.addEventListener("input", onSetupField);
+  pnew.addEventListener("change", onSetupField);
 
   document.getElementById("setupbtn").addEventListener("click", function(){
     disarmConcede(); syncSetup();
-    setup.setAttribute("data-face", "live");
-    setup.classList.add("open");
+    openPanel(pgame);
   });
-  document.getElementById("setupdone").addEventListener("click", closeSetup);
-  document.getElementById("preback").addEventListener("click", closeSetup);
 
   // Legend picker. players[p].legend stays a plain name string, exactly as
   // every archived match already stores it. players[p].art holds the product
@@ -1558,7 +1497,8 @@
   }
   function lgpLabel(p){
     var b = document.getElementById("lgp" + p);
-    if (b) { b.textContent = players[p].legend || "No legend"; }
+    var bt = b ? b.getElementsByClassName("t")[0] : null;
+    if (bt) { bt.textContent = players[p].legend || "No legend"; }
   }
   var lgpSort = "rel";
   var lgpQ = "";
@@ -1599,7 +1539,7 @@
     }
     if (!view.length) { h = "<div class=\"lgpempty\">No legend matches that search</div>"; }
     g.innerHTML = h;
-    g.scrollTop = 0;
+    if (g.parentNode) { g.parentNode.scrollTop = 0; }
     lgpSyncTiles();
   }
   function lgpSetTileArt(tile, e, want){
@@ -1650,11 +1590,7 @@
     document.getElementById("lgptitle").textContent = players[p].legend || "Legend";
     lgpSyncTiles();
     lgpSyncChips();
-    document.getElementById("lgpsheet").classList.add("open");
-  }
-  function lgpClose(){
-    document.getElementById("lgpsheet").classList.remove("open");
-    lgpFor = 0;
+    deeper(pleg);
   }
   function lgpChoose(nm){
     if (!lgpFor) { return; }
@@ -1729,8 +1665,8 @@
     syncConcedeLabels();
     syncFirst();
     render();
+    back();
   });
-  document.getElementById("lgpdone").addEventListener("click", lgpClose);
   lgpSortLoad();
   lgpSortSync();
   lgpBuild();

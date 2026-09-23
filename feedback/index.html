@@ -10,164 +10,55 @@
 <meta name="apple-mobile-web-app-title" content="RB Feedback">
 <title>Feedback - Van Isle Riftbound</title>
 <link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
 <style>
-  :root{
-    --mo-fast:.16s;
-    --mo-ease:cubic-bezier(.22,.72,.2,1);
-    --ground:#000000;
-    --rule:#212429;
-    --rule-hi:#343A44;
-    --bone:#F2F3F5;
-    --dim:#828A97;
-    --mute:#4E5561;
-    --r:9px;
-    --display:"Poppins",system-ui,sans-serif;
-    --mono:"Nunito",ui-monospace,monospace;
-    --gut:16px;
-    --tap:44px;
-  }
-  *{box-sizing:border-box;touch-action:manipulation;}
-  html,body{margin:0;padding:0;background:var(--ground);touch-action:manipulation;}
-  body{
-    color:var(--bone);
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:13px;line-height:1.45;
-    -webkit-font-smoothing:antialiased;
-    -webkit-tap-highlight-color:transparent;
-    font-variant-numeric:tabular-nums;
-  }
-  .wrap{
-    max-width:600px;margin:0 auto;
-    padding:env(safe-area-inset-top) max(var(--gut),env(safe-area-inset-left)) calc(64px + env(safe-area-inset-bottom)) max(var(--gut),env(safe-area-inset-right));
-  }
-
-  .mast{padding:30px 0 14px;}
-  .mast h1{
-    font-family:var(--display);font-weight:800;
-    font-size:clamp(38px,11.5vw,60px);
-    line-height:.86;letter-spacing:-.035em;
-    text-transform:uppercase;margin:0;
-  }
-  .mast .nvw{margin-top:14px;}
-  .mast .nvtog{
-    display:flex;width:100%;align-items:center;gap:10px;
-    min-height:44px;padding:0 14px;background:none;
-    border:1px solid var(--rule);border-radius:6px;
-    color:var(--dim);cursor:pointer;text-align:left;
-    font-family:var(--display);font-weight:600;font-size:15px;
-    letter-spacing:.1em;text-transform:uppercase;
-    transition:color var(--mo-fast) ease,border-color var(--mo-fast) ease;
-  }
-  .mast .nvtog:active{border-color:var(--rule-hi);}
-  .mast .nvtog[aria-expanded="true"]{color:var(--bone);border-color:var(--rule-hi);}
-  .mast .nvtog .nvcar{margin-left:auto;flex:0 0 auto;display:block;transition:transform var(--mo-fast) var(--mo-ease);}
-  .mast .nvtog[aria-expanded="true"] .nvcar{transform:rotate(180deg);}
-  .mast .nvpan{
-    margin-top:6px;border:1px solid var(--rule-hi);
-    border-radius:6px;overflow:hidden;
-  }
-  .mast .nvpan a{
-    display:flex;width:100%;align-items:center;min-height:44px;
-    padding:0 14px;background:none;color:var(--dim);text-decoration:none;
-    font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase;
-    transition:color var(--mo-fast);
-  }
-  .mast .nvpan a+a{border-top:1px solid var(--rule);}
-  .mast .nvpan a:hover{color:var(--bone);}
-  .mast .nvpan [aria-current="page"]{color:var(--bone);}
-
-  .fdbkintro p{
-    margin:0 0 12px;
-    font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.6;
-  }
-  .fdbkintro p:last-child{margin-bottom:0;color:var(--dim);}
-
-  .fdbkform{
-    margin-top:26px;
-    border:1px solid var(--rule);border-radius:var(--r);
-    overflow:hidden;
-  }
-  .fdbkform iframe{
-    display:block;width:100%;border:0;
-    background:transparent;
-  }
-  .fdbkform .alt{
-    display:flex;align-items:center;justify-content:center;min-height:var(--tap);
-    padding:12px 14px;
-    border-top:1px solid var(--rule);
-    font-family:var(--mono);font-weight:500;font-size:13px;
-    letter-spacing:.1em;text-transform:uppercase;
-    color:var(--mute);text-decoration:none;text-align:center;
-  }
-  .fdbkform .alt:hover{color:var(--bone);}
-
-  .fdbkship{margin-top:34px;}
-  .fdbkship h2{
-    font-family:var(--display);font-weight:600;
-    font-size:15px;letter-spacing:.1em;text-transform:uppercase;
-    margin:0 0 4px;
-  }
-  .fdbkship .lead{
-    font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--mute);margin:0 0 10px;
-  }
-  .fdbkship ul{
-    list-style:none;margin:0;padding:0;
-    border-top:1px solid var(--rule);
-  }
-  .fdbkship li{
-    padding:11px 0;border-bottom:1px solid var(--rule);
-    font-family:var(--mono);font-weight:500;font-size:13px;line-height:1.5;
-  }
-
-  .fdbknote{
-    margin-top:34px;padding-top:20px;
-    border-top:1px solid var(--rule);
-    font-family:var(--mono);font-weight:500;font-size:12px;line-height:1.75;
-    color:var(--mute);text-align:center;
-  }
-  .fdbknote a{color:var(--dim);}
-  .fdbknote a:hover{color:var(--bone);}
-  .fdbknote p{margin:0 0 12px;}
-  .fdbknote p:last-child{margin-bottom:0;}
-
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none !important;animation:none !important;}
-  }
+/* The feedback page. CARD SYSTEM, converted 2026-09-22. The shared layer
+   (tokens, glass, frost, the bar, menus, the footer) is app.css, linked
+   above. This block holds only the feedback page's own rules. The spec is
+   the round-2 mockup, "RAVI counter and feedback mockup". */
+html{background:var(--ground)}
+body{-webkit-font-smoothing:antialiased;
+  /* THIS DOES NOT STOP DOUBLE-TAP ZOOM. The touchend guard at the end of
+     the page is the fix; this declaration is correct and free. */
+  touch-action:manipulation}
+#fb{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.fbh{padding:14px 4px 0}
+.fbh h2{font-size:28px;line-height:1.1}
+.fbl{margin:10px 0 0;font-size:17px;line-height:1.4}
+/* the form sits in a glass card. Tally draws its own fields and colours;
+   those are set in Tally, not here. */
+.fcard{border-radius:20px;padding:8px;margin:20px 0 12px;min-height:200px;overflow:hidden}
+.fcard iframe{display:block;width:100%;border:0;background:transparent}
+/* the store-neutral line: muted small print directly under the form */
+.fbn{margin:0 4px 30px;font-size:13px;line-height:1.5;color:var(--muted)}
+.lead{margin:-6px 4px 10px;font-size:12px;color:var(--muted)}
+.ship{border-radius:20px;padding:4px 16px;list-style:none;margin:0}
+.ship li{padding:12px 0;font-size:15px;line-height:1.4;border-top:1px solid rgba(255,255,255,.07)}
+.ship li:first-child{border-top:0}
+.foot a{color:var(--bone)}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header class="mast">
-    <h1>Feedback</h1>
-    <div class="nvw">
-      <button type="button" class="nvtog" id="nvtog" aria-expanded="false" aria-controls="nvpan">Navigation<svg class="nvcar" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-      <nav class="nvpan" id="nvpan" aria-label="Pages" hidden>
-        <a href="../">Calendar</a>
-        <a href="../counter/">Point counter</a>
-        <a href="../trade/">Trade calculator</a>
-        <a aria-current="page" href="./">Feedback</a>
-      </nav>
-    </div>
+<div class="wmrow"><h1 class="wm">Van Isle Riftbound</h1></div>
+
+<main id="fb">
+  <header class="fbh">
+    <h2 class="ttl">Feedback</h2>
+    <p class="fbl">If something is broken, an event is wrong or missing, or you want the app to do something it does not do yet, this is where to say so.</p>
   </header>
 
-  <div class="fdbkintro">
-    <p>This is a free tool for the Riftbound scene on Vancouver Island. If something is broken, an event is wrong or missing, or you want it to do something it does not do yet, this is where to say so.</p>
-    <p>It is not a contact form for any store, including the one that maintains it. Anything about a particular shop's events, prices or stock is better taken to that shop directly.</p>
-  </div>
-
-  <div class="fdbkform">
+  <section class="fcard glass">
     <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
-    <a class="alt" href="https://tally.so/r/QKlGxX">Form not loading? Open it on its own page</a>
-  </div>
+  </section>
 
-  <section class="fdbkship">
-    <h2>Recently shipped</h2>
-    <p class="lead">Some of what came out of feedback like this</p>
-    <ul>
+  <p class="fbn">A free tool for the Riftbound scene on Vancouver Island. It is not a contact form for any store, including the one that maintains it. Anything about a particular shop's events, prices or stock is better taken to that shop directly.</p>
+
+  <section>
+    <div class="shead"><h2>Recently shipped</h2></div>
+    <p class="lead">Some of what came out of feedback like this.</p>
+    <ul class="ship glass">
       <li>See how far a card's price has moved, over a day, a week, a month, a year or all time.</li>
       <li>Card art on the counter and the trade calculator, with a full-screen view on tap.</li>
       <li>Saved trades, kept at the numbers they were agreed at, with a receipt image you can send.</li>
@@ -176,22 +67,51 @@
     </ul>
   </section>
 
-  <div class="fdbknote">
+  <footer class="foot">
     <p>Everything sent here gets read. Most suggestions will not get built, and there is no reply unless you leave an email.</p>
     <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
     <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>Free for any island store or player to use or link.</p>
-  </div>
+  </footer>
+</main>
 
-</div>
+<!-- THE STANDARD BAR. Slots never move between pages: Settings is here,
+     dimmed in place, because this page has none. -->
+<nav class="bar frost" id="tabs">
+  <a class="tab" href="#" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
+  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path class="fillon" d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17h0A1.5 1.5 0 0 1 4 15.5z"/></svg></button>
+  <a class="tab" href="https://tally.so/r/QKlGxX" aria-label="Open the form on its own page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
+  <button type="button" class="tab" disabled aria-label="No settings on this page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="phead">
+    <h4 class="ttl">Go to</h4>
+    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="pbody"><div class="pick">
+    <a href="../">Events<span class="sp"></span><small>Calendar</small></a>
+    <a href="../counter/">Game<span class="sp"></span><small>Point counter</small></a>
+    <a href="../trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
+    <button type="button" class="on" id="pnhere">Feedback<span class="sp"></span><small>Tell us</small></button>
+  </div></div>
+</section>
+
 <script>
 (function(){
-  var t = document.getElementById("nvtog"), p = document.getElementById("nvpan");
-  if(!t || !p){ return; }
-  t.addEventListener("click", function(){
-    var open = p.hasAttribute("hidden");
-    if(open){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); }
-    t.setAttribute("aria-expanded", open ? "true" : "false");
-  });
+  // One menu on this page, the Go to list. While it is open the page is
+  // locked at the root (html.lock in app.css); the body is never pinned.
+  var pnav = document.getElementById("pnav"), scrim = document.getElementById("scrim"), open = false;
+  function set(on){
+    open = on;
+    if (on) { pnav.classList.add("show"); scrim.classList.add("show"); document.documentElement.classList.add("lock"); }
+    else { pnav.classList.remove("show"); scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
+    pnav.setAttribute("aria-hidden", on ? "false" : "true");
+  }
+  document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
+  document.getElementById("pnclose").addEventListener("click", function(){ set(false); });
+  document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
+  scrim.addEventListener("click", function(){ set(false); });
 })();
 </script>
 <script>
