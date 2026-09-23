@@ -32,13 +32,19 @@
     --mo-pulse:1.8s;
     --mo-ease:cubic-bezier(.22,.72,.2,1);
   }
-  html,body{height:100%;overflow:hidden;touch-action:manipulation}
-  body{display:flex;flex-direction:column;overscroll-behavior:none;
-    -webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased;
-    padding-top:env(safe-area-inset-top,0px)}
-
-  /* the stage stops above the floating strip */
-  .stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;overflow:hidden;
+  /* THE BODY IS LEFT ALONE AND THE STAGE IS FIXED TO THE SCREEN. With html
+     and body held at height:100%, the installed app on an iPhone with the
+     status bar drawn over the page sized the page to the 812px it reports
+     as its height on an 874px screen, and the floating strip rode up by
+     the difference. A probe page (2026-09-22) found the bar right under
+     every layout applied after load, and every page whose bar sits right
+     leaves the body alone, so the counter now does too. */
+  html,body{touch-action:manipulation;overscroll-behavior:none}
+  body{-webkit-user-select:none;user-select:none;-webkit-font-smoothing:antialiased}
+  /* The stage starts where the other pages' wordmark row puts their first
+     line, clear of the status bar, and stops above the floating strip. */
+  .stage{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;
+    padding-top:calc(env(safe-area-inset-top,0px) + 24px);
     padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 10px)}
 
   /* THE STRIP IS THE BAR'S SHELL holding the counter's own four controls.
@@ -52,7 +58,7 @@
   .strip .ic svg{width:22px;height:22px}
 
   /* ======== the field ======== */
-  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:8px 12px 0}
+  .field{flex:1;min-height:0;display:flex;flex-direction:column;padding:0 12px}
   .side{min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;
     justify-content:center;overflow:hidden;padding:4px 2px;
     transition:flex-grow var(--mo-travel) var(--mo-ease),flex-basis var(--mo-travel) var(--mo-ease)}
@@ -71,22 +77,26 @@
   .pips{display:inline-flex;gap:4px;margin-left:8px;flex:0 0 auto}
   .pips i{width:6px;height:6px;border-radius:999px;background:var(--track);display:block}
   .pips i.on{background:var(--c)}
-  .side[data-role="minor"] .pn{display:flex;flex:1 1 auto;min-width:0;flex-direction:row;align-items:center;gap:10px}
-  .side[data-role="minor"] .name{margin-top:0;flex:1 1 auto;min-width:0;gap:8px;line-height:1}
-  .side[data-role="minor"] .name .nm{text-overflow:clip}
+  /* THE SLIM ROW: the cut pill takes whatever width is left over, and the
+     name gives way first, down to an ellipsis, with the art on or off. */
+  .side[data-role="minor"] .pn{display:flex;flex:0 1 auto;min-width:0;flex-direction:row;align-items:center;gap:10px}
+  .side[data-role="minor"] .name{margin-top:0;flex:0 1 auto;min-width:0;gap:8px;line-height:1}
   .side[data-role="minor"] .pips{margin-left:0}
   .side[data-role="minor"] .legend{display:none}
-  .side[data-role="minor"] .lgathumb ~ .pn .nm{display:none}
-  .side[data-role="minor"] .num,.side[data-role="minor"] .acts{flex:0 0 auto}
+  .side[data-role="minor"] .num{flex:0 0 auto}
+  .side[data-role="minor"] .acts{flex:1 0 auto}
 
   .num{font-family:var(--disp);font-weight:800;line-height:.82;letter-spacing:-.03em;color:var(--c);
     font-size:min(42vh,64vw);position:relative;z-index:3;order:1}
   .side[data-role="minor"] .num{font-size:40px}
-  /* SPLIT MUST FIT on the device floor: an installed iPhone 7 is 375 by 667
-     less a 20px status bar. At 26vh the split numeral overflowed its side
-     there by 15px, into the timer line and under the strip. 20vh fits; on a
-     taller phone the width cap (44vw) still decides, as before. */
-  .side[data-role="equal"] .num{font-size:min(20vh,44vw)}
+  /* SPLIT MUST FIT. The split numeral takes the height each half has left
+     once everything else in the column is counted: 208px of fixed parts
+     (the stage's top and bottom room, the pass button, two timer lines),
+     split two ways, less the 118px each half's name, rail and buttons use,
+     over the numeral's .82 line height. The status bar and home bar come
+     off first. On a tall phone the width cap (44vw) decides instead; on an
+     installed iPhone 7 this comes to about 124px. */
+  .side[data-role="equal"] .num{font-size:min(44vw,calc((100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 208px) * .61 - 144px))}
 
   /* THE RAIL: eight lines, each point's letter under its line */
   .rail{align-self:stretch;display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:22px;
@@ -117,7 +127,7 @@
   .acts button:last-child{border-radius:2px 24px 24px 2px}
   .side[data-role="equal"] .acts{margin-top:10px}
   .side[data-role="minor"] .acts{display:flex;align-self:auto;margin:0}
-  .side[data-role="minor"] .acts button{height:38px;padding:0 10px;font-size:12px}
+  .side[data-role="minor"] .acts button{flex:1 1 auto;height:38px;padding:0 10px;font-size:12px}
   .side[data-role="minor"] .acts button:first-child{border-radius:19px 2px 2px 19px}
   .side[data-role="minor"] .acts button:last-child{border-radius:2px 19px 19px 2px}
 
@@ -157,7 +167,7 @@
   .win{position:fixed;left:12px;right:12px;bottom:max(4px,calc(env(safe-area-inset-bottom,0px) - 12px));
     max-width:456px;margin:0 auto;z-index:25;border-radius:24px;padding:14px;
     display:none;flex-direction:column;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-  .stage[data-won="1"] .win{display:flex}
+  .stage[data-won="1"] ~ .win{display:flex}
   #wintext{text-align:center;font-family:var(--disp);font-weight:700;font-size:17px;min-width:0;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .win .nextbox{display:flex;flex-direction:column;gap:10px}
@@ -182,6 +192,7 @@
   .two{display:flex;gap:8px}
   .two > *{flex:1;min-width:0}
   .pfoot .two + .pact,.pfoot .pact + .pact{margin-top:8px}
+  .pfoot .pact.armed{background:var(--glass-press)}
   .pick svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:var(--muted);stroke-width:2.2;
     stroke-linecap:round;stroke-linejoin:round}
   .pnote{font-size:12px;color:var(--muted);margin:8px 2px 0;line-height:1.5}
@@ -220,10 +231,6 @@
   .tglrow button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
   .tglrow button[aria-pressed="true"]::before{display:none}
 
-  /* START MATCH KEEPS ITS BONE FILL: the app's only primary commit button */
-  .start{height:48px;border-radius:999px;width:100%;background:var(--bone);color:var(--ink);
-    font-family:var(--disp);font-weight:700;font-size:15px}
-  .start:active{background:#d6d2c9}
 
   /* the log: rows you only read, written on the glass */
   #log{list-style:none;margin:0;padding:0}
@@ -314,14 +321,16 @@
 <body>
 <div class="stage" id="stage" data-mode="focus" data-won="0">
   <div class="field" id="field"></div>
-  <div class="win frost" id="win" data-next="0">
+</div>
+<!-- THE BANNER SITS OUTSIDE THE STAGE: the stage is fixed, so it is its own
+     layer, and a banner inside it could not rise above the strip. -->
+<div class="win frost" id="win" data-next="0">
     <b id="wintext">Player 1 wins</b>
     <div class="nextbox">
       <span class="nlab">Next game, who goes first</span>
       <div class="winrow" id="nextrow"><button type="button" class="sidebtn" data-open="1">Player 1 first</button><button type="button" class="sidebtn" data-open="2">Player 2 first</button></div>
     </div>
     <div class="winrow"><button type="button" class="pact btn glass" id="winlog">Log</button><button type="button" class="pact btn glass" id="unwin">Undo</button><button type="button" class="pact btn glass" id="again">New match</button></div>
-  </div>
 </div>
 
 <nav class="bar strip frost" id="strip" aria-label="Game controls">
@@ -382,7 +391,7 @@
     <div data-slot></div>
     <p class="cred">The game in progress stays as it is until you start the new one.</p>
   </div>
-  <div class="pfoot"><button type="button" class="start" id="startmatch">Start match</button></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="startmatch">Start match</button></div>
 </section>
 
 <!-- LEGEND: one deeper from a player's legend row -->
@@ -1121,7 +1130,26 @@
   elUndo.addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }
   });
-  elReset.addEventListener("click", function(){ openPre(true); });
+  // New match asks twice, as the banner's does: opening it clears the
+  // round timer. Start match does not ask again, since every way in has.
+  var resetArmed = false, resetTimer = null;
+  function disarmReset(){
+    resetArmed = false;
+    if (resetTimer) { clearTimeout(resetTimer); resetTimer = null; }
+    elReset.classList.remove("armed");
+    elReset.textContent = "New match";
+  }
+  elReset.addEventListener("click", function(){
+    if (!resetArmed) {
+      resetArmed = true;
+      elReset.classList.add("armed");
+      elReset.textContent = "Sure? Tap again";
+      resetTimer = setTimeout(disarmReset, 3000);
+      return;
+    }
+    disarmReset();
+    openPre(true);
+  });
   var clearArmed = false, clearTimer = null;
   function disarmClear(){
     clearArmed = false;
@@ -1269,7 +1297,7 @@
     syncBack();
   }
   function closeMenus(){
-    tmDisarm(); disarmConcede(); disarmClear();
+    tmDisarm(); disarmConcede(); disarmClear(); disarmReset();
     openPanel(null);
   }
   scrim.addEventListener("click", closeMenus);
