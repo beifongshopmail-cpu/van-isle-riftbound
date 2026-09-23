@@ -96,7 +96,7 @@
   /* Whatever height is still spare goes ABOVE the numeral, where the card
      art sits, not under the buttons: the buttons stay low, in thumb reach,
      and the band of black over the strip is gone. */
-  .side[data-role="major"]{justify-content:flex-end;padding-bottom:6px}
+  .side[data-role="major"]{justify-content:flex-end;padding-bottom:2px}
   /* SPLIT MUST FIT. The split numeral takes the height each half has left
      once everything else in the column is counted: 214px of fixed parts
      (the stage's top and bottom room, the pass button, two timer lines),
@@ -115,7 +115,11 @@
   .rail span.f::before{background:var(--c)}
   .rail span.e{color:var(--faint)}
   /* split spacing is tighter than focus, for the same device-floor reason */
-  .side[data-role="equal"]{padding:2px}
+  /* THE MAIN PLAYER'S BUTTONS HOLD STILL between focus and split: both
+     modes sit the buttons at the bottom of the half with the same 2px, and
+     any spare height goes above the numeral. The far half is rotated, so
+     the same rule mirrors it to the top edge. */
+  .side[data-role="equal"]{padding:2px;justify-content:flex-end}
   .side[data-role="equal"] .name{margin-top:8px}
   .side[data-role="equal"] .rail{margin-top:10px}
   .side[data-role="minor"] .rail{display:none}
