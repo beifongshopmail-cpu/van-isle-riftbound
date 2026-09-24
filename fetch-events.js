@@ -5,6 +5,18 @@ const path = require("path");
 const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS } = require("./config");
 const { writeFeeds } = require("./ics");
 
+// Store id -> a short display name. Keys are the same store ids sid uses.
+const STORE_SHORT = {
+  "21894": "AJ's",
+  "902": "Colossal Courtenay",
+  "15103": "Colossal Victoria",
+  "16866": "Everything Games",
+  "2069": "Gauntlet",
+  "29310": "Giddy-Up",
+  "18437": "North Park Framing",
+  "4294": "Skyhaven"
+};
+
 const OUT_DIR = path.join(__dirname, "data");
 const OUT_FILE = path.join(OUT_DIR, "events.json");
 const PAGE_SIZE = 100;
@@ -138,7 +150,8 @@ function shape(raw, region) {
     currency: raw.currency || "CAD",
     updated: raw.updated_at || null,
     round: round,
-    sid: (store.id === null || store.id === undefined) ? null : store.id
+    sid: (store.id === null || store.id === undefined) ? null : store.id,
+    store: STORE_SHORT[String(store.id)] || null
   };
 }
 
