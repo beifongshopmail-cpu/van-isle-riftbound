@@ -134,10 +134,10 @@ a{color:inherit;text-decoration:none}
 /* event cards: the glass recipe with the type colour as the body.
    Body strengths are the reference's: Nexus .26, Skirmish .24; the
    three types it did not mock take .25.
-   THEY SINK ON PRESS LIKE EVERY OTHER CONTROL. They are LINKS, not
-   buttons, so app.css's press shrink does not reach them and they carry
-   their own -- and iOS needs the document-level touch listener in the
-   script before it will fire a pressed state on a link at all. */
+   THE CARD IS A DIV, NOT A LINK: tapping its head button reveals Play
+   here and the locator link in place. THEY SINK ON PRESS LIKE EVERY OTHER
+   CONTROL, and iOS still needs the document-level touch listener in
+   the script before any :active rule on the page will fire at all. */
 .ev{
   display:block;position:relative;color:var(--bone);
   border-radius:18px;padding:12px 14px;margin:0 0 8px 0;
@@ -148,7 +148,8 @@ a{color:inherit;text-decoration:none}
 }
 .ev.t-nexus{--ga:.26}
 .ev.t-skirmish{--ga:.24}
-.ev:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
+.evhead{display:block;width:100%;background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.evhead:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
 .ev .l1,.ev .l3{display:flex;align-items:center;gap:8px;font-size:12px}
 .ev .l1 .mk{width:8px;height:8px}
 .ev .l1 .mk.s-bar{width:11px;height:5px}
@@ -165,9 +166,13 @@ a{color:inherit;text-decoration:none}
   font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px;
 }
-/* PLAY HERE sits as a sibling right after a today card, not nested in the
-   link -- the card is itself an <a>, so this is its own control. */
-.ev + .pact.playhere{margin:-4px 0 8px 0}
+/* EVACT: Play here (today only) and the locator link, revealed by
+   tapping the card's head button. [hidden] on the attribute selector
+   alone loses to display:flex at equal specificity, so it is restated
+   here. */
+.evact{display:flex;gap:8px;margin-top:10px}
+.evact a{flex:1;height:44px;box-sizing:border-box}
+.evact[hidden]{display:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
@@ -380,6 +385,22 @@ a{color:inherit;text-decoration:none}
   var filt = document.getElementById("filt");
 
   var anchorRow = 0;
+  // The one open card, by data-id, memory only -- re-applied after every
+  // render so a re-render (a filter change, a month flip) does not
+  // collapse whatever the reader had open.
+  var openCardId = null;
+  function syncCardOpen(){
+    var cards = listEl.querySelectorAll(".ev");
+    for (var i = 0; i < cards.length; i++){
+      var c = cards[i];
+      var isOpen = openCardId !== null && String(c.getAttribute("data-id")) === String(openCardId);
+      c.classList.toggle("open", isOpen);
+      var h = c.querySelector(".evhead");
+      if (h) h.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      var a = c.querySelector(".evact");
+      if (a) a.hidden = !isOpen;
+    }
+  }
 
   function pad(n){ return (n < 10 ? "0" : "") + n; }
   function keyOf(y,m,d){ return y + "-" + pad(m+1) + "-" + pad(d); }
@@ -559,12 +580,16 @@ a{color:inherit;text-decoration:none}
 
     for (var i = 0; i < rows.length; i++){
       var ev = rows[i], ty = TYPES[ev.type] || TYPES.other;
-      var a = document.createElement("a");
-      a.className = "ev glass t-" + (TYPES[ev.type] ? ev.type : "other");
-      a.href = "https://locator.riftbound.uvsgames.com/events/" + ev.id;
-      a.target = "_blank"; a.rel = "noopener";
-      a.style.setProperty("--c", ty.rgb);
-      a.style.setProperty("--cl", ty.lit);
+      var card = document.createElement("div");
+      card.className = "ev glass t-" + (TYPES[ev.type] ? ev.type : "other");
+      card.setAttribute("data-id", ev.id);
+      card.style.setProperty("--c", ty.rgb);
+      card.style.setProperty("--cl", ty.lit);
+
+      var head = document.createElement("button");
+      head.type = "button";
+      head.className = "evhead";
+      head.setAttribute("aria-expanded", "false");
 
       var l1 = document.createElement("span");
       l1.className = "l1";
@@ -585,7 +610,7 @@ a{color:inherit;text-decoration:none}
         s1.textContent = left + " of " + ev.cap;
         l1.appendChild(s1);
       }
-      a.appendChild(l1);
+      head.appendChild(l1);
 
       var nm = document.createElement("span");
       nm.className = "name";
@@ -595,7 +620,7 @@ a{color:inherit;text-decoration:none}
         nb.className = "new"; nb.textContent = "NEW";
         nm.appendChild(nb);
       }
-      a.appendChild(nm);
+      head.appendChild(nm);
 
       var l3 = document.createElement("span");
       l3.className = "l3";
@@ -609,19 +634,30 @@ a{color:inherit;text-decoration:none}
         pe.className = "price mono"; pe.textContent = pz;
         l3.appendChild(pe);
       }
-      a.appendChild(l3);
-      listEl.appendChild(a);
+      head.appendChild(l3);
+      card.appendChild(head);
 
-      // PLAY HERE: today's cards only. The card above is itself a link,
-      // so this goes in as a sibling right after it, not nested inside it.
+      var act = document.createElement("div");
+      act.className = "evact";
+      act.hidden = true;
       if (ev.day === t){
         var ph = document.createElement("a");
         ph.className = "pact btn glass playhere";
         ph.href = "../counter/?ev=" + ev.id;
         ph.textContent = "Play here";
-        listEl.appendChild(ph);
+        act.appendChild(ph);
       }
+      var loc = document.createElement("a");
+      loc.className = "pact btn glass";
+      loc.href = "https://locator.riftbound.uvsgames.com/events/" + ev.id;
+      loc.target = "_blank"; loc.rel = "noopener";
+      loc.textContent = "Open in locator";
+      act.appendChild(loc);
+      card.appendChild(act);
+
+      listEl.appendChild(card);
     }
+    syncCardOpen();
   }
 
   /* every type is always listed, so the panel never changes height
@@ -825,6 +861,18 @@ a{color:inherit;text-decoration:none}
     refresh(false);
   });
 
+  // ONE delegated listener for every card: tapping its head button
+  // toggles that card and closes whichever other card was open.
+  listEl.addEventListener("click", function(e){
+    var head = e.target.closest ? e.target.closest(".evhead") : null;
+    if (!head) return;
+    var card = head.closest(".ev");
+    if (!card) return;
+    var id = card.getAttribute("data-id");
+    openCardId = (openCardId !== null && String(openCardId) === String(id)) ? null : id;
+    syncCardOpen();
+  });
+
   document.getElementById("prev").onclick = function(){
     var m = cursor.m - 1, y = cursor.y;
     if (m < 0){ m = 11; y--; }
@@ -872,7 +920,7 @@ a{color:inherit;text-decoration:none}
   document.getElementById("pclose").addEventListener("click", function(){ openPanel(null); });
   document.getElementById("pnclose").addEventListener("click", function(){ openPanel(null); });
   /* iOS only fires the pressed state on non-button elements while a touch
-     listener exists at document level. The event cards are links. */
+     listener exists at document level. */
   document.addEventListener("touchstart", function(){}, {passive:true});
 
   document.getElementById("tylist").addEventListener("click", function(e){
