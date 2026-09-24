@@ -193,7 +193,7 @@
 
   /* A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE: the player's stain at
      rest, their press when pressed or armed. */
-  .sidebtn{display:block;height:44px;line-height:44px;border-radius:999px;padding:0 12px;min-width:0;
+  .sidebtn{display:block;height:44px;box-sizing:border-box;line-height:44px;border-radius:999px;padding:0 12px;min-width:0;
     font-family:var(--disp);font-weight:600;font-size:13px;text-align:center;
     background:var(--pct);color:var(--pc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sidebtn:active,.sidebtn.armed{background:var(--pcr);color:var(--bone)}
@@ -215,18 +215,27 @@
   .pgrp{margin-bottom:16px}
   .pgrp:last-child{margin-bottom:0}
   .pl1{color:var(--pc);font-family:var(--disp);font-weight:700;font-size:15px;margin:0 2px 8px}
-  .nf{display:flex;align-items:center;height:44px;border-radius:999px;background:var(--recess);
+  .nf{display:flex;align-items:center;height:44px;box-sizing:border-box;border-radius:999px;background:var(--recess);
     padding:0 16px;margin-bottom:8px}
   .nf input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);
     font-family:var(--text);font-size:16px;padding:0;-webkit-user-select:text;user-select:text}
   .nf input::placeholder{color:var(--muted)}
   .legrow{margin-bottom:10px}
-  .legrow button{height:44px}
+  .legrow button{height:44px;box-sizing:border-box}
   .legrow .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-  /* the Event menu: each row is name, then venue/time under it */
-  #evlist button{flex-direction:column;align-items:flex-start;height:auto;padding:10px 16px;gap:2px}
+  /* the Event menu: each row is name, then venue/time under it. Content
+     row: sized by its own two lines, with the row floor under it. */
+  #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:44px;padding:10px 16px;gap:2px}
   #evlist small{display:block}
+
+  /* SIZE SCALE, STYLE.md 10: a Row is 44px, pinned with height rather
+     than min-height so WebKit cannot grow it. .pact and the Go-to
+     list's .pick rows come from app.css at 44/48; restated here, at
+     an id a page rule can out-specify, rather than edited there. */
+  .pact{height:44px;box-sizing:border-box}
+  #pgame .pick a,#pgame .pick button,#pastfilt button{height:44px;box-sizing:border-box}
+
   .swatches{display:flex;gap:6px;justify-content:space-between;padding:0 4px}
   .swatches button{width:34px;height:34px;border-radius:999px;display:grid;place-items:center}
   .swatches button::after{content:"";width:26px;height:26px;border-radius:999px;background:var(--sw)}
@@ -245,12 +254,12 @@
   /* the custom round length: STATIC markup under #tmrow, never rebuilt
      by renderTimerRow, so a tap into the field keeps its focus */
   .tmcustom{display:flex;gap:6px;margin-top:6px}
-  .tmcustom input{flex:1;min-width:0;height:34px;border-radius:999px;background:var(--recess);
+  .tmcustom input{flex:1;min-width:0;height:44px;box-sizing:border-box;border-radius:999px;background:var(--recess);
     border:0;outline:none;color:var(--bone);padding:0 14px;
     font-family:var(--text);font-size:16px;font-variant-numeric:tabular-nums;
     -webkit-user-select:text;user-select:text}
   .tmcustom input::placeholder{color:var(--muted)}
-  .tmcustom button{flex:0 0 auto;height:34px;padding:0 16px;border-radius:999px;
+  .tmcustom button{flex:0 0 auto;height:44px;box-sizing:border-box;padding:0 16px;border-radius:999px;
     background:var(--recess);font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
   .tmcustom button.armed{background:var(--hi)}
 
@@ -628,6 +637,19 @@
   // it (the Event row in #shared, and the ?ev= query link on load); both
   // call cseSet or cseClear, never localStorage directly.
   var EKEY = "vir.counter.tag.v1";
+  // Labels only, copied verbatim from the calendar's TYPES -- not the
+  // colours, which the counter has no use for.
+  var TYPE_LABELS = {
+    nexus: "Nexus Nights",
+    skirmish: "Summoner Skirmish",
+    learn: "Learn-to-Play",
+    open: "Open Play",
+    other: "Event"
+  };
+  function cseLabel(o){
+    if (!o) return "";
+    return (o.type && o.store) ? (o.type + " \u00B7 " + o.store) : o.name;
+  }
   function cseToday(){
     return new Intl.DateTimeFormat("en-CA", { timeZone:"America/Vancouver",
       year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
@@ -645,7 +667,9 @@
     try{
       localStorage.setItem(EKEY, JSON.stringify({
         id:e.id, name:e.name, venue:e.venue, day:e.day,
-        round:(typeof e.round === "number" && isFinite(e.round) && e.round > 0) ? e.round : null
+        round:(typeof e.round === "number" && isFinite(e.round) && e.round > 0) ? e.round : null,
+        type: TYPE_LABELS[e.type] || TYPE_LABELS.other,
+        store: e.store || e.venue
       }));
     }catch(err){}
     cseSyncRow();
@@ -660,7 +684,7 @@
     var b = document.getElementById("evbtn");
     var bt = b ? b.getElementsByClassName("t")[0] : null;
     var cur = cseGet();
-    if(bt){ bt.textContent = cur ? cur.name : "No event"; }
+    if(bt){ bt.textContent = cur ? cseLabel(cur) : "No event"; }
   }
   var cseList = [];
   function cseTodayEvents(list){
@@ -684,9 +708,10 @@
     var cur = cseGet(), h = "", i;
     for(i = 0; i < cseList.length; i++){
       var e = cseList[i], on = cur && cur.id === e.id;
+      var elab = cseLabel({ name:e.name, type:TYPE_LABELS[e.type] || TYPE_LABELS.other, store:e.store || e.venue });
       h += "<button type=\"button\" data-ev=\"" + e.id + "\"" +
         (on ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">" +
-        "<span class=\"t\">" + esc(e.name) + "</span><small>" +
+        "<span class=\"t\">" + esc(elab) + "</span><small>" +
         esc((e.venue || "") + ", " + (e.time || "")) + "</small></button>";
     }
     h += "<button type=\"button\" data-ev=\"\"" +
@@ -733,6 +758,13 @@
   }
 
   var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  // "Sep 24" from a YYYY-MM-DD string, split rather than run through Date
+  // so no local timezone can shift the day.
+  function shortDate(s){
+    var p = String(s).split("-");
+    var mi = parseInt(p[1], 10) - 1;
+    return (MON[mi] || "") + " " + parseInt(p[2], 10);
+  }
   // Player 1 is blue and player 2 pink by default: the trade page's hues.
   var SWATCH = ["#5DA5EE","#EE5F9C","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
   var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#5DA5EE" },
@@ -950,7 +982,11 @@
     if (!games.length) { return; }
     var rec = { v:1, at:Date.now(), bo:bo, games:games };
     var cur = cseGet();
-    if (cur) { rec.tag = { id:cur.id, name:cur.name, venue:cur.venue, day:cur.day }; }
+    if (cur) {
+      rec.tag = { id:cur.id, name:cur.name, venue:cur.venue, day:cur.day };
+      if (cur.type) { rec.tag.type = cur.type; }
+      if (cur.store) { rec.tag.store = cur.store; }
+    }
     history.unshift(rec);
     while (history.length > HMAX) { history.pop(); }
     saveHistory();
@@ -1153,7 +1189,7 @@
           var tg = pfTags[ti];
           fh += "<button type=\"button\" data-tagf=\"" + tg.id + "\"" +
             (pastFilter === tg.id ? " class=\"on\"" : "") + ">" +
-            esc(tg.name) + " &middot; " + esc(tg.day) + "</button>";
+            esc(cseLabel(tg)) + " &middot; " + esc(shortDate(tg.day)) + "</button>";
         }
         pf.innerHTML = fh;
         pf.hidden = false;
@@ -1195,7 +1231,7 @@
                  esc(g0.p[2].legend || "No legend");
       var len = multi ? "best of 3" : "single game";
       var cnt = gs.length === 1 ? "1 game" : gs.length + " games";
-      var tagd = m.tag ? (" &middot; " + esc(m.tag.name)) : "";
+      var tagd = m.tag ? (" &middot; " + esc(cseLabel(m.tag))) : "";
       var hideRow = pastFilter !== null && (!m.tag || m.tag.id !== pastFilter);
       out += "<li" + (hideRow ? " hidden" : "") + " data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
         "<span class=\"res " + rc + "\">" + rl + "</span>" +

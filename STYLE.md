@@ -446,3 +446,15 @@ assumed.
 
 THE TRADE PAGE IS WHERE THE LADDER CAME FROM. When in doubt about a control
 height, look there first.
+
+## 10. Control heights
+
+| Control | Height |
+| --- | --- |
+| Row (single-line full-width or standalone control) | 44px |
+| Track (.seg) | 40px |
+| Segment inside a track | 34px |
+| Round icon button (.circ) | 36px |
+| Content row | height by content, min-height 44px |
+
+Pin rows with height, not min-height; WebKit grows min-height rows.
