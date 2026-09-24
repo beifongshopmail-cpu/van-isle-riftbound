@@ -37,9 +37,9 @@ html{background:var(--ground)}
 body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
-  /* 40 arc + 24 overlap + 14 lift: the name centres in the black that is
-     actually visible */
-  justify-content:center;padding-top:env(safe-area-inset-top,0px);padding-bottom:78px;
+  /* the name centres between the settings button's bottom and the middle
+     block's top */
+  justify-content:center;padding-top:calc(var(--top-clear) + 36px);padding-bottom:78px;
   position:relative;flex:0 0 auto;
   /* ONE LINE: replace with an image or texture */
   background:var(--ground)}
@@ -80,20 +80,18 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .opento small{display:block}
 .oponote{font-size:13px;color:var(--muted);line-height:1.4;margin:10px 2px 0}
 
-/* SETTINGS GROWS FROM THE GEAR THAT OPENS IT. This page has no bottom
-   bar, so app.css's bottom-anchored panel position and its rise-from-below
-   motion do not apply here; both are overridden by id, in one place. */
+/* THE HUB'S MENU HANGS FROM ITS BUTTON: positioned under the gear, sliding
+   down from it, with app.css's own open and close. NEVER SET opacity OR
+   pointer-events ON #pset: an id outranks .panel.show and the open menu
+   goes invisible. */
 #pset{
   top:calc(var(--top-clear) + 36px + 8px);
   bottom:auto;
   left:12px;right:12px;
   max-height:calc(100vh - var(--top-clear) - 36px - 8px - env(safe-area-inset-bottom,0px) - 16px);
-  transform-origin:top right;
-  opacity:0;
-  transform:scale(.9);
-  transition:transform .22s var(--ease),opacity .22s var(--ease);
+  transform:translateY(-12px);
 }
-#pset.show{transform:scale(1)}
+#pset.show{transform:none}
 </style>
 </head>
 <body>
