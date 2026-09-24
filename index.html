@@ -34,34 +34,32 @@
 <style>
 /* The hub. No bottom bar: this page IS the bar's Hub slot's destination. */
 html{background:var(--ground)}
-body{-webkit-font-smoothing:antialiased}
+body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;justify-content:flex-end;
-  padding-bottom:72px;position:relative;
-  background:radial-gradient(60% 55% at 20% 30%,rgba(93,165,238,.35),transparent 70%),
-    radial-gradient(55% 50% at 80% 20%,rgba(154,123,234,.30),transparent 70%),
-    radial-gradient(70% 60% at 60% 85%,rgba(94,210,190,.22),transparent 70%),
-    var(--ground)}
+  padding-bottom:72px;position:relative;flex:0 0 auto;
+  /* ONE LINE: replace with an image or texture */
+  background:var(--ground)}
 .hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:28px;color:var(--bone)}
-.hubgear{position:absolute;top:max(12px,calc(env(safe-area-inset-top,0px) + 8px));right:12px}
+.hubgear{position:absolute;top:var(--top-clear);right:12px}
 
-.low{position:relative;margin-top:-40px;background:var(--ground);
-  border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px}
+.low{position:relative;margin-top:-40px;
+  border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px;
+  flex:1 0 auto;display:flex;flex-direction:column}
 
-.grid{margin-top:-24px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.blk{width:calc((100% - 12px) / 2);aspect-ratio:4/3;border-radius:18px;padding:14px;
+.grid{margin-top:-24px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.blk{width:calc((100% - 20px) / 3);aspect-ratio:1/1;border-radius:18px;padding:12px;
   display:flex;flex-direction:column;justify-content:space-between;color:var(--bone);
-  text-decoration:none;transition:transform .16s ease,filter .16s ease}
+  text-decoration:none;transition:transform .16s ease,filter .16s ease;
+  background:rgba(var(--cl),.25);box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16);
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .blk:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
-.blk .bi{width:28px;height:28px}
+.blk .bi{width:24px;height:24px}
 .blk .bi svg{width:100%;height:100%}
-.blk .bn{font-family:var(--disp);font-weight:700;font-size:17px}
-.grid[data-cols="3"] .blk{width:calc((100% - 24px) / 3)}
-.grid[data-cols="3"] .blk .bi{width:24px;height:24px}
-.grid[data-cols="3"] .blk .bn{font-size:15px}
+.blk .bn{font-family:var(--disp);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.foot{margin-top:28px;padding:0 12px calc(env(safe-area-inset-bottom,0px) + 16px)}
-.foot p{margin:0;text-align:center;font-family:var(--text);font-size:12px;line-height:1.4;color:var(--muted)}
+.hubfoot{margin-top:auto;padding:28px 12px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.hubfoot p{margin:0;text-align:center;font-family:var(--text);font-size:12px;line-height:1.4;color:var(--muted)}
 
 /* Settings reuses the card system's panel, scrim and html.lock. */
 .opento .lb{font-size:13px;font-weight:600;color:var(--muted);margin:0 2px 10px}
@@ -76,10 +74,10 @@ body{-webkit-font-smoothing:antialiased}
   <button type="button" class="circ btn glass hubgear" id="hubset" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
 </div>
 
-<div class="low">
+<div class="low glass">
   <nav class="grid" id="grid" aria-label="Pages"></nav>
 
-  <footer class="foot">
+  <footer class="hubfoot">
     <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
   </footer>
 </div>
@@ -101,17 +99,15 @@ body{-webkit-font-smoothing:antialiased}
 (function(){
   var PAGES = window.RAVI_PAGES || [];
 
-  // THE GRID. Two per row below 7 pages; three at 7 or more, with the
-  // icon and name shrinking to match (grid[data-cols="3"] in the style
-  // block above).
+  // THE GRID. Three per row, always: the blocks are the calendar .ev
+  // body recipe, coloured by each page's own rgb.
   var grid = document.getElementById("grid");
   var h = "";
   for (var i = 0; i < PAGES.length; i++) {
     var p = PAGES[i];
-    h += '<a class="blk glass" href="' + p.path + '"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
+    h += '<a class="blk glass" href="' + p.path + '" style="--cl:' + p.rgb + '"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
   }
   grid.innerHTML = h;
-  if (PAGES.length >= 7) { grid.setAttribute("data-cols", "3"); }
 
   // SETTINGS: a scrim-and-panel menu like every other page's, locking the
   // page at the root while open.

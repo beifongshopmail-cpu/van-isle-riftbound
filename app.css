@@ -46,6 +46,10 @@
   --text:"Nunito",system-ui,-apple-system,sans-serif;
   --barH:56px;
   --ease:cubic-bezier(.22,.72,.2,1);
+  /* THE TOP CLEAR LINE. iOS draws its own fade under the status bar in the
+     installed app, and we cannot change its depth. Nothing we draw that
+     must stay sharp sits above this line. Tune this one number. */
+  --top-clear:calc(env(safe-area-inset-top,0px) + 28px);
 }
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
@@ -147,6 +151,8 @@ html.lock,html.lock body{overflow:hidden}
 .pick a{color:inherit;text-decoration:none}
 .pick small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 .pick button.on small,.pick a.on small{color:rgba(18,19,22,.62)}
+/* no link preview on long press */
+.pick a, a.tab{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 
 /* ======== PATTERNS SETTLED ON THE CALENDAR, SHARED BY EVERY PAGE ========
    Not in the reference page. Moved here from index.html so no page
