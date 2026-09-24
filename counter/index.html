@@ -223,6 +223,10 @@
   .legrow{margin-bottom:10px}
   .legrow button{height:44px}
   .legrow .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* the Event menu: each row is name, then venue/time under it */
+  #evlist button{flex-direction:column;align-items:flex-start;height:auto;padding:10px 16px;gap:2px}
+  #evlist small{display:block}
   .swatches{display:flex;gap:6px;justify-content:space-between;padding:0 4px}
   .swatches button{width:34px;height:34px;border-radius:999px;display:grid;place-items:center}
   .swatches button::after{content:"";width:26px;height:26px;border-radius:999px;background:var(--sw)}
@@ -237,6 +241,18 @@
   #tmnow{font-size:12px;color:var(--muted);margin:8px 2px 0}
   #tmnow.tmover{color:var(--over)}
   #tmnow:empty{display:none}
+
+  /* the custom round length: STATIC markup under #tmrow, never rebuilt
+     by renderTimerRow, so a tap into the field keeps its focus */
+  .tmcustom{display:flex;gap:6px;margin-top:6px}
+  .tmcustom input{flex:1;min-width:0;height:34px;border-radius:999px;background:var(--recess);
+    border:0;outline:none;color:var(--bone);padding:0 14px;
+    font-family:var(--text);font-size:16px;font-variant-numeric:tabular-nums;
+    -webkit-user-select:text;user-select:text}
+  .tmcustom input::placeholder{color:var(--muted)}
+  .tmcustom button{flex:0 0 auto;height:34px;padding:0 16px;border-radius:999px;
+    background:var(--recess);font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
+  .tmcustom button.armed{background:var(--hi)}
 
   /* show on the field: two independent switches */
   .tglrow{display:flex;gap:8px}
@@ -257,6 +273,9 @@
   #log li.e2 .rt b,.mbody li.e2 .rt b{color:var(--p2)}
   #log li.et .rt b,.mbody li.et .rt b{color:var(--muted)}
   #log li.empty,#past li.empty{display:block;color:var(--muted);font-size:13px;line-height:1.5}
+
+  /* the tag filter: All matches, then one row per tagged event, own track */
+  #pastfilt{margin-bottom:8px}
 
   /* past matches: rows you pick from, in a recessed track; each expands in place */
   #past{list-style:none;margin:0;padding:4px;background:var(--recess);border-radius:24px;
@@ -380,7 +399,8 @@
             <div class="swatches" id="c2"></div>
           </div>
         </div>
-        <div class="row"><p class="lb">Round timer</p><div class="seg" id="tmrow"></div><div id="tmnow"></div></div>
+        <div class="row"><p class="lb">Event</p><div class="pick legrow"><button type="button" id="evbtn"><span class="t">No event</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
+        <div class="row"><p class="lb">Round timer</p><div class="seg" id="tmrow"></div><div class="tmcustom" id="tmcustom"><input type="text" inputmode="numeric" maxlength="3" id="tmcustominput" placeholder="Other" aria-label="Custom round minutes"><button type="button" id="tmcustombtn">Start</button></div><div id="tmnow"></div></div>
         <div class="row"><p class="lb">Show on the field</p><div class="tglrow" id="lgarow"><button type="button" class="pact btn glass" id="lgacard" aria-pressed="false">Legend art</button><button type="button" class="pact btn glass" id="lgrrune" aria-pressed="false">Domains</button></div></div>
       </div>
     </div>
@@ -422,6 +442,12 @@
   </div>
 </section>
 
+<!-- EVENT: one deeper from the Event row in #shared -->
+<section class="panel frost" id="pevt" aria-hidden="true" aria-label="Event">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Event</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="evlist"></div></div>
+</section>
+
 <!-- LOG: this game, with the way into past matches always in the foot -->
 <section class="panel frost" id="plog" aria-hidden="true" aria-label="Log">
   <div class="phead"><div class="ht"><h4 class="ttl">This game</h4><span class="cnt" id="logcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -431,7 +457,7 @@
 
 <section class="panel frost" id="ppast" aria-hidden="true" aria-label="Past matches">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Past matches</h4><span class="cnt" id="pastcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><ul id="past"></ul></div>
+  <div class="pbody"><div class="pick" id="pastfilt" hidden></div><ul id="past"></ul></div>
   <div class="pfoot">
     <div class="two"><button type="button" class="pact btn glass" id="expjson">Export</button><button type="button" class="pact btn glass" id="impjson">Import</button></div>
     <button type="button" class="pact btn glass clearpast" id="clearpast">Delete all past matches</button>
@@ -550,6 +576,10 @@
     var el = document.getElementById("tmrow"), now = document.getElementById("tmnow");
     if(!el) return;
     var t = loadTimer(), ms = tmMs(), mins = [30, 50, 60], h = "", i, sel;
+    var cur = cseGet();
+    if(cur && typeof cur.round === "number" && cur.round > 0 && mins.indexOf(cur.round) < 0){
+      mins = mins.concat([cur.round]).sort(function(a, b){ return a - b; });
+    }
     for(i = 0; i < mins.length; i++){
       sel = (t && t.min === mins[i]) ? "true" : "false";
       h += "<button type=\"button\" data-min=\"" + mins[i] + "\" aria-pressed=\"" + sel
@@ -563,12 +593,19 @@
     }
     el.innerHTML = h;
     if(now){
-      if(ms === null){ now.textContent = ""; now.className = ""; }
-      else {
+      if(ms === null){
+        if(cur && typeof cur.round === "number" && cur.round > 0){
+          now.textContent = "Event rounds are " + cur.round + " min";
+          now.className = "";
+        } else {
+          now.textContent = ""; now.className = "";
+        }
+      } else {
         now.textContent = fmtClock(ms) + (ms <= 0 ? " over time" : " left");
         now.className = ms <= 0 ? "tmover" : "";
       }
     }
+    cseCustomSync();
   }
   function startTimer(min){
     saveTimer({ end: Date.now() + min*60000, min: min });
@@ -583,6 +620,118 @@
     if(tmArmT){ clearTimeout(tmArmT); tmArmT = null; }
     if(tmArm){ tmArm = 0; renderTimerRow(); }
   }
+
+  // CURRENT EVENT: today's chosen event from ../data/events.json, stored
+  // under EKEY as {id, name, venue, day, round}. It counts only while its
+  // day still equals today -- a stale snapshot from a previous day reads
+  // as none, with nothing to clear it explicitly. Two entry points write
+  // it (the Event row in #shared, and the ?ev= query link on load); both
+  // call cseSet or cseClear, never localStorage directly.
+  var EKEY = "vir.counter.tag.v1";
+  function cseToday(){
+    return new Intl.DateTimeFormat("en-CA", { timeZone:"America/Vancouver",
+      year:"numeric", month:"2-digit", day:"2-digit" }).format(new Date());
+  }
+  function cseGet(){
+    try{
+      var r = localStorage.getItem(EKEY);
+      if(!r) return null;
+      var o = JSON.parse(r);
+      if(!o || typeof o.id === "undefined" || o.day !== cseToday()) return null;
+      return o;
+    }catch(e){ return null; }
+  }
+  function cseSet(e){
+    try{
+      localStorage.setItem(EKEY, JSON.stringify({
+        id:e.id, name:e.name, venue:e.venue, day:e.day,
+        round:(typeof e.round === "number" && isFinite(e.round) && e.round > 0) ? e.round : null
+      }));
+    }catch(err){}
+    cseSyncRow();
+    renderTimerRow();
+  }
+  function cseClear(){
+    try{ localStorage.removeItem(EKEY); }catch(err){}
+    cseSyncRow();
+    renderTimerRow();
+  }
+  function cseSyncRow(){
+    var b = document.getElementById("evbtn");
+    var bt = b ? b.getElementsByClassName("t")[0] : null;
+    var cur = cseGet();
+    if(bt){ bt.textContent = cur ? cur.name : "No event"; }
+  }
+  var cseList = [];
+  function cseTodayEvents(list){
+    var t = cseToday(), out = [];
+    for(var i = 0; i < list.length; i++){
+      if(list[i] && list[i].day === t) out.push(list[i]);
+    }
+    out.sort(function(a, b){
+      return (a.start || "") < (b.start || "") ? -1 : ((a.start || "") > (b.start || "") ? 1 : 0);
+    });
+    return out;
+  }
+  function cseRenderList(list){
+    var box = document.getElementById("evlist");
+    if(!box) return;
+    cseList = cseTodayEvents(list);
+    if(!cseList.length){
+      box.innerHTML = "<div class=\"lgpempty\">No events today</div>";
+      return;
+    }
+    var cur = cseGet(), h = "", i;
+    for(i = 0; i < cseList.length; i++){
+      var e = cseList[i], on = cur && cur.id === e.id;
+      h += "<button type=\"button\" data-ev=\"" + e.id + "\"" +
+        (on ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">" +
+        "<span class=\"t\">" + esc(e.name) + "</span><small>" +
+        esc((e.venue || "") + ", " + (e.time || "")) + "</small></button>";
+    }
+    h += "<button type=\"button\" data-ev=\"\"" +
+      (!cur ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">No event</button>";
+    box.innerHTML = h;
+  }
+  function cseOpen(){
+    deeper(pevt);
+    var box = document.getElementById("evlist");
+    if(box){ box.innerHTML = ""; }
+    fetch("../data/events.json", { cache:"no-cache" }).then(function(r){
+      if(!r.ok) throw new Error("http " + r.status);
+      return r.json();
+    }).then(function(j){
+      cseRenderList((j && j.events) || []);
+    }).catch(function(){
+      if(box){ box.innerHTML = "<div class=\"lgpempty\">Events could not load</div>"; }
+    });
+  }
+  function cseCustomSync(){
+    var inp = document.getElementById("tmcustominput"), btn = document.getElementById("tmcustombtn");
+    if(!inp || !btn) return;
+    var running = tmMs() !== null;
+    inp.placeholder = running ? "Minutes left" : "Other";
+    if(!running){ btn.textContent = "Start"; btn.className = ""; return; }
+    if(tmArm === -2){ btn.textContent = "Sure?"; btn.className = "armed"; }
+    else { btn.textContent = "Set"; btn.className = ""; }
+  }
+  function cseTimerSet(mn){
+    var t = loadTimer();
+    saveTimer({ end:Date.now() + mn * 60000, min:t ? t.min : mn });
+    renderTimerRow(); render(); tmRun();
+  }
+  function cseDistinctTags(){
+    var seen = {}, out = [];
+    for(var i = 0; i < history.length; i++){
+      var tg = history[i].tag;
+      if(tg && tg.id != null && !seen[tg.id]){
+        seen[tg.id] = 1;
+        out.push(tg);
+      }
+    }
+    return out;
+  }
+
   var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   // Player 1 is blue and player 2 pink by default: the trade page's hues.
   var SWATCH = ["#5DA5EE","#EE5F9C","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
@@ -618,12 +767,14 @@
   var pgame = document.getElementById("pgame");
   var pnew = document.getElementById("pnew");
   var pleg = document.getElementById("pleg");
+  var pevt = document.getElementById("pevt");
   var shared = document.getElementById("shared");
   var scrim = document.getElementById("scrim");
   var elPast = document.getElementById("past");
 
   var ev = null;
   var history = [];
+  var pastFilter = null;
   var mode = "focus";
   var wake = null;
   var firstP = 1;
@@ -797,7 +948,10 @@
     var games = banked.slice();
     if (won()) { games.push({ ev:ev.slice(), p:snap() }); }
     if (!games.length) { return; }
-    history.unshift({ v:1, at:Date.now(), bo:bo, games:games });
+    var rec = { v:1, at:Date.now(), bo:bo, games:games };
+    var cur = cseGet();
+    if (cur) { rec.tag = { id:cur.id, name:cur.name, venue:cur.venue, day:cur.day }; }
+    history.unshift(rec);
     while (history.length > HMAX) { history.pop(); }
     saveHistory();
   }
@@ -989,6 +1143,26 @@
     document.getElementById("clearpast").disabled = !hn;
     document.getElementById("pastn").textContent = String(hn);
     document.getElementById("pastcnt").textContent = hn ? String(hn) : "";
+
+    var pfTags = cseDistinctTags(), pf = document.getElementById("pastfilt");
+    if (pf) {
+      if (pfTags.length) {
+        var fh = "<button type=\"button\" data-tagf=\"\"" +
+          (pastFilter === null ? " class=\"on\"" : "") + ">All matches</button>";
+        for (var ti = 0; ti < pfTags.length; ti++) {
+          var tg = pfTags[ti];
+          fh += "<button type=\"button\" data-tagf=\"" + tg.id + "\"" +
+            (pastFilter === tg.id ? " class=\"on\"" : "") + ">" +
+            esc(tg.name) + " &middot; " + esc(tg.day) + "</button>";
+        }
+        pf.innerHTML = fh;
+        pf.hidden = false;
+      } else {
+        pf.innerHTML = "";
+        pf.hidden = true;
+      }
+    }
+
     if (!hn) {
       elPast.innerHTML = "<li class=\"empty\">No finished matches yet. A match is saved here when you start the next one.</li>";
       return;
@@ -1021,7 +1195,9 @@
                  esc(g0.p[2].legend || "No legend");
       var len = multi ? "best of 3" : "single game";
       var cnt = gs.length === 1 ? "1 game" : gs.length + " games";
-      out += "<li data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
+      var tagd = m.tag ? (" &middot; " + esc(m.tag.name)) : "";
+      var hideRow = pastFilter !== null && (!m.tag || m.tag.id !== pastFilter);
+      out += "<li" + (hideRow ? " hidden" : "") + " data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\">" +
         "<span class=\"res " + rc + "\">" + rl + "</span>" +
         "<span class=\"sco\"><b class=\"s1\">" + lf + "</b><b class=\"dash\">-</b>" +
         "<b class=\"s2\">" + rt + "</b></span>" +
@@ -1031,7 +1207,7 @@
         "<span class=\"mday\">" + stamp(m.at) + "</span></button>" +
         "<div class=\"mbody\"><div class=\"dtl\">" + legs + " &middot; " + len +
         " &middot; " + cnt + " &middot; " + tt
-        + (tt === 1 ? " turn" : " turns") + "</div>" + body + "</div></li>";
+        + (tt === 1 ? " turn" : " turns") + tagd + "</div>" + body + "</div></li>";
     }
     out += tools;
     elPast.innerHTML = out;
@@ -1178,6 +1354,7 @@
   }
   document.getElementById("pastbtn").addEventListener("click", function(){
     disarmClear();
+    pastFilter = null;
     renderPast();
     deeper(ppast);
   });
@@ -1185,6 +1362,12 @@
     var t = e.target;
     while (t && t !== ppast && t.tagName !== "BUTTON") { t = t.parentNode; }
     if (!t || t === ppast) { return; }
+    if (t.hasAttribute("data-tagf")) {
+      var tf = t.getAttribute("data-tagf");
+      pastFilter = tf === "" ? null : parseInt(tf, 10);
+      renderPast();
+      return;
+    }
     if (t.id === "impjson") {
       var fi = document.getElementById("impfile");
       if (fi) { fi.value = ""; fi.click(); }
@@ -1401,6 +1584,7 @@
 
   function syncSetup(){
     syncConcedeLabels();
+    cseSyncRow();
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
       wearSide(document.getElementById("grp" + p), p);
@@ -1431,6 +1615,10 @@
     if (fp) {
       firstP = parseInt(fp, 10);
       syncFirst();
+      return;
+    }
+    if (t.id === "evbtn") {
+      cseOpen();
       return;
     }
     var col = t.getAttribute && t.getAttribute("data-col");
@@ -1737,6 +1925,10 @@
 
   document.getElementById("startmatch").addEventListener("click", function(){
     startNew();
+    var curEv = cseGet();
+    if (curEv && typeof curEv.round === "number" && curEv.round > 0 && tmMs() === null) {
+      startTimer(curEv.round);
+    }
     closeSetup();
   });
   document.getElementById("tmrow").addEventListener("click", function(e){
@@ -1754,6 +1946,41 @@
     }
     tmDisarm();
     if(want === -1){ stopTimer(); } else { startTimer(want); }
+  });
+  document.getElementById("evlist").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("button") : null;
+    if(!b) return;
+    var id = b.getAttribute("data-ev");
+    if(id === ""){
+      cseClear();
+    } else if(id !== null){
+      var eid = parseInt(id, 10), k;
+      for(k = 0; k < cseList.length; k++){
+        if(cseList[k].id === eid){ cseSet(cseList[k]); break; }
+      }
+    }
+    back();
+  });
+  document.getElementById("tmcustombtn").addEventListener("click", function(){
+    var inp = document.getElementById("tmcustominput");
+    var v = inp ? inp.value : "";
+    if(!/^\d+$/.test(v)) return;
+    var n = parseInt(v, 10);
+    if(n < 1 || n > 180) return;
+    if(tmMs() === null){
+      startTimer(n);
+      inp.value = "";
+      return;
+    }
+    if(tmArm !== -2){
+      tmDisarm();
+      tmArm = -2;
+      renderTimerRow();
+      tmArmT = setTimeout(tmDisarm, 3000);
+      return;
+    }
+    tmDisarm();
+    cseTimerSet(n);
   });
   document.getElementById("impfile").addEventListener("change", function(){
     var f = this.files && this.files[0];
@@ -1776,6 +2003,30 @@
   render();
   renderTimerRow();
   if(tmMs() !== null) tmRun();
+  cseSyncRow();
+
+  // ENTRY 2: ?ev=<id> on load. The query is removed with replaceState
+  // regardless of what the fetch finds -- window.history, not the match
+  // history array this scope already names "history". Opens no menu and
+  // never touches the timer; an id that is not found is ignored silently.
+  (function(){
+    var qs;
+    try{ qs = new URLSearchParams(location.search); }catch(e){ qs = null; }
+    var qev = qs ? qs.get("ev") : null;
+    if(qev === null) return;
+    window.history.replaceState(null, "", location.pathname);
+    var qevId = parseInt(qev, 10);
+    if(isNaN(qevId)) return;
+    fetch("../data/events.json", { cache:"no-cache" }).then(function(r){
+      if(!r.ok) throw new Error("http " + r.status);
+      return r.json();
+    }).then(function(j){
+      var list = (j && j.events) || [], i;
+      for(i = 0; i < list.length; i++){
+        if(list[i] && list[i].id === qevId){ cseSet(list[i]); break; }
+      }
+    }).catch(function(){});
+  })();
 })();
 </script>
 <script>
