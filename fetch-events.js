@@ -116,6 +116,10 @@ async function fetchAnchor(anchor, afterIso) {
 function shape(raw, region) {
   const start = new Date(raw.start_datetime);
   const store = raw.store || {};
+  const settings = raw.settings || {};
+  const roundMinutes = settings.round_duration_in_minutes;
+  const round = (typeof roundMinutes === "number" && isFinite(roundMinutes) && roundMinutes > 0)
+    ? roundMinutes : null;
   return {
     id: raw.id,
     name: String(raw.name || "").trim(),
@@ -132,7 +136,9 @@ function shape(raw, region) {
     reg: raw.registered_user_count || 0,
     cents: raw.cost_in_cents || 0,
     currency: raw.currency || "CAD",
-    updated: raw.updated_at || null
+    updated: raw.updated_at || null,
+    round: round,
+    sid: (store.id === null || store.id === undefined) ? null : store.id
   };
 }
 
