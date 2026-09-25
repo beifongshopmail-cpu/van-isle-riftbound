@@ -472,6 +472,30 @@
 <script src="../cards/legends.js"></script>
 <script>
 (function(){
+  // TEST MODE: a simulated event for today, toggled by ?sim=1 / ?sim=0 on
+  // load. The query is left untouched here -- the ?ev= handler further
+  // down strips its own query itself, and the sim must be in place
+  // before that lookup runs.
+  var SIMKEY = "vir.sim.v1";
+  (function(){
+    try{
+      var qs = new URLSearchParams(location.search);
+      var sim = qs.get("sim");
+      if (sim === "1") { localStorage.setItem(SIMKEY, "1"); }
+      else if (sim === "0") { localStorage.removeItem(SIMKEY); }
+    }catch(e){}
+  })();
+  function simEvent(day){
+    return {id:1, name:"Test event - 1v1", type:"nexus", start:day+"T00:00:00-07:00", end:null,
+      day:day, time:"All day", venue:"Test Store", city:"Victoria", address:"", region:"victoria",
+      cap:8, reg:0, cents:0, currency:"CAD", updated:null, round:25, sid:1, store:"Test Store"};
+  }
+  function withSim(list){
+    var on = false;
+    try{ on = localStorage.getItem(SIMKEY) === "1"; }catch(e){}
+    return on ? list.concat([simEvent(cseToday())]) : list;
+  }
+
   var GKEY = "vir.counter.game.v1";
   var MKEY = "vir.counter.mode.v1";
   var GOAL = 8;
@@ -719,7 +743,7 @@
       if(!r.ok) throw new Error("http " + r.status);
       return r.json();
     }).then(function(j){
-      cseRenderList((j && j.events) || []);
+      cseRenderList(withSim((j && j.events) || []));
     }).catch(function(){
       if(box){ box.innerHTML = "<div class=\"lgpempty\">Events could not load</div>"; }
     });
@@ -2050,7 +2074,7 @@
       if(!r.ok) throw new Error("http " + r.status);
       return r.json();
     }).then(function(j){
-      var list = (j && j.events) || [], i;
+      var list = withSim((j && j.events) || []), i;
       for(i = 0; i < list.length; i++){
         if(list[i] && list[i].id === qevId){ cseSet(list[i]); break; }
       }
