@@ -229,13 +229,6 @@
   #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:44px;padding:10px 16px;gap:2px}
   #evlist small{display:block}
 
-  /* SIZE SCALE, STYLE.md 10: a Row is 44px, pinned with height rather
-     than min-height so WebKit cannot grow it. .pact and the Go-to
-     list's .pick rows come from app.css at 44/48; restated here, at
-     an id a page rule can out-specify, rather than edited there. */
-  .pact{height:44px;box-sizing:border-box}
-  #pgame .pick a,#pgame .pick button,#pastfilt button{height:44px;box-sizing:border-box}
-
   .swatches{display:flex;gap:6px;justify-content:space-between;padding:0 4px}
   .swatches button{width:34px;height:34px;border-radius:999px;display:grid;place-items:center}
   .swatches button::after{content:"";width:26px;height:26px;border-radius:999px;background:var(--sw)}
@@ -398,17 +391,17 @@
           <div class="pgrp" id="grp1">
             <p class="pl1">Player 1</p>
             <div class="nf"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name"></div>
-            <div class="pick legrow"><button type="button" id="lgp1" data-lgp="1"><span class="t">No legend</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
+            <div class="pick legrow solo"><button type="button" id="lgp1" data-lgp="1"><span class="t">No legend</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
             <div class="swatches" id="c1"></div>
           </div>
           <div class="pgrp" id="grp2">
             <p class="pl1">Player 2</p>
             <div class="nf"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name"></div>
-            <div class="pick legrow"><button type="button" id="lgp2" data-lgp="2"><span class="t">No legend</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
+            <div class="pick legrow solo"><button type="button" id="lgp2" data-lgp="2"><span class="t">No legend</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
             <div class="swatches" id="c2"></div>
           </div>
         </div>
-        <div class="row"><p class="lb">Event</p><div class="pick legrow"><button type="button" id="evbtn"><span class="t">No event</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
+        <div class="row"><p class="lb">Event</p><div class="pick legrow solo"><button type="button" id="evbtn"><span class="t">No event</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
         <div class="row"><p class="lb">Round timer</p><div class="seg" id="tmrow"></div><div class="tmcustom" id="tmcustom"><input type="text" inputmode="numeric" maxlength="3" id="tmcustominput" placeholder="Other" aria-label="Custom round minutes"><button type="button" id="tmcustombtn">Start</button></div><div id="tmnow"></div></div>
         <div class="row"><p class="lb">Show on the field</p><div class="tglrow" id="lgarow"><button type="button" class="pact btn glass" id="lgacard" aria-pressed="false">Legend art</button><button type="button" class="pact btn glass" id="lgrrune" aria-pressed="false">Domains</button></div></div>
       </div>
@@ -461,7 +454,7 @@
 <section class="panel frost" id="plog" aria-hidden="true" aria-label="Log">
   <div class="phead"><div class="ht"><h4 class="ttl">This game</h4><span class="cnt" id="logcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><ol id="log"></ol></div>
-  <div class="pfoot"><div class="pick"><button type="button" id="pastbtn">Past matches<span class="sp"></span><small id="pastn">0</small><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
+  <div class="pfoot"><div class="pick solo"><button type="button" id="pastbtn">Past matches<span class="sp"></span><small id="pastn">0</small><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
 </section>
 
 <section class="panel frost" id="ppast" aria-hidden="true" aria-label="Past matches">

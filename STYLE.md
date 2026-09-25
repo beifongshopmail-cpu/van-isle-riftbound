@@ -457,4 +457,4 @@ height, look there first.
 | Round icon button (.circ) | 36px |
 | Content row | height by content, min-height 44px |
 
-Pin rows with height, not min-height; WebKit grows min-height rows.
+Measure the surface the eye sees, not the control inside it. A tray (.pick, .seg, .tylist) draws its own padding around its rows, so a tray holding a single row takes .solo, which removes the padding and makes the visible pill the 44px row. List rows inside a tray are 44px.
