@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-24T17:46:39.697Z",
- "generated_local": "2026-09-24T10:46:39-07:00",
+ "generated_at": "2026-09-25T01:56:52.446Z",
+ "generated_local": "2026-09-24T18:56:52-07:00",
  "window_start": "2026-09-24T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 17,
-   "added": 17
+   "returned": 16,
+   "added": 16
   },
   {
    "name": "Courtenay",
@@ -23,32 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 34,
-  "unique": 34,
+  "fetched": 33,
+  "unique": 33,
   "prev_unique": 34
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 927098,
-   "name": "Thursday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-24T18:00:00-07:00",
-   "end": "2026-09-24T21:20:00-07:00",
-   "day": "2026-09-24",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-09-08T22:14:03+00:00",
-   "round": 50,
-   "sid": 18437
-  },
   {
    "id": 816058,
    "name": "Tuesday Riftbound Playnight",
@@ -67,7 +47,8 @@
    "currency": "CAD",
    "updated": "2026-07-31T05:04:48+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 532629,
@@ -87,7 +68,8 @@
    "currency": "CAD",
    "updated": "2026-04-30T20:30:31+00:00",
    "round": 50,
-   "sid": 18437
+   "sid": 18437,
+   "store": "North Park Framing"
   },
   {
    "id": 501062,
@@ -107,7 +89,8 @@
    "currency": "CAD",
    "updated": "2026-04-14T18:47:49+00:00",
    "round": 50,
-   "sid": 21894
+   "sid": 21894,
+   "store": "AJ's"
   },
   {
    "id": 518595,
@@ -127,7 +110,8 @@
    "currency": "CAD",
    "updated": "2026-04-23T19:32:47+00:00",
    "round": 50,
-   "sid": 902
+   "sid": 902,
+   "store": "Colossal Courtenay"
   },
   {
    "id": 805051,
@@ -147,7 +131,8 @@
    "currency": "CAD",
    "updated": "2026-07-27T20:13:33+00:00",
    "round": 50,
-   "sid": 902
+   "sid": 902,
+   "store": "Colossal Courtenay"
   },
   {
    "id": 818680,
@@ -167,7 +152,8 @@
    "currency": "CAD",
    "updated": "2026-08-01T18:15:55+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 821777,
@@ -187,7 +173,8 @@
    "currency": "CAD",
    "updated": "2026-08-02T05:01:08+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 932479,
@@ -202,12 +189,13 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-09-10T18:02:48+00:00",
    "round": 50,
-   "sid": 4294
+   "sid": 4294,
+   "store": "Skyhaven"
   },
   {
    "id": 827959,
@@ -227,7 +215,8 @@
    "currency": "CAD",
    "updated": "2026-08-04T05:03:26+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 903319,
@@ -247,7 +236,8 @@
    "currency": "CAD",
    "updated": "2026-08-31T18:25:47+00:00",
    "round": 60,
-   "sid": 2069
+   "sid": 2069,
+   "store": "Gauntlet"
   },
   {
    "id": 837229,
@@ -267,7 +257,8 @@
    "currency": "CAD",
    "updated": "2026-08-07T05:04:57+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 841879,
@@ -287,7 +278,8 @@
    "currency": "CAD",
    "updated": "2026-08-09T05:01:11+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 519459,
@@ -307,7 +299,8 @@
    "currency": "CAD",
    "updated": "2026-04-24T00:57:18+00:00",
    "round": 50,
-   "sid": 15103
+   "sid": 15103,
+   "store": "Colossal Victoria"
   },
   {
    "id": 497224,
@@ -327,7 +320,8 @@
    "currency": "CAD",
    "updated": "2026-04-13T20:50:27+00:00",
    "round": 50,
-   "sid": 4294
+   "sid": 4294,
+   "store": "Skyhaven"
   },
   {
    "id": 847112,
@@ -347,7 +341,8 @@
    "currency": "CAD",
    "updated": "2026-08-11T05:02:52+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 903320,
@@ -367,7 +362,8 @@
    "currency": "CAD",
    "updated": "2026-08-31T18:27:27+00:00",
    "round": 60,
-   "sid": 2069
+   "sid": 2069,
+   "store": "Gauntlet"
   },
   {
    "id": 856044,
@@ -387,7 +383,8 @@
    "currency": "CAD",
    "updated": "2026-08-14T05:03:59+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 860816,
@@ -407,7 +404,8 @@
    "currency": "CAD",
    "updated": "2026-08-16T05:00:57+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 932482,
@@ -427,7 +425,8 @@
    "currency": "CAD",
    "updated": "2026-09-10T18:03:37+00:00",
    "round": 50,
-   "sid": 4294
+   "sid": 4294,
+   "store": "Skyhaven"
   },
   {
    "id": 866184,
@@ -447,7 +446,8 @@
    "currency": "CAD",
    "updated": "2026-08-18T05:03:23+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 903321,
@@ -467,7 +467,8 @@
    "currency": "CAD",
    "updated": "2026-08-31T18:27:49+00:00",
    "round": 60,
-   "sid": 2069
+   "sid": 2069,
+   "store": "Gauntlet"
   },
   {
    "id": 875551,
@@ -487,7 +488,8 @@
    "currency": "CAD",
    "updated": "2026-08-21T05:04:41+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 879775,
@@ -507,7 +509,8 @@
    "currency": "CAD",
    "updated": "2026-08-23T05:01:10+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 884760,
@@ -527,7 +530,8 @@
    "currency": "CAD",
    "updated": "2026-08-25T05:04:31+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 894008,
@@ -547,7 +551,8 @@
    "currency": "CAD",
    "updated": "2026-08-28T05:04:06+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 899243,
@@ -567,7 +572,8 @@
    "currency": "CAD",
    "updated": "2026-08-30T05:01:14+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 904901,
@@ -587,7 +593,8 @@
    "currency": "CAD",
    "updated": "2026-09-01T05:03:26+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 914712,
@@ -607,7 +614,8 @@
    "currency": "CAD",
    "updated": "2026-09-04T05:04:26+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 920103,
@@ -627,7 +635,8 @@
    "currency": "CAD",
    "updated": "2026-09-06T05:01:08+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 925474,
@@ -647,7 +656,8 @@
    "currency": "CAD",
    "updated": "2026-09-08T05:03:43+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 934751,
@@ -667,7 +677,8 @@
    "currency": "CAD",
    "updated": "2026-09-11T05:04:02+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   },
   {
    "id": 939671,
@@ -687,7 +698,8 @@
    "currency": "CAD",
    "updated": "2026-09-13T05:01:16+00:00",
    "round": 50,
-   "sid": 16866
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": 945045,
@@ -707,7 +719,8 @@
    "currency": "CAD",
    "updated": "2026-09-15T05:03:58+00:00",
    "round": 50,
-   "sid": 29310
+   "sid": 29310,
+   "store": "Giddy-Up"
   }
  ]
 }
