@@ -44,13 +44,13 @@ a{color:inherit;text-decoration:none}
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .hold{height:122px}   /* plate at rest: 10 + 40 + 8 + 40 + 10 = 108, plus a 14 gap */
-.sf{display:flex;align-items:center;gap:8px;height:40px;border-radius:999px;padding:0 2px 0 14px;background:rgba(255,255,255,.07)}
+.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);border-radius:999px;padding:0 2px 0 14px;background:rgba(255,255,255,.07)}
 .sf>svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
 .sf input{flex:1;min-width:0;height:100%;background:none;border:0;outline:none;color:var(--bone);
   font-family:var(--text);font-size:16px;-webkit-appearance:none;appearance:none;padding:0}
 .sf input::placeholder{color:var(--muted)}
 .sf input::-webkit-search-cancel-button{-webkit-appearance:none}
-.qx{width:36px;height:36px;display:grid;place-items:center;border-radius:999px;color:var(--muted)}
+.qx{width:var(--sz-sm);height:var(--sz-sm);display:grid;place-items:center;border-radius:999px;color:var(--muted)}
 .qx svg{width:16px;height:16px}
 .sides{margin-top:8px}
 .sides button{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;padding:0 10px}
@@ -81,13 +81,13 @@ a{color:inherit;text-decoration:none}
    pressed, the counter's score-button values. */
 .res{--sc:93,165,238}
 .res.to2{--sc:238,95,156}
-.buy{flex:0 0 84px;width:84px;height:36px;padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
+.buy{flex:0 0 84px;width:84px;height:var(--sz-sm);padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
   background:rgba(var(--sc),.14);color:rgb(var(--sc));font-family:var(--disp);font-weight:600;font-size:13px}
 .buy:active{background:rgba(var(--sc),.50);color:var(--bone)}
 .rnone{padding:12px 6px;font-size:15px;color:var(--muted)}
 
 /* card art: Riot's thumbnail, cosmetic and resolved live, never frozen */
-.art{display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden;
+.art{display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden; /* size-exempt: card art image */
   background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .art img{display:block;width:100%;height:100%;object-fit:cover}
 /* THE DIFFERENCE: a glass ring, each side's total beside it */
@@ -135,12 +135,12 @@ a{color:inherit;text-decoration:none}
 .lamt{flex:0 0 auto;font-size:15px;font-weight:700}
 .lact{display:none;align-items:center;gap:8px;padding:0 0 12px 48px}
 .ln.open .lact{display:flex}
-.stp{display:inline-flex;align-items:center;height:36px;border-radius:999px;background:rgba(0,0,0,.28);padding:2px}
+.stp{display:inline-flex;align-items:center;height:var(--sz-sm);border-radius:999px;background:rgba(0,0,0,.28);padding:2px}
 .stp button{width:32px;height:32px;border-radius:999px;display:grid;place-items:center}
 .stp button:active{background:var(--hi)}
 .stp svg{width:14px;height:14px}
 .stp span{min-width:22px;text-align:center;font-size:15px;font-weight:700}
-.mvp{min-width:0;height:36px;padding:0 14px 0 10px;display:flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:600;font-size:13px}
+.mvp{min-width:0;height:var(--sz-sm);padding:0 14px 0 10px;display:flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:600;font-size:13px}
 .mvp .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mvp svg{width:16px;height:16px;flex:0 0 auto}
 .mvp.d1 svg{color:var(--yc)} .mvp.d2 svg{color:var(--tc)}
@@ -155,11 +155,11 @@ a{color:inherit;text-decoration:none}
 /* undo */
 .ud{margin:14px 0 0}
 .udrow{display:flex;align-items:center;gap:8px}
-.udtog{flex:1;min-width:0;height:36px;padding:0 6px;display:flex;align-items:center;gap:8px;text-align:left;font-size:13px}
+.udtog{flex:1;min-width:0;height:var(--sz-sm);padding:0 6px;display:flex;align-items:center;gap:8px;text-align:left;font-size:13px}
 .udl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-weight:600}
 .udn{font-size:12px;font-weight:600;color:var(--muted)}
 .udtog .chev{fill:none;stroke:var(--bone);stroke-linecap:round;stroke-linejoin:round}
-.udob{height:36px;padding:0 18px;font-family:var(--disp);font-weight:600;font-size:13px}
+.udob{height:var(--sz-sm);padding:0 18px;font-family:var(--disp);font-weight:600;font-size:13px}
 /* THE GLASS STAYS STILL AND ONLY THE LIST SCROLLS. A glass surface that
    is itself the scroller carries its rim away with the content. */
 .udlogw{margin-top:8px;border-radius:18px}
@@ -172,7 +172,7 @@ a{color:inherit;text-decoration:none}
 /* panels */
 .pnote{font-size:12px;color:var(--muted);margin:6px 2px 0}
 .rates{display:flex;gap:8px;margin-bottom:8px}
-.rate{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:44px;border-radius:999px;background:var(--recess);padding:0 14px}
+.rate{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:var(--sz-row);border-radius:999px;background:var(--recess);padding:0 14px}
 .rate label{font-family:var(--disp);font-weight:600;font-size:13px}
 .rate.r1 label{color:var(--yc)} .rate.r2 label{color:var(--tc)}
 .rate input{flex:1;min-width:0;width:100%;background:none;border:0;outline:none;color:var(--bone);font-family:var(--text);
@@ -181,7 +181,7 @@ a{color:inherit;text-decoration:none}
 .rate span{font-size:13px;color:var(--muted)}
 .two{display:flex;gap:8px;margin-bottom:8px}
 .two .pact{flex:1}
-.nf{display:flex;align-items:center;height:44px;border-radius:999px;background:var(--recess);padding:0 16px;margin-bottom:8px}
+.nf{display:flex;align-items:center;height:var(--sz-row);border-radius:999px;background:var(--recess);padding:0 16px;margin-bottom:8px}
 .nf input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);font-family:var(--text);font-size:16px;padding:0}
 .nf input::placeholder{color:var(--muted)}
 .svl{background:var(--recess);border-radius:24px;padding:4px;display:flex;flex-direction:column;gap:2px}

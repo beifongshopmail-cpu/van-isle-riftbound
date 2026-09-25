@@ -449,12 +449,22 @@ height, look there first.
 
 ## 10. Control heights
 
-| Control | Height |
-| --- | --- |
-| Row (single-line full-width or standalone control) | 44px |
-| Track (.seg) | 40px |
-| Segment inside a track | 34px |
-| Round icon button (.circ) | 36px |
-| Content row | height by content, min-height 44px |
+No control height is typed as a bare number. Every rule reads one of these seven named tokens, declared once in app.css's `:root`, right after `--barH`:
 
-Measure the surface the eye sees, not the control inside it. A tray (.pick, .seg, .tylist) draws its own padding around its rows, so a tray holding a single row takes .solo, which removes the padding and makes the visible pill the 44px row. List rows inside a tray are 44px.
+| Token | Value | For |
+| --- | --- | --- |
+| `--sz-row` | 44px | menu rows, fields, full-width actions |
+| `--sz-track` | 40px | a recessed track, and search fields |
+| `--sz-seg` | 34px | a segment inside a track, and colour swatches |
+| `--sz-sm` | 36px | round buttons and compact pill buttons |
+| `--sz-score` | 48px | counter only: the main score buttons, read at arm's length |
+| `--sz-score-min` | 38px | counter only: the slim-banner score buttons |
+| `--sz-seam` | 50px | counter only: Pass turn |
+
+Measure the surface the eye sees, not the control inside it. A tray (.pick, .seg, .tylist) draws its own padding around its rows, so a tray holding a single row takes .solo, which removes the padding and makes the visible pill the `--sz-row` row. List rows inside a tray are `--sz-row`.
+
+Two images are size-exempt from this scale and keep their bare px values, each marked in place with a `/* size-exempt: ... */` comment: trade's card art image (.art) and the counter's rune image (.side[data-role="equal"] .lgarune img). Neither is a control.
+
+The calendar's day cells (.cell) are their own case: squeezed to seven equal columns against screen width, not by any row-content minimum, they keep a lower floor of 40px rather than the `--sz-row` minimum.
+
+Every build block runs `node audit.js` in `C:\dev\rb-tools` before it's considered done.

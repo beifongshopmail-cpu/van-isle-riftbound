@@ -45,6 +45,15 @@
   --disp:"Poppins",system-ui,-apple-system,sans-serif;
   --text:"Nunito",system-ui,-apple-system,sans-serif;
   --barH:56px;
+  /* THE NAMED SIZES. Every control height on every page reads one of
+     these, never a bare number, so the scale stays a decision made once. */
+  --sz-row:44px;       /* menu rows, fields, full-width actions */
+  --sz-track:40px;      /* a recessed track, and search fields */
+  --sz-seg:34px;        /* a segment inside a track, and colour swatches */
+  --sz-sm:36px;         /* round buttons and compact pill buttons */
+  --sz-score:48px;      /* counter only: the main score buttons, read at arm's length */
+  --sz-score-min:38px;  /* counter only: the slim-banner score buttons */
+  --sz-seam:50px;       /* counter only: Pass turn */
   --ease:cubic-bezier(.22,.72,.2,1);
   /* THE TOP CLEAR LINE. iOS draws its own fade under the status bar in the
      installed app, and we cannot change its depth. Nothing we draw that
@@ -82,7 +91,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
 .btn{border-radius:999px}
 .btn:active{background:var(--glass-press)}
-.circ{width:36px;height:36px;display:grid;place-items:center}
+.circ{width:var(--sz-sm);height:var(--sz-sm);display:grid;place-items:center}
 .circ svg{width:18px;height:18px}
 
 /* .frost: see-through chrome that blurs what passes behind it */
@@ -137,14 +146,14 @@ html.lock,html.lock body{overflow:hidden}
 
 /* option tracks: a recessed track, borderless options, the chosen one in bone */
 .seg{display:flex;background:var(--recess);border-radius:999px;padding:3px;gap:2px}
-.seg button{flex:1;height:34px;border-radius:999px;font-size:13px;font-weight:600;font-family:var(--disp)}
+.seg button{flex:1;height:var(--sz-seg);border-radius:999px;font-size:13px;font-weight:600;font-family:var(--disp)}
 .seg button:active{background:var(--hi)}
 .seg button.on{background:var(--bone);color:var(--ink)}
 /* the same chosen state as an attribute, for option tracks that carry aria-pressed */
 .seg button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
 .pick{background:var(--recess);border-radius:24px;padding:4px;display:flex;flex-direction:column;gap:2px}
 .pick.solo{padding:0}
-.pick button,.pick a{display:flex;align-items:center;gap:10px;width:100%;height:44px;box-sizing:border-box;padding:0 16px;border-radius:999px;
+.pick button,.pick a{display:flex;align-items:center;gap:10px;width:100%;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:999px;
   font-family:var(--disp);font-weight:600;font-size:15px}
 .pick button:active,.pick a:active{background:var(--hi)}
 .pick button.on,.pick a.on{background:var(--bone);color:var(--ink)}
@@ -181,7 +190,7 @@ html.lock,html.lock body{overflow:hidden}
 /* A PLAIN FULL-WIDTH ACTION, in a panel or anywhere a page needs one.
    Used with btn glass. */
 .pact{
-  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:44px;
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:var(--sz-row);
   font-family:var(--disp);font-size:13px;font-weight:600;
 }
 .pact svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.6;fill:none}

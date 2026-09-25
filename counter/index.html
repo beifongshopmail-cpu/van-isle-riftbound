@@ -49,9 +49,9 @@
      It does not rest: the card system's bar never dims, so the old
      dim-after-touch is gone. */
   .strip{display:flex;align-items:center;gap:4px}
-  .strip .seg{flex:1.7;height:44px;min-width:0}
-  .strip .seg button{height:38px;min-width:0}
-  .strip .ic{flex:1;height:44px;border-radius:999px;display:grid;place-items:center}
+  .strip .seg{flex:1.7;height:var(--sz-track);min-width:0}
+  .strip .seg button{height:var(--sz-seg);min-width:0}
+  .strip .ic{flex:1;height:var(--sz-row);border-radius:999px;display:grid;place-items:center}
   .strip .ic:active{background:var(--on)}
   .strip .ic svg{width:22px;height:22px}
 
@@ -132,7 +132,7 @@
      script as --pct and --pcr. */
   .acts{align-self:stretch;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:18px;
     order:4;position:relative;z-index:3}
-  .acts button{height:48px;min-width:0;font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:.06em;
+  .acts button{height:var(--sz-score);min-width:0;font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:.06em;
     text-transform:uppercase;background:var(--pct)}
   .acts button:active{background:var(--pcr)}
   .acts button:first-child{border-radius:24px 2px 2px 24px}
@@ -140,13 +140,13 @@
   .acts button:last-child{border-radius:2px 24px 24px 2px}
   .side[data-role="equal"] .acts{margin-top:10px}
   .side[data-role="minor"] .acts{display:flex;align-self:auto;margin:0}
-  .side[data-role="minor"] .acts button{flex:1 1 auto;height:38px;padding:0 10px;font-size:12px}
+  .side[data-role="minor"] .acts button{flex:1 1 auto;height:var(--sz-score-min);padding:0 10px;font-size:12px}
   .side[data-role="minor"] .acts button:first-child{border-radius:19px 2px 2px 19px}
   .side[data-role="minor"] .acts button:last-child{border-radius:2px 19px 19px 2px}
 
   /* pass turn: neutral glass, the current player's name in their colour */
   .seamwrap{flex:0 0 auto}
-  .pass{height:50px;margin:8px 0;display:flex;align-items:center;justify-content:center;gap:14px;width:100%;
+  .pass{height:var(--sz-seam);margin:8px 0;display:flex;align-items:center;justify-content:center;gap:14px;width:100%;
     font-family:var(--disp);font-weight:700;font-size:15px;letter-spacing:.1em;text-transform:uppercase}
   .pass .dv{flex:0 0 auto;width:2px;height:20px;background:var(--faint)}
   .pass em{font-style:normal;display:flex;align-items:center;gap:.5ch;min-width:0}
@@ -172,7 +172,7 @@
   .lgarune{position:absolute;top:0;right:0;z-index:3;display:flex;flex-direction:column;gap:7px}
   .lgarune img{width:52px;height:52px;display:block}
   .side[data-role="equal"] .lgarune{gap:5px}
-  .side[data-role="equal"] .lgarune img{width:40px;height:40px}
+  .side[data-role="equal"] .lgarune img{width:40px;height:40px} /* size-exempt: rune image */
   .side[data-role="minor"] .lgarune{display:none}
 
   /* ======== the victory banner: frosted, and it sits where a menu does,
@@ -193,7 +193,7 @@
 
   /* A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE: the player's stain at
      rest, their press when pressed or armed. */
-  .sidebtn{display:block;height:44px;box-sizing:border-box;line-height:44px;border-radius:999px;padding:0 12px;min-width:0;
+  .sidebtn{display:block;height:var(--sz-row);box-sizing:border-box;line-height:44px;border-radius:999px;padding:0 12px;min-width:0;
     font-family:var(--disp);font-weight:600;font-size:13px;text-align:center;
     background:var(--pct);color:var(--pc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sidebtn:active,.sidebtn.armed{background:var(--pcr);color:var(--bone)}
@@ -204,7 +204,7 @@
   /* ======== the menus ======== */
   .two{display:flex;gap:8px}
   .two > *{flex:1;min-width:0}
-  .pfoot .two + .pact,.pfoot .pact + .pact{margin-top:8px}
+  .pfoot .two + .pact,.pfoot > .pact + .pact{margin-top:8px}
   .pfoot .pact.armed{background:var(--glass-press)}
   .pick svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:var(--muted);stroke-width:2.2;
     stroke-linecap:round;stroke-linejoin:round}
@@ -215,22 +215,22 @@
   .pgrp{margin-bottom:16px}
   .pgrp:last-child{margin-bottom:0}
   .pl1{color:var(--pc);font-family:var(--disp);font-weight:700;font-size:15px;margin:0 2px 8px}
-  .nf{display:flex;align-items:center;height:44px;box-sizing:border-box;border-radius:999px;background:var(--recess);
+  .nf{display:flex;align-items:center;height:var(--sz-row);box-sizing:border-box;border-radius:999px;background:var(--recess);
     padding:0 16px;margin-bottom:8px}
   .nf input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);
     font-family:var(--text);font-size:16px;padding:0;-webkit-user-select:text;user-select:text}
   .nf input::placeholder{color:var(--muted)}
   .legrow{margin-bottom:10px}
-  .legrow button{height:44px;box-sizing:border-box}
+  .legrow button{height:var(--sz-row);box-sizing:border-box}
   .legrow .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
   /* the Event menu: each row is name, then venue/time under it. Content
      row: sized by its own two lines, with the row floor under it. */
-  #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:44px;padding:10px 16px;gap:2px}
+  #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:var(--sz-row);padding:10px 16px;gap:2px}
   #evlist small{display:block}
 
   .swatches{display:flex;gap:6px;justify-content:space-between;padding:0 4px}
-  .swatches button{width:34px;height:34px;border-radius:999px;display:grid;place-items:center}
+  .swatches button{width:var(--sz-seg);height:var(--sz-seg);border-radius:999px;display:grid;place-items:center}
   .swatches button::after{content:"";width:26px;height:26px;border-radius:999px;background:var(--sw)}
   .swatches button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--bone)}
 
@@ -247,12 +247,12 @@
   /* the custom round length: STATIC markup under #tmrow, never rebuilt
      by renderTimerRow, so a tap into the field keeps its focus */
   .tmcustom{display:flex;gap:6px;margin-top:6px}
-  .tmcustom input{flex:1;min-width:0;height:44px;box-sizing:border-box;border-radius:999px;background:var(--recess);
+  .tmcustom input{flex:1;min-width:0;height:var(--sz-row);box-sizing:border-box;border-radius:999px;background:var(--recess);
     border:0;outline:none;color:var(--bone);padding:0 14px;
     font-family:var(--text);font-size:16px;font-variant-numeric:tabular-nums;
     -webkit-user-select:text;user-select:text}
   .tmcustom input::placeholder{color:var(--muted)}
-  .tmcustom button{flex:0 0 auto;height:44px;box-sizing:border-box;padding:0 16px;border-radius:999px;
+  .tmcustom button{flex:0 0 auto;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:999px;
     background:var(--recess);font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
   .tmcustom button.armed{background:var(--hi)}
 
@@ -317,15 +317,15 @@
 
   /* the legend picker: search and sort hold still under the head */
   .lpf{flex:0 0 auto;display:flex;gap:8px;margin:0 0 10px}
-  .sf{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:40px;border-radius:999px;padding:0 14px;
+  .sf{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:var(--sz-track);border-radius:999px;padding:0 14px;
     background:rgba(255,255,255,.07)}
   .sf svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
   .lgpq{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);font-family:var(--text);
     font-size:16px;padding:0;-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
   .lgpq::placeholder{color:var(--muted)}
   .lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
-  .lpf .seg{flex:0 0 132px;height:40px}
-  .lpf .seg button{height:34px}
+  .lpf .seg{flex:0 0 132px;height:var(--sz-track)}
+  .lpf .seg button{height:var(--sz-seg)}
   .lgpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;align-content:start}
   .lgpempty{grid-column:1/-1;padding:18px 0;text-align:center;font-size:13px;color:var(--muted)}
   .lgptile{text-align:center;border-radius:10px;padding:0 0 4px}
