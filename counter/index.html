@@ -158,6 +158,19 @@
     color:var(--muted);line-height:1.2}
   .tmv.tmfar{transform:rotate(180deg)}
   .tmv.tmover{color:var(--over);animation:overpulse var(--mo-pulse) ease-in-out infinite}
+  /* THE CLOCK shares the round timer's line: with the clock on, .tmv
+     becomes a three-part grid (a player's name and time either side,
+     the round timer's own text in the middle) instead of the plain
+     centred line above. Colour marks whose turn it is; the over-time
+     pulse stays on the round part alone, never the whole line. */
+  .tmv.tmclock{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;padding:4px;text-align:left}
+  .tmv.tmclock .tmp{min-width:0;overflow:hidden}
+  .tmv.tmclock .tmp2{text-align:right}
+  .tmv.tmclock .tmnm{max-width:9ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    display:inline-block;vertical-align:bottom}
+  .tmv.tmclock .tmr.tmover{color:var(--over);animation:overpulse var(--mo-pulse) ease-in-out infinite}
+  .tmpause{display:inline-block;width:7px;height:9px;border-left:2px solid currentColor;
+    border-right:2px solid currentColor;box-sizing:border-box;margin-right:3px;vertical-align:middle}
   @keyframes overpulse{
     0%{color:var(--over)}
     50%{color:var(--over-deep)}
@@ -388,6 +401,7 @@
 <section class="panel frost" id="pgame" aria-hidden="true" aria-label="Game">
   <div class="phead"><h4 class="ttl">Game</h4><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
+    <div class="row" id="clockpauserow" hidden><p class="lb">Clock</p><div class="pick solo"><button type="button" id="clockpause"><span class="t">Pause clock</span><span class="sp"></span><small>for a judge call</small></button></div></div>
     <div class="row"><p class="lb">End this game early</p><div class="two"><button type="button" class="sidebtn" data-concede="1" id="cc1">P1 concedes</button><button type="button" class="sidebtn" data-concede="2" id="cc2">P2 concedes</button></div></div>
     <div class="row"><div class="pick legrow solo"><button type="button" id="pendbtn"><span class="t">Time called or agreed draw</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
     <div data-slot>
@@ -408,7 +422,7 @@
         </div>
         <div class="row"><p class="lb">Event</p><div class="pick legrow solo"><button type="button" id="evbtn"><span class="t">No event</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
         <div class="row"><p class="lb">Round timer</p><div class="seg" id="tmrow"></div><div class="tmcustom" id="tmcustom"><input type="text" inputmode="numeric" maxlength="3" id="tmcustominput" placeholder="Other" aria-label="Custom round minutes"><button type="button" id="tmcustombtn">Start</button></div><div id="tmnow"></div></div>
-        <div class="row"><p class="lb">Show on the field</p><div class="tglrow" id="lgarow"><button type="button" class="pact btn glass" id="lgacard" aria-pressed="false">Legend art</button><button type="button" class="pact btn glass" id="lgrrune" aria-pressed="false">Domains</button></div></div>
+        <div class="row"><p class="lb">Show on the field</p><div class="tglrow" id="lgarow"><button type="button" class="pact btn glass" id="lgacard" aria-pressed="false">Legend art</button><button type="button" class="pact btn glass" id="lgrrune" aria-pressed="false">Domains</button><button type="button" class="pact btn glass" id="lgclock" aria-pressed="false">Clock</button></div></div>
       </div>
     </div>
     <div class="row"><p class="lb">Go to</p><div class="pick">
@@ -529,6 +543,14 @@
   var TKEY = "vir.counter.timer.v1";
   var AKEY = "vir.counter.art.v1";
   var RKEY = "vir.counter.runes.v1";
+  var CLKKEY = "vir.counter.clock.v1";
+  var clockOn = false; // default OFF; "1" is the only value that turns it on
+  function clockLoad(){
+    try { clockOn = localStorage.getItem(CLKKEY) === "1"; } catch (e) {}
+  }
+  function clockSave(){
+    try { localStorage.setItem(CLKKEY, clockOn ? "1" : "0"); } catch (e) {}
+  }
   var lgrOn = false;
   function lgrLoad(){
     try { if (localStorage.getItem(RKEY) === "on") { lgrOn = true; } } catch (e) {}
@@ -597,24 +619,54 @@
     return (neg ? "-" : "") + m + ":" + (s < 10 ? "0" + s : s);
   }
   function tmLine(far){
+    if (!clockOn) {
+      var msOld = tmMs();
+      if(msOld === null) return "";
+      return "<div class=\"tmv" + (far ? " tmfar" : "") + (msOld <= 0 ? " tmover" : "") + "\">"
+        + fmtClock(msOld) + "</div>";
+    }
+    // the clock is on: the round timer text (if any) sits in the middle
+    // of a three-part grid, player times either side. Colour marks whose
+    // turn it is; paused or decided mutes both and adds a pause mark.
     var ms = tmMs();
-    if(ms === null) return "";
-    return "<div class=\"tmv" + (far ? " tmfar" : "") + (ms <= 0 ? " tmover" : "") + "\">"
-      + fmtClock(ms) + "</div>";
+    var roundText = ms === null ? "" : (fmtClock(ms) + (ms <= 0 ? " over time" : " left"));
+    var roundCls = (ms !== null && ms <= 0) ? " tmover" : "";
+    var p = paused(ev), over = gameOver(), c = ctx();
+    var t = gameTimes(ev);
+    var t1 = t ? fmtDur(t[1]) : "0:00", t2 = t ? fmtDur(t[2]) : "0:00";
+    var col1, col2;
+    if (over || p) { col1 = "var(--muted)"; col2 = "var(--muted)"; }
+    else if (c.p === 1) { col1 = players[1].colour; col2 = "var(--muted)"; }
+    else { col1 = "var(--muted)"; col2 = players[2].colour; }
+    var mark = p ? "<span class=\"tmpause\"></span>" : "";
+    return "<div class=\"tmv tmclock" + (far ? " tmfar" : "") + "\">" +
+      "<span class=\"tmp tmp1\" style=\"color:" + col1 + "\"><span class=\"tmnm\">" + esc(nameOf(1)) +
+      "</span> " + mark + t1 + "</span>" +
+      "<span class=\"tmr" + roundCls + "\">" + roundText + "</span>" +
+      "<span class=\"tmp tmp2\" style=\"color:" + col2 + "\"><span class=\"tmnm\">" + esc(nameOf(2)) +
+      "</span> " + mark + t2 + "</span>" +
+      "</div>";
   }
   function timerTick(){
     var ms = tmMs();
-    if(ms === null){ if(tmInt){ clearInterval(tmInt); tmInt = null; } return; }
-    var txt = fmtClock(ms), over = ms <= 0, i;
-    var a = document.querySelectorAll(".tmv");
-    for(i = 0; i < a.length; i++){
-      a[i].textContent = txt;
-      if(over){ a[i].classList.add("tmover"); } else { a[i].classList.remove("tmover"); }
+    if(ms === null && !clockOn){ if(tmInt){ clearInterval(tmInt); tmInt = null; } return; }
+    if (clockOn) {
+      var farEl = document.getElementById("tmFar"), nearEl = document.getElementById("tmNear");
+      if (mode === "split" && farEl) { farEl.innerHTML = tmLine(true); }
+      if (nearEl) { nearEl.innerHTML = tmLine(false); }
+    } else {
+      var txt = fmtClock(ms), over = ms <= 0, i;
+      var a = document.querySelectorAll(".tmv");
+      for(i = 0; i < a.length; i++){
+        a[i].textContent = txt;
+        if(over){ a[i].classList.add("tmover"); } else { a[i].classList.remove("tmover"); }
+      }
     }
     var n = document.getElementById("tmnow");
-    if(n && n.textContent !== ""){
-      n.textContent = txt + (over ? " over time" : " left");
-      n.className = over ? "tmover" : "";
+    if(n && n.textContent !== "" && ms !== null){
+      var txt2 = fmtClock(ms), over2 = ms <= 0;
+      n.textContent = txt2 + (over2 ? " over time" : " left");
+      n.className = over2 ? "tmover" : "";
     }
   }
   function tmRun(){ if(!tmInt) tmInt = setInterval(timerTick, 1000); }
@@ -1156,6 +1208,16 @@
     return null;
   }
 
+  // True when the clock is currently stopped for a judge call: scanning
+  // from the end, a pause found before a resume.
+  function paused(list){
+    for (var i = list.length - 1; i >= 0; i--) {
+      if (list[i].t === "resume") { return false; }
+      if (list[i].t === "pause") { return true; }
+    }
+    return false;
+  }
+
   // THE RAIL: eight lines, each point's letter under its line.
   function trackOf(p){
     var pts = pointsOf(p), h = "";
@@ -1224,6 +1286,12 @@
 
   function seam(){
     var c = ctx(), d = gameOver() ? " disabled" : "";
+    if (clockOn && paused(ev)) {
+      return "<div class=\"seamwrap\">" +
+        "<button type=\"button\" class=\"pass btn glass\" id=\"seam\"" + d + ">" +
+        "Resume clock<span class=\"dv\"></span>" +
+        "<em style=\"color:var(--muted)\">paused</em></button></div>";
+    }
     return "<div class=\"seamwrap\">" +
       "<button type=\"button\" class=\"pass btn glass\" id=\"seam\"" + d +
       " style=\"--sc:" + players[c.p].colour + "\">Pass turn<span class=\"dv\"></span>" +
@@ -1255,6 +1323,10 @@
           out += "<li class=\"et\"><span class=\"lt\">Time called</span>" +
                  "<span class=\"rt\"><b>" + esc(nm(e.w)) + " wins the game</b></span></li>";
         }
+      } else if (e.t === "pause") {
+        out += "<li class=\"et\"><span class=\"lt\">Clock</span><span class=\"rt\">Paused</span></li>";
+      } else if (e.t === "resume") {
+        out += "<li class=\"et\"><span class=\"lt\">Clock</span><span class=\"rt\">Resumed</span></li>";
       } else {
         var gained = 0, ended = false;
         for (var j = i + 1; j < list.length; j++) {
@@ -1289,13 +1361,19 @@
     return MON[d.getMonth()].toUpperCase() + " " + d.getDate();
   }
 
-  // Each player's time in one game: the sum of their turns, a turn
-  // running from its own turn event's at to the next turn event's at,
-  // or to the game's terminal moment for the last turn. null (not an
-  // object) means "not recorded" -- any event in the game missing `at`
-  // (an old-shape record, from before this block) makes the whole game
-  // untimed rather than partly timed.
+  // Each player's time in one game, walked forward once in stream order:
+  // start on the seed's player, running. Every step adds the elapsed
+  // time since the previous event to whoever is current, but only while
+  // running; a turn then switches the current player, a pause stops the
+  // clock, a resume starts it again. The last stretch (last event to the
+  // game's terminal moment) counts only if still running when the game
+  // ended -- a game that ends while paused stops charging time there.
+  // null (not an object) means "not recorded" -- any event in the game
+  // missing `at` (an old-shape record, from before step 8) makes the
+  // whole game untimed rather than partly timed. A game with no
+  // pause/resume events at all gives exactly the totals this replaced.
   function gameTimes(list){
+    if (!list.length) { return { 1:0, 2:0 }; }
     var k;
     for (k = 0; k < list.length; k++) { if (typeof list[k].at !== "number") { return null; } }
     var term = null, i;
@@ -1312,15 +1390,18 @@
       }
     }
     if (term === null) { term = Date.now(); } // live, undecided game
-    var out = { 1:0, 2:0 }, m, n, end;
-    for (m = 0; m < list.length; m++) {
-      if (list[m].t !== "turn") { continue; }
-      end = term;
-      for (n = m + 1; n < list.length; n++) {
-        if (list[n].t === "turn") { end = list[n].at; break; }
-      }
-      out[list[m].p] += Math.max(0, end - list[m].at);
+
+    var out = { 1:0, 2:0 };
+    var cur = list[0].p, running = true, prevAt = list[0].at, m, e;
+    for (m = 1; m < list.length; m++) {
+      e = list[m];
+      if (running) { out[cur] += Math.max(0, e.at - prevAt); }
+      prevAt = e.at;
+      if (e.t === "turn") { cur = e.p; }
+      else if (e.t === "pause") { running = false; }
+      else if (e.t === "resume") { running = true; }
     }
+    if (running) { out[cur] += Math.max(0, term - prevAt); }
     return out;
   }
 
@@ -1487,6 +1568,7 @@
     elLog.innerHTML = logHTML(ev, nameOf);
     document.getElementById("logcnt").textContent = nameOf(c.p) + " turn " + c.n;
     syncPend();
+    syncClockRow();
   }
 
   function keepAwake(){
@@ -1516,11 +1598,15 @@
     while (t && t !== field && t.tagName !== "BUTTON") { t = t.parentNode; }
     if (!t || t === field) { return; }
     if (t.id === "seam") {
-      if (!gameOver()) {
-        var c = ctx(), nx = c.p === 1 ? 2 : 1;
-        ev.push({ t:"turn", p:nx, n:turns(nx) + 1, at:Date.now() });
-        save(); render(); flashSeam(); keepAwake();
+      if (gameOver()) { return; }
+      if (clockOn && paused(ev)) {
+        ev.push({ t:"resume", at:Date.now() });
+        save(); render();
+        return;
       }
+      var c = ctx(), nx = c.p === 1 ? 2 : 1;
+      ev.push({ t:"turn", p:nx, n:turns(nx) + 1, at:Date.now() });
+      save(); render(); flashSeam(); keepAwake();
       return;
     }
     if (t.getAttribute("data-spot")) {
@@ -1899,8 +1985,24 @@
     closeMenus();
   }
 
+  // The Clock row: hidden entirely while the clock is off, otherwise
+  // reading Pause/Resume to match paused(ev), disabled once the game is
+  // over (same reasoning as the concede buttons and the pend rows).
+  function syncClockRow(){
+    var row = document.getElementById("clockpauserow");
+    if (!row) { return; }
+    row.hidden = !clockOn;
+    var btn = document.getElementById("clockpause");
+    if (!btn) { return; }
+    var p = paused(ev);
+    btn.querySelector(".t").textContent = p ? "Resume clock" : "Pause clock";
+    btn.querySelector("small").textContent = p ? "paused" : "for a judge call";
+    btn.disabled = gameOver();
+  }
+
   function syncSetup(){
     syncConcedeLabels();
+    syncClockRow();
     cseSyncRow();
     for (var p = 1; p <= 2; p++) {
       document.getElementById("n" + p).value = players[p].name;
@@ -1940,6 +2042,13 @@
     }
     if (t.id === "pendbtn") {
       pendOpen();
+      return;
+    }
+    if (t.id === "clockpause") {
+      if (gameOver()) { return; }
+      ev.push(paused(ev) ? { t:"resume", at:Date.now() } : { t:"pause", at:Date.now() });
+      save(); render();
+      closeMenus();
       return;
     }
     var col = t.getAttribute && t.getAttribute("data-col");
@@ -2226,8 +2335,10 @@
   // deliberately separate -- runes with no card is a wanted combination.
   function lgaSync(){
     var c = document.getElementById("lgacard"), r = document.getElementById("lgrrune");
+    var k = document.getElementById("lgclock");
     if (c) { c.setAttribute("aria-pressed", lgaMode === "small" ? "true" : "false"); }
     if (r) { r.setAttribute("aria-pressed", lgrOn ? "true" : "false"); }
+    if (k) { k.setAttribute("aria-pressed", clockOn ? "true" : "false"); }
   }
   document.getElementById("lgarow").addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("button") : null;
@@ -2238,6 +2349,16 @@
     } else if (b.id === "lgrrune") {
       lgrOn = !lgrOn;
       lgrSave();
+    } else if (b.id === "lgclock") {
+      // no hidden pause can swallow time -- turning the clock off while
+      // paused first resumes it, exactly as if a judge waved play on
+      if (clockOn && paused(ev)) {
+        ev.push({ t:"resume", at:Date.now() });
+        save();
+      }
+      clockOn = !clockOn;
+      clockSave();
+      if (clockOn) { tmRun(); }
     } else { return; }
     lgaSync();
     render();
@@ -2315,6 +2436,7 @@
   mode = loadMode();
   lgaLoad();
   lgrLoad();
+  clockLoad();
   loadPlayers();
   history = loadHistory();
   loadMatch();
@@ -2323,7 +2445,7 @@
   renderPast();
   render();
   renderTimerRow();
-  if(tmMs() !== null) tmRun();
+  if(tmMs() !== null || clockOn) tmRun();
   cseSyncRow();
 
   // ENTRY 2: ?ev=<id> on load. The query is removed with replaceState
