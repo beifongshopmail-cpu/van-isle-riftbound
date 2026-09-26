@@ -206,6 +206,9 @@
   .two > *{flex:1;min-width:0}
   .pfoot .two + .pact,.pfoot > .pact + .pact{margin-top:8px}
   .pfoot .pact.armed{background:var(--glass-press)}
+  /* the pend rows use the same armed cue as a pressed .pick row, since
+     they are .pick buttons carrying the concede idiom, not .pact ones */
+  #pend .pick button.armed{background:var(--hi)}
   .pick svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:var(--muted);stroke-width:2.2;
     stroke-linecap:round;stroke-linejoin:round}
   .pnote{font-size:12px;color:var(--muted);margin:8px 2px 0;line-height:1.5}
@@ -292,6 +295,7 @@
   .res.rwin{color:var(--p1)}
   .res.rloss{color:var(--p2)}
   .res.rdnf{color:var(--muted)}
+  .res.rdraw{color:var(--muted)}
   .sco{flex:0 0 52px;display:flex;align-items:baseline;gap:2px;font-family:var(--disp);font-weight:700;font-size:20px}
   .sco .s1{color:var(--p1)}
   .sco .s2{color:var(--p2)}
@@ -385,6 +389,7 @@
   <div class="phead"><h4 class="ttl">Game</h4><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row"><p class="lb">End this game early</p><div class="two"><button type="button" class="sidebtn" data-concede="1" id="cc1">P1 concedes</button><button type="button" class="sidebtn" data-concede="2" id="cc2">P2 concedes</button></div></div>
+    <div class="row"><div class="pick legrow solo"><button type="button" id="pendbtn"><span class="t">Time called or agreed draw</span><span class="sp"></span><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
     <div data-slot>
       <div id="shared">
         <div class="row"><p class="lb">Players</p>
@@ -450,10 +455,25 @@
   <div class="pbody"><div class="pick" id="evlist"></div></div>
 </section>
 
+<!-- TIME CALLED / DRAW: one deeper from the Game menu's new row -->
+<section class="panel frost" id="pend" aria-hidden="true" aria-label="Time called or draw">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Time called or draw</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="row"><p class="lb">Time called</p><div class="pick">
+      <button type="button" id="pendw1" data-endw="1" style="color:var(--pc)">Player 1 wins this game</button>
+      <button type="button" id="pendw2" data-endw="2" style="color:var(--pc)">Player 2 wins this game</button>
+      <button type="button" id="pendtd" data-endw="0">Draw</button>
+    </div></div>
+    <div class="row"><p class="lb">Agreed</p><div class="pick solo">
+      <button type="button" id="pendagree" data-endagree="1">Intentional draw</button>
+    </div></div>
+  </div>
+</section>
+
 <!-- LOG: this game, with the way into past matches always in the foot -->
 <section class="panel frost" id="plog" aria-hidden="true" aria-label="Log">
   <div class="phead"><div class="ht"><h4 class="ttl">This game</h4><span class="cnt" id="logcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><ol id="log"></ol></div>
+  <div class="pbody"><div id="logtime" class="pnote"></div><ol id="log"></ol></div>
   <div class="pfoot"><div class="pick solo"><button type="button" id="pastbtn">Past matches<span class="sp"></span><small id="pastn">0</small><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>
 </section>
 
@@ -817,6 +837,7 @@
   var pnew = document.getElementById("pnew");
   var pleg = document.getElementById("pleg");
   var pevt = document.getElementById("pevt");
+  var pend = document.getElementById("pend");
   var shared = document.getElementById("shared");
   var scrim = document.getElementById("scrim");
   var elPast = document.getElementById("past");
@@ -831,7 +852,7 @@
   var boPick = 1;
   var banked = [];
 
-  function fresh(p){ return [ { t:"turn", p:(p === 2 ? 2 : 1), n:1 } ]; }
+  function fresh(p){ return [ { t:"turn", p:(p === 2 ? 2 : 1), n:1, at:Date.now() } ]; }
 
   function save(){ try { localStorage.setItem(GKEY, JSON.stringify(ev)); } catch (e) {} }
   function saveMode(){ try { localStorage.setItem(MKEY, mode); } catch (e) {} }
@@ -995,7 +1016,7 @@
 
   function endMatch(){
     var games = banked.slice();
-    if (won()) { games.push({ ev:ev.slice(), p:snap() }); }
+    if (decided(ev)) { games.push({ ev:ev.slice(), p:snap() }); }
     if (!games.length) { return; }
     var rec = { v:1, at:Date.now(), bo:bo, games:games };
     var cur = cseGet();
@@ -1032,7 +1053,50 @@
   }
 
   function matchOpen(){
+    if (endedByCall(curGames())) { return false; }
     return bo === 3 && !matchWinner() && (gameWins(1) + gameWins(2)) > 0;
+  }
+
+  // Every game played so far, in order: the banked (finished) ones, plus
+  // the live one if it has itself been decided. Same shape as `banked`
+  // ({ev, p}), minus `p` where it isn't needed.
+  function curGames(){
+    return decided(ev) ? banked.concat([{ ev:ev }]) : banked;
+  }
+
+  // True the moment any game in the list was ended by a call -- time
+  // called or an agreed draw -- rather than by points or a concede.
+  function endedByCall(games){
+    for (var i = 0; i < games.length; i++) {
+      var g = games[i].ev;
+      for (var j = 0; j < g.length; j++) { if (g[j].t === "end") { return true; } }
+    }
+    return false;
+  }
+
+  // The match's own result: 1, 2, "draw", or 0 (not decided). Used by
+  // both the live banner and the past-matches row, so a record's own
+  // bo travels in (never the live global `bo`, which a past record may
+  // not share). Once any game was ended by a call, the whole match is
+  // decided immediately, by game wins -- equal wins is a match draw.
+  // Otherwise this is exactly the classic need()/matchWinner() path,
+  // reduced to game-win counting so a single finished game (bo 1) and a
+  // multi-game match (bo 3) share one formula.
+  function matchResult(games, curBo){
+    if (!games.length) { return 0; }
+    var w1 = 0, w2 = 0, i, wi;
+    for (i = 0; i < games.length; i++) {
+      wi = winnerOf(games[i].ev);
+      if (wi === 1) { w1++; } else if (wi === 2) { w2++; }
+    }
+    if (endedByCall(games)) {
+      if (w1 === w2) { return "draw"; }
+      return w1 > w2 ? 1 : 2;
+    }
+    var needed = curBo === 3 ? 2 : 1;
+    if (w1 >= needed) { return 1; }
+    if (w2 >= needed) { return 2; }
+    return 0;
   }
 
   function pointsOf(p){
@@ -1053,6 +1117,7 @@
   function winnerOf(list){
     for (var i = list.length - 1; i >= 0; i--) {
       if (list[i].t === "concede") { return list[i].p === 1 ? 2 : 1; }
+      if (list[i].t === "end") { return list[i].w; }
     }
     var s1 = 0, s2 = 0;
     for (var j = 0; j < list.length; j++) {
@@ -1066,6 +1131,31 @@
   }
   function won(){ return winnerOf(ev); }
 
+  // True when the last concede-or-end event (same scan winnerOf uses) is
+  // an end event with w 0 -- a drawn game, whether by time or agreement.
+  function isDraw(list){
+    for (var i = list.length - 1; i >= 0; i--) {
+      if (list[i].t === "concede") { return false; }
+      if (list[i].t === "end") { return list[i].w === 0; }
+    }
+    return false;
+  }
+  // decided: the game has a result at all -- a winner, or a draw. This
+  // is the GAME-OVER question; winnerOf/won stay the WHO-WON one.
+  function decided(list){ return winnerOf(list) !== 0 || isDraw(list); }
+  function gameOver(){ return decided(ev); }
+
+  // The trailing end event, if the last concede-or-end event in the list
+  // is one -- null if the game ended some other way (or hasn't ended).
+  // Used only for its `why`, to tell an agreed draw from a timed one.
+  function lastEnd(list){
+    for (var i = list.length - 1; i >= 0; i--) {
+      if (list[i].t === "concede") { return null; }
+      if (list[i].t === "end") { return list[i]; }
+    }
+    return null;
+  }
+
   // THE RAIL: eight lines, each point's letter under its line.
   function trackOf(p){
     var pts = pointsOf(p), h = "";
@@ -1077,7 +1167,7 @@
   }
 
   function acts(p){
-    var d = won() ? " disabled" : "";
+    var d = gameOver() ? " disabled" : "";
     return "<div class=\"acts\">" +
       "<button data-p=\"" + p + "\" data-s=\"conquer\"" + d + ">Conquer</button>" +
       "<button data-p=\"" + p + "\" data-s=\"hold\"" + d + ">Hold</button>" +
@@ -1133,7 +1223,7 @@
   }
 
   function seam(){
-    var c = ctx(), d = won() ? " disabled" : "";
+    var c = ctx(), d = gameOver() ? " disabled" : "";
     return "<div class=\"seamwrap\">" +
       "<button type=\"button\" class=\"pass btn glass\" id=\"seam\"" + d +
       " style=\"--sc:" + players[c.p].colour + "\">Pass turn<span class=\"dv\"></span>" +
@@ -1154,6 +1244,17 @@
       } else if (e.t === "concede") {
         out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
                "<span class=\"rt\"><b>" + esc(nm(e.p)) + " concedes</b></span></li>";
+      } else if (e.t === "end") {
+        if (e.why === "agreed") {
+          out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
+                 "<span class=\"rt\"><b>Intentional draw</b></span></li>";
+        } else if (e.w === 0) {
+          out += "<li class=\"et\"><span class=\"lt\">Time called</span>" +
+                 "<span class=\"rt\"><b>Game drawn</b></span></li>";
+        } else {
+          out += "<li class=\"et\"><span class=\"lt\">Time called</span>" +
+                 "<span class=\"rt\"><b>" + esc(nm(e.w)) + " wins the game</b></span></li>";
+        }
       } else {
         var gained = 0, ended = false;
         for (var j = i + 1; j < list.length; j++) {
@@ -1186,6 +1287,70 @@
   function stamp(ms){
     var d = new Date(ms);
     return MON[d.getMonth()].toUpperCase() + " " + d.getDate();
+  }
+
+  // Each player's time in one game: the sum of their turns, a turn
+  // running from its own turn event's at to the next turn event's at,
+  // or to the game's terminal moment for the last turn. null (not an
+  // object) means "not recorded" -- any event in the game missing `at`
+  // (an old-shape record, from before this block) makes the whole game
+  // untimed rather than partly timed.
+  function gameTimes(list){
+    var k;
+    for (k = 0; k < list.length; k++) { if (typeof list[k].at !== "number") { return null; } }
+    var term = null, i;
+    for (i = list.length - 1; i >= 0; i--) {
+      if (list[i].t === "concede" || list[i].t === "end") { term = list[i].at; break; }
+    }
+    if (term === null) {
+      var s1 = 0, s2 = 0, j;
+      for (j = 0; j < list.length; j++) {
+        if (list[j].t === "point") {
+          if (list[j].p === 1) { s1++; if (s1 === GOAL) { term = list[j].at; break; } }
+          else if (list[j].p === 2) { s2++; if (s2 === GOAL) { term = list[j].at; break; } }
+        }
+      }
+    }
+    if (term === null) { term = Date.now(); } // live, undecided game
+    var out = { 1:0, 2:0 }, m, n, end;
+    for (m = 0; m < list.length; m++) {
+      if (list[m].t !== "turn") { continue; }
+      end = term;
+      for (n = m + 1; n < list.length; n++) {
+        if (list[n].t === "turn") { end = list[n].at; break; }
+      }
+      out[list[m].p] += Math.max(0, end - list[m].at);
+    }
+    return out;
+  }
+
+  // m:ss under an hour, h:mm:ss at or over.
+  function fmtDur(ms){
+    var s = Math.floor(ms / 1000), h = Math.floor(s / 3600);
+    s -= h * 3600;
+    var m = Math.floor(s / 60);
+    s -= m * 60;
+    var p2 = function(n){ return n < 10 ? "0" + n : "" + n; };
+    return h > 0 ? (h + ":" + p2(m) + ":" + p2(s)) : (m + ":" + p2(s));
+  }
+
+  // "<P1> 12:34 . <P2> 10:02", the same middle dot cseLabel uses, or
+  // "Time not recorded".
+  function timeLineText(list, nm){
+    var t = gameTimes(list);
+    if (!t) { return "Time not recorded"; }
+    return nm(1) + " " + fmtDur(t[1]) + " · " + nm(2) + " " + fmtDur(t[2]);
+  }
+
+  // "Match time 45:10" -- first event of game 1 to last event of the
+  // last game -- or "Time not recorded".
+  function matchTimeText(gs){
+    if (!gs || !gs.length) { return "Time not recorded"; }
+    var first = gs[0].ev, last = gs[gs.length - 1].ev;
+    if (!first || !first.length || !last || !last.length) { return "Time not recorded"; }
+    var a = first[0].at, b = last[last.length - 1].at;
+    if (typeof a !== "number" || typeof b !== "number") { return "Time not recorded"; }
+    return "Match time " + fmtDur(Math.max(0, b - a));
   }
 
   function renderPast(){
@@ -1234,16 +1399,17 @@
         if (wj === 1) { gw1++; } else if (wj === 2) { gw2++; }
         tt += sj.turns;
         var jt = sj.conceded ? "conceded" : sj.turns + " turns";
+        body += "<p class=\"pnote\">" + esc(timeLineText(gj.ev, nm)) + "</p>";
         body += "<div class=\"ghead\">Game " + (j + 1) +
           "<b class=\"g1\">" + sj[1] + "</b><b>vs</b><b class=\"g2\">" + sj[2] + "</b>" +
           "<span class=\"gsub\">" + esc(nm(sj.first)) + " first &middot; " + jt + "</span></div>";
         body += "<ol>" + logHTML(gj.ev, nm) + "</ol>";
       }
       var s0 = statsOf(g0.ev);
-      var w = multi ? (gw1 >= 2 ? 1 : (gw2 >= 2 ? 2 : 0)) : winnerOf(g0.ev);
+      var w = matchResult(gs, m.bo);
       var lf = multi ? gw1 : s0[1], rt = multi ? gw2 : s0[2];
-      var rc = w === 1 ? "rwin" : (w === 2 ? "rloss" : "rdnf");
-      var rl = w === 1 ? "Win" : (w === 2 ? "Loss" : "DNF");
+      var rc = w === 1 ? "rwin" : (w === 2 ? "rloss" : (w === "draw" ? "rdraw" : "rdnf"));
+      var rl = w === 1 ? "Win" : (w === 2 ? "Loss" : (w === "draw" ? "Draw" : "DNF"));
       var legs = esc(g0.p[1].legend || "No legend") + " vs " +
                  esc(g0.p[2].legend || "No legend");
       var len = multi ? "best of 3" : "single game";
@@ -1258,7 +1424,7 @@
         "<span class=\"opp\"><span class=\"vs\">vs</span> " +
         "<span class=\"them\">" + esc(nm(2)) + "</span></span>" +
         "<span class=\"mday\">" + stamp(m.at) + "</span></button>" +
-        "<div class=\"mbody\"><div class=\"dtl\">" + legs + " &middot; " + len +
+        "<div class=\"mbody\"><p class=\"pnote\">" + esc(matchTimeText(gs)) + "</p><div class=\"dtl\">" + legs + " &middot; " + len +
         " &middot; " + cnt + " &middot; " + tt
         + (tt === 1 ? " turn" : " turns") + tagd + "</div>" + body + "</div></li>";
     }
@@ -1267,15 +1433,36 @@
   }
 
   function render(){
-    var c = ctx(), w = won();
+    var c = ctx(), w = gameOver();
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
     var open = w ? matchOpen() : false;
-    elWin.textContent = !w ? nameOf(1) + " wins"
-      : bo === 1 ? nameOf(w) + " wins"
-      : open ? nameOf(w) + " wins game " + (banked.length + 1)
-      : nameOf(w) + " wins the match";
-    elWin.style.color = w ? players[w].colour : "";
+    if (!w) {
+      elWin.textContent = nameOf(1) + " wins";
+      elWin.style.color = "";
+    } else if (open) {
+      // the match continues (bo 3, no call yet, wins short of need()):
+      // this banner is about the game that just ended, not the match
+      var gw = winnerOf(ev);
+      elWin.textContent = nameOf(gw) + " wins game " + (banked.length + 1);
+      elWin.style.color = players[gw].colour;
+    } else {
+      var mr = matchResult(curGames(), bo);
+      if (mr === "draw") {
+        var end = lastEnd(ev);
+        elWin.textContent = (end && end.why === "agreed") ? "Intentional draw" : "Match drawn";
+        elWin.style.color = "var(--bone)";
+      } else if (mr === 1 || mr === 2) {
+        elWin.textContent = bo === 1 ? nameOf(mr) + " wins" : nameOf(mr) + " wins the match";
+        elWin.style.color = players[mr].colour;
+      } else {
+        // defensive fallback -- w is true (gameOver) and open is false,
+        // so mr should never land here, but never show a blank banner
+        var gw2 = winnerOf(ev);
+        elWin.textContent = gw2 ? (bo === 1 ? nameOf(gw2) + " wins" : nameOf(gw2) + " wins the match") : nameOf(1) + " wins";
+        elWin.style.color = gw2 ? players[gw2].colour : "";
+      }
+    }
     elBanner.setAttribute("data-next", open ? "1" : "0");
     if (open) { syncNext(); }
     if (w) { syncAgain(); } else { disarmAgain(); }
@@ -1295,8 +1482,11 @@
     document.getElementById("seamSlot").innerHTML = seam();
     document.getElementById("tmNear").innerHTML = tmLine(false);
 
+    var lt = document.getElementById("logtime");
+    if (lt) { lt.textContent = timeLineText(ev, nameOf); }
     elLog.innerHTML = logHTML(ev, nameOf);
     document.getElementById("logcnt").textContent = nameOf(c.p) + " turn " + c.n;
+    syncPend();
   }
 
   function keepAwake(){
@@ -1326,9 +1516,9 @@
     while (t && t !== field && t.tagName !== "BUTTON") { t = t.parentNode; }
     if (!t || t === field) { return; }
     if (t.id === "seam") {
-      if (!won()) {
+      if (!gameOver()) {
         var c = ctx(), nx = c.p === 1 ? 2 : 1;
-        ev.push({ t:"turn", p:nx, n:turns(nx) + 1 });
+        ev.push({ t:"turn", p:nx, n:turns(nx) + 1, at:Date.now() });
         save(); render(); flashSeam(); keepAwake();
       }
       return;
@@ -1338,10 +1528,10 @@
       return;
     }
     if (t.getAttribute("data-s")) {
-      if (won()) { return; }
+      if (gameOver()) { return; }
       var c2 = ctx();
       ev.push({ t:"point", p:parseInt(t.getAttribute("data-p"), 10),
-                src:t.getAttribute("data-s"), tp:c2.p, tn:c2.n });
+                src:t.getAttribute("data-s"), tp:c2.p, tn:c2.n, at:Date.now() });
       var fp = t.getAttribute("data-p"), fs = t.getAttribute("data-s");
       save(); render(); keepAwake();
       var nb = field.querySelector('.acts button[data-p="' + fp + '"][data-s="' + fs + '"]');
@@ -1485,7 +1675,7 @@
     var t = e.target.closest ? e.target.closest("button") : e.target;
     var v = t && t.getAttribute ? t.getAttribute("data-open") : null;
     if (!v) { return; }
-    if (!won() || !matchOpen()) { return; }
+    if (!gameOver() || !matchOpen()) { return; }
     disarmAgain();
     bankGame();
     ev = fresh(parseInt(v, 10));
@@ -1547,7 +1737,7 @@
     syncBack();
   }
   function closeMenus(){
-    tmDisarm(); disarmConcede(); disarmClear(); disarmReset();
+    tmDisarm(); disarmConcede(); disarmPend(); disarmClear(); disarmReset();
     openPanel(null);
   }
   scrim.addEventListener("click", closeMenus);
@@ -1585,7 +1775,7 @@
   }
 
   function syncConcedeLabels(){
-    var w = won();
+    var w = gameOver();
     var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
     if (b1) {
       if (!b1.classList.contains("armed")) { b1.textContent = nameOf(1) + " concedes"; }
@@ -1598,6 +1788,80 @@
       b2.disabled = w ? true : false;
     }
   }
+
+  // TIME CALLED / AGREED DRAW: the same arm-and-confirm idiom as the
+  // concede buttons, across the Game menu's row and the four rows one
+  // deeper in #pend.
+  var pendArmed = null;
+  var pendTimer = null;
+
+  function pendOpen(){
+    syncPend();
+    deeper(pend);
+  }
+
+  function disarmPend(){
+    pendArmed = null;
+    if (pendTimer) { clearTimeout(pendTimer); pendTimer = null; }
+    var ids = ["pendw1", "pendw2", "pendtd", "pendagree"], i, b;
+    for (i = 0; i < ids.length; i++) {
+      b = document.getElementById(ids[i]);
+      if (b) { b.classList.remove("armed"); }
+    }
+    syncPend();
+  }
+
+  // Labels, side colours and the disabled state (the row in the Game
+  // menu, and all four rows here) -- gameOver() disables every one of
+  // them, the same reasoning as the concede buttons.
+  function syncPend(){
+    var over = gameOver();
+    var pb = document.getElementById("pendbtn");
+    if (pb) { pb.disabled = over; }
+    var b1 = document.getElementById("pendw1"), b2 = document.getElementById("pendw2");
+    var td = document.getElementById("pendtd"), ag = document.getElementById("pendagree");
+    if (b1) {
+      if (pendArmed !== "1") { b1.textContent = nameOf(1) + " wins this game"; }
+      wearSide(b1, 1);
+      b1.disabled = over;
+    }
+    if (b2) {
+      if (pendArmed !== "2") { b2.textContent = nameOf(2) + " wins this game"; }
+      wearSide(b2, 2);
+      b2.disabled = over;
+    }
+    if (td) {
+      if (pendArmed !== "0") { td.textContent = "Draw"; }
+      td.disabled = over;
+    }
+    if (ag) {
+      if (pendArmed !== "agree") { ag.textContent = "Intentional draw"; }
+      ag.disabled = over;
+    }
+  }
+
+  pend.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest("button") : null;
+    if (!t) { return; }
+    var ew = t.getAttribute("data-endw");
+    var ea = t.hasAttribute("data-endagree");
+    if (ew === null && !ea) { return; } // back/close, handled by the shared .panel listener
+    if (t.disabled) { return; }
+    var key = ea ? "agree" : ew;
+    if (pendArmed !== key) {
+      disarmPend();
+      pendArmed = key;
+      t.classList.add("armed");
+      t.textContent = "Sure? Tap again";
+      pendTimer = setTimeout(disarmPend, 3000);
+      return;
+    }
+    disarmPend();
+    if (ea) { ev.push({ t:"end", w:0, why:"agreed", at:Date.now() }); }
+    else { ev.push({ t:"end", w:parseInt(ew, 10), why:"time", at:Date.now() }); }
+    save(); render();
+    closeMenus();
+  });
 
   function syncLen(){
     var b = document.getElementById("blen").getElementsByTagName("button");
@@ -1674,6 +1938,10 @@
       cseOpen();
       return;
     }
+    if (t.id === "pendbtn") {
+      pendOpen();
+      return;
+    }
     var col = t.getAttribute && t.getAttribute("data-col");
     if (col) {
       players[parseInt(t.getAttribute("data-p"), 10)].colour = col;
@@ -1682,7 +1950,7 @@
     }
     var cc = t.getAttribute && t.getAttribute("data-concede");
     if (cc) {
-      if (won()) { syncConcedeLabels(); return; }
+      if (gameOver()) { syncConcedeLabels(); return; }
       if (t.disabled) { return; }
       if (ccArmed !== cc) {
         disarmConcede();
@@ -1693,7 +1961,7 @@
         return;
       }
       disarmConcede();
-      ev.push({ t:"concede", p:parseInt(cc, 10) });
+      ev.push({ t:"concede", p:parseInt(cc, 10), at:Date.now() });
       save(); render();
       closeMenus();
       return;
