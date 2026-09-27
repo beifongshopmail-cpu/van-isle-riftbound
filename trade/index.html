@@ -135,16 +135,16 @@ a{color:inherit;text-decoration:none}
 .lamt{flex:0 0 auto;font-size:15px;font-weight:700}
 .lact{display:none;align-items:center;gap:8px;padding:0 0 12px 48px}
 .ln.open .lact{display:flex}
-.stp{display:inline-flex;align-items:center;height:var(--sz-sm);border-radius:999px;background:rgba(0,0,0,.28);padding:2px}
-.stp button{width:32px;height:32px;border-radius:999px;display:grid;place-items:center}
+.stp{display:inline-flex;align-items:center;height:var(--sz-track);border-radius:999px;background:rgba(0,0,0,.28);padding:3px}
+.stp button{width:var(--sz-seg);height:var(--sz-seg);border-radius:999px;display:grid;place-items:center}
 .stp button:active{background:var(--hi)}
 .stp svg{width:14px;height:14px}
 .stp span{min-width:22px;text-align:center;font-size:15px;font-weight:700}
-.mvp{min-width:0;height:var(--sz-sm);padding:0 14px 0 10px;display:flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:600;font-size:13px}
+.mvp{min-width:0;height:var(--sz-track);padding:0 14px 0 10px;display:flex;align-items:center;gap:6px;font-family:var(--disp);font-weight:600;font-size:13px}
 .mvp .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mvp svg{width:16px;height:16px;flex:0 0 auto}
 .mvp.d1 svg{color:var(--yc)} .mvp.d2 svg{color:var(--tc)}
-.lact .del{flex:0 0 auto;margin-left:auto;color:var(--muted)}
+.lact .del{flex:0 0 auto;margin-left:auto;color:var(--muted);height:var(--sz-track)}
 .lact .circ svg{width:17px;height:17px}
 /* THE CHIP IS PART OF ITS LINE. Size, weight and colour all inherit, so it
    matches the text it sits after. The arrow is sized in em to the line,

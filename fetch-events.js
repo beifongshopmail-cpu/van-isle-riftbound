@@ -132,6 +132,9 @@ function shape(raw, region) {
   const roundMinutes = settings.round_duration_in_minutes;
   const round = (typeof roundMinutes === "number" && isFinite(roundMinutes) && roundMinutes > 0)
     ? roundMinutes : null;
+  const gameWins = settings.maximum_number_of_game_wins_per_match;
+  const wins = (typeof gameWins === "number" && isFinite(gameWins) && gameWins >= 1)
+    ? gameWins : null;
   return {
     id: raw.id,
     name: String(raw.name || "").trim(),
@@ -150,6 +153,7 @@ function shape(raw, region) {
     currency: raw.currency || "CAD",
     updated: raw.updated_at || null,
     round: round,
+    wins: wins,
     sid: (store.id === null || store.id === undefined) ? null : store.id,
     store: STORE_SHORT[String(store.id)] || null
   };
