@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-09-27T17:34:41.084Z",
- "generated_local": "2026-09-27T10:34:41-07:00",
+ "generated_at": "2026-09-28T06:24:07.269Z",
+ "generated_local": "2026-09-27T23:24:07-07:00",
  "window_start": "2026-09-27T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
-   "returned": 14,
-   "added": 14
+   "returned": 12,
+   "added": 12
   },
   {
    "name": "Courtenay",
@@ -23,56 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 27,
-  "unique": 27,
+  "fetched": 25,
+  "unique": 25,
   "prev_unique": 27
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 821777,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-09-27T11:30:00-07:00",
-   "end": "2026-09-27T15:40:00-07:00",
-   "day": "2026-09-27",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 1,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-02T05:01:08+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 16866,
-   "store": "Everything Games"
-  },
-  {
-   "id": 932479,
-   "name": "Sunday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-09-27T17:30:00-07:00",
-   "end": "2026-09-27T21:40:00-07:00",
-   "day": "2026-09-27",
-   "time": "5:30 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 3,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-09-10T18:02:48+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 4294,
-   "store": "Skyhaven"
-  },
   {
    "id": 827959,
    "name": "Tuesday Riftbound Playnight",
