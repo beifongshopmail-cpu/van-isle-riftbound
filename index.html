@@ -98,7 +98,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 <div class="top">
   <h1 class="hubname">RAVI</h1>
-  <button type="button" class="circ btn glass hubgear" id="hubset" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+  <button type="button" class="circ btn glass hubgear" id="hubset" aria-label="Settings" data-k="deeper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
 </div>
 
 <div class="low glass">
@@ -113,11 +113,11 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 <section class="panel frost opento" id="pset" aria-hidden="true" aria-label="Settings">
   <div class="phead">
     <h4 class="ttl">Settings</h4>
-    <button type="button" class="circ btn glass" id="psclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button type="button" class="circ btn glass" id="psclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="pbody">
     <p class="lb">Open the app to</p>
-    <div class="pick" id="opento"></div>
+    <div class="pick" id="opento" data-k="pick"></div>
     <p class="oponote">Opening the app skips the hub. Tap Hub on any page to come back.</p>
   </div>
 </section>
@@ -134,7 +134,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   for (var i = 0; i < PAGES.length; i++) {
     var p = PAGES[i];
     if (p.path) {
-      h += '<a class="blk glass" href="' + p.path + '" style="--cl:' + p.rgb + '"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
+      h += '<a class="blk glass" href="' + p.path + '" style="--cl:' + p.rgb + '" data-k="do"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
     } else {
       h += '<div class="blk glass dead" aria-disabled="true"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></div>';
     }

@@ -12,6 +12,7 @@
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
 <style>
 /* The calendar, at the site root. CARD SYSTEM, converted 2026-09-19.
    The shared layer (tokens, glass, frost, bar, panels, option tracks,
@@ -148,8 +149,9 @@ a{color:inherit;text-decoration:none}
 }
 .ev.t-nexus{--ga:.26}
 .ev.t-skirmish{--ga:.24}
-.evhead{display:block;width:100%;background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.evhead{display:block;position:relative;width:100%;background:none;border:0;padding:0 20px 0 0;margin:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .evhead:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
+.evhead .chev{position:absolute;top:50%;right:0;margin-top:-8px;color:var(--muted)}
 .ev .l1,.ev .l3{display:flex;align-items:center;gap:8px;font-size:12px}
 .ev .l1 .mk{width:8px;height:8px}
 .ev .l1 .mk.s-bar{width:11px;height:5px}
@@ -218,12 +220,12 @@ a{color:inherit;text-decoration:none}
     <span class="m" id="mname">&nbsp;</span>
     <span class="y mono" id="myear"></span>
     <span class="sp"></span>
-    <button type="button" class="hemi hl btn glass" id="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
-    <button type="button" class="hemi hr btn glass" id="next" aria-label="Next month"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
-    <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings">
+    <button type="button" class="hemi hl btn glass" id="prev" aria-label="Previous month" data-k="do"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
+    <button type="button" class="hemi hr btn glass" id="next" aria-label="Next month" data-k="do"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
+    <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings" data-k="deeper">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.4a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-.97 1.47V20a2 2 0 1 1-4 0v-.09A1.6 1.6 0 0 0 9.1 18.4a1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.77 1.6 1.6 0 0 0-1.47-.97H3a2 2 0 1 1 0-4h.09A1.6 1.6 0 0 0 4.6 9.1a1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.77.32H9.1a1.6 1.6 0 0 0 .97-1.47V3a2 2 0 1 1 4 0v.09a1.6 1.6 0 0 0 .97 1.47 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77v.08a1.6 1.6 0 0 0 1.47.97H21a2 2 0 1 1 0 4h-.09a1.6 1.6 0 0 0-1.47.97z"/></svg>
     </button>
-    <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar" data-k="open"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
   </div>
 
   <div class="dow" aria-hidden="true">
@@ -252,55 +254,45 @@ a{color:inherit;text-decoration:none}
         Free for any island store or player to use or link.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
     </p>
-    <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
   </footer>
 </main>
 
 <nav class="bar frost" id="tabs">
-  <a class="tab" href="../?hub" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
-  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect class="fillon" x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4" stroke-linecap="round"/><path d="M3 9h18" stroke="#3A3B3C"/></svg></button>
-  <a class="tab" id="subtab" href="#" aria-label="Subscribe in your calendar app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></a>
-  <button type="button" class="tab" id="tabset" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+  <a class="tab" href="../?hub" aria-label="Hub" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
+  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Events" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect class="fillon" x="3" y="4" width="18" height="17" rx="3"/><path d="M8 2v4M16 2v4" stroke-linecap="round"/><path d="M3 9h18" stroke="#3A3B3C"/></svg></button>
+  <a class="tab" id="subtab" href="#" aria-label="Subscribe in your calendar app" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></a>
+  <button type="button" class="tab" id="tabset" aria-label="Settings" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
 </nav>
 
 <div class="scrim" id="scrim"></div>
 <section class="panel frost" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="phead">
     <h4 class="ttl">Go to</h4>
-    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-  <div class="pbody"><div class="pick">
-    <button type="button" class="on" id="pnhere">Events<span class="sp"></span><small>Calendar</small></button>
-    <a href="../counter/">Game<span class="sp"></span><small>Point counter</small></a>
-    <a href="../trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
-    <a href="../feedback/">Feedback<span class="sp"></span><small>Tell us</small></a>
-  </div></div>
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
 <section class="panel frost" id="panel" aria-hidden="true" aria-label="Calendar settings">
   <div class="phead">
     <h4 class="ttl">Calendar settings</h4>
-    <button type="button" class="circ btn glass" id="pclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button type="button" class="circ btn glass" id="pclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="pbody">
   <div class="row">
     <p class="lb">Area</p>
-    <div class="seg" role="group" aria-label="Area">
+    <div class="seg" role="group" aria-label="Area" data-k="pick">
       <button type="button" data-scope="victoria" aria-pressed="true">Greater Victoria</button>
       <button type="button" data-scope="island" aria-pressed="false">Whole Island</button>
     </div>
   </div>
   <div class="row">
     <p class="lb">Event types</p>
-    <div class="tylist" id="tylist"></div>
+    <div class="tylist" id="tylist" data-k="pick"></div>
   </div>
   <div class="row">
     <p class="lb">Stores</p>
-    <div class="tylist" id="stlist"></div>
+    <div class="tylist" id="stlist" data-k="pick"></div>
   </div>
-  <a class="pact btn glass" id="sub" href="#">
-    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
-    <span>Add to calendar</span>
-  </a>
   </div>
 </section>
 
@@ -543,6 +535,7 @@ a{color:inherit;text-decoration:none}
           cell.setAttribute("data-key", s);
           cell.setAttribute("aria-pressed", selected === s ? "true" : "false");
           cell.setAttribute("aria-label", DOW[c] + " " + dn + ", " + evs.length + " events");
+          cell.setAttribute("data-k", "grid");
         }
         var d = document.createElement("span");
         d.className = "d";
@@ -613,6 +606,7 @@ a{color:inherit;text-decoration:none}
       head.type = "button";
       head.className = "evhead";
       head.setAttribute("aria-expanded", "false");
+      head.setAttribute("data-k", "open");
 
       var l1 = document.createElement("span");
       l1.className = "l1";
@@ -658,10 +652,13 @@ a{color:inherit;text-decoration:none}
         l3.appendChild(pe);
       }
       head.appendChild(l3);
+      head.insertAdjacentHTML("beforeend",
+        '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>');
       card.appendChild(head);
 
       var act = document.createElement("div");
       act.className = "evact";
+      act.setAttribute("data-k", "do");
       act.hidden = true;
       if (ev.day === t){
         var ph = document.createElement("a");
@@ -755,8 +752,7 @@ a{color:inherit;text-decoration:none}
 
   function renderSub(){
     var base = location.host + location.pathname.replace(/[^\/]*$/, "");
-    document.getElementById("sub").href = "webcal://" + base + "../data/" + scope + ".ics";
-    document.getElementById("subtab").href = document.getElementById("sub").href;
+    document.getElementById("subtab").href = "webcal://" + base + "../data/" + scope + ".ics";
   }
 
   function renderStamp(){
@@ -938,6 +934,7 @@ a{color:inherit;text-decoration:none}
   filt.addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
   document.getElementById("tabset").addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
   document.getElementById("tabnav").addEventListener("click", function(){ openPanel(openP === pnav ? null : pnav); });
+  window.RAVI_GOTO(document.getElementById("pnavgoto"), "calendar", "../");
   document.getElementById("pnhere").addEventListener("click", function(){ openPanel(null); });
   scrim.addEventListener("click", function(){ openPanel(null); });
   document.getElementById("pclose").addEventListener("click", function(){ openPanel(null); });

@@ -468,3 +468,20 @@ Two images are size-exempt from this scale and keep their bare px values, each m
 The calendar's day cells (.cell) are their own case: squeezed to seven equal columns against screen width, not by any row-content minimum, they keep a lower floor of 40px rather than the `--sz-row` minimum.
 
 Every build block runs `node audit.js` in `C:\dev\rb-tools` before it's considered done.
+
+## 11. Control kinds
+
+Glass means press. Sunken means choose. Every tappable element carries `data-k`, either on itself or on its nearest container, naming one kind:
+
+- **do** - acts once. Glass (`.btn.glass`, or `.circ.btn.glass` when compact), or `.sidebtn` when it acts for one player. Arm-then-confirm is a behaviour of `do`, not a kind of its own.
+- **deeper** - opens another menu. Glass, and must contain a right chevron: `<svg class="cvr" ...><polyline points="9 5 16 12 9 19"/></svg>`. No other kind may contain `.cvr`.
+- **pick** - a choice that stays. Sits inside a sunken track (background `var(--recess)`); the chosen one is bone-filled, or wears a bone ring (`inset 0 0 0 2px var(--bone)`) when the options are pictures or colours rather than text. Go to counts as `pick`: the page you are already on is the chosen tile.
+- **type** - a text field in a sunken shape.
+- **open** - opens in place. Carries `aria-expanded` and a `.chev` that flips (the rule already in app.css).
+- **slot** - an icon slot on `.bar` or the counter's strip. Allowed nowhere else.
+- **play** - the counter's field controls (the score buttons, Pass turn). Allowed only inside the counter's field.
+- **grid** - the calendar's day cells. Allowed only there.
+
+Text you only read carries no `data-k` and is not tappable.
+
+The counter's controls are brought to these rules in the next change; until then the audit lists them as KNOWN.

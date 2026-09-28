@@ -12,6 +12,7 @@
 <title>Feedback - Van Isle Riftbound</title>
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
 <style>
 /* The feedback page. CARD SYSTEM, converted 2026-09-22. The shared layer
    (tokens, glass, frost, the bar, menus, the footer) is app.css, linked
@@ -73,7 +74,6 @@ body{-webkit-font-smoothing:antialiased;
 
   <footer class="foot">
     <p>Everything sent here gets read. Most suggestions will not get built, and there is no reply unless you leave an email.</p>
-    <p>Van Isle Riftbound was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
     <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>Free for any island store or player to use or link.</p>
   </footer>
 </main>
@@ -81,24 +81,19 @@ body{-webkit-font-smoothing:antialiased;
 <!-- THE STANDARD BAR. Slots never move between pages: Settings is here,
      dimmed in place, because this page has none. -->
 <nav class="bar frost" id="tabs">
-  <a class="tab" href="../?hub" aria-label="Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
-  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path class="fillon" d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17h0A1.5 1.5 0 0 1 4 15.5z"/></svg></button>
-  <a class="tab" href="https://tally.so/r/QKlGxX" aria-label="Open the form on its own page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
-  <button type="button" class="tab" disabled aria-label="No settings on this page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+  <a class="tab" href="../?hub" aria-label="Hub" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19z"/></svg></a>
+  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Feedback" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path class="fillon" d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v10a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17h0A1.5 1.5 0 0 1 4 15.5z"/></svg></button>
+  <a class="tab" href="https://tally.so/r/QKlGxX" aria-label="Open the form on its own page" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg></a>
+  <button type="button" class="tab" disabled aria-label="No settings on this page" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
 </nav>
 
 <div class="scrim" id="scrim"></div>
 <section class="panel frost" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="phead">
     <h4 class="ttl">Go to</h4>
-    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
-  <div class="pbody"><div class="pick">
-    <a href="../calendar/">Events<span class="sp"></span><small>Calendar</small></a>
-    <a href="../counter/">Game<span class="sp"></span><small>Point counter</small></a>
-    <a href="../trade/">Trade<span class="sp"></span><small>Trade calculator</small></a>
-    <button type="button" class="on" id="pnhere">Feedback<span class="sp"></span><small>Tell us</small></button>
-  </div></div>
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
 
 <script>
@@ -114,6 +109,7 @@ body{-webkit-font-smoothing:antialiased;
   }
   document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
   document.getElementById("pnclose").addEventListener("click", function(){ set(false); });
+  window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
   document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
   scrim.addEventListener("click", function(){ set(false); });
 })();
