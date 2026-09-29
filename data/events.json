@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-09-29T06:38:43.460Z",
- "generated_local": "2026-09-28T23:38:43-07:00",
- "window_start": "2026-09-28T07:00:00.000Z",
+ "generated_at": "2026-09-29T18:29:55.296Z",
+ "generated_local": "2026-09-29T11:29:55-07:00",
+ "window_start": "2026-09-29T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -25,7 +25,7 @@
  "totals": {
   "fetched": 27,
   "unique": 27,
-  "prev_unique": 25
+  "prev_unique": 27
  },
  "unknown_templates": {},
  "events": [
@@ -64,7 +64,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-31T18:25:47+00:00",
