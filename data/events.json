@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-28T20:01:14.309Z",
- "generated_local": "2026-09-28T13:01:14-07:00",
+ "generated_at": "2026-09-29T06:38:43.460Z",
+ "generated_local": "2026-09-28T23:38:43-07:00",
  "window_start": "2026-09-28T07:00:00.000Z",
  "anchors": [
   {
@@ -12,8 +12,8 @@
   {
    "name": "Courtenay",
    "region": "island",
-   "returned": 0,
-   "added": 0
+   "returned": 2,
+   "added": 2
   },
   {
    "name": "Campbell River",
@@ -23,8 +23,8 @@
   }
  ],
  "totals": {
-  "fetched": 25,
-  "unique": 25,
+  "fetched": 27,
+  "unique": 27,
   "prev_unique": 25
  },
  "unknown_templates": {},
@@ -94,6 +94,28 @@
    "wins": 2,
    "sid": 29310,
    "store": "Giddy-Up"
+  },
+  {
+   "id": 1008235,
+   "name": "Saturday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-10-03T17:30:00-07:00",
+   "end": "2026-10-03T21:40:00-07:00",
+   "day": "2026-10-03",
+   "time": "5:30 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Courtenay",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
+   "region": "island",
+   "cap": 32,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-29T00:04:27+00:00",
+   "round": 50,
+   "wins": 2,
+   "sid": 902,
+   "store": "Colossal Courtenay"
   },
   {
    "id": 841879,
@@ -226,6 +248,28 @@
    "wins": 2,
    "sid": 29310,
    "store": "Giddy-Up"
+  },
+  {
+   "id": 1008248,
+   "name": "Saturday Evening Nexus Nights - 1v1",
+   "type": "nexus",
+   "start": "2026-10-10T17:30:00-07:00",
+   "end": "2026-10-10T21:40:00-07:00",
+   "day": "2026-10-10",
+   "time": "5:30 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Courtenay",
+   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
+   "region": "island",
+   "cap": 32,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": "2026-09-29T00:08:35+00:00",
+   "round": 50,
+   "wins": 2,
+   "sid": 902,
+   "store": "Colossal Courtenay"
   },
   {
    "id": 860816,
