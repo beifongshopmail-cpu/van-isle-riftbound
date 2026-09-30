@@ -45,7 +45,7 @@ a{color:inherit;text-decoration:none}
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .hold{height:122px}   /* plate at rest: 10 + 40 + 8 + 40 + 10 = 108, plus a 14 gap */
-.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);border-radius:999px;padding:0 2px 0 14px;background:rgba(255,255,255,.07)}
+.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);border-radius:999px;padding:0 2px 0 14px;background:var(--recess)}
 .sf>svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
 .sf input{flex:1;min-width:0;height:100%;background:none;border:0;outline:none;color:var(--bone);
   font-family:var(--text);font-size:16px;-webkit-appearance:none;appearance:none;padding:0}
@@ -190,11 +190,15 @@ a{color:inherit;text-decoration:none}
    track. A row's second line is content-sized, so it grows past
    --sz-row's 44px once a note is showing; that is a content row, not a
    typed size. */
-.doors .door{height:auto;min-height:var(--sz-row);align-items:flex-start;flex-direction:column;gap:2px;padding:10px 16px}
-.doors .door .t{width:100%}
-.doors .door small{white-space:normal;width:100%}
-.doors .door .cvr{position:absolute;top:14px;right:16px}
-.doors .door{position:relative;padding-right:40px}
+/* .rec marks a RECORD row (STYLE.md section 11, R2): the one exception
+   allowed to grow past one line, since its content is a saved item, not
+   a fixed label -- plain .door rows (e.g. "All saved trades") stay the
+   one-line base rule in app.css. */
+.doors .door.rec{height:auto;min-height:var(--sz-row);align-items:flex-start;flex-direction:column;gap:2px;padding:10px 16px}
+.doors .door.rec .t{width:100%}
+.doors .door.rec small{white-space:normal;width:100%}
+.doors .door.rec .cvr{position:absolute;top:14px;right:16px}
+.doors .door.rec{position:relative;padding-right:40px}
 .a{color:var(--yc)} .b{color:var(--tc)}
 .svempty{padding:14px 16px;font-size:13px;color:var(--muted)}
 
@@ -1248,7 +1252,7 @@ a{color:inherit;text-decoration:none}
   // recent and the whole history is one menu deeper; both open the same way.
   function tlRow(r, k){
     var nr = r.nm || {};
-    return '<button type="button" class="door btn glass" data-act="tlopen" data-idx="' + k + '" data-k="deeper"><span class="t">' + esc(r.note || tlWhen(r.at)) + '</span><span class="sp"></span><small>'
+    return '<button type="button" class="door rec btn glass" data-act="tlopen" data-idx="' + k + '" data-k="deeper"><span class="t">' + esc(r.note || tlWhen(r.at)) + '</span><span class="sp"></span><small>'
       + (r.note ? esc(tlWhen(r.at)) + ' &middot; ' : '')
       + '<span class="a">' + esc(Nm(1, nr)) + ' ' + esc(tlMoney(tlTotal(r, 1), r)) + '</span> &middot; '
       + '<span class="b">' + esc(Nm(2, nr)) + ' ' + esc(tlMoney(tlTotal(r, 2), r)) + '</span></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>';

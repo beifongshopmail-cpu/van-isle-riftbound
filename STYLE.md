@@ -474,14 +474,15 @@ Every build block runs `node audit.js` in `C:\dev\rb-tools` before it's consider
 Glass means press. Sunken means choose. Every tappable element carries `data-k`, either on itself or on its nearest container, naming one kind:
 
 - **do** - acts once. Glass (`.btn.glass`, or `.circ.btn.glass` when compact), or `.sidebtn` when it acts for one player. Arm-then-confirm is a behaviour of `do`, not a kind of its own.
-- **deeper** - opens another menu. Glass, and must contain a right chevron: `<svg class="cvr" ...><polyline points="9 5 16 12 9 19"/></svg>`. No other kind may contain `.cvr`.
+- **deeper** - ONE LEVEL DEEPER INSIDE A MENU: it lives inside a `.panel` and must contain a right chevron, `<svg class="cvr" ...><polyline points="9 5 16 12 9 19"/></svg>`. No other kind may contain `.cvr`. A control on the page itself, the bar, the strip or the banner that opens a menu is `do` (or `slot`) instead, never `deeper` - `deeper` is reserved for a row already inside one menu that opens the next.
 - **pick** - a choice that stays. Sits inside a sunken track (background `var(--recess)`); the chosen one is bone-filled, or wears a bone ring (`inset 0 0 0 2px var(--bone)`) when the options are pictures or colours rather than text. Go to counts as `pick`: the page you are already on is the chosen tile.
-- **type** - a text field in a sunken shape.
+- **type** - a text field in a sunken shape. One shade, `background:var(--recess)` on the field's own visible shape (itself, or its wrapper) - never the lighter search-field tint some earlier pages used.
 - **open** - opens in place. Carries `aria-expanded` and a `.chev` that flips (the rule already in app.css).
 - **slot** - an icon slot on `.bar` or the counter's strip. Allowed nowhere else.
-- **play** - the counter's field controls (the score buttons, Pass turn). Allowed only inside the counter's field.
+- **play** - the counter's field controls (the score buttons, Pass turn, the legend thumbnail). Allowed only inside the counter's field.
 - **grid** - the calendar's day cells. Allowed only there.
+- **view** - the counter's full-card viewer: tap anywhere to dismiss, a settled call, not a menu and not `do`. Allowed only on that overlay.
+
+A `deeper` row is ONE line at `--sz-row`, its value in the grey `small` on the right. Two-line `deeper` rows are allowed only for records - an item the row represents, not a fixed label: trade's saved-trade rows, the counter's past-match rows, the counter's event rows. The audit names that list; nothing else may grow past one line.
 
 Text you only read carries no `data-k` and is not tappable.
-
-The counter's controls are brought to these rules in the next change; until then the audit lists them as KNOWN.
