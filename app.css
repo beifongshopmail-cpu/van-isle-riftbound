@@ -230,6 +230,49 @@ html.lock,html.lock body{overflow:hidden}
 .goto .gt.on{background:var(--bone);color:var(--ink)}
 .goto .gt.on svg .fillon{fill:currentColor}
 
+/* THE SUNKEN FIELD: one shape for every text input in a recessed track,
+   with an optional single action at its right end (.fbtn, a "do", so it
+   uses the .glass recipe rather than var(--glass-press) -- a sunken
+   parent cannot show the pressed shade at rest). .nf ("name field") is
+   the canonical class; .sf ("search field") is its alias -- both already
+   existed per-page with this same shape. ".field" was the name agreed on,
+   but counter/index.html already uses that class for its own two-player
+   board container, so .nf stays canonical instead, to avoid the clash. */
+.nf,.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);box-sizing:border-box;
+  border-radius:999px;background:var(--recess);padding:0 6px 0 16px}
+.nf.row,.sf.row{height:var(--sz-row)}
+.nf input,.sf input{flex:1;min-width:0;height:100%;background:none;border:0;outline:none;color:var(--bone);
+  font-family:var(--text);font-size:16px;padding:0;-webkit-appearance:none;appearance:none;
+  -webkit-user-select:text;user-select:text}
+.nf input::placeholder,.sf input::placeholder{color:var(--muted)}
+.sf input::-webkit-search-cancel-button{-webkit-appearance:none}
+.nf svg,.sf svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
+.nf .fbtn,.sf .fbtn{flex:0 0 auto;height:calc(100% - 6px);box-sizing:border-box;padding:0 14px;border-radius:999px;
+  font-family:var(--disp);font-weight:600;font-size:13px}
+.nf .fbtn.armed,.sf .fbtn.armed{background:var(--hi)}
+
+/* SEG.MULTI: a multi-select track -- every segment is its own independent
+   on/off switch (aria-pressed), not a single choice. Same recess and gap
+   as .seg; the cut is the counter's score-button cut, scaled to a pill:
+   outer ends fully round, inner corners nearly square. */
+.seg.multi button{border-radius:2px}
+.seg.multi button:first-child{border-radius:999px 2px 2px 999px}
+.seg.multi button:last-child{border-radius:2px 999px 999px 2px}
+.seg.multi button:only-child{border-radius:999px}
+.seg.multi button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
+.seg.multi button:not([aria-pressed="true"]){background:transparent}
+
+/* .rec: a RECORD row (STYLE.md section 11, R2) -- the one shape allowed
+   to grow past one line, since its content is a saved item, not a fixed
+   label (a past match, a saved trade). One line measures exactly
+   --sz-row; it grows only when its own content wraps, by min-height
+   alone, never a fixed taller height or extra vertical padding. */
+.rec{height:auto;min-height:var(--sz-row);padding-top:0;padding-bottom:0}
+.door.rec{align-items:flex-start;flex-direction:column;justify-content:center;gap:2px;position:relative;padding-right:40px}
+.door.rec .t{width:100%}
+.door.rec small{white-space:normal;width:100%}
+.door.rec .cvr{position:absolute;top:14px;right:16px}
+
 /* flashes that confirm a tap */
 .flash-p{animation:flp .42s ease}
 @keyframes flp{0%{background:var(--pc);color:var(--ink)}100%{}}

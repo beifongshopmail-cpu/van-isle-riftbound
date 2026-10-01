@@ -485,4 +485,6 @@ Glass means press. Sunken means choose. Every tappable element carries `data-k`,
 
 A `deeper` row is ONE line at `--sz-row`, its value in the grey `small` on the right. Two-line `deeper` rows are allowed only for records - an item the row represents, not a fixed label: trade's saved-trade rows, the counter's past-match rows, the counter's event rows. The audit names that list; nothing else may grow past one line.
 
+Pages place components; they do not reshape them. `.door`, `.pact`, `.seg` (and its buttons), `.nf`/`.sf`, `.goto` (and its tiles), `.rec`, `.btn`, `.circ` carry their own height, min-height, padding, border-radius and width in app.css, and a page's own `<style>` may not set any of those five properties on them again, even to restate the same value. Layout around them - gap, margin, flex placement - is a page's own business. Named exceptions carry a `size-exempt:` comment: the counter's field (`play`), the calendar's day-cell grid.
+
 Text you only read carries no `data-k` and is not tappable.

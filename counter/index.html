@@ -50,8 +50,8 @@
      It does not rest: the card system's bar never dims, so the old
      dim-after-touch is gone. */
   .strip{display:flex;align-items:center;gap:4px}
-  .strip .seg{flex:1.7;height:var(--sz-track);min-width:0}
-  .strip .seg button{height:var(--sz-seg);min-width:0}
+  .strip .seg{flex:1.7;min-width:0}
+  .strip .seg button{min-width:0}
   .strip .ic{flex:1;height:var(--sz-row);border-radius:999px;display:grid;place-items:center}
   .strip .ic:active{background:var(--on)}
   .strip .ic svg{width:22px;height:22px}
@@ -229,11 +229,7 @@
   .pgrp{margin-bottom:16px}
   .pgrp:last-child{margin-bottom:0}
   .pl1{color:var(--pc);font-family:var(--disp);font-weight:700;font-size:15px;margin:0 2px 8px}
-  .nf{display:flex;align-items:center;height:var(--sz-row);box-sizing:border-box;border-radius:999px;background:var(--recess);
-    padding:0 16px;margin-bottom:8px}
-  .nf input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);
-    font-family:var(--text);font-size:16px;padding:0;-webkit-user-select:text;user-select:text}
-  .nf input::placeholder{color:var(--muted)}
+  .nf{margin-bottom:8px}
   .legrow{margin-bottom:10px}
   .legrow button{height:var(--sz-row);box-sizing:border-box}
   .legrow .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -259,16 +255,9 @@
   #tmnow:empty{display:none}
 
   /* the custom round length: STATIC markup under #tmrow, never rebuilt
-     by renderTimerRow, so a tap into the field keeps its focus */
-  .tmcustom{display:flex;gap:6px;margin-top:6px}
-  .tmcustom input{flex:1;min-width:0;height:var(--sz-row);box-sizing:border-box;border-radius:999px;background:var(--recess);
-    border:0;outline:none;color:var(--bone);padding:0 14px;
-    font-family:var(--text);font-size:16px;font-variant-numeric:tabular-nums;
-    -webkit-user-select:text;user-select:text}
-  .tmcustom input::placeholder{color:var(--muted)}
-  .tmcustom button{flex:0 0 auto;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:999px;
-    background:var(--recess);font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
-  .tmcustom button.armed{background:var(--hi)}
+     by renderTimerRow, so a tap into the field keeps its focus. #tmcustom
+     is a plain .nf.row now; app.css's .nf/.fbtn carry its whole shape. */
+  #tmcustominput{font-variant-numeric:tabular-nums}
 
   /* player cards: one glass card each, header always visible, body only
      when open. Only one open at a time (pcOpen/pcShut). */
@@ -307,7 +296,7 @@
   #past > li{display:block;border-radius:20px}
   #past li.empty{padding:14px}
   #past li.open{background:rgba(255,255,255,.04)}
-  .mrow{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 14px;
+  .mrow{display:flex;align-items:center;gap:10px;width:100%;padding:0 14px;
     text-align:left;border-radius:20px}
   .mrow:active{transform:none;background:var(--hi)}
   .res{flex:0 0 40px;font-size:12px;font-weight:700}
@@ -340,15 +329,12 @@
 
   /* the legend picker: search and sort hold still under the head */
   .lpf{flex:0 0 auto;display:flex;gap:8px;margin:0 0 10px}
-  .sf{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:var(--sz-track);border-radius:999px;padding:0 14px;
-    background:var(--recess)}
-  .sf svg{width:18px;height:18px;flex:0 0 auto;stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
+  .sf{flex:1;min-width:0}
   .lgpq{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);font-family:var(--text);
     font-size:16px;padding:0;-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
   .lgpq::placeholder{color:var(--muted)}
   .lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
-  .lpf .seg{flex:0 0 132px;height:var(--sz-track)}
-  .lpf .seg button{height:var(--sz-seg)}
+  .lpf .seg{flex:0 0 132px}
   .lgpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;align-content:start;
     background:var(--recess);border-radius:20px;padding:10px}
   .lgpempty{grid-column:1/-1;padding:18px 0;text-align:center;font-size:13px;color:var(--muted)}
@@ -422,7 +408,7 @@
             <div class="pcard glass" id="pcard1" data-p="1">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot1"></i><span class="pnm" id="pnm1">Player 1</span><span class="sp"></span><small class="plegh" id="plegh1">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody1" hidden>
-                <div class="nf"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name" data-k="type"></div>
+                <div class="nf row"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name" data-k="type"></div>
                 <button type="button" class="door btn glass" id="lgp1" data-lgp="1" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
                 <div class="swatches" id="c1" data-k="pick"></div>
               </div>
@@ -430,7 +416,7 @@
             <div class="pcard glass" id="pcard2" data-p="2">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot2"></i><span class="pnm" id="pnm2">Player 2</span><span class="sp"></span><small class="plegh" id="plegh2">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody2" hidden>
-                <div class="nf"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name" data-k="type"></div>
+                <div class="nf row"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name" data-k="type"></div>
                 <button type="button" class="door btn glass" id="lgp2" data-lgp="2" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
                 <div class="swatches" id="c2" data-k="pick"></div>
               </div>
@@ -440,7 +426,7 @@
         </div>
       </div>
     </div>
-    <div class="row"><p class="lb">Show on the field</p><div class="seg" id="lgarow" data-k="pick"><button type="button" id="lgacard" aria-pressed="false">Legend art</button><button type="button" id="lgrrune" aria-pressed="false">Domains</button><button type="button" id="lgclock" aria-pressed="false">Clock</button></div></div>
+    <div class="row"><p class="lb">Show on the field</p><div class="seg multi" id="lgarow" data-k="pick"><button type="button" id="lgacard" aria-pressed="false">Legend art</button><button type="button" id="lgrrune" aria-pressed="false">Domains</button><button type="button" id="lgclock" aria-pressed="false">Clock</button></div></div>
     <div class="row"><p class="lb">Go to</p><div class="goto" id="pgamegoto"></div></div>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" id="reset" data-k="do">New match</button></div>
@@ -466,8 +452,8 @@
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Round timer</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row"><div class="seg" id="tmrow" data-k="pick"></div></div>
+    <div class="row"><div class="nf row" id="tmcustom"><input type="text" inputmode="decimal" maxlength="6" id="tmcustominput" placeholder="Other (mm.ss)" aria-label="Custom round minutes" data-k="type"><button type="button" id="tmcustombtn" class="fbtn btn glass" data-k="do">Start</button></div><div id="tmnow"></div></div>
     <div class="row" id="tmstoprow" hidden><button type="button" class="pact btn glass" id="tmstop" data-k="do">Stop timer</button></div>
-    <div class="row"><div class="tmcustom" id="tmcustom"><input type="text" inputmode="decimal" maxlength="6" id="tmcustominput" placeholder="Other (mm.ss)" aria-label="Custom round minutes" data-k="type"><button type="button" id="tmcustombtn" class="pact btn glass" data-k="do">Start</button></div><div id="tmnow"></div></div>
   </div>
 </section>
 
@@ -1554,7 +1540,7 @@
       var cnt = gs.length === 1 ? "1 game" : gs.length + " games";
       var tagd = m.tag ? (" &middot; " + esc(cseLabel(m.tag))) : "";
       var hideRow = pastFilter !== null && (!m.tag || m.tag.id !== pastFilter);
-      out += "<li" + (hideRow ? " hidden" : "") + " data-m=\"" + i + "\"><button class=\"mrow\" data-m=\"" + i + "\" data-k=\"open\" aria-expanded=\"false\">" +
+      out += "<li" + (hideRow ? " hidden" : "") + " data-m=\"" + i + "\"><button class=\"mrow rec\" data-m=\"" + i + "\" data-k=\"open\" aria-expanded=\"false\">" +
         "<span class=\"res " + rc + "\">" + rl + "</span>" +
         "<span class=\"sco\"><b class=\"s1\">" + lf + "</b><b class=\"dash\">-</b>" +
         "<b class=\"s2\">" + rt + "</b></span>" +
