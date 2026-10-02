@@ -166,7 +166,7 @@ a{color:inherit;text-decoration:none}
 .nmf input::placeholder{color:var(--muted);font-weight:400}
 /* panels */
 .pnote{font-size:12px;color:var(--muted);margin:6px 2px 0}
-.rates{display:flex;gap:8px;margin-bottom:8px}
+.rates{display:flex;gap:8px;margin-bottom:6px}
 .rate{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:var(--sz-row);border-radius:999px;background:var(--recess);padding:0 14px}
 .rate label{font-family:var(--disp);font-weight:600;font-size:13px}
 .rate.r1 label{color:var(--yc)} .rate.r2 label{color:var(--tc)}
@@ -176,7 +176,7 @@ a{color:inherit;text-decoration:none}
 .rate span{font-size:13px;color:var(--muted)}
 .two{display:flex;gap:8px;margin-bottom:8px}
 .two .pact{flex:1}
-.nf{margin-bottom:8px}
+.nf{margin-bottom:6px}
 /* Saved-trade rows and "All saved trades" are .door rows (app.css) in a
    .doors column now -- deeper-opening controls, glass, out of any sunken
    track. A row's second line is content-sized, so it grows past
@@ -208,7 +208,7 @@ a{color:inherit;text-decoration:none}
 .pfoot .two:last-child{margin-bottom:0}
 /* THE WAY INTO THE WHOLE HISTORY is a pick-list row, so it reads as a place
    you go. Always shown: Import has to be reachable with nothing saved. */
-.allrow{margin-top:8px}
+.allrow{margin-top:6px}
 .rcphint{font-size:12px;color:var(--muted);margin:0 2px 12px 2px}
 .rcpimgs img{display:block;width:100%;height:auto;margin:0 0 12px 0;border-radius:12px}
 </style>
@@ -329,7 +329,7 @@ a{color:inherit;text-decoration:none}
   <div class="phead"><div class="ht"><h4 class="ttl">Saved trades</h4><span class="cnt" id="tlcount"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
   <div class="row">
-    <div class="nf row"><input id="tlnote" type="text" maxlength="60" placeholder="Add a note (optional)" autocomplete="off" data-k="type"></div>
+    <div class="nf tall"><input id="tlnote" type="text" maxlength="60" placeholder="Add a note (optional)" autocomplete="off" data-k="type"></div>
     <button type="button" class="pact btn glass" id="tlsave" data-act="tlsave" data-k="do">Save this trade</button></div>
   <div class="row"><p class="lb">Recent</p><div class="doors" id="tllist" data-k="deeper"></div>
     <div class="doors allrow"><button type="button" class="door btn glass" data-act="tlall" data-k="deeper">All saved trades<span class="sp"></span><small id="tlallcnt"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div></div>

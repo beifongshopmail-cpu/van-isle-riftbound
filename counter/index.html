@@ -136,14 +136,14 @@
   .acts button{height:var(--sz-score);min-width:0;font-family:var(--disp);font-weight:600;font-size:16px;letter-spacing:.06em;
     text-transform:uppercase;background:var(--pct)}
   .acts button:active{background:var(--pcr)}
-  .acts button:first-child{border-radius:24px 2px 2px 24px}
-  .acts button:nth-child(2){border-radius:2px}
-  .acts button:last-child{border-radius:2px 24px 24px 2px}
+  .acts button:first-child{border-radius:24px var(--r-cut) var(--r-cut) 24px}
+  .acts button:nth-child(2){border-radius:var(--r-cut)}
+  .acts button:last-child{border-radius:var(--r-cut) 24px 24px var(--r-cut)}
   .side[data-role="equal"] .acts{margin-top:10px}
   .side[data-role="minor"] .acts{display:flex;align-self:auto;margin:0}
   .side[data-role="minor"] .acts button{flex:1 1 auto;height:var(--sz-score-min);padding:0 10px;font-size:12px}
-  .side[data-role="minor"] .acts button:first-child{border-radius:19px 2px 2px 19px}
-  .side[data-role="minor"] .acts button:last-child{border-radius:2px 19px 19px 2px}
+  .side[data-role="minor"] .acts button:first-child{border-radius:19px var(--r-cut) var(--r-cut) 19px}
+  .side[data-role="minor"] .acts button:last-child{border-radius:var(--r-cut) 19px 19px var(--r-cut)}
 
   /* pass turn: neutral glass, the current player's name in their colour */
   .seamwrap{flex:0 0 auto}
@@ -229,7 +229,6 @@
   .pgrp{margin-bottom:16px}
   .pgrp:last-child{margin-bottom:0}
   .pl1{color:var(--pc);font-family:var(--disp);font-weight:700;font-size:15px;margin:0 2px 8px}
-  .nf{margin-bottom:8px}
   .legrow{margin-bottom:10px}
   .legrow button{height:var(--sz-row);box-sizing:border-box}
   .legrow .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -239,10 +238,8 @@
   #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:var(--sz-row);padding:10px 16px;gap:2px}
   #evlist small{display:block}
 
-  .swatches{display:flex;gap:6px;justify-content:space-between;background:var(--recess);border-radius:999px;padding:4px 8px}
-  .swatches button{width:var(--sz-seg);height:var(--sz-seg);border-radius:999px;display:grid;place-items:center}
-  .swatches button::after{content:"";width:26px;height:26px;border-radius:999px;background:var(--sw)}
-  .swatches button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--bone)}
+  /* colours: a sunken one-of-six track now (app.css's .seg.swatch) --
+     each capsule IS the colour, no inner dot. */
 
   /* who goes first wears each player's own colour */
   .who1 button{color:var(--pc)}
@@ -256,8 +253,7 @@
 
   /* the custom round length: STATIC markup under #tmrow, never rebuilt
      by renderTimerRow, so a tap into the field keeps its focus. #tmcustom
-     is a plain .nf.row now; app.css's .nf/.fbtn carry its whole shape. */
-  #tmcustominput{font-variant-numeric:tabular-nums}
+     is a plain .nf.tall.fit now; app.css's .nf/.fbtn carry its whole shape. */
 
   /* player cards: one glass card each, header always visible, body only
      when open. Only one open at a time (pcOpen/pcShut). */
@@ -271,7 +267,6 @@
   .pnm{font-family:var(--disp);font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .plegh{font-family:var(--text);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:9ch}
   .pcbody{padding:10px 4px 4px;display:flex;flex-direction:column;gap:8px}
-  .pcbody .nf{margin-bottom:0}
 
 
   /* the log: rows you only read, written on the glass */
@@ -395,8 +390,8 @@
   <div class="phead"><h4 class="ttl">Game</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <p class="lb">This game</p>
-    <div class="row" id="clockpauserow" hidden><button type="button" class="pact btn glass" id="clockpause" data-k="do"><span class="t">Pause clock</span><span class="sp"></span><small>for a judge call</small></button></div>
     <div class="row"><div class="doors">
+      <button type="button" class="pact btn glass" id="clockpause" data-k="do" hidden><span class="t">Pause clock</span><span class="sp"></span><small>for a judge call</small></button>
       <button type="button" class="door btn glass" id="timerbtn" data-k="deeper"><span class="t">Round timer</span><span class="sp"></span><small class="timerval">Off</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
       <button type="button" class="door btn glass" id="endbtn" data-k="deeper"><span class="t">End this game</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
     </div></div>
@@ -408,17 +403,17 @@
             <div class="pcard glass" id="pcard1" data-p="1">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot1"></i><span class="pnm" id="pnm1">Player 1</span><span class="sp"></span><small class="plegh" id="plegh1">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody1" hidden>
-                <div class="nf row"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name" data-k="type"></div>
+                <div class="nf tall"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name" data-k="type"></div>
                 <button type="button" class="door btn glass" id="lgp1" data-lgp="1" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
-                <div class="swatches" id="c1" data-k="pick"></div>
+                <div class="seg swatch" id="c1" data-k="pick"></div>
               </div>
             </div>
             <div class="pcard glass" id="pcard2" data-p="2">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot2"></i><span class="pnm" id="pnm2">Player 2</span><span class="sp"></span><small class="plegh" id="plegh2">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody2" hidden>
-                <div class="nf row"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name" data-k="type"></div>
+                <div class="nf tall"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name" data-k="type"></div>
                 <button type="button" class="door btn glass" id="lgp2" data-lgp="2" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
-                <div class="swatches" id="c2" data-k="pick"></div>
+                <div class="seg swatch" id="c2" data-k="pick"></div>
               </div>
             </div>
           </div>
@@ -439,7 +434,7 @@
     <div class="row"><p class="lb">Match length</p><div class="seg" id="blen" data-k="pick"><button type="button" data-bo="1" aria-pressed="true">Single game</button><button type="button" data-bo="3" aria-pressed="false">Best of 3</button></div></div>
     <div class="row"><p class="lb">Who goes first</p><div class="seg who1" id="first" data-k="pick"><button type="button" data-first="1" aria-pressed="true">Player 1</button><button type="button" data-first="2" aria-pressed="false">Player 2</button></div></div>
     <div data-slot></div>
-    <div class="row"><div class="doors">
+    <div class="row"><p class="lb">Round timer</p><div class="doors">
       <button type="button" class="door btn glass" id="timerbtn2" data-k="deeper"><span class="t">Round timer</span><span class="sp"></span><small class="timerval">Off</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
     </div></div>
     <p class="cred">The game in progress stays as it is until you start the new one.</p>
@@ -452,8 +447,10 @@
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Round timer</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row"><div class="seg" id="tmrow" data-k="pick"></div></div>
-    <div class="row"><div class="nf row" id="tmcustom"><input type="text" inputmode="decimal" maxlength="6" id="tmcustominput" placeholder="Other (mm.ss)" aria-label="Custom round minutes" data-k="type"><button type="button" id="tmcustombtn" class="fbtn btn glass" data-k="do">Start</button></div><div id="tmnow"></div></div>
-    <div class="row" id="tmstoprow" hidden><button type="button" class="pact btn glass" id="tmstop" data-k="do">Stop timer</button></div>
+    <div class="row"><p class="lb">Other length</p><div class="doors">
+      <div class="nf tall fit" id="tmcustom"><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="mm:ss" aria-label="Custom round minutes" data-k="type"><button type="button" id="tmcustombtn" class="fbtn btn glass" data-k="do">Start</button></div>
+      <button type="button" class="pact btn glass" id="tmstop" data-k="do" hidden>Stop timer</button>
+    </div><div id="tmnow"></div></div>
   </div>
 </section>
 
@@ -718,9 +715,9 @@
         + (tmArm === mins[i] ? "Sure?" : mins[i]) + "</button>";
     }
     el.innerHTML = h;
-    var stopRow = document.getElementById("tmstoprow"), stopBtn = document.getElementById("tmstop");
-    if (stopRow) { stopRow.hidden = (ms === null); }
+    var stopBtn = document.getElementById("tmstop");
     if (stopBtn) {
+      stopBtn.hidden = (ms === null);
       stopBtn.textContent = (tmArm === -1) ? "Sure?" : "Stop timer";
       stopBtn.classList.toggle("armed", tmArm === -1);
     }
@@ -863,13 +860,29 @@
     });
   }
   function cseCustomSync(){
-    var inp = document.getElementById("tmcustominput"), btn = document.getElementById("tmcustombtn");
-    if(!inp || !btn) return;
+    var btn = document.getElementById("tmcustombtn");
+    if(!btn) return;
     var running = tmMs() !== null;
-    inp.placeholder = running ? "Minutes left (mm.ss)" : "Other (mm.ss)";
     if(!running){ btn.textContent = "Start"; btn.classList.remove("armed"); return; }
     if(tmArm === -2){ btn.textContent = "Sure?"; btn.classList.add("armed"); }
     else { btn.textContent = "Set"; btn.classList.remove("armed"); }
+  }
+  // Digits only, filled from the right with a colon as they're typed:
+  // "5" -> "0:05", "123" -> "1:23", "1230" -> "12:30", "12000" -> "120:00".
+  // At most 5 digits. tmDigits is the one source of truth; the input's
+  // displayed value is always just tmFormatDigits(tmDigits) -- never
+  // parsed back out of the punctuated display, which is why backspace
+  // (handled on keydown, native editing suppressed) is exact.
+  var tmDigits = "";
+  function tmFormatDigits(d){
+    if(d === "") return "";
+    var secs = d.length <= 2 ? d.padStart(2, "0") : d.slice(-2);
+    var mins = d.length <= 2 ? "0" : d.slice(0, -2);
+    return mins + ":" + secs;
+  }
+  function tmRedrawCustom(){
+    var inp = document.getElementById("tmcustominput");
+    if(inp){ inp.value = tmFormatDigits(tmDigits); }
   }
   function cseTimerSet(mn){
     var t = loadTimer();
@@ -2057,11 +2070,9 @@
   // reading Pause/Resume to match paused(ev), disabled once the game is
   // over (same reasoning as the concede buttons and the pend rows).
   function syncClockRow(){
-    var row = document.getElementById("clockpauserow");
-    if (!row) { return; }
-    row.hidden = !clockOn;
     var btn = document.getElementById("clockpause");
     if (!btn) { return; }
+    btn.hidden = !clockOn;
     var p = paused(ev);
     btn.querySelector(".t").textContent = p ? "Resume clock" : "Pause clock";
     btn.querySelector("small").textContent = p ? "paused" : "for a judge call";
@@ -2501,17 +2512,38 @@
     }
     back();
   });
+  document.getElementById("tmcustominput").addEventListener("keydown", function(e){
+    if(e.key >= "0" && e.key <= "9"){
+      e.preventDefault();
+      if(tmDigits.length < 5){ tmDigits += e.key; tmRedrawCustom(); }
+      return;
+    }
+    if(e.key === "Backspace"){
+      e.preventDefault();
+      tmDigits = tmDigits.slice(0, -1);
+      tmRedrawCustom();
+      return;
+    }
+    if(e.key === "Delete"){
+      e.preventDefault();
+      tmDigits = "";
+      tmRedrawCustom();
+      return;
+    }
+    // any other single character (a dot, a letter, a paste-triggering
+    // key) would insert something that is not a digit -- block it.
+    // Navigation/control keys (Tab, arrows, Enter...) have key.length
+    // > 1 and pass through untouched.
+    if(e.key.length === 1){ e.preventDefault(); }
+  });
   document.getElementById("tmcustombtn").addEventListener("click", function(){
-    var inp = document.getElementById("tmcustominput");
-    var v = inp ? inp.value : "";
-    // mm or mm.ss -- seconds, when given, must be exactly two digits and
-    // under 60; total seconds must land in 1..10800 (the old 1..180
-    // minute range, now countable to the second).
-    var m = /^(\d{1,3})(?:\.(\d{2}))?$/.exec(v);
+    // last two digits are seconds (0-59); the rest are minutes. Total
+    // seconds must land in 1..10800 (the old 1..180 minute range, now
+    // countable to the second).
     var secs = null;
-    if(m){
-      var mins = parseInt(m[1], 10);
-      var ss = m[2] ? parseInt(m[2], 10) : 0;
+    if(tmDigits !== ""){
+      var ss = parseInt(tmDigits.length <= 2 ? tmDigits : tmDigits.slice(-2), 10);
+      var mins = tmDigits.length <= 2 ? 0 : parseInt(tmDigits.slice(0, -2), 10);
       if(ss <= 59){
         var total = mins * 60 + ss;
         if(total >= 1 && total <= 10800){ secs = total; }
@@ -2522,7 +2554,8 @@
                            // already multiply by 60000, so this is exact
     if(tmMs() === null){
       startTimer(frac);
-      inp.value = "";
+      tmDigits = "";
+      tmRedrawCustom();
       return;
     }
     if(tmArm !== -2){

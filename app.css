@@ -51,6 +51,7 @@
   --sz-track:40px;      /* a recessed track, and search fields */
   --sz-seg:34px;        /* a segment inside a track, and colour swatches */
   --sz-sm:36px;         /* round buttons and compact pill buttons */
+  --r-cut:2px;          /* the inner corner of a cut track (the counter's score buttons, .seg.multi) */
   --sz-score:48px;      /* counter only: the main score buttons, read at arm's length */
   --sz-score-min:38px;  /* counter only: the slim-banner score buttons */
   --sz-seam:50px;       /* counter only: Pass turn */
@@ -142,7 +143,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
    else. The page script adds and removes the class on <html>. */
 html.lock,html.lock body{overflow:hidden}
 .row{margin-bottom:14px}
-.row .lb{font-size:13px;font-weight:600;margin:0 0 6px}
+.lb{font-size:13px;font-weight:600;margin:0 0 6px}
 
 /* option tracks: a recessed track, borderless options, the chosen one in bone */
 .seg{display:flex;background:var(--recess);border-radius:999px;padding:3px;gap:2px}
@@ -223,7 +224,7 @@ html.lock,html.lock body{overflow:hidden}
    row on its own, CSS grid's default behaviour, nothing else needed. */
 .goto{background:var(--recess);border-radius:24px;padding:4px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
 .goto .gt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:60px;min-width:0;
-  border-radius:20px;font-family:var(--disp);font-weight:600;font-size:12px;color:inherit;text-decoration:none}
+  border-radius:20px;font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:-.08em;padding:0 2px;color:inherit;text-decoration:none}
 .goto .gt span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .goto .gt svg{width:22px;height:22px}
 .goto .gt:active{background:var(--hi)}
@@ -240,7 +241,13 @@ html.lock,html.lock body{overflow:hidden}
    board container, so .nf stays canonical instead, to avoid the clash. */
 .nf,.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);box-sizing:border-box;
   border-radius:999px;background:var(--recess);padding:0 6px 0 16px}
-.nf.row,.sf.row{height:var(--sz-row)}
+.nf.tall,.sf.tall{height:var(--sz-row)}
+/* .fit: a field sized to its own content, not the full row -- the
+   counter's "Other length" entry, which only ever needs to hold "000:00"
+   plus its .fbtn. Called ".field.fit" in STYLE.md's working notes, but
+   .nf is this file's canonical name for the same reason given above. */
+.nf.fit,.sf.fit{width:fit-content}
+.nf.fit input,.sf.fit input{flex:none;width:6ch;text-align:right;font-variant-numeric:tabular-nums}
 .nf input,.sf input{flex:1;min-width:0;height:100%;background:none;border:0;outline:none;color:var(--bone);
   font-family:var(--text);font-size:16px;padding:0;-webkit-appearance:none;appearance:none;
   -webkit-user-select:text;user-select:text}
@@ -255,12 +262,19 @@ html.lock,html.lock body{overflow:hidden}
    on/off switch (aria-pressed), not a single choice. Same recess and gap
    as .seg; the cut is the counter's score-button cut, scaled to a pill:
    outer ends fully round, inner corners nearly square. */
-.seg.multi button{border-radius:2px}
-.seg.multi button:first-child{border-radius:999px 2px 2px 999px}
-.seg.multi button:last-child{border-radius:2px 999px 999px 2px}
+.seg.multi button{border-radius:var(--r-cut)}
+.seg.multi button:first-child{border-radius:999px var(--r-cut) var(--r-cut) 999px}
+.seg.multi button:last-child{border-radius:var(--r-cut) 999px 999px var(--r-cut)}
 .seg.multi button:only-child{border-radius:999px}
 .seg.multi button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
 .seg.multi button:not([aria-pressed="true"]){background:transparent}
+
+/* SEG.SWATCH: a pick-one track of colour capsules -- each segment IS the
+   colour (--sw, set inline per button), not a dot on a neutral chip. The
+   chosen one wears a double ring: bone on the colour, ground outside
+   that, so the ring reads on every colour including the near-white one. */
+.seg.swatch button{background-color:var(--sw)}
+.seg.swatch button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
 
 /* .rec: a RECORD row (STYLE.md section 11, R2) -- the one shape allowed
    to grow past one line, since its content is a saved item, not a fixed
