@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-01T18:43:29.183Z",
- "generated_local": "2026-10-01T11:43:29-07:00",
+ "generated_at": "2026-10-02T06:47:05.675Z",
+ "generated_local": "2026-10-01T23:47:05-07:00",
  "window_start": "2026-10-01T07:00:00.000Z",
  "anchors": [
   {
@@ -108,7 +108,7 @@
    "address": "515 Chatham St, Victoria, BC, V8T 1E1, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 3,
+   "reg": 4,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-24T00:57:18+00:00",
@@ -130,7 +130,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 7,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-13T20:50:27+00:00",
