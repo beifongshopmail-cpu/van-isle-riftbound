@@ -489,4 +489,10 @@ Pages place components; they do not reshape them. `.door`, `.pact`, `.seg` (and 
 
 Spacing: 6 within a group, 14 between groups.
 
+A menu that holds one track and nothing else is a tray: no title, no X.
+
+In a stack of rows, an action is a `.door.act`; a centred `.pact` is only for an action standing alone or in a menu foot.
+
+A label never repeats its only row.
+
 Text you only read carries no `data-k` and is not tappable.

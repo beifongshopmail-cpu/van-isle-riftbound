@@ -265,11 +265,7 @@ a{color:inherit;text-decoration:none}
 </nav>
 
 <div class="scrim" id="scrim"></div>
-<section class="panel frost" id="pnav" aria-hidden="true" aria-label="Pages">
-  <div class="phead">
-    <h4 class="ttl">Go to</h4>
-    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
 <section class="panel frost" id="panel" aria-hidden="true" aria-label="Calendar settings">
@@ -910,7 +906,7 @@ a{color:inherit;text-decoration:none}
   var openP = null;
   function openPanel(p){
     if (openP && openP !== p){
-      openP.className = "panel frost";
+      openP.classList.remove("show");
       openP.setAttribute("aria-hidden", "true");
       openP = null;
     }
@@ -919,16 +915,16 @@ a{color:inherit;text-decoration:none}
         locked = true;
         document.documentElement.classList.add("lock");
       }
-      p.className = "panel frost show";
+      p.classList.add("show");
       p.setAttribute("aria-hidden", "false");
       openP = p;
-      scrim.className = "scrim show";
+      scrim.classList.add("show");
     } else {
       if (locked){
         locked = false;
         document.documentElement.classList.remove("lock");
       }
-      scrim.className = "scrim";
+      scrim.classList.remove("show");
     }
   }
   filt.addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
@@ -938,7 +934,6 @@ a{color:inherit;text-decoration:none}
   document.getElementById("pnhere").addEventListener("click", function(){ openPanel(null); });
   scrim.addEventListener("click", function(){ openPanel(null); });
   document.getElementById("pclose").addEventListener("click", function(){ openPanel(null); });
-  document.getElementById("pnclose").addEventListener("click", function(){ openPanel(null); });
   /* iOS only fires the pressed state on non-button elements while a touch
      listener exists at document level. */
   document.addEventListener("touchstart", function(){}, {passive:true});

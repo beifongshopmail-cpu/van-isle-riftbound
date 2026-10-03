@@ -88,11 +88,7 @@ body{-webkit-font-smoothing:antialiased;
 </nav>
 
 <div class="scrim" id="scrim"></div>
-<section class="panel frost" id="pnav" aria-hidden="true" aria-label="Pages">
-  <div class="phead">
-    <h4 class="ttl">Go to</h4>
-    <button type="button" class="circ btn glass" id="pnclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
 
@@ -108,7 +104,6 @@ body{-webkit-font-smoothing:antialiased;
     pnav.setAttribute("aria-hidden", on ? "false" : "true");
   }
   document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
-  document.getElementById("pnclose").addEventListener("click", function(){ set(false); });
   window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
   document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
   scrim.addEventListener("click", function(){ set(false); });

@@ -51,7 +51,8 @@
   --sz-track:40px;      /* a recessed track, and search fields */
   --sz-seg:34px;        /* a segment inside a track, and colour swatches */
   --sz-sm:36px;         /* round buttons and compact pill buttons */
-  --r-cut:2px;          /* the inner corner of a cut track (the counter's score buttons, .seg.multi) */
+  --r-cut:6px;          /* the inner corner of a cut track (the counter's score buttons, .seg.multi) */
+  --gap-cut:3px;        /* the gap between segments in a cut track (same two) */
   --sz-score:48px;      /* counter only: the main score buttons, read at arm's length */
   --sz-score-min:38px;  /* counter only: the slim-banner score buttons */
   --sz-seam:50px;       /* counter only: Pass turn */
@@ -121,6 +122,14 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
   transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.panel{-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}}
 .panel.show{transform:none;opacity:1;pointer-events:auto}
+/* TRAY: a menu that holds one track and nothing else -- Go to is the
+   first one. Same frost, position and scrim as any .panel; no .phead
+   (STYLE.md section 11: "no title, no X"). Closing it needs no code of
+   its own: the scrim, the bar slot that opened it (toggle), and the
+   current tile's own click handler already close whatever panel is
+   open. */
+.panel.tray{padding:6px;border-radius:calc(24px + 6px)}
+.panel.tray .pbody{margin:0 -6px;padding:0 6px}
 .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex:0 0 auto}
 .phead h4{font-size:20px}
 /* EVERY OVERLAY IS THIS MENU, and every menu is a head, a body and an
@@ -216,6 +225,11 @@ html.lock,html.lock body{overflow:hidden}
 .door .sp{flex:1}
 .door small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .doors{display:flex;flex-direction:column;gap:6px}
+/* .door.act: the same row (left .t, .sp, grey small on the right) for a
+   plain action, data-k="do", never deeper -- no .cvr. STYLE.md section
+   11: in a stack of rows an action is this, never a centred .pact; a
+   .pact is only for standing alone or in a menu foot. */
+.door.act .cvr{display:none}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 
 /* GO TO: the page-picker tiles, built by pages.js's RAVI_GOTO from
@@ -242,12 +256,6 @@ html.lock,html.lock body{overflow:hidden}
 .nf,.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);box-sizing:border-box;
   border-radius:999px;background:var(--recess);padding:0 6px 0 16px}
 .nf.tall,.sf.tall{height:var(--sz-row)}
-/* .fit: a field sized to its own content, not the full row -- the
-   counter's "Other length" entry, which only ever needs to hold "000:00"
-   plus its .fbtn. Called ".field.fit" in STYLE.md's working notes, but
-   .nf is this file's canonical name for the same reason given above. */
-.nf.fit,.sf.fit{width:fit-content}
-.nf.fit input,.sf.fit input{flex:none;width:6ch;text-align:right;font-variant-numeric:tabular-nums}
 .nf input,.sf input{flex:1;min-width:0;height:100%;background:none;border:0;outline:none;color:var(--bone);
   font-family:var(--text);font-size:16px;padding:0;-webkit-appearance:none;appearance:none;
   -webkit-user-select:text;user-select:text}
@@ -259,9 +267,10 @@ html.lock,html.lock body{overflow:hidden}
 .nf .fbtn.armed,.sf .fbtn.armed{background:var(--hi)}
 
 /* SEG.MULTI: a multi-select track -- every segment is its own independent
-   on/off switch (aria-pressed), not a single choice. Same recess and gap
-   as .seg; the cut is the counter's score-button cut, scaled to a pill:
-   outer ends fully round, inner corners nearly square. */
+   on/off switch (aria-pressed), not a single choice. Same recess as .seg;
+   the cut -- gap and inner-corner radius both -- is the counter's
+   score-button cut, scaled to a pill: outer ends fully round. */
+.seg.multi{gap:var(--gap-cut)}
 .seg.multi button{border-radius:var(--r-cut)}
 .seg.multi button:first-child{border-radius:999px var(--r-cut) var(--r-cut) 999px}
 .seg.multi button:last-child{border-radius:var(--r-cut) 999px 999px var(--r-cut)}
