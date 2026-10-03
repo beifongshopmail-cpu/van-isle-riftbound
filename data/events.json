@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-02T18:14:58.980Z",
- "generated_local": "2026-10-02T11:14:58-07:00",
+ "generated_at": "2026-10-03T06:07:55.444Z",
+ "generated_local": "2026-10-02T23:07:55-07:00",
  "window_start": "2026-10-02T07:00:00.000Z",
  "anchors": [
   {
@@ -18,39 +18,17 @@
   {
    "name": "Campbell River",
    "region": "island",
-   "returned": 12,
-   "added": 12
+   "returned": 11,
+   "added": 11
   }
  ],
  "totals": {
-  "fetched": 25,
-  "unique": 25,
+  "fetched": 24,
+  "unique": 24,
   "prev_unique": 25
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 837229,
-   "name": "Tuesday Riftbound Playnight",
-   "type": "learn",
-   "start": "2026-10-02T18:00:00-07:00",
-   "end": "2026-10-02T21:30:00-07:00",
-   "day": "2026-10-02",
-   "time": "6:00 PM",
-   "venue": "Giddy-Up Games",
-   "city": "Campbell River",
-   "address": "582 S Dogwood St, Campbell River, BC V9W 6M4, Canada",
-   "region": "island",
-   "cap": 8,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-08-07T05:04:57+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 29310,
-   "store": "Giddy-Up"
-  },
   {
    "id": 1008235,
    "name": "Saturday Evening Nexus Nights - 1v1",
@@ -130,7 +108,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 9,
+   "reg": 13,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-04-13T20:50:27+00:00",
