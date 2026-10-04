@@ -201,7 +201,7 @@ html.lock,html.lock body{overflow:hidden}
    Used with btn glass. */
 .pact{
   display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:var(--sz-row);
-  font-family:var(--disp);font-size:13px;font-weight:600;
+  font-family:var(--disp);font-size:15px;font-weight:600;
 }
 .pact svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.6;fill:none}
 
@@ -256,6 +256,10 @@ html.lock,html.lock body{overflow:hidden}
 .nf,.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);box-sizing:border-box;
   border-radius:999px;background:var(--recess);padding:0 6px 0 16px}
 .nf.tall,.sf.tall{height:var(--sz-row)}
+/* STYLE.md section 11: "type follows height" -- a .nf.tall's own inline
+   label (the counter's "Other length") is a row-height control's text
+   same as .door/.pact/.sidebtn, so it reads at the same 15px. */
+.nf.tall > .t{font-family:var(--disp);font-weight:600;font-size:15px;color:var(--muted);white-space:nowrap}
 .nf input,.sf input{flex:1;min-width:0;height:100%;background:none;border:0;outline:none;color:var(--bone);
   font-family:var(--text);font-size:16px;padding:0;-webkit-appearance:none;appearance:none;
   -webkit-user-select:text;user-select:text}
@@ -269,12 +273,16 @@ html.lock,html.lock body{overflow:hidden}
 /* SEG.MULTI: a multi-select track -- every segment is its own independent
    on/off switch (aria-pressed), not a single choice. Same recess as .seg;
    the cut -- gap and inner-corner radius both -- is the counter's
-   score-button cut, scaled to a pill: outer ends fully round. */
+   score-button cut, scaled to a pill: outer ends fully round. KNOWN BUG:
+   999px on one corner makes the browser scale down EVERY corner of that
+   same box to avoid overlap, flattening the small cut corner right along
+   with it -- the outer corner must be the segment's own real half-height
+   instead, never a number bigger than the box. */
 .seg.multi{gap:var(--gap-cut)}
 .seg.multi button{border-radius:var(--r-cut)}
-.seg.multi button:first-child{border-radius:999px var(--r-cut) var(--r-cut) 999px}
-.seg.multi button:last-child{border-radius:var(--r-cut) 999px 999px var(--r-cut)}
-.seg.multi button:only-child{border-radius:999px}
+.seg.multi button:first-child{border-radius:calc(var(--sz-seg) / 2) var(--r-cut) var(--r-cut) calc(var(--sz-seg) / 2)}
+.seg.multi button:last-child{border-radius:var(--r-cut) calc(var(--sz-seg) / 2) calc(var(--sz-seg) / 2) var(--r-cut)}
+.seg.multi button:only-child{border-radius:calc(var(--sz-seg) / 2)}
 .seg.multi button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
 .seg.multi button:not([aria-pressed="true"]){background:transparent}
 

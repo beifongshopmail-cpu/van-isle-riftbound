@@ -491,8 +491,10 @@ Spacing: 6 within a group, 14 between groups.
 
 A menu that holds one track and nothing else is a tray: no title, no X.
 
-In a stack of rows, an action is a `.door.act`; a centred `.pact` is only for an action standing alone or in a menu foot.
+A lone action is a centred full-width pill. Actions sharing a line are centred pills dividing the width. A left-aligned action row (`.door.act`) is used only inside a stack of deeper rows.
 
 A label never repeats its only row.
+
+Type follows height: row-height controls 15, compact controls 13.
 
 Text you only read carries no `data-k` and is not tappable.
