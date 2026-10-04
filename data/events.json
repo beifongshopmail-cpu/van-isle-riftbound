@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-03T17:02:01.391Z",
- "generated_local": "2026-10-03T10:02:01-07:00",
+ "generated_at": "2026-10-04T06:39:23.107Z",
+ "generated_local": "2026-10-03T23:39:23-07:00",
  "window_start": "2026-10-03T07:00:00.000Z",
  "anchors": [
   {
@@ -12,8 +12,8 @@
   {
    "name": "Courtenay",
    "region": "island",
-   "returned": 2,
-   "added": 2
+   "returned": 1,
+   "added": 1
   },
   {
    "name": "Campbell River",
@@ -23,34 +23,12 @@
   }
  ],
  "totals": {
-  "fetched": 24,
-  "unique": 24,
+  "fetched": 23,
+  "unique": 23,
   "prev_unique": 24
  },
  "unknown_templates": {},
  "events": [
-  {
-   "id": 1008235,
-   "name": "Saturday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-10-03T17:30:00-07:00",
-   "end": "2026-10-03T21:40:00-07:00",
-   "day": "2026-10-03",
-   "time": "5:30 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
-   "region": "island",
-   "cap": 32,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-09-29T00:04:27+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 902,
-   "store": "Colossal Courtenay"
-  },
   {
    "id": 841879,
    "name": "Sunday morning \"nexus Night\"",
@@ -64,7 +42,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-09T05:01:11+00:00",
@@ -107,11 +85,11 @@
    "city": "Victoria",
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
-   "cap": 24,
-   "reg": 13,
+   "cap": 28,
+   "reg": 24,
    "cents": 0,
    "currency": "CAD",
-   "updated": "2026-04-13T20:50:27+00:00",
+   "updated": "2026-10-04T05:32:58+00:00",
    "round": 50,
    "wins": 2,
    "sid": 4294,
