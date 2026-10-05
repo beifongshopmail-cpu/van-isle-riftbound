@@ -49,7 +49,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Sunken track: rgba(0,0,0,.35) (--recess). Chosen option inside it: bone fill, ink text.
 - A chosen picture or colour wears a bone ring instead of a fill: inset 0 0 0 2px bone, then 2px ground.
 - Frosted chrome (bar, strip, menus): rgba(36,37,38,.22), blur 20 on bar and strip, 24 on menus, saturate 160%, rim rgba(255,255,255,.10).
-- A control that acts for one side wears that side: its colour at .14 at rest, .50 pressed.
+- A control that acts for one side is glass, with that side's colour as its text, and that colour at .50 when pressed or armed.
 - Event cards are glass with the type colour as the body.
 - A glass surface is never its own scroller. A still glass wrapper holds a plain scrolling child.
 - Crop with overflow, never clip-path, on anything holding a frosted surface. No drop shadow inside a crop.
