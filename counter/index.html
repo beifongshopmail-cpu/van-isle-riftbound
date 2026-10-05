@@ -374,6 +374,7 @@
     <div class="nextbox">
       <span class="nlab">Next game, who goes first</span>
       <div class="winrow" id="nextrow"><button type="button" class="sidebtn btn glass" data-open="1" data-k="do">Player 1 first</button><button type="button" class="sidebtn btn glass" data-open="2" data-k="do">Player 2 first</button></div>
+      <button type="button" class="pact btn glass" id="callend" data-k="do" hidden>Time called, end the match here</button>
     </div>
     <div class="winrow"><button type="button" class="pact btn glass" id="winlog" data-k="do">Log</button><button type="button" class="pact btn glass" id="unwin" data-k="do">Undo</button><button type="button" class="pact btn glass" id="again" data-k="do">New match</button></div>
 </div>
@@ -679,6 +680,7 @@
       n.className = over2 ? "tmover" : "";
     }
     syncTimerTrigger();
+    syncCallEnd();
   }
   // The Round timer trigger (#timerbtn, now inside #shared alongside
   // #evbtn under "Event and timer") moves between Game and New match
@@ -1614,6 +1616,7 @@
 
   function render(){
     syncLive();
+    syncCallEnd();
     var c = ctx(), w = gameOver();
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
@@ -1872,6 +1875,41 @@
   });
   document.getElementById("unwin").addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }
+  });
+
+  // TIME CALLED BETWEEN GAMES: on the banner of an open best of 3, shown
+  // only once the round timer has run out (a deliberate break of STYLE.md
+  // 1's never-hide rule: Mako's spec, it is the last row, nothing below it
+  // in the box moves). It records what the players say; the app decides
+  // nothing. The end event joins the game that just finished, stamped
+  // with that game's last moment, so no wait between games is charged to
+  // either player's clock. Banner Undo takes it back. Second tap confirms.
+  var callArmed = false, callTimer = null;
+  function syncCallEnd(){
+    var b = document.getElementById("callend");
+    if (!b) { return; }
+    var ms = tmMs();
+    var show = gameOver() && matchOpen() && ms !== null && ms <= 0;
+    if (!show && callArmed) {
+      callArmed = false;
+      if (callTimer) { clearTimeout(callTimer); callTimer = null; }
+    }
+    b.hidden = !show;
+    b.textContent = callArmed ? "Sure? Tap again" : "Time called, end the match here";
+    if (callArmed) { b.classList.add("armed"); } else { b.classList.remove("armed"); }
+  }
+  document.getElementById("callend").addEventListener("click", function(){
+    if (!gameOver() || !matchOpen()) { return; }
+    if (!callArmed) {
+      callArmed = true;
+      syncCallEnd();
+      callTimer = setTimeout(function(){ callArmed = false; callTimer = null; syncCallEnd(); }, 3000);
+      return;
+    }
+    callArmed = false;
+    if (callTimer) { clearTimeout(callTimer); callTimer = null; }
+    ev.push({ t:"end", w:winnerOf(ev), why:"time", at:ev[ev.length - 1].at });
+    save(); render();
   });
 
   document.addEventListener("visibilitychange", function(){
@@ -2638,7 +2676,8 @@
 
   // ENTRY 2: ?ev=<id> on load. The query is removed with replaceState
   // regardless of what the fetch finds -- window.history, not the match
-  // history array this scope already names "history". Opens no menu and
+  // history array this scope already names "history". Opens New match
+  // with the event picked (openPre sets the length from its wins) and
   // never touches the timer; an id that is not found is ignored silently.
   (function(){
     var qs;
@@ -2654,7 +2693,7 @@
     }).then(function(j){
       var list = withSim((j && j.events) || []), i;
       for(i = 0; i < list.length; i++){
-        if(list[i] && list[i].id === qevId){ cseSet(list[i]); break; }
+        if(list[i] && list[i].id === qevId){ cseSet(list[i]); openPre(false); break; }
       }
     }).catch(function(){});
   })();
