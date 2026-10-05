@@ -86,7 +86,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 ## 6. Corners
 
-- A pill's radius is exactly half its own height. Never 999px: the browser shrinks every corner of a mixed shape together. [D] [C]
+- A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D] [C]
 - A cut track (counter score pills, .seg.multi): round outer ends, 6px inner corners (--r-cut), 3px gaps (--gap-cut). [D]
 - Menus 24. Tracks that hold rows (.pick, Go to) 24. A tray 30 (24 plus its 6 padding). Go to tiles 20.
 
@@ -178,7 +178,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 ## 15. Candidate checks (not built)
 
-1. No 999px radius in any stylesheet (static).
+1. No 999px in a border-radius whose corners differ (static).
 2. Any font-size off the six rungs carries an exempt comment (static).
 3. Poppins used only at 600, 700 or 800 (static).
 4. Every open menu is visible and tappable: opacity 1, pointer-events auto, its centre lands inside it.

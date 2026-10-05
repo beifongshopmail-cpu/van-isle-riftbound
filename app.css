@@ -256,7 +256,7 @@ html.lock,html.lock body{overflow:hidden}
 .nf,.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);box-sizing:border-box;
   border-radius:999px;background:var(--recess);padding:0 6px 0 16px}
 .nf.tall,.sf.tall{height:var(--sz-row)}
-/* STYLE.md, Control kinds: "type follows height" -- a .nf.tall's own inline
+/* STYLE.md, Type: "type follows height" -- a .nf.tall's own inline
    label (the counter's "Other length") is a row-height control's text
    same as .door/.pact/.sidebtn, so it reads at the same 15px. */
 .nf.tall > .t{font-family:var(--disp);font-weight:600;font-size:15px;color:var(--muted);white-space:nowrap}
