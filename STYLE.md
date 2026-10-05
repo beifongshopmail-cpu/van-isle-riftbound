@@ -1,500 +1,188 @@
-# Van Isle Riftbound - visual style contract
-
-Every rule here states a value AND a reason. The reason matters as much as the
-value: most of these exist to stop one specific mistake happening again, and a
-bare number invites a later reader to simplify it away.
-
-If this file and the code disagree, the code is wrong. Fix the code.
-
-WHO THIS IS FOR: anyone adding a page, a panel or a control to this app,
-including someone who has never opened the repo before.
-
-WHAT THIS IS NOT: a changelog, a milestone history, or a record of what went
-wrong. Those live on the project's task list. This is the current rules only.
-
-THE APP IS FOUR PAGES, each a single self-contained HTML file carrying its own
-CSS and its own script:
-
-    index.html            the event calendar
-    counter/index.html    the in-game point counter
-    trade/index.html      the trade calculator
-    feedback/index.html   the feedback form
-
-There is no shared stylesheet, no framework and no build step. Tokens are
-declared once per file and duplicated across files on purpose - see section 8.
-
-ASCII only, everywhere in this repo. PowerShell reads .ps1 files as ANSI and an
-em dash causes a parse failure, so the whole project stays ASCII for
-consistency, this file included.
-
-## 1. The ground
-
-THE GROUND IS BLACK, #000000 (--ground). It is also why depth is done with
-hairlines rather than shadows: a drop shadow does nothing on black.
-
-ALL INTERFACE CHROME IS MONOCHROME - black, bone and two greys.
-
-    --bone     #F2F3F5   a label that is active, current or selected
-    --dim      #828A97   a label at rest
-    --mute     #4E5561   quieter still: captions, source lines, empty states
-    --rule     #212429   a hairline at rest
-    --rule-hi  #343A44   a hairline that is open, focused or pressed
-    --warn     #FFB020   a stale-data stamp, and nothing else
-
-THE DATA CARRIES THE COLOUR. The only coloured things on a page are things that
-mean something: an event's category, a player's side, which side of a trade a
-card sits on. That is what lets the calendar grid carry the visual weight, and
-it stops a UI accent competing with the category hues.
-
-THE CALENDAR'S FOUR CATEGORY HUES:
-
-    nexus     #3FA9F5   Nexus Nights
-    skirmish  #FFB020   Summoner Skirmish
-    open      #FF4F9A   Open Play
-    learn     #EDEFF2   Learn-to-Play
-
-Green and violet are deliberately absent from that set. THE SHIPPED PALETTE
-STAYS AS IT IS.
-
-THE COUNTER'S SIX PLAYER SWATCHES ARE A DIFFERENT SET AND ARE NOT AN EXCEPTION
-TO ANYTHING. They include a green and a violet. A swatch is a player choosing
-which colour they are for the next hour, which is the most literal case of the
-data carrying the colour anywhere in the app - the chosen hue then drives that
-player's numeral, track, pips and banner. The category hues above are OURS and
-are fixed; these are the player's and are picked fresh every match. Do not
-reconcile the two lists.
-
-THREE ARGUED EXCEPTIONS to monochrome chrome. Each one was argued on its own
-merits and written down; ANY NEW HUE NEEDS THE SAME.
-
-1. --over #FF453A and --over-deep #8C1F19, the round timer past zero. It is
-   chrome, but it is an alarm.
-2. The six domain colours on the counter's rune glyphs. The colour IS the data.
-3. The per-side colours: --p1 / --s1 #3FA9F5 and --p2 / --s2 #FF4F9A. One hue
-   per player on the counter, per side on the trade page. Same two values, two
-   names, because the pages do not share a stylesheet.
-
-DIRECTION IS CARRIED BY SHAPE, NEVER BY COLOUR. A price rising is good news for
-a seller and bad news for a buyer, and this app must not take that side. The
-price-movement signal uses an arrow. Green-and-red would assert an opinion the
-tool has no business having, on a page whose neutrality is load-bearing.
-
-DIM MEANS DISABLED. A resting opacity below full, on an element still meant to
-be used, reads as unavailable. Two exceptions: a scrim over a modal, and
-opacity moving inside an animation. Neither is a resting state.
-
-Scrim alpha cannot be tuned in small steps on this ground. Anything under
-roughly 15 points of alpha is unjudgeable. The modal scrim is rgba(0,0,0,.7).
-
-ON COLOUR AND ACCESSIBILITY: the palette was chosen with a colourblind reader
-present, and that shaped it. But accessibility here is a last consideration,
-never a blocker and never grounds to veto a palette that otherwise works. The
-test is "looks good for a general audience". Keeping a text label beside every
-colour block is worth doing on its own merits - small blocks, dim screens,
-outdoor light - and not as an accessibility argument.
-
-## 2. Surfaces
-
-NO GRADIENTS ANYWHERE. Depth comes from a flat fill plus a 1px hairline, and
-nothing else. The calendar once used a top-lit gradient with an inset white
-bevel; matching the counter meant deleting all of it, and "make these pages
-match" turned out to be one subtraction rather than a repaint. Expect that
-shape again.
-
-PLATE FILLS CELLS AND INPUTS, NEVER CONTAINERS. --plate #14171D is the fill for
-a small repeated cell (a calendar day) or a text input. A CONTAINER IS A 1px
-HAIRLINE ON THE GROUND WITH NO FILL AT ALL. The trade page once filled nearly
-every container with plate and read as a stack of grey boxes; the counter fills
-almost nothing and reads correctly. The plate value is the lever for grid
-legibility - not the gap, not an outline.
-
-A HAIRLINE IS --rule AT REST AND --rule-hi WHEN OPEN, FOCUSED OR PRESSED. An
-open disclosure panel is --rule-hi. That is the whole state system.
-
-COLOUR BLOOM IS FOR DATA ONLY. An event bar and a legend swatch throw a small
-glow in their own colour via box-shadow. It survived the flattening pass
-because it is data, not chrome. Nothing in chrome glows.
-
-RADII BY THE JOB THE THING DOES:
-
-    9px  (--r)       a container or a disclosure panel
-    6px              a bar or a text control
-    5px  (--r-cell)  a segmented box, an icon button, a calendar cell -
-                     deliberately tighter than chrome so the grid still
-                     reads as a grid
-    2px  (--r-xs)    an event bar or a chip
-
-The counter writes all of these as literals rather than tokens. That is
-consistent within that file; see section 8.
-
-## 3. Type
-
-TWO FACES, AND ONLY TWO.
-
-    Archivo        (--display)  section headers and display numbers
-    IBM Plex Mono  (--mono)     everything else, including card and event names
-
-IBM PLEX SANS (--body) IS RETIRED AS A TEXT FACE. The token is still declared in
-all four files and the woff2 still ships; nothing should reference it for type.
-
-WEIGHT 800 IS DISPLAY, WEIGHT 600 IS STRUCTURE, MONO IS EVERYTHING ELSE.
-800 belongs on the counter's big score, the verdict number and the mastheads,
-where mass is the point. A SECTION HEADER IS ARCHIVO 600, 15px, UPPERCASE,
-.1em. It was 800 once and shouted over the 10px mono two lines below it, because
-three amplifiers - weight, caps and wide tracking - were stacked on one element.
-The felt problem was mass, not size.
-
-MONO IS ALWAYS 500 UNLESS A RULE SAYS OTHERWISE. A rule that sets --mono with no
-font-weight renders at 400 and reads as a different face on the same page.
-
-THREE SIZES OUTSIDE DISPLAY TYPE, AND NO OTHERS:
-
-    10px   captions and small labels
-    13px   controls and content
-    16px   text inputs (a floor, not a choice - see section 7)
-
-ONE EXCEPTION, ON THE TRADE PAGE'S PANEL HEADER BAR. The side total and the
-percentage badge are mono 15px, matching the Archivo 600 15px label beside
-them. Elements sharing one bar must read as one size; a 13px total next to a
-15px label reads as a mistake rather than as a hierarchy. The exception is the
-bar, not the page - anywhere else on the ladder, 13px.
-
-WHOLE PIXELS ONLY. A half-pixel size renders softer and heavier at the same
-nominal size and reads as a different font.
-
-TRACKING: .1em on uppercase controls and headers, .08em on data and values.
-.04em is a stray and must not be reintroduced.
-
-Mono runs wider per character than sans, so 13px mono occupies roughly the same
-measure as 14px sans. A size change on paper is not always one on screen.
-
-## 4. Buttons and controls
-
-THE LADDER, THREE HEIGHTS:
-
-    44px   a primary commit, and anything full-width or in a stacked row
-    38px   a segmented control, and any button sitting BESIDE a bar rather
-           than acting as one
-    32px   a single-line control inside a row of content - a quantity
-           stepper, a move or delete button on a card line
-
-A SEGMENTED CONTROL IS ONE SHARED BORDER BOX WITH DIVIDERS INSIDE IT. If the
-buttons have a gap between them and a border each, it is a STACKED ROW and it is
-44px. Reading a stacked row as segmented once made a whole sheet alternate 44
-and 38 down its length, and both complaints it produced traced to that one
-misreading.
-
-44px IS ALSO THE TAP FLOOR (--tap). A text-only link acting as a control still
-takes min-height:var(--tap).
-
-A FILL MEANS SELECTED, NEVER "IMPORTANT". A pressed segment carries a bone fill
-because it indicates selection. A bar that merely wanted emphasis lost its fill
-for exactly this reason. Content-state indicators - today's date marker, a NEW
-badge - are not controls and keep their fills.
-
-OUTLINE STATES: border --rule at rest, --rule-hi when open, focused or pressed;
-label --dim at rest, --bone when open.
-
-ANY BUTTON MUST DECLARE ITS BACKGROUND EXPLICITLY, even background:none.
-Otherwise iOS Safari paints a light grey native bar over it.
-
-FOUR EXCEPTIONS TO THE LADDER, each with its reason:
-
-1. START MATCH on the counter keeps its bone fill. It is the app's ONLY primary
-   commit button, and a fill means selected everywhere else. Deliberate.
-2. The trade page's add buttons on a search result stay 38px despite sitting
-   inside a content row. Each one stacks a price, a printing label and a delta
-   chip across two lines, and 32px cannot hold two lines of type.
-3. The counter's colour swatches are content-state indicators, not ladder
-   members. The button keeps a 44px box as the tap target and the colour is
-   painted by a 30px ::after chip inside it, with the selected ring on the CHIP
-   so it hugs the colour rather than the tap target.
-4. The counter's in-game controls are exempt wholesale - see section 9.
-
-## 5. Blocks and spacing
-
-ONE BLOCK INSET OF 14px. Every stacked block indents its contents 14px from the
-block edge.
-
-14px BETWEEN STACKED BLOCKS, AND ONE MARGIN PER BLOCK - never both. A block that
-declared both made one gap 28px where every other gap on the page was 14.
-
-A BLOCK SITTING BETWEEN TWO OTHERS OWES A MARGIN ON BOTH SIDES if either
-neighbour carries none. Some blocks here carry no margin at all and rely
-entirely on the block above.
-
-WHEN A BLOCK MOVES OUT OF A PARENT IT INHERITS NONE OF THE PARENT'S SPACING
-CONTRACT - and the parent may have been spacing its NEIGHBOURS too. Check what
-the parent supplied to what sat below it, not only to the block being moved.
-
-WHEN SEVERAL UNRELATED-LOOKING SPACING COMPLAINTS APPEAR ON ONE COMPONENT,
-SUSPECT ITS BOX, NOT ITS NUMBERS. One component nested a level too deep produced
-a bordered box inside a bordered box, an inherited centring and a stray gap all
-at once, and no value change could have fixed any of them.
-
-THE DISCLOSURE IS ONE SHAPE, USED FOUR TIMES:
-
-    bar       full width, min-height 44px, padding 0 14px, background none,
-              1px --rule, radius 6px, Archivo 600 15px .1em uppercase in --dim
-    open      border --rule-hi, label --bone
-    chevron   a 12px SVG at margin-left:auto, inheriting currentColor so it
-              brightens with the bar, rotating 180deg off aria-expanded in
-              pure CSS, transition --mo-fast --mo-ease
-    summary   sits before the chevron, pushed right by margin-left:auto,
-              mono 500 13px .08em, and follows the bar's open state
-    panel     margin-top 6px, padding 14px, 1px --rule-hi, radius var(--r)
-
-The navigation panel is the one variation: it holds a list of full-bleed 44px
-rows, so it takes overflow:hidden, radius 6px and NO padding, with a 1px --rule
-between rows.
-
-OPEN STATE IS NEVER PERSISTED on any disclosure. A page reopening with a panel
-already open reads as a page that failed to reset.
-
-margin-left:auto BELONGS TO WHATEVER IS ACTUALLY LAST IN THE BAR. Twice, deleting
-an element silently collapsed the indicator inward because the auto margin went
-with it. Move it, do not just delete it.
-
-## 6. Motion
-
-MOTION CONFIRMS, IT NEVER DECORATES. Every moving thing answers "did that
-register?" or "something changed that you did not do". Anything else gets
-deleted, and this rule has removed things already built and shipped, twice.
-
-NOTHING ANIMATES ON FIRST PAINT. Absolute, no exceptions. A load cascade was
-designed, tuned over two mockup rounds, shipped, and removed one commit later
-because the calendar's agenda sits below the fold: it played where nobody could
-see it. Animating on scroll-into-view is not the fix - it fires while the reader
-is mid-scroll, which is decoration.
-
-SHARED TOKENS, duplicated per file:
-
-    --mo-fast    .16s   a colour or border state change
-    --mo-tap     .22s   the tap flash
-    --mo-rise    .32s
-    --mo-seam    .42s   the agenda rise
-    --mo-settle  .7s
-    --mo-pulse   1.8s   the over-time clock, the only loop in the app,
-                        which is what makes looping itself mean "attention"
-    --mo-ease    cubic-bezier(.22,.72,.2,1)
-    --mo-travel  .42s   counter only, the focus-to-split move
-
-Not every file declares every token. Declare what the file uses.
-
-A RISE IS FOR CONTENT ARRIVING IN RESPONSE TO A TAP: 16px over --mo-seam, 60ms
-stagger, capped at seven groups. It fires when a tap REPLACES a list's contents.
-It does NOT fire when a filter merely THINS a list - rising a thinned list reads
-as the page redrawing itself rather than as an answer to the tap.
-
-A FLASH IS FOR THE TAPPED CONTROL CONFIRMING ITSELF: a 30 percent wash plus a
-24px glow in the control's own colour, over --mo-tap. Adopting it on a new page
-is copying two keyframes and calling the one helper. There are no values to
-rediscover, and that is deliberate.
-
-THE FLASH IS APPLIED AFTER THE RENDER, NOT BEFORE. Both the calendar and the
-counter rebuild their contents on every interaction, so the tapped element is
-destroyed by its own tap. Render first, then find the fresh node and apply the
-class with remove, forced reflow, add. Where the node survives its render, pass
-the live node directly. Both call shapes are correct and neither should be
-unified into the other.
-
-A CONTROL THAT ALREADY CONFIRMS ITSELF TWICE DOES NOT GET A THIRD. Worked
-example: the calendar's day cell takes a bone border AND pushes a panel open
-beneath it on tap. A flash there is decoration. It was wired, judged on device,
-and unwired.
-
-A FILL MEANS SELECTED, AND THAT OUTRANKS MOTION CONSISTENCY. Worked example: the
-calendar's scope toggle is permanently excluded from the flash, because its
-pressed segment carries a bone fill and a flash ending at any other value fights
-it. Its confirmation is the fill moving.
-
-EVERY MOTION RULE LIVES INSIDE @media (prefers-reduced-motion:no-preference), so
-the reduced case is disabled by construction rather than by a second block that
-can drift out of step.
-
-WHEN PORTING A MOTION RULE BETWEEN PAGES, VERIFY EVERY CUSTOM PROPERTY IT READS
-RESOLVES ON THE NEW ELEMENT. The flash keys on var(--c); on the calendar that
-was set on the inner swatch and never on the button. color-mix against an
-undefined custom property is an INVALID DECLARATION, so the animation runs and
-paints nothing - no console error, no visible cause, nothing in the diff.
-
-## 7. Building for the phone
-
-EVERY VISUAL JUDGEMENT ON THIS APP IS MADE ON A REAL PHONE. A screenshot shows
-one component out of its context; a mockup inherits the viewport it was built
-in. Both have produced confidently wrong decisions here.
-
-16px IS A FLOOR ON ANY TEXT INPUT, NOT A PREFERENCE. iOS Safari zooms the
-viewport when a focused input's font-size is under 16px.
-
-TO MAKE AN INPUT LOOK 13px ANYWAY: a wrapper div with an explicit height and
-overflow:hidden, holding an input that is genuinely 16px and oversized -
-123.0769% wide, 54.1538px tall, 17.2px padding, the 13/16 factor applied in
-reverse - scaled by transform:scale(.8125) with transform-origin:top left. The
-input stays 16px so iOS never intervenes; the wrapper's box is honest so nothing
-overflows. THE WRAPPER NEEDS ITS OWN border-radius or it clips the input's
-rounded corners square.
-
-THREE THINGS THAT DO NOT WORK, all tried on device:
-  - transform on the input alone. It affects PAINT ONLY; the layout box stays
-    oversized and overflows its container.
-  - zoom. Layout comes out right, but iOS reads the rendered size and zooms.
-  - -webkit-text-size-adjust. A no-op here.
-
-The counter's inputs are deliberately NOT wrapped. That page is read at arm's
-length across a table, where 16px is the right size anyway.
-
-DOUBLE-TAP ZOOM IS HELD OFF BY A SCRIPT, NOT BY CSS. Each page carries a
-document-level touchend listener: a second touch within 320ms and 30px of the
-previous one is the zoom gesture, and preventDefault on that touchend cancels
-it. It must be attached with {passive:false} or the preventDefault is ignored.
-It skips button, a, input, select, textarea, label, summary and [role=button],
-AND RESETS ITS TIMER WHEN IT SKIPS - without the reset, a tap on a button
-followed by a tap on nearby text is measured against the button tap and
-swallowed. A scroll is a move, not a tap, and never reaches it; a pinch carries
-more than one touch point and returns early.
-
-THE CONSEQUENCE FOR ANYTHING NEW: a tappable that is not a button is not in the
-skip list and becomes double-tap-zoomable. Make it a button, or give it
-role=button.
-
-touch-action IS NOT THE LEVER FOR THIS. Six rounds of on-device testing found
-every touch-action treatment identical, including declaring it on every element
-and every pseudo box. The gesture targets TEXT. The counter was always clean
-because nearly everything on it is a button, and buttons are immune.
-
-A DISABLED CONTROL STILL ABSORBS A TAP. The calendar's empty day cells are
-disabled buttons and needed pointer-events:none to drop them out of hit-testing.
-
-GIVE THE TOP SAFE-AREA INSET BACK ON THE PAGE WRAPPER, or the masthead sits
-under the status bar when the app is launched from the home screen. A page
-tested only in Safari looks correct and clips when installed. RUN EVERY PAGE
-BOTH WAYS.
-
-## 8. Names and tokens
-
-TOKENS ARE DECLARED PER FILE AND DUPLICATED DELIBERATELY. There is no shared
-stylesheet and every page must stand alone.
-
-NOT EVERY TOKEN EXISTS IN EVERY FILE, and assuming otherwise has stopped a build
-block already. --plate is on the calendar and the trade page only. --tap,
---ground, --r and --gut are on the calendar, trade and feedback pages and NOT on
-the counter, which writes every height and radius as a literal. The motion set
-is partial too: the trade page declares four tokens and the feedback page two.
-CHECK THE FILE BEFORE USING A TOKEN, and do not add a token to a file for the
-sake of one control.
-
-WHEN NAMING A NEW FAMILY, NO MEMBER MAY BE A PREFIX OF ANOTHER. Each page is one
-script in one function scope, so a collision is silent - a new function has been
-overwritten here by a pre-existing variable of the same name. Prefix new
-identifiers, and check the prefix does not swallow a sibling.
-
-AN INDEX WRITTEN INTO MARKUP MUST SURVIVE THE LIST BEING FILTERED OR REORDERED.
-Write the index into the source array, never the loop counter. The failure is
-silent: the wrong item is selected and nothing throws.
-
-VOCABULARY. Two names in this codebase mean more than one thing. New code should
-not extend either.
-
-  A LEGEND IS A RIFTBOUND CHARACTER. On the counter, a legend is the character a
-  player has chosen. On the calendar, the colour key for event types is ALSO
-  called the legend in the source. New calendar code should call that one the
-  KEY or the FILTERS. The overlap has already cost a round trip.
-
-  THE CHEVRON IS ONE COMPONENT UNDER THREE NAMES. .rcar, .tlcar and .nvcar are
-  the identical 12px glyph with identical behaviour. New code should use one
-  name for it.
-
-ASCII ONLY, in every file in this repo.
-
-## 9. Where a page is deliberately different
-
-THE COUNTER IS NOT THE REFERENCE PAGE, AND ITS DIFFERENCES ARE NOT DRIFT. It is
-read at arm's length, across a table, under time pressure, by two people at
-once. It has its own ladder and its own type rule, and neither should be swept
-into the ones above.
-
-    seam           58px
-    score words    48px, 32px in the minor role
-    mode bar       32px, 24px settled
-    strip icons    34px, 28px settled
-
-THE COUNTER'S OWN TYPE RULE, ONE LINE: BUTTONS ARE ARCHIVO 600, CONTENT AND DATA
-ARE MONO. Anything pressed during a game is Archivo, because it is read at
-distance under time pressure. Everything in a sheet, a log or a picker is mono.
-
-The counter has NO MASTHEAD AND NO DISCLOSURE. Its navigation is a set of rows
-inside the setup sheet, which is already a full-screen surface opened on
-purpose. A menu inside a sheet would mean three taps to leave instead of two.
-
-Its setup sheet scrolls, and that is accepted. A sheet that HIDES A CONTROL to
-avoid scrolling is worse than one that scrolls.
-
-BECAUSE IT SCROLLS, ITS EXIT BUTTON IS STICKY. Back to the game sits at the top
-of both setup faces and pins there, so leaving mid-match never costs a scroll.
-The log's own close button is NOT sticky and stays at the bottom, because it
-follows a list you have finished reading.
-
-The sticky rule is fiddly and the numbers are not guessable. The sheet carries
-padding:12px, so a sticky child at top:0 leaves that 12px strip uncovered and
-rows scroll through it. The button therefore takes top:-12px, a negative margin
-of -12px on three sides, width:calc(100% + 24px) and its own padding:12px, so
-its black background starts above the sheet's inset rather than at it. Verified
-on device in Safari and installed. position:sticky inside a flex column with
-overflow-y:auto is not guaranteed on iOS; it works here and was checked, not
-assumed.
-
-THE TRADE PAGE IS WHERE THE LADDER CAME FROM. When in doubt about a control
-height, look there first.
-
-## 10. Control heights
-
-No control height is typed as a bare number. Every rule reads one of these seven named tokens, declared once in app.css's `:root`, right after `--barH`:
-
-| Token | Value | For |
-| --- | --- | --- |
-| `--sz-row` | 44px | menu rows, fields, full-width actions |
-| `--sz-track` | 40px | a recessed track, and search fields |
-| `--sz-seg` | 34px | a segment inside a track, and colour swatches |
-| `--sz-sm` | 36px | round buttons and compact pill buttons |
-| `--sz-score` | 48px | counter only: the main score buttons, read at arm's length |
-| `--sz-score-min` | 38px | counter only: the slim-banner score buttons |
-| `--sz-seam` | 50px | counter only: Pass turn |
-
-Measure the surface the eye sees, not the control inside it. A tray (.pick, .seg, .tylist) draws its own padding around its rows, so a tray holding a single row takes .solo, which removes the padding and makes the visible pill the `--sz-row` row. List rows inside a tray are `--sz-row`.
-
-Two images are size-exempt from this scale and keep their bare px values, each marked in place with a `/* size-exempt: ... */` comment: trade's card art image (.art) and the counter's rune image (.side[data-role="equal"] .lgarune img). Neither is a control.
-
-The calendar's day cells (.cell) are their own case: squeezed to seven equal columns against screen width, not by any row-content minimum, they keep a lower floor of 40px rather than the `--sz-row` minimum.
-
-Every build block runs `node audit.js` in `C:\dev\rb-tools` before it's considered done.
-
-## 11. Control kinds
-
-Glass means press. Sunken means choose. Every tappable element carries `data-k`, either on itself or on its nearest container, naming one kind:
-
-- **do** - acts once. Glass (`.btn.glass`, or `.circ.btn.glass` when compact), or `.sidebtn` when it acts for one player. Arm-then-confirm is a behaviour of `do`, not a kind of its own.
-- **deeper** - ONE LEVEL DEEPER INSIDE A MENU: it lives inside a `.panel` and must contain a right chevron, `<svg class="cvr" ...><polyline points="9 5 16 12 9 19"/></svg>`. No other kind may contain `.cvr`. A control on the page itself, the bar, the strip or the banner that opens a menu is `do` (or `slot`) instead, never `deeper` - `deeper` is reserved for a row already inside one menu that opens the next.
-- **pick** - a choice that stays. Sits inside a sunken track (background `var(--recess)`); the chosen one is bone-filled, or wears a bone ring (`inset 0 0 0 2px var(--bone)`) when the options are pictures or colours rather than text. Go to counts as `pick`: the page you are already on is the chosen tile.
-- **type** - a text field in a sunken shape. One shade, `background:var(--recess)` on the field's own visible shape (itself, or its wrapper) - never the lighter search-field tint some earlier pages used.
-- **open** - opens in place. Carries `aria-expanded` and a `.chev` that flips (the rule already in app.css).
-- **slot** - an icon slot on `.bar` or the counter's strip. Allowed nowhere else.
-- **play** - the counter's field controls (the score buttons, Pass turn, the legend thumbnail). Allowed only inside the counter's field.
-- **grid** - the calendar's day cells. Allowed only there.
-- **view** - the counter's full-card viewer: tap anywhere to dismiss, a settled call, not a menu and not `do`. Allowed only on that overlay.
-
-A `deeper` row is ONE line at `--sz-row`, its value in the grey `small` on the right. Two-line `deeper` rows are allowed only for records - an item the row represents, not a fixed label: trade's saved-trade rows, the counter's past-match rows, the counter's event rows. The audit names that list; nothing else may grow past one line.
-
-Pages place components; they do not reshape them. `.door`, `.pact`, `.seg` (and its buttons), `.nf`/`.sf`, `.goto` (and its tiles), `.rec`, `.btn`, `.circ` carry their own height, min-height, padding, border-radius and width in app.css, and a page's own `<style>` may not set any of those five properties on them again, even to restate the same value. Layout around them - gap, margin, flex placement - is a page's own business. Named exceptions carry a `size-exempt:` comment: the counter's field (`play`), the calendar's day-cell grid.
-
-Spacing: 6 within a group, 14 between groups.
-
-A menu that holds one track and nothing else is a tray: no title, no X.
-
-A lone action is a centred full-width pill. Actions sharing a line are centred pills dividing the width. A left-aligned action row (`.door.act`) is used only inside a stack of deeper rows.
-
-A label never repeats its only row.
-
-Type follows height: row-height controls 15, compact controls 13.
-
-Text you only read carries no `data-k` and is not tappable.
+# RAVI - the design rulebook
+
+The one place the app's design rules live. One rule per line, each with its value.
+
+STATUS: PROVISIONAL until the pages are final (M7). Mako accepted this draft on 2026-10-04 without re-checking each call. Any rule outside section 1 may change as pages are finished, with his yes, as its own commit.
+
+- A new rule enters only with Mako's yes, as its own commit, never inside a fix.
+- Mako's eye on the phone outranks any value here. Anything he names becomes a rule with a check.
+- If the code and this file disagree, one of them is a bug. Report it; do not pick.
+- This is a starting point, not a cage. To break a rule on purpose, say so in one line and note the break on that page's LOG item.
+- ASCII only, this file included.
+
+CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit.js checks it (UNPROVEN: its menu walk misses menus). [C] a check could catch it and none does yet (see the last section). No mark: judged by eye on the phone.
+
+## 1. Hard rules (not style, never broken on purpose)
+
+- Colour never carries meaning alone. Shape or words carry it too. (Mako is colourblind.)
+- Dim means disabled: opacity .4, pointer-events none, and it holds its place. Never hide a control that moves its neighbours.
+- Price direction is an arrow, never a colour. Up and down look the same apart from the arrow.
+- Store neutrality: no store's numbers, defaults or tilt anywhere in the UI.
+- The device floor: an iPhone 7 on iOS 15 must run it. The cheap version is the baseline, the costly one the enhancement.
+- Blur only inside @supports (backdrop-filter); without it, the same colour at .94 alpha.
+- No color-mix() and no :has() in anything the page depends on. Compute tints in script.
+- Text inputs are a real 16px. No scale or zoom tricks to make them look smaller.
+- 12px is the type floor. An element that needs smaller is redesigned, not shrunk.
+- Every call on "RULE -- settled calls, do not re-propose" stands.
+
+## 2. Ground and colour
+
+- Ground #08090A (--ground). Bone #EDEAE3 (--bone). Ink on bone #121316 (--ink).
+- Muted text #A4A7AD (--muted). Faint #4A4E55 (--faint). Track #2A2D32 (--track). Pressed in a track #34383E (--hi).
+- Player 1 and Yours: blue #5DA5EE. Player 2 and Theirs: pink #EE5F9C.
+- Round timer past zero: #E5484D (--over). The only alarm colour.
+- Event types, each with its own mark shape AND its name in words on every card:
+  - Nexus Nights 63,169,245, circle
+  - Summoner Skirmish 255,176,32, diamond
+  - Learn-to-Play 203,166,255, square
+  - Open Play 255,79,154, bar
+  - Other events 138,148,163, ring
+- The counter's six swatches are the player's choice for one match; the first two are the player defaults.
+- A new hue anywhere needs Mako's yes.
+
+## 3. Surfaces
+
+- Glass means press. Sunken means choose or type. Bone fill means chosen.
+- A fill means selected, never "important".
+- One glass recipe (.glass) for buttons, surfaces and event cards: body rgba(255,255,255,.045), 1px rim lit at the top fading down the sides, faint glow inside the base. No full outline on any button.
+- Glass pressed: rgba(255,255,255,.14) (--glass-press).
+- Sunken track: rgba(0,0,0,.35) (--recess). Chosen option inside it: bone fill, ink text.
+- A chosen picture or colour wears a bone ring instead of a fill: inset 0 0 0 2px bone, then 2px ground.
+- Frosted chrome (bar, strip, menus): rgba(36,37,38,.22), blur 20 on bar and strip, 24 on menus, saturate 160%, rim rgba(255,255,255,.10).
+- A control that acts for one side wears that side: its colour at .14 at rest, .50 pressed.
+- Event cards are glass with the type colour as the body.
+- A glass surface is never its own scroller. A still glass wrapper holds a plain scrolling child.
+- Crop with overflow, never clip-path, on anything holding a frosted surface. No drop shadow inside a crop.
+
+## 4. Type
+
+- Two faces. Poppins for display and every tappable label. Nunito for text and data.
+- Poppins ships 600, 700 and 800 only. Any other Poppins weight is synthesised and wrong. [C]
+- Six rungs: 12, 13, 15, 17, 20, 28. Whole pixels only. [C]
+- Titles: Poppins 700, sentence case. Menu title 20; section head 17; wordmark 17.
+- Buttons and tappable labels: Poppins 600.
+- Numerals: Poppins 800.
+- Body: Nunito 400 at 15. Passive metadata: 12, muted.
+- The grey value in a row: Nunito 600, 12, muted.
+- Tabular figures on body, inherited by every number.
+- Type follows height: a 44px control carries 15px; a 34, 36 or 38px control carries 13px. Inputs, play and grid are exempt. [D]
+- Named exemptions to the rungs, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula); 40 slim-banner numeral; 26 trade ring amount. [C]
+
+## 5. Sizes
+
+- No control height is a bare number. Every one reads a named size from app.css :root. [A]
+  - --sz-row 44: menu rows, fields, full-width actions
+  - --sz-track 40: a sunken track, and search fields
+  - --sz-sm 36: round buttons and compact pills
+  - --sz-seg 34: a segment inside a track, and swatches
+  - --sz-score 48: counter score buttons
+  - --sz-score-min 38: counter slim-banner score buttons
+  - --sz-seam 50: counter Pass turn
+- Measure the surface the eye sees, not the control inside it. [A]
+- A tray holding one row takes .solo, so the visible pill is the 44 row.
+- Calendar day cells: 46 circles where there is room, never under 40.
+- Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
+- The bar is 56 high (--barH).
+
+## 6. Corners
+
+- A pill's radius is exactly half its own height. Never 999px: the browser shrinks every corner of a mixed shape together. [D] [C]
+- A cut track (counter score pills, .seg.multi): round outer ends, 6px inner corners (--r-cut), 3px gaps (--gap-cut). [D]
+- Menus 24. Tracks that hold rows (.pick, Go to) 24. A tray 30 (24 plus its 6 padding). Go to tiles 20.
+
+## 7. Spacing and alignment
+
+- 6 within a group, 14 between groups.
+- A menu or section title sits 10 above what it heads.
+- Inside a track: 2 between options, 3 to 4 padding.
+- Menu padding 16; tray padding 6.
+- Controls side by side share top and bottom within 0.5px. [A]
+- Nothing overflows sideways. [D]
+- A one-line row clips its text with an ellipsis; it never wraps.
+
+## 8. Control kinds
+
+- Every tappable carries data-k, on itself or its nearest container, naming one kind. [A]
+- do: acts once. Glass, or a side pill (.sidebtn) when it acts for one player. Arm-then-confirm is a do.
+- deeper: a row inside a menu that opens the next menu. Always carries the right chevron (.cvr); nothing else may. [A]
+- pick: a choice that stays, inside a sunken track. Go to is a pick; the page you are on is the chosen tile.
+- type: a text field in a sunken shape, background --recess on its visible shape.
+- open: opens in place. Carries aria-expanded and a .chev that points at what a tap will do.
+- slot: an icon slot on the bar or the counter's strip, nowhere else. [A]
+- play: the counter's field (score buttons, Pass turn, legend thumbnail), nowhere else.
+- grid: the calendar's day cells, nowhere else.
+- view: the counter's full-card viewer: tap anywhere dismisses it. Nowhere else.
+- Text you only read carries no data-k and is not tappable.
+- A deeper row is one line at 44, its value in grey small on the right. Only records (.rec: saved trades, past matches, event rows) may grow past one line. [A]
+- In a stack of rows an action is a .door.act. A centred .pact stands alone or sits in a menu foot.
+- A label never repeats its only row.
+- Pages place components; they never reshape them. A page may not set height, min-height, padding, border-radius or width on .door, .pact, .seg, .nf/.sf, .goto, .rec, .btn or .circ. Layout around them is the page's own. [A]
+
+## 9. Menus
+
+- Every overlay is a menu: a head (title, X), a body, an optional foot. Only the body scrolls. No full-screen sheets.
+- Going deeper replaces the menu and adds a back arrow. Back returns where you were. X or the scrim closes the whole stack.
+- A menu holding one track and nothing else is a tray: no title, no X.
+- A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar; on the hub it hangs from the gear.
+- The menu's height cap counts the bar.
+- An open menu locks the page at the root (html.lock). Never pin the body with position:fixed.
+- Never set opacity or pointer-events on a panel by id. Those belong to .panel.show. [C]
+- Style a panel by id or by app.css classes only; the menu script rewrites its className.
+- A two-tap confirm adds and removes .armed; it never rewrites className.
+- Menu scrim rgba(0,0,0,.35). The full-card viewer's scrim .7.
+
+## 10. The bar
+
+- One shared bar: .bar, .tab and .frost in app.css, unchanged on every page. Each page carries its own four buttons.
+- Fully round, 12 in from the sides, bottom max(4px, safe-area inset minus 12px).
+- Four slots, always in this order: Hub, Go to, the page's one action, Settings. Slots never move between pages; an unused one dims in place.
+- The active slot: a see-through pill (rgba(255,255,255,.14)) and its icon filled.
+- The counter's strip is the same shell with its own four controls. The hub has no bar.
+- Menus and the counter's victory banner sit above the bar.
+
+## 11. The page
+
+- Every page is at least one screen tall (body min-height 100vh). [C]
+- The scrollbar stays put (scrollbar-gutter stable, overflow-y scroll).
+- The top clear line: nothing sharp and unfrosted sits above the safe-area inset plus 28px (--top-clear). [C]
+- Give the top safe-area inset back on the page wrapper.
+- The wordmark row is chrome: one thin row, name only, scrolls away.
+- The footer: 30 above, a short dim hairline inset 24 from both ends.
+
+## 12. Motion
+
+- Motion confirms; it never decorates.
+- Nothing animates on first paint.
+- Press: scale .96, and the shade change.
+- Tap flashes, .42s: bone for neutral controls (.flash-n), the player's colour for side controls (.flash-p).
+- Apply a flash after the render: find the fresh node, remove the class, force reflow, add it.
+- A control that already confirms itself twice gets no third.
+- A chevron turns in .28s.
+- Reduced motion turns every transition and animation off.
+- Never animate layout from script while the page scrolls. Sticky, transitions and the browser's own scroll anchoring first.
+- Never tween or scroll-correct a height above the screen. Change it in one frame and let the browser hold the view.
+
+## 13. Phone mechanics
+
+- Double-tap zoom is held off by a touchend script on every page: a second touch within 320ms and 30px is cancelled, passive:false, buttons and links skipped, and the timer resets on every skip.
+- Anything tappable is a button, or carries role=button.
+- A disabled control drops out of hit-testing (pointer-events none).
+- Every button declares its background, even none.
+- Links that act as tiles show no long-press preview.
+
+## 14. Names
+
+- No member of a new class or function family is a prefix of another.
+- An index written into markup comes from the source array, never the loop counter.
+- A legend is a Riftbound character. The calendar's colour key is the key or the filters.
+
+## 15. Candidate checks (not built)
+
+1. No 999px radius in any stylesheet (static).
+2. Any font-size off the six rungs carries an exempt comment (static).
+3. Poppins used only at 600, 700 or 800 (static).
+4. Every open menu is visible and tappable: opacity 1, pointer-events auto, its centre lands inside it.
+5. No panel sets opacity or pointer-events by id (static).
+6. Every page's body is at least the viewport height.
+7. No unfrosted fixed or sticky element sits above --top-clear.
+8. Move audit.js's checks (sizes, alignment, bare heights, kinds, no reshaping) into drawn-test.js, or prove each on a planted defect.

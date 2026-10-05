@@ -124,7 +124,7 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 .panel.show{transform:none;opacity:1;pointer-events:auto}
 /* TRAY: a menu that holds one track and nothing else -- Go to is the
    first one. Same frost, position and scrim as any .panel; no .phead
-   (STYLE.md section 11: "no title, no X"). Closing it needs no code of
+   (STYLE.md, Control kinds: "no title, no X"). Closing it needs no code of
    its own: the scrim, the bar slot that opened it (toggle), and the
    current tile's own click handler already close whatever panel is
    open. */
@@ -212,7 +212,7 @@ html.lock,html.lock body{overflow:hidden}
 .foot p{margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .foot b{color:var(--bone);font-weight:600}
 
-/* CONTROL KINDS: see STYLE.md section 11. .door is the glass "opens a
+/* CONTROL KINDS: see STYLE.md, Control kinds. .door is the glass "opens a
    deeper menu" row -- the glass counterpart of .pick's recessed row, used
    inside a .doors column once a row needs its own glass surface instead
    of sitting in a shared sunken track (a saved-trade row, "All saved
@@ -226,8 +226,8 @@ html.lock,html.lock body{overflow:hidden}
 .door small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .doors{display:flex;flex-direction:column;gap:6px}
 /* .door.act: the same row (left .t, .sp, grey small on the right) for a
-   plain action, data-k="do", never deeper -- no .cvr. STYLE.md section
-   11: in a stack of rows an action is this, never a centred .pact; a
+   plain action, data-k="do", never deeper -- no .cvr. STYLE.md, Control
+   kinds: in a stack of rows an action is this, never a centred .pact; a
    .pact is only for standing alone or in a menu foot. */
 .door.act .cvr{display:none}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
@@ -256,7 +256,7 @@ html.lock,html.lock body{overflow:hidden}
 .nf,.sf{display:flex;align-items:center;gap:8px;height:var(--sz-track);box-sizing:border-box;
   border-radius:999px;background:var(--recess);padding:0 6px 0 16px}
 .nf.tall,.sf.tall{height:var(--sz-row)}
-/* STYLE.md section 11: "type follows height" -- a .nf.tall's own inline
+/* STYLE.md, Control kinds: "type follows height" -- a .nf.tall's own inline
    label (the counter's "Other length") is a row-height control's text
    same as .door/.pact/.sidebtn, so it reads at the same 15px. */
 .nf.tall > .t{font-family:var(--disp);font-weight:600;font-size:15px;color:var(--muted);white-space:nowrap}
@@ -293,7 +293,7 @@ html.lock,html.lock body{overflow:hidden}
 .seg.swatch button{background-color:var(--sw)}
 .seg.swatch button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
 
-/* .rec: a RECORD row (STYLE.md section 11, R2) -- the one shape allowed
+/* .rec: a RECORD row (STYLE.md, Control kinds) -- the one shape allowed
    to grow past one line, since its content is a saved item, not a fixed
    label (a past match, a saved trade). One line measures exactly
    --sz-row; it grows only when its own content wraps, by min-height
