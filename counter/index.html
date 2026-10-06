@@ -254,12 +254,11 @@
   #tmnow:empty{display:none}
 
   /* the custom round length: STATIC markup under #tmrow, never rebuilt
-     by renderTimerRow, so a tap into the field keeps its focus. It fills
-     its line whether or not a timer runs. Stop is a plain .pact in the
-     menu foot, always there, dim while no timer runs (STYLE.md 1: dim
-     means disabled; never hide a control that moves its neighbours). */
-  #tmcustom .sp{flex:1}
-  #tmcustom input{flex:none;width:6ch;text-align:right;font-variant-numeric:tabular-nums}
+     by renderTimerRow, so a tap into the field keeps its focus. The field
+     holds only the input. Start (Set while a timer runs) and Stop share
+     the menu foot as two equal .pacts; Stop is always there, dim while no
+     timer runs (STYLE.md 1: dim means disabled). */
+  #tmcustom input{font-variant-numeric:tabular-nums}
 
   /* player cards: one glass card each, header always visible, body only
      when open. Only one open at a time (pcOpen/pcShut). */
@@ -454,10 +453,10 @@
   <div class="pbody">
     <div class="row"><div class="seg" id="tmrow" data-k="pick"></div><div id="tmnow"></div></div>
     <div class="row" id="tmline">
-      <div class="nf tall" id="tmcustom"><span class="t">Other length</span><span class="sp"></span><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="mm:ss" aria-label="Custom round minutes" data-k="type"><button type="button" id="tmcustombtn" class="fbtn btn glass" data-k="do">Start</button></div>
+      <div class="nf tall" id="tmcustom"><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="Other length (mm:ss)" aria-label="Other round length, minutes and seconds" data-k="type"></div>
     </div>
   </div>
-  <div class="pfoot"><button type="button" class="pact btn glass" id="tmstop" data-k="do" disabled>Stop</button></div>
+  <div class="pfoot"><div class="two"><button type="button" class="pact btn glass" id="tmcustombtn" data-k="do">Start</button><button type="button" class="pact btn glass" id="tmstop" data-k="do" disabled>Stop</button></div></div>
 </section>
 
 <!-- LEGEND: one deeper from a player's legend row -->
@@ -1950,10 +1949,16 @@
       scrim.classList.remove("show");
     }
   }
+  // A deeper menu shows its back arrow and no X (STYLE.md, Menus); the
+  // scrim still closes the whole stack.
   function syncBack(){
     var bs = document.querySelectorAll(".phead .back"), i;
+    var xs = document.querySelectorAll(".phead [data-close]");
     for (i = 0; i < bs.length; i++) {
       bs[i].hidden = !(STACK.length > 1 && bs[i].closest(".panel") === OPENP);
+    }
+    for (i = 0; i < xs.length; i++) {
+      xs[i].hidden = STACK.length > 1 && xs[i].closest(".panel") === OPENP;
     }
   }
   function openPanel(p){ STACK = p ? [p] : []; show(p); syncBack(); }
