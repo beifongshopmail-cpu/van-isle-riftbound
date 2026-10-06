@@ -121,7 +121,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 ## 9. Menus
 
 - Every overlay is a menu: a head (title, X), a body, an optional foot. Only the body scrolls. No full-screen sheets.
-- Going deeper replaces the menu and adds a back arrow. Back returns where you were. X or the scrim closes the whole stack.
+- Going deeper replaces the menu: it shows a back arrow and no X. Back returns where you were. The X on a menu opened directly, or the scrim, closes the whole stack.
 - A menu holding one track and nothing else is a tray: no title, no X.
 - A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar; on the hub it hangs from the gear.
 - The menu's height cap counts the bar.
