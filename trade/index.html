@@ -186,6 +186,8 @@ a{color:inherit;text-decoration:none}
    .door.rec rule carries the two-line layout; nothing left to add here. */
 .a{color:var(--yc)} .b{color:var(--tc)}
 .svempty{padding:14px 16px;font-size:13px;color:var(--muted)}
+/* a saved-trade row's difference arrow, the ring's arrow at row size */
+.tld svg{width:14px;height:14px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 
 /* THE SAVED TRADE AND ITS RECEIPT ARE MENUS, deeper ones: each takes the
    place of the menu it was opened from and carries a back arrow. */
@@ -1228,14 +1230,20 @@ a{color:inherit;text-decoration:none}
       + " " + d.toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
   }
 
-  // One saved trade as a list row. The Saved menu lists the three most
+  // One saved trade as a list row: one line at 44, like every deeper row
+  // (STYLE.md, Control kinds). The note, or the date when there is none;
+  // on the right, in grey, the date when the note took the title, then
+  // the difference with the ring's arrow pointing at the side worth more.
+  // Both totals are one tap away. The Saved menu lists the three most
   // recent and the whole history is one menu deeper; both open the same way.
   function tlRow(r, k){
-    var nr = r.nm || {};
-    return '<button type="button" class="door rec btn glass" data-act="tlopen" data-idx="' + k + '" data-k="deeper"><span class="t">' + esc(r.note || tlWhen(r.at)) + '</span><span class="sp"></span><small>'
-      + (r.note ? esc(tlWhen(r.at)) + ' &middot; ' : '')
-      + '<span class="a">' + esc(Nm(1, nr)) + ' ' + esc(tlMoney(tlTotal(r, 1), r)) + '</span> &middot; '
-      + '<span class="b">' + esc(Nm(2, nr)) + ' ' + esc(tlMoney(tlTotal(r, 2), r)) + '</span></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>';
+    var t1 = tlTotal(r, 1), t2 = tlTotal(r, 2), d = Math.abs(t1 - t2), dir;
+    var day = new Date(r.at).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+    if(!(t1 + t2)) dir = "";
+    else if(d < 0.005) dir = " &middot; Even";
+    else dir = ' &middot; ' + esc(tlMoney(d, r)) + (t1 > t2 ? ' <span class="a">' + IC.left : ' <span class="b">' + IC.right) + '</span>';
+    return '<button type="button" class="door btn glass" data-act="tlopen" data-idx="' + k + '" data-k="deeper"><span class="t">' + esc(r.note || tlWhen(r.at)) + '</span><span class="sp"></span><small class="tld">'
+      + (r.note ? esc(day) : "") + (r.note ? dir : dir.replace(/^ &middot; /, "")) + '</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>';
   }
 
   function tlRender(){
@@ -1451,15 +1459,19 @@ a{color:inherit;text-decoration:none}
     f.click();
   }
 
-  var RCPW = 1080, RCPPAD = 48, RCPMAXH = 14000, RCPLH = 62;
+  // THE RECEIPT IS THE SAVED-TRADE MENU AS A PICTURE, at three times the
+  // phone's scale (1080 wide = 360 x 3): the same ground, the same two
+  // tinted side cards, the same rows, the difference with its arrow, and
+  // sentence case throughout. RCPLH is the tallest single line (a card
+  // row), used only by the page-split guard below.
+  var RCPW = 1080, RCPPAD = 60, RCPMAXH = 14000, RCPLH = 192;
+  var RCPIN = 48, RCPR = 66;
 
   // Canvas cannot render HTML, so the receipt is drawn from the same
   // frozen record the sheet reads. Numbers can never disagree; only
-  // layout can.
-  // Card names, sub-lines and totals are in the text face, Nunito, as on
-  // the page. Only the title and the difference number are Poppins 800,
-  // the display face at a vendored weight. The third argument still reads
-  // "mono" at the call sites; it now means the text face.
+  // layout can. Poppins (600/700/800 only) for titles and totals, Nunito
+  // for text and data, as on the page. The third argument still reads
+  // "mono" at the call sites; it means the text face.
   function rcpFont(px, w, mono){
     return w + " " + px + 'px ' + (mono ? '"Nunito", system-ui, sans-serif' : '"Poppins", system-ui, sans-serif');
   }
@@ -1467,8 +1479,8 @@ a{color:inherit;text-decoration:none}
   // The verdict line. A named side reads as that person's side.
   function rcpMore(n, rec){
     var s = (rec.nm || {})[n];
-    if(!s) return n === 1 ? "YOURS IS WORTH MORE" : "THEIRS IS WORTH MORE";
-    return String(s).toUpperCase() + "'S SIDE IS WORTH MORE";
+    if(!s || s === "Yours" || s === "Theirs") return n === 1 ? "Yours is worth more" : "Theirs is worth more";
+    return String(s) + "'s side is worth more";
   }
 
   function rcpCut(cx, s, max){
@@ -1478,6 +1490,52 @@ a{color:inherit;text-decoration:none}
     return t + "...";
   }
 
+  // Words into at most two lines of max width; the second line cuts.
+  function rcpWrap(cx, s, max){
+    var w = String(s).split(" "), a = "", k, t;
+    if(cx.measureText(String(s)).width <= max) return [String(s)];
+    for(k = 0; k < w.length; k++){
+      t = a ? a + " " + w[k] : w[k];
+      if(cx.measureText(t).width > max && a) break;
+      a = t;
+    }
+    if(cx.measureText(a).width > max) return [rcpCut(cx, s, max)];
+    return [a, rcpCut(cx, w.slice(k).join(" "), max)];
+  }
+
+  function rcpRound(cx, x, y, w, h, r){
+    cx.beginPath();
+    cx.moveTo(x + r, y);
+    cx.lineTo(x + w - r, y);
+    cx.arcTo(x + w, y, x + w, y + r, r);
+    cx.lineTo(x + w, y + h - r);
+    cx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    cx.lineTo(x + r, y + h);
+    cx.arcTo(x, y + h, x, y + h - r, r);
+    cx.lineTo(x, y + r);
+    cx.arcTo(x, y, x + r, y, r);
+    cx.closePath();
+  }
+
+  // The app's arrow (IC.left / IC.right), drawn: a shaft and a head,
+  // pointing at the side worth more.
+  function rcpArrow(cx, x, y, s, right, col){
+    var d = right ? 1 : -1;
+    cx.save();
+    cx.strokeStyle = col;
+    cx.lineWidth = s * 0.1;
+    cx.lineCap = "round";
+    cx.lineJoin = "round";
+    cx.beginPath();
+    cx.moveTo(x - d * s * 0.42, y);
+    cx.lineTo(x + d * s * 0.42, y);
+    cx.moveTo(x + d * s * 0.42 - d * s * 0.25, y - s * 0.25);
+    cx.lineTo(x + d * s * 0.42, y);
+    cx.lineTo(x + d * s * 0.42 - d * s * 0.25, y + s * 0.25);
+    cx.stroke();
+    cx.restore();
+  }
+
   // Both sides in one flat list of drawing instructions, so pagination is
   // a slice rather than a special case.
   function rcpLines(rec){
@@ -1485,125 +1543,163 @@ a{color:inherit;text-decoration:none}
     for(n = 1; n <= 2; n++){
       a = rec["s" + n] || [];
       pc = (rec.pct && rec.pct[n] != null) ? rec.pct[n] : 100;
-      out.push({ t: "head", n: n, pc: pc });
+      out.push({ t: "head", n: n, pc: pc, amt: tlMoney(tlTotal(rec, n), rec) });
       if(!a.length) out.push({ t: "none", n: n });
       for(k = 0; k < a.length; k++){
         it = a[k];
         out.push({
           t: "card", n: n,
           nm: it.n,
-          sub: it.s + (it.c ? " " + it.c : "") + (it.sn ? " / " + it.sn : "") + " / x" + it.q,
+          sub: it.s + (it.c ? " \u00b7 " + it.c : "") + " \u00b7 " + it.q + " \u00d7 " + tlMoney(it.u * (pc / 100), rec),
           amt: tlMoney(it.u * (pc / 100) * it.q, rec)
         });
       }
-      out.push({ t: "sum", n: n, amt: tlMoney(tlTotal(rec, n), rec) });
+      out.push({ t: "sum", n: n });
     }
     return out;
   }
 
+  var RCPH = { head: 156, card: 192, none: 120, sum: 18 };
+
   function rcpDraw(rec, lines, page, pages){
-    var cv = document.createElement("canvas"), cx, y, k, ln, col, h;
+    var cv = document.createElement("canvas"), cx, y, k, ln, h, cw, top, runs = [], run = null, ys = [];
     var t1 = tlTotal(rec, 1), t2 = tlTotal(rec, 2);
     var gap = Math.abs(t1 - t2);
     var last = (page === pages - 1);
-    h = RCPPAD * 2 + 150 + lines.length * RCPLH + (last ? 150 : 40);
+    var BLUE = "#5DA5EE", PINK = "#EE5F9C", BONE = "#EDEAE3", MUTED = "#A4A7AD";
+    var tl, body = 0;
+
+    // the title wraps to two lines at most, then cuts
+    cx = cv.getContext("2d");
+    cx.font = rcpFont(60, "700", false);
+    tl = rcpWrap(cx, rec.note || "Trade", RCPW - RCPPAD * 2);
+    var head = RCPPAD + 66 * tl.length + 204;
+
+    // lay out first: each line's top, and the runs of one side that share a card
+    for(k = 0; k < lines.length; k++){
+      ln = lines[k];
+      if(!run || run.n !== ln.n){
+        if(run) body += 36;
+        run = { n: ln.n, top: head + body, bottom: 0 };
+        runs.push(run);
+      }
+      ys.push(head + body);
+      body += RCPH[ln.t];
+      run.bottom = head + body;
+    }
+    h = head + body + (last ? 330 : 60) + 120;
     cv.width = RCPW;
     cv.height = Math.round(h);
     cx = cv.getContext("2d");
     cx.fillStyle = "#08090A";
     cx.fillRect(0, 0, cv.width, cv.height);
     cx.textBaseline = "alphabetic";
+    cw = RCPW - RCPPAD * 2;
 
-    y = RCPPAD + 46;
-    cx.fillStyle = "#EDEAE3";
-    cx.font = rcpFont(46, "800", false);
-    cx.fillText(rcpCut(cx, rec.note || "Trade", RCPW - RCPPAD * 2), RCPPAD, y);
+    // the head: title, then the frozen line, as the saved-trade menu reads
+    cx.fillStyle = BONE;
+    cx.font = rcpFont(60, "700", false);
+    for(k = 0; k < tl.length; k++) cx.fillText(tl[k], RCPPAD, RCPPAD + 60 + 66 * k);
+    y = RCPPAD + 66 * tl.length;
+    cx.fillStyle = MUTED;
+    cx.font = rcpFont(36, "400", true);
+    cx.fillText(rcpCut(cx, "Saved " + tlWhen(rec.at) + " \u00b7 " + rec.cur
+      + (rec.cur === "CAD" && rec.fx && rec.fx.rate ? " at " + rec.fx.rate : ""), cw), RCPPAD, y + 60);
+    cx.fillText("TCGplayer market price" + (rec.pd ? " of " + String(rec.pd).slice(0, 10) : "") + ".", RCPPAD, y + 110);
+    cx.fillText("Not an offer from any store.", RCPPAD, y + 160);
 
-    y += 34;
-    cx.fillStyle = "#A4A7AD";
-    cx.font = rcpFont(22, "500", true);
-    cx.fillText("SAVED " + tlWhen(rec.at).toUpperCase() + "  /  " + rec.cur
-      + (rec.pd ? "  /  PRICES " + String(rec.pd).slice(0, 10) : ""), RCPPAD, y);
+    // the side cards: the side's own tint, corner 22 x 3
+    for(k = 0; k < runs.length; k++){
+      cx.fillStyle = runs[k].n === 1 ? "rgba(93,165,238,.10)" : "rgba(238,95,156,.10)";
+      rcpRound(cx, RCPPAD, runs[k].top, cw, runs[k].bottom - runs[k].top, RCPR);
+      cx.fill();
+    }
 
-    y += 30;
-    cx.fillText("TCGPLAYER MARKET PRICE. NOT AN OFFER FROM ANY STORE.", RCPPAD, y);
-
-    y += 46;
     for(k = 0; k < lines.length; k++){
       ln = lines[k];
-      col = (ln.n === 1) ? "#5DA5EE" : "#EE5F9C";
+      top = ys[k];
       if(ln.t === "head"){
-        cx.fillStyle = "#A4A7AD";
-        cx.font = rcpFont(22, "500", true);
-        cx.fillText(Nm(ln.n, rec.nm || {}).toUpperCase()
-          + (ln.pc !== 100 ? "  " + ln.pc + "%" : ""), RCPPAD, y + 22);
-        y += 62;
-        continue;
-      }
-      if(ln.t === "none"){
-        cx.fillStyle = "#4A4E55";
-        cx.font = rcpFont(24, "500", true);
-        cx.fillText("Nothing on this side.", RCPPAD, y + 26);
-        y += 62;
-        continue;
-      }
-      if(ln.t === "sum"){
-        cx.strokeStyle = "#2A2D32";
-        cx.lineWidth = 2;
-        cx.beginPath();
-        cx.moveTo(RCPPAD, y + 4);
-        cx.lineTo(RCPW - RCPPAD, y + 4);
-        cx.stroke();
-        cx.fillStyle = col;
-        cx.font = rcpFont(30, "500", true);
+        cx.fillStyle = ln.n === 1 ? BLUE : PINK;
+        cx.font = rcpFont(51, "700", false);
+        var nm = rcpCut(cx, Nm(ln.n, rec.nm || {}), cw / 2);
+        cx.fillText(nm, RCPPAD + RCPIN, top + 96);
+        if(ln.pc !== 100){
+          var nw = cx.measureText(nm).width;
+          cx.fillStyle = MUTED;
+          cx.font = rcpFont(36, "600", true);
+          cx.fillText("at " + ln.pc + "%", RCPPAD + RCPIN + nw + 24, top + 96);
+        }
+        cx.fillStyle = BONE;
+        cx.font = rcpFont(51, "700", false);
         cx.textAlign = "right";
-        cx.fillText(ln.amt, RCPW - RCPPAD, y + 40);
+        cx.fillText(ln.amt, RCPW - RCPPAD - RCPIN, top + 96);
         cx.textAlign = "left";
-        y += 62;
         continue;
       }
-      cx.fillStyle = col;
-      cx.font = rcpFont(28, "500", true);
+      if(ln.t === "sum") continue;
+      // a hairline above every row, as in the menu
+      cx.fillStyle = "rgba(255,255,255,.07)";
+      cx.fillRect(RCPPAD + RCPIN, top, cw - RCPIN * 2, 3);
+      if(ln.t === "none"){
+        cx.fillStyle = MUTED;
+        cx.font = rcpFont(45, "400", true);
+        cx.fillText("Nothing on this side.", RCPPAD + RCPIN, top + 76);
+        continue;
+      }
+      cx.fillStyle = BONE;
+      cx.font = rcpFont(45, "600", true);
       cx.textAlign = "right";
-      cx.fillText(ln.amt, RCPW - RCPPAD, y + 26);
+      cx.fillText(ln.amt, RCPW - RCPPAD - RCPIN, top + 84);
+      var aw = cx.measureText(ln.amt).width;
       cx.textAlign = "left";
-      cx.fillStyle = "#EDEAE3";
-      cx.font = rcpFont(26, "500", true);
-      cx.fillText(rcpCut(cx, ln.nm, RCPW - RCPPAD * 2 - 220), RCPPAD, y + 26);
-      cx.fillStyle = "#A4A7AD";
-      cx.font = rcpFont(18, "500", true);
-      cx.fillText(rcpCut(cx, ln.sub, RCPW - RCPPAD * 2 - 220), RCPPAD, y + 50);
-      y += 62;
+      cx.fillText(rcpCut(cx, ln.nm, cw - RCPIN * 2 - aw - 48), RCPPAD + RCPIN, top + 84);
+      cx.fillStyle = MUTED;
+      cx.font = rcpFont(36, "400", true);
+      cx.fillText(rcpCut(cx, ln.sub, cw - RCPIN * 2 - aw - 48), RCPPAD + RCPIN, top + 138);
     }
 
+    y = head + body;
     if(last){
-      cx.strokeStyle = "#2A2D32";
-      cx.lineWidth = 2;
-      cx.beginPath();
-      cx.moveTo(RCPPAD, y + 6);
-      cx.lineTo(RCPW - RCPPAD, y + 6);
+      // the difference, as the ring reads: the amount, and an arrow
+      // pointing at the side worth more, with the words beside it
+      y += 36;
+      cx.fillStyle = "rgba(255,255,255,.045)";
+      rcpRound(cx, RCPPAD, y, cw, 258, RCPR);
+      cx.fill();
+      cx.strokeStyle = "rgba(255,255,255,.14)";
+      cx.lineWidth = 3;
+      rcpRound(cx, RCPPAD + 1.5, y + 1.5, cw - 3, 255, RCPR);
       cx.stroke();
-      y += 56;
-      cx.fillStyle = "#A4A7AD";
-      cx.font = rcpFont(22, "500", true);
-      cx.fillText("DIFFERENCE " + rec.cur, RCPPAD, y);
-      y += 48;
-      cx.fillStyle = "#EDEAE3";
-      cx.font = rcpFont(52, "800", false);
-      cx.fillText(tlMoney(gap, rec), RCPPAD, y);
-      cx.font = rcpFont(26, "500", true);
+      cx.fillStyle = MUTED;
+      cx.font = rcpFont(36, "400", true);
+      cx.fillText("Difference, " + rec.cur, RCPPAD + RCPIN, y + 78);
+      cx.fillStyle = BONE;
+      cx.font = rcpFont(84, "800", false);
+      cx.fillText(tlMoney(gap, rec), RCPPAD + RCPIN, y + 180);
+      cx.font = rcpFont(36, "600", true);
       cx.textAlign = "right";
-      cx.fillStyle = (gap < 0.005) ? "#A4A7AD" : ((t1 > t2) ? "#5DA5EE" : "#EE5F9C");
-      cx.fillText(gap < 0.005 ? "EVEN" : rcpMore(t1 > t2 ? 1 : 2, rec),
-        RCPW - RCPPAD, y);
+      if(gap < 0.005){
+        cx.fillStyle = MUTED;
+        cx.fillText("Even", RCPW - RCPPAD - RCPIN, y + 172);
+      } else {
+        var more = t1 > t2 ? 1 : 2, col = more === 1 ? BLUE : PINK;
+        var words = rcpCut(cx, rcpMore(more, rec), cw / 2 - 40);
+        cx.fillStyle = col;
+        cx.fillText(words, RCPW - RCPPAD - RCPIN, y + 172);
+        rcpArrow(cx, RCPW - RCPPAD - RCPIN - 30, y + 96, 60, more === 2, col);
+      }
       cx.textAlign = "left";
+      y += 258;
     }
 
+    // the foot: the app's name, small and muted
+    cx.fillStyle = "#4A4E55";
+    cx.font = rcpFont(36, "700", false);
+    cx.fillText("Van Isle Riftbound", RCPPAD, cv.height - RCPPAD);
     if(pages > 1){
-      cx.fillStyle = "#4A4E55";
-      cx.font = rcpFont(18, "500", true);
+      cx.font = rcpFont(36, "600", true);
       cx.textAlign = "right";
-      cx.fillText((page + 1) + " OF " + pages, RCPW - RCPPAD, RCPPAD + 24);
+      cx.fillText((page + 1) + " of " + pages, RCPW - RCPPAD, cv.height - RCPPAD);
       cx.textAlign = "left";
     }
     return cv;
