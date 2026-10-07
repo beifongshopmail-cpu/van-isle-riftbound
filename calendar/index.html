@@ -141,7 +141,7 @@ a{color:inherit;text-decoration:none}
    the script before any :active rule on the page will fire at all. */
 .ev{
   display:block;position:relative;color:var(--bone);
-  border-radius:18px;padding:12px 14px;margin:0 0 8px 0;
+  border-radius:22px;padding:12px 14px;margin:0 0 8px 0;
   background:rgba(var(--cl),var(--ga,.25));
   box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16);
   transition:transform .16s ease,filter .16s ease;
@@ -178,30 +178,19 @@ a{color:inherit;text-decoration:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
-.fail{margin:14px 0;padding:16px;border-radius:18px;color:var(--muted);font-size:15px}
+.fail{margin:14px 0;padding:16px;border-radius:22px;color:var(--muted);font-size:15px}
 .fail a{color:var(--bone);text-decoration:underline}
 
 /* ===================== panels ===================== */
 /* The bar, the scrim and both panels are app.css. Only the calendar's
    own rows are here. */
 
-/* event types: a recessed track like the Go to list, with a tick box */
-.tylist{background:var(--recess);border-radius:24px;padding:4px;display:flex;flex-direction:column;gap:2px}
-.tyrow{
-  display:flex;align-items:center;gap:10px;width:100%;
-  height:var(--sz-row);padding:0 14px;border-radius:999px;
-  font-family:var(--disp);font-size:15px;font-weight:600;color:var(--bone);
-}
-.tyrow:active{background:var(--hi)}
+/* event types and stores: app.css's .pick group and rows. Several can be
+   on at once, so each row carries its own check (.box) rather than .on. */
 .tyrow .lab{flex:1;text-align:left}
 .tyrow .n{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
-.tyrow .box{
-  width:20px;height:20px;border-radius:6px;flex:0 0 auto;
-  border:1.5px solid var(--faint);
-  display:flex;align-items:center;justify-content:center;
-}
-.tyrow .box svg{width:12px;height:12px;stroke:var(--ink);stroke-width:3;fill:none}
-.tyrow[aria-pressed="true"] .box{background:var(--bone);border-color:var(--bone)}
+.tyrow .box{width:18px;height:18px;flex:0 0 auto;display:flex}
+.tyrow .box svg{width:18px;height:18px;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .tyrow[aria-pressed="false"] .lab{color:var(--muted)}
 .tyrow[aria-pressed="false"] .box svg{visibility:hidden}
 .tyrow[aria-pressed="false"] .mk:not(.s-ring){background:var(--faint)}
@@ -283,11 +272,11 @@ a{color:inherit;text-decoration:none}
   </div>
   <div class="row">
     <p class="lb">Event types</p>
-    <div class="tylist" id="tylist" data-k="pick"></div>
+    <div class="pick" id="tylist" data-k="pick"></div>
   </div>
   <div class="row">
     <p class="lb">Stores</p>
-    <div class="tylist" id="stlist" data-k="pick"></div>
+    <div class="pick" id="stlist" data-k="pick"></div>
   </div>
   </div>
 </section>
@@ -302,7 +291,7 @@ a{color:inherit;text-decoration:none}
     skirmish: {label:"Summoner Skirmish", rgb:"255,176,32",   shape:"s-diamond"},
     learn:    {label:"Learn-to-Play",     rgb:"203,166,255",  shape:"s-square"},
     open:     {label:"Open Play",         rgb:"255,79,154",   shape:"s-bar"},
-    other:    {label:"Event",             rgb:"138,148,163",  shape:"s-ring"}
+    other:    {label:"Event",             rgb:"138,148,163",  shape:"s-ring", filt:"Other events"}
   };
   var TYPE_ORDER = ["nexus","skirmish","learn","open","other"];
   var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -692,7 +681,7 @@ a{color:inherit;text-decoration:none}
       b.setAttribute("aria-pressed", hidden[k] ? "false" : "true");
       b.appendChild(mark(ty));
       var l = document.createElement("span");
-      l.className = "lab"; l.textContent = ty.label;
+      l.className = "lab"; l.textContent = ty.filt || ty.label;
       b.appendChild(l);
       var n = document.createElement("span");
       n.className = "n mono"; n.textContent = String(counts[k] || 0);

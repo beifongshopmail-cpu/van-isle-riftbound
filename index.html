@@ -52,7 +52,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 .grid{margin-top:-24px;display:flex;flex-wrap:wrap;justify-content:center;
   row-gap:18px;column-gap:12px;padding:0 8px;max-width:420px;margin-left:auto;margin-right:auto}
-.blk{width:calc((100% - 24px) / 3);aspect-ratio:1/1;border-radius:18px;padding:11px;
+.blk{width:calc((100% - 24px) / 3);aspect-ratio:1/1;border-radius:20px;padding:11px;
   display:flex;flex-direction:column;justify-content:space-between;color:var(--bone);
   text-decoration:none;transition:transform .16s ease,filter .16s ease;
   /* a solid base under the tint, the colour the plate shows through, so
@@ -76,9 +76,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .hubfoot p{margin:0;text-align:center;font-family:var(--text);font-size:12px;line-height:1.4;color:var(--muted)}
 
 /* Settings reuses the card system's panel, scrim and html.lock. */
-.opento .lb{font-size:13px;font-weight:600;color:var(--muted);margin:0 2px 10px}
-.opento small{display:block}
-.oponote{font-size:13px;color:var(--muted);line-height:1.4;margin:10px 2px 0}
+.oponote{font-size:12px;color:var(--muted);line-height:1.5;margin:8px 2px 0}
 
 /* THE HUB'S MENU HANGS FROM ITS BUTTON: positioned under the gear, sliding
    down from it, with app.css's own open and close. NEVER SET opacity OR
@@ -118,7 +116,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   <div class="pbody">
     <p class="lb">Open the app to</p>
     <div class="pick" id="opento" data-k="pick"></div>
-    <p class="oponote">Opening the app skips the hub. Tap Hub on any page to come back.</p>
+    <p class="oponote">The app opens to the page you pick here. Tap Hub on any page to come back.</p>
   </div>
 </section>
 
@@ -160,11 +158,11 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
   function renderOpenTo(){
     var cur = currentChoice();
-    var rows = '<button type="button" class="' + (cur === "" ? "on " : "") + '" data-id="">Hub<span class="sp"></span><small>Always show this page</small></button>';
+    var rows = '<button type="button" class="' + (cur === "" ? "on " : "") + '" data-id="">Hub</button>';
     for (var i = 0; i < PAGES.length; i++) {
       var p = PAGES[i];
       if (!p.path) { continue; }
-      rows += '<button type="button" class="' + (cur === p.id ? "on " : "") + '" data-id="' + p.id + '">' + p.name + '<span class="sp"></span><small>Open straight to ' + p.name + '</small></button>';
+      rows += '<button type="button" class="' + (cur === p.id ? "on " : "") + '" data-id="' + p.id + '">' + p.name + '</button>';
     }
     document.getElementById("opento").innerHTML = rows;
   }

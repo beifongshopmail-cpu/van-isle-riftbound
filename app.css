@@ -22,11 +22,9 @@
   --ground:#08090A;            /* near-void. Chosen over #121316 and #17191C */
   --bone:#EDEAE3; --ink:#121316; --muted:#A4A7AD; --faint:#4A4E55; --track:#2A2D32; --hi:#34383E;
   /* identity colours: players, event types, over-time */
-  --p1:#EE5F9C; --p2:#5DA5EE;
-  --p1t:rgba(238,95,156,.14); --p2t:rgba(93,165,238,.14);   /* score-button stain ("light") */
-  --p1r:rgba(238,95,156,.50); --p2r:rgba(93,165,238,.50);   /* score-button press */
-  --nx:#8FBDF7; --sk:#F2CC5C;                               /* type word and marks */
-  --nxg:rgba(143,189,247,.26); --skg:rgba(242,204,92,.24);  /* event-card glass body */
+  --p1:#5DA5EE; --p2:#EE5F9C;                               /* player 1 and Yours blue, player 2 and Theirs pink */
+  --p1t:rgba(93,165,238,.14); --p2t:rgba(238,95,156,.14);   /* score-button stain ("light") */
+  --p1r:rgba(93,165,238,.50); --p2r:rgba(238,95,156,.50);   /* score-button press */
   --over:#E5484D;
   /* THE GLASS RECIPE ("specular"): near-clear body, light caught along the top curve fading
      down the sides, a faint return at the base, a soft glow inside the base. No full outline. */
@@ -86,9 +84,10 @@ button:active{transform:scale(.96);transition-duration:.08s}
 button:disabled{opacity:.4;pointer-events:none}                   /* dim means disabled, holds its place */
 button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 
-/* .glass: the one glass recipe. Buttons, surfaces and event cards all use it. */
-.glass{position:relative;background:var(--glass);box-shadow:var(--glass-base)}
-.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
+/* .glass: the one glass recipe. Buttons, surfaces, event cards and the
+   glass group (.doors) all use it. */
+.glass,.doors{position:relative;background:var(--glass);box-shadow:var(--glass-base)}
+.glass::before,.doors::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
 .btn{border-radius:999px}
@@ -154,23 +153,33 @@ html.lock,html.lock body{overflow:hidden}
 .row{margin-bottom:14px}
 .lb{font-size:13px;font-weight:600;margin:0 0 6px}
 
-/* option tracks: a recessed track, borderless options, the chosen one in bone */
+/* option tracks: a recessed track, borderless options, the chosen one in bone.
+   A track is for a few short options side by side; a list of rows is a
+   group (.pick below, .doors further down). */
 .seg{display:flex;background:var(--recess);border-radius:999px;padding:3px;gap:2px}
 .seg button{flex:1;height:var(--sz-seg);border-radius:999px;font-size:13px;font-weight:600;font-family:var(--disp)}
 .seg button:active{background:var(--hi)}
 .seg button.on{background:var(--bone);color:var(--ink)}
 /* the same chosen state as an attribute, for option tracks that carry aria-pressed */
 .seg button[aria-pressed="true"]{background:var(--bone);color:var(--ink)}
-.pick{background:var(--recess);border-radius:24px;padding:4px;display:flex;flex-direction:column;gap:2px}
-.pick.solo{padding:0}
-.pick button,.pick a{display:flex;align-items:center;gap:10px;width:100%;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:999px;
+/* THE GROUPED LIST (STYLE.md, Surfaces). A list of rows is one rounded
+   group: rows flat inside it, no gap, a hairline between them inset 16
+   from the left. Corner 22, half a row, so a group of one row is the
+   familiar pill. .pick is the SUNKEN group you choose in: the chosen row
+   wears a bone check on the right, never a fill. .doors (further down)
+   is the GLASS group you press in. Rows in a group shade on press and do
+   not scale. */
+.pick{background:var(--recess);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.pick button,.pick a{position:relative;display:flex;align-items:center;gap:10px;width:100%;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:0;
   font-family:var(--disp);font-weight:600;font-size:15px}
-.pick button:active,.pick a:active{background:var(--hi)}
-.pick button.on,.pick a.on{background:var(--bone);color:var(--ink)}
+.pick button:active,.pick a:active{background-color:var(--hi);transform:none}
+.pick button.on,.pick a.on{padding-right:44px}
+.pick button.on::after,.pick a.on::after{content:"";position:absolute;right:16px;top:calc(50% - 9px);width:18px;height:18px;background:var(--bone);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat}
 .pick .sp{flex:1}
 .pick a{color:inherit;text-decoration:none}
 .pick small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
-.pick button.on small,.pick a.on small{color:rgba(18,19,22,.62)}
 /* no link preview on long press */
 .pick a, a.tab{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 
@@ -212,19 +221,24 @@ html.lock,html.lock body{overflow:hidden}
 .foot p{margin:0 0 10px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .foot b{color:var(--bone);font-weight:600}
 
-/* CONTROL KINDS: see STYLE.md, Control kinds. .door is the glass "opens a
-   deeper menu" row -- the glass counterpart of .pick's recessed row, used
-   inside a .doors column once a row needs its own glass surface instead
-   of sitting in a shared sunken track (a saved-trade row, "All saved
-   trades"). .cvr is the chevron that marks a deeper-opening control: it
-   appears inside a .door, or trailing a plain glass foot button (e.g.
-   "Receipt image") that also opens one level deeper. */
+/* CONTROL KINDS: see STYLE.md, Control kinds. .door is the glass row you
+   press: it opens a deeper menu (with .cvr) or acts once (.door.act).
+   Inside .doors, the glass group, a .door gives up its own glass and
+   becomes a flat row; standing alone it is a glass pill. .cvr is the
+   chevron that marks a deeper-opening control: it appears inside a
+   .door, or trailing a plain glass foot button (e.g. "Receipt image")
+   that also opens one level deeper. */
 .door{display:flex;align-items:center;gap:10px;width:100%;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:999px;
   font-family:var(--disp);font-weight:600;font-size:15px;text-align:left}
 .door .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .door .sp{flex:1}
 .door small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
-.doors{display:flex;flex-direction:column;gap:6px}
+.doors{display:flex;flex-direction:column;border-radius:22px;overflow:hidden}
+.doors > .door{background-color:transparent;box-shadow:none;border-radius:0}
+.doors > .door::before{content:none}
+.doors > .door:active{background-color:var(--glass-press);transform:none}
+/* the hairline between rows, in either group */
+.pick > :not(:last-child),.doors > :not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
 /* .door.act: the same row (left .t, .sp, grey small on the right) for a
    plain action, data-k="do", never deeper -- no .cvr. STYLE.md, Control
    kinds: in a stack of rows an action is this, never a centred .pact; a
@@ -296,13 +310,13 @@ html.lock,html.lock body{overflow:hidden}
 /* .rec: a RECORD row (STYLE.md, Control kinds) -- the one shape allowed
    to grow past one line, since its content is a saved item, not a fixed
    label (a past match, a saved trade). One line measures exactly
-   --sz-row; it grows only when its own content wraps, by min-height
-   alone, never a fixed taller height or extra vertical padding. */
-.rec{height:auto;min-height:var(--sz-row);padding-top:0;padding-bottom:0}
+   --sz-row (min-height); two lines get 7px above and below so the text
+   clears the row's edge, never a fixed taller height. */
+.rec{height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px}
 .door.rec{align-items:flex-start;flex-direction:column;justify-content:center;gap:2px;position:relative;padding-right:40px}
 .door.rec .t{width:100%}
 .door.rec small{white-space:normal;width:100%}
-.door.rec .cvr{position:absolute;top:14px;right:16px}
+.door.rec .cvr{position:absolute;top:calc(50% - 8px);right:16px}
 
 /* flashes that confirm a tap */
 .flash-p{animation:flp .42s ease}

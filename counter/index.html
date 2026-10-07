@@ -22,12 +22,6 @@
    the main face is unchanged: focus and split, the legend art and runes,
    the timer lines. STYLE.md, Control kinds (play) exempts the field's sizes. */
   :root{
-    /* PLAYER 1 IS BLUE AND PLAYER 2 IS PINK on this page, the trade page's
-       two hues. app.css names them the other way round (--p1 pink, --p2
-       blue) and the trade page reads those names, so they are redeclared
-       here, not swapped at the source. The log and past matches read them. */
-    --p1:#5DA5EE;
-    --p2:#EE5F9C;
     --over-deep:#8C1F19;
     --mo-rise:.32s;
     --mo-travel:.42s;
@@ -238,6 +232,7 @@
   /* the Event menu: each row is name, then venue/time under it. Content
      row: sized by its own two lines, with the row floor under it. */
   #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:var(--sz-row);padding:10px 16px;gap:2px}
+  #evlist button.on{padding-right:44px}
   #evlist small{display:block}
 
   /* colours: a sunken one-of-six track now (app.css's .seg.swatch) --
@@ -273,14 +268,16 @@
   .tmsplit button:last-child{border-radius:var(--r-cut) calc(var(--sz-row) / 2) calc(var(--sz-row) / 2) var(--r-cut)}
   .tmsplit button:active,.tmsplit button.armed{background:var(--glass-press)}
 
-  /* player cards: one glass card each, header always visible, body only
-     when open. Only one open at a time (pcOpen/pcShut). */
-  .pcards{margin-bottom:14px}
-  .pcard{border-radius:24px;padding:0;margin-bottom:8px}
-  .pcard:last-child{margin-bottom:0}
-  .pcard.open{padding:12px;border-radius:24px}
+  /* players: one glass group (app.css's group shape), a row per player,
+     header always visible, body only when open. Only one open at a time
+     (pcOpen/pcShut). */
+  .pcards{margin-bottom:14px;border-radius:22px;overflow:hidden}
+  .pcard{padding:0}
+  .pcard:not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
+  .pcard.open{padding:12px}
   .pcard.open .pchead{padding:0 4px}
-  .pchead{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 12px;border-radius:20px;text-align:left}
+  .pchead{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 16px;border-radius:0;text-align:left}
+  .pchead:active{transform:none}
   .pdot{width:12px;height:12px;border-radius:999px;flex:0 0 auto;display:block}
   .pnm{font-family:var(--disp);font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .plegh{font-family:var(--text);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:9ch}
@@ -303,14 +300,16 @@
   /* the tag filter: All matches, then one row per tagged event, own track */
   #pastfilt{margin-bottom:8px}
 
-  /* past matches: rows you pick from, in a recessed track; each expands in place */
-  #past{list-style:none;margin:0;padding:4px;background:var(--recess);border-radius:24px;
-    display:flex;flex-direction:column;gap:2px}
-  #past > li{display:block;border-radius:20px}
+  /* past matches: rows you pick from, in a sunken group (app.css's group
+     shape); each expands in place */
+  #past{list-style:none;margin:0;padding:0;background:var(--recess);border-radius:22px;overflow:hidden;
+    display:flex;flex-direction:column}
+  #past > li{display:block}
+  #past > li:not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
   #past li.empty{padding:14px}
-  #past li.open{background:rgba(255,255,255,.04)}
-  .mrow{display:flex;align-items:center;gap:10px;width:100%;padding:0 14px;
-    text-align:left;border-radius:20px}
+  #past li.open{background-color:rgba(255,255,255,.04)}
+  .mrow{display:flex;align-items:center;gap:10px;width:100%;padding:0 16px;
+    text-align:left;border-radius:0}
   .mrow:active{transform:none;background:var(--hi)}
   .res{flex:0 0 40px;font-size:12px;font-weight:700}
   .res.rwin{color:var(--p1)}
@@ -417,8 +416,8 @@
       <div data-slot>
         <div id="shared">
           <p class="lb">Players</p>
-          <div class="pcards" id="pcards">
-            <div class="pcard glass" id="pcard1" data-p="1">
+          <div class="pcards glass" id="pcards">
+            <div class="pcard" id="pcard1" data-p="1">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot1"></i><span class="pnm" id="pnm1">Player 1</span><span class="sp"></span><small class="plegh" id="plegh1">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody1" hidden>
                 <div class="nf tall"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name" data-k="type"></div>
@@ -426,7 +425,7 @@
                 <div class="seg swatch" id="c1" data-k="pick"></div>
               </div>
             </div>
-            <div class="pcard glass" id="pcard2" data-p="2">
+            <div class="pcard" id="pcard2" data-p="2">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot2"></i><span class="pnm" id="pnm2">Player 2</span><span class="sp"></span><small class="plegh" id="plegh2">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody2" hidden>
                 <div class="nf tall"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name" data-k="type"></div>
