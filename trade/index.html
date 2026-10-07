@@ -192,6 +192,7 @@ a{color:inherit;text-decoration:none}
 /* THE SAVED TRADE AND ITS RECEIPT ARE MENUS, deeper ones: each takes the
    place of the menu it was opened from and carries a back arrow. */
 .frozen{font-size:12px;color:var(--muted);margin:0 2px 14px}
+.tlname{margin-bottom:10px}
 .sum{border-radius:22px;padding:10px 14px;margin:0 0 12px}
 .sum div{display:flex;justify-content:space-between;padding:4px 0;font-size:15px}
 .sum .a{color:var(--yc);font-weight:700} .sum .b{color:var(--tc);font-weight:700}
@@ -327,7 +328,7 @@ a{color:inherit;text-decoration:none}
   <div class="phead"><div class="ht"><h4 class="ttl">Saved trades</h4><span class="cnt" id="tlcount"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
   <div class="row">
-    <div class="nf tall"><input id="tlnote" type="text" maxlength="60" placeholder="Add a note (optional)" autocomplete="off" data-k="type"></div>
+    <div class="nf tall"><input id="tlnote" type="text" maxlength="60" placeholder="Title (optional)" autocomplete="off" data-k="type"></div>
     <button type="button" class="pact btn glass" id="tlsave" data-act="tlsave" data-k="do">Save this trade</button></div>
   <div class="row"><p class="lb">Recent</p><div class="doors" id="tllist" data-k="deeper"></div></div>
   </div>
@@ -1343,12 +1344,18 @@ a{color:inherit;text-decoration:none}
     nr = r.nm || {};
     el("tlttl").textContent = r.note || "Saved trade";
     el("tlbody").innerHTML = ''
+      + '<div class="nf tall tlname"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>'
+      + '<input id="tltitle" type="text" maxlength="60" placeholder="Title (optional)" autocomplete="off" aria-label="Title of this saved trade" data-k="type" value="' + esc(r.note || "") + '"></div>'
       + '<p class="frozen">Prices, rates, names and currency stay as they were when saved, ' + esc(tlWhen(r.at)) + ', in ' + esc(r.cur)
       + (r.cur === "CAD" ? " at " + esc(String(r.fx.rate)) : "") + (r.pd ? ", prices of " + esc(String(r.pd).slice(0, 10)) : "") + '.</p>'
       + tlSideHTML(r, 1) + tlSideHTML(r, 2)
       + '<div class="sum glass"><div><span class="a">' + esc(Nm(1, nr)) + '</span><span>' + esc(tlMoney(t1, r)) + '</span></div>'
       + '<div><span class="b">' + esc(Nm(2, nr)) + '</span><span>' + esc(tlMoney(t2, r)) + '</span></div>'
       + '<div class="d"><span>Difference</span><span>' + esc(tlMoney(Math.abs(t1 - t2), r)) + '</span></div></div>';
+    // THE TITLE IS THE ONE THING ON A SAVED TRADE THAT CAN CHANGE. Prices,
+    // rates, names and currency stay frozen; the title is a label, saved
+    // as it is typed, the way the side names are.
+    el("tltitle").addEventListener("input", function(){ tlRename(k, this.value); });
     el("tlload").setAttribute("data-idx", k);
     el("tlrcp").setAttribute("data-idx", k);
     el("tldel").setAttribute("data-idx", k);
@@ -1356,6 +1363,17 @@ a{color:inherit;text-decoration:none}
     TLDARM = 0;
     el("tldel").textContent = "Delete";
     deeper(el("ptrade"));
+  }
+
+  // Writes a new title onto saved trade k and redraws everything that
+  // shows it: the lists behind this menu and this menu's own heading.
+  function tlRename(k, v){
+    var a = tlLoad();
+    if(!a[k]) return;
+    a[k].note = String(v).slice(0, 60);
+    tlWrite(a);
+    tlRender();
+    el("tlttl").textContent = a[k].note || "Saved trade";
   }
 
   // Leaves the saved trade for the list it was opened from.
