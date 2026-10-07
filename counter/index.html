@@ -255,19 +255,20 @@
 
   /* the custom round length: STATIC markup under #tmrow, never rebuilt
      by renderTimerRow, so a tap into the field keeps its focus. One line
-     (#tmline): the Custom field takes what is left; beside it a glass
-     split pill, Start (Set while a timer runs) | Stop, built like the
-     score buttons' cut track (STYLE.md, Corners: round outer ends, 6px
-     inner corners, 3px gap). Both halves keep one width whatever their
-     word says. Stop is always there, dim while no timer runs (STYLE.md 1:
-     dim means disabled). The hint clears on tap so the caret never sits
-     inside it. The input's 10px right padding evens out .nf's 16/6 sides. */
+     (#tmline): the Custom field is just wide enough for the longest time
+     (999:99); a glass split pill takes the rest, Start (Set while a timer
+     runs) | Stop, built like the score buttons' cut track (STYLE.md,
+     Corners: round outer ends, 6px inner corners, 3px gap). Its halves
+     share the width equally whatever their word says. Stop is always
+     there, dim while no timer runs (STYLE.md 1: dim means disabled). The
+     hint clears on tap so the caret never sits inside it. The input's
+     10px right padding evens out .nf's 16/6 sides. */
   #tmline{display:flex;gap:6px;align-items:center}
-  #tmline #tmcustom{flex:1;min-width:0}
+  #tmline #tmcustom{flex:0 0 104px;min-width:0}
   #tmcustom input{text-align:center;padding-right:10px;font-variant-numeric:tabular-nums}
   #tmcustom input:focus::placeholder{color:transparent}
-  .tmsplit{display:flex;gap:var(--gap-cut);flex:0 0 auto}
-  .tmsplit button{width:76px;height:var(--sz-row);font-family:var(--disp);font-weight:600;font-size:15px;color:inherit}
+  .tmsplit{display:flex;gap:var(--gap-cut);flex:1;min-width:0}
+  .tmsplit button{flex:1;min-width:0;height:var(--sz-row);font-family:var(--disp);font-weight:600;font-size:15px;color:inherit}
   .tmsplit button:first-child{border-radius:calc(var(--sz-row) / 2) var(--r-cut) var(--r-cut) calc(var(--sz-row) / 2)}
   .tmsplit button:last-child{border-radius:var(--r-cut) calc(var(--sz-row) / 2) calc(var(--sz-row) / 2) var(--r-cut)}
   .tmsplit button:active,.tmsplit button.armed{background:var(--glass-press)}
@@ -465,7 +466,7 @@
   <div class="pbody">
     <div class="row"><div class="seg" id="tmrow" data-k="pick"></div><div id="tmnow"></div></div>
     <div class="row" id="tmline">
-      <div class="nf tall" id="tmcustom"><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="Custom (mm:ss)" aria-label="Custom round time, minutes and seconds" data-k="type"></div>
+      <div class="nf tall" id="tmcustom"><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="Custom" aria-label="Custom round time, minutes and seconds" data-k="type"></div>
       <div class="tmsplit"><button type="button" class="glass" id="tmcustombtn" data-k="do">Start</button><button type="button" class="glass" id="tmstop" data-k="do" disabled>Stop</button></div>
     </div>
   </div>
