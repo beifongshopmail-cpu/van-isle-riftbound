@@ -16,6 +16,8 @@ checks and commit. You do not design. These rules hold in every session.
 - Never retype or transcribe tool output, including git log lines. Paste it.
   If you cannot paste a section, write MISSING. A fabricated line is worse
   than a gap. Paste it even if you believe it is wrong.
+- Never compose tool output in your reply when the block names an output
+  file. See "Output goes to a file" below.
 
 ## Always
 - Your shell is Bash on Windows. Normalise CRLF before matching any search
@@ -36,7 +38,22 @@ checks and commit. You do not design. These rules hold in every session.
   overflow) with every menu open. It runs its own server and shuts it down.
 - If check.js warns that test ports are already in use, stop and report.
 
-## Standard reply (use it unless the block gives its own skeleton)
+## Output goes to a file (from 2026-10-07)
+Retyped output went wrong four times in one session (M5), each time from a
+long context. So when a block names an output file:
+- Run every command the block asks you to show with its output appended to
+  that file, never into your reply:
+    { echo "\$ <command>"; <command>; echo "exit $?"; } >> "$OUT" 2>&1
+- Your reply is CODE OUT #<n>, the file path, one line per step (done or
+  STOP and why), HOOKS, and at most 3 notes. Mako attaches the file to the
+  chat; the file is the record.
+- When a block gives you a file to write, use the Write tool and copy its
+  text exactly, escapes such as \u00b7 included, as written. The block's
+  hash check is the proof.
+- The output folder is C:\Users\beifo\OneDrive\ravi-out (create it if
+  missing). It is outside both repos; never commit it.
+
+## Standard reply (use it unless the block gives its own skeleton or names an output file)
 Fenced with four tildes, nothing outside the fence:
 
 ~~~~
