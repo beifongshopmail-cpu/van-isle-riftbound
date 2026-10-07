@@ -36,13 +36,16 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
   - Summoner Skirmish 255,176,32, diamond
   - Learn-to-Play 203,166,255, square
   - Open Play 255,79,154, bar
-  - Other events 138,148,163, ring
+  - Other events 138,148,163, ring. The filter row reads Other events; a card reads Event.
 - The counter's six swatches are the player's choice for one match; the first two are the player defaults.
 - A new hue anywhere needs Mako's yes.
 
 ## 3. Surfaces
 
-- Glass means press. Sunken means choose or type. Bone fill means chosen.
+- Glass means press. Sunken means choose or type. Bone fill means chosen in a track; a bone check means chosen in a list.
+- One thing is a pill: a button, a field, a track. A list of rows is one group: the rows flat inside it, no gap between them, a hairline rgba(255,255,255,.08) between rows, inset 16 from the left.
+- A group you press in is glass (.doors). A group you choose in is sunken (.pick); its chosen row wears an 18px bone check on the right, 16 in.
+- A pick-many list (the calendar's types and stores) shows the same check on every row that is on.
 - A fill means selected, never "important".
 - One glass recipe (.glass) for buttons, surfaces and event cards: body rgba(255,255,255,.045), 1px rim lit at the top fading down the sides, faint glow inside the base. No full outline on any button.
 - Glass pressed: rgba(255,255,255,.14) (--glass-press).
@@ -79,7 +82,6 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
   - --sz-score-min 38: counter slim-banner score buttons
   - --sz-seam 50: counter Pass turn
 - Measure the surface the eye sees, not the control inside it. [A]
-- A tray holding one row takes .solo, so the visible pill is the 44 row.
 - Calendar day cells: 46 circles where there is room, never under 40.
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
 - The bar is 56 high (--barH).
@@ -88,13 +90,14 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 - A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D] [C]
 - A cut track (counter score pills, .seg.multi): round outer ends, 6px inner corners (--r-cut), 3px gaps (--gap-cut). [D]
-- Menus 24. Tracks that hold rows (.pick, Go to) 24. A tray 30 (24 plus its 6 padding). Go to tiles 20.
+- Three surface corners. 24: menus and the two big page surfaces (the calendar's month, the trade plate). 22, half a row: every group and every card (event cards, the feedback form, saved-trade cards), so a group of one row is a pill. 20: tiles (Go to tiles, the hub blocks).
+- The Go to track 24; a tray 30 (24 plus its 6 padding).
 
 ## 7. Spacing and alignment
 
 - 6 within a group, 14 between groups.
 - A menu or section title sits 10 above what it heads.
-- Inside a track: 2 between options, 3 to 4 padding.
+- Inside a track (.seg, Go to): 2 between options, 3 to 4 padding. Inside a group: no gap, no padding; row content 16 in from each side.
 - Menu padding 16; tray padding 6.
 - Controls side by side share top and bottom within 0.5px. [A]
 - Nothing overflows sideways. [D]
@@ -105,7 +108,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Every tappable carries data-k, on itself or its nearest container, naming one kind. [A]
 - do: acts once. Glass, or a side pill (.sidebtn) when it acts for one player. Arm-then-confirm is a do.
 - deeper: a row inside a menu that opens the next menu. Always carries the right chevron (.cvr); nothing else may. [A]
-- pick: a choice that stays, inside a sunken track. Go to is a pick; the page you are on is the chosen tile.
+- pick: a choice that stays, in a sunken track (.seg) or a sunken group (.pick). Go to is a pick; the page you are on is the chosen tile.
 - type: a text field in a sunken shape, background --recess on its visible shape.
 - open: opens in place. Carries aria-expanded and a .chev that points at what a tap will do.
 - slot: an icon slot on the bar or the counter's strip, nowhere else. [A]
@@ -113,7 +116,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - grid: the calendar's day cells, nowhere else.
 - view: the counter's full-card viewer: tap anywhere dismisses it. Nowhere else.
 - Text you only read carries no data-k and is not tappable.
-- A deeper row is one line at 44, its value in grey small on the right. Only records (.rec: saved trades, past matches, event rows) may grow past one line. [A]
+- A deeper row is one line at 44, its value in grey small on the right. Only records (.rec: saved trades, past matches, event rows) may grow past one line; a two-line record takes 7 above and below. [A]
 - In a stack of rows an action is a .door.act. A centred .pact stands alone or sits in a menu foot.
 - A label never repeats its only row.
 - Pages place components; they never reshape them. A page may not set height, min-height, padding, border-radius or width on .door, .pact, .seg, .nf/.sf, .goto, .rec, .btn or .circ. Layout around them is the page's own. [A]
@@ -122,6 +125,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 - Every overlay is a menu: a head (title, X), a body, an optional foot. Only the body scrolls. No full-screen sheets.
 - Going deeper replaces the menu: it shows a back arrow and no X. Back returns where you were. The X on a menu opened directly, or the scrim, closes the whole stack.
+- A deeper menu's title is the label of the row that opened it.
 - A menu holding one track and nothing else is a tray: no title, no X.
 - A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar; on the hub it hangs from the gear.
 - The menu's height cap counts the bar.
@@ -153,7 +157,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 - Motion confirms; it never decorates.
 - Nothing animates on first paint.
-- Press: scale .96, and the shade change.
+- Press: scale .96, and the shade change. A row inside a group takes the shade only.
 - Tap flashes, .42s: bone for neutral controls (.flash-n), the player's colour for side controls (.flash-p).
 - Apply a flash after the render: find the fresh node, remove the class, force reflow, add it.
 - A control that already confirms itself twice gets no third.
