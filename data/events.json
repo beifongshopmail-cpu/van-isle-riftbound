@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-07T06:55:53.886Z",
- "generated_local": "2026-10-06T23:55:53-07:00",
- "window_start": "2026-10-06T07:00:00.000Z",
+ "generated_at": "2026-10-07T19:14:16.844Z",
+ "generated_local": "2026-10-07T12:14:16-07:00",
+ "window_start": "2026-10-07T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -25,7 +25,7 @@
  "totals": {
   "fetched": 20,
   "unique": 20,
-  "prev_unique": 21
+  "prev_unique": 20
  },
  "unknown_templates": {},
  "events": [
@@ -42,7 +42,7 @@
    "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-08-31T18:27:27+00:00",
@@ -108,7 +108,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 32,
-   "reg": 0,
+   "reg": 1,
    "cents": 0,
    "currency": "CAD",
    "updated": "2026-10-04T20:30:24+00:00",
@@ -130,7 +130,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-16T05:00:57+00:00",
@@ -152,7 +152,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC, V8Z 4H3, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-09-10T18:03:37+00:00",
