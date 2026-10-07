@@ -48,6 +48,9 @@ Mako's call: on RAVI the agent pushes. A bad push is undone with git revert.
 - rb-tools, exactly: git -C /c/dev/rb-tools push origin master
 - The guard allows only those push forms (run through run.sh is fine).
   Anything else is blocked; stop and report.
+- Run each pull and push as its own command, with nothing chained before
+  or after it (no ;, no &&, no tail of the output file). A chained push is
+  blocked.
 - 'cannot lock ref' means the data refresh landed in the same minute: pull
   and push once more, then stop if it fails again.
 - Never --force, never another branch, never rewrite pushed history. Undo a
