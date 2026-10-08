@@ -154,7 +154,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Give the top safe-area inset back on the page wrapper.
 - The wordmark row is chrome: one thin row, the wordmark centred and nothing else, scrolls away.
 - Every page's first line starts at the safe-area inset plus 30px, where the counter's stage starts.
-- The wordmark is the coloured RAVI: RA --p1, VI --p2, Poppins 800, as on the app icon. Only the hub's name and the page-top row carry it; everywhere else the name is plain RAVI. The hub spells it out once beneath it: Rift App, Vancouver Island.
+- The wordmark is the coloured RAVI: RA --p1, VI --p2, Poppins 800, as on the app icon. Only the hub's name and the page-top row carry it; everywhere else the name is plain RAVI.
 - The footer: 30 above, a short dim hairline inset 24 from both ends.
 
 ## 12. Motion
