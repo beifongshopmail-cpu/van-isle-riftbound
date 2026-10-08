@@ -115,17 +115,27 @@ svg .icf{display:none}
 .on > svg .icf{display:inline}
 
 /* menus: frosted panel rising from the bottom over a light scrim */
-.scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:30}
-.scrim.show{opacity:1;pointer-events:auto}
+.scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:30}
+.scrim.show{opacity:1;pointer-events:auto;transition-duration:.3s}
 .panel{position:fixed;left:12px;right:12px;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);max-width:456px;margin:0 auto;
   border-radius:24px;padding:16px;z-index:40;box-shadow:0 14px 36px rgba(0,0,0,.5);
   /* THE CAP COUNTS THE BAR. The panel sits above the bar, so a cap of the
      whole screen let a tall menu run off the top by the bar's height. */
   max-height:calc(100% - max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) - var(--barH) - 8px - 16px - env(safe-area-inset-top,0px));
   display:flex;flex-direction:column;overflow:hidden;
-  transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
+  /* A MENU ARRIVES SLOWER THAN IT LEAVES (STYLE.md, Motion): it glides up
+     and settles in .34s, and drops away in .2s. */
+  transform:translateY(24px);opacity:0;pointer-events:none;transition:transform .2s cubic-bezier(.4,0,1,1),opacity .2s ease}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.panel{-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}}
-.panel.show{transform:none;opacity:1;pointer-events:auto}
+.panel.show{transform:none;opacity:1;pointer-events:auto;transition:transform .34s var(--ease),opacity .22s ease}
+/* A DEEPER MENU SLIDES IN FROM THE RIGHT and Back slides it out again; the
+   menu it came from moves the other way. The page script sets these for
+   one move only: .fromr or .froml on the menu arriving, .tol or .tor on the
+   one leaving. */
+.panel.fromr:not(.show){transform:translateX(32px);transition:none}
+.panel.froml:not(.show){transform:translateX(-32px);transition:none}
+.panel.tol:not(.show){transform:translateX(-32px)}
+.panel.tor:not(.show){transform:translateX(32px)}
 /* TRAY: a menu that holds one track and nothing else -- Go to is the
    first one. Same frost, position and scrim as any .panel; no .phead
    (STYLE.md, Control kinds: "no title, no X"). Closing it needs no code of
@@ -344,3 +354,20 @@ html.lock,html.lock body{overflow:hidden}
 @keyframes fln{0%{background:rgba(237,234,227,.85);color:var(--ink)}100%{}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* PAGE TO PAGE: the page fades into the next one and the bar holds still
+   (STYLE.md, Motion). Only between pages: a cold launch or a reload paints
+   with no motion. A phone without cross-page transitions switches
+   instantly, as before. Inside no-preference, so reduced motion turns it
+   off: the kill switch above cannot reach the transition's own layers. */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
+  .bar{view-transition-name:bar}
+}
+/* CONTENT A TAP OPENS eases in under the row that opened it (STYLE.md,
+   Motion): the page script adds .reveal after the tap, never on a render,
+   so a re-render never replays it. The height changes in one frame. */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{animation:reveal .26s var(--ease)}
+}
+@keyframes reveal{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:none}}

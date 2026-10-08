@@ -148,6 +148,35 @@
   .pass em{font-style:normal;display:flex;align-items:center;gap:.5ch;min-width:0}
   .pass b{font-weight:700;color:var(--sc);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+  /* THE FIELD'S MOTION (STYLE.md, Motion). A point lands: the numeral
+     settles from a touch larger and the newest rail line draws in. A pass
+     flashes the button in the incoming player's colour, rolls its turn
+     line up and glows their half from the seam. fillSide updates the sides
+     in place, so the next render never cuts these off. */
+  .pass .seamghost{display:none}
+  @media (prefers-reduced-motion: no-preference){
+    .num.ptland{animation:ptland var(--mo-rise) var(--mo-ease)}
+    .rail span.rnew::before{animation:railin var(--mo-rise) var(--mo-ease);transform-origin:left center}
+    .side.passwash::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
+      background:radial-gradient(60% 100% at 50% 0,var(--pcr),transparent 72%);animation:passwash .56s ease-out}
+    #sideTop:not(.far).passwash::after{background:radial-gradient(60% 100% at 50% 100%,var(--pcr),transparent 72%)}
+    .pass.flash-p b{animation:flpb .42s ease}
+    /* the turn line rolls up: the old one leaves upward as the new one
+       comes in from below, clipped to the button */
+    .pass{overflow:hidden}
+    .pass em.seamroll{animation:seamroll .3s var(--mo-ease)}
+    .pass .seamghost{display:flex;position:absolute;pointer-events:none;animation:seamghost .24s cubic-bezier(.4,0,1,1) both}
+    /* the victory banner rises where a menu does */
+    .win.winrise{animation:winrise .34s var(--mo-ease)}
+  }
+  @keyframes seamroll{0%{transform:translateY(26px);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes seamghost{0%{transform:none;opacity:1}100%{transform:translateY(-26px);opacity:0}}
+  @keyframes winrise{0%{transform:translateY(24px);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes ptland{0%{transform:scale(1.06)}100%{transform:none}}
+  @keyframes railin{0%{transform:scaleX(0)}100%{transform:none}}
+  @keyframes passwash{0%{opacity:1}100%{opacity:0}}
+  @keyframes flpb{0%{color:var(--ink)}100%{}}
+
   /* the timer lines. The padding is SYMMETRIC on purpose: the far line is
      rotated, so any one-sided padding lands on the opposite side for it. */
   .tmv{flex:0 0 auto;text-align:center;padding:4px 0;font-size:13px;font-weight:500;letter-spacing:.08em;
@@ -1387,12 +1416,44 @@
       "<section class=\"side\" id=\"sideBot\"></section>";
     fieldBuilt = true;
   }
+  // THE SIDES UPDATE IN PLACE. A side is rebuilt only when what it is made
+  // of changes: its role, the name, the legend and its runes, the art, the
+  // match length. A point, a pass or an undo sets the score, the rail, the
+  // pips and the buttons on the nodes already there, so a motion running on
+  // them is never cut off by the next render. The result is the same markup
+  // a rebuild would give, apart from the motion classes.
+  function sideKey(p, role){
+    return [role, nameOf(p), players[p].legend,
+      lgrOn ? lgaDom(players[p].legend, "lgarune") : "",
+      lgaMode, lgaSrc(p), bo].join("|");
+  }
   function fillSide(el, p, role){
     var far = (role === "minor" && mode !== "focus") || (role === "equal" && p === 2);
-    el.className = "side p" + p + (far ? " far" : "");
+    var cls = "side p" + p + (far ? " far" : "");
+    // keep a running pass glow: the only class added after a render
+    if (el.className.replace(" passwash", "") !== cls) { el.className = cls; }
     el.setAttribute("data-role", role);
     wearSide(el, p);
-    el.innerHTML = blockInner(p, role);
+    var k = sideKey(p, role);
+    if (el.rviKey !== k) {
+      el.innerHTML = blockInner(p, role);
+      el.rviKey = k;
+      return;
+    }
+    var n = el.querySelector(".num"), s = String(score(p));
+    if (n && n.textContent !== s) { n.textContent = s; }
+    var pts = pointsOf(p), sp = el.querySelectorAll(".rail span");
+    for (var i = 0; i < sp.length; i++) {
+      var on = i < pts.length, c = on ? "f" : "e", t = on ? KEY[pts[i].src] : "\u00b7";
+      if ((sp[i].classList.contains("f") ? "f" : "e") !== c) { sp[i].className = c; }
+      if (sp[i].textContent !== t) { sp[i].textContent = t; }
+    }
+    var w = bo === 3 ? gameWins(p) : 0, ip = el.querySelectorAll(".pips i");
+    for (var j = 0; j < ip.length; j++) {
+      if (j < w) { ip[j].setAttribute("class", "on"); } else { ip[j].removeAttribute("class"); }
+    }
+    var bs = el.querySelectorAll(".acts button"), d = gameOver();
+    for (var m = 0; m < bs.length; m++) { if (bs[m].disabled !== d) { bs[m].disabled = d; } }
   }
 
   function seam(){
@@ -1405,7 +1466,7 @@
     }
     return "<div class=\"seamwrap\">" +
       "<button type=\"button\" class=\"pass btn glass\" id=\"seam\" data-k=\"play\"" + d +
-      " style=\"--sc:" + players[c.p].colour + "\">Pass turn<span class=\"dv\"></span>" +
+      " style=\"--sc:" + players[c.p].colour + ";--pc:" + players[c.p].colour + "\">Pass turn<span class=\"dv\"></span>" +
       "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
   }
 
@@ -1629,8 +1690,11 @@
     syncLive();
     syncCallEnd();
     var c = ctx(), w = gameOver();
+    var wasWon = stage.getAttribute("data-won") === "1";
     stage.setAttribute("data-mode", mode);
     stage.setAttribute("data-won", w ? "1" : "0");
+    // the banner rises when a game ends in front of you, not on first paint
+    if (w && !wasWon && fieldBuilt) { restartFx(elBanner, "winrise"); }
     var open = w ? matchOpen() : false;
     if (!w) {
       elWin.textContent = nameOf(1) + " wins";
@@ -1719,8 +1783,9 @@
         return;
       }
       var c = ctx(), nx = c.p === 1 ? 2 : 1;
+      var oe = document.querySelector("#seam em"), og = oe ? oe.innerHTML : "";
       ev.push({ t:"turn", p:nx, n:turns(nx) + 1, at:Date.now() });
-      save(); render(); flashSeam(); keepAwake();
+      save(); render(); flashSeam(nx, og, players[c.p].colour); keepAwake();
       return;
     }
     if (t.getAttribute("data-spot")) {
@@ -1737,6 +1802,7 @@
       var nb = field.querySelector('.acts button[data-p="' + fp + '"][data-s="' + fs + '"]');
       if (nb) { nb.classList.remove("flash-p"); void nb.offsetWidth;
                 nb.classList.add("flash-p"); }
+      landPoint(parseInt(fp, 10));
     }
   });
 
@@ -1750,14 +1816,45 @@
     saveMode(); render();
   });
 
-  function flashSeam(){
+  // Restart a motion class: remove it, force a reflow, add it back.
+  function restartFx(el, cls){
+    if (!el) { return; }
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+  }
+  // A POINT LANDS on the nodes fillSide kept: the numeral settles and the
+  // newest rail line draws in.
+  function landPoint(p){
+    var sd = field.querySelector(".side.p" + p);
+    if (!sd) { return; }
+    restartFx(sd.querySelector(".num"), "ptland");
+    var f = sd.querySelectorAll(".rail span.f");
+    if (f.length) { restartFx(f[f.length - 1], "rnew"); }
+  }
+  // THE PASS confirms in the incoming player's colour: the button flashes
+  // it (app.css's .flash-p, with --pc set by seam()), the turn line rolls
+  // up out of the way of the new one, and their half glows from the seam.
+  // og and oc are the old turn line and the old player's colour, read
+  // before the render replaced the button.
+  function flashSeam(nx, og, oc){
     var s = document.getElementById("seam");
     if (!s) { return; }
-    // app.css's bone flash confirms the pass. A fuller pass-turn flash
-    // belongs to the motion pass.
-    s.classList.remove("flash-n");
-    void s.offsetWidth;
-    s.classList.add("flash-n");
+    restartFx(s, "flash-p");
+    var em = s.querySelector("em");
+    if (em && og) {
+      var g = document.createElement("em");
+      g.className = "seamghost";
+      g.setAttribute("aria-hidden", "true");
+      g.innerHTML = og;
+      g.style.setProperty("--sc", oc);
+      g.style.left = em.offsetLeft + "px";
+      g.style.top = em.offsetTop + "px";
+      s.appendChild(g);
+      setTimeout(function(){ if (g.parentNode) { g.parentNode.removeChild(g); } }, 320);
+      restartFx(em, "seamroll");
+    }
+    restartFx(field.querySelector(".side.p" + nx), "passwash");
     try { if (navigator.vibrate) { navigator.vibrate(16); } } catch (e) {}
   }
   elUndo.addEventListener("click", function(){
@@ -1836,7 +1933,7 @@
     if (mi === null) { return; }
     var li = t.parentNode;
     if (li.className === "open") { li.className = ""; t.setAttribute("aria-expanded", "false"); }
-    else { li.className = "open"; t.setAttribute("aria-expanded", "true"); }
+    else { li.className = "open"; t.setAttribute("aria-expanded", "true"); restartFx(li.querySelector(".mbody"), "reveal"); }
   });
   document.getElementById("logbtn").addEventListener("click", openSheet);
 
@@ -1940,8 +2037,20 @@
   // move into whichever of Game or New match is showing. Two copies would
   // give two inputs one id.
   var OPENP = null, STACK = [];
-  function show(p, keep){
+  // A DEEPER MENU SLIDES IN FROM THE RIGHT; Back slides the other way
+  // (app.css, .fromr .froml .tol .tor). dir is 1 deeper, -1 back, 0 for
+  // any other open or close, which rises and drops as usual.
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  function show(p, keep, dir){
     pcShut();
+    if (OPENP && p && OPENP !== p && dir) { slideMenus(OPENP, p, dir); }
     if (OPENP && OPENP !== p) {
       OPENP.classList.remove("show");
       OPENP.setAttribute("aria-hidden", "true");
@@ -1952,6 +2061,7 @@
       if (slot && shared.parentNode !== slot) { slot.appendChild(shared); }
       document.documentElement.classList.add("lock");
       p.classList.add("show");
+      p.classList.remove("fromr", "froml");
       p.setAttribute("aria-hidden", "false");
       var bd = p.querySelector(".pbody");
       if (bd && !keep) { bd.scrollTop = 0; }
@@ -1974,10 +2084,10 @@
     }
   }
   function openPanel(p){ STACK = p ? [p] : []; show(p); syncBack(); }
-  function deeper(p){ STACK.push(p); show(p); syncBack(); }
+  function deeper(p){ STACK.push(p); show(p, false, 1); syncBack(); }
   function back(){
     STACK.pop();
-    show(STACK.length ? STACK[STACK.length - 1] : null, true);
+    show(STACK.length ? STACK[STACK.length - 1] : null, true, -1);
     syncBack();
   }
   function closeMenus(){
@@ -2227,7 +2337,7 @@
     if (!head) { return; }
     var card = head.closest(".pcard");
     var wasOpen = head.getAttribute("aria-expanded") === "true";
-    if (wasOpen) { pcShut(); } else { pcOpen(card.getAttribute("data-p")); }
+    if (wasOpen) { pcShut(); } else { pcOpen(card.getAttribute("data-p")); restartFx(card.querySelector(".pcbody"), "reveal"); }
   });
 
   function setupClick(e){

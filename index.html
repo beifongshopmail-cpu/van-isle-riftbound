@@ -15,7 +15,7 @@
     if (id && window.RAVI_PAGES) {
       for (var i = 0; i < window.RAVI_PAGES.length; i++) {
         if (window.RAVI_PAGES[i].id === id) {
-          if (window.RAVI_PAGES[i].path) { location.replace(window.RAVI_PAGES[i].path); }
+          if (window.RAVI_PAGES[i].path) { window.RAVI_AWAY = true; location.replace(window.RAVI_PAGES[i].path); }
           break;
         }
       }
@@ -46,6 +46,16 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   background:var(--ground)}
 .hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:.01em;color:var(--bone)} /* rung-exempt: the wordmark */
 .hubgear{position:absolute;top:var(--top-clear);right:12px}
+/* THE LAUNCH INTRO (STYLE.md, Motion). While it plays the name is four
+   capitals that travel, and .introfull is the full name laid over them.
+   The script builds both only while it plays; at rest the name is the
+   plain wordmark above. Reduced motion never gets here. */
+.hubname.intro span{display:inline-block}
+.introfull{position:absolute;left:50%;width:max-content;text-align:center;white-space:nowrap;pointer-events:none;
+  font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:.01em;line-height:1.15;color:var(--bone);
+  transform-origin:50% 50%} /* rung-exempt: the wordmark */
+.introfull .il{display:block}
+.introfull span span{display:inline-block}
 
 .low{position:relative;margin-top:-40px;
   border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px;
@@ -122,6 +132,126 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 </section>
 
 <script>
+// THE LAUNCH INTRO (STYLE.md, Motion). The first time the hub shows in a
+// launch, 'Rift App' over 'Vancouver Island' closes into RAVI: the small
+// letters fade while the two lines slide together, up, down and in, and
+// the four capitals land in the wordmark. Nothing waits on it, and any tap
+// finishes it. The flag is in session storage, which the installed app
+// keeps until it is fully closed. A launch that opens straight to another
+// page (Settings, Open the app to) leaves it for the first time the hub
+// does show. Reduced motion, no storage or no Web Animations skips it.
+// window.RAVI_INTRO is the list the hub's blocks add their rise to.
+(function(){
+  var h = document.querySelector(".hubname"), top = h ? h.parentNode : null;
+  if (!h || window.RAVI_AWAY) { return; }
+  try {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
+    if (!h.animate || !document.fonts || !document.fonts.load) { return; }
+    if (sessionStorage.getItem("ravi.intro.v1")) { return; }
+    sessionStorage.setItem("ravi.intro.v1", "1");
+  } catch (e) { return; }
+  var ALL = window.RAVI_INTRO = [], MINE = [];
+  var rest = h.innerHTML, ov = null, done = false;
+  var E = "cubic-bezier(.22,.72,.2,1)";
+  // The capitals are measured in the wordmark's own font, so the name
+  // waits for it, hidden. If it is slow, RAVI shows plainly instead.
+  h.style.visibility = "hidden";
+  var late = setTimeout(end, 800);
+  document.addEventListener("pointerdown", skip, true);
+  document.fonts.load("800 34px Poppins").then(go, go);
+
+  function skip(){
+    for (var i = 0; i < ALL.length; i++) { try { ALL[i].finish(); } catch (e) {} }
+  }
+  function end(){
+    if (done) { return; }
+    done = true;
+    clearTimeout(late);
+    document.removeEventListener("pointerdown", skip, true);
+    if (ov && ov.parentNode) { ov.parentNode.removeChild(ov); }
+    h.innerHTML = rest;
+    h.className = "hubname";
+    h.removeAttribute("style");
+  }
+  // One element's moves on the intro's clock: [time in ms, style, easing
+  // to the next step], from 0 to the end time T.
+  function run(el, steps, T){
+    var k = [], i, p, f;
+    for (i = 0; i < steps.length; i++) {
+      f = {};
+      for (p in steps[i][1]) { f[p] = steps[i][1][p]; }
+      f.offset = steps[i][0] / T;
+      if (steps[i][2]) { f.easing = steps[i][2]; }
+      k.push(f);
+    }
+    var a = el.animate(k, { duration: T, fill: "both" });
+    MINE.push(a); ALL.push(a);
+  }
+  function go(){
+    if (done) { return; }
+    clearTimeout(late);
+    var i, j, q;
+    var LINES = [[["R", "ift"], ["A", "pp"]], [["V", "ancouver"], ["I", "sland"]]];
+    var COL = ["logo1", "logo1", "logo2", "logo2"];
+    // the wordmark as four capitals, each at its place at rest
+    h.className = "hubname intro";
+    h.innerHTML = "<span class=\"logo1\">R</span><span class=\"logo1\">A</span>" +
+      "<span class=\"logo2\">V</span><span class=\"logo2\">I</span>";
+    // the full name over it, centred on the same line
+    var s = "", c = 0;
+    for (i = 0; i < LINES.length; i++) {
+      s += "<span class=\"il\">";
+      for (j = 0; j < LINES[i].length; j++) {
+        if (j) { s += "<span class=\"lc\">&#160;</span>"; }
+        s += "<span class=\"ic " + COL[c++] + "\">" + LINES[i][j][0] + "</span>";
+        var t = LINES[i][j][1];
+        for (q = 0; q < t.length; q++) { s += "<span class=\"lc\">" + t.charAt(q) + "</span>"; }
+      }
+      s += "</span>";
+    }
+    ov = document.createElement("div");
+    ov.className = "introfull";
+    ov.setAttribute("aria-hidden", "true");
+    ov.innerHTML = s;
+    top.appendChild(ov);
+    // the full name fits inside the 16px gutters, centred on the screen
+    var wide = 0, ls = ov.querySelectorAll(".il");
+    for (i = 0; i < ls.length; i++) {
+      var a0 = ls[i].firstChild.getBoundingClientRect(), a1 = ls[i].lastChild.getBoundingClientRect();
+      wide = Math.max(wide, a1.right - a0.left);
+    }
+    var fit = Math.min(1, (top.clientWidth - 32) / Math.max(1, wide));
+    ov.style.top = (h.offsetTop + h.offsetHeight / 2 - ov.offsetHeight / 2) + "px";
+    ov.style.transform = "translateX(-50%) scale(" + fit + ")";
+    // where each capital starts, as a move from its place at rest
+    var cap = h.children, ic = ov.querySelectorAll(".ic"), M = [];
+    for (i = 0; i < 4; i++) {
+      var r0 = ic[i].getBoundingClientRect(), r1 = cap[i].getBoundingClientRect();
+      M.push("translate(" + (r0.left + r0.width / 2 - (r1.left + r1.width / 2)) + "px," +
+        (r0.top + r0.height / 2 - (r1.top + r1.height / 2)) + "px) scale(" + (r0.width / Math.max(1, r1.width)) + ")");
+      ic[i].style.visibility = "hidden";
+    }
+    h.style.visibility = "";
+    // in over .3s from just apart, read until .75s, then close up by 1.35s
+    var T = 1350;
+    for (i = 0; i < 4; i++) {
+      var sh = " translateY(" + (i < 2 ? -10 : 10) + "px)";
+      run(cap[i], [[0, { transform: M[i] + sh, opacity: 0 }, E], [300, { transform: M[i], opacity: 1 }],
+        [750, { transform: M[i], opacity: 1 }, E], [T, { transform: "none", opacity: 1 }]], T);
+    }
+    for (i = 0; i < ls.length; i++) {
+      var lcs = ls[i].querySelectorAll(".lc"), dl = i ? 10 : -10;
+      for (j = 0; j < lcs.length; j++) {
+        run(lcs[j], [[0, { transform: "translateY(" + dl + "px)", opacity: 0 }, E], [300, { transform: "none", opacity: 1 }],
+          [750, { transform: "none", opacity: 1 }, "ease"], [970, { transform: "none", opacity: 0 }],
+          [T, { transform: "none", opacity: 0 }]], T);
+      }
+    }
+    Promise.all(MINE.map(function(a){ return a.finished; })).then(end, end);
+  }
+})();
+</script>
+<script>
 (function(){
   var PAGES = window.RAVI_PAGES || [];
 
@@ -139,6 +269,18 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
     }
   }
   grid.innerHTML = h;
+  // THE BLOCKS RISE IN ONCE PER LAUNCH, with the launch intro (STYLE.md,
+  // Motion): one after another, all done in under half a second after
+  // the name starts. Any other visit to the hub shows them at rest.
+  if (window.RAVI_INTRO && grid.animate) {
+    var bk = grid.children;
+    for (var bj = 0; bj < bk.length; bj++) {
+      var bo = getComputedStyle(bk[bj]).opacity;
+      window.RAVI_INTRO.push(bk[bj].animate(
+        [{ transform: "translateY(14px) scale(.96)", opacity: 0 }, { transform: "none", opacity: bo }],
+        { duration: 380, delay: 120 + bj * 40, easing: "cubic-bezier(.22,.72,.2,1)", fill: "backwards" }));
+    }
+  }
 
   // SETTINGS: a scrim-and-panel menu like every other page's, locking the
   // page at the root while open.

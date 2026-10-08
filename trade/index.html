@@ -1020,12 +1020,14 @@ a{color:inherit;text-decoration:none}
       EXP[tg] = !EXP[tg];
       OPEN = "";
       renderSides();
+      if(EXP[tg]) reveal(el("l" + tg));
       return;
     }
     if(act === "row"){
       var rk = t.getAttribute("data-side") + ":" + t.getAttribute("data-idx");
       OPEN = (OPEN === rk) ? "" : rk;
       renderSides();
+      if(OPEN) reveal(document.querySelector(".ln.open .lact"));
       return;
     }
     if(act === "tlsave"){ tlSave(); return; }
@@ -1077,7 +1079,12 @@ a{color:inherit;text-decoration:none}
       paint();
       return;
     }
-    if(act === "udtog"){ udOpen(el("udlogw").hidden); return; }
+    if(act === "udtog"){
+      var uo = el("udlogw").hidden;
+      udOpen(uo);
+      if(uo) reveal(el("udlogw"));
+      return;
+    }
     if(act === "undo"){
       if(!UDS.length) return;
       OPEN = "";
@@ -1805,8 +1812,27 @@ a{color:inherit;text-decoration:none}
   // locked at the root (app.css, html.lock), and nothing is saved or
   // restored, so the page cannot come back somewhere else.
   var OPENP = null, STACK = [];
-  function show(p, keep){
+  // A DEEPER MENU SLIDES IN FROM THE RIGHT; Back slides the other way
+  // (app.css, .fromr .froml .tol .tor). dir is 1 deeper, -1 back, 0 for
+  // any other open or close, which rises and drops as usual.
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  // CONTENT A TAP OPENS eases in (app.css, .reveal), restarted per tap.
+  function reveal(n){
+    if(!n) return;
+    n.classList.remove("reveal");
+    void n.offsetWidth;
+    n.classList.add("reveal");
+  }
+  function show(p, keep, dir){
     var sc = el("scrim"), b;
+    if(OPENP && p && OPENP !== p && dir) slideMenus(OPENP, p, dir);
     if(OPENP && OPENP !== p){
       OPENP.classList.remove("show");
       OPENP.setAttribute("aria-hidden", "true");
@@ -1821,6 +1847,7 @@ a{color:inherit;text-decoration:none}
     if(p){
       document.documentElement.classList.add("lock");
       p.classList.add("show");
+      p.classList.remove("fromr", "froml");
       p.setAttribute("aria-hidden", "false");
       b = p.querySelector(".pbody");
       if(b && !keep) b.scrollTop = 0;
@@ -1831,8 +1858,8 @@ a{color:inherit;text-decoration:none}
     }
   }
   function openPanel(p){ STACK = p ? [p] : []; show(p); }
-  function deeper(p){ STACK.push(p); show(p); }
-  function back(){ STACK.pop(); show(STACK.length ? STACK[STACK.length - 1] : null, true); }
+  function deeper(p){ STACK.push(p); show(p, false, 1); }
+  function back(){ STACK.pop(); show(STACK.length ? STACK[STACK.length - 1] : null, true, -1); }
 
   // Names never make an undo entry: save() records only a change to the
   // sides or the rates.
