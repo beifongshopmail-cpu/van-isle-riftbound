@@ -124,6 +124,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 ## 9. Menus
 
 - Every overlay is a menu: a head (title, X), a body, an optional foot. Only the body scrolls. No full-screen sheets.
+- While the body runs under the head or the foot, that edge shows a hairline and a soft shadow; with nothing underneath it shows none.
 - Going deeper replaces the menu: it shows a back arrow and no X. Back returns where you were. The X on a menu opened directly, or the scrim, closes the whole stack.
 - A deeper menu's title is the label of the row that opened it.
 - A menu holding one track and nothing else is a tray: no title, no X.
@@ -141,6 +142,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Fully round, 12 in from the sides, bottom max(4px, safe-area inset minus 12px).
 - Four slots, always in this order: Hub, Go to, the page's one action, Settings. Slots never move between pages; an unused one dims in place.
 - The active slot: a see-through pill (rgba(255,255,255,.14)) and its icon filled.
+- The active slot stays on while its menu, or a deeper menu opened from it, is open.
 - The counter's strip is the same shell with its own four controls. The hub has no bar.
 - Menus and the counter's victory banner sit above the bar.
 
