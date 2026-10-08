@@ -148,6 +148,15 @@ svg .icf{display:none}
 .phead .ht h4{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .phead .cnt{flex:0 0 auto;font-size:12px;color:var(--muted)}
 .phead .back{flex:0 0 auto;margin-left:-4px}
+
+/* MENU EDGES: a menu's header and footer stay put while its body scrolls. While content runs
+   underneath one, it shows a hairline and a soft shadow (pages.js sets .edge), so the cut
+   reads as an edge, not as content stopping short. Hidden when nothing is underneath. */
+.phead,.pfoot{position:relative}
+.phead::after,.pfoot::before{content:"";position:absolute;left:-16px;right:-16px;height:1px;background:var(--frost-rim);opacity:0;transition:opacity .15s ease;pointer-events:none}
+.phead::after{bottom:-6px;box-shadow:0 6px 12px rgba(0,0,0,.45)}
+.pfoot::before{top:0;box-shadow:0 -6px 12px rgba(0,0,0,.45)}
+.phead.edge::after,.pfoot.edge::before{opacity:1}
 /* THE PAGE HOLDS STILL UNDER AN OPEN MENU BY SWITCHING SCROLLING OFF AT
    THE ROOT. Pinning the body with position:fixed was the first lock and,
    in the installed app with the status bar drawn over the page, it lifted

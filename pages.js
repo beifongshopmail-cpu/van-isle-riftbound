@@ -64,3 +64,47 @@ window.RAVI_GOTO = function(container, hereId, rel){
   container.innerHTML = h;
   container.setAttribute("data-k", "pick");
 };
+
+// MENU STATE. Two things every page's menus share, kept here so a page only needs markup.
+// (1) A bar slot with data-fills="<menu id>" is on (its icon filled) while that menu, or a
+//     deeper menu opened from it, is showing. It goes off when every menu is closed.
+// (2) A menu's fixed header and footer show an edge (a hairline and a soft shadow, app.css)
+//     while its scrolling body runs underneath them.
+(function(){
+  if (typeof document === "undefined") { return; }  // pages.js is also read as plain data (audit.js)
+  function boot(){
+    var panels = document.querySelectorAll(".panel");
+    var slots = document.querySelectorAll("[data-fills]");
+    var active = null, i;
+    function edges(p){
+      var b = p.querySelector(".pbody"), h = p.querySelector(".phead"), f = p.querySelector(".pfoot");
+      if (!b) { return; }
+      if (h) { h.classList.toggle("edge", b.scrollTop > 0); }
+      if (f) { f.classList.toggle("edge", b.scrollTop + b.clientHeight < b.scrollHeight - 1); }
+    }
+    function sync(){
+      var shown = document.querySelector(".panel.show"), j;
+      if (!shown) { active = null; }
+      else {
+        for (j = 0; j < slots.length; j++) { if (slots[j].getAttribute("data-fills") === shown.id) { active = slots[j]; } }
+        edges(shown);
+      }
+      for (j = 0; j < slots.length; j++) { slots[j].classList.toggle("on", slots[j] === active); }
+    }
+    var mo = new MutationObserver(sync);
+    for (i = 0; i < panels.length; i++) {
+      mo.observe(panels[i], { attributes: true, attributeFilter: ["class"] });
+      (function(p){
+        var b = p.querySelector(".pbody");
+        if (!b) { return; }
+        var later = function(){ window.requestAnimationFrame(function(){ edges(p); }); };
+        b.addEventListener("scroll", function(){ edges(p); }, { passive: true });
+        b.addEventListener("transitionend", later);
+        new MutationObserver(later).observe(b, { subtree: true, childList: true, attributes: true });
+      })(panels[i]);
+    }
+    window.addEventListener("resize", function(){ var s = document.querySelector(".panel.show"); if (s) { edges(s); } });
+    sync();
+  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
+})();
