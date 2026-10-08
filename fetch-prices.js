@@ -1,6 +1,6 @@
 "use strict";
 
-// Riftbound price data for Van Isle Riftbound.
+// Riftbound price data for RAVI.
 // Reads TCGCSV, a public mirror of the TCGplayer catalogue, plus the Bank of
 // Canada Valet API for the USD to CAD rate, and writes data/prices.json.
 //

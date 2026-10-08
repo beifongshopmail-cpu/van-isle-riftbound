@@ -14,8 +14,8 @@ const LABELS = {
 
 // Two feeds so a subscriber gets the same choice the page offers.
 const FEEDS = [
-  { file: "victoria.ics", name: "Van Isle Riftbound - Victoria", regions: ["victoria"] },
-  { file: "island.ics",   name: "Van Isle Riftbound - Island",   regions: ["victoria", "island"] }
+  { file: "victoria.ics", name: "RAVI - Victoria", regions: ["victoria"] },
+  { file: "island.ics",   name: "RAVI - Island",   regions: ["victoria", "island"] }
 ];
 
 const EVENT_URL = "https://locator.riftbound.uvsgames.com/events/";
