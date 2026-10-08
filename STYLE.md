@@ -62,14 +62,14 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Two faces. Poppins for display and every tappable label. Nunito for text and data.
 - Poppins ships 600, 700 and 800 only. Any other Poppins weight is synthesised and wrong. [C]
 - Six rungs: 12, 13, 15, 17, 20, 28. Whole pixels only. [C]
-- Titles: Poppins 700, sentence case. Menu title 20; section head 17; wordmark 17.
+- Titles: Poppins 700, sentence case. Menu title 20; section head 17. The wordmark is the logo (section 11).
 - Buttons and tappable labels: Poppins 600.
 - Numerals: Poppins 800.
 - Body: Nunito 400 at 15. Passive metadata: 12, muted.
 - The grey value in a row: Nunito 600, 12, muted.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15px; a 34, 36 or 38px control carries 13px. Inputs, play and grid are exempt. [D]
-- Named exemptions to the rungs, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula); 40 slim-banner numeral; 26 trade ring amount. [C]
+- Named exemptions to the rungs, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula); 40 slim-banner numeral; 26 trade ring amount; the wordmark, 22 at the page top and 34 on the hub. [C]
 
 ## 5. Sizes
 
@@ -152,7 +152,9 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - The scrollbar stays put (scrollbar-gutter stable, overflow-y scroll).
 - The top clear line: nothing sharp and unfrosted sits above the safe-area inset plus 28px (--top-clear). [C]
 - Give the top safe-area inset back on the page wrapper.
-- The wordmark row is chrome: one thin row, name only, scrolls away.
+- The wordmark row is chrome: one thin row, the wordmark centred and nothing else, scrolls away.
+- Every page's first line starts at the safe-area inset plus 30px, where the counter's stage starts.
+- The wordmark is the coloured RAVI: RA --p1, VI --p2, Poppins 800, as on the app icon. Only the hub's name and the page-top row carry it; everywhere else the name is plain RAVI. The hub spells it out once beneath it: Rift App, Vancouver Island.
 - The footer: 30 above, a short dim hairline inset 24 from both ends.
 
 ## 12. Motion
