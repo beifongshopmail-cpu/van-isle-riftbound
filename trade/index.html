@@ -809,6 +809,8 @@ a{color:inherit;text-decoration:none}
     return h;
   }
 
+  // The markup each side's list was last written with (plate, below).
+  var LISTH = {};
   function plate(role, n){
     var cnt = sideCount(n);
     el("side" + role).setAttribute("data-s", n);
@@ -817,7 +819,11 @@ a{color:inherit;text-decoration:none}
     el("c" + role).textContent = cnt + (cnt === 1 ? " card" : " cards");
     el("t" + role).textContent = money(sideTotal(n));
     el("tog" + role).setAttribute("aria-expanded", EXP[role] ? "true" : "false");
-    el("l" + role).innerHTML = EXP[role] ? rows(n, role) : "";
+    // A list is rewritten only when its markup changes, so opening or
+    // closing the other side never reloads this side's card images (they
+    // flickered for a moment).
+    var lh = EXP[role] ? rows(n, role) : "";
+    if(LISTH[role] !== lh){ el("l" + role).innerHTML = lh; LISTH[role] = lh; }
   }
 
   // THE SWITCH PICKS WHICH SIDE COMES FIRST AND OPEN, AND WHERE SEARCH

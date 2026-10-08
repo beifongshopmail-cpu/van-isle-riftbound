@@ -154,12 +154,15 @@
      line up and glows their half from the seam. fillSide updates the sides
      in place, so the next render never cuts these off. */
   .pass .seamghost{display:none}
+  /* the pass glow lies behind the field's contents: it starts behind the
+     button and spreads over the timer line into the incoming half */
+  .field{position:relative}
+  .tmv{position:relative;z-index:1}
+  .passglow{position:absolute;left:0;right:0;z-index:0;pointer-events:none;opacity:0}
   @media (prefers-reduced-motion: no-preference){
     .num.ptland{animation:ptland var(--mo-rise) var(--mo-ease)}
     .rail span.rnew::before{animation:railin var(--mo-rise) var(--mo-ease);transform-origin:left center}
-    .side.passwash::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;
-      background:radial-gradient(60% 100% at 50% 0,var(--pcr),transparent 72%);animation:passwash .56s ease-out}
-    #sideTop:not(.far).passwash::after{background:radial-gradient(60% 100% at 50% 100%,var(--pcr),transparent 72%)}
+    .passglow.glowing{animation:passwash .56s ease-out}
     .pass.flash-p b{animation:flpb .42s ease}
     /* the turn line rolls up: the old one leaves upward as the new one
        comes in from below, clipped to the button */
@@ -1854,8 +1857,30 @@
       setTimeout(function(){ if (g.parentNode) { g.parentNode.removeChild(g); } }, 320);
       restartFx(em, "seamroll");
     }
-    restartFx(field.querySelector(".side.p" + nx), "passwash");
+    passGlow(nx);
     try { if (navigator.vibrate) { navigator.vibrate(16); } } catch (e) {}
+  }
+  // THE PASS GLOW starts behind the button's middle and spreads into the
+  // incoming player's half, over the timer line, so nothing dark sits
+  // between the button and the glow. One element, made on the first pass.
+  function passGlow(nx){
+    var sd = field.querySelector(".side.p" + nx), s = document.getElementById("seam");
+    if (!sd || !s) { return; }
+    var g = document.getElementById("passglow");
+    if (!g) {
+      g = document.createElement("div");
+      g.id = "passglow";
+      g.className = "passglow";
+      field.insertBefore(g, field.firstChild);
+    }
+    var f = field.getBoundingClientRect(), b = s.getBoundingClientRect(), r = sd.getBoundingClientRect();
+    var mid = b.top + b.height / 2 - f.top, below = r.top + r.height / 2 > b.top + b.height / 2;
+    var y0 = below ? mid : r.top - f.top, y1 = below ? r.bottom - f.top : mid;
+    g.style.top = y0 + "px";
+    g.style.height = Math.max(0, y1 - y0) + "px";
+    g.style.background = "radial-gradient(60% 100% at 50% " + (below ? "0" : "100%") + "," +
+      rgbaOf(players[nx].colour, .5) + ",transparent 72%)";
+    restartFx(g, "glowing");
   }
   elUndo.addEventListener("click", function(){
     if (ev.length > 1) { ev.pop(); save(); render(); }

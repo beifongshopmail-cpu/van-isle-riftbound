@@ -354,15 +354,16 @@ html.lock,html.lock body{overflow:hidden}
 @keyframes fln{0%{background:rgba(237,234,227,.85);color:var(--ink)}100%{}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-/* PAGE TO PAGE: the page fades into the next one and the bar holds still
-   (STYLE.md, Motion). Only between pages: a cold launch or a reload paints
-   with no motion. A phone without cross-page transitions switches
-   instantly, as before. Inside no-preference, so reduced motion turns it
-   off: the kill switch above cannot reach the transition's own layers. */
+/* PAGE TO PAGE: the page fades into the next one in .2s (STYLE.md, Motion).
+   The bar is the same on both pages, so it reads as still. It is not
+   lifted into a layer of its own: that flickered and cost the phone time.
+   Only between pages: a cold launch or a reload paints with no motion. A
+   phone without cross-page transitions switches instantly, as before.
+   Inside no-preference, so reduced motion turns it off: the kill switch
+   above cannot reach the transition's own layers. */
 @media (prefers-reduced-motion:no-preference){
   @view-transition{navigation:auto}
-  ::view-transition-old(root),::view-transition-new(root){animation-duration:.28s}
-  .bar{view-transition-name:bar}
+  ::view-transition-old(root),::view-transition-new(root){animation-duration:.2s}
 }
 /* CONTENT A TAP OPENS eases in under the row that opened it (STYLE.md,
    Motion): the page script adds .reveal after the tap, never on a render,
