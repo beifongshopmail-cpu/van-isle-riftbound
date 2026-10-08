@@ -365,6 +365,8 @@ html.lock,html.lock body{overflow:hidden}
   @view-transition{navigation:auto}
   ::view-transition-old(root),::view-transition-new(root){animation-duration:.2s}
 }
+/* While the fade plays (pages.js sets html.vt) the bar is its solid fallback, never see-through. */
+html.vt .bar{background:var(--frost-solid);-webkit-backdrop-filter:none;backdrop-filter:none}
 /* CONTENT A TAP OPENS eases in under the row that opened it (STYLE.md,
    Motion): the page script adds .reveal after the tap, never on a render,
    so a re-render never replays it. The height changes in one frame. */

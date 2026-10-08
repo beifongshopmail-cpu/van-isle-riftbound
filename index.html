@@ -134,11 +134,11 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 <script>
 // THE LAUNCH INTRO (STYLE.md, Motion). The first time the hub shows in a
-// launch, 'Rift App' over 'Van Isle' turns into RAVI in three beats: the
-// two lines come in and are read, the small letters dim so the four
-// capitals stand out, then the small letters go and the lines close up,
-// up, down and in, into the wordmark. About 2.5s; nothing waits on it, and
-// any tap finishes it. The flag is in session storage, which the installed
+// launch, 'Rift App' (blue) over 'Van Isle' (pink) turns into RAVI in
+// three beats: the two lines come in a size larger and are read, the small
+// letters dim so the four capitals stand out, then the small letters go
+// and the capitals close up, up, down and in, shrinking into the wordmark.
+// About 2s; nothing waits on it, and any tap finishes it. The flag is in session storage, which the installed
 // app keeps until it is fully closed. A launch that opens straight to
 // another page (Settings, Open the app to) leaves it for the first time
 // the hub does show. Reduced motion, no storage or no Web Animations skips
@@ -212,7 +212,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
     // together if the page settles while the intro plays
     var s = "", c = 0;
     for (i = 0; i < LINES.length; i++) {
-      s += "<span class=\"il\">";
+      s += "<span class=\"il " + COL[i * 2] + "\">";
       for (j = 0; j < LINES[i].length; j++) {
         if (j) { s += "<span class=\"lc\" style=\"opacity:0\">&#160;</span>"; }
         s += "<span class=\"ic " + COL[c++] + "\">" + LINES[i][j][0] + "</span>";
@@ -226,13 +226,14 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
     ov.setAttribute("aria-hidden", "true");
     ov.innerHTML = s;
     h.appendChild(ov);
-    // the full name fits inside the 16px gutters, centred on the screen
+    // the full name starts up to 1.4 times the wordmark's size, inside the
+    // 16px gutters, centred on the screen
     var wide = 0, ls = ov.querySelectorAll(".il");
     for (i = 0; i < ls.length; i++) {
       var a0 = ls[i].firstChild.getBoundingClientRect(), a1 = ls[i].lastChild.getBoundingClientRect();
       wide = Math.max(wide, a1.right - a0.left);
     }
-    var fit = Math.min(1, (top.clientWidth - 32) / Math.max(1, wide));
+    var fit = Math.min(1.4, (top.clientWidth - 32) / Math.max(1, wide));
     ov.style.transform = "translate(-50%,-50%) scale(" + fit + ")";
     // where each capital starts, as a move from its place at rest
     var cap = h.querySelectorAll(".hubname > .logo1, .hubname > .logo2"), ic = ov.querySelectorAll(".ic"), M = [];
@@ -243,22 +244,21 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
       ic[i].style.visibility = "hidden";
     }
     h.style.visibility = "";
-    // in by .45s and read until 1s; the small letters dim to .28 by 1.3s
-    // while the capitals grow a touch; held to 1.7s; then the small letters
-    // go by 1.95s and the capitals close up by 2.5s
-    var T = 2500, BIG = " scale(1.08)";
+    // in by .4s and read until .75s; the small letters dim to .3 by 1s and
+    // hold to 1.3s; then they go by 1.5s while the capitals close up and
+    // shrink into the wordmark by 2s
+    var T = 2000;
     for (i = 0; i < 4; i++) {
       var sh = " translateY(" + (i < 2 ? -10 : 10) + "px)";
-      run(cap[i], [[0, { transform: M[i] + sh, opacity: 0 }, E], [450, { transform: M[i], opacity: 1 }],
-        [1000, { transform: M[i], opacity: 1 }, E], [1300, { transform: M[i] + BIG, opacity: 1 }],
-        [1700, { transform: M[i] + BIG, opacity: 1 }, E], [T, { transform: "none", opacity: 1 }]], T);
+      run(cap[i], [[0, { transform: M[i] + sh, opacity: 0 }, E], [400, { transform: M[i], opacity: 1 }],
+        [1300, { transform: M[i], opacity: 1 }, E], [T, { transform: "none", opacity: 1 }]], T);
     }
     for (i = 0; i < ls.length; i++) {
       var lcs = ls[i].querySelectorAll(".lc"), dl = i ? 10 : -10;
       for (j = 0; j < lcs.length; j++) {
-        run(lcs[j], [[0, { transform: "translateY(" + dl + "px)", opacity: 0 }, E], [450, { transform: "none", opacity: 1 }],
-          [1000, { transform: "none", opacity: 1 }, "ease"], [1300, { transform: "none", opacity: .28 }],
-          [1700, { transform: "none", opacity: .28 }, "ease"], [1950, { transform: "none", opacity: 0 }],
+        run(lcs[j], [[0, { transform: "translateY(" + dl + "px)", opacity: 0 }, E], [400, { transform: "none", opacity: 1 }],
+          [750, { transform: "none", opacity: 1 }, "ease"], [1000, { transform: "none", opacity: .3 }],
+          [1300, { transform: "none", opacity: .3 }, "ease"], [1500, { transform: "none", opacity: 0 }],
           [T, { transform: "none", opacity: 0 }]], T);
       }
     }

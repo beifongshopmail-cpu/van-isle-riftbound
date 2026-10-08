@@ -1874,12 +1874,18 @@
       field.insertBefore(g, field.firstChild);
     }
     var f = field.getBoundingClientRect(), b = s.getBoundingClientRect(), r = sd.getBoundingClientRect();
-    var mid = b.top + b.height / 2 - f.top, below = r.top + r.height / 2 > b.top + b.height / 2;
-    var y0 = below ? mid : r.top - f.top, y1 = below ? r.bottom - f.top : mid;
+    var below = r.top + r.height / 2 > b.top + b.height / 2, bh = b.height;
+    // From the button's far edge to the far edge of the incoming half. It
+    // fades in across the button itself, so no straight edge shows through
+    // the button or beside it.
+    var y0 = below ? b.top - f.top : r.top - f.top, y1 = below ? r.bottom - f.top : b.bottom - f.top;
     g.style.top = y0 + "px";
     g.style.height = Math.max(0, y1 - y0) + "px";
-    g.style.background = "radial-gradient(60% 100% at 50% " + (below ? "0" : "100%") + "," +
+    g.style.background = "radial-gradient(70% 100% at 50% " + (below ? bh / 2 + "px" : "calc(100% - " + bh / 2 + "px)") + "," +
       rgbaOf(players[nx].colour, .5) + ",transparent 72%)";
+    var mk = "linear-gradient(" + (below ? "to bottom" : "to top") + ",transparent 0," + "#000 " + bh + "px)";
+    g.style.webkitMaskImage = mk;
+    g.style.maskImage = mk;
     restartFx(g, "glowing");
   }
   elUndo.addEventListener("click", function(){
