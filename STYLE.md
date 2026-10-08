@@ -166,12 +166,12 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Apply a flash after the render: find the fresh node, remove the class, force reflow, add it.
 - A control that already confirms itself twice gets no third.
 - A chevron turns in .28s.
-- Page to page: the old page fades into the new over .28s; the bar holds still. A cold launch or a reload paints with no motion. A phone without cross-page transitions switches instantly.
-- The launch intro: once per launch, the first time the hub shows, 'Rift App' over 'Vancouver Island' closes into RAVI. The small letters fade as the two lines slide together (about .75s to read, 1.35s in all), and the hub's blocks rise in one after another with it. Nothing waits on it; a tap finishes it. No other page has one.
+- Page to page: the old page fades into the new over .2s. The bar is the same on both pages, so it reads as still; it is never lifted into a transition layer of its own. A cold launch or a reload paints with no motion. A phone without cross-page transitions switches instantly.
+- The launch intro: once per launch, the first time the hub shows, 'Rift App' over 'Van Isle' turns into RAVI in three beats: the two lines come in and are read (to 1s), the small letters dim so the four capitals stand out (held to 1.7s), then the small letters go and the lines close up into the wordmark (2.5s in all). The hub's blocks rise in one after another while the name is read. Nothing waits on it; a tap finishes it. No other page has one.
 - A menu arrives slower than it leaves: it glides up and settles in .34s and drops away in .2s. A deeper menu slides in from the right and Back slides it out; the menu it came from moves the other way.
 - Content a tap opens (a player card, a past match, an event card, a trade row, side or undo list) eases in under its row in .26s, added after the tap, never on a render. Its height changes in one frame.
 - A point lands: the numeral settles from 1.06 and the newest rail line draws in, --mo-rise.
-- Pass turn: the button flashes the incoming player's colour, its turn line rolls up, and their half glows from the seam, .56s.
+- Pass turn: the button flashes the incoming player's colour, its turn line rolls up, and a glow spreads from behind the button over the timer line into their half, .56s. Nothing dark sits between the button and the glow.
 - The victory banner rises where a menu does, when a game ends in front of you; never on first paint.
 - The counter's sides update in place, so the next render never cuts a motion off.
 - Reduced motion turns every transition and animation off.
