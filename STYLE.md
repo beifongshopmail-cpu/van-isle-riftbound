@@ -159,13 +159,21 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 ## 12. Motion
 
-- Motion confirms; it never decorates.
-- Nothing animates on first paint.
+- Motion confirms; it never decorates. Two exceptions, and only these: the page-to-page fade and the hub's launch intro.
+- Nothing animates on first paint, apart from the launch intro.
 - Press: scale .96, and the shade change. A row inside a group takes the shade only.
 - Tap flashes, .42s: bone for neutral controls (.flash-n), the player's colour for side controls (.flash-p).
 - Apply a flash after the render: find the fresh node, remove the class, force reflow, add it.
 - A control that already confirms itself twice gets no third.
 - A chevron turns in .28s.
+- Page to page: the old page fades into the new over .28s; the bar holds still. A cold launch or a reload paints with no motion. A phone without cross-page transitions switches instantly.
+- The launch intro: once per launch, the first time the hub shows, 'Rift App' over 'Vancouver Island' closes into RAVI. The small letters fade as the two lines slide together (about .75s to read, 1.35s in all), and the hub's blocks rise in one after another with it. Nothing waits on it; a tap finishes it. No other page has one.
+- A menu arrives slower than it leaves: it glides up and settles in .34s and drops away in .2s. A deeper menu slides in from the right and Back slides it out; the menu it came from moves the other way.
+- Content a tap opens (a player card, a past match, an event card, a trade row, side or undo list) eases in under its row in .26s, added after the tap, never on a render. Its height changes in one frame.
+- A point lands: the numeral settles from 1.06 and the newest rail line draws in, --mo-rise.
+- Pass turn: the button flashes the incoming player's colour, its turn line rolls up, and their half glows from the seam, .56s.
+- The victory banner rises where a menu does, when a game ends in front of you; never on first paint.
+- The counter's sides update in place, so the next render never cuts a motion off.
 - Reduced motion turns every transition and animation off.
 - Never animate layout from script while the page scrolls. Sticky, transitions and the browser's own scroll anchoring first.
 - Never tween or scroll-correct a height above the screen. Change it in one frame and let the browser hold the view.
