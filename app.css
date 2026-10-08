@@ -107,7 +107,12 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 .tab{border-radius:999px;display:grid;place-items:center}
 .tab svg{width:24px;height:24px}
 .tab:active,.tab.on{background:var(--on)}
-.tab.on svg .fillon{fill:currentColor}   /* the active slot's icon goes filled: shape as well as shade */
+/* ICONS: each carries an outline drawing (.ico) and a filled one (.icf). The filled one
+   shows while its slot is on: shape as well as shade. Gaps in a filled icon are real holes
+   cut by its own mask, so every mask id on a page must be unique (pages.js numbers them). */
+svg .icf{display:none}
+.on > svg .ico{display:none}
+.on > svg .icf{display:inline}
 
 /* menus: frosted panel rising from the bottom over a light scrim */
 .scrim{position:fixed;inset:0;background:var(--scrim);opacity:0;pointer-events:none;transition:opacity .22s ease;z-index:30}
@@ -257,7 +262,6 @@ html.lock,html.lock body{overflow:hidden}
 .goto .gt svg{width:22px;height:22px}
 .goto .gt:active{background:var(--hi)}
 .goto .gt.on{background:var(--bone);color:var(--ink)}
-.goto .gt.on svg .fillon{fill:currentColor}
 
 /* THE SUNKEN FIELD: one shape for every text input in a recessed track,
    with an optional single action at its right end (.fbtn, a "do", so it
