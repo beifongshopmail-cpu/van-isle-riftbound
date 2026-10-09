@@ -108,19 +108,3 @@ window.RAVI_GOTO = function(container, hereId, rel){
   }
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
 })();
-
-// (3) PAGE TO PAGE (STYLE.md, Motion): while the page fade plays, the bar shows its solid
-//     fallback (html.vt, app.css) instead of the blur. The blur is not drawn into the fade's
-//     pictures, so without this the bar went see-through for a moment and then blurred.
-(function(){
-  if (typeof document === "undefined" || !window.addEventListener) { return; }  // read as plain data too
-  var h = document.documentElement;
-  function off(){ h.classList.remove("vt"); }
-  window.addEventListener("pageswap", function(e){ if (e.viewTransition) { h.classList.add("vt"); } });
-  window.addEventListener("pagereveal", function(e){
-    if (!e.viewTransition) { return; }
-    h.classList.add("vt");
-    e.viewTransition.finished.then(off, off);
-  });
-  window.addEventListener("pageshow", function(e){ if (e.persisted) { off(); } });
-})();
