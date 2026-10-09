@@ -19,6 +19,7 @@ MARKS: [D] drawn-test.js checks it. [A] audit.js checks it. [C] a check could ca
 - Price direction is an arrow, never a colour. Up and down look the same apart from the arrow.
 - Store neutrality: no store's numbers, defaults or tilt anywhere in the UI.
 - Target: current iOS Safari, run as an installed app. Existing fallbacks stay. color-mix() and :has() are allowed in new work.
+- A browser tab shows only the install screen (section 5), on every page. Nothing else changes for it.
 - Frosted surfaces declare a solid fallback inside @supports (backdrop-filter): blur on, the same colour at about .94 alpha off.
 - Text inputs are a real 16px. No scale or zoom tricks to make them look smaller.
 - 12px is the type floor. An element that needs smaller is redesigned, not shrunk.
@@ -107,17 +108,17 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 34 on the hub (.hubname). Go to tile labels are 12 with letter-spacing -.08em.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 34 on the hub (.hubname) and the install screen (.gwname). Go to tile labels are 12 with letter-spacing -.08em.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
 - Calendar day cells: circles, width min(46px, 100%) of the column.
-- Icon sizes: bar 24, Go to tile 22, round button 18, hub block 52 (stroke 1.5), pact 17, chevron 16.
+- Icon sizes: bar 24, Go to tile 22, install step 22, round button 18, hub block 52 (stroke 1.5), pact 17, chevron 16.
 Corners
 - A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D]
 - Cut track (.seg.multi, counter score buttons): round outer ends of half the height, 6 inner corners (--r-cut), 3 gaps (--gap-cut). [D]
 - Surface corners: 24 for menus, the Go to track and the two sticky surfaces; 22 (half a row) for every group and card (.pick, .doors, .pghead, .ev, saved-trade cards, feedback form); 20 for tiles (.gt Go to tiles, .blk hub blocks); a tray is 30 (24 plus its 6 padding).
-- Pictures and inner joins may use smaller page-local corners: trade .lnh 14 and .rcpimgs img 12, counter .lgptile 10 and .lgppic 8, the calendar .hl and .hr join 5. A new surface uses one of the three.
+- Pictures and inner joins may use smaller page-local corners: trade .lnh 14 and .rcpimgs img 12, counter .lgptile 10 and .lgppic 8, the calendar .hl and .hr join 5, the install step icon .gwstep img 6. A new surface uses one of the three.
 Spacing
 - 6 within a group, 14 between groups (.row margin-bottom 14, .lb label 6 above its control).
 - A menu or section title sits 10 above what it heads (.phead and .shead margin-bottom 10).
@@ -248,13 +249,22 @@ The hub block (index.html)
 - .blk.dead: a Soon slot, a div, dimmed (.4), inert.
 - The hub: eight blocks; a new page takes the first Soon slot; App settings stays last. Plate .low.glass under the name .hubname (34, Poppins 800); hub footer .hubfoot (12 muted, Riot notice).
 
+The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
+- In a browser tab every page shows only #ravigate, first in the body; html.gate hides every other child of the body. The page's own markup and scripts are untouched.
+- It stays out: installed (navigator.standalone, or display-mode standalone, fullscreen or minimal-ui); after Continue in the browser in this tab (session key ravi.web.v1); on a ?sim= link; under a test tool (navigator.webdriver). window.RAVI_GATE is true while it shows; the hub's launch intro waits for it.
+- Layout: .gwtop (height max(260px, 34vh), the name .gwname at 34 with RA --p1 and VI --p2, one line .gwline 15 muted), one glass card .gwcard (corner 22, .shead 17), then on a phone a 12 muted note (.gwnote) and the footer with the Continue link.
+- iPhone (#gwios): Add RAVI to your Home Screen, three steps (.gwstep, 44 high, icon 22, hairline inset 16): Share, Add to Home Screen, Open RAVI (the app icon).
+- Android (#gwand): Install RAVI. The .pact button (#gwinst) shows only once the browser offers its prompt; otherwise one line says to use the browser menu.
+- A computer (#gwpc): RAVI is a phone app, one line, and Continue in the browser as a .pact.
+- The app icon appears once, small, in the last iPhone step. It is the wordmark itself, so never above the name.
+
 ## 6. New page checklist (in this order)
 
 1. pages.js: edit the first Soon entry of RAVI_PAGES: id, name, path ("<id>/"), icon getter (RAVI_ICON name), rgb "r,g,b". Keep Settings last. Add the icon to the SVG table first if it is new.
-2. Make the folder <id>/ and index.html from the Kit: head as in section 5 (manifest link, theme-color #08090A, apple meta, fonts.css, app.css, pages.js), .wmrow, main wrapper, .pghead or a glass plate, content, footer.
+2. Make the folder <id>/ and index.html from the Kit: head as in section 5 (manifest link, theme-color #08090A, apple meta, fonts.css, app.css, pages.js), .wmrow, main wrapper, .pghead or a glass plate, content, footer. The install screen comes with pages.js.
 3. The bar: four slots in order, unused one dimmed. A Go to tray (#pnav) with the .goto filled by RAVI_GOTO, its script, and the double-tap guard script (copy the last script block of feedback/index.html unchanged: touchend, 320ms, 30px, buttons and links skipped, passive false).
 4. "Open the app to" (settings) and the hub read pages.js; nothing else to edit there.
-5. Tests: drawn-test.js PAGES list (add [id, "<id>/"]); audit.js DRIVERS (add a run<Page> function to the DRIVERS map, or the generic fallback runs closed-only); m2-test.js page lists (T1, T8, T9, T18); a new fail-first test for the page's own logic (pattern of m6-test.js and m7-test.js: node <name>-test.js <app root>), added to the DEFAULT list in check.js.
+5. Tests: drawn-test.js PAGES list (add [id, "<id>/"]); audit.js DRIVERS (add a run<Page> function to the DRIVERS map, or the generic fallback runs closed-only); m2-test.js page lists (T1, T8, T9, T18); m8-test.js PAGES; a new fail-first test for the page's own logic (pattern of m6-test.js and m7-test.js: node <name>-test.js <app root>), added to the DEFAULT list in check.js.
 6. Run node check.js. Fix failures; never change a test or threshold to pass.
 7. Mako phone-checks after the green tick on GitHub's Pages build.
 
@@ -300,7 +310,7 @@ The hub block (index.html)
 - No member of a new class or function family is a prefix of another.
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
-- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3.
+- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
 
@@ -323,7 +333,7 @@ App settings (settings/index.html)
 
 ## 11. Checks
 
-- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
+- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
 - drawn-test.js: with every menu open on all six pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
 - audit.js: over every page, state and width (375, 390, 430); Chromium from check.js, node audit.js --engine both adds WebKit. A sizes, B alignment, C bare px sizes, D control kinds, E layout safety, plus a scan that pages do not reshape Kit parts. [A]
 - m2-test.js: pages load cleanly (T1), links and manifest resolve (T8), the Riot notice on the hub only (T9), theme colour (T18).
@@ -338,6 +348,7 @@ App settings (settings/index.html)
 - m5g-test.js: a bar slot stays on while its menu or a deeper one is open; menu edges.
 - m6-test.js: counter sides update in place; trade lists rewrite only when their markup changes.
 - m7-test.js: App settings page and its rows, reset, Go to without Hub where the bar has it, the calendar gear fills.
+- m8-test.js: the install screen on all six pages in a browser tab, never installed; iPhone steps, Android Install, computer; Continue for the tab only; the intro waits; ?sim= and test tools skip it; fit at 402 and 360, type on the rungs. Every other suite runs past the screen (navigator.webdriver).
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
   2. Any font-size off the rungs carries an exempt comment (static).
