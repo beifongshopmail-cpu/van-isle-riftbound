@@ -38,14 +38,13 @@ html{background:var(--ground)}
 body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
-  /* the name centres between the settings button's bottom and the middle
+  /* the name centres between the top clear line plus 36 and the middle
      block's top */
   justify-content:center;padding-top:calc(var(--top-clear) + 36px);padding-bottom:78px;
   position:relative;flex:0 0 auto;
   /* ONE LINE: replace with an image or texture */
   background:var(--ground)}
 .hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:.01em;color:var(--bone)} /* rung-exempt: the wordmark */
-.hubgear{position:absolute;top:var(--top-clear);right:12px}
 /* THE LAUNCH INTRO (STYLE.md, Motion). While it plays the name is four
    capitals that travel, and .introfull is the full name laid over them.
    The script builds both only while it plays; at rest the name is the
@@ -76,9 +75,12 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .blk:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
 .blk.dead{background:linear-gradient(var(--glass),var(--glass)),var(--ground);opacity:.4;pointer-events:none}
 .blk.dead:active{transform:none;filter:none}
-.blk .bi{width:24px;height:24px}
-.blk .bi svg{width:100%;height:100%}
-.blk .bn{font-family:var(--disp);font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* THE BLOCK'S FACE: the icon centred in the space above the name, tinted
+   toward the block's own colour and a little see-through, so icon and
+   name sit in the glass; the name centred along the bottom. */
+.blk .bi{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0;color:rgba(var(--ci,237,234,227),.82)}
+.blk .bi svg{width:52px;height:52px;stroke-width:1.5}
+.blk .bn{font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the arc gives about 10px; the extra 4px exaggerates the curve, Mako's call. */
 .grid > .blk:nth-child(2), .grid > .blk:nth-child(5){top:-14px}
 /* a last row of two spreads a little, so it doesn't hug the centre gap */
@@ -86,29 +88,12 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 .hubfoot{margin-top:auto;padding:28px 12px calc(env(safe-area-inset-bottom,0px) + 16px)}
 .hubfoot p{margin:0;text-align:center;font-family:var(--text);font-size:12px;line-height:1.4;color:var(--muted)}
-
-/* Settings reuses the card system's panel, scrim and html.lock. */
-.oponote{font-size:12px;color:var(--muted);line-height:1.5;margin:8px 2px 0}
-
-/* THE HUB'S MENU HANGS FROM ITS BUTTON: positioned under the gear, sliding
-   down from it, with app.css's own open and close. NEVER SET opacity OR
-   pointer-events ON #pset: an id outranks .panel.show and the open menu
-   goes invisible. */
-#pset{
-  top:calc(var(--top-clear) + 36px + 8px);
-  bottom:auto;
-  left:12px;right:12px;
-  max-height:calc(100vh - var(--top-clear) - 36px - 8px - env(safe-area-inset-bottom,0px) - 16px);
-  transform:translateY(-12px);
-}
-#pset.show{transform:none}
 </style>
 </head>
 <body>
 
 <div class="top">
   <h1 class="hubname"><span class="logo1">RA</span><span class="logo2">VI</span></h1>
-  <button type="button" class="circ btn glass hubgear" id="hubset" aria-label="Settings" data-k="do" data-fills="pset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M9.90 4.90 L10.29 2.76 L13.71 2.76 L14.10 4.90 L15.53 5.50 L17.32 4.25 L19.75 6.68 L18.50 8.47 L19.10 9.90 L21.24 10.29 L21.24 13.71 L19.10 14.10 L18.50 15.53 L19.75 17.32 L17.32 19.75 L15.53 18.50 L14.10 19.10 L13.71 21.24 L10.29 21.24 L9.90 19.10 L8.47 18.50 L6.68 19.75 L4.25 17.32 L5.50 15.53 L4.90 14.10 L2.76 13.71 L2.76 10.29 L4.90 9.90 L5.50 8.47 L4.25 6.68 L6.68 4.25 L8.47 5.50Z"/><circle cx="12" cy="12" r="3"/></g><g class="icf"><mask id="rvs-hub-set" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M9.90 4.90 L10.29 2.76 L13.71 2.76 L14.10 4.90 L15.53 5.50 L17.32 4.25 L19.75 6.68 L18.50 8.47 L19.10 9.90 L21.24 10.29 L21.24 13.71 L19.10 14.10 L18.50 15.53 L19.75 17.32 L17.32 19.75 L15.53 18.50 L14.10 19.10 L13.71 21.24 L10.29 21.24 L9.90 19.10 L8.47 18.50 L6.68 19.75 L4.25 17.32 L5.50 15.53 L4.90 14.10 L2.76 13.71 L2.76 10.29 L4.90 9.90 L5.50 8.47 L4.25 6.68 L6.68 4.25 L8.47 5.50Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-hub-set)"/></g></svg></button>
 </div>
 
 <div class="low glass">
@@ -119,18 +104,6 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   </footer>
 </div>
 
-<div class="scrim" id="scrim"></div>
-<section class="panel frost opento" id="pset" aria-hidden="true" aria-label="Settings">
-  <div class="phead">
-    <h4 class="ttl">Settings</h4>
-    <button type="button" class="circ btn glass" id="psclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-  </div>
-  <div class="pbody">
-    <p class="lb">Open the app to</p>
-    <div class="pick" id="opento" data-k="pick"></div>
-    <p class="oponote">The app opens to the page you pick here. Tap Hub on any page to come back.</p>
-  </div>
-</section>
 
 <script>
 // THE LAUNCH INTRO (STYLE.md, Motion). The first time the hub shows in a
@@ -140,7 +113,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 // shrinking into the wordmark. About 1.9s; nothing waits on it, and any
 // tap finishes it. The flag is in session storage, which the installed
 // app keeps until it is fully closed. A launch that opens straight to
-// another page (Settings, Open the app to) leaves it for the first time
+// another page (App settings, Open the app to) leaves it for the first time
 // the hub does show. Reduced motion, no storage or no Web Animations skips
 // it. window.RAVI_INTRO is the list the hub's blocks add their rise to.
 (function(){
@@ -149,6 +122,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   try {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
     if (!h.animate || !document.fonts || !document.fonts.load) { return; }
+    if (localStorage.getItem("ravi.intro.off.v1")) { return; }
     if (sessionStorage.getItem("ravi.intro.v1")) { return; }
     sessionStorage.setItem("ravi.intro.v1", "1");
   } catch (e) { return; }
@@ -272,12 +246,18 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   // THE GRID. Three per row, always: the blocks are the calendar .ev
   // body recipe, coloured by each page's own rgb. A page with no path is
   // a dead placeholder: a div, not a link, dimmed and inert.
+  // A block's icon and name take a pale tint of its own colour.
+  function tint(rgb){
+    var c = rgb.split(","), o = [];
+    for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .62)); }
+    return o.join(",");
+  }
   var grid = document.getElementById("grid");
   var h = "";
   for (var i = 0; i < PAGES.length; i++) {
     var p = PAGES[i];
     if (p.path) {
-      h += '<a class="blk glass" href="' + p.path + '" style="--cl:' + p.rgb + '" data-k="do"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
+      h += '<a class="blk glass" href="' + p.path + '" style="--cl:' + p.rgb + ';--ci:' + tint(p.rgb) + '" data-k="do"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
     } else {
       h += '<div class="blk glass dead" aria-disabled="true"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></div>';
     }
@@ -296,44 +276,6 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
     }
   }
 
-  // SETTINGS: a scrim-and-panel menu like every other page's, locking the
-  // page at the root while open.
-  var pset = document.getElementById("pset"), scrim = document.getElementById("scrim"), open = false;
-  function setOpen(on){
-    open = on;
-    if (on) { pset.classList.add("show"); scrim.classList.add("show"); document.documentElement.classList.add("lock"); }
-    else { pset.classList.remove("show"); scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
-    pset.setAttribute("aria-hidden", on ? "false" : "true");
-  }
-  document.getElementById("hubset").addEventListener("click", function(){ renderOpenTo(); setOpen(true); });
-  document.getElementById("psclose").addEventListener("click", function(){ setOpen(false); });
-  scrim.addEventListener("click", function(){ setOpen(false); });
-
-  function currentChoice(){
-    try { return localStorage.getItem("vir.hub.open.v1") || ""; } catch (e) { return ""; }
-  }
-
-  function renderOpenTo(){
-    var cur = currentChoice();
-    var rows = '<button type="button" class="' + (cur === "" ? "on " : "") + '" data-id="">Hub</button>';
-    for (var i = 0; i < PAGES.length; i++) {
-      var p = PAGES[i];
-      if (!p.path) { continue; }
-      rows += '<button type="button" class="' + (cur === p.id ? "on " : "") + '" data-id="' + p.id + '">' + p.name + '</button>';
-    }
-    document.getElementById("opento").innerHTML = rows;
-  }
-
-  document.getElementById("opento").addEventListener("click", function(e){
-    var t = e.target.closest ? e.target.closest("button") : null;
-    if (!t) { return; }
-    var id = t.getAttribute("data-id");
-    try {
-      if (id) { localStorage.setItem("vir.hub.open.v1", id); }
-      else { localStorage.removeItem("vir.hub.open.v1"); }
-    } catch (err) {}
-    renderOpenTo();
-  });
   /* iOS only fires the pressed state on non-button elements while a touch
      listener exists at document level. The event cards are links. */
   document.addEventListener("touchstart", function(){}, {passive:true});

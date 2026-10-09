@@ -278,9 +278,10 @@ html.lock,html.lock body{overflow:hidden}
 
 /* GO TO: the page-picker tiles, built by pages.js's RAVI_GOTO from
    RAVI_PAGES. A sunken track (kind "pick"), not glass -- the page you are
-   on is the chosen tile. Five columns; a sixth tile onward wraps to a new
-   row on its own, CSS grid's default behaviour, nothing else needed. */
-.goto{background:var(--recess);border-radius:24px;padding:4px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+   on is the chosen tile. The tiles share one row evenly, however many
+   there are (four, or five on the counter); how Go to grows past five
+   pages is M9's to decide. */
+.goto{background:var(--recess);border-radius:24px;padding:4px;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
 .goto .gt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:60px;min-width:0;
   border-radius:20px;font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:-.08em;padding:0 2px;color:inherit;text-decoration:none}
 .goto .gt span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

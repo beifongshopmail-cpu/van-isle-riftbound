@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="App settings for RAVI: where the app opens, and the opening animation.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Settings - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<style>
+/* App settings. The shared layer (tokens, glass, the bar, menus, the
+   footer) is app.css; this block holds only this page's own rules. Each
+   section is a glass card holding a sunken pick group, like the
+   calendar's card and the feedback form. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+#st{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.sth{padding:14px 4px 0}
+.sth h2{font-size:28px;line-height:1.1}
+.sts{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
+.sts .shead{margin:0 4px 10px}
+.sts .shead h2{font-size:17px}
+.stn{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+/* the reset slot while it waits for its second tap */
+.tab.armed{background:var(--glass-press)}
+.starm{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);text-align:center;visibility:hidden}
+.starm.show{visibility:visible}
+</style>
+</head>
+<body>
+
+<div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+
+<main id="st">
+  <header class="sth"><h2 class="ttl">App settings</h2></header>
+
+  <section class="sts glass">
+    <div class="shead"><h2>Open the app to</h2></div>
+    <div class="pick" id="opento" data-k="pick"></div>
+    <p class="stn">The app opens to the page you pick here. Tap Hub on any page to come back.</p>
+  </section>
+
+  <section class="sts glass">
+    <div class="shead"><h2>Motion</h2></div>
+    <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button></div>
+    <p class="stn">The RAVI name forming when the app opens.</p>
+  </section>
+
+  <p class="starm" id="starm" aria-live="polite">Tap reset again to put every setting back.</p>
+</main>
+
+<!-- THE STANDARD BAR. Slots never move between pages: the Settings slot is
+     here, dimmed in place, because this page is the settings. -->
+<nav class="bar frost" id="tabs">
+  <a class="tab" href="../?hub" aria-label="Hub" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.45" y="3.05" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="9.55" y="1.85" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="16.65" y="3.05" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="2.45" y="10.15" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="9.55" y="8.95" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="16.65" y="10.15" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="6.00" y="17.25" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="13.10" y="17.25" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/></svg></a>
+  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Settings" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M14.83 15.99 17.08 17.00 16.03 19.55 13.73 18.66 12.46 19.93 13.35 22.23 10.80 23.28 9.79 21.03 8.01 21.03 7.00 23.28 4.45 22.23 5.34 19.93 4.07 18.66 1.77 19.55 0.72 17.00 2.97 15.99 2.97 14.21 0.72 13.20 1.77 10.65 4.07 11.54 5.34 10.27 4.45 7.97 7.00 6.92 8.01 9.17 9.79 9.17 10.80 6.92 13.35 7.97 12.46 10.27 13.73 11.54 16.03 10.65 17.08 13.20 14.83 14.21ZM6.10 15.10a2.80 2.80 0 1 0 5.60 0a2.80 2.80 0 1 0 -5.60 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/><path d="M21.94 4.88 23.48 5.06 23.29 6.92 21.75 6.79 21.13 7.81 21.95 9.12 20.38 10.13 19.52 8.85 18.34 9.00 17.82 10.45 16.05 9.86 16.52 8.38 15.67 7.55 14.20 8.06 13.56 6.30 15.01 5.75 15.13 4.56 13.82 3.74 14.80 2.14 16.13 2.92 17.13 2.28 16.96 0.74 18.82 0.51 19.04 2.04 20.16 2.42 21.26 1.33 22.60 2.64 21.54 3.76ZM16.90 5.50a1.60 1.60 0 1 0 3.20 0a1.60 1.60 0 1 0 -3.20 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/></g><g class="icf"><path d="M14.83 15.99 17.08 17.00 16.03 19.55 13.73 18.66 12.46 19.93 13.35 22.23 10.80 23.28 9.79 21.03 8.01 21.03 7.00 23.28 4.45 22.23 5.34 19.93 4.07 18.66 1.77 19.55 0.72 17.00 2.97 15.99 2.97 14.21 0.72 13.20 1.77 10.65 4.07 11.54 5.34 10.27 4.45 7.97 7.00 6.92 8.01 9.17 9.79 9.17 10.80 6.92 13.35 7.97 12.46 10.27 13.73 11.54 16.03 10.65 17.08 13.20 14.83 14.21ZM6.10 15.10a2.80 2.80 0 1 0 5.60 0a2.80 2.80 0 1 0 -5.60 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/><path d="M21.94 4.88 23.48 5.06 23.29 6.92 21.75 6.79 21.13 7.81 21.95 9.12 20.38 10.13 19.52 8.85 18.34 9.00 17.82 10.45 16.05 9.86 16.52 8.38 15.67 7.55 14.20 8.06 13.56 6.30 15.01 5.75 15.13 4.56 13.82 3.74 14.80 2.14 16.13 2.92 17.13 2.28 16.96 0.74 18.82 0.51 19.04 2.04 20.16 2.42 21.26 1.33 22.60 2.64 21.54 3.76ZM16.90 5.50a1.60 1.60 0 1 0 3.20 0a1.60 1.60 0 1 0 -3.20 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/></g></svg></button>
+  <button type="button" class="tab" id="streset" aria-label="Reset settings" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></button>
+  <button type="button" class="tab" disabled aria-label="This page is the settings" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z"/><circle cx="12" cy="12" r="3"/></g><g class="icf"><mask id="rvs-fb-set" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-fb-set)"/></g></svg></button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+
+<script>
+(function(){
+  // One menu on this page, the Go to list. While it is open the page is
+  // locked at the root (html.lock in app.css); the body is never pinned.
+  var pnav = document.getElementById("pnav"), scrim = document.getElementById("scrim"), open = false;
+  function set(on){
+    open = on;
+    if (on) { pnav.classList.add("show"); scrim.classList.add("show"); document.documentElement.classList.add("lock"); }
+    else { pnav.classList.remove("show"); scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
+    pnav.setAttribute("aria-hidden", on ? "false" : "true");
+  }
+  document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
+  window.RAVI_GOTO(document.getElementById("pnavgoto"), "settings", "../");
+  // Settings has no Go to tile of its own, so there is no current tile.
+  var here = document.getElementById("pnhere");
+  if (here) { here.addEventListener("click", function(){ set(false); }); }
+  scrim.addEventListener("click", function(){ set(false); });
+})();
+</script>
+<script>
+(function(){
+  // THE SETTINGS. Both live on this phone only (local storage):
+  //   vir.hub.open.v1   the page the app opens to (no key: the hub);
+  //                     the hub's open-to check at its top reads it
+  //   ravi.intro.off.v1 "1" turns the hub's launch intro off
+  // Reset (the bar's third slot) asks for a second tap, then removes both.
+  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1";
+  var PAGES = window.RAVI_PAGES || [];
+  var opento = document.getElementById("opento"), intro = document.getElementById("stintro");
+  var reset = document.getElementById("streset"), armline = document.getElementById("starm");
+  function get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function put(k, v){ try { if (v === null) { localStorage.removeItem(k); } else { localStorage.setItem(k, v); } } catch (e) {} }
+  function row(id, name, on){ return '<button type="button" class="' + (on ? "on" : "") + '" data-id="' + id + '">' + name + '</button>'; }
+  function render(){
+    var c = get(OKEY) || "", h = row("", "Hub", c === "");
+    for (var i = 0; i < PAGES.length; i++) {
+      var p = PAGES[i];
+      if (!p.path || p.id === "settings") { continue; }
+      h += row(p.id, p.name, c === p.id);
+    }
+    opento.innerHTML = h;
+    var on = !get(IKEY);
+    intro.classList.toggle("on", on);
+    intro.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+  opento.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest("button") : null;
+    if (!t) { return; }
+    var id = t.getAttribute("data-id");
+    put(OKEY, id ? id : null);
+    render();
+  });
+  intro.addEventListener("click", function(){
+    put(IKEY, get(IKEY) ? null : "1");
+    render();
+  });
+  var armed = false, armT = 0;
+  function disarm(){ armed = false; clearTimeout(armT); reset.classList.remove("armed"); armline.classList.remove("show"); }
+  reset.addEventListener("click", function(){
+    if (!armed) {
+      armed = true; reset.classList.add("armed"); armline.classList.add("show");
+      armT = setTimeout(disarm, 3000);
+      return;
+    }
+    put(OKEY, null); put(IKEY, null);
+    disarm();
+    render();
+  });
+  render();
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>
