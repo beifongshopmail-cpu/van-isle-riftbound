@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-08T19:10:31.764Z",
- "generated_local": "2026-10-08T12:10:31-07:00",
- "window_start": "2026-10-08T07:00:00.000Z",
+ "generated_at": "2026-10-09T07:11:10.123Z",
+ "generated_local": "2026-10-09T00:11:10-07:00",
+ "window_start": "2026-10-09T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -64,7 +64,7 @@
    "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
    "region": "island",
    "cap": 32,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": "2026-09-29T00:08:35+00:00",
