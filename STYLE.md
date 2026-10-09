@@ -108,12 +108,12 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 34 on the hub (.hubname) and the install screen (.gwname). Go to tile labels are 12 with letter-spacing -.08em.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 34 on the hub (.hubname); 40 on the install screen (.gwname). Go to tile labels are 12 with letter-spacing -.08em.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
 - Calendar day cells: circles, width min(46px, 100%) of the column.
-- Icon sizes: bar 24, Go to tile 22, install step 22, round button 18, hub block 52 (stroke 1.5), pact 17, chevron 16.
+- Icon sizes: bar 24, Go to tile 22, install step 24, round button 18, hub block 52 (stroke 1.5), pact 17, chevron 16.
 Corners
 - A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D]
 - Cut track (.seg.multi, counter score buttons): round outer ends of half the height, 6 inner corners (--r-cut), 3 gaps (--gap-cut). [D]
@@ -252,8 +252,8 @@ The hub block (index.html)
 The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - In a browser tab every page shows only #ravigate, first in the body; html.gate hides every other child of the body. The page's own markup and scripts are untouched.
 - It stays out: installed (navigator.standalone, or display-mode standalone, fullscreen or minimal-ui); after Continue in the browser in this tab (session key ravi.web.v1); on a ?sim= link; under a test tool (navigator.webdriver). window.RAVI_GATE is true while it shows; the hub's launch intro waits for it.
-- Layout: .gwtop (height max(260px, 34vh), the name .gwname at 34 with RA --p1 and VI --p2, one line .gwline 15 muted), one glass card .gwcard (corner 22, .shead 17), then on a phone a 12 muted note (.gwnote) and the footer with the Continue link. The bottom padding (safe area + 96) keeps the footer clear of Safari's floating bar.
-- iPhone (#gwios): Add RAVI to your Home Screen, five numbered steps as Safari shows them (.gwstep: number .gwn 13 muted, icon 22, words .gwt, optional second line .gwsub 13 muted; at least 44 high, may wrap, hairline inset 16): the menu button (No menu button? Tap Share and go to step 3), Share, View More then Add to Home Screen, keep Open as Web App on then Add, Open RAVI (the app icon). Another browser on iOS starts at Share (four steps).
+- Layout: one block centred in the screen (min-height 100svh; top --top-clear + 8, bottom safe area + 84 so the Continue line clears Safari's floating bar): .gwtop (the name .gwname at 40 with RA --p1 and VI --p2, one line .gwline 17 muted), one glass card .gwcard (corner 22, .shead 20), then on a phone a 13 muted note (.gwnote) and the footer (13) with the Continue link.
+- iPhone (#gwios): Add RAVI to your Home Screen, six numbered steps as Safari shows them (.gwstep: number .gwn 15 muted, icon 24, words .gwt 17, optional second line .gwsub 15 muted; at least 44 high, may wrap, hairline inset 16): the menu button (No menu button? Tap Share and go to step 3), Share, Scroll down or tap View More, Add to Home Screen, keep Open as Web App on then Add, Open RAVI (the app icon). Another browser on iOS starts at Share (five steps).
 - Android (#gwand): Install RAVI. The .pact button (#gwinst) shows only once the browser offers its prompt; otherwise one line says to use the browser menu.
 - A computer (#gwpc): RAVI is a phone app, one line, and Continue in the browser as a .pact.
 - The app icon appears once, small, in the last iPhone step. It is the wordmark itself, so never above the name.
@@ -348,7 +348,7 @@ App settings (settings/index.html)
 - m5g-test.js: a bar slot stays on while its menu or a deeper one is open; menu edges.
 - m6-test.js: counter sides update in place; trade lists rewrite only when their markup changes.
 - m7-test.js: App settings page and its rows, reset, Go to without Hub where the bar has it, the calendar gear fills.
-- m8-test.js: the install screen on all six pages in a browser tab, never installed; iPhone steps, Android Install, computer; Continue for the tab only; the intro waits; ?sim= and test tools skip it; fit at 402 and 360, type on the rungs. Every other suite runs past the screen (navigator.webdriver).
+- m8-test.js: the install screen on all six pages in a browser tab, never installed; iPhone steps, Android Install, computer; Continue for the tab only; the intro waits; ?sim= and test tools skip it; fit at 402 and 360, type on the rungs (40 for the name), the Continue line clear of Safari's bar. Every other suite runs past the screen (navigator.webdriver).
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
   2. Any font-size off the rungs carries an exempt comment (static).
