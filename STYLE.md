@@ -110,6 +110,8 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - do: acts once. Glass, or a side pill (.sidebtn) when it acts for one player. Arm-then-confirm is a do.
 - deeper: a row inside a menu that opens the next menu. Always carries the right chevron (.cvr); nothing else may. [A]
 - pick: a choice that stays, in a sunken track (.seg) or a sunken group (.pick). Go to is a pick; the page you are on is the chosen tile.
+- Go to lists the pages, its tiles sharing the track evenly. A page whose bar carries Hub leaves Hub out of Go to; the counter, whose strip has no Hub slot, keeps it. App settings is reached from the hub and is never in Go to.
+- An on/off setting is a row in a sunken group with a bone check while it is on, like the calendar's types.
 - type: a text field in a sunken shape, background --recess on its visible shape.
 - open: opens in place. Carries aria-expanded and a .chev that points at what a tap will do.
 - slot: an icon slot on the bar or the counter's strip, nowhere else. [A]
@@ -129,7 +131,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Going deeper replaces the menu: it shows a back arrow and no X. Back returns where you were. The X on a menu opened directly, or the scrim, closes the whole stack.
 - A deeper menu's title is the label of the row that opened it.
 - A menu holding one track and nothing else is a tray: no title, no X.
-- A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar; on the hub it hangs from the gear.
+- A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar.
 - The menu's height cap counts the bar.
 - An open menu locks the page at the root (html.lock). Never pin the body with position:fixed.
 - Never set opacity or pointer-events on a panel by id. Those belong to .panel.show. [C]
@@ -145,6 +147,8 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - The active slot: a see-through pill (rgba(255,255,255,.14)) and its icon filled.
 - The active slot stays on while its menu, or a deeper menu opened from it, is open.
 - The counter's strip is the same shell with its own four controls. The hub has no bar.
+- The hub: eight blocks, App settings always last; a new page takes the first Soon slot. A block's icon (52) is centred in the space above its name, both a pale, slightly see-through tint of the block's own colour. The Soon blocks are dimmed glass with the hourglass.
+- App settings is a page like the others: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed, since the page is the settings.
 - Menus and the counter's victory banner sit above the bar.
 
 ## 11. The page
