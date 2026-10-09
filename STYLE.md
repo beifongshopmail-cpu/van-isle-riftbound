@@ -252,8 +252,8 @@ The hub block (index.html)
 The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - In a browser tab every page shows only #ravigate, first in the body; html.gate hides every other child of the body. The page's own markup and scripts are untouched.
 - It stays out: installed (navigator.standalone, or display-mode standalone, fullscreen or minimal-ui); after Continue in the browser in this tab (session key ravi.web.v1); on a ?sim= link; under a test tool (navigator.webdriver). window.RAVI_GATE is true while it shows; the hub's launch intro waits for it.
-- Layout: .gwtop (height max(260px, 34vh), the name .gwname at 34 with RA --p1 and VI --p2, one line .gwline 15 muted), one glass card .gwcard (corner 22, .shead 17), then on a phone a 12 muted note (.gwnote) and the footer with the Continue link.
-- iPhone (#gwios): Add RAVI to your Home Screen, three steps (.gwstep, 44 high, icon 22, hairline inset 16): Share, Add to Home Screen, Open RAVI (the app icon).
+- Layout: .gwtop (height max(260px, 34vh), the name .gwname at 34 with RA --p1 and VI --p2, one line .gwline 15 muted), one glass card .gwcard (corner 22, .shead 17), then on a phone a 12 muted note (.gwnote) and the footer with the Continue link. The bottom padding (safe area + 96) keeps the footer clear of Safari's floating bar.
+- iPhone (#gwios): Add RAVI to your Home Screen, five numbered steps as Safari shows them (.gwstep: number .gwn 13 muted, icon 22, words .gwt, optional second line .gwsub 13 muted; at least 44 high, may wrap, hairline inset 16): the menu button (No menu button? Tap Share and go to step 3), Share, View More then Add to Home Screen, keep Open as Web App on then Add, Open RAVI (the app icon). Another browser on iOS starts at Share (four steps).
 - Android (#gwand): Install RAVI. The .pact button (#gwinst) shows only once the browser offers its prompt; otherwise one line says to use the browser menu.
 - A computer (#gwpc): RAVI is a phone app, one line, and Continue in the browser as a .pact.
 - The app icon appears once, small, in the last iPhone step. It is the wordmark itself, so never above the name.
