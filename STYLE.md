@@ -159,15 +159,15 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 
 ## 12. Motion
 
-- Motion confirms; it never decorates. Two exceptions, and only these: the page-to-page fade and the hub's launch intro.
+- Motion confirms; it never decorates. One exception, and only this one: the hub's launch intro.
 - Nothing animates on first paint, apart from the launch intro.
 - Press: scale .96, and the shade change. A row inside a group takes the shade only.
 - Tap flashes, .42s: bone for neutral controls (.flash-n), the player's colour for side controls (.flash-p).
 - Apply a flash after the render: find the fresh node, remove the class, force reflow, add it.
 - A control that already confirms itself twice gets no third.
 - A chevron turns in .28s.
-- Page to page: the old page fades into the new over .2s. The bar is the same on both pages, so it reads as still; it is never lifted into a transition layer of its own, and while the fade plays it shows its solid fallback, never see-through. A cold launch or a reload paints with no motion. A phone without cross-page transitions switches instantly.
-- The launch intro: once per launch, the first time the hub shows, 'Rift App' in blue over 'Van Isle' in pink turns into RAVI in three beats: the two lines come in up to 1.4 times the wordmark's size and are read (to .75s), the small letters dim so the four capitals stand out (held to 1.3s), then the small letters go and the capitals close up, shrinking into the wordmark (2s in all). The hub's blocks rise in one after another while the name is read. Nothing waits on it; a tap finishes it. No other page has one.
+- Page to page: no motion. Pages switch instantly, as the tabs of an iPhone tab bar do, so the bar never changes between them. (A cross-page fade was tried in M6 and dropped: the phone does not draw the bar's blur into the fade.)
+- The launch intro: once per launch, the first time the hub shows, 'Rift App' in blue over 'Van Isle' in pink turns into RAVI: the two lines come in up to 1.4 times the wordmark's size and are read (to 1s), then in one continuous move the small letters fade while the capitals close up, shrinking into the wordmark (1.9s in all). The hub's blocks rise in one after another while the name is read. Nothing waits on it; a tap finishes it. No other page has one.
 - A menu arrives slower than it leaves: it glides up and settles in .34s and drops away in .2s. A deeper menu slides in from the right and Back slides it out; the menu it came from moves the other way.
 - Content a tap opens (a player card, a past match, an event card, a trade row, side or undo list) eases in under its row in .26s, added after the tap, never on a render. Its height changes in one frame.
 - A point lands: the numeral settles from 1.06 and the newest rail line draws in, --mo-rise.
