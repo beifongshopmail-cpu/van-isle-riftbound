@@ -59,7 +59,7 @@ Mako's call: on RAVI the agent pushes. A bad push is undone with git revert.
   (github.com/beifongshopmail-cpu/rb-tools). Never add another.
 - Mako phone-checks after the green tick on GitHub's Pages build.
 
-## Output goes to a file (from 2026-10-07)
+## Output goes to a file (from 2026-10-07; pushed to rb-tools from 2026-10-08)
 Retyped output went wrong four times in one session (M5), each time from a
 long context. So when a block names an output file:
 - Run every command the block asks you to show through run.sh, never into
@@ -68,14 +68,21 @@ long context. So when a block names an output file:
   It appends "$ <command>", the output and "exit <code>" to
   code-out-<n>.txt in the output folder. Never type those lines yourself.
   For a pipe or redirect: bash /c/dev/rb-tools/run.sh <n> bash -c '<command>'
-- Your reply is CODE OUT #<n>, the file path, one line per step (done or
-  STOP and why), HOOKS, and at most 3 notes. Mako attaches the file to the
-  chat; the file is the record.
+- The last step of every block: write your summary (CODE OUT #<n>, one
+  line per step, done or STOP and why, HOOKS, at most 3 notes) to
+  C:\dev\rb-tools\out\summary-<n>.txt, cat it through run.sh, then run
+  run.sh <n> echo END CODE OUT <n>. Copy the output file to
+  C:\dev\rb-tools\codeout\code-out-<n>.txt, stage it by name, commit it
+  as "codeout: <n>" and push rb-tools (the form under Push).
+- Your reply is one line: CODE OUT #<n>, saved and pushed (or STOP and
+  why). Mako only says "done"; chat reads the file from rb-tools. The file
+  is the record.
 - When a block gives you a file to write, use the Write tool and copy its
   text exactly, escapes such as \u00b7 included, as written. The block's
   hash check is the proof.
 - The output folder is C:\Users\beifo\OneDrive\ravi-out (create it if
-  missing). It is outside both repos; never commit it.
+  missing). It is outside both repos; never commit it. Only the copy in
+  rb-tools\codeout\ is committed.
 
 ## Standard reply (use it unless the block gives its own skeleton or names an output file)
 Fenced with four tildes, nothing outside the fence:
