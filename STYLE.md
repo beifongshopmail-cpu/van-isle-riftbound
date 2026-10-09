@@ -31,12 +31,13 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - Muted text #A4A7AD (--muted). Faint #4A4E55 (--faint). Track #2A2D32 (--track). Pressed in a track #34383E (--hi).
 - Player 1 and Yours: blue #5DA5EE. Player 2 and Theirs: pink #EE5F9C.
 - Round timer past zero: #E5484D (--over). The only alarm colour.
-- Event types, each with its own mark shape AND its name in words on every card:
-  - Nexus Nights 63,169,245, circle
+- Event types, each with its own mark shape AND its name in words on every card. The marks rise with the event's level, like rarity: the more sides, the higher the level. Listed in this order everywhere; a hexagon is kept for the next level:
+  - Open Play 180,90,255, circle
+  - Learn-to-Play 40,220,130, ring
+  - Nexus Nights 63,169,245, triangle
   - Summoner Skirmish 255,176,32, diamond
-  - Learn-to-Play 203,166,255, square
-  - Open Play 255,79,154, bar
-  - Other events 138,148,163, ring. The filter row reads Other events; a card reads Event.
+  - Other events 90,96,106, pentagon. The filter row reads Other events; a card reads Event.
+- The marks are one drawn set on a 12 grid with round joins, in a fixed square: 12 in a row, 10 on a card, 9 on the month grid.
 - The counter's six swatches are the player's choice for one match; the first two are the player defaults.
 - A new hue anywhere needs Mako's yes.
 
@@ -116,7 +117,7 @@ CHECK MARKS: [D] drawn-test.js checks it (proven on a planted defect). [A] audit
 - grid: the calendar's day cells, nowhere else.
 - view: the counter's full-card viewer: tap anywhere dismisses it. Nowhere else.
 - Text you only read carries no data-k and is not tappable.
-- A deeper row is one line at 44, its value in grey small on the right. Only records (.rec: saved trades, past matches, event rows) may grow past one line; a two-line record takes 7 above and below. [A]
+- A deeper row is one line at 44, its value in grey small on the right. Only records (.rec: saved trades, past matches, event rows, the calendar's store rows) may grow past one line; a two-line record takes 7 above and below. [A]
 - In a stack of rows an action is a .door.act. A centred .pact stands alone or sits in a menu foot.
 - A label never repeats its only row.
 - Pages place components; they never reshape them. A page may not set height, min-height, padding, border-radius or width on .door, .pact, .seg, .nf/.sf, .goto, .rec, .btn or .circ. Layout around them is the page's own. [A]
