@@ -78,7 +78,7 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
   function boot(){
     var panels = document.querySelectorAll(".panel");
     var slots = document.querySelectorAll("[data-fills]");
-    var active = null, i;
+    var activeId = null, i;
     function edges(p){
       var b = p.querySelector(".pbody"), h = p.querySelector(".phead"), f = p.querySelector(".pfoot");
       if (!b) { return; }
@@ -87,12 +87,14 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
     }
     function sync(){
       var shown = document.querySelector(".panel.show"), j;
-      if (!shown) { active = null; }
+      // Every slot that opens the shown menu fills (the calendar's bar gear
+      // and its card gear open the same menu); a deeper menu keeps them on.
+      if (!shown) { activeId = null; }
       else {
-        for (j = 0; j < slots.length; j++) { if (slots[j].getAttribute("data-fills") === shown.id) { active = slots[j]; } }
+        for (j = 0; j < slots.length; j++) { if (slots[j].getAttribute("data-fills") === shown.id) { activeId = shown.id; } }
         edges(shown);
       }
-      for (j = 0; j < slots.length; j++) { slots[j].classList.toggle("on", slots[j] === active); }
+      for (j = 0; j < slots.length; j++) { slots[j].classList.toggle("on", activeId !== null && slots[j].getAttribute("data-fills") === activeId); }
     }
     var mo = new MutationObserver(sync);
     for (i = 0; i < panels.length; i++) {

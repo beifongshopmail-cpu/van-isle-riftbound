@@ -82,7 +82,7 @@ a{color:inherit;text-decoration:none}
 #filt svg{width:19px;height:19px;stroke-width:2}
 #prev svg,#next svg{width:14px;height:14px;stroke-width:2.4}
 /* filters set: the same glass fill as a selected day */
-#filt.on{background:rgba(255,255,255,.18)}
+#filt.filtered{background:rgba(255,255,255,.18)}
 
 .dow{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding-bottom:4px}
 .dow span{text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
@@ -213,7 +213,7 @@ a{color:inherit;text-decoration:none}
     <span class="sp"></span>
     <button type="button" class="hemi hl btn glass" id="prev" aria-label="Previous month" data-k="do"><svg viewBox="0 0 24 24"><polyline points="15 5 8 12 15 19"/></svg></button>
     <button type="button" class="hemi hr btn glass" id="next" aria-label="Next month" data-k="do"><svg viewBox="0 0 24 24"><polyline points="9 5 16 12 9 19"/></svg></button>
-    <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings" data-k="do">
+    <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings" data-k="do" data-fills="panel">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z"/><circle cx="12" cy="12" r="3"/></g><g class="icf"><mask id="rvs-cal-filt" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-cal-filt)"/></g></svg>
     </button>
     <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar" data-k="open"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
@@ -747,7 +747,7 @@ a{color:inherit;text-decoration:none}
     var any = false, k;
     for (k in hidden){ if (hidden.hasOwnProperty(k) && hidden[k]) any = true; }
     for (k in hiddenStores){ if (hiddenStores.hasOwnProperty(k) && hiddenStores[k]) any = true; }
-    filt.classList.toggle("on", any);
+    filt.classList.toggle("filtered", any);
   }
 
   function renderSub(){

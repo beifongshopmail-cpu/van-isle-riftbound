@@ -29,9 +29,6 @@ body{-webkit-font-smoothing:antialiased;
   touch-action:manipulation}
 #fb{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
-.fbh{padding:14px 4px 0}
-.fbh h2{font-size:28px;line-height:1.1}
-.fbl{margin:10px 0 0;font-size:17px;line-height:1.4}
 /* the form sits in a glass card. Tally draws its own fields and colours;
    those are set in Tally, not here. */
 .fcard{border-radius:22px;padding:8px;margin:20px 0 12px;min-height:200px;overflow:hidden}
@@ -50,9 +47,9 @@ body{-webkit-font-smoothing:antialiased;
 <div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
 
 <main id="fb">
-  <header class="fbh">
+  <header class="pghead glass">
     <h2 class="ttl">Feedback</h2>
-    <p class="fbl">If something is broken, an event is wrong or missing, or you want the app to do something it does not do yet, this is where to say so.</p>
+    <p>If something is broken, an event is wrong or missing, or you want the app to do something it does not do yet, this is where to say so.</p>
   </header>
 
   <section class="fcard glass">

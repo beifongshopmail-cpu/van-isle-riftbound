@@ -228,6 +228,12 @@ html.lock,html.lock body{overflow:hidden}
 .shead h2{margin:0;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em}
 .shead .sp{flex:1}
 .shead .cnt{font-size:12px;color:var(--muted)}
+/* A PAGE HEAD: a text page's title and one line on what the page is for,
+   in a glass plate, so the page starts on a surface as the calendar and
+   trade pages do. */
+.pghead{border-radius:22px;padding:14px 16px 15px;margin:6px 0 0}
+.pghead h2{font-size:20px;line-height:1.2}
+.pghead p{margin:6px 0 0;font-size:13px;line-height:1.45;color:var(--muted)}
 
 /* THE CHEVRON POINTS AT WHAT A TAP WILL DO, not at the state it is in.
    Draw it pointing UP in the markup: up while open, because the tap
