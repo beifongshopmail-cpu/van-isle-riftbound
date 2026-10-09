@@ -142,18 +142,29 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
   var ask = null, box = null;
   var SHARE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M8 10H6.5A2.5 2.5 0 0 0 4 12.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6a2.5 2.5 0 0 0-2.5-2.5H16"/></svg>';
   var PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  var MENU = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>';
+  var TOGGLE = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><circle cx="17" cy="12" r="2.5" fill="currentColor" stroke="none"/></svg>';
   var TOP = '<div class="gwtop"><h1 class="gwname"><span class="logo1">RA</span><span class="logo2">VI</span></h1>' +
     '<p class="gwline">Events, Game and Trade for Riftbound on Vancouver Island.</p></div>';
   var NOTE = '<p class="gwnote">RAVI is built to run as an app. Your matches and saved trades stay on this phone.</p>' +
     '<div class="gwsp"></div><footer class="foot"><p>On a computer, or just looking? <a href="#" data-web data-k="do">Continue in the browser</a></p></footer>';
-  function step(icon, words){ return '<div class="gwstep">' + icon + '<span>' + words + '</span></div>'; }
+  // One numbered step; sub is an optional second line, 13 muted.
+  function step(n, icon, words, sub){
+    return '<div class="gwstep"><span class="gwn">' + n + '</span>' + icon + '<span class="gwt">' + words +
+      (sub ? '<small class="gwsub">' + sub + '</small>' : '') + '</span></div>';
+  }
+  // iPhone: the taps as Safari shows them (signed off from Mako's screenshots,
+  // 2026-10-09). Safari's compact bar hides Share behind the menu button;
+  // another browser on iOS starts at Share.
   function markup(){
     if (ios) {
-      return TOP + '<section class="gwcard glass" id="gwios"><div class="shead"><h2>Add RAVI to your Home Screen</h2></div>' +
-        step(SHARE, 'Tap <b>Share</b> <small>' + (safari ? "in Safari's toolbar" : "in your browser's menu") + '</small>') +
-        step(PLUS, 'Choose <b>Add to Home Screen</b>') +
-        step('<img src="' + base + 'icons/apple-touch-icon.png" alt="">', 'Open <b>RAVI</b> from your Home Screen') +
-        '</section>' + NOTE;
+      var ICON = '<img src="' + base + 'icons/apple-touch-icon.png" alt="">', h = '', k = 0;
+      if (safari) { h += step(++k, MENU, 'Tap the <b>menu button</b> next to the address bar', 'No menu button? Tap Share and go to step 3.'); }
+      h += step(++k, SHARE, safari ? 'Tap <b>Share</b>' : 'Tap <b>Share</b> in the address bar or menu');
+      h += step(++k, PLUS, 'Tap <b>View More</b>, scroll down, then tap <b>Add to Home Screen</b>');
+      h += step(++k, TOGGLE, 'Keep <b>Open as Web App</b> on, then tap <b>Add</b>');
+      h += step(++k, ICON, 'Open <b>RAVI</b> from your Home Screen');
+      return TOP + '<section class="gwcard glass" id="gwios"><div class="shead"><h2>Add RAVI to your Home Screen</h2></div>' + h + '</section>' + NOTE;
     }
     if (android) {
       return TOP + '<section class="gwcard glass" id="gwand"><div class="shead"><h2>Install RAVI</h2></div>' +
