@@ -381,27 +381,30 @@ html.lock,html.lock body{overflow:hidden}
    child of the body is hidden, so a page's own markup is untouched. The
    installed app never sees any of this. */
 html.gate body > :not(#ravigate){display:none!important}
-/* the bottom clears Safari's floating bar, so the Continue line is never under it */
-#ravigate{width:100%;max-width:480px;min-height:100vh;margin:0 auto;padding:0 12px calc(env(safe-area-inset-bottom,0px) + 96px);display:flex;flex-direction:column}
-.gwtop{flex:0 0 auto;height:max(260px,34vh);display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:calc(var(--top-clear) + 36px);text-align:center}
-.gwname{margin:0;font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:.01em;line-height:1.1} /* rung-exempt: the wordmark */
+/* One block, centred in the screen; the bottom padding keeps the Continue
+   line clear of Safari's floating bar (Mako's phone check 2026-10-09). */
+#ravigate{width:100%;max-width:480px;min-height:100vh;min-height:100svh;margin:0 auto;padding:calc(var(--top-clear) + 8px) 12px calc(env(safe-area-inset-bottom,0px) + 84px);display:flex;flex-direction:column;justify-content:center}
+.gwtop{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 0 26px}
+.gwname{margin:0;font-family:var(--disp);font-weight:800;font-size:40px;letter-spacing:.01em;line-height:1.1} /* rung-exempt: the wordmark */
 .gwname .logo1{color:var(--p1)}
 .gwname .logo2{color:var(--p2)}
-.gwline{margin:8px 24px 0;max-width:300px;font-size:15px;color:var(--muted)}
-.gwcard{border-radius:22px;padding:14px 12px 12px;margin-top:6px}
+.gwline{margin:8px 24px 0;max-width:320px;font-size:17px;line-height:1.4;color:var(--muted)}
+.gwcard{border-radius:22px;padding:16px 14px 10px}
 .gwcard .shead{margin:0 4px 6px}
+.gwcard .shead h2{font-size:20px}
 .gwcard .pact{margin-top:4px}
-.gwstep{position:relative;display:flex;align-items:flex-start;gap:12px;min-height:var(--sz-row);padding:10px 4px}
-.gwn{flex:0 0 12px;font-family:var(--disp);font-weight:600;font-size:13px;line-height:22px;color:var(--muted);text-align:center}
-.gwt{line-height:22px}
-.gwsub{display:block;margin-top:2px;font-size:13px;line-height:1.4;color:var(--muted)}
+.gwstep{position:relative;display:flex;align-items:flex-start;gap:12px;min-height:var(--sz-row);padding:12px 4px}
+.gwn{flex:0 0 14px;font-family:var(--disp);font-weight:600;font-size:15px;line-height:24px;color:var(--muted);text-align:center}
+.gwt{font-size:17px;line-height:24px}
+.gwsub{display:block;margin-top:3px;font-size:15px;line-height:1.4;color:var(--muted)}
 .gwstep + .gwstep::before{content:"";position:absolute;top:0;left:4px;right:4px;height:1px;background:rgba(255,255,255,.08)}
-.gwstep svg,.gwstep img{flex:0 0 22px;width:22px;height:22px}
+.gwstep svg,.gwstep img{flex:0 0 24px;width:24px;height:24px}
 .gwstep svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .gwstep img{border-radius:6px}
 .gwstep b{font-weight:700}
 .gwtxt{margin:0 4px 12px;color:var(--muted)}
 .gwor{margin:12px 4px 2px;font-size:13px;color:var(--muted);text-align:center}
-.gwnote{margin:10px 8px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-.gwsp{flex:1 1 auto}
+.gwnote{margin:14px 8px 0;font-size:13px;line-height:1.5;color:var(--muted)}
+#ravigate .foot{margin-top:20px;padding-top:20px}
+#ravigate .foot p{font-size:13px}
 #ravigate .foot a{color:var(--bone);font-weight:600;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(237,234,227,.4)}
