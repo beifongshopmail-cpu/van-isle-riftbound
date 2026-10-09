@@ -118,7 +118,9 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 // it. window.RAVI_INTRO is the list the hub's blocks add their rise to.
 (function(){
   var h = document.querySelector(".hubname"), top = h ? h.parentNode : null;
-  if (!h || window.RAVI_AWAY) { return; }
+  // Not behind the install screen either (pages.js): it plays once the
+  // visitor continues, or in the installed app.
+  if (!h || window.RAVI_AWAY || window.RAVI_GATE) { return; }
   try {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
     if (!h.animate || !document.fonts || !document.fonts.load) { return; }

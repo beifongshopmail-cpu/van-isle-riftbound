@@ -113,3 +113,98 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
   }
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
 })();
+
+// THE INSTALL SCREEN (STYLE.md, The install screen). RAVI runs as an
+// installed app. In a browser tab every page shows only the install screen
+// (#ravigate), and app.css hides the rest (html.gate); the page's own markup
+// and scripts are left as they are. The screen stays out when the app is
+// installed (navigator.standalone on iOS, a standalone display elsewhere),
+// when "Continue in the browser" was tapped in this tab (session key
+// ravi.web.v1, gone when the tab closes), on a ?sim= test link, or when a
+// test tool drives the page (navigator.webdriver; rb-tools m8-test.js proves
+// the screen by turning that off). window.RAVI_GATE is true while it shows.
+(function(){
+  if (typeof document === "undefined" || typeof navigator === "undefined") { return; }  // read as plain data (audit.js)
+  window.RAVI_GATE = false;
+  function mm(q){ try { return !!(window.matchMedia && window.matchMedia(q).matches); } catch (e) { return false; } }
+  if (navigator.standalone === true || mm("(display-mode: standalone)") || mm("(display-mode: fullscreen)") || mm("(display-mode: minimal-ui)")) { return; }
+  if (navigator.webdriver) { return; }
+  if (/[?&]sim=/.test(location.search)) { return; }
+  try { if (sessionStorage.getItem("ravi.web.v1") === "1") { return; } } catch (e) {}
+  window.RAVI_GATE = true;
+  document.documentElement.classList.add("gate");
+  var me = document.currentScript;
+  var base = me && me.src ? me.src.replace(/pages\.js(\?.*)?$/, "") : "";
+  var ua = navigator.userAgent || "";
+  var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var android = !ios && /Android/.test(ua);
+  var safari = ios && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  var ask = null, box = null;
+  var SHARE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M8 10H6.5A2.5 2.5 0 0 0 4 12.5v6A2.5 2.5 0 0 0 6.5 21h11a2.5 2.5 0 0 0 2.5-2.5v-6a2.5 2.5 0 0 0-2.5-2.5H16"/></svg>';
+  var PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  var TOP = '<div class="gwtop"><h1 class="gwname"><span class="logo1">RA</span><span class="logo2">VI</span></h1>' +
+    '<p class="gwline">Events, Game and Trade for Riftbound on Vancouver Island.</p></div>';
+  var NOTE = '<p class="gwnote">RAVI is built to run as an app. Your matches and saved trades stay on this phone.</p>' +
+    '<div class="gwsp"></div><footer class="foot"><p>On a computer, or just looking? <a href="#" data-web data-k="do">Continue in the browser</a></p></footer>';
+  function step(icon, words){ return '<div class="gwstep">' + icon + '<span>' + words + '</span></div>'; }
+  function markup(){
+    if (ios) {
+      return TOP + '<section class="gwcard glass" id="gwios"><div class="shead"><h2>Add RAVI to your Home Screen</h2></div>' +
+        step(SHARE, 'Tap <b>Share</b> <small>' + (safari ? "in Safari's toolbar" : "in your browser's menu") + '</small>') +
+        step(PLUS, 'Choose <b>Add to Home Screen</b>') +
+        step('<img src="' + base + 'icons/apple-touch-icon.png" alt="">', 'Open <b>RAVI</b> from your Home Screen') +
+        '</section>' + NOTE;
+    }
+    if (android) {
+      return TOP + '<section class="gwcard glass" id="gwand"><div class="shead"><h2>Install RAVI</h2></div>' +
+        '<button type="button" class="pact btn glass" id="gwinst" data-k="do" hidden>Install RAVI</button>' +
+        '<p class="gwor" id="gwhow">Tap the browser menu, then Install app.</p></section>' + NOTE;
+    }
+    return TOP + '<section class="gwcard glass" id="gwpc"><div class="shead"><h2>RAVI is a phone app</h2></div>' +
+      '<p class="gwtxt">Open this page on your phone, then add it to your Home Screen.</p>' +
+      '<button type="button" class="pact btn glass" data-web data-k="do">Continue in the browser</button></section>';
+  }
+  // Android: the browser offers its own Install prompt once it is ready.
+  function offer(){
+    var b = document.getElementById("gwinst"), w = document.getElementById("gwhow");
+    if (!b || !w || !ask) { return; }
+    b.hidden = false;
+    w.textContent = "or use the browser menu: Install app";
+  }
+  function installed(){
+    var b = document.getElementById("gwinst"), w = document.getElementById("gwhow");
+    if (b) { b.hidden = true; }
+    if (w) { w.textContent = "Installed. Open RAVI from your home screen."; }
+  }
+  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); ask = e; offer(); });
+  window.addEventListener("appinstalled", function(){ ask = null; installed(); });
+  function render(){
+    box = document.createElement("div");
+    box.id = "ravigate";
+    box.innerHTML = markup();
+    document.body.insertBefore(box, document.body.firstChild);
+    box.addEventListener("click", function(e){
+      var t = e.target.closest ? e.target.closest("[data-web], #gwinst") : null;
+      if (!t) { return; }
+      e.preventDefault();
+      if (t.id === "gwinst") {
+        if (!ask) { return; }
+        // The browser's prompt can be shown once; after a No, the menu is the way.
+        var a = ask; ask = null;
+        t.hidden = true;
+        document.getElementById("gwhow").textContent = "Tap the browser menu, then Install app.";
+        a.prompt();
+        if (a.userChoice && a.userChoice.then) { a.userChoice.then(function(r){ if (r && r.outcome === "accepted") { installed(); } }); }
+        return;
+      }
+      // Continue in the browser: remembered for this tab, then the page
+      // loads again as itself (so the hub's opening plays then, not hidden).
+      try { sessionStorage.setItem("ravi.web.v1", "1"); location.reload(); return; } catch (x) {}
+      document.documentElement.classList.remove("gate");
+      box.parentNode.removeChild(box);
+      window.RAVI_GATE = false;
+    });
+    offer();
+  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", render); } else { render(); }
+})();
