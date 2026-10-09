@@ -344,6 +344,9 @@ html.lock,html.lock body{overflow:hidden}
 .rec{height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px}
 .door.rec{align-items:flex-start;flex-direction:column;justify-content:center;gap:2px;position:relative;padding-right:40px}
 .door.rec .t{width:100%}
+/* a record inside a pick group (the calendar's store rows): a .pick row's
+   own height and padding give way to the record's */
+.pick button.rec{height:auto;padding-top:7px;padding-bottom:7px}
 .door.rec small{white-space:normal;width:100%}
 .door.rec .cvr{position:absolute;top:calc(50% - 8px);right:16px}
 
