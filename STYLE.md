@@ -130,12 +130,13 @@ Spacing
 Colour
 - Players: Yours/P1 blue --p1, Theirs/P2 pink --p2. The counter's six swatches are the player's choice for one match; the first two are the defaults.
 - The only alarm colour is --over (the counter's --over-deep #8C1F19 is its pressed shade). The calendar's amber #FFC24D on low spots is a caution, always with words.
-- Event types: each has a mark shape, a hue and its name in words on every card. Order everywhere: Open Play, Learn-to-Play, Nexus Nights, Summoner Skirmish, Other.
+- Event types: each has a mark shape, a hue and its name in words on every card. Order everywhere: Open Play, Learn-to-Play, Nexus Nights, Summoner Skirmish, Pre-Rift, Other.
   - Open Play 180,90,255, circle (s-circle)
   - Learn-to-Play 40,220,130, ring (s-ring)
   - Nexus Nights 63,169,245, triangle (s-tri)
   - Summoner Skirmish 255,176,32, diamond (s-diamond)
-  - Other 90,96,106, pentagon (s-penta). The filter row reads Other events; a card reads Event.
+  - Pre-Rift 30,200,195, pentagon (s-penta)
+  - Other 90,96,106, outlined hexagon (s-hex). The filter row reads Other events; a card reads Event.
 - Marks are one drawn set on a 12 grid with round joins, in a fixed square: 12 in a row (.mk), 10 on a card (.ev .l1 .mk), 9 on the month grid (.dots .mk).
 - Event card body: glass with rgba(type rgb, .25); Nexus .26, Skirmish .24 (--ga).
 - A page colour (hub block, event type) is given as an rgb triple; tints are computed in script (hub icon and name: toward white by .62; calendar lit: .40).
