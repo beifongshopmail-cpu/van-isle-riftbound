@@ -9,6 +9,7 @@ const LABELS = {
   skirmish: "Summoner Skirmish",
   learn: "Learn-to-Play",
   open: "Open Play",
+  prerift: "Pre-Rift",
   other: "Event"
 };
 

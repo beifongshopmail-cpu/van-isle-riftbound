@@ -34,8 +34,31 @@ const MIN_EVENTS = 10;
 // loose - a false positive trains us to ignore the notices.
 const DROP_FRACTION = 0.4;
 
+// PlayRiftbound, Riot's organized-play site, home of island events since
+// 2026-09-14. Its event search is a stored GraphQL query read with a plain
+// GET. RAVI names itself honestly (client name "ravi"); it never claims to
+// be Riot's own site. If Riot changes the stored query, the run fails and
+// the last good file stays published.
+const RB = {
+  base: "https://playriftbound.com/api/gql",
+  op: "CompeteTournamentSearch",
+  hash: "acbcbba681a9c9a8063f792f7d665ba1eda81b19528b6af19e523f0c2061bec2",
+  client: "ravi",
+  version: "1.0",
+  ua: "VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-isle-riftbound)",
+  // tournamentType -> our category key. Anything else is "other" and is
+  // reported as an unknown template, the same path as the old feed.
+  types: {
+    OPEN_PLAY: "open",
+    LEARN_TO_PLAY: "learn",
+    NEXUS_NIGHT: "nexus",
+    SUMMONER_SKIRMISH: "skirmish",
+    PRE_RIFT: "prerift"
+  }
+};
+
 // Below this count, percentage swings are noise. No delta notice fires
 // when either side of the comparison is under this.
 const DROP_FLOOR = 20;
 
-module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR };
+module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR, RB };

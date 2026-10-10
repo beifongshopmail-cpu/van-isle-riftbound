@@ -285,16 +285,17 @@ a{color:inherit;text-decoration:none}
 <script>
 (function(){
   /* Colour alone cannot carry meaning: every type also has a distinct
-     SHAPE and a distinct lightness, so the five stay separable for a
+     SHAPE and a distinct lightness, so the six stay separable for a
      colourblind reader. The event block names its type in words too. */
   var TYPES = {
     nexus:    {label:"Nexus Nights",      rgb:"63,169,245",   shape:"s-tri"},
     skirmish: {label:"Summoner Skirmish", rgb:"255,176,32",   shape:"s-diamond"},
     learn:    {label:"Learn-to-Play",     rgb:"40,220,130",   shape:"s-ring"},
     open:     {label:"Open Play",         rgb:"180,90,255",   shape:"s-circle"},
-    other:    {label:"Event",             rgb:"90,96,106",    shape:"s-penta", filt:"Other events"}
+    prerift:  {label:"Pre-Rift",          rgb:"30,200,195",   shape:"s-penta"},
+    other:    {label:"Event",             rgb:"90,96,106",    shape:"s-hex", filt:"Other events"}
   };
-  var TYPE_ORDER = ["open","learn","nexus","skirmish","other"];
+  var TYPE_ORDER = ["open","learn","nexus","skirmish","prerift","other"];
   var DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   var MONTH = ["January","February","March","April","May","June",
                "July","August","September","October","November","December"];
@@ -411,14 +412,15 @@ a{color:inherit;text-decoration:none}
 
   // THE MARKS RISE WITH THE EVENT'S LEVEL, like rarity: the more sides,
   // the higher the level. Open Play a circle, Learn-to-Play a ring,
-  // Nexus Nights a triangle, Summoner Skirmish a diamond, other and
-  // special events a pentagon (a hexagon is kept for the next level).
+  // Nexus Nights a triangle, Summoner Skirmish a diamond, Pre-Rift a
+  // pentagon; any other event an outlined hexagon (Mako, M9).
   var MARKS = {
     "s-circle":  '<circle cx="6" cy="6" r="5" fill="currentColor"/>',
     "s-ring":    '<circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/>',
     "s-tri":     '<path d="M6 1.6 10.9 10.2 1.1 10.2z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>',
     "s-diamond": '<path d="M6 1.2 10.8 6 6 10.8 1.2 6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>',
-    "s-penta":   '<path d="M6 1.3 10.6 4.6 8.85 10.1 3.15 10.1 1.4 4.6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>'
+    "s-penta":   '<path d="M6 1.3 10.6 4.6 8.85 10.1 3.15 10.1 1.4 4.6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>',
+    "s-hex":     '<path d="M6 1.4 10.1 3.7 10.1 8.3 6 10.6 1.9 8.3 1.9 3.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>'
   };
   function mark(ty){
     var el = document.createElement("span");
