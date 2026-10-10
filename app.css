@@ -158,6 +158,8 @@ svg .icf{display:none}
 .phead .ht h4{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .phead .cnt{flex:0 0 auto;font-size:12px;color:var(--muted)}
 .phead .back{flex:0 0 auto;margin-left:-4px}
+/* the X holds its size beside a long title (M9: a long article title squeezed it) */
+.phead > .circ{flex:0 0 auto}
 
 /* MENU EDGES: a menu's header and footer stay put while its body scrolls. While content runs
    underneath one, it shows a hairline and a soft shadow (pages.js sets .edge), so the cut
@@ -285,8 +287,7 @@ html.lock,html.lock body{overflow:hidden}
 /* GO TO: the page-picker tiles, built by pages.js's RAVI_GOTO from
    RAVI_PAGES. A sunken track (kind "pick"), not glass -- the page you are
    on is the chosen tile. The tiles share one row evenly, however many
-   there are (four, or five on the counter); how Go to grows past five
-   pages is M9's to decide. */
+   there are, in one row up to five (two rows past five, below). */
 .goto{background:var(--recess);border-radius:24px;padding:4px;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
 .goto .gt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:60px;min-width:0;
   border-radius:20px;font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:-.08em;padding:0 2px;color:inherit;text-decoration:none}
@@ -294,6 +295,12 @@ html.lock,html.lock body{overflow:hidden}
 .goto .gt svg{width:22px;height:22px}
 .goto .gt:active{background:var(--hi)}
 .goto .gt.on{background:var(--bone);color:var(--ink)}
+/* PAST FIVE TILES, TWO ROWS (M9). One row holds five; a sixth would
+   squeeze the labels past reading. From six on, the tiles fill two even
+   rows (6 as 3+3, 7 as 4+3, 8 as 4+4), each tile its usual size. */
+.goto:has(> .gt:nth-child(6)){grid-auto-flow:row;grid-template-columns:repeat(3,1fr)}
+.goto:has(> .gt:nth-child(7)){grid-template-columns:repeat(4,1fr)}
+.goto:has(> .gt:nth-child(9)){grid-template-columns:repeat(5,1fr)}
 
 /* THE SUNKEN FIELD: one shape for every text input in a recessed track,
    with an optional single action at its right end (.fbtn, a "do", so it

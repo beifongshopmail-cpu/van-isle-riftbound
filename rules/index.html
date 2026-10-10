@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Riot's official Riftbound errata, FAQs and rulings, word for word.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Rules - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<style>
+/* The Rules page (M9). Riot's errata, FAQs, rulings and legality lists from
+   data/rules.json, which fetch-rules.js copies word for word from Riot's
+   pages. Nothing here rewrites Riot's words; it only lays them out. The
+   shared layer is app.css; this block holds only the page's own rules. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;
+  /* THIS DOES NOT STOP DOUBLE-TAP ZOOM. The touchend guard at the end of
+     the page is the fix. */
+  touch-action:manipulation}
+#rl{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+#home > section,#res{margin-top:22px}
+.srow{margin-top:14px}
+/* A list entry that opens in place: the row (.door.rec, kind open) and the
+   body under it (.rbody), siblings inside one group. */
+.door.rec .t.wrap{white-space:normal;line-height:1.3}
+.door.rec .chev{position:absolute;top:14px;right:16px;color:var(--muted)}
+.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
+.rbody{padding:2px 16px 14px}
+.rlab{margin:8px 0 4px;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+/* Riot's own markup, as fetch-rules.js kept it */
+.rtx{font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
+.rtx.old{color:var(--muted)}
+.rtx p{margin:0 0 8px}
+.rtx > :last-child{margin-bottom:0}
+.rtx ul,.rtx ol{margin:0 0 8px;padding-left:20px}
+.rtx li{margin:0 0 4px}
+.rtx li p{margin:0}
+.rtx h1,.rtx h2,.rtx h3,.rtx h4,.rtx h5,.rtx h6{margin:10px 0 6px;font-family:var(--disp);font-size:13px;font-weight:700}
+.rtx blockquote{margin:0 0 8px;padding-left:12px;border-left:2px solid var(--track)}
+.rtx table{width:100%;border-collapse:collapse;margin:0 0 8px;font-size:13px;line-height:1.35}
+.rtx td,.rtx th{vertical-align:top;text-align:left;padding:6px;border:1px solid rgba(255,255,255,.08)}
+.rtx a{color:var(--bone);text-decoration:underline;text-underline-offset:2px}
+.rtx .rpic{display:inline-block;margin:0 0 8px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--muted)}
+.rsrc{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.rsrc a{color:var(--bone)}
+.rnote{margin:0 0 12px;padding:12px 16px;border-radius:22px;background:var(--recess);font-size:13px;line-height:1.45;color:var(--muted)}
+.rnote p{margin:0}
+.empty{margin:6px 4px 0;font-size:13px;color:var(--muted)}
+.foot a{color:var(--bone)}
+/* a row that leaves the app (Riot's PDFs) carries the out-arrow (.extl), never the deeper chevron */
+.extl{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+</style>
+</head>
+<body>
+
+<div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+
+<main id="rl">
+  <header class="pghead glass">
+    <h2 class="ttl">Rules</h2>
+    <p>Riot's official errata, FAQs and rulings, word for word.</p>
+  </header>
+
+  <div class="srow">
+    <div class="sf">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+      <input id="q" type="search" placeholder="Search cards, questions and rulings" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+      <button type="button" class="fbtn glass" id="qx" disabled data-k="do">Clear</button>
+    </div>
+  </div>
+
+  <section id="res" hidden>
+    <div class="shead"><h2>Results</h2><span class="sp"></span><span class="cnt" id="rescnt"></span></div>
+    <div class="doors" id="reslist" data-k="open"></div>
+    <p class="empty" id="resnone" hidden>Nothing matches. Try a card name or a few words from the question.</p>
+  </section>
+
+  <div id="home">
+    <section>
+      <div class="shead"><h2>Current documents</h2></div>
+      <div class="doors" id="docs"></div>
+    </section>
+    <section>
+      <div class="shead"><h2>Errata</h2></div>
+      <div class="doors" id="errata" data-k="deeper"></div>
+    </section>
+    <section>
+      <div class="shead"><h2>FAQs and rulings</h2></div>
+      <div class="doors" id="faqs" data-k="deeper"></div>
+    </section>
+  </div>
+  <p class="empty" id="loadfail" hidden>The rules could not be loaded. Check your connection and open the page again.</p>
+
+  <footer class="foot">
+    <p>Rules text by Riot Games, shown word for word from playriftbound.com. Where RAVI and Riot's own pages ever differ, Riot's pages are right.</p>
+    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
+  </footer>
+</main>
+
+<!-- THE STANDARD BAR: Hub, Go to, What's new, Settings (dimmed). -->
+<nav class="bar frost" id="tabs">
+  <a class="tab" href="../?hub" aria-label="Hub" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.45" y="3.05" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="9.55" y="1.85" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="16.65" y="3.05" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="2.45" y="10.15" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="9.55" y="8.95" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="16.65" y="10.15" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="6.00" y="17.25" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/><rect x="13.10" y="17.25" width="4.9" height="4.9" rx="1.4" fill="currentColor" stroke="none"/></svg></a>
+  <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Rules" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M12 6.5C9.5 4.8 6 4.5 3 5.5v13c3-1 6.5-.7 9 1 2.5-1.7 6-2 9-1v-13c-3-1-6.5-.7-9 1z"/><path d="M12 6.5v13"/><path d="M15.5 5.1v6.4l1.75-1.4 1.75 1.4V4.9"/></g><g class="icf"><mask id="rvs-rl-nav" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M12 6.5C9.5 4.8 6 4.5 3 5.5v13c3-1 6.5-.7 9 1 2.5-1.7 6-2 9-1v-13c-3-1-6.5-.7-9 1z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 7.5v11" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/><path d="M15.5 4.4v7.1l1.75-1.4 1.75 1.4V4.2z" fill="#000" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-rl-nav)"/></g></svg></button>
+  <button type="button" class="tab" id="tabnew" aria-label="What's new" data-fills="pnew" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6L3.5 8.5"/><path d="M3.5 3.5v5h5"/><path d="M12 7.5V12l3 2"/></g><g class="icf"><mask id="rvs-rl-new" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><circle cx="12" cy="12" r="9.5" fill="#fff" stroke="none"/><path d="M12 7.5V12l3 2" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-rl-new)"/></g></svg></button>
+  <button type="button" class="tab" disabled aria-label="No settings on this page" data-k="slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z"/><circle cx="12" cy="12" r="3"/></g><g class="icf"><mask id="rvs-rl-set" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-rl-set)"/></g></svg></button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<section class="panel frost" id="pnew" aria-hidden="true" aria-label="What's new">
+  <div class="phead"><h4 class="ttl">What's new</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="newlist" data-k="deeper"></div><p class="rsrc">Riot's rules articles, newest first. RAVI checks Riot's pages every few hours.</p></div>
+</section>
+<section class="panel frost" id="part" aria-hidden="true" aria-label="Article">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl" id="arttl">Article</h4><span class="cnt" id="artcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="artbody"></div>
+</section>
+
+<script>
+(function(){
+  var D = null, BYSRC = {}, SRC = {};
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function day(iso){
+    if(!iso) return "";
+    var p = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso)).split("-");
+    return MON[+p[1] - 1] + " " + (+p[2]) + ", " + p[0];
+  }
+  function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
+  // Text only, for search. DOMParser builds an inert document, so Riot's
+  // pictures inside the markup are never fetched.
+  var PARSE = new DOMParser();
+  function strip(h){ return h ? (PARSE.parseFromString(h, "text/html").body.textContent || "").replace(/\s+/g, " ").trim() : ""; }
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>';
+  var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
+  var OUT = '<svg class="extl" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M17 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h4"/></svg>';
+
+  // Riot's markup as fetch-rules.js kept it. Pictures stay on Riot's page
+  // for now (a link to the article instead); links open outside the app.
+  function rtx(html, url, cls){
+    var h = (html || "").replace(/<img[^>]*>/g, '<a class="rpic" href="' + esc(url) + '">Picture on Riot\'s page</a>');
+    return '<div class="rtx' + (cls ? " " + cls : "") + '">' + h + '</div>';
+  }
+  function title(it){ return it.cards ? it.cards[0] : (it.q || it.title || ""); }
+  function body(it){
+    var url = (SRC[it.source] || {}).url || "";
+    if(it.kind === "errata"){
+      return '<p class="rlab">New text</p>' + rtx(it["new"], url) + (it.old ? '<p class="rlab">Old text</p>' + rtx(it.old, url, "old") : "");
+    }
+    return rtx(it.a || it.html, url);
+  }
+  // One entry: the row that opens in place, and its body under it.
+  function entry(it, sub){
+    return '<button type="button" class="door btn glass rec" aria-expanded="false" data-id="' + esc(it.id) + '" data-k="open"><span class="t wrap">' + esc(title(it)) + '</span>'
+      + (sub ? '<small>' + esc(sub) + '</small>' : '') + CHEV + '</button><div class="rbody" hidden></div>';
+  }
+  var ITEM = {};
+  function toggle(btn){
+    var b = btn.nextElementSibling, open = btn.getAttribute("aria-expanded") === "true";
+    if(open){ btn.setAttribute("aria-expanded", "false"); b.hidden = true; b.innerHTML = ""; return; }
+    b.innerHTML = body(ITEM[btn.getAttribute("data-id")]);
+    btn.setAttribute("aria-expanded", "true");
+    b.hidden = false;
+    b.querySelectorAll("a").forEach(function(a){ a.target = "_blank"; a.rel = "noopener"; });
+    b.classList.remove("reveal"); void b.offsetWidth; b.classList.add("reveal");
+  }
+
+  // ---- menus: one on screen, a stack behind it (as on the trade page) ----
+  var OPENP = null, STACK = [];
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  function show(p, keep, dir){
+    var sc = el("scrim"), b;
+    if(OPENP && p && OPENP !== p && dir) slideMenus(OPENP, p, dir);
+    if(OPENP && OPENP !== p){ OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    var xs = document.querySelectorAll(".phead [data-close]"), i;
+    for(i = 0; i < xs.length; i++){ xs[i].hidden = STACK.length > 1 && xs[i].closest(".panel") === p; }
+    var bk = el("part").querySelector(".back");
+    bk.hidden = !(STACK.length > 1 && p === el("part"));
+    if(p){
+      document.documentElement.classList.add("lock");
+      p.classList.add("show"); p.classList.remove("fromr", "froml");
+      p.setAttribute("aria-hidden", "false");
+      b = p.querySelector(".pbody");
+      if(b && !keep) b.scrollTop = 0;
+      sc.classList.add("show");
+    } else {
+      document.documentElement.classList.remove("lock");
+      sc.classList.remove("show");
+    }
+  }
+  function openPanel(p){ STACK = p ? [p] : []; show(p); }
+  function deeper(p){ STACK.push(p); show(p, false, 1); }
+  function back(){ STACK.pop(); show(STACK.length ? STACK[STACK.length - 1] : null, true, -1); }
+
+  // An article's menu: its entries (grouped as Riot groups them), then the
+  // source line and Riot's own warning where it has one.
+  function fillArticle(id){
+    var s = SRC[id], list = BYSRC[id] || [], h = "", group = null, open = false, i;
+    el("arttl").textContent = s.kind === "hub" ? s.title : cap(s.set) + (s.kind === "errata" ? " errata" : " FAQ");
+    el("artcnt").textContent = list.length;
+    if(s.notice) h += '<div class="rnote">' + s.notice + '</div>';
+    for(i = 0; i < list.length; i++){
+      var it = list[i], g = it.kind === "errata" ? (it.group || "") : (it.group || it.section || "");
+      if(i === 0 || g !== group){
+        if(open) h += '</div></div>';
+        h += '<div class="row">' + (g ? '<p class="lb">' + esc(g) + '</p>' : '') + '<div class="doors" data-k="open">';
+        open = true; group = g;
+      }
+      h += entry(it);
+    }
+    if(open) h += '</div></div>';
+    h += '<p class="rsrc">' + esc(s.title) + (s.published ? ', published ' + day(s.published) : '') + '. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Read it on playriftbound.com</a></p>';
+    el("artbody").innerHTML = h;
+  }
+  function fillLegal(it){
+    var s = SRC[it.source];
+    el("arttl").textContent = it.title;
+    el("artcnt").textContent = "";
+    el("artbody").innerHTML = rtx(it.html, s.url) + '<p class="rsrc">From Riot\'s Rules Hub. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Open it on playriftbound.com</a></p>';
+  }
+
+  // ---- the page ----
+  function srcRow(s, act){
+    var n = (BYSRC[s.id] || []).length, unit = s.kind === "errata" ? (n === 1 ? " card" : " cards") : (n === 1 ? " entry" : " entries");
+    return '<button type="button" class="door btn glass" data-act="' + act + '" data-src="' + esc(s.id) + '" data-k="deeper"><span class="t">' + esc(cap(s.set)) + '</span><span class="sp"></span><small>' + n + unit + '</small>' + CVR + '</button>';
+  }
+  function render(){
+    var docs = "", err = "", faq = "", news = "", i;
+    var hub = BYSRC.hub || [];
+    hub.forEach(function(it){
+      if(it.kind === "doc"){
+        var up = /last updated:\s*([^<)]+)/i.exec(it.html);
+        docs += '<a class="door btn glass act" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span><span class="sp"></span>' + (up ? '<small>' + esc(up[1].trim()) + '</small>' : '') + OUT + '</a>';
+      }
+    });
+    hub.forEach(function(it){
+      if(it.kind === "legal"){
+        docs += '<button type="button" class="door btn glass" data-act="legal" data-id="' + esc(it.id) + '" data-k="deeper"><span class="t">' + esc(it.title) + '</span><span class="sp"></span>' + CVR + '</button>';
+      }
+    });
+    var srcs = D.sources.filter(function(s){ return s.kind !== "hub"; }).sort(function(a, b){ return (b.published || "").localeCompare(a.published || ""); });
+    srcs.forEach(function(s){
+      if(s.kind === "errata") err += srcRow(s, "art");
+      else faq += srcRow(s, "art");
+      news += '<button type="button" class="door btn glass rec" data-act="art" data-src="' + esc(s.id) + '" data-k="deeper"><span class="t wrap">' + esc(s.title) + '</span><small>' + esc(day(s.published)) + '</small>' + CVR + '</button>';
+    });
+    el("docs").innerHTML = docs;
+    el("errata").innerHTML = err;
+    el("faqs").innerHTML = faq;
+    el("newlist").innerHTML = news;
+    window.RAVI_EDGES && window.RAVI_EDGES();
+  }
+
+  // ---- search: card names, questions, titles and every word of the text ----
+  var IDX = [];
+  function find(q){
+    var words = q.toLowerCase().split(/\s+/).filter(Boolean), out = [], i;
+    for(i = 0; i < IDX.length && out.length < 40; i++){
+      var x = IDX[i], ok = true, w;
+      for(w = 0; w < words.length; w++){ if(x.t.indexOf(words[w]) === -1){ ok = false; break; } }
+      if(ok) out.push(x);
+    }
+    // names and questions that match first, then the rest
+    out.sort(function(a, b){ return (b.h.indexOf(words[0]) !== -1) - (a.h.indexOf(words[0]) !== -1); });
+    return out;
+  }
+  function search(){
+    var q = el("q").value.trim();
+    el("qx").disabled = !q;
+    el("home").hidden = !!q;
+    el("res").hidden = !q;
+    if(!q) return;
+    var hits = find(q), h = "";
+    hits.forEach(function(x){ h += entry(x.it, (SRC[x.it.source] || {}).title); });
+    el("reslist").innerHTML = h;
+    el("reslist").hidden = !hits.length;
+    el("resnone").hidden = !!hits.length;
+    el("rescnt").textContent = hits.length >= 40 ? "first 40" : hits.length;
+  }
+
+  function boot(){
+    D.sources.forEach(function(s){ SRC[s.id] = s; });
+    D.items.forEach(function(it){
+      ITEM[it.id] = it;
+      (BYSRC[it.source] = BYSRC[it.source] || []).push(it);
+      if(it.kind === "doc" || it.kind === "legal") return;
+      var head = title(it);
+      IDX.push({ it: it, h: head.toLowerCase(), t: (head + " " + (it.group || "") + " " + strip(it["new"]) + " " + strip(it.old) + " " + strip(it.a) + " " + strip(it.html)).toLowerCase() });
+    });
+    render();
+  }
+
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-act],[data-close],.door.rec[aria-expanded]");
+    if(!t) return;
+    if(t.hasAttribute("aria-expanded")){ toggle(t); return; }
+    if(t.hasAttribute("data-close")){ openPanel(null); return; }
+    var a = t.getAttribute("data-act");
+    if(a === "back"){ back(); return; }
+    if(a === "art"){
+      fillArticle(t.getAttribute("data-src"));
+      if(OPENP === el("pnew")) deeper(el("part")); else openPanel(el("part"));
+      return;
+    }
+    if(a === "legal"){ fillLegal(ITEM[t.getAttribute("data-id")]); openPanel(el("part")); return; }
+  });
+  el("scrim").addEventListener("click", function(){ openPanel(null); });
+  el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
+  el("tabnew").addEventListener("click", function(){ openPanel(STACK[0] === el("pnew") ? null : el("pnew")); });
+  window.RAVI_GOTO(el("pnavgoto"), "rules", "../");
+  el("pnhere").addEventListener("click", function(){ openPanel(null); });
+  el("q").addEventListener("input", search);
+  el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
+
+  fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ D = d; boot(); })
+    .catch(function(){ el("home").hidden = true; el("loadfail").hidden = false; });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>

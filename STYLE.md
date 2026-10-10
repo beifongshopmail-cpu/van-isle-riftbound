@@ -152,6 +152,7 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - trade/index.html: .ln .lnh .rcpimgs .res .sidep .stp .tail .toast .ud .vd
 - feedback/index.html: .fbn .fcard .ship
 - settings/index.html: .sts .starm
+- rules/index.html: .empty .extl .old .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
 
 Page shell (feedback/index.html, settings/index.html)
 - Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, the page's own style block (in that order).
@@ -331,11 +332,15 @@ Feedback (feedback/index.html)
 - .pghead, a glass form card (.fcard, Tally embed), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
 App settings (settings/index.html)
 - .pghead, two glass cards (.sts) holding a .shead and a .pick: Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row). Reset in the bar's third slot, two taps; Settings slot dimmed.
+Rules (rules/index.html)
+- Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .pghead, a search field (.sf with a Clear .fbtn, dimmed while empty), then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
+- An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, names first, at most 40.
+- Bar: Hub, Go to, What's new (#pnew, data-fills; Riot's articles newest first, each opening #part deeper), Settings dimmed.
 
 ## 11. Checks
 
-- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
-- drawn-test.js: with every menu open on all six pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
+- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
+- drawn-test.js: with every menu open on all seven pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
 - audit.js: over every page, state and width (375, 390, 430); Chromium from check.js, node audit.js --engine both adds WebKit. A sizes, B alignment, C bare px sizes, D control kinds, E layout safety, plus a scan that pages do not reshape Kit parts. [A]
 - m2-test.js: pages load cleanly (T1), links and manifest resolve (T8), the Riot notice on the hub only (T9), theme colour (T18).
 - m3-test.js: events carry round and store; calendar Play here, store filter, remembered filters; counter event tag, past-match filter, round timer.
@@ -349,7 +354,10 @@ App settings (settings/index.html)
 - m5g-test.js: a bar slot stays on while its menu or a deeper one is open; menu edges.
 - m6-test.js: counter sides update in place; trade lists rewrite only when their markup changes.
 - m7-test.js: App settings page and its rows, reset, Go to without Hub where the bar has it, the calendar gear fills.
-- m8-test.js: the install screen on all six pages in a browser tab, never installed; iPhone steps, Android Install, computer; Continue for the tab only; the intro waits; ?sim= and test tools skip it; fit at 402 and 360, type on the rungs (40 for the name), the Continue line clear of Safari's bar. Every other suite runs past the screen (navigator.webdriver).
+- m8-test.js: the install screen on all seven pages in a browser tab, never installed; iPhone steps, Android Install, computer; Continue for the tab only; the intro waits; ?sim= and test tools skip it; fit at 402 and 360, type on the rungs (40 for the name), the Continue line clear of Safari's bar. Every other suite runs past the screen (navigator.webdriver).
+- m9-test.js: the counter takes event ids as text (Event menu, ?ev= link, past-matches filter).
+- m9k-test.js: the rules watcher against Riot's saved pages: counts, word for word, RAVI's name on every request, no change leaves the file alone, a missing or halved page fails the run.
+- m9l-test.js: the Rules page (documents, articles newest first, an entry opening in place, Riot's warning, search, What's new deeper), its hub block, Go to in one row of five and two rows past five.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
   2. Any font-size off the rungs carries an exempt comment (static).
