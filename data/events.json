@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-10T06:45:02.988Z",
- "generated_local": "2026-10-09T23:45:02-07:00",
- "window_start": "2026-10-09T07:00:00.000Z",
+ "generated_at": "2026-10-10T17:40:35.204Z",
+ "generated_local": "2026-10-10T10:40:35-07:00",
+ "window_start": "2026-10-10T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 24,
-   "added": 24
+   "returned": 23,
+   "added": 23
   },
   {
    "name": "Courtenay",
@@ -47,35 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 50,
-  "unique": 49,
-  "prev_unique": 19
+  "fetched": 49,
+  "unique": 48,
+  "prev_unique": 49
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117407214390961434",
-   "name": "Skyhaven Games Casual // L2P",
-   "type": "learn",
-   "start": "2026-10-09T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-09",
-   "time": "6:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 4,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 4294,
-   "store": "Skyhaven"
-  },
   {
    "id": "rb117213852100443736",
    "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
@@ -89,7 +67,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 3,
+   "reg": 4,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -617,7 +595,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 8,
+   "reg": 9,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
