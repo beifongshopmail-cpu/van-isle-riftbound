@@ -1627,7 +1627,7 @@
         for (var ti = 0; ti < pfTags.length; ti++) {
           var tg = pfTags[ti];
           fh += "<button type=\"button\" data-tagf=\"" + tg.id + "\"" +
-            (pastFilter === tg.id ? " class=\"on\"" : "") + ">" +
+            (pastFilter === String(tg.id) ? " class=\"on\"" : "") + ">" +
             esc(cseLabel(tg)) + " &middot; " + esc(shortDate(tg.day)) + "</button>";
         }
         pf.innerHTML = fh;
@@ -1672,7 +1672,7 @@
       var len = multi ? "best of 3" : "single game";
       var cnt = gs.length === 1 ? "1 game" : gs.length + " games";
       var tagd = m.tag ? (" &middot; " + esc(cseLabel(m.tag))) : "";
-      var hideRow = pastFilter !== null && (!m.tag || m.tag.id !== pastFilter);
+      var hideRow = pastFilter !== null && (!m.tag || String(m.tag.id) !== pastFilter);
       out += "<li" + (hideRow ? " hidden" : "") + " data-m=\"" + i + "\"><button class=\"mrow rec\" data-m=\"" + i + "\" data-k=\"open\" aria-expanded=\"false\">" +
         "<span class=\"res " + rc + "\">" + rl + "</span>" +
         "<span class=\"sco\"><b class=\"s1\">" + lf + "</b><b class=\"dash\">-</b>" +
@@ -1936,7 +1936,7 @@
     if (!t || t === ppast) { return; }
     if (t.hasAttribute("data-tagf")) {
       var tf = t.getAttribute("data-tagf");
-      pastFilter = tf === "" ? null : parseInt(tf, 10);
+      pastFilter = tf === "" ? null : tf;
       renderPast();
       return;
     }
@@ -2745,9 +2745,11 @@
     if(id === ""){
       cseClear();
     } else if(id !== null){
-      var eid = parseInt(id, 10), k;
+      // Ids are compared as text: PlayRiftbound's are text ("rb..."),
+      // the old feed's were numbers.
+      var k;
       for(k = 0; k < cseList.length; k++){
-        if(cseList[k].id === eid){ cseSet(cseList[k]); break; }
+        if(String(cseList[k].id) === id){ cseSet(cseList[k]); break; }
       }
     }
     back();
@@ -2844,15 +2846,14 @@
     var qev = qs ? qs.get("ev") : null;
     if(qev === null) return;
     window.history.replaceState(null, "", location.pathname);
-    var qevId = parseInt(qev, 10);
-    if(isNaN(qevId)) return;
+    if(qev === "") return;
     fetch("../data/events.json", { cache:"no-cache" }).then(function(r){
       if(!r.ok) throw new Error("http " + r.status);
       return r.json();
     }).then(function(j){
       var list = withSim((j && j.events) || []), i;
       for(i = 0; i < list.length; i++){
-        if(list[i] && list[i].id === qevId){ cseSet(list[i]); openPre(false); break; }
+        if(list[i] && String(list[i].id) === qev){ cseSet(list[i]); openPre(false); break; }
       }
     }).catch(function(){});
   })();
