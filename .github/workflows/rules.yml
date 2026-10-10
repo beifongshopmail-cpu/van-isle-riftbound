@@ -1,0 +1,85 @@
+name: refresh rules
+
+# Every 6 hours, at 03:20, 09:20, 15:20 and 21:20 UTC (off the hour, where
+# GitHub's scheduler is least crowded). workflow_dispatch is the manual run.
+#
+# THIS WORKFLOW NEVER WRITES TO main. fetch-rules.js rewrites data/rules.json
+# only when Riot's words changed; when they did, the change goes on a branch
+# and a pull request opens for review. Merging publishes it. A quiet run
+# leaves nothing: no branch, no pull request.
+#
+# A failed read fails the run and GitHub emails the owner; the published
+# file stays as it was.
+on:
+  schedule:
+    - cron: "20 3,9,15,21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-rules
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Fixture checks
+        run: node test-rules.js
+
+      - name: Read Riot's rules pages
+        run: node fetch-rules.js
+
+      - name: Decide whether this is worth a pull request
+        id: gate
+        run: |
+          if git diff --quiet -- data/rules.json; then
+            echo "open=no" >> "$GITHUB_OUTPUT"
+          else
+            echo "open=yes" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open a pull request
+        if: steps.gate.outputs.open == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="rules/refresh-$(date -u +%Y%m%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add data/rules.json
+          git commit -m "rules: Riot's rules pages changed $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --set-upstream origin "$BRANCH"
+          BODY="$RUNNER_TEMP/rules-pr.md"
+          node -e "
+          const d = require('./data/rules.json');
+          const lines = ['Riot changed one or more rules pages. The words below are copied, never rewritten.', ''];
+          const fresh = d.items.filter(function (i) { return i.changed === d.items.reduce(function (m, x) { return x.changed > m ? x.changed : m; }, ''); });
+          lines.push('| source | items |', '| --- | --- |');
+          d.sources.forEach(function (s) { lines.push('| ' + s.title + ' | ' + d.items.filter(function (i) { return i.source === s.id; }).length + ' |'); });
+          lines.push('', 'Changed most recently (' + fresh.length + '):', '');
+          fresh.slice(0, 40).forEach(function (i) { lines.push('- ' + i.kind + ': ' + (i.cards ? i.cards[0] : (i.q || i.title))); });
+          lines.push('', 'Waiting for a later version (patch notes, ban lists, changelogs): ' + d.later.length);
+          require('fs').writeFileSync(process.env.RUNNER_TEMP + '/rules-pr.md', lines.join('\n') + '\n');
+          "
+          gh pr create \
+            --title "Rules pages changed" \
+            --body-file "$BODY" \
+            --base main \
+            --head "$BRANCH"
+
+      - name: Nothing new
+        if: steps.gate.outputs.open != 'yes'
+        run: echo "no change in Riot's rules pages; nothing committed"
