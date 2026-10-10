@@ -228,6 +228,7 @@ Menus
 
 Go to (pages.js)
 - .goto: sunken track, corner 24, padding 4, gap 2, tiles .gt equal width, 60 high, icon 22, label 12. The current page is the chosen tile: a button with id="pnhere" and data-close.
+- Up to five tiles share one row. Past five they fill two even rows (6 as 3+3, 7 as 4+3, 8 as 4+4), each tile its usual size; app.css does this from the tile count, nothing for a page to do. [T] (Mako's yes 2026-10-10)
 - Fill it with RAVI_GOTO(container, hereId, rel, withHub). rel is "../" from a page folder. Pass withHub true only where the page has no Hub slot (the counter). Settings is never a tile.
     window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
     document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
@@ -279,7 +280,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
 - One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides.
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
-- Go to lists the pages, tiles sharing the track evenly. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub and is never in Go to. [T]
+- Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub and is never in Go to. [T]
 - App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
 
 ## 8. Motion
