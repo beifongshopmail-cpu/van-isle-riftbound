@@ -319,6 +319,14 @@ a{color:inherit;text-decoration:none}
       day:day, time:"All day", venue:"Test Store", city:"Victoria", address:"", region:"victoria",
       cap:8, reg:0, cents:0, currency:"CAD", updated:null, round:25, wins:2, sid:1, store:"Test Store"};
   }
+  // An event's own page. PlayRiftbound ids ("rb" + its number) open on
+  // playriftbound.com; the old locator's numeric ids keep the locator,
+  // which cannot open PlayRiftbound events.
+  function eventUrl(id){
+    var s = String(id);
+    return /^rb\d+$/.test(s) ? "https://playriftbound.com/en-US/events/" + s.slice(2)
+      : "https://locator.riftbound.uvsgames.com/events/" + s;
+  }
   function withSim(list){
     var on = false;
     try{ on = localStorage.getItem(SIMKEY) === "1"; }catch(e){}
@@ -669,9 +677,9 @@ a{color:inherit;text-decoration:none}
       }
       var loc = document.createElement("a");
       loc.className = "pact btn glass";
-      loc.href = "https://locator.riftbound.uvsgames.com/events/" + ev.id;
+      loc.href = eventUrl(ev.id);
       loc.target = "_blank"; loc.rel = "noopener";
-      loc.textContent = "Open in locator";
+      loc.textContent = /^rb\d+$/.test(String(ev.id)) ? "Event page" : "Open in locator";
       act.appendChild(loc);
       card.appendChild(act);
 
