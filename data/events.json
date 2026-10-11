@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-10T17:40:35.204Z",
- "generated_local": "2026-10-10T10:40:35-07:00",
+ "generated_at": "2026-10-11T06:53:04.452Z",
+ "generated_local": "2026-10-10T23:53:04-07:00",
  "window_start": "2026-10-10T07:00:00.000Z",
  "anchors": [
   {
@@ -28,15 +28,15 @@
    "name": "Victoria",
    "region": "victoria",
    "source": "uvs",
-   "returned": 8,
-   "added": 7
+   "returned": 7,
+   "added": 6
   },
   {
    "name": "Courtenay",
    "region": "island",
    "source": "uvs",
-   "returned": 1,
-   "added": 1
+   "returned": 0,
+   "added": 0
   },
   {
    "name": "Campbell River",
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 49,
-  "unique": 48,
-  "prev_unique": 49
+  "fetched": 47,
+  "unique": 46,
+  "prev_unique": 48
  },
  "unknown_templates": {},
  "old_feed_error": null,
@@ -67,7 +67,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 4,
+   "reg": 10,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -75,50 +75,6 @@
    "wins": null,
    "sid": 18437,
    "store": "North Park Framing"
-  },
-  {
-   "id": 1008248,
-   "name": "Saturday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-10-10T17:30:00-07:00",
-   "end": "2026-10-10T21:40:00-07:00",
-   "day": "2026-10-10",
-   "time": "5:30 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 lerwick road, courtenay, BC, V9N0A9, CA",
-   "region": "island",
-   "cap": 32,
-   "reg": 1,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-09-29T00:08:35+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 902,
-   "store": "Colossal Courtenay"
-  },
-  {
-   "id": 1063933,
-   "name": "Saturday Evening Nexus Nights - 1v1",
-   "type": "nexus",
-   "start": "2026-10-10T18:00:00-07:00",
-   "end": "2026-10-10T22:10:00-07:00",
-   "day": "2026-10-10",
-   "time": "6:00 PM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 1,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": "2026-10-04T20:30:24+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 16866,
-   "store": "Everything Games"
   },
   {
    "id": 860816,
@@ -221,7 +177,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -309,7 +265,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 14,
+   "reg": 17,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -485,7 +441,7 @@
    "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 2,
+   "reg": 3,
    "cents": 4000,
    "currency": "CAD",
    "updated": null,
@@ -595,7 +551,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 9,
+   "reg": 11,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
