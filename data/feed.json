@@ -1,0 +1,93 @@
+{
+ "updated": "2026-10-11",
+ "note": "Riot's own posts. Facebook text is Riot's, word for word; Discord gives only the link and the day.",
+ "items": [
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02rzqGEz49f2j8rBBuUeLNFq7SbfQgrUxvCSUXchFtr1RS8nMSyjdWfsysY7fTJkhPl",
+   "kind": "rules",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02rzqGEz49f2j8rBBuUeLNFq7SbfQgrUxvCSUXchFtr1RS8nMSyjdWfsysY7fTJkhPl",
+   "posted": "2026-10-09",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "#RBRadiance is almost here, and we've got some fresh card errata to share for four cards from the new set! Check out the Errata article: https://riot.com/3Umpltb",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://riot.com/3Umpltb"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid0JUmvg8gW9N8bugoNBBdWNztt55TnvfM57bgNp71VHZfv3e1p7LFU9Zta5jjrYLxQl",
+   "kind": "rules",
+   "url": "https://facebook.com/playriftbound/posts/pfbid0JUmvg8gW9N8bugoNBBdWNztt55TnvfM57bgNp71VHZfv3e1p7LFU9Zta5jjrYLxQl",
+   "posted": "2026-10-09",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "#RBRadiance brings plenty of new and unique interactions to the table, and we want to make sure your questions are answered.\n\nCheck out the latest Patch Notes for clarifications on how these interactions should work!\n\nArticle: https://riot.com/3VWbYjN",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://riot.com/3VWbYjN"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/reel/1052399924511911",
+   "kind": "product",
+   "url": "https://facebook.com/reel/1052399924511911",
+   "posted": "2026-10-09",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "So many ways to shine. Take a look at some of the cards lighting up #RBRadiance in Riftbound, dropping October 23. Pre-Rifts start October 16 at your local game store! Find one near you: https://riot.com/4hPddsy",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://riot.com/4hPddsy"
+   ]
+  },
+  {
+   "id": "link:https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/",
+   "kind": "rules",
+   "url": "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/",
+   "posted": "2026-10-09",
+   "via": [
+    "discord"
+   ],
+   "shape": "forwarded"
+  },
+  {
+   "id": "link:https://playriftbound.com/en-us/news/announcements/october-2026-tournament-rules-changelog/",
+   "kind": "rules",
+   "url": "https://playriftbound.com/en-us/news/announcements/october-2026-tournament-rules-changelog/",
+   "posted": "2026-10-09",
+   "via": [
+    "discord"
+   ],
+   "shape": "forwarded"
+  },
+  {
+   "id": "link:https://playriftbound.com/en-us/news/announcements/radiance-errata-updates/",
+   "kind": "rules",
+   "url": "https://playriftbound.com/en-us/news/announcements/radiance-errata-updates/",
+   "posted": "2026-10-09",
+   "via": [
+    "discord"
+   ],
+   "shape": "forwarded"
+  },
+  {
+   "id": "fb:https://facebook.com/reel/2862062344175481",
+   "kind": "product",
+   "url": "https://facebook.com/reel/2862062344175481",
+   "posted": "2026-10-08",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Born in Piltover, the Starry Eyed Songstress is ready to shine under the spotlight in #RBRadiance✨🎤 What kind of performance will you put on with Seraphine?",
+   "via": [
+    "muse"
+   ]
+  }
+ ]
+}
