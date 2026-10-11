@@ -11,10 +11,11 @@
    "credit": "Riot, on Facebook",
    "text": "#RBRadiance is almost here, and we've got some fresh card errata to share for four cards from the new set! Check out the Errata article: https://riot.com/3Umpltb",
    "via": [
+    "discord",
     "muse"
    ],
    "links": [
-    "https://riot.com/3Umpltb"
+    "https://playriftbound.com/en-us/news/announcements/radiance-errata-updates/"
    ]
   },
   {
@@ -26,10 +27,11 @@
    "credit": "Riot, on Facebook",
    "text": "#RBRadiance brings plenty of new and unique interactions to the table, and we want to make sure your questions are answered.\n\nCheck out the latest Patch Notes for clarifications on how these interactions should work!\n\nArticle: https://riot.com/3VWbYjN",
    "via": [
+    "discord",
     "muse"
    ],
    "links": [
-    "https://riot.com/3VWbYjN"
+    "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/"
    ]
   },
   {
@@ -44,33 +46,13 @@
     "muse"
    ],
    "links": [
-    "https://riot.com/4hPddsy"
+    "https://playriftbound.com/en-us/events/"
    ]
-  },
-  {
-   "id": "link:https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/",
-   "kind": "rules",
-   "url": "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/",
-   "posted": "2026-10-09",
-   "via": [
-    "discord"
-   ],
-   "shape": "forwarded"
   },
   {
    "id": "link:https://playriftbound.com/en-us/news/announcements/october-2026-tournament-rules-changelog/",
    "kind": "rules",
    "url": "https://playriftbound.com/en-us/news/announcements/october-2026-tournament-rules-changelog/",
-   "posted": "2026-10-09",
-   "via": [
-    "discord"
-   ],
-   "shape": "forwarded"
-  },
-  {
-   "id": "link:https://playriftbound.com/en-us/news/announcements/radiance-errata-updates/",
-   "kind": "rules",
-   "url": "https://playriftbound.com/en-us/news/announcements/radiance-errata-updates/",
    "posted": "2026-10-09",
    "via": [
     "discord"
