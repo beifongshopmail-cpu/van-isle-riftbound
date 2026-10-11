@@ -1,0 +1,96 @@
+name: refresh feed
+
+# Every 6 hours, at 03:40, 09:40, 15:40 and 21:40 UTC (twenty minutes after
+# the rules job, off the hour). workflow_dispatch is the manual run.
+#
+# THIS WORKFLOW NEVER WRITES TO main. fetch-feed.js rewrites data/feed.json
+# only when a new Riot post turned up; when one did, the change goes on a
+# branch and a pull request opens for review. Merging publishes it. A quiet
+# run leaves nothing: no branch, no pull request.
+#
+# When a new item is a rules post, the rules job is started at once instead
+# of waiting for its next turn.
+#
+# Keys: DISCORD_TOKEN (the RAVI scanner bot, reads #riot-feed) and
+# RECORDS_TOKEN (read-only on mako-records, reads Muse's files). A missing
+# key or a refused read fails the run and GitHub emails the owner; the
+# published file stays as it was.
+on:
+  schedule:
+    - cron: "40 3,9,15,21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: refresh-feed
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Fixture checks
+        run: node test-feed.js
+
+      - name: Read the Discord channel and Muse's files
+        id: read
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          RECORDS_TOKEN: ${{ secrets.RECORDS_TOKEN }}
+        run: node fetch-feed.js
+
+      - name: Decide whether this is worth a pull request
+        id: gate
+        run: |
+          if [ -n "$(git status --porcelain -- data/feed.json)" ]; then
+            echo "open=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "open=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open a pull request
+        if: steps.gate.outputs.open == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="feed/refresh-$(date -u +%Y%m%d-%H%M)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add data/feed.json
+          git commit -m "feed: new Riot posts $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --set-upstream origin "$BRANCH"
+          BODY="$RUNNER_TEMP/feed-pr.md"
+          node -e "
+          const d = require('./data/feed.json');
+          const lines = ['New Riot posts. Facebook text is Riot\'s, word for word; Discord gives only the link and the day.', '', '| posted | kind | via | link |', '| --- | --- | --- | --- |'];
+          d.items.slice(0, 40).forEach(function (i) { lines.push('| ' + i.posted + ' | ' + i.kind + ' | ' + i.via.join(' + ') + ' | ' + i.url + ' |'); });
+          require('fs').writeFileSync(process.env.RUNNER_TEMP + '/feed-pr.md', lines.join('\n') + '\n');
+          "
+          gh pr create \
+            --title "New Riot posts" \
+            --body-file "$BODY" \
+            --base main \
+            --head "$BRANCH"
+
+      - name: Start the rules job for a new rules post
+        if: steps.read.outputs.rules == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run rules.yml --ref main
+
+      - name: Nothing new
+        if: steps.gate.outputs.open != 'yes'
+        run: echo "no new Riot posts; nothing committed"
