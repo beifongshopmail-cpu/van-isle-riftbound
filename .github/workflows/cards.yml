@@ -96,13 +96,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BRANCH="cards/refresh-$(date -u +%Y%m%d-%H%M)"
+          BRANCH="cards/refresh"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
+          git checkout -B "$BRANCH"
           git add cards
           git commit -m "cards: refresh from Riot's gallery $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push --set-upstream origin "$BRANCH"
+          git push --force origin "$BRANCH"
           BODY="$RUNNER_TEMP/cards-pr.md"
           {
             echo "New Riftbound cards appeared in Riot's official gallery."
@@ -123,11 +123,17 @@ jobs:
             echo "Closing this without merging is safe. The next run will"
             echo "open a fresh one, because the art it needs is still missing."
           } > "$BODY"
-          gh pr create \
-            --title "New Riftbound cards: ${{ steps.gate.outputs.new_cards }} cards, ${{ steps.gate.outputs.new_files }} image files" \
-            --body-file "$BODY" \
-            --base main \
-            --head "$BRANCH"
+          # One standing pull request per job: update it if it is open,
+          # otherwise open a new one. The bot's own branch is reset each run.
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -qx OPEN; then
+            gh pr edit "$BRANCH" --title "New Riftbound cards: ${{ steps.gate.outputs.new_cards }} cards, ${{ steps.gate.outputs.new_files }} image files" --body-file "$BODY"
+          else
+            gh pr create \
+              --title "New Riftbound cards: ${{ steps.gate.outputs.new_cards }} cards, ${{ steps.gate.outputs.new_files }} image files" \
+              --body-file "$BODY" \
+              --base main \
+              --head "$BRANCH"
+          fi
 
       - name: Nothing new
         if: steps.gate.outputs.open != 'yes'

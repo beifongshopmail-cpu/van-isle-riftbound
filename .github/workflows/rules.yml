@@ -55,13 +55,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BRANCH="rules/refresh-$(date -u +%Y%m%d-%H%M)"
+          BRANCH="rules/refresh"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
+          git checkout -B "$BRANCH"
           git add data/rules.json
           git commit -m "rules: Riot's rules pages changed $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push --set-upstream origin "$BRANCH"
+          git push --force origin "$BRANCH"
           BODY="$RUNNER_TEMP/rules-pr.md"
           node -e "
           const d = require('./data/rules.json');
@@ -74,11 +74,17 @@ jobs:
           lines.push('', 'Waiting for a later version (patch notes, ban lists, changelogs): ' + d.later.length);
           require('fs').writeFileSync(process.env.RUNNER_TEMP + '/rules-pr.md', lines.join('\n') + '\n');
           "
-          gh pr create \
-            --title "Rules pages changed" \
-            --body-file "$BODY" \
-            --base main \
-            --head "$BRANCH"
+          # One standing pull request per job: update it if it is open,
+          # otherwise open a new one. The bot's own branch is reset each run.
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -qx OPEN; then
+            gh pr edit "$BRANCH" --title "Rules pages changed" --body-file "$BODY"
+          else
+            gh pr create \
+              --title "Rules pages changed" \
+              --body-file "$BODY" \
+              --base main \
+              --head "$BRANCH"
+          fi
 
       - name: Nothing new
         if: steps.gate.outputs.open != 'yes'

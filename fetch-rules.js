@@ -371,6 +371,10 @@ function pickSources(listPages) {
     s.id = id;
     s.set = setName(s.title);
   });
+  // Riot's listings order posts that share a date differently from one read
+  // to the next; a fixed order (newest first, then by address) keeps a quiet
+  // run quiet.
+  later.sort(function (a, b) { return (b.published || "").localeCompare(a.published || "") || a.path.localeCompare(b.path); });
   return { load: load, later: later };
 }
 

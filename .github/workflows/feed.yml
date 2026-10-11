@@ -65,13 +65,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BRANCH="feed/refresh-$(date -u +%Y%m%d-%H%M)"
+          BRANCH="feed/refresh"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
+          git checkout -B "$BRANCH"
           git add data/feed.json
           git commit -m "feed: new Riot posts $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push --set-upstream origin "$BRANCH"
+          git push --force origin "$BRANCH"
           BODY="$RUNNER_TEMP/feed-pr.md"
           node -e "
           const d = require('./data/feed.json');
@@ -79,11 +79,17 @@ jobs:
           d.items.slice(0, 40).forEach(function (i) { lines.push('| ' + i.posted + ' | ' + i.kind + ' | ' + i.via.join(' + ') + ' | ' + i.url + ' |'); });
           require('fs').writeFileSync(process.env.RUNNER_TEMP + '/feed-pr.md', lines.join('\n') + '\n');
           "
-          gh pr create \
-            --title "New Riot posts" \
-            --body-file "$BODY" \
-            --base main \
-            --head "$BRANCH"
+          # One standing pull request per job: update it if it is open,
+          # otherwise open a new one. The bot's own branch is reset each run.
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -qx OPEN; then
+            gh pr edit "$BRANCH" --title "New Riot posts" --body-file "$BODY"
+          else
+            gh pr create \
+              --title "New Riot posts" \
+              --body-file "$BODY" \
+              --base main \
+              --head "$BRANCH"
+          fi
 
       - name: Start the rules job for a new rules post
         if: steps.read.outputs.rules == 'yes'

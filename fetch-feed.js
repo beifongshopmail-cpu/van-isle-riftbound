@@ -13,6 +13,11 @@
 //    (mako-records/ravi/muse/facebook/YYYY-MM-DD.json): Riot's official
 //    Facebook posts, kept word for word and credited.
 //
+// Riot's short links (riot.com/...) are followed one step, as RAVI, to the
+// page they stand for, so a short link on Facebook and the full address on
+// Discord meet as one item. A short link that will not resolve is kept as it
+// is, with a WARN line.
+//
 // The same Riot link seen in both places becomes one item. Nothing is ever
 // rewritten. Every run re-reads the last 100 Discord messages and the last
 // 30 Muse files and merges them into the file, so there is no saved
@@ -39,6 +44,7 @@ const DISCORD_UA = "DiscordBot (https://github.com/beifongshopmail-cpu/van-isle-
 const DISCORD = process.env.FEED_DISCORD_BASE || "https://discord.com/api/v10";
 const GITHUB = process.env.FEED_GITHUB_BASE || "https://api.github.com";
 const OUT_FILE = process.env.FEED_OUT || path.join(__dirname, "data", "feed.json");
+const SHORT = process.env.FEED_SHORT_BASE || ""; // stands in for https://riot.com in tests
 const TODAY = process.env.FEED_TODAY || "";
 
 // Riot's own places. A host alone, or a host plus the account path.
@@ -179,8 +185,11 @@ function merge(prev, fresh) {
   function add(it) {
     const was = byId[it.id];
     if (!was) { byId[it.id] = JSON.parse(JSON.stringify(it)); out.push(byId[it.id]); return; }
-    it.via.forEach(function (v) { if (was.via.indexOf(v) === -1) { was.via.push(v); } });
-    if (it.text && !was.text) { Object.assign(was, it, { via: was.via }); }
+    // The newer reading wins; where it was seen adds up.
+    const via = was.via.slice();
+    it.via.forEach(function (v) { if (via.indexOf(v) === -1) { via.push(v); } });
+    Object.assign(was, JSON.parse(JSON.stringify(it)));
+    was.via = via;
   }
   prev.concat(fresh).forEach(add);
   const posts = out.filter(function (i) { return i.id.indexOf("fb:") === 0; });
@@ -194,6 +203,55 @@ function merge(prev, fresh) {
   kept.forEach(function (i) { i.via.sort(); });
   kept.sort(function (a, b) { return (b.posted || "").localeCompare(a.posted || "") || a.id.localeCompare(b.id); });
   return kept;
+}
+
+// ---- short links ----
+
+function isShort(u) {
+  const n = norm(u);
+  return !!n && new URL(n).hostname === "riot.com" && new URL(n).pathname.length > 1;
+}
+
+// One step only: the address riot.com points to, if it is one of Riot's own.
+async function resolveShort(u, cache) {
+  const n = norm(u);
+  if (cache[n] !== undefined) { return cache[n]; }
+  const target = SHORT ? SHORT + new URL(n).pathname : n;
+  let got = n;
+  try {
+    const res = await fetch(target, { redirect: "manual", headers: { "User-Agent": RB.ua } });
+    const loc = res.headers.get("location");
+    if (res.status >= 300 && res.status < 400 && loc) {
+      const to = norm(new URL(loc, n).href);
+      if (to && isRiot(to) && !isShort(to)) { got = to; }
+      else { console.log("WARN short link " + n + " points outside Riot's places; kept as it is"); }
+    } else {
+      console.log("WARN short link " + n + " answered " + res.status + "; kept as it is");
+    }
+  } catch (e) {
+    console.log("WARN short link " + n + " did not answer; kept as it is");
+  }
+  cache[n] = got;
+  return got;
+}
+
+// Discord links and the Riot links inside Muse's posts, followed to their pages.
+async function expand(items, cache) {
+  for (const it of items) {
+    if (it.id.indexOf("link:") === 0 && isShort(it.url)) {
+      const to = await resolveShort(it.url, cache);
+      if (to !== it.url) { it.short = it.url; it.url = to; it.id = "link:" + to; it.kind = kindOf(to); }
+    }
+    if (it.links) {
+      const out = [];
+      for (const l of it.links) {
+        const to = isShort(l) ? await resolveShort(l, cache) : l;
+        if (out.indexOf(to) === -1 && to !== it.url) { out.push(to); }
+      }
+      it.links = out;
+    }
+  }
+  return items;
 }
 
 // ---- reading ----
@@ -239,6 +297,11 @@ async function main() {
   const muse = await readMuse(rt);
   console.log("muse: " + muse.files + " files, " + muse.items.length + " posts" + (muse.warn ? ", " + muse.warn + " skipped" : ""));
 
+  const cache = {};
+  await expand(fromDiscord.concat(muse.items), cache);
+  const keys = Object.keys(cache);
+  console.log("short links: " + keys.length + " followed, " + keys.filter(function (k) { return cache[k] !== k; }).length + " resolved");
+
   let prev = null;
   try { prev = JSON.parse(fs.readFileSync(OUT_FILE, "utf8")); } catch (e) {}
   const before = prev ? prev.items : [];
@@ -263,4 +326,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { linksOf, norm, isRiot, kindOf, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, CHANNEL };
+module.exports = { linksOf, norm, isRiot, kindOf, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL };
