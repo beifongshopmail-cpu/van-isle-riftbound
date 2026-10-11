@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-11T06:53:04.452Z",
- "generated_local": "2026-10-10T23:53:04-07:00",
- "window_start": "2026-10-10T07:00:00.000Z",
+ "generated_at": "2026-10-11T17:55:31.932Z",
+ "generated_local": "2026-10-11T10:55:31-07:00",
+ "window_start": "2026-10-11T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 23,
-   "added": 23
+   "returned": 22,
+   "added": 22
   },
   {
    "name": "Courtenay",
@@ -47,35 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 47,
-  "unique": 46,
-  "prev_unique": 48
+  "fetched": 46,
+  "unique": 45,
+  "prev_unique": 46
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117213852100443736",
-   "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
-   "type": "nexus",
-   "start": "2026-10-10T12:00:00-07:00",
-   "end": null,
-   "day": "2026-10-10",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 10,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing"
-  },
   {
    "id": 860816,
    "name": "Sunday morning \"nexus Night\"",
@@ -89,7 +67,7 @@
    "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
    "region": "victoria",
    "cap": 24,
-   "reg": 2,
+   "reg": 4,
    "cents": 600,
    "currency": "CAD",
    "updated": "2026-08-16T05:00:57+00:00",
@@ -551,7 +529,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 11,
+   "reg": 12,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
