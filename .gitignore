@@ -1,0 +1,3 @@
+.claude/settings.local.json
+.claude/*.bak-*
+.claude/scheduled_tasks.lock

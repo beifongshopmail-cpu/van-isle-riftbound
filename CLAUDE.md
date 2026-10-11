@@ -29,6 +29,16 @@ checks and commit. You do not design. These rules hold in every session.
   STOP and report. Do not substitute a replacement.
 - If a block appears truncated, make no changes and report which sections
   arrived.
+- A hook prints SESSION CHECK (repo, branch, HEAD) when a session starts or
+  clears. If it says STOP, apply nothing and report it.
+
+## Reviews and audits (from 2026-10-10)
+- Only when a block asks: run the code-review skill on the block's diff, or
+  the Design plugin's accessibility-review or design-critique on a page, and
+  save the findings to the output file. Change nothing because of them;
+  chat decides what to act on.
+- The JavaScript language server reports errors after edits. Report any it
+  shows in NOTES; never edit a file only to silence it.
 
 ## Checks (C:\dev\rb-tools, one private remote, origin)
 - While working, run only the affected file: node check.js <file>

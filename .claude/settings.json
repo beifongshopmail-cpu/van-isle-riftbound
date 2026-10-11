@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash /c/dev/rb-tools/run.sh *)",
+      "Bash(node *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git hash-object *)",
+      "Bash(git rev-parse *)",
+      "Bash(git branch --show-current)",
+      "Bash(git fetch *)",
+      "Bash(gh api *)"
+    ],
+    "deny": [
+      "Bash(git reset --hard*)",
+      "Bash(git clean*)",
+      "Edit(/.claude/settings.json)",
+      "Write(/.claude/settings.json)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /c/dev/rb-tools/session-check.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "design@knowledge-work-plugins": true
+  },
+  "advisorModel": "opus"
+}
