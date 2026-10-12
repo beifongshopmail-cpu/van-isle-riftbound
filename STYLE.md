@@ -81,6 +81,7 @@ Surfaces
 - Crop with overflow, never clip-path, on anything holding a frosted surface. No drop shadow inside a crop.
 Lists
 - One thing is a pill: a button, a field, a track. A list of rows is one group: rows flat inside, no gap, a hairline rgba(255,255,255,.08) between rows inset 16 from the left. [A]
+- Inside a card, sections are divided by a 1px solid line at rgba(255,255,255,.07) across the card's content width, never inset: the event card's open row (.evact), trade, counter and feedback cards. [C] (m95c-test.js checks the event card's; Mako's yes 2026-10-12)
 - A group you press in is glass (.doors). A group you choose in is sunken (.pick); its chosen row wears an 18px bone check, 16 from the right.
 - A pick-many list shows the same check on every row that is on (calendar .tyrow with .box).
 - An on/off setting is a check row in a sunken group (.pick), never a switch.
