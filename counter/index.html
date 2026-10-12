@@ -275,9 +275,9 @@
   .who1 button{color:var(--pc)}
   .who1 button[aria-pressed="true"]{background:var(--pc);color:var(--ink)}
 
-  /* round timer */
+  /* the match timer, opened in place under its row (#pcardt) */
   #tmrow button.armed{background:var(--hi)}
-  #tmnow{font-size:12px;color:var(--muted);margin:8px 2px 0}
+  #tmnow{font-size:12px;color:var(--muted);margin:0 2px}
   #tmnow.tmover{color:var(--over)}
   #tmnow:empty{display:none}
 
@@ -309,8 +309,17 @@
   .pcard:not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
   .pcard.open{padding:12px}
   .pcard.open .pchead{padding:0 4px}
-  .pchead{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 16px;border-radius:0;text-align:left}
-  .pchead:active{transform:none}
+  .pchead,.pcrow{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 16px;border-radius:0;text-align:left}
+  .pchead:active,.pcrow:active{transform:none}
+  .pcrow:active{background-color:var(--glass-press)}
+  .pchead .sp,.pcrow .sp{flex:1}
+  /* a row's value on the right: the timer's time, the event, what shows
+     on the field (12 muted, as a .door's small) */
+  .pval{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;min-width:0;max-width:60%}
+  /* the top group: Pause clock only while the clock is on, never in New match */
+  #pnew #pcardc{display:none}
+  #fcards{margin-bottom:0}
   .pdot{width:12px;height:12px;border-radius:999px;flex:0 0 auto;display:block}
   .pnm{font-family:var(--disp);font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .plegh{font-family:var(--text);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:9ch}
@@ -436,19 +445,28 @@
 <input type="file" id="impfile" accept="application/json,.json" style="display:none">
 <div class="scrim" id="scrim"></div>
 
-<!-- GAME: the old setup sheet's live face, as a menu -->
-<section class="panel frost" id="pgame" aria-hidden="true" aria-label="Game">
-  <div class="phead"><h4 class="ttl">Game</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<!-- GAME SETTINGS: the old setup sheet's live face, as a menu. No section
+     labels: three groups (clock, timer and event; the players; what shows
+     on the field), then Go to, End game and New match held in the foot. -->
+<section class="panel frost" id="pgame" aria-hidden="true" aria-label="Game settings">
+  <div class="phead"><h4 class="ttl">Game settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <p class="lb">This game</p>
-    <div class="row"><div class="doors">
-      <button type="button" class="door act btn glass" id="clockpause" data-k="do" hidden><span class="t">Pause clock</span><span class="sp"></span><small>for a judge call</small></button>
-      <button type="button" class="door btn glass" id="endbtn" data-k="deeper"><span class="t">End this game</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
-    </div></div>
-    <div class="row">
-      <div data-slot>
+    <div data-slot>
         <div id="shared">
-          <p class="lb">Players</p>
+          <div class="pcards doors" id="mcards">
+            <div class="pcard" id="pcardc" hidden><button type="button" class="pcrow" id="clockpause" data-k="do" hidden><span class="pnm t">Pause clock</span><span class="sp"></span><small class="pval">for a judge call</small></button></div>
+            <div class="pcard" id="pcardt" data-p="t"><button type="button" class="pchead" id="timerbtn" aria-expanded="false" data-k="open"><span class="pnm">Match timer</span><span class="sp"></span><small class="pval timerval">Off</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+              <div class="pcbody" id="pcbodyt" hidden>
+                <div class="seg" id="tmrow" data-k="pick"></div>
+                <div id="tmnow"></div>
+                <div id="tmline">
+                  <div class="nf tall" id="tmcustom"><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="Custom" aria-label="Custom match time, minutes and seconds" data-k="type"></div>
+                  <div class="tmsplit"><button type="button" class="glass" id="tmcustombtn" data-k="do">Start</button><button type="button" class="glass" id="tmstop" data-k="do" disabled>Stop</button></div>
+                </div>
+              </div>
+            </div>
+            <div class="pcard"><button type="button" class="pcrow" id="evbtn" data-k="deeper"><span class="pnm">Event</span><span class="sp"></span><small class="pval">No event</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button></div>
+          </div>
           <div class="pcards glass" id="pcards">
             <div class="pcard" id="pcard1" data-p="1">
               <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot1"></i><span class="pnm" id="pnm1">Player 1</span><span class="sp"></span><small class="plegh" id="plegh1">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
@@ -467,40 +485,27 @@
               </div>
             </div>
           </div>
-          <div class="row"><p class="lb">Event and timer</p><div class="doors">
-            <button type="button" class="door btn glass" id="evbtn" data-k="deeper"><span class="t">Event</span><span class="sp"></span><small>No event</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
-            <button type="button" class="door btn glass" id="timerbtn" data-k="deeper"><span class="t">Round timer</span><span class="sp"></span><small class="timerval">Off</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 5 16 12 9 19"/></svg></button>
-          </div></div>
         </div>
+    </div>
+    <div class="pcards glass" id="fcards">
+      <div class="pcard" id="pcardf" data-p="f"><button type="button" class="pchead" id="lgahead" aria-expanded="false" data-k="open"><span class="pnm">Show on the field</span><span class="sp"></span><small class="pval" id="lgaval">Off</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+        <div class="pcbody" id="pcbodyf" hidden><div class="pick" id="lgarow" data-k="pick"><button type="button" id="lgacard" aria-pressed="false">Legend art</button><button type="button" id="lgrrune" aria-pressed="false">Domains</button><button type="button" id="lgclock" aria-pressed="false">Player clocks</button></div></div>
       </div>
     </div>
-    <div class="row"><p class="lb">Show on the field</p><div class="seg multi" id="lgarow" data-k="pick"><button type="button" id="lgacard" aria-pressed="false">Legend art</button><button type="button" id="lgrrune" aria-pressed="false">Domains</button><button type="button" id="lgclock" aria-pressed="false">Clock</button></div></div>
   </div>
-  <div class="pfoot"><div class="row"><p class="lb">Go to</p><div class="goto" id="pgamegoto"></div></div><button type="button" class="pact btn glass" id="reset" data-k="do">New match</button></div>
+  <div class="pfoot"><div class="goto" id="pgamegoto"></div><div class="two fpair"><button type="button" class="pact btn glass" id="endbtn" data-k="do">End game</button><button type="button" class="pact btn glass" id="reset" data-k="do">New match</button></div></div>
 </section>
 
 <!-- NEW MATCH: the old sheet's pre face. One deeper from Game, or its own menu from the banner -->
 <section class="panel frost" id="pnew" aria-hidden="true" aria-label="New match">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">New match</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="row"><p class="lb">Match length</p><div class="seg" id="blen" data-k="pick"><button type="button" data-bo="1" aria-pressed="true">Single game</button><button type="button" data-bo="3" aria-pressed="false">Best of 3</button></div></div>
-    <div class="row"><p class="lb">Who goes first</p><div class="seg who1" id="first" data-k="pick"><button type="button" data-first="1" aria-pressed="true">Player 1</button><button type="button" data-first="2" aria-pressed="false">Player 2</button></div></div>
+    <div class="row"><div class="seg" id="blen" role="group" aria-label="Match length" data-k="pick"><button type="button" data-bo="1" aria-pressed="false">Single game</button><button type="button" data-bo="3" aria-pressed="true">Best of 3</button></div></div>
+    <div class="row"><div class="seg who1" id="first" role="group" aria-label="Who goes first" data-k="pick"><button type="button" data-first="1" aria-pressed="true">Player 1</button><button type="button" data-first="2" aria-pressed="false">Player 2</button></div></div>
     <div data-slot></div>
     <p class="cred">The game in progress stays as it is until you start the new one.</p>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" id="startmatch" data-k="do">Start match</button></div>
-</section>
-
-<!-- ROUND TIMER: one deeper from Game's or New match's Round timer row -->
-<section class="panel frost" id="ptimer" aria-hidden="true" aria-label="Round timer">
-  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">Round timer</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <div class="row"><div class="seg" id="tmrow" data-k="pick"></div><div id="tmnow"></div></div>
-    <div class="row" id="tmline">
-      <div class="nf tall" id="tmcustom"><input type="text" inputmode="numeric" pattern="[0-9]*" id="tmcustominput" placeholder="Custom" aria-label="Custom round time, minutes and seconds" data-k="type"></div>
-      <div class="tmsplit"><button type="button" class="glass" id="tmcustombtn" data-k="do">Start</button><button type="button" class="glass" id="tmstop" data-k="do" disabled>Stop</button></div>
-    </div>
-  </div>
 </section>
 
 <!-- LEGEND: one deeper from a player's legend row -->
@@ -523,9 +528,9 @@
   <div class="pbody"><div class="pick" id="evlist" data-k="pick"></div></div>
 </section>
 
-<!-- END THIS GAME: one deeper from the Game menu's row -->
-<section class="panel frost" id="pend" aria-hidden="true" aria-label="End this game">
-  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">End this game</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<!-- END GAME: one deeper from the Game settings foot -->
+<section class="panel frost" id="pend" aria-hidden="true" aria-label="End game">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl">End game</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row"><p class="lb">Who concedes?</p><div class="two"><button type="button" class="sidebtn btn glass" data-concede="1" id="cc1" data-k="do">Player 1</button><button type="button" class="sidebtn btn glass" data-concede="2" id="cc2" data-k="do">Player 2</button></div></div>
     <div class="row"><p class="lb">Time called: who won?</p><div class="three">
@@ -717,17 +722,12 @@
       }
     }
     var n = document.getElementById("tmnow");
-    if(n && n.textContent !== "" && ms !== null && !tmHintT){
-      var txt2 = fmtClock(ms), over2 = ms <= 0;
-      n.textContent = txt2 + (over2 ? " over time" : " left");
-      n.className = over2 ? "tmover" : "";
-    }
     syncTimerTrigger();
     syncCallEnd();
   }
-  // The Round timer trigger (#timerbtn, now inside #shared alongside
-  // #evbtn under "Event and timer") moves between Game and New match
-  // with the rest of #shared -- one element, not two kept in sync.
+  // The match timer's row (#timerbtn, inside #shared with Pause clock and
+  // Event) moves between Game settings and New match with the rest of
+  // #shared, and opens in place there -- one element, not two kept in sync.
   function syncTimerTrigger(){
     var ms = tmMs();
     var txt = ms === null ? "Off" : (fmtClock(ms) + (ms <= 0 ? " over" : " left"));
@@ -778,15 +778,14 @@
           now.textContent = ""; now.className = "";
         }
       } else {
-        now.textContent = fmtClock(ms) + (ms <= 0 ? " over time" : " left");
-        now.className = ms <= 0 ? "tmover" : "";
+        now.textContent = ""; now.className = "";
       }
     }
     cseCustomSync();
     syncTimerTrigger();
   }
   function startTimer(min){
-    saveTimer({ end: Date.now() + min*60000, min: min });
+    saveTimer({ end: Date.now() + min*60000, min: min, at: Date.now() });
     renderTimerRow(); render(); tmRun();
   }
   function stopTimer(){
@@ -935,7 +934,7 @@
   }
   function cseTimerSet(mn){
     var t = loadTimer();
-    saveTimer({ end:Date.now() + mn * 60000, min:t ? t.min : mn });
+    saveTimer({ end:Date.now() + mn * 60000, min:t ? t.min : mn, at:Date.now() });
     renderTimerRow(); render(); tmRun();
   }
   function cseDistinctTags(){
@@ -994,7 +993,6 @@
   var pleg = document.getElementById("pleg");
   var pevt = document.getElementById("pevt");
   var pend = document.getElementById("pend");
-  var ptimer = document.getElementById("ptimer");
   var shared = document.getElementById("shared");
   var scrim = document.getElementById("scrim");
   var elPast = document.getElementById("past");
@@ -1005,8 +1003,8 @@
   var mode = "focus";
   var wake = null;
   var firstP = 1;
-  var bo = 1;
-  var boPick = 1;
+  var bo = 3;
+  var boPick = 3;
   var banked = [];
   var liveAt = 0; // see syncLive
 
@@ -1151,7 +1149,7 @@
       if (!raw) { return; }
       var m = JSON.parse(raw);
       if (!m || m.v !== 1) { return; }
-      if (m.bo === 3) { bo = 3; }
+      if (m.bo === 1 || m.bo === 3) { bo = m.bo; }
       if (typeof m.live === "number") { liveAt = m.live; }
       if (m.games && m.games.length) {
         var out = [];
@@ -1905,7 +1903,7 @@
     if (!resetArmed) {
       resetArmed = true;
       elReset.classList.add("armed");
-      elReset.textContent = "Sure? Tap again";
+      elReset.textContent = "Sure?";
       resetTimer = setTimeout(disarmReset, 3000);
       return;
     }
@@ -2276,7 +2274,7 @@
     var b = document.getElementById("first").getElementsByTagName("button");
     for (var i = 0; i < b.length; i++) {
       var p = parseInt(b[i].getAttribute("data-first"), 10);
-      b[i].textContent = nameOf(p);
+      b[i].textContent = nameOf(p) + " first";
       wearSide(b[i], p);
       b[i].setAttribute("aria-pressed", p === firstP ? "true" : "false");
     }
@@ -2284,8 +2282,11 @@
 
   // NEW MATCH is the old sheet's pre face. From the Game menu it goes one
   // deeper, with a back arrow; from the victory banner it is its own menu.
-  // Opening it leaves a running round timer alone; Start match clears it.
+  // Opening it leaves a running timer alone; Start match clears a timer
+  // left from before it opened, and keeps one set while it was open.
+  var preAt = 0; // when New match last opened; Start match keeps a timer set since
   function openPre(fromGame){
+    preAt = Date.now();
     tmDisarm();
     disarmConcede();
     // the current event's wins (if any) recommend a length every time New
@@ -2313,6 +2314,8 @@
     var btn = document.getElementById("clockpause");
     if (!btn) { return; }
     btn.hidden = !clockOn;
+    var crow = document.getElementById("pcardc");
+    if (crow) { crow.hidden = !clockOn; }
     var p = paused(ev);
     btn.querySelector(".t").textContent = p ? "Resume clock" : "Pause clock";
     btn.querySelector("small").textContent = p ? "paused" : "for a judge call";
@@ -2364,13 +2367,16 @@
     if (head) { head.setAttribute("aria-expanded", "true"); }
     if (body) { body.hidden = false; }
   }
-  document.getElementById("pcards").addEventListener("click", function(e){
+  function pcClick(e){
     var head = e.target.closest ? e.target.closest(".pchead") : null;
     if (!head) { return; }
     var card = head.closest(".pcard");
     var wasOpen = head.getAttribute("aria-expanded") === "true";
     if (wasOpen) { pcShut(); } else { pcOpen(card.getAttribute("data-p")); restartFx(card.querySelector(".pcbody"), "reveal"); }
-  });
+  }
+  document.getElementById("pcards").addEventListener("click", pcClick);
+  document.getElementById("mcards").addEventListener("click", pcClick);
+  document.getElementById("fcards").addEventListener("click", pcClick);
 
   function setupClick(e){
     // Walk to the button before reading anything. A direct e.target read
@@ -2674,6 +2680,14 @@
     if (c) { c.setAttribute("aria-pressed", lgaMode === "small" ? "true" : "false"); }
     if (r) { r.setAttribute("aria-pressed", lgrOn ? "true" : "false"); }
     if (k) { k.setAttribute("aria-pressed", clockOn ? "true" : "false"); }
+    if (c) { c.classList.toggle("on", lgaMode === "small"); }
+    if (r) { r.classList.toggle("on", lgrOn); }
+    if (k) { k.classList.toggle("on", clockOn); }
+    var v = document.getElementById("lgaval"), on = [];
+    if (lgaMode === "small") { on.push("Art"); }
+    if (lgrOn) { on.push("Domains"); }
+    if (clockOn) { on.push("Clocks"); }
+    if (v) { v.textContent = on.length === 3 ? "All" : (on.length ? on.join(", ") : "Off"); }
   }
   document.getElementById("lgarow").addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("button") : null;
@@ -2701,7 +2715,10 @@
   lgaSync();
 
   document.getElementById("startmatch").addEventListener("click", function(){
-    stopTimer();
+    // a timer left over from before New match opened is cleared; one set
+    // while New match was open is this match's, and keeps running
+    var t0 = loadTimer();
+    if (!t0 || !(t0.at >= preAt)) { stopTimer(); }
     startNew();
     var curEv = cseGet();
     if (curEv && typeof curEv.round === "number" && curEv.round > 0 && tmMs() === null) {
@@ -2736,7 +2753,6 @@
     tmDisarm();
     stopTimer();
   });
-  document.getElementById("timerbtn").addEventListener("click", function(){ deeper(ptimer); });
   document.getElementById("endbtn").addEventListener("click", function(){ pendOpen(); });
   document.getElementById("evlist").addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("button") : null;
