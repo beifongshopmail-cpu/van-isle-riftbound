@@ -363,14 +363,22 @@ a{color:inherit;text-decoration:none}
     return IS_APPLE ? "https://maps.apple.com/?q=" + q
       : "https://www.google.com/maps/search/?api=1&query=" + q;
   }
-  // A card's round buttons. All three open outside RAVI's page (the
-  // installed app shows them in its own browser sheet, with Done to come
-  // back); the calendar file too, so it can never replace this page.
+  // A card's round buttons. They open outside RAVI's page (the installed
+  // app shows them in its own browser sheet, with Done to come back).
+  // THE CALENDAR FILE IS THE EXCEPTION ON AN iPHONE OR iPAD: that sheet
+  // cannot open a calendar file (it stays blank; Mako's phone, 2026-10-12),
+  // so the link goes to Safari itself (x-safari-https://), which shows the
+  // event with Add to Calendar. Proved on the phone before it was built.
+  function calUrl(id){
+    var rel = "../data/ev/" + id + ".ics";
+    if (!IS_APPLE) return rel;
+    return "x-safari-" + new URL(rel, location.href).href;
+  }
   function iconLink(box, cls, href, label, svg){
     var a = document.createElement("a");
     a.className = "circ btn glass " + cls;
     a.href = href;
-    a.target = "_blank"; a.rel = "noopener";
+    if (!/^x-safari-/.test(href)){ a.target = "_blank"; a.rel = "noopener"; }
     a.setAttribute("aria-label", label);
     a.innerHTML = svg;
     box.appendChild(a);
@@ -737,7 +745,7 @@ a{color:inherit;text-decoration:none}
       btns.className = "evbtns";
       iconLink(btns, "evdir", mapUrl(street || placeOf(ev)), "Directions", PIN);
       // the test event (?sim=1) has no calendar file
-      if (!ev.sim) iconLink(btns, "evadd", "../data/ev/" + ev.id + ".ics", "Add this event to your calendar", CALPLUS);
+      if (!ev.sim) iconLink(btns, "evadd", calUrl(ev.id), "Add this event to your calendar", CALPLUS);
       iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT);
       info.appendChild(btns);
       act.appendChild(info);

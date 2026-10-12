@@ -66,6 +66,17 @@ function utcStamp(date) {
   return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
+// Local wall-clock form in TZ: 20260808T103000. A one-event file gives its
+// times this way (DTSTART;TZID=...), so the phone shows only the local
+// time; a UTC time made iPhone add a second "(GMT)" line (2026-10-12).
+function localStamp(date) {
+  const p = {};
+  new Intl.DateTimeFormat("en-CA", { timeZone: TZ, hourCycle: "h23", year: "numeric", month: "2-digit",
+    day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })
+    .formatToParts(date).forEach(function (x) { p[x.type] = x.value; });
+  return p.year + p.month + p.day + "T" + p.hour + p.minute + p.second;
+}
+
 function describe(ev) {
   const bits = [LABELS[ev.type] || LABELS.other];
   bits.push(ev.venue + (ev.city ? ", " + ev.city : ""));
@@ -102,8 +113,13 @@ function buildFeed(name, events, stamp) {
     lines.push("BEGIN:VEVENT");
     lines.push("UID:" + ev.id + "@van-isle-riftbound");
     lines.push("DTSTAMP:" + (stamp || FIXED_STAMP));
-    lines.push("DTSTART:" + utcStamp(start));
-    lines.push("DTEND:" + utcStamp(end));
+    if (name === null) {
+      lines.push("DTSTART;TZID=" + TZ + ":" + localStamp(start));
+      lines.push("DTEND;TZID=" + TZ + ":" + localStamp(end));
+    } else {
+      lines.push("DTSTART:" + utcStamp(start));
+      lines.push("DTEND:" + utcStamp(end));
+    }
     lines.push("SUMMARY:" + esc(ev.name));
     lines.push("LOCATION:" + esc(ev.address || ev.venue));
     lines.push("DESCRIPTION:" + esc(describe(ev)));

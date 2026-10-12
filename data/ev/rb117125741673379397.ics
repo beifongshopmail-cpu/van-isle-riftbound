@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117125741673379397@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART:20261023T010000Z
-DTEND:20261023T040000Z
+DTSTART;TZID=America/Vancouver:20261022T180000
+DTEND;TZID=America/Vancouver:20261022T210000
 SUMMARY:North Park Picture Framing and Collectables Radiance Pre-Rift
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori

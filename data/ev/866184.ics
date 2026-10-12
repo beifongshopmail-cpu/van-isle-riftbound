@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:866184@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART:20261014T010000Z
-DTEND:20261014T043000Z
+DTSTART;TZID=America/Vancouver:20261013T180000
+DTEND;TZID=America/Vancouver:20261013T213000
 SUMMARY:Tuesday Riftbound Playnight
 LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
 DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register

@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117368564203616505@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART:20261018T190000Z
-DTEND:20261018T220000Z
+DTSTART;TZID=America/Vancouver:20261018T120000
+DTEND;TZID=America/Vancouver:20261018T150000
 SUMMARY:Radiance Pre Rift (Colossal Cards & Collectables Courtenay)
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Courtenay\n1 of 16 re
