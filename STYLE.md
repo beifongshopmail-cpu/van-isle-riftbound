@@ -325,7 +325,7 @@ Calendar (calendar/index.html)
 - Menus: tray #pnav; #panel "Calendar settings" (Area .seg, Event types .pick, Stores .pick). Bar action: subscribe (#subtab). Two controls fill with #panel.
 Counter (counter/index.html)
 - Fixed .stage with two sides (.side, data-role major, equal or minor), score numerals .num, .rail log, cut score buttons .acts, Pass turn .pass, round timer line .tmv, victory banner .win. Strip (.bar.strip.frost) of four controls; Go to has Hub (withHub true).
-- Menus #pgame, #pnew, #ptimer, #pleg, #pevt, #pend, #plog, #ppast with a stack (OPENP, STACK). Full-card viewer .spot (view kind, scrim .7).
+- Menus #pgame (Game settings), #pnew, #pleg, #pevt, #pend, #plog, #ppast with a stack (OPENP, STACK). Game settings and New match have no section labels and share #shared: the top group (.pcards.doors: Pause clock while the clock is on, Match timer, Event), then the player cards; Game settings adds Show on the field, and its foot holds Go to, then End game and New match side by side. The Match timer, Show on the field and each player open in place (.pcard, .pchead), one at a time. Full-card viewer .spot (view kind, scrim .7).
 Trade (trade/index.html)
 - Sticky .plate (search .sf, .sides track with side colours, results .res), ring .vd for the difference, side panels .sidep with .ln lines and steppers .stp, undo bar .ud, toast .toast.
 - Bar: Hub, Go to, Saved trades (#psav, data-fills), Settings (#pset, data-fills). Menus #pnav, #pset, #psav, #phist, #ptrade, #prcp.
@@ -340,15 +340,15 @@ Rules (rules/index.html)
 
 ## 11. Checks
 
-- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
+- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
 - drawn-test.js: with every menu open on all seven pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
 - audit.js: over every page, state and width (375, 390, 430); Chromium from check.js, node audit.js --engine both adds WebKit. A sizes, B alignment, C bare px sizes, D control kinds, E layout safety, plus a scan that pages do not reshape Kit parts. [A]
 - m2-test.js: pages load cleanly (T1), links and manifest resolve (T8), the Riot notice on the hub only (T9), theme colour (T18).
 - m3-test.js: events carry round and store; calendar Play here, store filter, remembered filters; counter event tag, past-match filter, round timer.
 - m4-test.js: counter time called and agreed draw, end events, the log.
 - m5-test.js: Go to tiles, hub notice, calendar subscribe, trade rows as deeper and do kinds.
-- m5b-test.js: counter Game menu order, End this game and Round timer menus, player cards, New match, Past matches.
-- m5c-test.js: counter End this game labels, short confirm text, Round timer Stop in the foot, Pass turn name.
+- m5b-test.js: counter Game settings shape (no section labels, three groups, the foot), End game, the Match timer in place, player cards, Show on the field as check rows, New match, Past matches.
+- m5c-test.js: counter End game labels, short confirm text, the Match timer's Start and Stop on one line, Pass turn name.
 - m5d-test.js: a match is logged the moment it is decided; New match keeps the timer.
 - m5e-test.js: Time called between games; Play here opens New match with the event picked.
 - m5f-test.js: a saved trade's title can change; nothing else on it does.
@@ -359,6 +359,7 @@ Rules (rules/index.html)
 - m9-test.js: the counter takes event ids as text (Event menu, ?ev= link, past-matches filter).
 - m9k-test.js: the rules watcher against Riot's saved pages: counts, word for word, RAVI's name on every request, no change leaves the file alone, a missing or halved page fails the run.
 - m9l-test.js: the Rules page (documents, articles newest first, an entry opening in place, Riot's warning, search, What's new deeper), its hub block, Go to in one row of five and two rows past five.
+- m95-test.js: the counter's menus after M9.5: a timer set in New match survives Start match, Best of 3 by default, the Match timer in place, the top group, End game and New match the same size and evenly placed, every row's chevron at the right.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
   2. Any font-size off the rungs carries an exempt comment (static).
