@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117170860186945231@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART:20261018T223000Z
+DTEND:20261019T013000Z
+SUMMARY:Colossal Cards Victoria Radiance Pre-Rift
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Victoria\n3 of 28 reg
+ istered\n$40.00 CAD\nSign up: https://playriftbound.com/en-US/events/11717
+ 0860186945231
+URL:https://playriftbound.com/en-US/events/117170860186945231
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -19,8 +19,16 @@ const FEEDS = [
   { file: "island.ics",   name: "RAVI - Island",   regions: ["victoria", "island"] }
 ];
 
-const EVENT_URL = "https://locator.riftbound.uvsgames.com/events/";
+// An event's own page, the same rule as the calendar page's eventUrl:
+// PlayRiftbound ids ("rb" + its number) open on playriftbound.com; the old
+// locator's numeric ids keep the locator.
+function eventUrl(id) {
+  const s = String(id);
+  return /^rb\d+$/.test(s) ? "https://playriftbound.com/en-US/events/" + s.slice(2)
+    : "https://locator.riftbound.uvsgames.com/events/" + s;
+}
 const DEFAULT_MINUTES = 180;
+const FIXED_STAMP = "20260901T000000Z";
 
 // RFC 5545 text escaping: backslash, semicolon, comma, newline.
 function esc(value) {
@@ -63,23 +71,27 @@ function describe(ev) {
   bits.push(ev.venue + (ev.city ? ", " + ev.city : ""));
   if (ev.cap != null) bits.push(ev.reg + " of " + ev.cap + " registered");
   bits.push(ev.cents ? "$" + (ev.cents / 100).toFixed(2) + " " + ev.currency : "Free");
-  bits.push("Sign up: " + EVENT_URL + ev.id);
+  bits.push("Sign up: " + eventUrl(ev.id));
   return bits.join("\n");
 }
 
+// A feed (name given: a calendar to subscribe to, refreshed every 6 hours)
+// or a single event to add once (name null: no calendar name, no refresh).
 function buildFeed(name, events, stamp) {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//van-isle-riftbound//EN",
     "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "X-WR-CALNAME:" + esc(name),
-    "X-WR-TIMEZONE:" + TZ,
-    "X-WR-CALDESC:" + esc("Riftbound events on Vancouver Island. Sign-ups happen on the official locator."),
-    "REFRESH-INTERVAL;VALUE=DURATION:PT6H",
-    "X-PUBLISHED-TTL:PT6H"
+    "METHOD:PUBLISH"
   ];
+  if (name !== null) {
+    lines.push("X-WR-CALNAME:" + esc(name));
+    lines.push("X-WR-TIMEZONE:" + TZ);
+    lines.push("X-WR-CALDESC:" + esc("Riftbound events on Vancouver Island. Sign-ups happen on each event's own page."));
+    lines.push("REFRESH-INTERVAL;VALUE=DURATION:PT6H");
+    lines.push("X-PUBLISHED-TTL:PT6H");
+  }
 
   for (const ev of events) {
     const start = new Date(ev.start);
@@ -89,13 +101,13 @@ function buildFeed(name, events, stamp) {
 
     lines.push("BEGIN:VEVENT");
     lines.push("UID:" + ev.id + "@van-isle-riftbound");
-    lines.push("DTSTAMP:" + stamp);
+    lines.push("DTSTAMP:" + (stamp || FIXED_STAMP));
     lines.push("DTSTART:" + utcStamp(start));
     lines.push("DTEND:" + utcStamp(end));
     lines.push("SUMMARY:" + esc(ev.name));
     lines.push("LOCATION:" + esc(ev.address || ev.venue));
     lines.push("DESCRIPTION:" + esc(describe(ev)));
-    lines.push("URL:" + EVENT_URL + ev.id);
+    lines.push("URL:" + eventUrl(ev.id));
     lines.push("CATEGORIES:" + esc(LABELS[ev.type] || LABELS.other));
     lines.push("STATUS:CONFIRMED");
     lines.push("TRANSP:OPAQUE");
@@ -120,4 +132,32 @@ function writeFeeds(outDir, events) {
   return written;
 }
 
-module.exports = { writeFeeds, buildFeed, esc, fold };
+// ONE FILE PER EVENT, data/ev/<id>.ics, for the event card's Add to
+// calendar button. DTSTAMP is FIXED_STAMP, a fixed past moment, so a file
+// changes only when its event does (the cron commits nothing new otherwise).
+// Files for events no longer listed are removed.
+function writeEventFiles(outDir, events) {
+  const dir = path.join(outDir, "ev");
+  fs.mkdirSync(dir, { recursive: true });
+  const keep = {};
+  let n = 0;
+  for (const ev of events) {
+    const id = String(ev.id).replace(/[^A-Za-z0-9_-]/g, "");
+    if (!id || !ev.start) continue;
+    const file = id + ".ics";
+    const body = buildFeed(null, [ev], null);
+    const full = path.join(dir, file);
+    let old = null;
+    try { old = fs.readFileSync(full, "utf8"); } catch (e) {}
+    if (old !== body) fs.writeFileSync(full, body, "utf8");
+    keep[file] = 1;
+    n++;
+  }
+  let removed = 0;
+  for (const f of fs.readdirSync(dir)) {
+    if (/\.ics$/.test(f) && !keep[f]) { fs.unlinkSync(path.join(dir, f)); removed++; }
+  }
+  return { count: n, removed: removed };
+}
+
+module.exports = { writeFeeds, writeEventFiles, buildFeed, eventUrl, esc, fold };

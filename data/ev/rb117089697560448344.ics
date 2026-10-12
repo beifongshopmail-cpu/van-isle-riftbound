@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117089697560448344@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART:20261219T220000Z
+DTEND:20261220T010000Z
+SUMMARY:Radiance Summoner Skirmish II
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n0 of 16 registe
+ red\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/events/117089697
+ 560448344
+URL:https://playriftbound.com/en-US/events/117089697560448344
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -134,8 +134,8 @@ a{color:inherit;text-decoration:none}
 /* event cards: the glass recipe with the type colour as the body.
    Body strengths are the reference's: Nexus .26, Skirmish .24; the
    three types it did not mock take .25.
-   THE CARD IS A DIV, NOT A LINK: tapping its head button reveals Play
-   here and the locator link in place. THEY SINK ON PRESS LIKE EVERY OTHER
+   THE CARD IS A DIV, NOT A LINK: tapping its head button reveals the
+   address and three round buttons in place. THEY SINK ON PRESS LIKE EVERY OTHER
    CONTROL, and iOS still needs the document-level touch listener in
    the script before any :active rule on the page will fire at all. */
 .ev{
@@ -166,12 +166,18 @@ a{color:inherit;text-decoration:none}
   font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px;
 }
-/* EVACT: Play here (today only) and the locator link, revealed by
-   tapping the card's head button. [hidden] on the attribute selector
-   alone loses to display:flex at equal specificity, so it is restated
-   here. */
-.evact{display:flex;gap:8px;margin-top:10px}
-.evact a{flex:1;height:var(--sz-row);box-sizing:border-box}
+/* EVACT: revealed by tapping the card's head button. One row under the
+   in-card line: the street address (13 bone; "Ends" 12 muted under it)
+   on the left, three round icon buttons on the right -- Directions,
+   Add to calendar, the event page -- the month card's own shape, a label
+   left and circles right. No words on the buttons; each carries an
+   aria-label. [hidden] is restated so it beats display:flex. */
+.evact{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+.evact .evinfo{display:flex;align-items:center;gap:12px}
+.evact .evaddr{flex:1;min-width:0;font-size:13px;line-height:1.4;color:var(--bone)}
+.evact .evaddr .evend{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.evact .evbtns{display:flex;gap:8px;flex:0 0 auto}
+.evact .evbtns .circ svg{stroke:currentColor;stroke-width:2;fill:none}
 .evact[hidden]{display:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
@@ -317,7 +323,7 @@ a{color:inherit;text-decoration:none}
   function simEvent(day){
     return {id:1, name:"Test event - 1v1", type:"nexus", start:day+"T00:00:00-07:00", end:null,
       day:day, time:"All day", venue:"Test Store", city:"Victoria", address:"", region:"victoria",
-      cap:8, reg:0, cents:0, currency:"CAD", updated:null, round:25, wins:2, sid:1, store:"Test Store"};
+      cap:8, reg:0, cents:0, currency:"CAD", updated:null, round:25, wins:2, sid:1, store:"Test Store", sim:true};
   }
   // An event's own page. PlayRiftbound ids ("rb" + its number) open on
   // playriftbound.com; the old locator's numeric ids keep the locator,
@@ -327,6 +333,52 @@ a{color:inherit;text-decoration:none}
     return /^rb\d+$/.test(s) ? "https://playriftbound.com/en-US/events/" + s.slice(2)
       : "https://locator.riftbound.uvsgames.com/events/" + s;
   }
+  // WHERE AN EVENT IS: the street address without the country, shown
+  // only when the feed has one (the old feed repeats the street, so the
+  // repeat is dropped, and a postal code never splits). Directions fall
+  // back to the venue and city, and open the phone's own maps: Apple Maps
+  // on an iPhone or iPad, Google Maps anywhere else.
+  function streetOf(ev){
+    var p = String(ev.address || "").replace(/,\s*(Canada|CA)\s*$/i, "")
+      .split(/\s*,\s*/).filter(Boolean);
+    if (p.length > 1 && p[1].indexOf(p[0]) !== -1) p.shift();
+    return p.join(", ").replace(/([A-Z]\d[A-Z]) (\d[A-Z]\d)/, "$1\u00a0$2");
+  }
+  function placeOf(ev){
+    return [ev.venue, ev.city].filter(Boolean).join(", ");
+  }
+  // the end as a clock time read straight from the feed's local string,
+  // or "" when the feed has none
+  function endOf(ev){
+    var m = /T(\d\d):(\d\d)/.exec(String(ev.end || ""));
+    if (!m) return "";
+    var h = +m[1], ap = h < 12 ? "AM" : "PM";
+    h = h % 12 || 12;
+    return h + ":" + m[2] + " " + ap;
+  }
+  var IS_APPLE = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  function mapUrl(where){
+    var q = encodeURIComponent(where);
+    return IS_APPLE ? "https://maps.apple.com/?q=" + q
+      : "https://www.google.com/maps/search/?api=1&query=" + q;
+  }
+  // A card's round buttons. All three open outside RAVI's page (the
+  // installed app shows them in its own browser sheet, with Done to come
+  // back); the calendar file too, so it can never replace this page.
+  function iconLink(box, cls, href, label, svg){
+    var a = document.createElement("a");
+    a.className = "circ btn glass " + cls;
+    a.href = href;
+    a.target = "_blank"; a.rel = "noopener";
+    a.setAttribute("aria-label", label);
+    a.innerHTML = svg;
+    box.appendChild(a);
+  }
+  // Lucide drawings (RULE -- icons): map-pin, calendar-plus, external-link
+  var PIN = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>';
+  var CALPLUS = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M21 13V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"/><path d="M3 10h18"/><path d="M16 19h6"/><path d="M19 16v6"/></svg>';
+  var OUT = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
   function withSim(list){
     var on = false;
     try{ on = localStorage.getItem(SIMKEY) === "1"; }catch(e){}
@@ -578,7 +630,7 @@ a{color:inherit;text-decoration:none}
   }
 
   function renderList(){
-    var seen = seenSet() || [], rows, t = todayKey();
+    var seen = seenSet() || [], rows;
     if (selected){
       rows = forDay(selected);
       var p = parseKey(selected);
@@ -668,19 +720,27 @@ a{color:inherit;text-decoration:none}
       act.className = "evact";
       act.setAttribute("data-k", "do");
       act.hidden = true;
-      if (ev.day === t){
-        var ph = document.createElement("a");
-        ph.className = "pact btn glass playhere";
-        ph.href = "../counter/?ev=" + ev.id;
-        ph.textContent = "Play here";
-        act.appendChild(ph);
+      var street = streetOf(ev), ends = endOf(ev);
+      var info = document.createElement("div");
+      info.className = "evinfo";
+      var ad = document.createElement("span");
+      ad.className = "evaddr";
+      ad.textContent = street;
+      if (ends){
+        var en = document.createElement("span");
+        en.className = "evend";
+        en.textContent = "Ends " + ends;
+        ad.appendChild(en);
       }
-      var loc = document.createElement("a");
-      loc.className = "pact btn glass";
-      loc.href = eventUrl(ev.id);
-      loc.target = "_blank"; loc.rel = "noopener";
-      loc.textContent = /^rb\d+$/.test(String(ev.id)) ? "Event page" : "Open in locator";
-      act.appendChild(loc);
+      info.appendChild(ad);
+      var btns = document.createElement("span");
+      btns.className = "evbtns";
+      iconLink(btns, "evdir", mapUrl(street || placeOf(ev)), "Directions", PIN);
+      // the test event (?sim=1) has no calendar file
+      if (!ev.sim) iconLink(btns, "evadd", "../data/ev/" + ev.id + ".ics", "Add this event to your calendar", CALPLUS);
+      iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT);
+      info.appendChild(btns);
+      act.appendChild(info);
       card.appendChild(act);
 
       listEl.appendChild(card);
@@ -771,7 +831,7 @@ a{color:inherit;text-decoration:none}
     var when = new Date(META.generated_at);
     var hrs = (Date.now() - when.getTime()) / 3600000;
     s.innerHTML = "";
-    s.appendChild(document.createTextNode("Events read from the official Riftbound locator. Last checked "));
+    s.appendChild(document.createTextNode("Events read from PlayRiftbound and the official Riftbound locator. Last checked "));
     var b = document.createElement("b");
     b.textContent = when.toLocaleString(undefined, {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     s.appendChild(b);

@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117125741673379397@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART:20261023T010000Z
+DTEND:20261023T040000Z
+SUMMARY:North Park Picture Framing and Collectables Radiance Pre-Rift
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
+ a\n12 of 16 registered\n$45.00 USD\nSign up: https://playriftbound.com/en-
+ US/events/117125741673379397
+URL:https://playriftbound.com/en-US/events/117125741673379397
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:884760@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART:20261021T010000Z
+DTEND:20261021T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n0 of 8 register
+ ed\nFree\nSign up: https://locator.riftbound.uvsgames.com/events/884760
+URL:https://locator.riftbound.uvsgames.com/events/884760
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117170908777826678@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART:20261122T220000Z
+DTEND:20261123T010000Z
+SUMMARY:Colossal Cards Victoria Radiance Skirmish 1
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n0 
+ of 28 registered\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/eve
+ nts/117170908777826678
+URL:https://playriftbound.com/en-US/events/117170908777826678
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
