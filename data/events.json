@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-11T17:55:31.932Z",
- "generated_local": "2026-10-11T10:55:31-07:00",
- "window_start": "2026-10-11T07:00:00.000Z",
+ "generated_at": "2026-10-12T07:02:03.048Z",
+ "generated_local": "2026-10-12T00:02:03-07:00",
+ "window_start": "2026-10-12T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 22,
-   "added": 22
+   "returned": 21,
+   "added": 21
   },
   {
    "name": "Courtenay",
@@ -28,8 +28,8 @@
    "name": "Victoria",
    "region": "victoria",
    "source": "uvs",
-   "returned": 7,
-   "added": 6
+   "returned": 5,
+   "added": 5
   },
   {
    "name": "Courtenay",
@@ -47,57 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 46,
-  "unique": 45,
-  "prev_unique": 46
+  "fetched": 43,
+  "unique": 43,
+  "prev_unique": 45
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": 860816,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
-   "start": "2026-10-11T11:30:00-07:00",
-   "end": "2026-10-11T15:40:00-07:00",
-   "day": "2026-10-11",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 4,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": "2026-08-16T05:00:57+00:00",
-   "round": 50,
-   "wins": 2,
-   "sid": 16866,
-   "store": "Everything Games"
-  },
-  {
-   "id": "rb117330797499015153",
-   "name": "Skyhaven Games Nexus Night",
-   "type": "nexus",
-   "start": "2026-10-11T17:00:00-07:00",
-   "end": null,
-   "day": "2026-10-11",
-   "time": "5:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 400,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 4294,
-   "store": "Skyhaven"
-  },
   {
    "id": 866184,
    "name": "Tuesday Riftbound Playnight",
@@ -243,7 +199,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 17,
+   "reg": 18,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
