@@ -322,7 +322,7 @@ Hub (index.html)
 - No bar. Name .hubname centred in .top (height max(260px, 42vh)); .low.glass plate with a curved top; nav#grid of eight blocks; the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
 Calendar (calendar/index.html)
 - Sticky month card (.stick zero-height holder, .card, .hold spacer, arithmetic height), .mrow with month, year and the .hemi pair, gear (#filt, data-fills panel; .filtered marks hidden filters) and collapse chevron (#mtog).
-- Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact (Play here on today, locator link).
+- Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and three round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evlink the event page), each a .circ with an aria-label and no words, all opening outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
 - Menus: tray #pnav; #panel "Calendar settings" (Area .seg, Event types .pick, Stores .pick). Bar action: subscribe (#subtab). Two controls fill with #panel.
 Counter (counter/index.html)
 - Fixed .stage with two sides (.side, data-role major, equal or minor), score numerals .num, .rail log, cut score buttons .acts, Pass turn .pass, round timer line .tmv, victory banner .win. Strip (.bar.strip.frost) of four controls; Go to has Hub (withHub true).
@@ -341,17 +341,17 @@ Rules (rules/index.html)
 
 ## 11. Checks
 
-- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
+- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95, m95c. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
 - drawn-test.js: with every menu open on all seven pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
 - audit.js: over every page, state and width (375, 390, 430); Chromium from check.js, node audit.js --engine both adds WebKit. A sizes, B alignment, C bare px sizes, D control kinds, E layout safety, plus a scan that pages do not reshape Kit parts. [A]
 - m2-test.js: pages load cleanly (T1), links and manifest resolve (T8), the Riot notice on the hub only (T9), theme colour (T18).
-- m3-test.js: events carry round and store; calendar Play here, store filter, remembered filters; counter event tag, past-match filter, round timer.
+- m3-test.js: events carry round and store; calendar card buttons, store filter, remembered filters; counter event tag, past-match filter, round timer.
 - m4-test.js: counter time called and agreed draw, end events, the log.
 - m5-test.js: Go to tiles, hub notice, calendar subscribe, trade rows as deeper and do kinds.
 - m5b-test.js: counter Game settings shape (no section labels, three groups, the foot), End game, the Match timer in place, player cards, Show on the field as check rows, New match, Past matches.
 - m5c-test.js: counter End game labels, short confirm text, the Match timer's Start and Stop on one line, Pass turn name.
 - m5d-test.js: a match is logged the moment it is decided; New match keeps the timer.
-- m5e-test.js: Time called between games; Play here opens New match with the event picked.
+- m5e-test.js: Time called between games; the counter's hidden ?ev= link opens New match with the event picked.
 - m5f-test.js: a saved trade's title can change; nothing else on it does.
 - m5g-test.js: a bar slot stays on while its menu or a deeper one is open; menu edges.
 - m6-test.js: counter sides update in place; trade lists rewrite only when their markup changes.
@@ -361,6 +361,7 @@ Rules (rules/index.html)
 - m9k-test.js: the rules watcher against Riot's saved pages: counts, word for word, RAVI's name on every request, no change leaves the file alone, a missing or halved page fails the run.
 - m9l-test.js: the Rules page (documents, articles newest first, an entry opening in place, Riot's warning, search, What's new deeper), its hub block, Go to in one row of five and two rows past five.
 - m95-test.js: the counter's menus after M9.5: a timer set in New match survives Start match, Best of 3 by default, the Match timer in place, the top group, End game and New match the same size and evenly placed, every row's chevron at the right.
+- m95c-test.js: the calendar's event card after M9.5: no Play here, the address and its end, three round buttons in one row at the card's padding at 402 and 360, the in-card line, the one-event calendar files (ics.js, written on every refresh, unchanged files left alone), and PlayRiftbound links in the area feeds.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
   2. Any font-size off the rungs carries an exempt comment (static).
