@@ -212,6 +212,21 @@ a{color:inherit;text-decoration:none}
 .pfoot .two:last-child{margin-bottom:0}
 .rcphint{font-size:12px;color:var(--muted);margin:0 2px 12px 2px}
 .rcpimgs img{display:block;width:100%;height:auto;margin:0 0 12px 0;border-radius:12px}
+/* Trade settings (M9.6): each side is one row, its name in the counter's
+   name field and its percent in the cards' quantity stepper, half each.
+   Percent moves in steps of 5; Reset sits small at the label's end. */
+.lbr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.lbr .lb{margin:0}
+.rrs{height:var(--sz-sm);padding:0 14px;font-family:var(--disp);font-size:13px;font-weight:600}
+.rrs:disabled{opacity:.4}
+.sidr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:var(--sz-row);align-items:center;gap:8px}
+.sidr+.sidr{margin-top:6px}
+.sidr .nf{margin:0}
+.sidr .nf input{font-family:var(--disp);font-weight:600}
+.sidr .s1 input,.sidr .s1 input::placeholder{color:var(--yc)}
+.sidr .s2 input,.sidr .s2 input::placeholder{color:var(--tc)}
+.sidr .stp{justify-content:space-between;height:var(--sz-row);box-sizing:border-box}
+.sidr .stp span{flex:1}
 </style>
 </head>
 <body>
@@ -304,25 +319,16 @@ a{color:inherit;text-decoration:none}
 <section class="panel frost" id="pset" aria-hidden="true" aria-label="Trade settings">
   <div class="phead"><h4 class="ttl">Trade settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-  <div class="row"><p class="lb">Names</p>
-    <div class="rates">
-      <div class="rate r1 nmf"><input id="nm1" type="text" maxlength="16" placeholder="Yours" autocomplete="off" aria-label="Name for your side" data-k="type"></div>
-      <div class="rate r2 nmf"><input id="nm2" type="text" maxlength="16" placeholder="Theirs" autocomplete="off" aria-label="Name for their side" data-k="type"></div>
-    </div></div>
-  <div class="row"><p class="lb">Currency</p>
-    <div class="seg" id="cur" role="group" aria-label="Currency" data-k="pick"><button type="button" data-cur="CAD" aria-pressed="true">CAD</button><button type="button" data-cur="USD" aria-pressed="false">USD</button></div></div>
+  <div class="row"><div class="seg" id="cur" role="group" aria-label="Currency" data-k="pick"><button type="button" data-cur="CAD" aria-pressed="true">CAD</button><button type="button" data-cur="USD" aria-pressed="false">USD</button></div></div>
   <div class="row"><p class="lb">Price movement</p>
-    <div class="seg" id="dlt" role="group" aria-label="Price movement window" data-k="pick"><button type="button" data-dlt="1" aria-pressed="false">1D</button><button type="button" data-dlt="7" aria-pressed="false">7D</button><button type="button" data-dlt="30" aria-pressed="true">30D</button><button type="button" data-dlt="365" aria-pressed="false">1Y</button><button type="button" data-dlt="all" aria-pressed="false">All</button></div>
+    <div class="seg" id="dlt" role="group" aria-label="Price movement window" data-k="pick"><button type="button" data-dlt="off" aria-pressed="false">Off</button><button type="button" data-dlt="7" aria-pressed="false">7D</button><button type="button" data-dlt="30" aria-pressed="true">30D</button><button type="button" data-dlt="365" aria-pressed="false">1Y</button><button type="button" data-dlt="all" aria-pressed="false">All</button></div>
     <p class="pnote" id="dltnote"></p></div>
-  <div class="row"><p class="lb">Percent of market price</p>
-    <div class="rates">
-      <div class="rate r1"><label for="pc1" id="pl1">Yours</label><input id="pc1" type="number" inputmode="numeric" min="0" max="200" step="1" value="100" data-k="type"><span>%</span></div>
-      <div class="rate r2"><label for="pc2" id="pl2">Theirs</label><input id="pc2" type="number" inputmode="numeric" min="0" max="200" step="1" value="100" data-k="type"><span>%</span></div>
-    </div>
-    <button type="button" class="pact btn glass" id="rreset" data-act="rreset" data-k="do">Reset rates</button></div>
-  <div class="row"><p class="lb">This trade</p>
-    <button type="button" class="pact btn glass" data-act="clear" data-k="do">Clear both sides</button></div>
+  <div class="row"><div class="lbr"><p class="lb">Percent of market price</p><button type="button" class="rrs btn glass" id="rreset" data-act="rreset" data-k="do">Reset</button></div>
+    <div class="sidr"><div class="nf tall s1"><input id="nm1" type="text" maxlength="16" placeholder="Yours" autocomplete="off" aria-label="Name for your side" data-k="type"></div><div class="stp" data-k="do"><button type="button" class="circ btn glass" id="pcd1" data-act="pcstep" data-n="1" data-d="-1" aria-label="Lower your percent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><span id="pv1">100%</span><button type="button" class="circ btn glass" id="pcu1" data-act="pcstep" data-n="1" data-d="1" aria-label="Raise your percent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
+    <div class="sidr"><div class="nf tall s2"><input id="nm2" type="text" maxlength="16" placeholder="Theirs" autocomplete="off" aria-label="Name for their side" data-k="type"></div><div class="stp" data-k="do"><button type="button" class="circ btn glass" id="pcd2" data-act="pcstep" data-n="2" data-d="-1" aria-label="Lower their percent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><span id="pv2">100%</span><button type="button" class="circ btn glass" id="pcu2" data-act="pcstep" data-n="2" data-d="1" aria-label="Raise their percent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
   </div>
+  </div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="clear" data-k="do">Clear both sides</button></div>
 </section>
 
 <section class="panel frost" id="psav" aria-hidden="true" aria-label="Saved trades">
@@ -455,8 +461,6 @@ a{color:inherit;text-decoration:none}
     sides[2] = r.s2;
     PCT[1] = pcClamp(r.p1);
     PCT[2] = pcClamp(r.p2);
-    el("pc1").value = PCT[1];
-    el("pc2").value = PCT[2];
     UDBUSY = true;
     save();
     UDBUSY = false;
@@ -495,6 +499,8 @@ a{color:inherit;text-decoration:none}
       var r = JSON.parse(localStorage.getItem(KEY));
       if(!r) return;
       if(r.cur === "USD" || r.cur === "CAD") CUR = r.cur;
+      // 1D was dropped in M9.6: a stored 1D reads as 7D.
+      if(String(r.dlt) === "1") r.dlt = "7";
       if(r.dlt != null && DLTW.indexOf(String(r.dlt)) > -1){
         DLT = String(r.dlt);
         if(r.dltx === true) DLTX = true;
@@ -536,19 +542,6 @@ a{color:inherit;text-decoration:none}
     paint();
   }
 
-  function wirePc(n){
-    var box = el("pc" + n);
-    // An empty or half-typed box reads as 100 for display, but the field
-    // itself is left alone so backspacing to retype does not fight the input.
-    box.addEventListener("input", function(){
-      pcSet(n, this.value === "" ? 100 : this.value);
-    });
-    box.addEventListener("change", function(){
-      this.value = pcClamp(this.value === "" ? 100 : this.value);
-      pcSet(n, this.value);
-    });
-  }
-
   function priceOf(it){
     var c = byId.get(it.i);
     if(!c) return 0;
@@ -586,8 +579,8 @@ a{color:inherit;text-decoration:none}
 
   // The five movement windows. "all" reads the frozen baseline, which
   // never rolls and means "since we started tracking".
-  var DLTW = ["1","7","30","365","all"];
-  var DLTL = {"1":"daily","7":"7-day","30":"30-day","365":"1-year","all":"all-time"};
+  var DLTW = ["off","7","30","365","all"];
+  var DLTL = {"7":"7-day","30":"30-day","365":"1-year","all":"all-time"};
   var DLTM = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
   function dltWhen(ymd){
@@ -614,7 +607,7 @@ a{color:inherit;text-decoration:none}
   // themselves always wins and is never recomputed -- DLTX records that
   // choice, and a stored file with no dltx field was never chosen.
   function dltDefault(){
-    var w = ["30", "7", "1"], k;
+    var w = ["30", "7"], k;
     if(DLTX) return;
     if(!D || !D.anchors) return;
     for(k = 0; k < w.length; k++){
@@ -635,7 +628,7 @@ a{color:inherit;text-decoration:none}
   // small to mean anything. Only the first is a property of the file;
   // the other two are properties of the card.
   function dltPct(c, sub){
-    if(!c) return null;
+    if(!c || DLT === "off") return null;
     var from = null;
     if(DLT === "all"){
       from = (c.b && typeof c.b[sub] === "number") ? c.b[sub] : null;
@@ -671,7 +664,8 @@ a{color:inherit;text-decoration:none}
   function dltNote(){
     var n = el("dltnote");
     if(!n) return;
-    if(!D){ n.textContent = ""; return; }
+    n.hidden = DLT === "off";
+    if(!D || DLT === "off"){ n.textContent = ""; return; }
     var w = dltDate();
     if(!w){ n.textContent = "This window has not filled yet."; return; }
     n.textContent = (DLT === "all") ? ("Since tracking began, " + w + ".") : ("Compared with " + w + ".");
@@ -926,9 +920,18 @@ a{color:inherit;text-decoration:none}
   // Deliberately NOT part of plate(): the rate labels and the reset button
   // follow the names and rates even with both sides empty.
   function pcMark(){
-    el("pl1").textContent = Nm(1);
-    el("pl2").textContent = Nm(2);
+    for(var n = 1; n <= 2; n++){
+      el("pv" + n).textContent = PCT[n] + "%";
+      el("pcd" + n).disabled = PCT[n] <= 0;
+      el("pcu" + n).disabled = PCT[n] >= 200;
+    }
     el("rreset").disabled = (PCT[1] === 100 && PCT[2] === 100);
+  }
+  // A step moves to the next multiple of 5 (an odd saved rate such as 72
+  // steps to 75 or 70), inside 0 to 200.
+  function pcStep(n, d){
+    var v = PCT[n];
+    pcSet(n, d > 0 ? Math.floor(v / 5) * 5 + 5 : Math.ceil(v / 5) * 5 - 5);
   }
 
   function paint(){
@@ -1074,10 +1077,12 @@ a{color:inherit;text-decoration:none}
       }, 3000);
       return;
     }
+    if(act === "pcstep"){
+      pcStep(Number(t.getAttribute("data-n")), Number(t.getAttribute("data-d")));
+      return;
+    }
     if(act === "rreset"){
       if(PCT[1] === 100 && PCT[2] === 100) return;
-      el("pc1").value = 100;
-      el("pc2").value = 100;
       PCT[1] = 100;
       PCT[2] = 100;
       udMark("rreset", "Rates reset to 100", 0);
@@ -1409,8 +1414,6 @@ a{color:inherit;text-decoration:none}
       NAMES[n] = (r.nm && typeof r.nm[n] === "string") ? r.nm[n].slice(0, 16) : "";
     }
     CUR = (r.cur === "USD") ? "USD" : "CAD";
-    el("pc1").value = PCT[1];
-    el("pc2").value = PCT[2];
     el("nm1").value = NAMES[1];
     el("nm2").value = NAMES[2];
     pressGroup(el("cur"), "data-cur", CUR);
@@ -1897,12 +1900,8 @@ a{color:inherit;text-decoration:none}
     el("qx").style.visibility = "hidden";
     pressGroup(el("cur"), "data-cur", CUR);
     pressGroup(el("sides"), "data-side", String(SIDE));
-    el("pc1").value = PCT[1];
-    el("pc2").value = PCT[2];
     el("nm1").value = NAMES[1];
     el("nm2").value = NAMES[2];
-    wirePc(1);
-    wirePc(2);
     wireNm(1);
     wireNm(2);
 
