@@ -6,14 +6,14 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117089949356892554@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261212T160000
-DTEND;TZID=America/Vancouver:20261212T190000
+DTSTART;TZID=America/Vancouver:20261212T150000
+DTEND;TZID=America/Vancouver:20261212T180000
 SUMMARY:Radiance Summoner Skirmish II @ Colossal Cards & Collectables Court
  enay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
-DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n2
-  of 16 registered\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/ev
- ents/117089949356892554
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n1
+ 4 of 16 spots left\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/e
+ vents/117089949356892554
 URL:https://playriftbound.com/en-US/events/117089949356892554
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED

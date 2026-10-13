@@ -1,0 +1,57 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:RAVI - Colossal Cards & Collectables\, Victoria
+X-WR-TIMEZONE:America/Vancouver
+X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each 
+ event's own page.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:rb117170860186945231@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261018T223000Z
+DTEND:20261019T013000Z
+SUMMARY:Colossal Cards Victoria Radiance Pre-Rift
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Victoria\n25 of 28 sp
+ ots left\, checked Oct 13\, 12:54 PM\n$40.00 CAD\nSign up: https://playrif
+ tbound.com/en-US/events/117170860186945231
+URL:https://playriftbound.com/en-US/events/117170860186945231
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117170908777826678@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261122T220000Z
+DTEND:20261123T010000Z
+SUMMARY:Colossal Cards Victoria Radiance Skirmish 1
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n28
+  of 28 spots left\, checked Oct 13\, 12:54 PM\n$15.00 CAD\nSign up: https:
+ //playriftbound.com/en-US/events/117170908777826678
+URL:https://playriftbound.com/en-US/events/117170908777826678
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117170913739919281@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261220T220000Z
+DTEND:20261221T010000Z
+SUMMARY:Colossal Cards Victoria Radiance Skirmish 2
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n28
+  of 28 spots left\, checked Oct 13\, 12:54 PM\n$15.00 CAD\nSign up: https:
+ //playriftbound.com/en-US/events/117170913739919281
+URL:https://playriftbound.com/en-US/events/117170913739919281
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

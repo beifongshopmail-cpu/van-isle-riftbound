@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, RB } = require("./config");
-const { writeFeeds, writeEventFiles } = require("./ics");
+const { writeFeeds, writeEventFiles, writeStoreFeeds } = require("./ics");
 
 // Store id -> a short display name. Keys are the same store ids sid uses.
 const STORE_SHORT = {
@@ -383,6 +383,8 @@ async function main() {
   for (const f of feeds) {
     console.log(`wrote ${f.file} (${f.count} events)`);
   }
+  const st = writeStoreFeeds(OUT_DIR, events);
+  console.log(`wrote store/ (${st.count} store feeds, ${st.empty} with no events left)`);
   const one = writeEventFiles(OUT_DIR, events);
   console.log(`wrote ev/ (${one.count} event files, ${one.removed} removed)`);
 

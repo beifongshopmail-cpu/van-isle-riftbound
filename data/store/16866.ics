@@ -1,0 +1,117 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:RAVI - Everything Games\, Victoria
+X-WR-TIMEZONE:America/Vancouver
+X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each 
+ event's own page.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:rb117091115753003107@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261017T010000Z
+DTEND:20261017T040000Z
+SUMMARY:Friday Evening Pre-Rift
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
+DESCRIPTION:Pre-Rift\nEverything Games\, Victoria\n19 of 24 spots left\, ch
+ ecked Oct 13\, 12:54 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en
+ -US/events/117091115753003107
+URL:https://playriftbound.com/en-US/events/117091115753003107
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117091108751475574@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261018T183000Z
+DTEND:20261018T213000Z
+SUMMARY:Sunday Morning Pre-Rift
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
+DESCRIPTION:Pre-Rift\nEverything Games\, Victoria\n29 of 32 spots left\, ch
+ ecked Oct 13\, 12:54 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en
+ -US/events/117091108751475574
+URL:https://playriftbound.com/en-US/events/117091108751475574
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:899243@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261025T183000Z
+DTEND:20261025T224000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n24 of 24 spots left\
+ , checked Oct 13\, 12:54 PM\n$6.00 CAD\nSign up: https://locator.riftbound
+ .uvsgames.com/events/899243
+URL:https://locator.riftbound.uvsgames.com/events/899243
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:920103@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261101T193000Z
+DTEND:20261101T234000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n24 of 24 spots left\
+ , checked Oct 13\, 12:54 PM\n$6.00 CAD\nSign up: https://locator.riftbound
+ .uvsgames.com/events/920103
+URL:https://locator.riftbound.uvsgames.com/events/920103
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:939671@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261108T193000Z
+DTEND:20261108T234000Z
+SUMMARY:Sunday morning "nexus Night"
+LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n24 of 24 spots left\
+ , checked Oct 13\, 12:54 PM\n$6.00 CAD\nSign up: https://locator.riftbound
+ .uvsgames.com/events/939671
+URL:https://locator.riftbound.uvsgames.com/events/939671
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117096953908084886@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261122T183000Z
+DTEND:20261122T213000Z
+SUMMARY:Radiance Summoner skirmish
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
+DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 
+ left\, checked Oct 13\, 12:54 PM\n$20.00 CAD\nSign up: https://playriftbou
+ nd.com/en-US/events/117096953908084886
+URL:https://playriftbound.com/en-US/events/117096953908084886
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117096961730592935@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261227T183000Z
+DTEND:20261227T213000Z
+SUMMARY:Radiance summoner skirmish
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
+DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 
+ left\, checked Oct 13\, 12:54 PM\n$20.00 CAD\nSign up: https://playriftbou
+ nd.com/en-US/events/117096961730592935
+URL:https://playriftbound.com/en-US/events/117096961730592935
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

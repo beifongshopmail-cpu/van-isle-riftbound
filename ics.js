@@ -16,6 +16,7 @@ const LABELS = {
 // Two feeds so a subscriber gets the same choice the page offers.
 const FEEDS = [
   { file: "victoria.ics", name: "RAVI - Victoria", regions: ["victoria"] },
+  { file: "upisland.ics", name: "RAVI - Up Island", regions: ["island"] },
   { file: "island.ics",   name: "RAVI - Island",   regions: ["victoria", "island"] }
 ];
 
@@ -77,10 +78,17 @@ function localStamp(date) {
   return p.year + p.month + p.day + "T" + p.hour + p.minute + p.second;
 }
 
-function describe(ev) {
+// When the feed was read, as the notes say it: "Oct 13, 6:00 AM" in Vancouver time.
+function checkedAt(date) {
+  return new Intl.DateTimeFormat("en-US", { timeZone: TZ, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(date).replace(/[\u202f\u00a0]/g, " ");
+}
+
+// Spots LEFT, the same count the event card shows. A feed (refreshed) says when
+// it was checked; a one-event file is added once, so it carries no time.
+function describe(ev, checked) {
   const bits = [LABELS[ev.type] || LABELS.other];
   bits.push(ev.venue + (ev.city ? ", " + ev.city : ""));
-  if (ev.cap != null) bits.push(ev.reg + " of " + ev.cap + " registered");
+  if (ev.cap != null) bits.push(Math.max(0, ev.cap - (ev.reg || 0)) + " of " + ev.cap + " spots left" + (checked ? ", checked " + checked : ""));
   bits.push(ev.cents ? "$" + (ev.cents / 100).toFixed(2) + " " + ev.currency : "Free");
   bits.push("Sign up: " + eventUrl(ev.id));
   return bits.join("\n");
@@ -88,7 +96,7 @@ function describe(ev) {
 
 // A feed (name given: a calendar to subscribe to, refreshed every 6 hours)
 // or a single event to add once (name null: no calendar name, no refresh).
-function buildFeed(name, events, stamp) {
+function buildFeed(name, events, stamp, checked) {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -122,7 +130,7 @@ function buildFeed(name, events, stamp) {
     }
     lines.push("SUMMARY:" + esc(ev.name));
     lines.push("LOCATION:" + esc(ev.address || ev.venue));
-    lines.push("DESCRIPTION:" + esc(describe(ev)));
+    lines.push("DESCRIPTION:" + esc(describe(ev, name === null ? null : checked)));
     lines.push("URL:" + eventUrl(ev.id));
     lines.push("CATEGORIES:" + esc(LABELS[ev.type] || LABELS.other));
     lines.push("STATUS:CONFIRMED");
@@ -134,14 +142,15 @@ function buildFeed(name, events, stamp) {
   return lines.map(fold).join("\r\n") + "\r\n";
 }
 
-function writeFeeds(outDir, events) {
-  const stamp = utcStamp(new Date());
+function writeFeeds(outDir, events, now) {
+  const at = now || new Date();
+  const stamp = utcStamp(at), checked = checkedAt(at);
   const written = [];
   for (const feed of FEEDS) {
     const subset = events.filter(function (e) {
       return feed.regions.indexOf(e.region) !== -1;
     });
-    const body = buildFeed(feed.name, subset, stamp);
+    const body = buildFeed(feed.name, subset, stamp, checked);
     fs.writeFileSync(path.join(outDir, feed.file), body, "utf8");
     written.push({ file: feed.file, count: subset.length });
   }
@@ -176,4 +185,39 @@ function writeEventFiles(outDir, events) {
   return { count: n, removed: removed };
 }
 
-module.exports = { writeFeeds, writeEventFiles, buildFeed, eventUrl, esc, fold };
+// The file name of a store's feed: its store id, or venue-city when it has none
+// (the calendar page's Follow menu builds the same name).
+function storeFile(ev) {
+  const k = (ev.sid !== null && ev.sid !== undefined) ? String(ev.sid) : (ev.venue + "-" + ev.city);
+  return k.replace(/[^A-Za-z0-9_-]/g, "") + ".ics";
+}
+
+// ONE FEED PER STORE, data/store/<id>.ics, for Follow. A store's file is never
+// removed: a store with no events left keeps its file, empty, under its old name,
+// so a follower's calendar never points at a missing file.
+function writeStoreFeeds(outDir, events, now) {
+  const at = now || new Date();
+  const stamp = utcStamp(at), checked = checkedAt(at);
+  const dir = path.join(outDir, "store");
+  fs.mkdirSync(dir, { recursive: true });
+  const groups = {};
+  for (const ev of events) {
+    const f = storeFile(ev);
+    if (!groups[f]) groups[f] = { name: "RAVI - " + ev.venue + (ev.city ? ", " + ev.city : ""), list: [] };
+    groups[f].list.push(ev);
+  }
+  let empty = 0;
+  for (const f of fs.readdirSync(dir)) {
+    if (!/\.ics$/.test(f) || groups[f]) continue;
+    const old = fs.readFileSync(path.join(dir, f), "utf8").replace(/\r?\n /g, "");
+    const m = old.match(/X-WR-CALNAME:(.*)/);
+    groups[f] = { name: m ? m[1].replace(/\\(.)/g, "$1").trim() : "RAVI", list: [] };
+    empty++;
+  }
+  for (const f of Object.keys(groups)) {
+    fs.writeFileSync(path.join(dir, f), buildFeed(groups[f].name, groups[f].list, stamp, checked), "utf8");
+  }
+  return { count: Object.keys(groups).length, empty: empty };
+}
+
+module.exports = { writeFeeds, writeEventFiles, writeStoreFeeds, storeFile, buildFeed, eventUrl, esc, fold };

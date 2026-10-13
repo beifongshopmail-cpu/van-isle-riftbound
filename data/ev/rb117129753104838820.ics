@@ -6,13 +6,13 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117129753104838820@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20270109T110000
-DTEND;TZID=America/Vancouver:20270109T140000
+DTSTART;TZID=America/Vancouver:20270109T100000
+DTEND;TZID=America/Vancouver:20270109T130000
 SUMMARY:Gauntlet Games Radiance Skirmish 2
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
-DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n0 of 32 registere
- d\nFree\nSign up: https://playriftbound.com/en-US/events/11712975310483882
- 0
+DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
+ ft\nFree\nSign up: https://playriftbound.com/en-US/events/1171297531048388
+ 20
 URL:https://playriftbound.com/en-US/events/117129753104838820
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED

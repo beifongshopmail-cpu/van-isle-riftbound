@@ -1,0 +1,270 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:RAVI - Up Island
+X-WR-TIMEZONE:America/Vancouver
+X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each 
+ event's own page.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:866184@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261014T010000Z
+DTEND:20261014T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/866184
+URL:https://locator.riftbound.uvsgames.com/events/866184
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089686336807689@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261017T010000Z
+DTEND:20261017T040000Z
+SUMMARY:Radiance Pre-Rift
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Pre-Rift\nAJ's Games\, Campbell River\n16 of 16 spots left\, ch
+ ecked Oct 13\, 12:54 PM\n$40.00 CAD\nSign up: https://playriftbound.com/en
+ -US/events/117089686336807689
+URL:https://playriftbound.com/en-US/events/117089686336807689
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:875551@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261017T010000Z
+DTEND:20261017T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/875551
+URL:https://locator.riftbound.uvsgames.com/events/875551
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089690871093619@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261017T210000Z
+DTEND:20261018T000000Z
+SUMMARY:Riftbound Radiance Pre-rift 2
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Pre-Rift\nAJ's Games\, Campbell River\n16 of 16 spots left\, ch
+ ecked Oct 13\, 12:54 PM\n$40.00 CAD\nSign up: https://playriftbound.com/en
+ -US/events/117089690871093619
+URL:https://playriftbound.com/en-US/events/117089690871093619
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089935987420441@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261018T000000Z
+DTEND:20261018T030000Z
+SUMMARY:Radiance Pre Rift Sealed Event (Colossal Cards & Collectables Court
+ enay)
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Courtenay\n21 of 30 s
+ pots left\, checked Oct 13\, 12:54 PM\n$35.00 CAD\nSign up: https://playri
+ ftbound.com/en-US/events/117089935987420441
+URL:https://playriftbound.com/en-US/events/117089935987420441
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117368564203616505@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261018T190000Z
+DTEND:20261018T220000Z
+SUMMARY:Radiance Pre Rift (Colossal Cards & Collectables Courtenay)
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Courtenay\n15 of 16 s
+ pots left\, checked Oct 13\, 12:54 PM\n$35.00 CAD\nSign up: https://playri
+ ftbound.com/en-US/events/117368564203616505
+URL:https://playriftbound.com/en-US/events/117368564203616505
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:884760@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261021T010000Z
+DTEND:20261021T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/884760
+URL:https://locator.riftbound.uvsgames.com/events/884760
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:894008@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261024T010000Z
+DTEND:20261024T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/894008
+URL:https://locator.riftbound.uvsgames.com/events/894008
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:904901@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261028T010000Z
+DTEND:20261028T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/904901
+URL:https://locator.riftbound.uvsgames.com/events/904901
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:914712@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261031T010000Z
+DTEND:20261031T043000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/914712
+URL:https://locator.riftbound.uvsgames.com/events/914712
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:925474@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261104T020000Z
+DTEND:20261104T053000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/925474
+URL:https://locator.riftbound.uvsgames.com/events/925474
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:934751@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261107T020000Z
+DTEND:20261107T053000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/934751
+URL:https://locator.riftbound.uvsgames.com/events/934751
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:945045@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261111T020000Z
+DTEND:20261111T053000Z
+SUMMARY:Tuesday Riftbound Playnight
+LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
+DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
+ ft\, checked Oct 13\, 12:54 PM\nFree\nSign up: https://locator.riftbound.u
+ vsgames.com/events/945045
+URL:https://locator.riftbound.uvsgames.com/events/945045
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089944509981053@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261114T220000Z
+DTEND:20261115T010000Z
+SUMMARY:Radiance Summoner Skirmish @ Colossal Cards & Collectables Courtena
+ y
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n2
+ 3 of 24 spots left\, checked Oct 13\, 12:54 PM\n$10.00 CAD\nSign up: https
+ ://playriftbound.com/en-US/events/117089944509981053
+URL:https://playriftbound.com/en-US/events/117089944509981053
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089694282897798@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261121T220000Z
+DTEND:20261122T010000Z
+SUMMARY:Radiance Summoner Skirmish I
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 
+ left\, checked Oct 13\, 12:54 PM\n$10.00 CAD\nSign up: https://playriftbou
+ nd.com/en-US/events/117089694282897798
+URL:https://playriftbound.com/en-US/events/117089694282897798
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089949356892554@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261212T230000Z
+DTEND:20261213T020000Z
+SUMMARY:Radiance Summoner Skirmish II @ Colossal Cards & Collectables Court
+ enay
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n1
+ 4 of 16 spots left\, checked Oct 13\, 12:54 PM\n$15.00 CAD\nSign up: https
+ ://playriftbound.com/en-US/events/117089949356892554
+URL:https://playriftbound.com/en-US/events/117089949356892554
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117089697560448344@van-isle-riftbound
+DTSTAMP:20261013T195454Z
+DTSTART:20261219T220000Z
+DTEND:20261220T010000Z
+SUMMARY:Radiance Summoner Skirmish II
+LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
+DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 
+ left\, checked Oct 13\, 12:54 PM\n$10.00 CAD\nSign up: https://playriftbou
+ nd.com/en-US/events/117089697560448344
+URL:https://playriftbound.com/en-US/events/117089697560448344
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
