@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117096953908084886@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261122T113000
+DTEND;TZID=America/Vancouver:20261122T143000
+SUMMARY:Radiance Summoner skirmish
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
+DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n0 of 32 registe
+ red\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/events/117096953
+ 908084886
+URL:https://playriftbound.com/en-US/events/117096953908084886
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

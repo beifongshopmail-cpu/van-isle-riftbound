@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-13T07:26:38.072Z",
- "generated_local": "2026-10-13T00:26:38-07:00",
+ "generated_at": "2026-10-13T19:46:14.555Z",
+ "generated_local": "2026-10-13T12:46:14-07:00",
  "window_start": "2026-10-13T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 21,
-   "added": 21
+   "returned": 25,
+   "added": 25
   },
   {
    "name": "Courtenay",
@@ -29,7 +29,7 @@
    "region": "victoria",
    "source": "uvs",
    "returned": 5,
-   "added": 5
+   "added": 4
   },
   {
    "name": "Courtenay",
@@ -47,8 +47,8 @@
   }
  ],
  "totals": {
-  "fetched": 43,
-  "unique": 43,
+  "fetched": 47,
+  "unique": 46,
   "prev_unique": 43
  },
  "unknown_templates": {},
@@ -143,6 +143,28 @@
    "store": "AJ's"
   },
   {
+   "id": "rb117091115753003107",
+   "name": "Friday Evening Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-16T18:00:00-07:00",
+   "end": null,
+   "day": "2026-10-16",
+   "time": "6:00 PM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
+   "region": "victoria",
+   "cap": 24,
+   "reg": 5,
+   "cents": 4500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games"
+  },
+  {
    "id": 875551,
    "name": "Tuesday Riftbound Playnight",
    "type": "learn",
@@ -199,7 +221,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 19,
+   "reg": 20,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -297,24 +319,24 @@
    "store": null
   },
   {
-   "id": 879775,
-   "name": "Sunday morning \"nexus Night\"",
-   "type": "nexus",
+   "id": "rb117091108751475574",
+   "name": "Sunday Morning Pre-Rift",
+   "type": "prerift",
    "start": "2026-10-18T11:30:00-07:00",
-   "end": "2026-10-18T15:40:00-07:00",
+   "end": null,
    "day": "2026-10-18",
    "time": "11:30 AM",
    "venue": "Everything Games",
    "city": "Victoria",
-   "address": "721 Station Avenue, Victoria, BC, V9B 2S1, CA",
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 600,
+   "cap": 32,
+   "reg": 3,
+   "cents": 4500,
    "currency": "CAD",
-   "updated": "2026-08-23T05:01:10+00:00",
-   "round": 50,
-   "wins": 2,
+   "updated": null,
+   "round": null,
+   "wins": null,
    "sid": 16866,
    "store": "Everything Games"
   },
@@ -397,7 +419,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 26,
+   "reg": 28,
    "cents": 3500,
    "currency": "CAD",
    "updated": null,
@@ -825,6 +847,28 @@
    "store": "AJ's"
   },
   {
+   "id": "rb117096953908084886",
+   "name": "Radiance Summoner skirmish",
+   "type": "skirmish",
+   "start": "2026-11-22T11:30:00-07:00",
+   "end": null,
+   "day": "2026-11-22",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 0,
+   "cents": 2000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games"
+  },
+  {
    "id": "rb117170908777826678",
    "name": "Colossal Cards Victoria Radiance Skirmish 1",
    "type": "skirmish",
@@ -977,6 +1021,28 @@
    "wins": null,
    "sid": 4294,
    "store": "Skyhaven"
+  },
+  {
+   "id": "rb117096961730592935",
+   "name": "Radiance summoner skirmish",
+   "type": "skirmish",
+   "start": "2026-12-27T11:30:00-07:00",
+   "end": null,
+   "day": "2026-12-27",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 0,
+   "cents": 2000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": "rb117129753104838820",
