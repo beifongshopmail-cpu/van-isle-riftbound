@@ -279,7 +279,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Going deeper replaces the menu: back arrow, no X. A deeper menu's title is the label of the row that opened it.
 - A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar.
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
-- One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides.
+- One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides. Every bar is built by RAVI_BAR (pages.js) from the one icon table, so no page draws its own bar and a slot two pages share is the same copy. [T] (Mako's yes 2026-10-13)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
 - Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub and is never in Go to. [T]
 - App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
