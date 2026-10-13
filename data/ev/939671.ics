@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:939671@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261108T113000
-DTEND;TZID=America/Vancouver:20261108T154000
+DTSTART;TZID=America/Vancouver:20261108T123000
+DTEND;TZID=America/Vancouver:20261108T164000
 SUMMARY:Sunday morning "nexus Night"
 LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n0 of 24 registered\n

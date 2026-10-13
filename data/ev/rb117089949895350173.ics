@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117089949895350173@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261212T103000
-DTEND;TZID=America/Vancouver:20261212T133000
+DTSTART;TZID=America/Vancouver:20261212T113000
+DTEND;TZID=America/Vancouver:20261212T143000
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n0 of 16 registered\
