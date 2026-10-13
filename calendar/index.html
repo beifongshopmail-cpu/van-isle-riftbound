@@ -203,6 +203,29 @@ a{color:inherit;text-decoration:none}
 .tyrow .lab .stown{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);line-height:1.3}
 .tyrow .lab .sname{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tyrow .lab{min-width:0}
+/* FOLLOW (#psub): sunken rows follow (each a link to a calendar feed);
+   glass rows (.pcards, the same widget as the counter's player cards)
+   open an area in place, one at a time, as the counter's
+   player cards do. A followed row shows a bone bell left of its count. */
+#psub .phead{gap:8px}
+#psub .phead .ttl{margin-right:auto}
+.finfo{font-size:13px;line-height:1.4;color:var(--muted);margin:0 2px 14px}
+#fall{margin-bottom:14px}
+.pcards{border-radius:22px;overflow:hidden}
+.fcard:not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
+.fcard.open{padding:12px}
+.fcard.open .fhead{padding:0 4px}
+.fhead{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 16px;text-align:left;font-family:var(--disp);font-weight:600;font-size:15px}
+.fhead:active{transform:none}
+.fhead .sp,.pick a .sp{flex:1}
+.fhead .t,.pick a .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fhead small,.pick a small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.fhead .chev{stroke:var(--muted);fill:none;flex:0 0 auto}
+.fbody{padding-top:10px}
+.pick a .fmk{width:18px;height:18px;flex:0 0 auto;display:none;background:var(--bone);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.3 15.3C4.6 14 6 12.5 6 8a6 6 0 0 1 12 0c0 4.5 1.4 6 2.7 7.3A1 1 0 0 1 20 17H4a1 1 0 0 1-.7-1.7z'/%3E%3Cpath d='M10.27 21a2 2 0 0 0 3.46 0' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.3 15.3C4.6 14 6 12.5 6 8a6 6 0 0 1 12 0c0 4.5 1.4 6 2.7 7.3A1 1 0 0 1 20 17H4a1 1 0 0 1-.7-1.7z'/%3E%3Cpath d='M10.27 21a2 2 0 0 0 3.46 0' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.pick a.fon .fmk{display:block}
 </style>
 </head>
 <body>
@@ -257,13 +280,25 @@ a{color:inherit;text-decoration:none}
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"calendar"},
-  {tag:"a", icon:"bell", a:[["class", "tab"], ["id", "subtab"], ["href", "#"], ["aria-label", "Subscribe in your calendar app"], ["data-k", "slot"]]},
+  {tag:"button", icon:"bell", a:[["class", "tab"], ["id", "subtab"], ["aria-label", "Follow"], ["data-k", "slot"], ["data-fills", "psub"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["id", "tabset"], ["aria-label", "Settings"], ["data-k", "slot"], ["data-fills", "panel"]]}
 ]);</script>
 
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<section class="panel frost" id="psub" aria-hidden="true" aria-label="Follow">
+  <div class="phead">
+    <h4 class="ttl">Follow</h4>
+    <button type="button" class="circ btn glass" id="psinfo" aria-label="How following works" aria-expanded="false" data-k="open"></button>
+    <button type="button" class="circ btn glass" id="psclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="pbody">
+    <p class="finfo" id="finfo" hidden>Tap a row to add it to your calendar app, which picks up new events as they are listed. A bell marks what you added on this phone. To stop, remove it in your calendar app.</p>
+    <div class="pick" id="fall" data-k="do"></div>
+    <div class="pcards glass" id="fcards"></div>
+  </div>
 </section>
 <section class="panel frost" id="panel" aria-hidden="true" aria-label="Calendar settings">
   <div class="phead">
@@ -829,9 +864,58 @@ a{color:inherit;text-decoration:none}
     filt.classList.toggle("filtered", any);
   }
 
+  /* FOLLOW. Each row links to a calendar feed the refresh writes (ics.js):
+     island.ics, victoria.ics, upisland.ics, store/<id>.ics. RAVI cannot see
+     the phone's calendar, so a bell only means "tapped on this phone"
+     (FOLKEY); the note behind (i) says so. */
+  var FOLKEY = "vir.follow.v1", FOPEN = null;
+  function folSet(){ var o; try{ o = JSON.parse(localStorage.getItem(FOLKEY) || "{}"); }catch(e){ o = {}; } return o && typeof o === "object" ? o : {}; }
+  function storeFile(e){ return String((e.sid !== null && e.sid !== undefined) ? e.sid : (e.venue + "-" + e.city)).replace(/[^A-Za-z0-9_-]/g, "") + ".ics"; }
+  function nEv(n){ return n + (n === 1 ? " event" : " events"); }
   function renderSub(){
-    var base = location.host + location.pathname.replace(/[^\/]*$/, "");
-    document.getElementById("subtab").href = "webcal://" + base + "../data/" + scope + ".ics";
+    var base = "webcal://" + new URL("../data/", location.href).href.replace(/^https?:\/\//, "");
+    var t = todayKey(), n = {all:0, victoria:0, island:0}, st = {victoria:{}, island:{}}, marks = folSet();
+    for (var i = 0; i < EVENTS.length; i++){
+      var e = EVENTS[i];
+      if (e.sim || e.day < t || !st[e.region]) continue;
+      n.all++; n[e.region]++;
+      var k = storeFile(e);
+      if (!st[e.region][k]) st[e.region][k] = {venue:e.venue || "", n:0};
+      st[e.region][k].n++;
+    }
+    function row(box, file, title, count){
+      var a = document.createElement("a");
+      a.href = base + file; a.setAttribute("data-file", file);
+      if (marks[file]) a.className = "fon";
+      a.innerHTML = '<span class="t"></span><span class="sp"></span><span class="fmk" aria-hidden="true"></span><small></small>';
+      a.querySelector(".t").textContent = title;
+      a.querySelector("small").textContent = nEv(count);
+      if (marks[file]) a.setAttribute("aria-label", title + ", added on this phone");
+      box.appendChild(a);
+    }
+    var fa = document.getElementById("fall"); fa.innerHTML = "";
+    row(fa, "island.ics", "Whole Island", n.all);
+    var box = document.getElementById("fcards"); box.innerHTML = "";
+    [["victoria", "Greater Victoria", "victoria.ics"], ["island", "Up Island", "upisland.ics"]].forEach(function(g){
+      var keys = Object.keys(st[g[0]]).sort(function(a, b){
+        var x = st[g[0]][a].venue.toLowerCase(), y = st[g[0]][b].venue.toLowerCase();
+        return x < y ? -1 : (x > y ? 1 : 0);
+      });
+      var open = FOPEN === g[0];
+      var card = document.createElement("div");
+      card.className = "fcard" + (open ? " open" : "");
+      card.innerHTML = '<button type="button" class="fhead" data-area="' + g[0] + '" aria-expanded="' + (open ? "true" : "false") + '" data-k="open"><span class="t"></span><span class="sp"></span><small></small>'
+        + '<svg class="chev" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>';
+      card.querySelector(".t").textContent = g[1];
+      card.querySelector("small").textContent = keys.length + (keys.length === 1 ? " store" : " stores");
+      box.appendChild(card);
+      if (!open) return;
+      var body = document.createElement("div"); body.className = "fbody";
+      var list = document.createElement("div"); list.className = "pick"; list.setAttribute("data-k", "do");
+      row(list, g[2], "All stores", n[g[0]]);
+      keys.forEach(function(k){ row(list, "store/" + k, st[g[0]][k].venue, st[g[0]][k].n); });
+      body.appendChild(list); card.appendChild(body);
+    });
   }
 
   function renderStamp(){
@@ -1020,6 +1104,32 @@ a{color:inherit;text-decoration:none}
   }
   filt.addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
   document.getElementById("tabset").addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
+  var psub = document.getElementById("psub"), psinfo = document.getElementById("psinfo");
+  psinfo.innerHTML = window.RAVI_ICON("info");
+  document.getElementById("subtab").addEventListener("click", function(){ openPanel(openP === psub ? null : psub); });
+  document.getElementById("psclose").addEventListener("click", function(){ openPanel(null); });
+  psinfo.addEventListener("click", function(){
+    var f = document.getElementById("finfo"), on = f.hidden;
+    f.hidden = !on;
+    psinfo.setAttribute("aria-expanded", on ? "true" : "false");
+    if (on){ f.classList.remove("reveal"); void f.offsetWidth; f.classList.add("reveal"); }
+  });
+  psub.addEventListener("click", function(e){
+    var h = e.target.closest ? e.target.closest(".fhead") : null;
+    if (h){
+      var area = h.getAttribute("data-area");
+      FOPEN = FOPEN === area ? null : area;
+      renderSub();
+      if (FOPEN){ var b = psub.querySelector(".fcard.open .fbody"); if (b) b.classList.add("reveal"); }
+      return;
+    }
+    var a = e.target.closest ? e.target.closest("a[data-file]") : null;
+    if (a){
+      var m = folSet(); m[a.getAttribute("data-file")] = 1;
+      try{ localStorage.setItem(FOLKEY, JSON.stringify(m)); }catch(err){}
+      a.classList.add("fon");
+    }
+  });
   document.getElementById("tabnav").addEventListener("click", function(){ openPanel(openP === pnav ? null : pnav); });
   window.RAVI_GOTO(document.getElementById("pnavgoto"), "calendar", "../");
   document.getElementById("pnhere").addEventListener("click", function(){ openPanel(null); });
@@ -1072,6 +1182,11 @@ a{color:inherit;text-decoration:none}
     META = j;
     EVENTS = withSim(j.events || []);
     if (!seenSet()) seedSeen(visible());
+    /* NEW means new since the last visit: badges stay while the page is open,
+       and every listed event counts as seen once the page is left. */
+    var leave = function(){ var all = []; for (var q = 0; q < EVENTS.length; q++){ if (!EVENTS[q].sim) all.push(EVENTS[q]); } seedSeen(all); };
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "hidden") leave(); });
     var first = visible()[0];
     if (first){ var p = parseKey(first.day); cursor = {y:p.y, m:p.m}; }
     else { var d = new Date(); cursor = {y:d.getFullYear(), m:d.getMonth()}; }
