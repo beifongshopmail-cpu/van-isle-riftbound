@@ -1,6 +1,7 @@
 // THE ICONS. One drawing per name, signed off 2026-10-07: 24 grid, 2-unit round lines,
-// one corner size. Most carry an outline (.ico) and a filled (.icf) drawing (the hub grid
-// and the strip's two are one drawing in every state); app.css
+// one corner size. Every page icon and every bar icon lives here (RAVI_BAR draws the bars
+// from it). Most carry an outline (.ico) and a filled (.icf) drawing (the hub grid, Reset
+// and the strip's Undo and Log are one drawing in every state); app.css
 // shows the filled one while the slot is on. A filled drawing's gaps are cut by a mask,
 // and mask ids must be unique on a page, so RAVI_ICON numbers each copy it hands out.
 window.RAVI_ICON = (function(){
@@ -13,7 +14,16 @@ window.RAVI_ICON = (function(){
     feedback: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7.5L7.5 20.5V17H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></g><g class="icf"><path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7.5L7.5 20.5V17H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="currentColor"/></g></svg>',
     rules: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M12 6.5C9.5 4.8 6 4.5 3 5.5v13c3-1 6.5-.7 9 1 2.5-1.7 6-2 9-1v-13c-3-1-6.5-.7-9 1z"/><path d="M12 6.5v13"/><path d="M15.5 5.1v6.4l1.75-1.4 1.75 1.4V4.9"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M12 6.5C9.5 4.8 6 4.5 3 5.5v13c3-1 6.5-.7 9 1 2.5-1.7 6-2 9-1v-13c-3-1-6.5-.7-9 1z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M12 7.5v11" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/><path d="M15.5 4.4v7.1l1.75-1.4 1.75 1.4V4.2z" fill="#000" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
     soon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h6L12 12z" fill="currentColor" stroke="none"/><path d="M7 21.5V18.6Q12 16.4 17 18.6V21.5z" fill="currentColor" stroke="none"/><path d="M5 22h14M5 2h14"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.41L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.41L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/></svg>',
-    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M14.83 15.99 17.08 17.00 16.03 19.55 13.73 18.66 12.46 19.93 13.35 22.23 10.80 23.28 9.79 21.03 8.01 21.03 7.00 23.28 4.45 22.23 5.34 19.93 4.07 18.66 1.77 19.55 0.72 17.00 2.97 15.99 2.97 14.21 0.72 13.20 1.77 10.65 4.07 11.54 5.34 10.27 4.45 7.97 7.00 6.92 8.01 9.17 9.79 9.17 10.80 6.92 13.35 7.97 12.46 10.27 13.73 11.54 16.03 10.65 17.08 13.20 14.83 14.21ZM6.10 15.10a2.80 2.80 0 1 0 5.60 0a2.80 2.80 0 1 0 -5.60 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/><path d="M21.94 4.88 23.48 5.06 23.29 6.92 21.75 6.79 21.13 7.81 21.95 9.12 20.38 10.13 19.52 8.85 18.34 9.00 17.82 10.45 16.05 9.86 16.52 8.38 15.67 7.55 14.20 8.06 13.56 6.30 15.01 5.75 15.13 4.56 13.82 3.74 14.80 2.14 16.13 2.92 17.13 2.28 16.96 0.74 18.82 0.51 19.04 2.04 20.16 2.42 21.26 1.33 22.60 2.64 21.54 3.76ZM16.90 5.50a1.60 1.60 0 1 0 3.20 0a1.60 1.60 0 1 0 -3.20 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/></g><g class="icf"><path d="M14.83 15.99 17.08 17.00 16.03 19.55 13.73 18.66 12.46 19.93 13.35 22.23 10.80 23.28 9.79 21.03 8.01 21.03 7.00 23.28 4.45 22.23 5.34 19.93 4.07 18.66 1.77 19.55 0.72 17.00 2.97 15.99 2.97 14.21 0.72 13.20 1.77 10.65 4.07 11.54 5.34 10.27 4.45 7.97 7.00 6.92 8.01 9.17 9.79 9.17 10.80 6.92 13.35 7.97 12.46 10.27 13.73 11.54 16.03 10.65 17.08 13.20 14.83 14.21ZM6.10 15.10a2.80 2.80 0 1 0 5.60 0a2.80 2.80 0 1 0 -5.60 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/><path d="M21.94 4.88 23.48 5.06 23.29 6.92 21.75 6.79 21.13 7.81 21.95 9.12 20.38 10.13 19.52 8.85 18.34 9.00 17.82 10.45 16.05 9.86 16.52 8.38 15.67 7.55 14.20 8.06 13.56 6.30 15.01 5.75 15.13 4.56 13.82 3.74 14.80 2.14 16.13 2.92 17.13 2.28 16.96 0.74 18.82 0.51 19.04 2.04 20.16 2.42 21.26 1.33 22.60 2.64 21.54 3.76ZM16.90 5.50a1.60 1.60 0 1 0 3.20 0a1.60 1.60 0 1 0 -3.20 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/></g></svg>'
+    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M14.83 15.99 17.08 17.00 16.03 19.55 13.73 18.66 12.46 19.93 13.35 22.23 10.80 23.28 9.79 21.03 8.01 21.03 7.00 23.28 4.45 22.23 5.34 19.93 4.07 18.66 1.77 19.55 0.72 17.00 2.97 15.99 2.97 14.21 0.72 13.20 1.77 10.65 4.07 11.54 5.34 10.27 4.45 7.97 7.00 6.92 8.01 9.17 9.79 9.17 10.80 6.92 13.35 7.97 12.46 10.27 13.73 11.54 16.03 10.65 17.08 13.20 14.83 14.21ZM6.10 15.10a2.80 2.80 0 1 0 5.60 0a2.80 2.80 0 1 0 -5.60 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/><path d="M21.94 4.88 23.48 5.06 23.29 6.92 21.75 6.79 21.13 7.81 21.95 9.12 20.38 10.13 19.52 8.85 18.34 9.00 17.82 10.45 16.05 9.86 16.52 8.38 15.67 7.55 14.20 8.06 13.56 6.30 15.01 5.75 15.13 4.56 13.82 3.74 14.80 2.14 16.13 2.92 17.13 2.28 16.96 0.74 18.82 0.51 19.04 2.04 20.16 2.42 21.26 1.33 22.60 2.64 21.54 3.76ZM16.90 5.50a1.60 1.60 0 1 0 3.20 0a1.60 1.60 0 1 0 -3.20 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/></g><g class="icf"><path d="M14.83 15.99 17.08 17.00 16.03 19.55 13.73 18.66 12.46 19.93 13.35 22.23 10.80 23.28 9.79 21.03 8.01 21.03 7.00 23.28 4.45 22.23 5.34 19.93 4.07 18.66 1.77 19.55 0.72 17.00 2.97 15.99 2.97 14.21 0.72 13.20 1.77 10.65 4.07 11.54 5.34 10.27 4.45 7.97 7.00 6.92 8.01 9.17 9.79 9.17 10.80 6.92 13.35 7.97 12.46 10.27 13.73 11.54 16.03 10.65 17.08 13.20 14.83 14.21ZM6.10 15.10a2.80 2.80 0 1 0 5.60 0a2.80 2.80 0 1 0 -5.60 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/><path d="M21.94 4.88 23.48 5.06 23.29 6.92 21.75 6.79 21.13 7.81 21.95 9.12 20.38 10.13 19.52 8.85 18.34 9.00 17.82 10.45 16.05 9.86 16.52 8.38 15.67 7.55 14.20 8.06 13.56 6.30 15.01 5.75 15.13 4.56 13.82 3.74 14.80 2.14 16.13 2.92 17.13 2.28 16.96 0.74 18.82 0.51 19.04 2.04 20.16 2.42 21.26 1.33 22.60 2.64 21.54 3.76ZM16.90 5.50a1.60 1.60 0 1 0 3.20 0a1.60 1.60 0 1 0 -3.20 0Z" fill="currentColor" fill-rule="evenodd" stroke="none"/></g></svg>',
+    // bar slots (RAVI_BAR below): gear is the bar's Settings slot; the strip's three are the counter's
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z"/><circle cx="12" cy="12" r="3"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M19.32 13.10 21.72 14.33 20.53 17.22 17.95 16.40 16.40 17.95 17.22 20.53 14.33 21.72 13.10 19.32 10.90 19.32 9.67 21.72 6.78 20.53 7.60 17.95 6.05 16.40 3.47 17.22 2.28 14.33 4.68 13.10 4.68 10.90 2.28 9.67 3.47 6.78 6.05 7.60 7.60 6.05 6.78 3.47 9.67 2.28 10.90 4.68 13.10 4.68 14.33 2.28 17.22 3.47 16.40 6.05 17.95 7.60 20.53 6.78 21.72 9.67 19.32 10.90Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
+    bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M3.3 15.3C4.6 14 6 12.5 6 8a6 6 0 0 1 12 0c0 4.5 1.4 6 2.7 7.3A1 1 0 0 1 20 17H4a1 1 0 0 1-.7-1.7z"/><path d="M10.27 21a2 2 0 0 0 3.46 0"/></g><g class="icf"><path d="M3.3 15.3C4.6 14 6 12.5 6 8a6 6 0 0 1 12 0c0 4.5 1.4 6 2.7 7.3A1 1 0 0 1 20 17H4a1 1 0 0 1-.7-1.7z" fill="currentColor"/><path d="M10.27 21a2 2 0 0 0 3.46 0"/></g></svg>',
+    saved: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></g><g class="icf"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor"/></g></svg>',
+    out: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6M21 3l-9 9M15 3h6v6"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect x="3" y="3" width="18" height="18" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="13" y="0" width="11" height="11" fill="#000" stroke="none"/><path d="M21 3l-9 9" fill="none" stroke="#000" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/><path d="M21 3l-9 9M15 3h6v6"/></g></svg>',
+    whatsnew: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6L3.5 8.5"/><path d="M3.5 3.5v5h5"/><path d="M12 7.5V12l3 2"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><circle cx="12" cy="12" r="9.5" fill="#fff" stroke="none"/><path d="M12 7.5V12l3 2" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
+    reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
+    undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
+    log: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.6C10.2 5.2 7 4.5 3 4.9v13.2c4-.4 7.2.3 9 1.7 1.8-1.4 5-2.1 9-1.7V4.9c-4-.4-7.2.3-9 1.7z"/><path d="M12 6.6v13.2"/></svg>'
   };
   return function(name){
     var s = SVG[name] || '';
@@ -67,6 +77,41 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
   }
   container.innerHTML = h;
   container.setAttribute("data-k", "pick");
+};
+
+// THE BAR (from M9.6). Every page's bar is built here, so a slot two pages share is the same
+// copy, and every bar icon comes from the SVG table above by name. A page holds an empty
+// <nav class="bar frost" id="tabs"></nav> (the counter's strip holds only its Layout track)
+// and, straight after it, one line: RAVI_BAR(nav, slots). The slots are added in bar order:
+//   "hub"              the Hub link, slot 1 on every page that has one
+//   {go:"<page id>"}   the page's own Go to slot, on, its icon and name from RAVI_PAGES;
+//                      a:[[name, value], ...] adds attributes after its id
+//   {tag, icon, a}     any other slot: "a" or "button", an icon name from the SVG table,
+//                      and its attributes in order ([name, null] writes a bare attribute)
+// It runs before the page's own script, so a page binds its slots by id as before.
+window.RAVI_BAR = function(nav, slots){
+  if (!nav) { return; }
+  function esc(v){ return String(v).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;"); }
+  function attrs(list){
+    var s = "", k;
+    for (k = 0; k < list.length; k++) { s += " " + list[k][0] + (list[k][1] === null ? "" : '="' + esc(list[k][1]) + '"'); }
+    return s;
+  }
+  var pages = window.RAVI_PAGES || [], h = "", i, j, sl, p;
+  for (i = 0; i < slots.length; i++) {
+    sl = slots[i];
+    if (sl === "hub") {
+      h += '<a class="tab" href="../?hub" aria-label="Hub" data-k="slot">' + window.RAVI_ICON("hub") + '</a>';
+    } else if (sl.go) {
+      p = null;
+      for (j = 0; j < pages.length; j++) { if (pages[j].id === sl.go) { p = pages[j]; } }
+      if (!p) { continue; }
+      h += '<button type="button" class="tab on" id="tabnav"' + attrs(sl.a || []) + ' aria-label="Pages, you are on ' + esc(p.name) + '" data-k="slot">' + p.icon + '</button>';
+    } else {
+      h += '<' + sl.tag + (sl.tag === "button" ? ' type="button"' : '') + attrs(sl.a || []) + '>' + window.RAVI_ICON(sl.icon) + '</' + sl.tag + '>';
+    }
+  }
+  nav.insertAdjacentHTML("beforeend", h);
 };
 
 // MENU STATE. Two things every page's menus share, kept here so a page only needs markup.
