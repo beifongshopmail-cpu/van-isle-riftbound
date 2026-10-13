@@ -1,7 +1,6 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bash /c/dev/rb-tools/run.sh *)",
       "Bash(node *)",
       "Bash(git status*)",
       "Bash(git diff*)",
@@ -20,18 +19,6 @@
       "Bash(git clean*)",
       "Edit(/.claude/settings.json)",
       "Write(/.claude/settings.json)"
-    ]
-  },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash /c/dev/rb-tools/session-check.sh"
-          }
-        ]
-      }
     ]
   },
   "enabledPlugins": {

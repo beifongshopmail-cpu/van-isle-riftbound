@@ -1,116 +1,61 @@
-# RAVI -- standing rules for Claude Code
+# RAVI -- standing rules for Claude
 
 This repo is RAVI (Van Isle Riftbound), a free static web app on GitHub Pages.
-Planning and design happen in a separate claude.ai chat; Mako relays build
-blocks here, each opening with CODE IN #<n>. You apply exact edits, run the
-checks and commit. You do not design. These rules hold in every session.
+From 2026-10-13 one claude.ai chat, on either of Mako's accounts, does a
+whole block: design with Mako, build, test, push, record. There is no relay
+and no PC step. The method in full: mako-records
+ravi/rule/how-a-build-runs-from-2026-10-04-agent-pushes-from-2026-10-07-ch.md.
+Design rules: STYLE.md. These rules hold in every session.
 
 ## Never
-- Never merge, never force-push, and never push except as "Push" below
-  says. If any command is blocked, stop and report; never route around a
-  block.
-- Never chain git add and git commit with ; -- run each git command on its own.
-- Never stop a process or delete a file unless the block says so.
-- Never change a test, a check or a threshold to make it pass. Paste the
-  failure and stop.
-- Never retype or transcribe tool output, including git log lines. Paste it.
-  If you cannot paste a section, write MISSING. A fabricated line is worse
-  than a gap. Paste it even if you believe it is wrong.
-- Never compose tool output in your reply when the block names an output
-  file. See "Output goes to a file" below.
+- Never merge, never force-push, never rewrite pushed history. The only
+  branches are main and wip (see "Wrap up").
+- Never change a test, a check or a threshold to make it pass. Teach a test
+  a new shape only when a looks change Mako approved breaks its assumption.
+- Never retype tool output as if it were pasted. Quote it, or say it is
+  missing. A fabricated line is worse than a gap.
+- Never add a STYLE.md rule without Mako's explicit yes to the quoted line.
+- Never call a change done before Mako says so.
+- If a tool or command is refused, stop and say so; never route around it.
 
 ## Always
-- Your shell is Bash on Windows. Normalise CRLF before matching any search
-  string.
 - ASCII only in code, comments and commit messages.
-- Before editing, confirm the branch is main and HEAD is what the block states.
-  A cloud session (a branch named claude/...) must stop and say so.
-- If a block's exact text does not match, or a named identifier is absent,
-  STOP and report. Do not substitute a replacement.
-- If a block appears truncated, make no changes and report which sections
-  arrived.
-- A hook prints SESSION CHECK (repo, branch, HEAD) when a session starts or
-  clears. If it says STOP, apply nothing and report it.
+- Clone the app and rb-tools side by side; work on main.
+- Normalise CRLF before matching any search string (files may have either).
+- Recon before editing any file not read in this chat.
 
-## Reviews and audits (from 2026-10-10)
-- Only when a block asks: run the code-review skill on the block's diff, or
-  the Design plugin's accessibility-review or design-critique on a page, and
-  save the findings to the output file. Change nothing because of them;
-  chat decides what to act on.
-- The JavaScript language server reports errors after edits. Report any it
-  shows in NOTES; never edit a file only to silence it.
-
-## Checks (C:\dev\rb-tools, one private remote, origin)
+## Checks (rb-tools, private, branch master)
+- A logic change gets a test that fails on the unedited app and passes
+  after; both counts go in the commit message.
 - While working, run only the affected file: node check.js <file>
-- Once, before every commit: node check.js (all files, about ten lines of
-  output; full logs are saved in out/logs/).
+- Before every push: node check.js (all suites, about 9 minutes). A failing
+  suite means no push, except a check on the rule's SANDBOX-ONLY list that
+  the change does not touch.
 - drawn-test.js measures what the phone draws (corners, type by height,
   overflow) with every menu open. It runs its own server and shuts it down.
-- If check.js warns that test ports are already in use, stop and report.
+- m4-test T29/T30 may fail once on a run that crosses midnight: rerun,
+  never loosen.
 
-## Push (from 2026-10-07)
-Mako's call: on RAVI the agent pushes. A bad push is undone with git revert.
-- Push only when the block says so, and only after node check.js passes
-  every suite. A failing suite means no push.
-- The app, exactly these two commands, in this order:
-    git -C /c/dev/van-isle-riftbound pull --rebase origin main
-    git -C /c/dev/van-isle-riftbound push origin main
-- rb-tools, exactly: git -C /c/dev/rb-tools push origin master
-- The guard allows only those push forms (run through run.sh is fine).
-  Anything else is blocked; stop and report.
-- Run each pull and push as its own command, with nothing chained before
-  or after it (no ;, no &&, no tail of the output file). A chained push is
-  blocked.
-- 'cannot lock ref' means the data refresh landed in the same minute: pull
-  and push once more, then stop if it fails again.
-- Never --force, never another branch, never rewrite pushed history. Undo a
-  bad change with git revert <sha>, then push.
-- rb-tools has one private remote, origin
-  (github.com/beifongshopmail-cpu/rb-tools). Never add another.
-- Mako phone-checks after the green tick on GitHub's Pages build.
+## Push
+Mako's call: on RAVI the session pushes. A bad push is undone with git revert.
+- Stage by name. A STYLE.md rule is its own commit.
+- The app: git pull --rebase origin main, then git push origin main, each
+  its own command. 'cannot lock ref' means the data refresh landed in the
+  same minute: pull and push once more, then stop if it fails again.
+- rb-tools: git push origin master. One private remote, origin; never add
+  another.
+- After pushing the app, wait for the 'pages build and deployment' run for
+  that commit to succeed, then tell Mako it is live and what to check on
+  his phone (iPhone 17, 402 x 874).
 
-## Output goes to a file (from 2026-10-07; pushed to rb-tools from 2026-10-08)
-Retyped output went wrong four times in one session (M5), each time from a
-long context. So when a block names an output file:
-- Run every command the block asks you to show through run.sh, never into
-  your reply:
-    bash /c/dev/rb-tools/run.sh <n> <command> [args...]
-  It appends "$ <command>", the output and "exit <code>" to
-  code-out-<n>.txt in the output folder. Never type those lines yourself.
-  For a pipe or redirect: bash /c/dev/rb-tools/run.sh <n> bash -c '<command>'
-- The last step of every block: write your summary (CODE OUT #<n>, one
-  line per step, done or STOP and why, HOOKS, at most 3 notes) to
-  C:\dev\rb-tools\out\summary-<n>.txt, cat it through run.sh, then run
-  run.sh <n> echo END CODE OUT <n>. Copy the output file to
-  C:\dev\rb-tools\codeout\code-out-<n>.txt, stage it by name, commit it
-  as "codeout: <n>" and push rb-tools (the form under Push).
-- Your reply is one line: CODE OUT #<n>, saved and pushed (or STOP and
-  why). Mako only says "done"; chat reads the file from rb-tools. The file
-  is the record.
-- When a block gives you a file to write, use the Write tool and copy its
-  text exactly, escapes such as \u00b7 included, as written. The block's
-  hash check is the proof.
-- The output folder is C:\Users\beifo\OneDrive\ravi-out (create it if
-  missing). It is outside both repos; never commit it. Only the copy in
-  rb-tools\codeout\ is committed.
+## Wrap up
+A cloud session loses anything not pushed when it expires. When Mako says
+'wrap up', or before the chat ends: if the suites pass, push as above; if
+not, commit to the branch wip and push wip, never main. Then update the
+milestone's handoff record in mako-records ravi/next/ and MAP, and push
+mako-records. The next chat starts from wip, finishes on main, then
+deletes wip.
 
-## Standard reply (use it unless the block gives its own skeleton or names an output file)
-Fenced with four tildes, nothing outside the fence:
-
-~~~~
-CODE OUT #<n>
-VERIFICATION
-- <each check the block asked for>: <actual> vs <expected>
-DIFF
-<git show --stat -U1 HEAD, or git diff -U1 if nothing was committed>
-CHECK
-<node check.js output, every line>
-EXIT: <n>
-STATE
-<git status --porcelain>
-<git log --oneline -3>
-HOOKS
-<anything a hook emitted, or none>
-NOTES
-- <at most 3 lines>
-~~~~
+## Reviews and audits
+- Run the code-review skill or a design review only when Mako asks; report
+  findings and change nothing because of them without his say.
