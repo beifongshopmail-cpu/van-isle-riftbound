@@ -148,9 +148,9 @@ Rule for every entry: a page may not set height, min-height, padding, border-rad
 
 Page-local classes named in this file (not in app.css; each lives in the page file shown, and is not a Kit part):
 - index.html (hub): .blk .bi .bn .hubfoot .low
-- calendar/index.html: .cell .dots .ev .evact .evhead .filtered .hemi .hl .hr .l1 .lab .mk .mrow .spots .stick .tyrow
+- calendar/index.html: .cell .dots .ev .evact .evhead .fbody .fcard .fhead .filtered .finfo .fmk .hemi .hl .hr .l1 .lab .mk .mrow .pcards .spots .stick .tyrow
 - counter/index.html: .lgppic .lgptile .num .pass .rail .res .spot .tmv .win
-- trade/index.html: .ln .lnh .rcpimgs .res .sidep .stp .tail .toast .ud .vd
+- trade/index.html: .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .ud .vd
 - feedback/index.html: .fbn .fcard .ship
 - settings/index.html: .sts .starm
 - rules/index.html: .empty .extl .old .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
@@ -316,7 +316,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - No member of a new class or function family is a prefix of another.
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
-- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
+- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
 
@@ -325,13 +325,16 @@ Hub (index.html)
 Calendar (calendar/index.html)
 - Sticky month card (.stick zero-height holder, .card, .hold spacer, arithmetic height), .mrow with month, year and the .hemi pair, gear (#filt, data-fills panel; .filtered marks hidden filters) and collapse chevron (#mtog).
 - Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and three round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evlink the event page), each a .circ with an aria-label and no words, all opening outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
-- Menus: tray #pnav; #panel "Calendar settings" (Area .seg, Event types .pick, Stores .pick). Bar action: subscribe (#subtab). Two controls fill with #panel.
+- Menus: tray #pnav; #panel "Calendar settings" (Area .seg, Event types .pick, Stores .pick); #psub "Follow". Bar action: Follow (#subtab, the bell, data-fills psub). Two controls fill with #panel.
+- Follow (#psub): an (i) in the head opens the note in place (.finfo). Sunken rows follow, each a webcal link to a feed the refresh writes (ics.js: island.ics, victoria.ics, upisland.ics, store/<id>.ics): Whole Island alone in #fall, then a .pcards group (the counter's expanding-card widget) of Greater Victoria and Up Island, glass rows that open in place one at a time to All stores and each store A to Z. A row tapped on this phone shows a bone bell (.fmk) left of its count (vir.follow.v1); RAVI cannot see the phone's calendar, so the bell means tapped, not followed.
+- NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
 Counter (counter/index.html)
 - Fixed .stage with two sides (.side, data-role major, equal or minor), score numerals .num, .rail log, cut score buttons .acts, Pass turn .pass, round timer line .tmv, victory banner .win. Strip (.bar.strip.frost) of four controls; Go to has Hub (withHub true).
 - Menus #pgame (Game settings), #pnew, #pleg, #pevt, #pend, #plog, #ppast with a stack (OPENP, STACK). Game settings and New match have no section labels and share #shared: the top group (.pcards.doors: Pause clock while the clock is on, Match timer, Event), then the player cards; Game settings adds Show on the field, and its foot holds Go to, then End game and New match side by side. The Match timer, Show on the field and each player open in place (.pcard, .pchead), one at a time. Full-card viewer .spot (view kind, scrim .7).
 Trade (trade/index.html)
 - Sticky .plate (search .sf, .sides track with side colours, results .res), ring .vd for the difference, side panels .sidep with .ln lines and steppers .stp, undo bar .ud, toast .toast.
 - Bar: Hub, Go to, Saved trades (#psav, data-fills), Settings (#pset, data-fills). Menus #pnav, #pset, #psav, #phist, #ptrade, #prcp.
+- Trade settings (#pset): currency (no label), Price movement (Off, 7D, 30D, 1Y, All; Off hides the note and every movement mark; a stored 1D reads as 7D), Percent of market price with a small Reset (.rrs) at the label's end, then one row per side (.sidr, two equal columns): the name field (.nf.tall in the side's colour) and the percent in the cards' stepper (.stp), steps of 5 inside 0 to 200. Clear both sides is the menu's foot.
 Feedback (feedback/index.html)
 - .pghead, a glass form card (.fcard, Tally embed), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
 App settings (settings/index.html)
@@ -343,7 +346,7 @@ Rules (rules/index.html)
 
 ## 11. Checks
 
-- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95, m95c, m96. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
+- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95, m95c, m96, m96f, m96c, m96t. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
 - drawn-test.js: with every menu open on all seven pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
 - audit.js: over every page, state and width (375, 390, 430); Chromium from check.js, node audit.js --engine both adds WebKit. A sizes, B alignment, C bare px sizes, D control kinds, E layout safety, plus a scan that pages do not reshape Kit parts. [A]
 - m2-test.js: pages load cleanly (T1), links and manifest resolve (T8), the Riot notice on the hub only (T9), theme colour (T18).
@@ -364,6 +367,9 @@ Rules (rules/index.html)
 - m9l-test.js: the Rules page (documents, articles newest first, an entry opening in place, Riot's warning, search, What's new deeper), its hub block, Go to in one row of five and two rows past five.
 - m95-test.js: the counter's menus after M9.5: a timer set in New match survives Start match, Best of 3 by default, the Match timer in place, the top group, End game and New match the same size and evenly placed, every row's chevron at the right.
 - m95c-test.js: the calendar's event card after M9.5: no Play here, the address and its end, three round buttons in one row at the card's padding at 402 and 360, the in-card line, the one-event calendar files (ics.js, written on every refresh, unchanged files left alone), and PlayRiftbound links in the area feeds.
+- m96f-test.js: the Follow feeds: one per store (never removed) and Up Island; notes say spots left, feeds say when they were checked.
+- m96c-test.js: the calendar's Follow menu (rows, areas in place, links to files that exist, the bell remembered) and NEW since the last visit.
+- m96t-test.js: Trade settings after M9.6 (no Names, Currency or This trade label; Off; side rows half and half; steps of 5; Reset) and the counter strip's icons at 24.
 - m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
