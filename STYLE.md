@@ -200,15 +200,17 @@ Buttons (calendar/index.html, app.css)
 The bar (every page except the hub)
 - .bar.frost: fixed pill, 56 high, 12 from the sides, max-width 456, bottom max(4px, safe-area bottom minus 12px), padding 5, four columns, gap 4, z-index 20. Round slots (.tab), 24 icon.
 - Four slots, always in this order: Hub, Go to, the page's one action, Settings. Slots never move between pages; an unused slot is dimmed in place (disabled).
-- Slot 1 is a link: a href="../?hub" aria-label="Hub" data-k="slot". Slot 2 is a button with id="tabnav" and class "tab on"; its icon is the page's own, filled while on. Slot 4 opens the page's settings menu with data-fills, or is dimmed.
+- Built by RAVI_BAR (pages.js), never written by hand: the page holds an empty nav and, straight after it, one line naming its four slots. "hub" is slot 1 (the Hub link). {go:"<page id>"} is slot 2 (button, id tabnav, class "tab on", its icon and name from RAVI_PAGES, filled while on; a: adds attributes after its id). Every other slot is {tag, icon, a}: "a" or "button", an icon name from the table, and its attributes in order ([name, null] writes a bare one such as disabled). Slot 4 opens the page's settings menu with data-fills, or is dimmed. [T]
 - .tab.on shows the pill --on and the filled drawing (.icf) instead of the outline (.ico). The active slot stays on while its menu or a deeper menu from it is open. [T]
-    <nav class="bar frost" id="tabs">
-      <a class="tab" href="../?hub" aria-label="Hub" data-k="slot"><svg>Hub drawing</svg></a>
-      <button type="button" class="tab on" id="tabnav" aria-label="Pages, you are on Feedback" data-k="slot"><svg>page icon</svg></button>
-      <a class="tab" href="..." aria-label="..." data-k="slot"><svg>action</svg></a>
-      <button type="button" class="tab" disabled aria-label="No settings on this page" data-k="slot"><svg>Settings</svg></button>
-    </nav>
-- The counter's strip is the same shell (.bar.strip.frost) with its own four controls, and no Hub slot, so its Go to keeps a Hub tile. The hub has no bar.
+    <nav class="bar frost" id="tabs"></nav>
+    <script>RAVI_BAR(document.getElementById("tabs"), [
+      "hub",
+      {go:"feedback"},
+      {tag:"a", icon:"out", a:[["class", "tab"], ["href", "https://tally.so/r/QKlGxX"], ["aria-label", "Open the form on its own page"], ["data-k", "slot"]]},
+      {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
+    ]);</script>
+- The counter's strip is the same shell (.bar.strip.frost) with its own four controls, and no Hub slot, so its Go to keeps a Hub tile. Its Layout track is in the markup; RAVI_BAR adds Undo, Log and Game settings after it. The hub has no bar.
+- Every bar in every state, in one picture: rb-tools bar-sheet.js (out/bars/bars-sheet.png). node bar-sheet.js --compare <dirA> <dirB> proves two builds draw the same bars, pixel for pixel.
 
 Menus
 - .panel.frost: fixed, 12 from the sides, max-width 456, corner 24, padding 16, sits 8 above the bar; max-height counts the bar. Shown by .show. Order in the file: .scrim, then panels.
@@ -242,10 +244,10 @@ Confirm and motion helpers
 - [hidden] always wins (display none).
 
 Icons (pages.js RAVI_ICON)
-- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for hub, events, game, trade, feedback, soon, settings.
+- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, soon, settings) and the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log).
 - Each icon has an outline group (.ico) and a filled group (.icf); the filled one shows when its parent has .on. The hub drawing and the strip's two are one drawing in every state.
 - Gaps in a filled icon are real holes cut by a mask, so every mask id on a page is unique. RAVI_ICON numbers its own (rvm1, rvm2, ...). Static markup names its own: rvs-<page>-<what>, e.g. rvs-fb-set.
-- A page icon is added to pages.js as one more entry in the SVG table; the bar copies it inline.
+- Every icon a page or a bar draws is one entry in the SVG table; RAVI_BAR and RAVI_GOTO take it by name. A new icon is added there first, never drawn into a page's bar.
 
 The hub block (index.html)
 - .blk (rendered from RAVI_PAGES into nav#grid.grid): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 52 centred above the name .bn (Poppins 700 15). Link with data-k="do".
@@ -266,9 +268,9 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 
 1. pages.js: edit the first Soon entry of RAVI_PAGES: id, name, path ("<id>/"), icon getter (RAVI_ICON name), rgb "r,g,b". Keep Settings last. Add the icon to the SVG table first if it is new.
 2. Make the folder <id>/ and index.html from the Kit: head as in section 5 (manifest link, theme-color #08090A, apple meta, fonts.css, app.css, pages.js), .wmrow, main wrapper, .pghead or a glass plate, content, footer. The install screen comes with pages.js.
-3. The bar: four slots in order, unused one dimmed. A Go to tray (#pnav) with the .goto filled by RAVI_GOTO, its script, and the double-tap guard script (copy the last script block of feedback/index.html unchanged: touchend, 320ms, 30px, buttons and links skipped, passive false).
+3. The bar: an empty nav and its RAVI_BAR line (section 5), four slots in order, unused one dimmed. A Go to tray (#pnav) with the .goto filled by RAVI_GOTO, its script, and the double-tap guard script (copy the last script block of feedback/index.html unchanged: touchend, 320ms, 30px, buttons and links skipped, passive false).
 4. "Open the app to" (settings) and the hub read pages.js; nothing else to edit there.
-5. Tests: drawn-test.js PAGES list (add [id, "<id>/"]); audit.js DRIVERS (add a run<Page> function to the DRIVERS map, or the generic fallback runs closed-only); m2-test.js page lists (T1, T8, T9, T18); m8-test.js PAGES; a new fail-first test for the page's own logic (pattern of m6-test.js and m7-test.js: node <name>-test.js <app root>), added to the DEFAULT list in check.js.
+5. Tests: drawn-test.js PAGES list (add [id, "<id>/"]); audit.js DRIVERS (add a run<Page> function to the DRIVERS map, or the generic fallback runs closed-only); m2-test.js page lists (T1, T8, T9, T18); m8-test.js PAGES; m96-test.js BARS (its slots and icons); a new fail-first test for the page's own logic (pattern of m6-test.js and m7-test.js: node <name>-test.js <app root>), added to the DEFAULT list in check.js.
 6. Run node check.js. Fix failures; never change a test or threshold to pass.
 7. Mako phone-checks after the green tick on GitHub's Pages build.
 
@@ -341,7 +343,7 @@ Rules (rules/index.html)
 
 ## 11. Checks
 
-- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95, m95c. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
+- check.js: runs drawn-test, m5c, m5d, m5e, m5f, m5g, m5b, m5, m4, m3, audit, m2, m6, m7, m8, m9, m9k, m9l, m9m, m9n, m9p, m95, m95c, m96. Run it once before every commit; node check.js <file> while working. Warns if ports 8900 to 8999 are in use.
 - drawn-test.js: with every menu open on all seven pages at 390x844, checks corners [D], type by height [D], and sideways overflow [D].
 - audit.js: over every page, state and width (375, 390, 430); Chromium from check.js, node audit.js --engine both adds WebKit. A sizes, B alignment, C bare px sizes, D control kinds, E layout safety, plus a scan that pages do not reshape Kit parts. [A]
 - m2-test.js: pages load cleanly (T1), links and manifest resolve (T8), the Riot notice on the hub only (T9), theme colour (T18).
@@ -362,6 +364,8 @@ Rules (rules/index.html)
 - m9l-test.js: the Rules page (documents, articles newest first, an entry opening in place, Riot's warning, search, What's new deeper), its hub block, Go to in one row of five and two rows past five.
 - m95-test.js: the counter's menus after M9.5: a timer set in New match survives Start match, Best of 3 by default, the Match timer in place, the top group, End game and New match the same size and evenly placed, every row's chevron at the right.
 - m95c-test.js: the calendar's event card after M9.5: no Play here, the address and its end, three round buttons in one row at the card's padding at 402 and 360, the in-card line, the one-event calendar files (ics.js, written on every refresh, unchanged files left alone), and PlayRiftbound links in the area feeds.
+- m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
+- bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
   2. Any font-size off the rungs carries an exempt comment (static).
