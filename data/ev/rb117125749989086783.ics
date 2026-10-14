@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117125749989086783@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261121T110000
-DTEND;TZID=America/Vancouver:20261121T140000
+DTSTART;TZID=America/Vancouver:20261121T120000
+DTEND;TZID=America/Vancouver:20261121T150000
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish I
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada

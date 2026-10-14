@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117021049810644601@van-isle-riftbound
-DTSTAMP:20261013T195454Z
+DTSTAMP:20261014T055350Z
 DTSTART:20261018T173000Z
 DTEND:20261018T203000Z
 SUMMARY:Radiance Pre-Rift 1
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n0 of 16 spots left\, checked
-  Oct 13\, 12:54 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
+  Oct 13\, 10:53 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
  vents/117021049810644601
 URL:https://playriftbound.com/en-US/events/117021049810644601
 CATEGORIES:Pre-Rift
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117021055583706596@van-isle-riftbound
-DTSTAMP:20261013T195454Z
+DTSTAMP:20261014T055350Z
 DTSTART:20261018T210000Z
 DTEND:20261019T000000Z
 SUMMARY:Radiance Pre-Rift 2
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
-DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n7 of 16 spots left\, checked
-  Oct 13\, 12:54 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
+DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n6 of 16 spots left\, checked
+  Oct 13\, 10:53 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
  vents/117021055583706596
 URL:https://playriftbound.com/en-US/events/117021055583706596
 CATEGORIES:Pre-Rift
@@ -41,13 +41,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089941548488590@van-isle-riftbound
-DTSTAMP:20261013T195454Z
+DTSTAMP:20261014T055350Z
 DTSTART:20261114T183000Z
 DTEND:20261114T213000Z
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n16 of 16 spots left
- \, checked Oct 13\, 12:54 PM\n$20.00 CAD\nSign up: https://playriftbound.c
+ \, checked Oct 13\, 10:53 PM\n$20.00 CAD\nSign up: https://playriftbound.c
  om/en-US/events/117089941548488590
 URL:https://playriftbound.com/en-US/events/117089941548488590
 CATEGORIES:Summoner Skirmish
@@ -56,13 +56,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089949895350173@van-isle-riftbound
-DTSTAMP:20261013T195454Z
+DTSTAMP:20261014T055350Z
 DTSTART:20261212T183000Z
 DTEND:20261212T213000Z
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n16 of 16 spots left
- \, checked Oct 13\, 12:54 PM\n$20.00 CAD\nSign up: https://playriftbound.c
+ \, checked Oct 13\, 10:53 PM\n$20.00 CAD\nSign up: https://playriftbound.c
  om/en-US/events/117089949895350173
 URL:https://playriftbound.com/en-US/events/117089949895350173
 CATEGORIES:Summoner Skirmish

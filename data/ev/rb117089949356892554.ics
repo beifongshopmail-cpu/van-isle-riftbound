@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117089949356892554@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261212T150000
-DTEND;TZID=America/Vancouver:20261212T180000
+DTSTART;TZID=America/Vancouver:20261212T160000
+DTEND;TZID=America/Vancouver:20261212T190000
 SUMMARY:Radiance Summoner Skirmish II @ Colossal Cards & Collectables Court
  enay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada

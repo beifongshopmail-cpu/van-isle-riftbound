@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117089694282897798@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261121T140000
-DTEND;TZID=America/Vancouver:20261121T170000
+DTSTART;TZID=America/Vancouver:20261121T150000
+DTEND;TZID=America/Vancouver:20261121T180000
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
 DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 

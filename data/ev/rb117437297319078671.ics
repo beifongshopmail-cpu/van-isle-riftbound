@@ -4,15 +4,16 @@ PRODID:-//van-isle-riftbound//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
-UID:899243@van-isle-riftbound
+UID:rb117437297319078671@van-isle-riftbound
 DTSTAMP:20260901T000000Z
 DTSTART;TZID=America/Vancouver:20261025T113000
-DTEND;TZID=America/Vancouver:20261025T154000
-SUMMARY:Sunday morning "nexus Night"
-LOCATION:721 Station Avenue\, Victoria\, BC\, V9B 2S1\, CA
+DTEND;TZID=America/Vancouver:20261025T143000
+SUMMARY:Sunday morning Nexus"night"
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n24 of 24 spots left\
- n$6.00 CAD\nSign up: https://locator.riftbound.uvsgames.com/events/899243
-URL:https://locator.riftbound.uvsgames.com/events/899243
+ n$6.00 USD\nSign up: https://playriftbound.com/en-US/events/11743729731907
+ 8671
+URL:https://playriftbound.com/en-US/events/117437297319078671
 CATEGORIES:Nexus Nights
 STATUS:CONFIRMED
 TRANSP:OPAQUE
