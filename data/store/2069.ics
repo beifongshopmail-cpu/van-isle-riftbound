@@ -11,14 +11,14 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:903321@van-isle-riftbound
-DTSTAMP:20261014T055350Z
+DTSTAMP:20261014T174939Z
 DTSTART:20261015T010000Z
 DTEND:20261015T040000Z
 SUMMARY:Wednesday Evening Nexus Nights - 1v1
 LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
  V8T 2C3\, CA
 DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n16 of 16 spots left\, 
- checked Oct 13\, 10:53 PM\n$5.00 CAD\nSign up: https://locator.riftbound.u
+ checked Oct 14\, 10:49 AM\n$5.00 CAD\nSign up: https://locator.riftbound.u
  vsgames.com/events/903321
 URL:https://locator.riftbound.uvsgames.com/events/903321
 CATEGORIES:Nexus Nights
@@ -27,13 +27,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129734731960429@van-isle-riftbound
-DTSTAMP:20261014T055350Z
+DTSTAMP:20261014T174939Z
 DTSTART:20261018T000000Z
 DTEND:20261018T030000Z
 SUMMARY:Gauntlet Games Radiance Pre-Rift
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Pre-Rift\nGauntlet Games\, Victoria\n28 of 28 spots left\, chec
- ked Oct 13\, 10:53 PM\n$40.00 CAD\nSign up: https://playriftbound.com/en-U
+ ked Oct 14\, 10:49 AM\n$40.00 CAD\nSign up: https://playriftbound.com/en-U
  S/events/117129734731960429
 URL:https://playriftbound.com/en-US/events/117129734731960429
 CATEGORIES:Pre-Rift
@@ -42,13 +42,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129739220447379@van-isle-riftbound
-DTSTAMP:20261014T055350Z
+DTSTAMP:20261014T174939Z
 DTSTART:20261022T010000Z
 DTEND:20261022T040000Z
 SUMMARY:Gauntlet Games Radiance Pre-Rift
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Pre-Rift\nGauntlet Games\, Victoria\n24 of 24 spots left\, chec
- ked Oct 13\, 10:53 PM\n$40.00 CAD\nSign up: https://playriftbound.com/en-U
+ ked Oct 14\, 10:49 AM\n$40.00 CAD\nSign up: https://playriftbound.com/en-U
  S/events/117129739220447379
 URL:https://playriftbound.com/en-US/events/117129739220447379
 CATEGORIES:Pre-Rift
@@ -57,13 +57,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129749064470654@van-isle-riftbound
-DTSTAMP:20261014T055350Z
+DTSTAMP:20261014T174939Z
 DTSTART:20261114T180000Z
 DTEND:20261114T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 1
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 13\, 10:53 PM\nFree\nSign up: https://playriftbound.com/e
+ ft\, checked Oct 14\, 10:49 AM\nFree\nSign up: https://playriftbound.com/e
  n-US/events/117129749064470654
 URL:https://playriftbound.com/en-US/events/117129749064470654
 CATEGORIES:Summoner Skirmish
@@ -72,13 +72,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129753104838820@van-isle-riftbound
-DTSTAMP:20261014T055350Z
+DTSTAMP:20261014T174939Z
 DTSTART:20270109T180000Z
 DTEND:20270109T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 2
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 13\, 10:53 PM\nFree\nSign up: https://playriftbound.com/e
+ ft\, checked Oct 14\, 10:49 AM\nFree\nSign up: https://playriftbound.com/e
  n-US/events/117129753104838820
 URL:https://playriftbound.com/en-US/events/117129753104838820
 CATEGORIES:Summoner Skirmish
