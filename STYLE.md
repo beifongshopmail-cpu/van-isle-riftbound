@@ -50,6 +50,8 @@ Glass and frost
 - --on rgba(255,255,255,.14): the bar's you-are-here pill
 - --recess rgba(0,0,0,.35): sunken surfaces
 - --scrim rgba(0,0,0,.35): menu scrim
+- --cg .30: the coloured glass, how much colour a coloured surface carries (section 4)
+- --tint: the page colour inside glass, set by pages.js on a page marked glass:true, rgba(page rgb, --cg); transparent elsewhere
 Type
 - --disp "Poppins", system-ui, -apple-system, sans-serif
 - --text "Nunito", system-ui, -apple-system, sans-serif
@@ -118,7 +120,7 @@ Sizes
 Corners
 - A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D]
 - Cut track (.seg.multi, counter score buttons): round outer ends of half the height, 6 inner corners (--r-cut), 3 gaps (--gap-cut). [D]
-- Surface corners: 24 for menus, the Go to track and the two sticky surfaces; 22 (half a row) for every group and card (.pick, .doors, .pghead, .ev, saved-trade cards, feedback form); 20 for tiles (.gt Go to tiles, .blk hub blocks); a tray is 30 (24 plus its 6 padding).
+- Surface corners: 24 for menus, the Go to track and the two sticky surfaces; 22 (half a row) for every group and card (.pick, .doors, .ev, saved-trade cards, the feedback form group); 20 for tiles (.gt Go to tiles, .blk hub blocks); a tray is 30 (24 plus its 6 padding).
 - Pictures and inner joins may use smaller page-local corners: trade .lnh 14 and .rcpimgs img 12, counter .lgptile 10 and .lgppic 8, the calendar .hl and .hr join 5, the install step icon .gwstep img 6. A new surface uses one of the three.
 Spacing
 - 6 within a group, 14 between groups (.row margin-bottom 14, .lb label 6 above its control).
@@ -132,15 +134,21 @@ Colour
 - Players: Yours/P1 blue --p1, Theirs/P2 pink --p2. The counter's six swatches are the player's choice for one match; the first two are the defaults.
 - The only alarm colour is --over (the counter's --over-deep #8C1F19 is its pressed shade). The calendar's amber #FFC24D on low spots is a caution, always with words.
 - Event types: each has a mark shape, a hue and its name in words on every card. Order everywhere: Open Play, Learn-to-Play, Nexus Nights, Summoner Skirmish, Pre-Rift, Other.
-  - Open Play 180,90,255, circle (s-circle)
-  - Learn-to-Play 40,220,130, ring (s-ring)
-  - Nexus Nights 63,169,245, triangle (s-tri)
-  - Summoner Skirmish 255,176,32, diamond (s-diamond)
-  - Pre-Rift 30,200,195, pentagon (s-penta)
+  - Open Play 115,80,240, circle (s-circle)
+  - Learn-to-Play 0,190,140, ring (s-ring)
+  - Nexus Nights 255,200,40, triangle (s-tri): the Events page colour, the most common card
+  - Summoner Skirmish 200,35,70, diamond (s-diamond)
+  - Pre-Rift 205,220,240, pentagon (s-penta)
   - Other 90,96,106, outlined hexagon (s-hex). The filter row reads Other events; a card reads Event.
 - Marks are one drawn set on a 12 grid with round joins, in a fixed square: 12 in a row (.mk), 10 on a card (.ev .l1 .mk), 9 on the month grid (.dots .mk).
-- Event card body: glass with rgba(type rgb, .25); Nexus .26, Skirmish .24 (--ga).
+- Event card body: coloured glass (below) in the type rgb.
 - A page colour (hub block, event type) is given as an rgb triple; tints are computed in script (hub icon and name: toward white by .62; calendar lit: .40).
+- Coloured glass (Mako 2026-10-15): a coloured surface carries its colour at --cg (.30) inside the glass, with the usual rim and base glow, frosted (blur 20, saturate 160%), and no solid base. One recipe (.cg, colour as --c) for hub blocks, event cards, trade side cards, Rules sections and a coloured page's glass. Fallback without blur: the same colour over --frost-solid. Plain glass inside glass is not frosted again.
+- See-through chrome stays clear: menus and the glass inside them, the bar, the strip, the calendar month card and the trade plate. The bar's you-are-here pill wears the page colour (rgb .54, its icon toward white by .62).
+- Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240. Feedback, Rules and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game and Trade keep clear glass.
+- Rules sections by kind: Current documents jade 0,190,140, Errata garnet 200,35,70, FAQs and rulings gold 255,200,40; always beside the words that name them.
+- Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
+- On a page colour, grey text inside glass is #DCDEE2, not --muted.
 
 ## 5. The Kit (shared parts)
 
@@ -165,8 +173,8 @@ Page shell (feedback/index.html, settings/index.html)
     <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
 
 Page head, section head, glass card (feedback/index.html)
-- .pghead.glass: a text page's title and one line, in a glass plate. Corner 22, padding 14 16 15, h2 20 (.ttl), p 13 muted. Use once, first in the main wrapper.
-    <header class="pghead glass"><h2 class="ttl">Feedback</h2><p>One line.</p></header>
+- .lede: a text page opens with one plain line under the wordmark, 13 muted, no glass; its title is an h2.sr for screen readers (Mako 2026-10-15: the glass header block retired on Feedback, Rules and App settings). .pghead.glass stays in app.css for now, used on no page.
+    <h2 class="sr">Feedback</h2><p class="lede">One line.</p>
 - .shead: title left at 17, optional .sp and .cnt (12 muted) right. min-height 32, margin-bottom 10.
     <div class="shead"><h2>Recently shipped</h2></div>
 - Glass card: any section with .glass and a page-local class that sets only margin and corner 22 (feedback .fcard, settings .sts). A group inside it is the Kit's own.
@@ -267,7 +275,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 ## 6. New page checklist (in this order)
 
 1. pages.js: edit the first Soon entry of RAVI_PAGES: id, name, path ("<id>/"), icon getter (RAVI_ICON name), rgb "r,g,b". Keep Settings last. Add the icon to the SVG table first if it is new.
-2. Make the folder <id>/ and index.html from the Kit: head as in section 5 (manifest link, theme-color #08090A, apple meta, fonts.css, app.css, pages.js), .wmrow, main wrapper, .pghead or a glass plate, content, footer. The install screen comes with pages.js.
+2. Make the folder <id>/ and index.html from the Kit: head as in section 5 (manifest link, theme-color #08090A, apple meta, fonts.css, app.css, pages.js), .wmrow, main wrapper, .lede or a glass plate, content, footer. The install screen comes with pages.js.
 3. The bar: an empty nav and its RAVI_BAR line (section 5), four slots in order, unused one dimmed. A Go to tray (#pnav) with the .goto filled by RAVI_GOTO, its script, and the double-tap guard script (copy the last script block of feedback/index.html unchanged: touchend, 320ms, 30px, buttons and links skipped, passive false).
 4. "Open the app to" (settings) and the hub read pages.js; nothing else to edit there.
 5. Tests: drawn-test.js PAGES list (add [id, "<id>/"]); audit.js DRIVERS (add a run<Page> function to the DRIVERS map, or the generic fallback runs closed-only); m2-test.js page lists (T1, T8, T9, T18); m8-test.js PAGES; m96-test.js BARS (its slots and icons); a new fail-first test for the page's own logic (pattern of m6-test.js and m7-test.js: node <name>-test.js <app root>), added to the DEFAULT list in check.js.
@@ -336,11 +344,11 @@ Trade (trade/index.html)
 - Bar: Hub, Go to, Saved trades (#psav, data-fills), Settings (#pset, data-fills). Menus #pnav, #pset, #psav, #phist, #ptrade, #prcp.
 - Trade settings (#pset): currency (no label), Price movement (Off, 7D, 30D, 1Y, All; Off hides the note and every movement mark; a stored 1D reads as 7D), Percent of market price with a small Reset (.rrs) at the label's end, then one row per side (.sidr, two equal columns): the name field (.nf.tall in the side's colour) and the percent in the cards' stepper (.stp), steps of 5 inside 0 to 200. Clear both sides is the menu's foot.
 Feedback (feedback/index.html)
-- .pghead, a glass form card (.fcard, Tally embed), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
+- .lede, the form folded in one group under a Send feedback row (kind open; the Tally embed loads again when it opens), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
 App settings (settings/index.html)
-- .pghead, two glass cards (.sts) holding a .shead and a .pick: Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row). Reset in the bar's third slot, two taps; Settings slot dimmed.
+- .lede, two glass cards (.sts) holding a .shead and a .pick: Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row). Reset in the bar's third slot, two taps; Settings slot dimmed.
 Rules (rules/index.html)
-- Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .pghead, a search field (.sf with a Clear .fbtn, dimmed while empty), then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
+- Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty), then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, names first, at most 40.
 - Bar: Hub, Go to, What's new (#pnew, data-fills; Riot's articles newest first, each opening #part deeper), Settings dimmed.
 
