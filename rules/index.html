@@ -65,10 +65,8 @@ body{-webkit-font-smoothing:antialiased;
 <div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
 
 <main id="rl">
-  <header class="pghead glass">
-    <h2 class="ttl">Rules</h2>
-    <p>Riot's official errata, FAQs and rulings, word for word.</p>
-  </header>
+  <h2 class="sr">Rules</h2>
+  <p class="lede">Riot's official errata, FAQs and rulings, word for word.</p>
 
   <div class="srow">
     <div class="sf">
@@ -87,15 +85,15 @@ body{-webkit-font-smoothing:antialiased;
   <div id="home">
     <section>
       <div class="shead"><h2>Current documents</h2></div>
-      <div class="doors" id="docs"></div>
+      <div class="doors" id="docs" style="--tint:rgba(0,190,140,.40)"></div>
     </section>
     <section>
       <div class="shead"><h2>Errata</h2></div>
-      <div class="doors" id="errata" data-k="deeper"></div>
+      <div class="doors" id="errata" data-k="deeper" style="--tint:rgba(200,35,70,.40)"></div>
     </section>
     <section>
       <div class="shead"><h2>FAQs and rulings</h2></div>
-      <div class="doors" id="faqs" data-k="deeper"></div>
+      <div class="doors" id="faqs" data-k="deeper" style="--tint:rgba(255,200,40,.40)"></div>
     </section>
   </div>
   <p class="empty" id="loadfail" hidden>The rules could not be loaded. Check your connection and open the page again.</p>
@@ -218,6 +216,7 @@ body{-webkit-font-smoothing:antialiased;
   function fillArticle(id){
     var s = SRC[id], list = BYSRC[id] || [], h = "", group = null, open = false, i;
     el("arttl").textContent = s.kind === "hub" ? s.title : cap(s.set) + (s.kind === "errata" ? " errata" : " FAQ");
+    kindTint(s.kind);
     el("artcnt").textContent = list.length;
     if(s.notice) h += '<div class="rnote">' + s.notice + '</div>';
     for(i = 0; i < list.length; i++){
@@ -233,8 +232,17 @@ body{-webkit-font-smoothing:antialiased;
     h += '<p class="rsrc">' + esc(s.title) + (s.published ? ', published ' + day(s.published) : '') + '. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Read it on playriftbound.com</a></p>';
     el("artbody").innerHTML = h;
   }
+  // THE KIND COLOURS (colour system, Mako 2026-10-14): Riot's current documents jade, errata
+  // garnet, FAQs and rulings gold, always beside the words that name the kind. An article's
+  // menu takes its kind's colour. A new kind gets the next palette colour here.
+  var KINDC = {hub:"0,190,140", errata:"200,35,70", faq:"255,200,40"};
+  function kindTint(kind){
+    var c = KINDC[kind] || KINDC.faq;
+    el("part").style.setProperty("--tint", "rgba(" + c + ",.40)");
+  }
   function fillLegal(it){
     var s = SRC[it.source];
+    kindTint("hub");
     el("arttl").textContent = it.title;
     el("artcnt").textContent = "";
     el("artbody").innerHTML = rtx(it.html, s.url) + '<p class="rsrc">From Riot\'s Rules Hub. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Open it on playriftbound.com</a></p>';

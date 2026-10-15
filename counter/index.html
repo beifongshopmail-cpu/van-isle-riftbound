@@ -238,7 +238,6 @@
     font-family:var(--disp);font-weight:600;font-size:15px;text-align:center;
     color:var(--pc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sidebtn:active,.sidebtn.armed{background:var(--pcr);color:var(--bone)}
-  .sidebtn{--tint:transparent}   /* a side button belongs to its player: no page colour under it */
   #nextrow .sidebtn{display:flex;align-items:center;justify-content:center;gap:.5ch}
   .sidebtn .nnm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .sidebtn .nsuf{flex:0 0 auto}
@@ -963,9 +962,9 @@
     return (MON[mi] || "") + " " + parseInt(p[2], 10);
   }
   // Player 1 is blue and player 2 pink by default: the trade page's hues.
-  var SWATCH = ["#5DA5EE","#EE5F9C","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
-  var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#5DA5EE" },
-                  2:{ name:"Player 2", legend:"", art:"", colour:"#EE5F9C" } };
+  var SWATCH = ["#5091FF","#F04B64","#FFC828","#00BE8C","#7350F0","#CDDCF0"];
+  var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#5091FF" },
+                  2:{ name:"Player 2", legend:"", art:"", colour:"#F04B64" } };
   // A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE. The stain (.14) and the
   // press (.50) are computed here rather than with color-mix(), which the
   // device floor cannot count on.

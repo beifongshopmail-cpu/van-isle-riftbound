@@ -42,14 +42,15 @@ window.RAVI_PAGES = [
   {id:"calendar", name:"Events", path:"calendar/", get icon(){ return window.RAVI_ICON("events"); }, rgb:"255,200,40"},
   {id:"counter", name:"Game", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, rgb:"200,35,70"},
   {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, rgb:"115,80,240"},
-  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, rgb:"40,95,240"},
-  {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, rgb:"0,190,140"},
+  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, rgb:"40,95,240", glass:true},
+  {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, rgb:"0,190,140", glass:true},
   {id:"soon2", name:"Soon", path:"", get icon(){ return window.RAVI_ICON("soon"); }, rgb:""},
   {id:"soon3", name:"Soon", path:"", get icon(){ return window.RAVI_ICON("soon"); }, rgb:""},
-  {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240"}
+  {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
 ];
 
-// THE PAGE COLOUR (colour system, 2026-10-14). Each page's glass takes its RAVI_PAGES colour:
+// THE PAGE COLOUR (colour system, 2026-10-14). Every page's bar pill takes its RAVI_PAGES colour;
+// a page marked glass:true (Feedback, Rules, Settings) also tints its glass.
 // pages.js finds the page from its folder and sets --page (the rgb triple), --tint (the glass
 // tint, .40), --on-pc / --on-ink (the bar's you-are-here pill and its icon) and the class
 // paged (app.css lifts grey text on tinted glass so it stays readable). The hub sets
@@ -64,10 +65,12 @@ window.RAVI_PAGES = [
       for (r = []; r.length < 3;) { r.push(Math.round(+c[r.length] + (255 - +c[r.length]) * .62)); }
       var st = document.documentElement.style;
       st.setProperty("--page", pages[i].rgb);
-      st.setProperty("--tint", "rgba(" + pages[i].rgb + ",.40)");
       st.setProperty("--on-pc", "rgba(" + pages[i].rgb + ",.54)");
       st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
-      document.documentElement.classList.add("paged");
+      if (pages[i].glass) {
+        st.setProperty("--tint", "rgba(" + pages[i].rgb + ",.40)");
+        document.documentElement.classList.add("paged");
+      }
       return;
     }
   }
