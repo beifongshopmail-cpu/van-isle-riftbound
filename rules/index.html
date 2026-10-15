@@ -104,12 +104,12 @@ body{-webkit-font-smoothing:antialiased;
   </footer>
 </main>
 
-<!-- THE STANDARD BAR: Hub, Go to, What's new, Settings (dimmed). -->
+<!-- THE STANDARD BAR: Hub, Go to, Latest, Settings (dimmed). -->
 <nav class="bar frost" id="tabs"></nav>
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"rules"},
-  {tag:"button", icon:"whatsnew", a:[["class", "tab"], ["id", "tabnew"], ["aria-label", "What's new"], ["data-fills", "pnew"], ["data-k", "slot"]]},
+  {tag:"button", icon:"whatsnew", a:[["class", "tab"], ["id", "tabnew"], ["aria-label", "Latest"], ["data-fills", "pnew"], ["data-k", "slot"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 
@@ -117,8 +117,8 @@ body{-webkit-font-smoothing:antialiased;
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
-<section class="panel frost" id="pnew" aria-hidden="true" aria-label="What's new">
-  <div class="phead"><h4 class="ttl">What's new</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pnew" aria-hidden="true" aria-label="Latest">
+  <div class="phead"><h4 class="ttl">Latest</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="doors" id="newlist" data-k="deeper"></div><p class="rsrc">Riot's rules articles, newest first. RAVI checks Riot's pages every few hours.</p></div>
 </section>
 <section class="panel frost" id="part" aria-hidden="true" aria-label="Article">
@@ -144,7 +144,7 @@ body{-webkit-font-smoothing:antialiased;
   function strip(h){ return h ? (PARSE.parseFromString(h, "text/html").body.textContent || "").replace(/\s+/g, " ").trim() : ""; }
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>';
   var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
-  var OUT = '<svg class="extl" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M17 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h4"/></svg>';
+  var OUT = '<svg class="extl" viewBox="0 0 24 24"><path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6M21 3l-9 9M15 3h6v6"/></svg>';
 
   // Riot's markup as fetch-rules.js kept it. Pictures stay on Riot's page
   // for now (a link to the article instead); links open outside the app.

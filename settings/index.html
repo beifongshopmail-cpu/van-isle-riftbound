@@ -57,14 +57,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="starm" id="starm" aria-live="polite">Tap reset again to put every setting back.</p>
 </main>
 
-<!-- THE STANDARD BAR. Slots never move between pages: the Settings slot is
-     here, dimmed in place, because this page is the settings. -->
+<!-- THE STANDARD BAR. Slots never move between pages: the fourth slot is
+     here, dimmed in place, showing Soon until it has a use (Mako 2026-10-15). -->
 <nav class="bar frost" id="tabs"></nav>
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"settings"},
   {tag:"button", icon:"reset", a:[["class", "tab"], ["id", "streset"], ["aria-label", "Reset settings"], ["data-k", "slot"]]},
-  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "This page is the settings"], ["data-k", "slot"]]}
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]}
 ]);</script>
 
 <div class="scrim" id="scrim"></div>
