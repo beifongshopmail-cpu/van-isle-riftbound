@@ -31,9 +31,11 @@ body{-webkit-font-smoothing:antialiased;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 /* the form sits in a glass card. Tally draws its own fields and colours;
    those are set in Tally, not here. */
-.fopen{margin-top:20px}
-.fcard{border-radius:22px;padding:8px;margin:8px 0 12px;min-height:200px;overflow:hidden}
-.fcard iframe{display:block;width:100%;border:0;background:transparent}
+/* the form opens in place inside its group (kind open): the row, then the form under it */
+.fgrp{margin:20px 0 12px}
+.fgrp > .door:has(+ .fbody[hidden]){background-image:none}   /* no divider under the row while the form is folded */
+.fbody{padding:0 8px 8px;min-height:200px}
+.fbody iframe{display:block;width:100%;border:0;background:transparent}
 /* the store-neutral line: muted small print directly under the form */
 .fbn{margin:0 4px 30px;font-size:13px;line-height:1.5;color:var(--muted)}
 .lead{margin:-6px 4px 10px;font-size:12px;color:var(--muted)}
@@ -51,10 +53,12 @@ body{-webkit-font-smoothing:antialiased;
   <h2 class="sr">Feedback</h2>
   <p class="lede">If something is broken, an event is wrong or missing, or you want the app to do something it does not do yet, this is where to say so.</p>
 
-  <button type="button" class="door btn glass fopen" id="fopen" aria-expanded="false" aria-controls="fform" data-k="open"><span class="t">Send feedback</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
-  <section class="fcard glass" id="fform" hidden>
+<div class="doors fgrp">
+  <button type="button" class="door btn glass" id="fopen" aria-expanded="false" aria-controls="fform" data-k="open"><span class="t">Send feedback</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
+  <div class="fbody" id="fform" hidden>
     <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
-  </section>
+  </div>
+  </div>
 
   <p class="fbn">A free tool for the Riftbound scene on Vancouver Island. It is not a contact form for any store, including the one that maintains it. Anything about a particular shop's events, prices or stock is better taken to that shop directly.</p>
 

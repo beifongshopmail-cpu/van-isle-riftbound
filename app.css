@@ -99,6 +99,9 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   .cg{background:linear-gradient(rgba(var(--c),var(--cg)),rgba(var(--c),var(--cg))),var(--glass)}
   .cg,html.paged main .glass,html.paged main .doors{-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+  /* a surface carries the frost once: plain glass inside glass (a group's rows, a card's buttons) adds none;
+     a coloured surface (.cg) always frosts, wherever it sits */
+  .glass .glass:not(.cg),.doors .glass:not(.cg),.cg .glass:not(.cg),html.paged main .glass .glass:not(.cg),html.paged main .doors .glass:not(.cg){-webkit-backdrop-filter:none;backdrop-filter:none}
 }
 /* on a page colour, grey text inside glass is lifted to stay readable (4.4:1 or better on the lightest, Settings) */
 html.paged .glass,html.paged .doors{--muted:#DCDEE2}
