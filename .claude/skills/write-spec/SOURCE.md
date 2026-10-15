@@ -1,0 +1,1 @@
+Copied unchanged from github.com/anthropics/knowledge-work-plugins, product-management/skills/write-spec (commit e6b5053, 2026-10-15), Apache License 2.0 (LICENSE.txt). Copied so every RAVI chat on either account loads it with the repo.

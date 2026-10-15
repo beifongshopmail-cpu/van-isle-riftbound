@@ -57,5 +57,5 @@ mako-records. The next chat starts from wip, finishes on main, then
 deletes wip.
 
 ## Reviews and audits
-- Run the code-review skill or a design review only when Mako asks; report
+- Run the review-code skill or a design review only when Mako asks; report
   findings and change nothing because of them without his say.
