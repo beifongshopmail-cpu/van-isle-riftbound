@@ -52,7 +52,7 @@ window.RAVI_PAGES = [
 // THE PAGE COLOUR (colour system, 2026-10-14). Every page's bar pill takes its RAVI_PAGES colour;
 // a page marked glass:true (Feedback, Rules, Settings) also tints its glass.
 // pages.js finds the page from its folder and sets --page (the rgb triple), --tint (the glass
-// tint, .40), --on-pc / --on-ink (the bar's you-are-here pill and its icon) and the class
+// tint, at --cg), --on-pc / --on-ink (the bar's you-are-here pill and its icon) and the class
 // paged (app.css lifts grey text on tinted glass so it stays readable). The hub sets
 // nothing: its plate stays clear and each block carries its own colour.
 (function(){
@@ -68,7 +68,7 @@ window.RAVI_PAGES = [
       st.setProperty("--on-pc", "rgba(" + pages[i].rgb + ",.54)");
       st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
       if (pages[i].glass) {
-        st.setProperty("--tint", "rgba(" + pages[i].rgb + ",.40)");
+        st.setProperty("--tint", "rgba(" + pages[i].rgb + ",var(--cg))");
         document.documentElement.classList.add("paged");
       }
       return;

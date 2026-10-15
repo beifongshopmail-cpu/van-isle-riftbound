@@ -22,7 +22,7 @@
    linked above. This block holds only what is the trade page's own. */
 
 /* the two sides' hues, the app's two player colours: yours blue, theirs pink */
-:root{--yc:#5091FF;--tc:#F04B64}
+:root{--yc:#5DA5EE;--tc:#EE5F9C}
 html{background:var(--ground)}
 body{
   -webkit-font-smoothing:antialiased;
@@ -76,8 +76,8 @@ a{color:inherit;text-decoration:none}
    name column never changes width from row to row. A control that acts on
    a side wears that side: the side's stain at rest and its press when
    pressed, the counter's score-button values. */
-.res{--sc:80,145,255}
-.res.to2{--sc:240,75,100}
+.res{--sc:93,165,238}
+.res.to2{--sc:238,95,156}
 .buy{flex:0 0 84px;width:84px;height:var(--sz-sm);padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
   background:rgba(var(--sc),.14);color:rgb(var(--sc));font-family:var(--disp);font-weight:600;font-size:13px}
 .buy:active{background:rgba(var(--sc),.50);color:var(--bone)}
@@ -109,8 +109,8 @@ a{color:inherit;text-decoration:none}
 /* THE TWO SIDES: the switch's side first and open, the other one tap away */
 .sidep{border-radius:22px;padding:2px 14px 6px}
 .sidep+.sidep{margin-top:12px}
-.sidep[data-s="1"]{background:rgba(80,145,255,.10)}
-.sidep[data-s="2"]{background:rgba(240,75,100,.10)}
+.sidep[data-s="1"]{--c:93,165,238}
+.sidep[data-s="2"]{--c:238,95,156}   /* coloured glass (app.css .cg) in each side's colour */
 .thd{display:flex;align-items:center;gap:8px;min-height:52px}
 .thd .h2{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:-.005em}
 .sidep[data-s="1"] .h2{color:var(--yc)} .sidep[data-s="2"] .h2{color:var(--tc)}
@@ -257,8 +257,8 @@ a{color:inherit;text-decoration:none}
       <svg viewBox="0 0 196 196" aria-hidden="true">
         <defs>
           <linearGradient id="rim" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".35" stop-color="#fff" stop-opacity=".14"/><stop offset=".6" stop-color="#fff" stop-opacity=".02"/><stop offset="1" stop-color="#fff" stop-opacity=".16"/></linearGradient>
-          <linearGradient id="gb1" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#5091FF" stop-opacity=".68"/><stop offset="1" stop-color="#5091FF" stop-opacity=".30"/></linearGradient>
-          <linearGradient id="gb2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#F04B64" stop-opacity=".68"/><stop offset="1" stop-color="#F04B64" stop-opacity=".30"/></linearGradient>
+          <linearGradient id="gb1" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#5DA5EE" stop-opacity=".68"/><stop offset="1" stop-color="#5DA5EE" stop-opacity=".30"/></linearGradient>
+          <linearGradient id="gb2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#EE5F9C" stop-opacity=".68"/><stop offset="1" stop-color="#EE5F9C" stop-opacity=".30"/></linearGradient>
           <linearGradient id="spec" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
           <linearGradient id="rimT" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="196"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity=".03"/><stop offset="1" stop-color="#fff" stop-opacity=".08"/></linearGradient>
         </defs>
@@ -269,12 +269,12 @@ a{color:inherit;text-decoration:none}
     <div class="flank f2"><span class="fk" id="fk2">Theirs</span><span class="fv" id="fv2"></span></div>
   </section>
 
-  <section class="sidep glass" id="sideA" data-s="1">
+  <section class="sidep glass cg" id="sideA" data-s="1">
     <div class="thd"><span class="h2" id="hA"></span><span class="pcx" id="pcA"></span><span class="cntx" id="cA"></span><span class="gap"></span><span class="tot" id="tA"></span>
       <button type="button" class="circ btn glass tog" id="togA" data-act="tog" data-tog="A" aria-expanded="true" aria-label="Show or hide these cards" data-k="open"><svg class="chev" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button></div>
     <div id="lA"></div>
   </section>
-  <section class="sidep glass" id="sideB" data-s="2">
+  <section class="sidep glass cg" id="sideB" data-s="2">
     <div class="thd"><span class="h2" id="hB"></span><span class="pcx" id="pcB"></span><span class="cntx" id="cB"></span><span class="gap"></span><span class="tot" id="tB"></span>
       <button type="button" class="circ btn glass tog" id="togB" data-act="tog" data-tog="B" aria-expanded="false" aria-label="Show or hide these cards" data-k="open"><svg class="chev" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button></div>
     <div id="lB"></div>
@@ -1333,7 +1333,7 @@ a{color:inherit;text-decoration:none}
   function tlSideHTML(rec, n){
     var a = rec["s" + n] || [], h = "", k, it, u, now;
     var pc = (rec.pct && rec.pct[n] != null) ? rec.pct[n] : 100;
-    h += '<section class="sidep glass" data-s="' + n + '"><div class="thd"><span class="h2">' + esc(Nm(n, rec.nm || {})) + '</span>'
+    h += '<section class="sidep glass cg" data-s="' + n + '"><div class="thd"><span class="h2">' + esc(Nm(n, rec.nm || {})) + '</span>'
       + '<span class="pcx">' + (pc !== 100 ? "at " + pc + "%" : "") + '</span><span class="gap"></span>'
       + '<span class="tot">' + esc(tlMoney(tlTotal(rec, n), rec)) + '</span></div>';
     if(!a.length) h += '<div class="sempty">Nothing on this side.</div>';
@@ -1601,7 +1601,7 @@ a{color:inherit;text-decoration:none}
     var t1 = tlTotal(rec, 1), t2 = tlTotal(rec, 2);
     var gap = Math.abs(t1 - t2);
     var last = (page === pages - 1);
-    var BLUE = "#5091FF", PINK = "#F04B64", BONE = "#EDEAE3", MUTED = "#A4A7AD";
+    var BLUE = "#5DA5EE", PINK = "#EE5F9C", BONE = "#EDEAE3", MUTED = "#A4A7AD";
     var tl, body = 0;
 
     // the title wraps to two lines at most, then cuts
@@ -1645,7 +1645,7 @@ a{color:inherit;text-decoration:none}
 
     // the side cards: the side's own tint, corner 22 x 3
     for(k = 0; k < runs.length; k++){
-      cx.fillStyle = runs[k].n === 1 ? "rgba(80,145,255,.10)" : "rgba(240,75,100,.10)";
+      cx.fillStyle = runs[k].n === 1 ? "rgba(93,165,238,.10)" : "rgba(238,95,156,.10)";
       rcpRound(cx, RCPPAD, runs[k].top, cw, runs[k].bottom - runs[k].top, RCPR);
       cx.fill();
     }

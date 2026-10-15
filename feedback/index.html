@@ -31,7 +31,8 @@ body{-webkit-font-smoothing:antialiased;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 /* the form sits in a glass card. Tally draws its own fields and colours;
    those are set in Tally, not here. */
-.fcard{border-radius:22px;padding:8px;margin:20px 0 12px;min-height:200px;overflow:hidden}
+.fopen{margin-top:20px}
+.fcard{border-radius:22px;padding:8px;margin:8px 0 12px;min-height:200px;overflow:hidden}
 .fcard iframe{display:block;width:100%;border:0;background:transparent}
 /* the store-neutral line: muted small print directly under the form */
 .fbn{margin:0 4px 30px;font-size:13px;line-height:1.5;color:var(--muted)}
@@ -50,7 +51,8 @@ body{-webkit-font-smoothing:antialiased;
   <h2 class="sr">Feedback</h2>
   <p class="lede">If something is broken, an event is wrong or missing, or you want the app to do something it does not do yet, this is where to say so.</p>
 
-  <section class="fcard glass">
+  <button type="button" class="door btn glass fopen" id="fopen" aria-expanded="false" aria-controls="fform" data-k="open"><span class="t">Send feedback</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
+  <section class="fcard glass" id="fform" hidden>
     <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
   </section>
 
@@ -101,6 +103,17 @@ body{-webkit-font-smoothing:antialiased;
     pnav.setAttribute("aria-hidden", on ? "false" : "true");
   }
   document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
+  // The form opens in place under its row (kind open); the chevron points at what a tap will do.
+  var fo = document.getElementById("fopen"), ff = document.getElementById("fform");
+  fo.addEventListener("click", function(){
+    var on = fo.getAttribute("aria-expanded") !== "true";
+    fo.setAttribute("aria-expanded", on ? "true" : "false");
+    ff.hidden = !on;
+    // The form measured itself while folded away; loading it again once it shows lets it
+    // take its full height.
+    var f = ff.querySelector("iframe");
+    if (on && f && f.dataset.tallySrc && !f.dataset.shown) { f.dataset.shown = "1"; f.src = f.dataset.tallySrc; }
+  });
   window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
   document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
   scrim.addEventListener("click", function(){ set(false); });

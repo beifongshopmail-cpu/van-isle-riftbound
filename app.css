@@ -22,9 +22,9 @@
   --ground:#08090A;            /* near-void. Chosen over #121316 and #17191C */
   --bone:#EDEAE3; --ink:#121316; --muted:#A4A7AD; --faint:#4A4E55; --track:#2A2D32; --hi:#34383E;
   /* identity colours: players, event types, over-time */
-  --p1:#5091FF; --p2:#F04B64;                               /* player 1 and Yours blue, player 2 and Theirs pink */
-  --p1t:rgba(80,145,255,.14); --p2t:rgba(240,75,100,.14);   /* score-button stain ("light") */
-  --p1r:rgba(80,145,255,.50); --p2r:rgba(240,75,100,.50);   /* score-button press */
+  --p1:#5DA5EE; --p2:#EE5F9C;                               /* player 1 and Yours blue, player 2 and Theirs pink */
+  --p1t:rgba(93,165,238,.14); --p2t:rgba(238,95,156,.14);   /* score-button stain ("light") */
+  --p1r:rgba(93,165,238,.50); --p2r:rgba(238,95,156,.50);   /* score-button press */
   --over:#E5484D;
   /* THE GLASS RECIPE ("specular"): near-clear body, light caught along the top curve fading
      down the sides, a faint return at the base, a soft glow inside the base. No full outline. */
@@ -37,7 +37,8 @@
   --frost-solid:rgba(36,37,38,.94);
   --frost-rim:rgba(255,255,255,.10);
   --on:rgba(255,255,255,.14);      /* the bar's "you are here" pill */
-  --tint:transparent;             /* the page colour in the glass; pages.js sets it from RAVI_PAGES (rgb .40) */
+  --tint:transparent;             /* the page colour in the glass; pages.js sets it from RAVI_PAGES */
+  --cg:.30;                       /* THE COLOURED GLASS: how much colour a coloured surface carries */
   --recess:rgba(0,0,0,.35);        /* tracks that hold options: segmented controls, pick lists */
   --scrim:rgba(0,0,0,.35);
   /* type: faces and rungs unchanged from the type-scale ARCH item */
@@ -88,6 +89,17 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 /* .glass: the one glass recipe. Buttons, surfaces, event cards and the
    glass group (.doors) all use it. */
 .glass,.doors{position:relative;background:linear-gradient(var(--tint),var(--tint)),var(--glass);box-shadow:var(--glass-base)}
+/* THE COLOURED GLASS (colour system, Mako 2026-10-15). One recipe for every coloured surface:
+   its colour at --cg inside the glass body, the usual rim and base glow, frosted, and no solid
+   base, so what passes behind shows through. A surface opts in with class .cg and its colour
+   as --c (an rgb triple); its background is the glass recipe with that colour on top. On a
+   page marked glass:true, the page's glass outside menus is coloured glass in the page colour.
+   Menus, the bar, the strip and the two plates stay clear (see-through chrome). */
+.cg{background:linear-gradient(rgba(var(--c),var(--cg)),rgba(var(--c),var(--cg))),var(--frost-solid)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .cg{background:linear-gradient(rgba(var(--c),var(--cg)),rgba(var(--c),var(--cg))),var(--glass)}
+  .cg,html.paged main .glass,html.paged main .doors{-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+}
 /* on a page colour, grey text inside glass is lifted to stay readable (4.4:1 or better on the lightest, Settings) */
 html.paged .glass,html.paged .doors{--muted:#DCDEE2}
 .glass::before,.doors::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
