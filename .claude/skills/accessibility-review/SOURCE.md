@@ -1,0 +1,1 @@
+Copied unchanged from github.com/anthropics/knowledge-work-plugins, design/skills/accessibility-review (commit e6b5053, 2026-10-15), Apache License 2.0 (LICENSE.txt). Copied so every RAVI chat on either account loads it with the repo.
