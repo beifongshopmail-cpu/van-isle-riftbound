@@ -37,6 +37,7 @@
   --frost-solid:rgba(36,37,38,.94);
   --frost-rim:rgba(255,255,255,.10);
   --on:rgba(255,255,255,.14);      /* the bar's "you are here" pill */
+  --tint:transparent;             /* the page colour in the glass; pages.js sets it from RAVI_PAGES (rgb .40) */
   --recess:rgba(0,0,0,.35);        /* tracks that hold options: segmented controls, pick lists */
   --scrim:rgba(0,0,0,.35);
   /* type: faces and rungs unchanged from the type-scale ARCH item */
@@ -86,12 +87,14 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 
 /* .glass: the one glass recipe. Buttons, surfaces, event cards and the
    glass group (.doors) all use it. */
-.glass,.doors{position:relative;background:var(--glass);box-shadow:var(--glass-base)}
+.glass,.doors{position:relative;background:linear-gradient(var(--tint),var(--tint)),var(--glass);box-shadow:var(--glass-base)}
+/* on a page colour, grey text inside glass is lifted to stay readable (4.4:1 or better on the lightest, Settings) */
+html.paged .glass,html.paged .doors{--muted:#DCDEE2}
 .glass::before,.doors::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
 .btn{border-radius:999px}
-.btn:active{background:var(--glass-press)}
+.btn:active{background:linear-gradient(var(--tint),var(--tint)),var(--glass-press)}
 .circ{width:var(--sz-sm);height:var(--sz-sm);display:grid;place-items:center}
 .circ svg{width:18px;height:18px}
 
@@ -106,7 +109,8 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
   display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .tab{border-radius:999px;display:grid;place-items:center}
 .tab svg{width:24px;height:24px}
-.tab:active,.tab.on{background:var(--on)}
+.tab:active,.tab.on{background:var(--on-pc,var(--on))}
+.tab.on{color:var(--on-ink,inherit)}
 /* ICONS: each carries an outline drawing (.ico) and a filled one (.icf). The filled one
    shows while its slot is on: shape as well as shade. Gaps in a filled icon are real holes
    cut by its own mask, so every mask id on a page must be unique (pages.js numbers them). */
@@ -272,7 +276,7 @@ html.lock,html.lock body{overflow:hidden}
 .door .sp{flex:1}
 .door small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .doors{display:flex;flex-direction:column;border-radius:22px;overflow:hidden}
-.doors > .door{background-color:transparent;box-shadow:none;border-radius:0}
+.doors > .door{background-color:transparent;box-shadow:none;border-radius:0;--tint:transparent}   /* the group carries the page colour, once */
 .doors > .door::before{content:none}
 .doors > .door:active{background-color:var(--glass-press);transform:none}
 /* the hairline between rows, in either group */
