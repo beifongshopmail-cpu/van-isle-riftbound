@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-16T05:33:49.974Z",
- "generated_local": "2026-10-15T22:33:49-07:00",
- "window_start": "2026-10-15T07:00:00.000Z",
+ "generated_at": "2026-10-16T17:11:55.642Z",
+ "generated_local": "2026-10-16T10:11:55-07:00",
+ "window_start": "2026-10-16T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 27,
-   "added": 27
+   "returned": 26,
+   "added": 26
   },
   {
    "name": "Courtenay",
@@ -47,35 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 35,
-  "unique": 35,
-  "prev_unique": 38
+  "fetched": 34,
+  "unique": 34,
+  "prev_unique": 35
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117213860117720777",
-   "name": "Thursday Casual Nexus Nights @ North Park Picture Framing and Collectables",
-   "type": "nexus",
-   "start": "2026-10-15T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-15",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 3,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing"
-  },
   {
    "id": "rb117089686336807689",
    "name": "Radiance Pre-Rift",
@@ -265,7 +243,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 5,
+   "reg": 6,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -309,7 +287,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 10,
+   "reg": 11,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
