@@ -342,7 +342,7 @@ Calendar (calendar/index.html)
 - Sticky month card (.stick zero-height holder, .card, .hold spacer, arithmetic height), .mrow with month, year and the .hemi pair, gear (#filt, data-fills panel; .filtered marks hidden filters) and collapse chevron (#mtog).
 - Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and three round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evlink the event page), each a .circ with an aria-label and no words, all opening outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
 - Menus: tray #pnav; #panel "Calendar settings" (Area .seg, Event types .pick, Stores .pick); #psub "Follow". Bar action: Follow (#subtab, the bell, data-fills psub). Two controls fill with #panel.
-- Follow (#psub): an (i) in the head opens the note in place (.finfo). Sunken rows follow, each a webcal link to a feed the refresh writes (ics.js: island.ics, victoria.ics, upisland.ics, store/<id>.ics): Whole Island alone in #fall, then a .pcards group (the counter's expanding-card widget) of Greater Victoria and Up Island, glass rows that open in place one at a time to All stores and each store A to Z. A row tapped on this phone shows a bone bell (.fmk) left of its count (vir.follow.v1); RAVI cannot see the phone's calendar, so the bell means tapped, not followed.
+- Follow (#psub): an (i) in the head opens the note in place (.finfo). One sunken group (#fall), each feed row a webcal link to a file the refresh writes (ics.js: island.ics, victoria.ics, upisland.ics, store/<id>.ics): Whole Island, then Greater Victoria and Up Island as open rows (kind open, a chevron) that list their feeds under them, one area at a time: All stores, then each store A to Z, set in 16 more (.fsub). A row tapped on this phone shows a bone bell (.fmk) left of its count (vir.follow.v1); RAVI cannot see the phone's calendar, so the bell means tapped, not followed.
 - NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
 Counter (counter/index.html)
 - Fixed .stage with two sides (.side, data-role major, equal or minor), score numerals .num, .rail log, cut score buttons .acts, Pass turn .pass, round timer line .tmv, victory banner .win. Strip (.bar.strip.frost) of four controls; Go to has Hub (withHub true).
@@ -374,7 +374,7 @@ Rules (rules/index.html)
 - m5d-test.js: a match is logged the moment it is decided; New match keeps the timer.
 - m5e-test.js: Time called between games; the counter's hidden ?ev= link opens New match with the event picked.
 - m5f-test.js: a saved trade's title can change; nothing else on it does.
-- m5g-test.js: a bar slot stays on while its menu or a deeper one is open; menu edges.
+- m5g-test.js: a bar slot stays on while its menu or a deeper one is open; menu edges (a fade, no line).
 - m6-test.js: counter sides update in place; trade lists rewrite only when their markup changes.
 - m7-test.js: App settings page and its rows, reset, Go to without Hub where the bar has it, the calendar gear fills.
 - m8-test.js: the install screen on all seven pages in a browser tab, never installed; iPhone steps, Android Install, computer; Continue for the tab only; the intro waits; ?sim= and test tools skip it; fit at 402 and 360, type on the rungs (40 for the name), the Continue line clear of Safari's bar. Every other suite runs past the screen (navigator.webdriver).
@@ -384,8 +384,8 @@ Rules (rules/index.html)
 - m95-test.js: the counter's menus after M9.5: a timer set in New match survives Start match, Best of 3 by default, the Match timer in place, the top group, End game and New match the same size and evenly placed, every row's chevron at the right.
 - m95c-test.js: the calendar's event card after M9.5: no Play here, the address and its end, three round buttons in one row at the card's padding at 402 and 360, the in-card line, the one-event calendar files (ics.js, written on every refresh, unchanged files left alone), and PlayRiftbound links in the area feeds.
 - m96f-test.js: the Follow feeds: one per store (never removed) and Up Island; notes say spots left, feeds say when they were checked.
-- m96c-test.js: the calendar's Follow menu (rows, areas in place, links to files that exist, the bell remembered) and NEW since the last visit.
-- m96t-test.js: Trade settings after M9.6 (no Names, Currency or This trade label; Off; side rows half and half; steps of 5; Reset) and the counter strip's icons at 24.
+- m96c-test.js: the calendar's Follow menu (one sunken group, areas in place with their rows set in, links to files that exist, the bell remembered) and NEW since the last visit.
+- m96t-test.js: Trade settings after M9.6 (no Names, Currency or This trade label; Off; side rows half and half; steps of 5; Reset) and the counter strip (icons 24, the Layout track 6 from its top and bottom).
 - m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
 - icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
