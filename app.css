@@ -264,7 +264,7 @@ html.lock,html.lock body{overflow:hidden}
    Draw it pointing UP in the markup: up while open, because the tap
    closes. The control carries aria-expanded, and false flips it down.
    Size comes from the button it sits in, with 16px as the fallback. */
-.chev{width:16px;height:16px;stroke-width:1.8;transition:transform .28s var(--ease)}
+.chev{width:16px;height:16px;stroke-width:2.2;transition:transform .28s var(--ease)} /* a row chevron: the same size and line as .cvr, so up, down, left and right match */
 [aria-expanded="false"] > .chev{transform:rotate(180deg)}
 
 /* A PLAIN FULL-WIDTH ACTION, in a panel or anywhere a page needs one.
@@ -306,6 +306,8 @@ html.lock,html.lock body{overflow:hidden}
    .pact is only for standing alone or in a menu foot. */
 .door.act .cvr{display:none}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.pact .cvr{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2} /* a row chevron in a pill keeps its row size */
+.circ .chev{width:18px;height:18px;stroke-width:2.4} /* a chevron in a round button matches Back and the month arrows */
 
 /* GO TO: the page-picker tiles, built by pages.js's RAVI_GOTO from
    RAVI_PAGES. A sunken track (kind "pick"), not glass -- the page you are
