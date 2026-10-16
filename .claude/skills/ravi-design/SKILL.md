@@ -57,9 +57,24 @@ Before building a feature or drawing an icon set, look for one that already exis
    accessibility-review where contrast or size is in question), fix what it finds, look at
    every icon at real size, and drop anything weak. Mako has caught faults chat called clean
    (M5: a stray mask frame; icons that did not stay filled).
-3. In place: put the picks into the real files on a local copy and shoot every affected page
+3. Carry forward what Mako already chose. When a round redraws or rebuilds something he picked
+   (a gear, a wrench, a weight), measure the new drawing against the chosen one: line, widths,
+   sizes, holes, gaps, and the proportions between parts (a head to its handle), not one measure
+   at a time. Keep every part he did not ask to change, and name every difference on the review
+   page. When a rebuild drifts, go back to the picked drawing as drawn. (Icon chat, 2026-10-16: a
+   rebuilt wrench came out with a handle half as wide as the one he picked; fixing the handle
+   alone left its head too small; the round-head wrench replaced his pick without saying so.)
+4. In place: put the picks into the real files on a local copy and shoot every affected page
    before and after with design/page-shots.js (402 x 874, installed-app mode; 360 where a
    rule asks). Measure, do not eyeball: gaps, squareness, sizes.
-4. Show Mako one review page (an Artifact, phone-first): before and after, what to look at,
+5. Sweep before every icon push (measure, do not eyeball): grep the whole app for every drawing
+   of each changed icon (static markup, script strings, CSS masks), so no stray copy stays old;
+   rb-tools design/icon-probe.js lists every icon the phone draws with its box and line, and each
+   must match its kind: bar 24 / line 2; Go to 22; hub 60 / line 1.5, faded as one piece; a bare
+   glyph in a round button 18 / 2.4; a drawn icon in a round button 18 / 2; a row chevron 16 / 2.2.
+   Measure the hub icons as a set (box about 19.5 to 22 units, centred at 12). A family's
+   "regular" weight is not the app's line: measure it at 24 first. Lessons behind this: records
+   LEARN -- icon chat (2026-10-15/16).
+6. Show Mako one review page (an Artifact, phone-first): before and after, what to look at,
    one recommendation, and only the picks that are genuinely his.
-5. Nothing reaches main until he says yes; unfinished work parks on the branch wip.
+7. Nothing reaches main until he says yes; unfinished work parks on the branch wip.
