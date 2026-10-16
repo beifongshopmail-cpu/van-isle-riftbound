@@ -116,7 +116,8 @@ Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
 - Calendar day cells: circles, width min(46px, 100%) of the column.
-- Icon sizes: bar 24, Go to tile 22, install step 24, round button 18, hub block 52 (stroke 1.5), pact 17, chevron 16.
+- Icon sizes: bar 24, Go to tile 22, install step 24, round button 18 (a bare glyph such as a chevron, Close or Back at line 2.4; a drawn icon such as the gear, pin or Out at line 2), hub block 60 (line 1.5; smaller on a narrow phone so the block stays square), pact 17, row chevron 16 (line 2.2). (Mako 2026-10-16)
+- Chevrons: one shape (12-unit arms), the same size in every direction: in a round button 18 at line 2.4, trailing in a row 16 at line 2.2. (Mako 2026-10-16)
 Corners
 - A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D]
 - Cut track (.seg.multi, counter score buttons): round outer ends of half the height, 6 inner corners (--r-cut), 3 gaps (--gap-cut). [D]
@@ -143,6 +144,7 @@ Colour
 - Marks are one drawn set on a 12 grid with round joins, in a fixed square: 12 in a row (.mk), 10 on a card (.ev .l1 .mk), 9 on the month grid (.dots .mk).
 - Event card body: coloured glass (below) in the type rgb.
 - A page colour (hub block, event type) is given as an rgb triple; tints are computed in script (hub icon and name: toward white by .62; calendar lit: .40).
+- The counter's domain runes are coloured glass (Mako 2026-10-16): Riot's rune file untouched, its white glyph over a disc of the domain colour at .90 with a lit top edge, a light rim and a soft shade at the foot. A named exception to the one-glass .30 rule.
 - Coloured glass (Mako 2026-10-15): a coloured surface carries its colour at --cg (.30) inside the glass, with the usual rim and base glow, frosted (blur 20, saturate 160%), and no solid base. One recipe (.cg, colour as --c) for hub blocks, event cards, trade side cards, Rules sections and a coloured page's glass. Fallback without blur: the same colour over --frost-solid. Plain glass inside glass is not frosted again.
 - See-through chrome stays clear: menus and the glass inside them, the bar, the strip, the calendar month card and the trade plate. The bar's you-are-here pill wears the page colour (rgb .54, its icon toward white by .62).
 - Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240. Feedback, Rules and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game and Trade keep clear glass.
@@ -257,9 +259,12 @@ Icons (pages.js RAVI_ICON)
 - Each icon has an outline group (.ico) and a filled group (.icf); the filled one shows when its parent has .on. The hub drawing and the strip's two are one drawing in every state.
 - Gaps in a filled icon are real holes cut by a mask, so every mask id on a page is unique. RAVI_ICON numbers its own (rvm1, rvm2, ...). Static markup names its own: rvs-<page>-<what>, e.g. rvs-fb-set.
 - Every icon a page or a bar draws is one entry in the SVG table; RAVI_BAR and RAVI_GOTO take it by name. A new icon is added there first, never drawn into a page's bar.
+- One line for every icon: 2-unit round lines on the 24 grid (1.5 on the hub). Shapes may be adapted from Lucide, Phosphor, Remix or Material Symbols and redrawn on this line; a family drawing kept as drawn uses the weight that matches (Material Symbols 600 in the bar, 400 on the hub as an .icb copy). (Mako 2026-10-16)
+- Hub icons are drawn solid in their tint and faded to .82 as one piece (opacity on the svg), never in a see-through colour, which stacks where two lines meet. (Mako 2026-10-16)
+- An icon may hold two masks: "@" for the filled drawing, "@b" for an outline cut; RAVI_ICON numbers both per copy.
 
 The hub block (index.html)
-- .blk (rendered from RAVI_PAGES into nav#grid.grid): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 52 centred above the name .bn (Poppins 700 15). Link with data-k="do".
+- .blk (rendered from RAVI_PAGES into nav#grid.grid): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 60 centred above the name .bn (Poppins 700 15). Link with data-k="do".
     <a class="blk glass" href="calendar/" style="--cl:255,176,32;--ci:...;" data-k="do"><span class="bi">icon</span><span class="bn">Events</span></a>
 - .blk.dead: a Soon slot, a div, dimmed (.4), inert.
 - The hub: eight blocks; a new page takes the first Soon slot; App settings stays last. Plate .low.glass under the name .hubname (34, Poppins 800); hub footer .hubfoot (12 muted, Riot notice).
@@ -380,6 +385,7 @@ Rules (rules/index.html)
 - m96c-test.js: the calendar's Follow menu (rows, areas in place, links to files that exist, the bell remembered) and NEW since the last visit.
 - m96t-test.js: Trade settings after M9.6 (no Names, Currency or This trade label; Off; side rows half and half; steps of 5; Reset) and the counter strip's icons at 24.
 - m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
+- icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
