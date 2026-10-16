@@ -211,9 +211,13 @@
   .side[data-role="equal"] .lgathumb{width:66px;height:93px}
   .side[data-role="minor"] .lgathumb{position:relative;flex:0 0 auto;width:40px;height:56px;border-radius:4px}
   .lgarune{position:absolute;top:0;right:0;z-index:3;display:flex;flex-direction:column;gap:7px}
-  .lgarune img{width:52px;height:52px;display:block}
+  /* the runes as coloured glass (icon pass 2026-10-16, Mako: 90): Riot's rune file is untouched;
+     the #rglyph filter keeps only its white glyph, over a disc of the domain's own colour at .90
+     with a lit top edge, a light rim and a soft shade at the foot */
+  .lgarune .rgl{display:block;width:52px;height:52px;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0) 55%),rgba(var(--rc),.9);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.38),inset 0 0 0 1px rgba(255,255,255,.18),inset 0 -2px 4px rgba(0,0,0,.18)}
+  .lgarune .rgl svg{display:block;width:100%;height:100%}
   .side[data-role="equal"] .lgarune{gap:5px}
-  .side[data-role="equal"] .lgarune img{width:40px;height:40px} /* size-exempt: rune image */
+  .side[data-role="equal"] .lgarune .rgl{width:40px;height:40px} /* size-exempt: rune image */
   .side[data-role="minor"] .lgarune{display:none}
 
   /* ======== the victory banner: frosted, and it sits where a menu does,
@@ -419,6 +423,8 @@
 </style>
 </head>
 <body>
+<!-- the rune glass filter (lgaDom): keeps only the white glyph of Riot's rune file -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rglyph" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  .3 .59 .11 0 0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></svg>
 <div class="stage" id="stage" data-mode="focus" data-won="0">
   <div class="field" id="field"></div>
 </div>
@@ -516,7 +522,7 @@
 <section class="panel frost" id="pleg" aria-hidden="true" aria-label="Legend">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 5 8 12 15 19"/></svg></button><h4 class="ttl" id="lgptitle">Legend</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="lpf">
-    <label class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" class="lgpq" id="lgpq" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"></label>
+    <label class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" class="lgpq" id="lgpq" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"></label>
     <div class="seg" id="lgpsort" role="group" aria-label="Sort order" data-k="pick"><button type="button" class="lgpsb" data-lgps="rel" aria-pressed="true">Release</button><button type="button" class="lgpsb" data-lgps="az" aria-pressed="false">A-Z</button></div>
   </div>
   <div class="pbody"><div class="lgpgrid" id="lgpgrid" data-k="pick"></div></div>
@@ -2459,6 +2465,9 @@
 
   // The six domain glyphs are Riot's own, written by fetch-cards.js into
   // cards/runes/ and referenced here as ../cards/runes/. A legend with no domains renders nothing rather than a placeholder.
+  // Each rune is drawn as coloured glass: the domain's colour (the fill of Riot's own rune file)
+  // as a disc, with Riot's white glyph on it through the #rglyph filter at the top of the page.
+  var RUNE_RGB = {body:"232,118,0", calm:"72,140,56", chaos:"106,64,148", fury:"223,22,32", mind:"15,111,166", order:"210,180,0"};
   function lgaDom(nm, cls){
     if (typeof VIR_LEGENDS === "undefined" || !nm) { return ""; }
     var e = lgaFind(nm);
@@ -2466,7 +2475,7 @@
     var h = "";
     for (var i = 0; i < e.d.length; i++) {
       var d = String(e.d[i]).toLowerCase();
-      h += "<img src=\"../cards/runes/rune_" + esc(d) + ".svg\" alt=\"" + esc(e.d[i]) + "\">";
+      h += "<span class=\"rgl\" role=\"img\" aria-label=\"" + esc(e.d[i]) + "\" style=\"--rc:" + (RUNE_RGB[d] || "128,128,128") + "\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><image href=\"../cards/runes/rune_" + esc(d) + ".svg\" width=\"24\" height=\"24\" filter=\"url(#rglyph)\"/></svg></span>";
     }
     return "<span class=\"" + cls + "\">" + h + "</span>";
   }

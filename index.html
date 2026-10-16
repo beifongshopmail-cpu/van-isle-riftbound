@@ -76,9 +76,13 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .blk.dead:active{transform:none;filter:none}
 /* THE BLOCK'S FACE: the icon centred in the space above the name, tinted
    toward the block's own colour and a little see-through, so icon and
-   name sit in the glass; the name centred along the bottom. */
-.blk .bi{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0;color:rgba(var(--ci,237,234,227),.82)}
-.blk .bi svg{width:52px;height:52px;stroke-width:1.5}
+   name sit in the glass; the name centred along the bottom. The icon is
+   drawn solid and faded as one piece (opacity on the svg, not a
+   see-through colour), so the colour never stacks where two lines meet. */
+.blk .bi{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0;color:rgb(var(--ci,237,234,227))}
+.blk .bi svg{width:min(60px, calc(33.33vw - 69.6px));height:min(60px, calc(33.33vw - 69.6px));stroke-width:1.5;--sw:1.5;opacity:.82} /* 60, or less where a narrow phone makes the block too small to hold it */
+.blk .bi svg:has(.icb) .ico{display:none}
+.blk .bi svg .icb{display:inline}
 .blk .bn{font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the arc gives about 10px; the extra 4px exaggerates the curve, Mako's call. */
 .grid > .blk:nth-child(2), .grid > .blk:nth-child(5){top:-14px}

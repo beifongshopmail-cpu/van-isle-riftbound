@@ -130,6 +130,7 @@ html.paged .glass,html.paged .doors{--muted:#DCDEE2}
    shows while its slot is on: shape as well as shade. Gaps in a filled icon are real holes
    cut by its own mask, so every mask id on a page must be unique (pages.js numbers them). */
 svg .icf{display:none}
+svg .icb{display:none} /* a hub-only drawing at the hub's thinner line (Trade's handshake); index.html shows it */
 .on > svg .ico{display:none}
 .on > svg .icf{display:inline}
 
