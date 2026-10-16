@@ -9,34 +9,4 @@ X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each
  event's own page.
 REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
-BEGIN:VEVENT
-UID:934751@van-isle-riftbound
-DTSTAMP:20261015T173849Z
-DTSTART:20261107T020000Z
-DTEND:20261107T053000Z
-SUMMARY:Tuesday Riftbound Playnight
-LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
-DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
- ft\, checked Oct 15\, 10:38 AM\nFree\nSign up: https://locator.riftbound.u
- vsgames.com/events/934751
-URL:https://locator.riftbound.uvsgames.com/events/934751
-CATEGORIES:Learn-to-Play
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
-UID:945045@van-isle-riftbound
-DTSTAMP:20261015T173849Z
-DTSTART:20261111T020000Z
-DTEND:20261111T053000Z
-SUMMARY:Tuesday Riftbound Playnight
-LOCATION:582 S Dogwood St\, Campbell River\, BC V9W 6M4\, Canada
-DESCRIPTION:Learn-to-Play\nGiddy-Up Games\, Campbell River\n8 of 8 spots le
- ft\, checked Oct 15\, 10:38 AM\nFree\nSign up: https://locator.riftbound.u
- vsgames.com/events/945045
-URL:https://locator.riftbound.uvsgames.com/events/945045
-CATEGORIES:Learn-to-Play
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
 END:VCALENDAR
