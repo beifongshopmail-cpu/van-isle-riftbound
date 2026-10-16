@@ -61,6 +61,7 @@ Sizes
 - --sz-track 40: a sunken track, search and name fields
 - --sz-sm 36: round buttons and compact pills
 - --sz-seg 34: a segment inside a track, swatches
+- --sz-seg-tall 38: a segment in the counter strip's Layout track, nowhere else
 - --sz-score 48, --sz-score-min 38, --sz-seam 50: counter only
 - --r-cut 6, --gap-cut 3: the cut track
 Other
@@ -221,6 +222,7 @@ The bar (every page except the hub)
       {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
     ]);</script>
 - The counter's strip is the same shell (.bar.strip.frost) with its own four controls, and no Hub slot, so its Go to keeps a Hub tile. Its Layout track is in the markup; RAVI_BAR adds Undo, Log and Game settings after it. The hub has no bar.
+- The strip's Layout track is the one tall track: its options are --sz-seg-tall (38), so the track is 44 like the strip's slots and sits 6 from the strip's top and bottom. A named exception to the Kit rule. [T] (Mako's yes 2026-10-16)
 - Every bar in every state, in one picture: rb-tools bar-sheet.js (out/bars/bars-sheet.png). node bar-sheet.js --compare <dirA> <dirB> proves two builds draw the same bars, pixel for pixel.
 
 Menus
@@ -231,7 +233,7 @@ Menus
       <div class="pbody">...</div>
     </section>
 - Head with a count: .ht holds an optional .back, h4 and .cnt (12 muted).
-- Edges: while the body runs under the head or foot, pages.js adds .edge and that edge shows a hairline and soft shadow. Nothing for a page to do.
+- Edges: while the body runs under the head or foot, pages.js adds .edge and the body fades out softly toward that edge over 24, with no line and no shadow. Nothing for a page to do. (Mako's yes 2026-10-16)
 - Tray (.panel.tray): a menu holding one track and nothing else. No title, no X; padding 6, corner 30.
     <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages"><div class="pbody"><div class="goto" id="pnavgoto"></div></div></section>
 - Deeper menu: replaces the menu it came from. Shows .back (a .circ.btn.glass) and no X. Its title is the label of the row that opened it. Back returns; the scrim or the X on a root menu closes the whole stack. Moves: .fromr (arriving from the right), .froml, .tol, .tor (leaving); the page script sets one per move.
@@ -291,7 +293,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 ## 7. Menus and the bar (rules)
 
 - Every overlay is a menu: head (title, X), body, optional foot. Only the body scrolls. [T]
-- While the body runs under the head or foot, that edge shows a hairline and a soft shadow; with nothing underneath it shows none. [T]
+- While the body runs under the head or foot, the body fades out softly toward that edge (24, no line, no shadow); with nothing underneath it stays sharp. [T] (Mako's yes 2026-10-16)
 - Going deeper replaces the menu: back arrow, no X. A deeper menu's title is the label of the row that opened it.
 - A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar.
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
