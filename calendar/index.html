@@ -201,25 +201,24 @@ a{color:inherit;text-decoration:none}
 .tyrow .lab .stown{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);line-height:1.3}
 .tyrow .lab .sname{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tyrow .lab{min-width:0}
-/* FOLLOW (#psub): sunken rows follow (each a link to a calendar feed);
-   glass rows (.pcards, the same widget as the counter's player cards)
-   open an area in place, one at a time, as the counter's
-   player cards do. A followed row shows a bone bell left of its count. */
+/* FOLLOW (#psub): one sunken group, as Calendar settings' lists are.
+   Whole Island is a feed row; Greater Victoria and Up Island are open
+   rows (kind open) that show their feeds in place under them, one area
+   at a time: All stores, then each store A to Z, set in 16 more so an
+   area and its stores read apart. A followed row shows a bone bell left
+   of its count. */
 #psub .phead{gap:8px}
 #psub .phead .ttl{margin-right:auto}
 .finfo{font-size:13px;line-height:1.4;color:var(--muted);margin:0 2px 14px}
-#fall{margin-bottom:14px}
-.pcards{border-radius:22px;overflow:hidden}
-.fcard:not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
-.fcard.open{padding:12px}
-.fcard.open .fhead{padding:0 4px}
-.fhead{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 16px;text-align:left;font-family:var(--disp);font-weight:600;font-size:15px}
-.fhead:active{transform:none}
+.finfo p{margin:0}
+.finfo p + p{margin-top:8px}
 .fhead .sp,.pick a .sp{flex:1}
 .fhead .t,.pick a .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fhead small,.pick a small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .fhead .chev{stroke:var(--muted);fill:none;flex:0 0 auto}
-.fbody{padding-top:10px}
+#fall small{white-space:nowrap}
+#fall > a.fsub{padding-left:32px}
+#fall > a.fsub:not(:last-child){background-size:calc(100% - 32px) 1px;background-position:32px 100%}
+#fall > a.fsub:has(+ .fhead){background-size:calc(100% - 16px) 1px;background-position:16px 100%}
 .pick a .fmk{width:18px;height:18px;flex:0 0 auto;display:none;background:var(--bone);
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.3 15.3C4.6 14 6 12.5 6 8a6 6 0 0 1 12 0c0 4.5 1.4 6 2.7 7.3A1 1 0 0 1 20 17H4a1 1 0 0 1-.7-1.7z'/%3E%3Cpath d='M10.27 21a2 2 0 0 0 3.46 0' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.3 15.3C4.6 14 6 12.5 6 8a6 6 0 0 1 12 0c0 4.5 1.4 6 2.7 7.3A1 1 0 0 1 20 17H4a1 1 0 0 1-.7-1.7z'/%3E%3Cpath d='M10.27 21a2 2 0 0 0 3.46 0' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
@@ -293,9 +292,12 @@ a{color:inherit;text-decoration:none}
     <button type="button" class="circ btn glass" id="psclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="pbody">
-    <p class="finfo" id="finfo" hidden>Tap a row to add it to your calendar app, which picks up new events as they are listed. A bell marks what you added on this phone. To stop, remove it in your calendar app.</p>
+    <div class="finfo" id="finfo" hidden>
+      <p>Tap a row to add it to your calendar app. New events show up there by themselves.</p>
+      <p>A bell marks what you added on this phone. To stop, remove it in your calendar app.</p>
+      <p>No prompt in Calendar? Come back and tap the row again.</p>
+    </div>
     <div class="pick" id="fall" data-k="do"></div>
-    <div class="pcards glass" id="fcards"></div>
   </div>
 </section>
 <section class="panel frost" id="panel" aria-hidden="true" aria-label="Calendar settings">
@@ -881,10 +883,10 @@ a{color:inherit;text-decoration:none}
       if (!st[e.region][k]) st[e.region][k] = {venue:e.venue || "", n:0};
       st[e.region][k].n++;
     }
-    function row(box, file, title, count){
+    function row(box, file, title, count, sub){
       var a = document.createElement("a");
       a.href = base + file; a.setAttribute("data-file", file);
-      if (marks[file]) a.className = "fon";
+      a.className = (sub ? "fsub" : "") + (marks[file] ? (sub ? " fon" : "fon") : "");
       a.innerHTML = '<span class="t"></span><span class="sp"></span><span class="fmk" aria-hidden="true"></span><small></small>';
       a.querySelector(".t").textContent = title;
       a.querySelector("small").textContent = nEv(count);
@@ -892,27 +894,24 @@ a{color:inherit;text-decoration:none}
       box.appendChild(a);
     }
     var fa = document.getElementById("fall"); fa.innerHTML = "";
-    row(fa, "island.ics", "Whole Island", n.all);
-    var box = document.getElementById("fcards"); box.innerHTML = "";
+    row(fa, "island.ics", "Whole Island", n.all, false);
     [["victoria", "Greater Victoria", "victoria.ics"], ["island", "Up Island", "upisland.ics"]].forEach(function(g){
       var keys = Object.keys(st[g[0]]).sort(function(a, b){
         var x = st[g[0]][a].venue.toLowerCase(), y = st[g[0]][b].venue.toLowerCase();
         return x < y ? -1 : (x > y ? 1 : 0);
       });
       var open = FOPEN === g[0];
-      var card = document.createElement("div");
-      card.className = "fcard" + (open ? " open" : "");
-      card.innerHTML = '<button type="button" class="fhead" data-area="' + g[0] + '" aria-expanded="' + (open ? "true" : "false") + '" data-k="open"><span class="t"></span><span class="sp"></span><small></small>'
-        + '<svg class="chev" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>';
-      card.querySelector(".t").textContent = g[1];
-      card.querySelector("small").textContent = keys.length + (keys.length === 1 ? " store" : " stores");
-      box.appendChild(card);
+      var h = document.createElement("button");
+      h.type = "button"; h.className = "fhead";
+      h.setAttribute("data-area", g[0]); h.setAttribute("aria-expanded", open ? "true" : "false"); h.setAttribute("data-k", "open");
+      h.innerHTML = '<span class="t"></span><span class="sp"></span><small></small>'
+        + '<svg class="chev" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>';
+      h.querySelector(".t").textContent = g[1];
+      h.querySelector("small").textContent = keys.length + (keys.length === 1 ? " store" : " stores");
+      fa.appendChild(h);
       if (!open) return;
-      var body = document.createElement("div"); body.className = "fbody";
-      var list = document.createElement("div"); list.className = "pick"; list.setAttribute("data-k", "do");
-      row(list, g[2], "All stores", n[g[0]]);
-      keys.forEach(function(k){ row(list, "store/" + k, st[g[0]][k].venue, st[g[0]][k].n); });
-      body.appendChild(list); card.appendChild(body);
+      row(fa, g[2], "All stores", n[g[0]], true);
+      keys.forEach(function(k){ row(fa, "store/" + k, st[g[0]][k].venue, st[g[0]][k].n, true); });
     });
   }
 
@@ -1118,7 +1117,7 @@ a{color:inherit;text-decoration:none}
       var area = h.getAttribute("data-area");
       FOPEN = FOPEN === area ? null : area;
       renderSub();
-      if (FOPEN){ var b = psub.querySelector(".fcard.open .fbody"); if (b) b.classList.add("reveal"); }
+      if (FOPEN){ var rs = psub.querySelectorAll("#fall > a.fsub"); for (var ri = 0; ri < rs.length; ri++) rs[ri].classList.add("reveal"); }
       return;
     }
     var a = e.target.closest ? e.target.closest("a[data-file]") : null;

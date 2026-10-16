@@ -50,6 +50,7 @@
   --sz-row:44px;       /* menu rows, fields, full-width actions */
   --sz-track:40px;      /* a recessed track, and search fields */
   --sz-seg:34px;        /* a segment inside a track, and colour swatches */
+  --sz-seg-tall:38px;   /* the counter strip only: a segment in its Layout track */
   --sz-sm:36px;         /* round buttons and compact pill buttons */
   --r-cut:6px;          /* the inner corner of a cut track (the counter's score buttons, .seg.multi) */
   --gap-cut:3px;        /* the gap between segments in a cut track (same two) */
@@ -124,6 +125,9 @@ html.paged .glass,html.paged .doors{--muted:#DCDEE2}
   display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .tab{border-radius:999px;display:grid;place-items:center}
 .tab svg{width:24px;height:24px}
+/* THE STRIP'S LAYOUT TRACK is the one tall track: its options are --sz-seg-tall (38), so the
+   track is 44 like the strip's three slots and sits 6 from the strip's top and bottom. */
+.bar.strip .seg button{height:var(--sz-seg-tall)}
 .tab:active,.tab.on{background:var(--on-pc,var(--on))}
 .tab.on{color:var(--on-ink,inherit)}
 /* ICONS: each carries an outline drawing (.ico) and a filled one (.icf). The filled one
@@ -182,13 +186,18 @@ svg .icb{display:none} /* a hub-only drawing at the hub's thinner line (Trade's 
 .phead > .circ{flex:0 0 auto}
 
 /* MENU EDGES: a menu's header and footer stay put while its body scrolls. While content runs
-   underneath one, it shows a hairline and a soft shadow (pages.js sets .edge), so the cut
-   reads as an edge, not as content stopping short. Hidden when nothing is underneath. */
-.phead,.pfoot{position:relative}
-.phead::after,.pfoot::before{content:"";position:absolute;left:-16px;right:-16px;height:1px;background:var(--frost-rim);opacity:0;transition:opacity .15s ease;pointer-events:none}
-.phead::after{bottom:-6px;box-shadow:0 6px 12px rgba(0,0,0,.45)}
-.pfoot::before{top:0;box-shadow:0 -6px 12px rgba(0,0,0,.45)}
-.phead.edge::after,.pfoot.edge::before{opacity:1}
+   underneath one, the body fades out softly toward it (pages.js sets .edge on that head or
+   foot): no line and no shadow, the way iOS lets a list fade under its own bars. With nothing
+   underneath, the body stays sharp to its edge. The fade grows in .15s where the phone can
+   animate a length (@property); elsewhere it simply appears. */
+@property --fade-t{syntax:"<length>";inherits:false;initial-value:0px}
+@property --fade-b{syntax:"<length>";inherits:false;initial-value:0px}
+.pbody{--fade-t:0px;--fade-b:0px;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 var(--fade-t),#000 calc(100% - var(--fade-b)),transparent 100%);
+  mask-image:linear-gradient(to bottom,transparent 0,#000 var(--fade-t),#000 calc(100% - var(--fade-b)),transparent 100%);
+  transition:--fade-t .15s ease,--fade-b .15s ease}
+.panel:has(> .phead.edge) > .pbody{--fade-t:24px}
+.panel:has(> .pfoot.edge) > .pbody{--fade-b:24px}
 /* THE PAGE HOLDS STILL UNDER AN OPEN MENU BY SWITCHING SCROLLING OFF AT
    THE ROOT. Pinning the body with position:fixed was the first lock and,
    in the installed app with the status bar drawn over the page, it lifted

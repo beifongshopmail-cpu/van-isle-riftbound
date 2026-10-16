@@ -153,8 +153,8 @@ window.RAVI_BAR = function(nav, slots){
 // MENU STATE. Two things every page's menus share, kept here so a page only needs markup.
 // (1) A bar slot with data-fills="<menu id>" is on (its icon filled) while that menu, or a
 //     deeper menu opened from it, is showing. It goes off when every menu is closed.
-// (2) A menu's fixed header and footer show an edge (a hairline and a soft shadow, app.css)
-//     while its scrolling body runs underneath them.
+// (2) A menu's fixed header and footer carry .edge while its scrolling body runs underneath
+//     them; app.css fades the body out softly toward that edge.
 (function(){
   if (typeof document === "undefined") { return; }  // pages.js is also read as plain data (audit.js)
   function boot(){
