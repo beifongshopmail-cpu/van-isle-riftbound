@@ -115,6 +115,100 @@ function textOf(v) {
   return '';
 }
 
+// Riot's card fields come in several shapes: set and rarity as
+// {value:{id}}, domains as {values:[{id}]}, types as [{id}]. Energy, might
+// and power were read as bare numbers only, and Riot does not send them that
+// way, so no card carried them (found in M11, 2026-10-17). numOf reads a
+// number out of any of those shapes and keeps 0; it returns undefined when
+// there is none, so the field is left off.
+function numOf(v) {
+  if (typeof v === 'number') { return isFinite(v) ? v : undefined; }
+  if (typeof v === 'string') {
+    var t = v.trim();
+    return /^-?\d+(\.\d+)?$/.test(t) ? Number(t) : undefined;
+  }
+  if (Array.isArray(v)) { return v.length ? numOf(v[0]) : undefined; }
+  if (v && typeof v === 'object') {
+    var keys = ['value', 'id', 'label', 'amount'];
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i] in v) {
+        var r = numOf(v[keys[i]]);
+        if (r !== undefined) { return r; }
+      }
+    }
+  }
+  return undefined;
+}
+
+// Ids out of the same shapes, lower case, in order, no repeats.
+function idsOf(v, out) {
+  out = out || [];
+  if (typeof v === 'string') {
+    var t = v.trim().toLowerCase();
+    if (t && out.indexOf(t) < 0) { out.push(t); }
+  } else if (Array.isArray(v)) {
+    for (var i = 0; i < v.length; i++) { idsOf(v[i], out); }
+  } else if (v && typeof v === 'object') {
+    if (typeof v.id === 'string') { idsOf(v.id, out); }
+    else if ('value' in v) { idsOf(v.value, out); }
+    else if ('values' in v) { idsOf(v.values, out); }
+    else if (typeof v.label === 'string') { idsOf(v.label, out); }
+  }
+  return out;
+}
+
+// Card kind: champion, signature, token. The deck rules need it (a Chosen
+// Champion, at most 3 Signatures, no tokens in a deck). Riot's field name is
+// not yet seen from a live run, so the likely names are all read; the probe
+// below shows the real one in the cards pull request.
+function kindsOf(c) {
+  var ct = c.cardType || {};
+  var srcs = [ct.superType, ct.supertype, ct.superTypes, ct.supertypes,
+    c.superType, c.supertype, c.superTypes, c.supertypes, c.cardSuperType];
+  var out = [];
+  for (var i = 0; i < srcs.length; i++) { if (srcs[i] !== undefined) { idsOf(srcs[i], out); } }
+  return out;
+}
+
+// One block of plain text for the cards pull request: how many cards carry
+// each new field, and one raw unit card's keys with its cost, might, power
+// and type fields as Riot sent them, so a live run shows the real shapes.
+function probe(items, list) {
+  var n = list.length;
+  var cnt = { e: 0, p: 0, w: 0, k: 0 };
+  for (var i = 0; i < n; i++) {
+    if ('e' in list[i]) { cnt.e++; }
+    if ('p' in list[i]) { cnt.p++; }
+    if ('w' in list[i]) { cnt.w++; }
+    if (list[i].k && list[i].k.length) { cnt.k++; }
+  }
+  var sample = null;
+  for (var j = 0; j < items.length && !sample; j++) {
+    var t = (((items[j] || {}).cardType || {}).type || [])[0] || {};
+    if (t.id === 'unit') { sample = items[j]; }
+  }
+  if (!sample) { sample = items[0] || {}; }
+  var pick = {};
+  ['energy', 'might', 'power', 'cardType', 'superType', 'supertype'].forEach(function (k) {
+    if (k in sample) { pick[k] = sample[k]; }
+  });
+  function ascii(s) { return String(s).replace(/[^\x20-\x7e]/g, '?'); }
+  var lines = [
+    'Card fields kept (M11 probe):',
+    '',
+    '    energy: ' + cnt.e + ' of ' + n,
+    '    might: ' + cnt.p + ' of ' + n,
+    '    power: ' + cnt.w + ' of ' + n,
+    '    kind: ' + cnt.k + ' of ' + n,
+    '',
+    'One raw card as Riot sent it (' + ascii(sample.publicCode || '?') + '):',
+    '',
+    '    keys: ' + ascii(Object.keys(sample).sort().join(', ')).slice(0, 900),
+    '    ' + ascii(JSON.stringify(pick)).slice(0, 1500)
+  ];
+  return lines.join('\n') + '\n';
+}
+
 function shape(c) {
   var img = c.cardImage || {};
   var set = (c.set && c.set.value) || {};
@@ -140,8 +234,13 @@ function shape(c) {
     h: hashOf(img.url),
     u: String(img.url || '')
   };
-  if (typeof c.energy === 'number') { o.e = c.energy; }
-  if (typeof c.might === 'number') { o.p = c.might; }
+  // e energy cost, p might, w power cost, k card kinds.
+  var en = numOf(c.energy), mi = numOf(c.might), pw = numOf(c.power);
+  if (en !== undefined) { o.e = en; }
+  if (mi !== undefined) { o.p = mi; }
+  if (pw !== undefined) { o.w = pw; }
+  var ks = kindsOf(c);
+  if (ks.length) { o.k = ks; }
   if (cgList.length) { o.g = cgList; }
   // Riot's policy requires official card text to be displayed wherever a
   // card is shown. Nothing renders it yet; it is captured now so a later
@@ -354,6 +453,9 @@ function main() {
       list.push(o);
     }
     console.log('shaped cards: ' + list.length);
+    var probeText = probe(items, list);
+    console.log(probeText);
+    if (process.env.CARDS_PROBE) { fs.writeFileSync(process.env.CARDS_PROBE, probeText, 'utf8'); }
     console.log('cards with no image hash: ' + noHash.length);
     for (var q = 0; q < Math.min(noHash.length, 8); q++) {
       console.log('  NO IMAGE: ' + noHash[q]);
@@ -634,9 +736,15 @@ function main() {
   });
 }
 
-main().then(function () {
-  console.log('done');
-}).catch(function (e) {
-  console.error('FAILED: ' + e.message);
-  process.exit(1);
-});
+module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf };
+
+// Run directly (node fetch-cards.js) it fetches; required by a test it only
+// hands over its functions.
+if (require.main === module) {
+  main().then(function () {
+    console.log('done');
+  }).catch(function (e) {
+    console.error('FAILED: ' + e.message);
+    process.exit(1);
+  });
+}
