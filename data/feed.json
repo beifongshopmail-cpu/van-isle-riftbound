@@ -1,7 +1,223 @@
 {
- "updated": "2026-10-11",
+ "updated": "2026-10-17",
  "note": "Riot's own posts. Facebook text is Riot's, word for word; Discord gives only the link and the day.",
  "items": [
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid0paHRXFjAzQntPHn5SqgbzQ8dypfDK1sZzD1CFowZuBbez2YujCRceuBdySZpMFivl",
+   "kind": "announcement",
+   "url": "https://facebook.com/playriftbound/posts/pfbid0paHRXFjAzQntPHn5SqgbzQ8dypfDK1sZzD1CFowZuBbez2YujCRceuBdySZpMFivl",
+   "posted": "2026-10-16",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Can you check off all 9 squares? Save this bingo card and see how many you can complete at your #RBRadiance Pre-Rifts!",
+   "via": [
+    "muse"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/reel/1425186893055041",
+   "kind": "product",
+   "url": "https://facebook.com/reel/1425186893055041",
+   "posted": "2026-10-16",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Pre-Rift is finally here! Our creators got a few rounds in at the LA Summit Pre-Rift. Here's what they had to say after their first taste of the set! #RBRadiance",
+   "via": [
+    "muse"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid0aurbKw1aaiyLSEnPSafgbAzeh6X99wgg8tT7Nzo6pHyv3c1Ap1xiMNsbPU8DVSk1l",
+   "kind": "rules",
+   "url": "https://facebook.com/playriftbound/posts/pfbid0aurbKw1aaiyLSEnPSafgbAzeh6X99wgg8tT7Nzo6pHyv3c1Ap1xiMNsbPU8DVSk1l",
+   "posted": "2026-10-15",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "We're coming up on one year of Riftbound, and always finding ways to level up the game! We're exploring three potential changes to turn order to help create a more balanced playing experience. These changes will be tested at events worldwide, outside of premier tournaments. Article: https://riot.com/3UvUU3M",
+   "via": [
+    "discord",
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/en-us/news/organizedplay/testing-start-of-game-rules/"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/reel/1097454946519420",
+   "kind": "product",
+   "url": "https://facebook.com/reel/1097454946519420",
+   "posted": "2026-10-15",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Got the right card in hand? Show it off to your opponent as you play a card to unlock an additional effect! #RBRadiance",
+   "via": [
+    "muse"
+   ]
+  },
+  {
+   "id": "link:https://playriftbound.com/en-us/news/organizedplay/regional-championships-competitive-integrity-prizing/",
+   "kind": "event",
+   "url": "https://playriftbound.com/en-us/news/organizedplay/regional-championships-competitive-integrity-prizing/",
+   "posted": "2026-10-15",
+   "via": [
+    "discord"
+   ],
+   "shape": "followed"
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02bUcfXLLJTq8y6UgRLejNbqaTFhdRhtW71qZktUywwEFwt5Qtg8SZa2cAqcdy4D4Rl",
+   "kind": "product",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02bUcfXLLJTq8y6UgRLejNbqaTFhdRhtW71qZktUywwEFwt5Qtg8SZa2cAqcdy4D4Rl",
+   "posted": "2026-10-13",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Looking to amp up your deck? Check out the new #RBRadiance Alt Art Runes you can find in booster packs! Get your first hands-on experience with Radiance at Pre-Rift events starting October 16! Find an event near you at PlayRiftbound.com",
+   "via": [
+    "muse"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/reel/1349246537113124",
+   "kind": "rules",
+   "url": "https://facebook.com/reel/1349246537113124",
+   "posted": "2026-10-13",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Take your Gear straight to the battlefield with Deploy to gain an effect, but watch out! Your opponent might be waiting to respond. #RBRadiance",
+   "via": [
+    "muse"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02CR1aNHymdfeACKMbdaynUbro2CgRVYHjKUhfLphfE1x6aoJTAQhAa9wFz9uUwSeSl",
+   "kind": "event",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02CR1aNHymdfeACKMbdaynUbro2CgRVYHjKUhfLphfE1x6aoJTAQhAa9wFz9uUwSeSl",
+   "posted": "2026-10-12",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Get your first hands-on experience with #RBRadiance at Pre-Rift events, starting October 16! Check out the event locator at PlayRiftbound.com today to find your nearest store. Here's what to expect from a Pre-Rift: https://playriftbound.com/en-us/news/game-updates/preparing-for-the-radiance-pre-rift/",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/en-us/news/game-updates/preparing-for-the-radiance-pre-rift/"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02FW7bJCTxUgc9oSL2c6maYtmMnhtNVBJC5LPCfd7gD4Sr4TfNtz5DCveG8gYdRxjUl",
+   "kind": "event",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02FW7bJCTxUgc9oSL2c6maYtmMnhtNVBJC5LPCfd7gD4Sr4TfNtz5DCveG8gYdRxjUl",
+   "posted": "2026-10-12",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "France, we're coming to you! We're heading to #PGW2026, bringing exclusive activities and merch for players at our booth! On se voit à Paris ! 🇫🇷 More event details in the article: https://riot.com/4ylrL9f",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/fr-fr/news/announcements/riftbound-a-la-paris-games-week-2026/"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid093XPkGd9bqgY58T496PoethsGNAXtr57T5R31ec2YW59UAQZT2dmSw4TDvMpQCbKl",
+   "kind": "announcement",
+   "url": "https://facebook.com/playriftbound/posts/pfbid093XPkGd9bqgY58T496PoethsGNAXtr57T5R31ec2YW59UAQZT2dmSw4TDvMpQCbKl",
+   "posted": "2026-10-12",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Get your first hands-on experience with #RBRadiance at Pre-Rift events, starting October 16! Check out the event locator at PlayRiftbound.com today to find your nearest store. Here's what to expect from a Pre-Rift: https://playriftbound.com/.../preparing-for-the-radiance.../",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/.../preparing-for-the-radiance.../"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid0BxUQP2qbdae2nAkZx2SE2NC5zeTDdGG29282pfoLjq8RJU7cAsCU35AUGgvVckRSl",
+   "kind": "event",
+   "url": "https://facebook.com/playriftbound/posts/pfbid0BxUQP2qbdae2nAkZx2SE2NC5zeTDdGG29282pfoLjq8RJU7cAsCU35AUGgvVckRSl",
+   "posted": "2026-10-12",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "France, we're coming to you! We're heading to #PGW2026, bringing exclusive activities and merch for players at our booth! On se voit à Paris! 🇫🇷 More event details in the article: https://riot.com/4ylrL9f",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/fr-fr/news/announcements/riftbound-a-la-paris-games-week-2026/"
+   ]
+  },
+  {
+   "id": "fb:https://playriftbound.com/en-us/news/announcements/preparing-for-the-radiance-pre-rift/",
+   "kind": "announcement",
+   "url": "https://playriftbound.com/en-us/news/announcements/preparing-for-the-radiance-pre-rift/",
+   "posted": "2026-10-12",
+   "source": "Riftbound (official website)",
+   "credit": "Riot, on Facebook",
+   "text": "Get ready to play Riftbound's newest set at your local Pre-Rift. Hello Riftbounders! This Friday, October 16, stores will begin running their Radiance Pre-Rift events. Events begin on Friday, but the Pre-Rift window lasts for the week, so check the schedule at your lo…",
+   "via": [
+    "discord",
+    "muse"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02sJdnWVMcfBMFo5vYhCkFEbxwxxm1qNccaLUpbH89TLgGMdQZu7cT29r3nUCuxspsl",
+   "kind": "rules",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02sJdnWVMcfBMFo5vYhCkFEbxwxxm1qNccaLUpbH89TLgGMdQZu7cT29r3nUCuxspsl",
+   "posted": "2026-10-10",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "#RBRadiance is almost here, and we've got some fresh card errata to share for four cards from the new set! Check out the updates and full details below. Errata article: https://riot.com/3Umpltb",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/en-us/news/announcements/radiance-errata-updates/"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid0JnaSwdyy9dZsQx8MMh2uxYnJjFzBAsAPSpuzWPe7aKCtMCAccVd4toGNPbJqAueXl",
+   "kind": "rules",
+   "url": "https://facebook.com/playriftbound/posts/pfbid0JnaSwdyy9dZsQx8MMh2uxYnJjFzBAsAPSpuzWPe7aKCtMCAccVd4toGNPbJqAueXl",
+   "posted": "2026-10-10",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "#RBRadiance brings plenty of new and unique interactions to the table, and we want to make sure your questions are answered. Check out the latest Patch Notes for clarifications on how these interactions should work! Article: https://riot.com/3VWbYjN",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/reel/1052399924511911",
+   "kind": "product",
+   "url": "https://facebook.com/reel/1052399924511911",
+   "posted": "2026-10-10",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "So many ways to shine. Take a look at some of the cards lighting up #RBRadiance in Riftbound, dropping October 23. Pre-Rifts start October 16 at your local game store! Find one near you: https://riot.com/4hPddsy",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/en-us/events/"
+   ]
+  },
+  {
+   "id": "fb:https://facebook.com/reel/1479786304207568",
+   "kind": "product",
+   "url": "https://facebook.com/reel/1479786304207568",
+   "posted": "2026-10-10",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "\"I am not in danger. I am the danger.\" 🪰 #RBRadiance",
+   "via": [
+    "muse"
+   ]
+  },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid02rzqGEz49f2j8rBBuUeLNFq7SbfQgrUxvCSUXchFtr1RS8nMSyjdWfsysY7fTJkhPl",
    "kind": "rules",
@@ -32,21 +248,6 @@
    ],
    "links": [
     "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/"
-   ]
-  },
-  {
-   "id": "fb:https://facebook.com/reel/1052399924511911",
-   "kind": "product",
-   "url": "https://facebook.com/reel/1052399924511911",
-   "posted": "2026-10-09",
-   "source": "Riftbound",
-   "credit": "Riot, on Facebook",
-   "text": "So many ways to shine. Take a look at some of the cards lighting up #RBRadiance in Riftbound, dropping October 23. Pre-Rifts start October 16 at your local game store! Find one near you: https://riot.com/4hPddsy",
-   "via": [
-    "muse"
-   ],
-   "links": [
-    "https://playriftbound.com/en-us/events/"
    ]
   },
   {
