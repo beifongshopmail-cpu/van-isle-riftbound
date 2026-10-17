@@ -251,6 +251,40 @@ function fieldReport(items) {
   return { cards: items.length, paths: out };
 }
 
+// One table of names and icons for the values cards share (set names, type,
+// kind, rarity and domain labels, Riot's icon urls), kept once in the
+// catalogue instead of on every card.
+function lookups(items) {
+  var L = { sets: {}, types: {}, kinds: {}, rarities: {}, domains: {}, stats: {} };
+  function put(tab, v) {
+    if (!v || typeof v.id !== 'string' || !v.id) { return; }
+    var k = v.id.toLowerCase();
+    var e = tab[k] || (tab[k] = {});
+    if (!e.l && v.label) { e.l = String(v.label); }
+    if (!e.u && v.icon && v.icon.url) { e.u = String(v.icon.url); }
+  }
+  function stat(name, v) {
+    if (!L.stats[name] && v && v.value && v.value.icon && v.value.icon.url) {
+      L.stats[name] = { l: String(v.label || name), u: String(v.value.icon.url) };
+    }
+  }
+  for (var i = 0; i < items.length; i++) {
+    var c = items[i] || {};
+    var sv = c.set && c.set.value;
+    if (sv && sv.id && sv.label && !L.sets[sv.id]) { L.sets[String(sv.id)] = String(sv.label); }
+    var ct = c.cardType || {};
+    var ty = ct.type || [];
+    for (var a = 0; a < ty.length; a++) { put(L.types, ty[a]); }
+    var st = ct.superType || [];
+    for (var b = 0; b < st.length; b++) { put(L.kinds, st[b]); }
+    put(L.rarities, c.rarity && c.rarity.value);
+    var dv = (c.domain && c.domain.values) || [];
+    for (var d = 0; d < dv.length; d++) { put(L.domains, dv[d]); }
+    stat('energy', c.energy); stat('might', c.might); stat('power', c.power); stat('mightBonus', c.mightBonus);
+  }
+  return L;
+}
+
 function shape(c) {
   var img = c.cardImage || {};
   var set = (c.set && c.set.value) || {};
@@ -284,6 +318,35 @@ function shape(c) {
   var ks = kindsOf(c);
   if (ks.length) { o.k = ks; }
   if (cgList.length) { o.g = cgList; }
+  // The rest of Riot's fields (M11, 2026-10-17, Mako: keep it all so later
+  // features need no new fetch; Riot's list is cards/fields.json).
+  // i Riot's id, b subtitle, o orientation when not portrait, y every type
+  // when more than one, q the rules text as Riot's HTML, f the effect box,
+  // m might bonus, a artists, z Riot's flags, co art colours.
+  if (typeof c.id === 'string' && c.id) { o.i = c.id; }
+  if (typeof c.subtitle === 'string' && c.subtitle.trim()) { o.b = c.subtitle.trim(); }
+  if (typeof c.orientation === 'string' && c.orientation && c.orientation !== 'portrait') { o.o = c.orientation; }
+  var types = idsOf((c.cardType && c.cardType.type) || []);
+  if (types.length > 1) { o.y = types; }
+  var rt = c.text && c.text.richText && c.text.richText.body;
+  if (typeof rt === 'string' && rt) { o.q = rt; }
+  var ef = c.effect && c.effect.richText && c.effect.richText.body;
+  if (typeof ef === 'string' && ef) { o.f = ef; }
+  var mb = numOf(c.mightBonus);
+  if (mb !== undefined) { o.m = mb; }
+  var arts = [];
+  var av = (c.illustrator && c.illustrator.values) || [];
+  for (var ai = 0; ai < av.length; ai++) {
+    var an = av[ai] && (av[ai].label || av[ai].id);
+    if (an && arts.indexOf(String(an)) < 0) { arts.push(String(an)); }
+  }
+  if (arts.length) { o.a = arts; }
+  var fl = idsOf(c.flags || []);
+  if (fl.length) { o.z = fl; }
+  var col = img.colors || {};
+  if (col.primary || col.secondary || col.label) {
+    o.co = [String(col.primary || ''), String(col.secondary || ''), String(col.label || '')];
+  }
   // Riot's policy requires official card text to be displayed wherever a
   // card is shown. Nothing renders it yet; it is captured now so a later
   // surface does not need a second pass over the catalogue.
@@ -653,6 +716,7 @@ function main() {
       build_id: buildId,
       source: 'riftbound.leagueoflegends.com card gallery',
       totals: { cards: list.length, images: Object.keys(hashes).length },
+      labels: lookups(items),
       cards: list
     }), 'utf8');
 
@@ -782,7 +846,7 @@ function main() {
   });
 }
 
-module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport };
+module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport, lookups: lookups };
 
 // Run directly (node fetch-cards.js) it fetches; required by a test it only
 // hands over its functions.
