@@ -99,6 +99,16 @@ a{color:inherit;text-decoration:none}
    in step. */
 .week{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding:2px 0;margin-bottom:2px}
 .week:last-child{margin-bottom:0}
+/* A MONTH CHANGE (motion sweep, 2026-10-16): the new month's weeks slide 24 in from the side
+   the arrow points and fade in, .26s. The arrow's handler marks the fresh rows (wnext from the
+   right, wprev from the left); the next render builds new rows without the mark, so it never
+   replays. It moves the rows, never #weeksInner, whose transform is the collapse. */
+@media (prefers-reduced-motion:no-preference){
+  .week.wnext{animation:wnext .26s var(--ease)}
+  .week.wprev{animation:wprev .26s var(--ease)}
+}
+@keyframes wnext{0%{opacity:0;transform:translateX(24px)}100%{opacity:1;transform:none}}
+@keyframes wprev{0%{opacity:0;transform:translateX(-24px)}100%{opacity:1;transform:none}}
 
 /* days are CIRCLES, 46 across, shrinking to the column on a narrow phone */
 .cell{
@@ -1038,7 +1048,21 @@ a{color:inherit;text-decoration:none}
     if (!s) return;
     selected = (selected === s) ? null : s;
     refresh(false);
+    easeList();
   });
+
+  // THE LIST UNDER THE MONTH eases in (app.css, .reveal) after a day or month tap, never on a
+  // render: the class is restarted here only, on the list that stays in place.
+  function easeList(){
+    listEl.classList.remove("reveal");
+    void listEl.offsetWidth;
+    listEl.classList.add("reveal");
+  }
+  function slideMonth(dir){
+    var wk = weeksInner.children;
+    for (var i = 0; i < wk.length; i++) wk[i].classList.add(dir > 0 ? "wnext" : "wprev");
+    easeList();
+  }
 
   // ONE delegated listener for every card: tapping its head button
   // toggles that card and closes whichever other card was open.
@@ -1064,11 +1088,13 @@ a{color:inherit;text-decoration:none}
     var m = cursor.m - 1, y = cursor.y;
     if (m < 0){ m = 11; y--; }
     cursor = {y:y, m:m}; selected = null; refresh(true);
+    slideMonth(-1);
   };
   document.getElementById("next").onclick = function(){
     var m = cursor.m + 1, y = cursor.y;
     if (m > 11){ m = 0; y++; }
     cursor = {y:y, m:m}; selected = null; refresh(true);
+    slideMonth(1);
   };
 
   /* ---- panels rise from the bottom (app.css); one open at a time.

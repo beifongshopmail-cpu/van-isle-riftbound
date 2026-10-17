@@ -113,6 +113,8 @@ body{-webkit-font-smoothing:antialiased;
     var on = fo.getAttribute("aria-expanded") !== "true";
     fo.setAttribute("aria-expanded", on ? "true" : "false");
     ff.hidden = !on;
+    // CONTENT A TAP OPENS eases in (app.css, .reveal), restarted per tap (motion sweep, 2026-10-16).
+    if (on) { ff.classList.remove("reveal"); void ff.offsetWidth; ff.classList.add("reveal"); }
     // The form measured itself while folded away; loading it again once it shows lets it
     // take its full height.
     var f = ff.querySelector("iframe");
