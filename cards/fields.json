@@ -1,0 +1,676 @@
+{
+ "cards": 1408,
+ "paths": {
+  "cardImage.accessibilityText": {
+   "n": 1408,
+   "ex": [
+    "Riftbound Spell: Abandon. [Reaction] (Play any time, even be",
+    "Riftbound Battlefield: Abandoned Hall. When a player plays a",
+    "Riftbound Spell: Acceleration Gate. Ready up to 4 units, gea"
+   ]
+  },
+  "cardImage.colors.label": {
+   "n": 1408,
+   "ex": [
+    "#040B10",
+    "#060B18",
+    "#000000"
+   ]
+  },
+  "cardImage.colors.primary": {
+   "n": 1408,
+   "ex": [
+    "#1E303D",
+    "#222C44",
+    "#2F1825"
+   ]
+  },
+  "cardImage.colors.secondary": {
+   "n": 1408,
+   "ex": [
+    "#DCF2F9",
+    "#DCEBF9",
+    "#DCF3F9"
+   ]
+  },
+  "cardImage.dimensions.aspectRatio": {
+   "n": 1408,
+   "ex": [
+    "0.7160731472569779",
+    "1.396505376344086",
+    "1.3951612903225807"
+   ]
+  },
+  "cardImage.dimensions.height": {
+   "n": 1408,
+   "ex": [
+    "1039",
+    "744",
+    "1040"
+   ]
+  },
+  "cardImage.dimensions.width": {
+   "n": 1408,
+   "ex": [
+    "744",
+    "1039",
+    "1038"
+   ]
+  },
+  "cardImage.mimeType": {
+   "n": 1408,
+   "ex": [
+    "image/png"
+   ]
+  },
+  "cardImage.provider": {
+   "n": 1408,
+   "ex": [
+    "sanity"
+   ]
+  },
+  "cardImage.type": {
+   "n": 1408,
+   "ex": [
+    "image"
+   ]
+  },
+  "cardImage.url": {
+   "n": 1408,
+   "ex": [
+    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_"
+   ]
+  },
+  "cardType.label": {
+   "n": 1408,
+   "ex": [
+    "Card Type"
+   ]
+  },
+  "cardType.superType[].icon.dimensions.aspectRatio": {
+   "n": 353,
+   "ex": []
+  },
+  "cardType.superType[].icon.dimensions.height": {
+   "n": 353,
+   "ex": []
+  },
+  "cardType.superType[].icon.dimensions.width": {
+   "n": 353,
+   "ex": []
+  },
+  "cardType.superType[].icon.mimeType": {
+   "n": 353,
+   "ex": [
+    "image/png"
+   ]
+  },
+  "cardType.superType[].icon.provider": {
+   "n": 353,
+   "ex": [
+    "sanity"
+   ]
+  },
+  "cardType.superType[].icon.type": {
+   "n": 353,
+   "ex": [
+    "image"
+   ]
+  },
+  "cardType.superType[].icon.url": {
+   "n": 353,
+   "ex": [
+    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_"
+   ]
+  },
+  "cardType.superType[].id": {
+   "n": 457,
+   "ex": [
+    "signature",
+    "champion",
+    "token"
+   ]
+  },
+  "cardType.superType[].label": {
+   "n": 457,
+   "ex": [
+    "Signature",
+    "Champion",
+    "Token"
+   ]
+  },
+  "cardType.type[].icon.dimensions.aspectRatio": {
+   "n": 1393,
+   "ex": []
+  },
+  "cardType.type[].icon.dimensions.height": {
+   "n": 1393,
+   "ex": []
+  },
+  "cardType.type[].icon.dimensions.width": {
+   "n": 1393,
+   "ex": []
+  },
+  "cardType.type[].icon.mimeType": {
+   "n": 1393,
+   "ex": [
+    "image/png"
+   ]
+  },
+  "cardType.type[].icon.provider": {
+   "n": 1393,
+   "ex": [
+    "sanity"
+   ]
+  },
+  "cardType.type[].icon.type": {
+   "n": 1393,
+   "ex": [
+    "image"
+   ]
+  },
+  "cardType.type[].icon.url": {
+   "n": 1393,
+   "ex": [
+    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_"
+   ]
+  },
+  "cardType.type[].id": {
+   "n": 1393,
+   "ex": [
+    "spell",
+    "battlefield",
+    "unit"
+   ]
+  },
+  "cardType.type[].label": {
+   "n": 1393,
+   "ex": [
+    "Spell",
+    "Battlefield",
+    "Unit"
+   ]
+  },
+  "collectorNumber": {
+   "n": 1408,
+   "ex": [
+    "131",
+    "205",
+    "150"
+   ]
+  },
+  "domain.label": {
+   "n": 1408,
+   "ex": [
+    "Domain"
+   ]
+  },
+  "domain.values[].icon.colors.label": {
+   "n": 1307,
+   "ex": []
+  },
+  "domain.values[].icon.colors.primary": {
+   "n": 1307,
+   "ex": []
+  },
+  "domain.values[].icon.colors.secondary": {
+   "n": 1307,
+   "ex": []
+  },
+  "domain.values[].icon.dimensions.aspectRatio": {
+   "n": 1307,
+   "ex": []
+  },
+  "domain.values[].icon.dimensions.height": {
+   "n": 1307,
+   "ex": []
+  },
+  "domain.values[].icon.dimensions.width": {
+   "n": 1307,
+   "ex": []
+  },
+  "domain.values[].icon.mimeType": {
+   "n": 1307,
+   "ex": [
+    "image/png"
+   ]
+  },
+  "domain.values[].icon.provider": {
+   "n": 1307,
+   "ex": [
+    "sanity"
+   ]
+  },
+  "domain.values[].icon.type": {
+   "n": 1307,
+   "ex": [
+    "image"
+   ]
+  },
+  "domain.values[].icon.url": {
+   "n": 1307,
+   "ex": [
+    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_"
+   ]
+  },
+  "domain.values[].id": {
+   "n": 1397,
+   "ex": [
+    "chaos",
+    "colorless",
+    "mind"
+   ]
+  },
+  "domain.values[].label": {
+   "n": 1397,
+   "ex": [
+    "Chaos",
+    "Colorless",
+    "Mind"
+   ]
+  },
+  "effect.label": {
+   "n": 35,
+   "ex": [
+    "Effect"
+   ]
+  },
+  "effect.richText.body": {
+   "n": 35,
+   "ex": [
+    "<p>[Ganking] (I can move from battlefield to battlefield.)</",
+    "<p>At the end of your turn, if I didn't conquer this turn, u",
+    "<p>When I conquer, channel 1 rune exhausted.</p>"
+   ]
+  },
+  "effect.richText.type": {
+   "n": 35,
+   "ex": [
+    "html"
+   ]
+  },
+  "energy.label": {
+   "n": 1144,
+   "ex": [
+    "Energy"
+   ]
+  },
+  "energy.value.id": {
+   "n": 1144,
+   "ex": [
+    "2",
+    "3",
+    "1"
+   ]
+  },
+  "energy.value.label": {
+   "n": 1144,
+   "ex": [
+    "2",
+    "3",
+    "1"
+   ]
+  },
+  "flags[].id": {
+   "n": 1,
+   "ex": [
+    "new"
+   ]
+  },
+  "flags[].label": {
+   "n": 1,
+   "ex": [
+    "New"
+   ]
+  },
+  "id": {
+   "n": 1408,
+   "ex": [
+    "unl-131-219",
+    "unl-205-219",
+    "ven-150-166"
+   ]
+  },
+  "illustrator.label": {
+   "n": 1408,
+   "ex": [
+    "Artist"
+   ]
+  },
+  "illustrator.values[].icon.provider": {
+   "n": 1368,
+   "ex": [
+    "web"
+   ]
+  },
+  "illustrator.values[].icon.type": {
+   "n": 1368,
+   "ex": [
+    "image"
+   ]
+  },
+  "illustrator.values[].icon.url": {
+   "n": 1368,
+   "ex": [
+    "https://assetcdn.rgpub.io/public/live/riot-shared/player-exp"
+   ]
+  },
+  "illustrator.values[].id": {
+   "n": 1368,
+   "ex": [
+    "kudosproductions",
+    "envarstudio",
+    "????/kudosproductions"
+   ]
+  },
+  "illustrator.values[].label": {
+   "n": 1368,
+   "ex": [
+    "Kudos Productions",
+    "Envar Studio",
+    "????/Kudos Productions"
+   ]
+  },
+  "might.label": {
+   "n": 786,
+   "ex": [
+    "Might"
+   ]
+  },
+  "might.value.icon.provider": {
+   "n": 786,
+   "ex": [
+    "web"
+   ]
+  },
+  "might.value.icon.type": {
+   "n": 786,
+   "ex": [
+    "image"
+   ]
+  },
+  "might.value.icon.url": {
+   "n": 786,
+   "ex": [
+    "https://assetcdn.rgpub.io/public/live/riot-shared/player-exp"
+   ]
+  },
+  "might.value.id": {
+   "n": 786,
+   "ex": [
+    "3",
+    "4",
+    "5"
+   ]
+  },
+  "might.value.label": {
+   "n": 786,
+   "ex": [
+    "3",
+    "4",
+    "5"
+   ]
+  },
+  "mightBonus.label": {
+   "n": 43,
+   "ex": [
+    "Might Bonus"
+   ]
+  },
+  "mightBonus.value.icon.provider": {
+   "n": 43,
+   "ex": [
+    "web"
+   ]
+  },
+  "mightBonus.value.icon.type": {
+   "n": 43,
+   "ex": [
+    "image"
+   ]
+  },
+  "mightBonus.value.icon.url": {
+   "n": 43,
+   "ex": [
+    "https://assetcdn.rgpub.io/public/live/riot-shared/player-exp"
+   ]
+  },
+  "mightBonus.value.id": {
+   "n": 43,
+   "ex": [
+    "3",
+    "4",
+    "2"
+   ]
+  },
+  "mightBonus.value.label": {
+   "n": 43,
+   "ex": [
+    "+3",
+    "+4",
+    "+2"
+   ]
+  },
+  "name": {
+   "n": 1408,
+   "ex": [
+    "Abandon",
+    "Abandoned Hall",
+    "Acceleration Gate"
+   ]
+  },
+  "orientation": {
+   "n": 1408,
+   "ex": [
+    "portrait",
+    "landscape"
+   ]
+  },
+  "power.label": {
+   "n": 576,
+   "ex": [
+    "Power"
+   ]
+  },
+  "power.value.icon.provider": {
+   "n": 576,
+   "ex": [
+    "web"
+   ]
+  },
+  "power.value.icon.type": {
+   "n": 576,
+   "ex": [
+    "image"
+   ]
+  },
+  "power.value.icon.url": {
+   "n": 576,
+   "ex": [
+    "https://assetcdn.rgpub.io/public/live/riot-shared/player-exp"
+   ]
+  },
+  "power.value.id": {
+   "n": 576,
+   "ex": [
+    "1",
+    "2",
+    "3"
+   ]
+  },
+  "power.value.label": {
+   "n": 576,
+   "ex": [
+    "1",
+    "2",
+    "3"
+   ]
+  },
+  "publicCode": {
+   "n": 1408,
+   "ex": [
+    "UNL-131/219",
+    "UNL-205/219",
+    "VEN-150/166"
+   ]
+  },
+  "rarity.label": {
+   "n": 1408,
+   "ex": [
+    "Rarity"
+   ]
+  },
+  "rarity.value.icon.colors.label": {
+   "n": 1408,
+   "ex": [
+    "#122021",
+    "#604634",
+    "#3A6C49"
+   ]
+  },
+  "rarity.value.icon.colors.primary": {
+   "n": 1408,
+   "ex": [
+    "#41B4B8",
+    "#B8794C",
+    "#A4B8AA"
+   ]
+  },
+  "rarity.value.icon.colors.secondary": {
+   "n": 1408,
+   "ex": [
+    "#293331",
+    "#332F29",
+    "#293333"
+   ]
+  },
+  "rarity.value.icon.dimensions.aspectRatio": {
+   "n": 1408,
+   "ex": [
+    "1.170731707317073",
+    "1.0859188544152745",
+    "1"
+   ]
+  },
+  "rarity.value.icon.dimensions.height": {
+   "n": 1408,
+   "ex": [
+    "410",
+    "419",
+    "354"
+   ]
+  },
+  "rarity.value.icon.dimensions.width": {
+   "n": 1408,
+   "ex": [
+    "480",
+    "455",
+    "354"
+   ]
+  },
+  "rarity.value.icon.mimeType": {
+   "n": 1408,
+   "ex": [
+    "image/png"
+   ]
+  },
+  "rarity.value.icon.provider": {
+   "n": 1408,
+   "ex": [
+    "sanity"
+   ]
+  },
+  "rarity.value.icon.type": {
+   "n": 1408,
+   "ex": [
+    "image"
+   ]
+  },
+  "rarity.value.icon.url": {
+   "n": 1408,
+   "ex": [
+    "https://cmsassets.rgpub.io/sanity/images/dsfx7636/game_data_"
+   ]
+  },
+  "rarity.value.id": {
+   "n": 1408,
+   "ex": [
+    "uncommon",
+    "epic",
+    "common"
+   ]
+  },
+  "rarity.value.label": {
+   "n": 1408,
+   "ex": [
+    "Uncommon",
+    "Epic",
+    "Common"
+   ]
+  },
+  "set.label": {
+   "n": 1408,
+   "ex": [
+    "Card Set"
+   ]
+  },
+  "set.value.id": {
+   "n": 1408,
+   "ex": [
+    "UNL",
+    "VEN",
+    "OGN"
+   ]
+  },
+  "set.value.label": {
+   "n": 1408,
+   "ex": [
+    "Unleashed",
+    "Vendetta",
+    "Origins"
+   ]
+  },
+  "subtitle": {
+   "n": 369,
+   "ex": [
+    "Inquisitive",
+    "Alluring",
+    "Confident"
+   ]
+  },
+  "tags.label": {
+   "n": 936,
+   "ex": [
+    "Tags"
+   ]
+  },
+  "tags.tags[]": {
+   "n": 936,
+   "ex": [
+    "Jayce",
+    "Mech",
+    "Poro"
+   ]
+  },
+  "text.label": {
+   "n": 1375,
+   "ex": [
+    "Ability"
+   ]
+  },
+  "text.richText.body": {
+   "n": 1375,
+   "ex": [
+    "<p>[Reaction] (Play any time, even before spells and abiliti",
+    "<p>When a player plays a spell, they may give a unit they co",
+    "<p>Ready up to 4 units, gear, and/or runes.</p>"
+   ]
+  },
+  "text.richText.type": {
+   "n": 1375,
+   "ex": [
+    "html"
+   ]
+  }
+ }
+}
