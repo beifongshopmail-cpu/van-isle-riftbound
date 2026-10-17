@@ -303,3 +303,72 @@ window.RAVI_BAR = function(nav, slots){
   }
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", render); } else { render(); }
 })();
+
+// A PICK-ONE TRACK SLIDES (STYLE.md, Motion; motion sweep, 2026-10-16). When a tap moves the
+// choice in a .seg, the chosen fill slides from the old option to the new one in .26s, as
+// iPhone's own segmented control does, instead of fading. The page's own handler changes the
+// choice as before; this only watches. Before the page handles the tap (capture), it notes the
+// chosen option's box, fill and every option's text colour; on the next frame, before it is
+// drawn, it lays a fill (.sgth, app.css) over the old box, clears the new option's own fill,
+// slides the fill to the new box and hands it back. Taps that do not move the choice (an armed
+// 'Sure?', the same option) and renders change nothing here. Skips .multi, .swatch and the
+// wrapping .lgpchips, a track the page rebuilt with a different count, and reduced motion.
+(function(){
+  if (!window.matchMedia || !document.addEventListener || !Element.prototype.animate) { return; }
+  var RM = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var EASE = "cubic-bezier(.22,.72,.2,1)", MS = 260;
+  function picks(seg){ return Array.prototype.filter.call(seg.children, function(b){ return b.tagName === "BUTTON"; }); }
+  function chosen(bs){
+    for (var i = 0; i < bs.length; i++) { if (bs[i].classList.contains("on") || bs[i].getAttribute("aria-pressed") === "true") { return i; } }
+    return -1;
+  }
+  function box(b){ return { left: b.offsetLeft + "px", top: b.offsetTop + "px", width: b.offsetWidth + "px", height: b.offsetHeight + "px" }; }
+  document.addEventListener("click", function(e){
+    if (RM.matches) { return; }
+    var b = e.target.closest ? e.target.closest(".seg > button") : null, seg = b ? b.parentNode : null;
+    if (!seg || seg.matches(".multi, .swatch, .lgpchips") || !seg.offsetWidth) { return; }
+    var bs = picks(seg), from = chosen(bs);
+    if (from < 0 || bs[from] === b) { return; }
+    // the track is the box every option is measured in (offsets, so a pressed option's scale
+    // does not count), so it is positioned from here until the slide ends
+    var stat = getComputedStyle(seg).position === "static";
+    if (stat) { seg.style.position = "relative"; }
+    var cs = getComputedStyle(bs[from]);
+    var was = { at: box(bs[from]), bg: cs.backgroundColor, r: cs.borderRadius, n: bs.length, stat: stat,
+      col: bs.map(function(x){ return getComputedStyle(x).color; }) };
+    requestAnimationFrame(function(){ if (!slide(seg, from, was) && stat) { seg.style.position = ""; } });
+  }, true);
+  function slide(seg, from, was){
+    if (!seg.isConnected) { return false; }
+    var bs = picks(seg), to = chosen(bs);
+    if (to < 0 || to === from || bs.length !== was.n) { return false; }
+    var A = bs[from], B = bs[to];
+    A.style.transition = "none"; B.style.transition = "none";
+    var bc = getComputedStyle(B), fill = bc.backgroundColor, rad = bc.borderRadius;
+    var stat = was.stat;
+    bs.forEach(function(x){ x.style.position = "relative"; x.style.zIndex = "1"; });
+    var g = document.createElement("i");
+    g.className = "sgth"; g.setAttribute("aria-hidden", "true");
+    seg.insertBefore(g, seg.firstChild);
+    var end = box(B), k0 = was.at, k1 = end;
+    k0.backgroundColor = was.bg; k0.borderRadius = was.r;
+    k1.backgroundColor = fill; k1.borderRadius = rad;
+    B.style.backgroundColor = "transparent";
+    var an = g.animate([k0, k1], { duration: MS, easing: EASE, fill: "forwards" });
+    A.animate([{ color: was.col[from] }, { color: getComputedStyle(A).color }], { duration: MS, easing: EASE });
+    B.animate([{ color: was.col[to] }, { color: bc.color }], { duration: MS, easing: EASE });
+    var over = false;
+    function done(){
+      if (over) { return; }
+      over = true;
+      B.style.backgroundColor = "";
+      void B.offsetWidth;
+      if (g.parentNode) { g.parentNode.removeChild(g); }
+      bs.forEach(function(x){ x.style.position = ""; x.style.zIndex = ""; });
+      if (stat) { seg.style.position = ""; }
+      requestAnimationFrame(function(){ A.style.transition = ""; B.style.transition = ""; });
+    }
+    an.onfinish = done; an.oncancel = done;
+    return true;
+  }
+})();

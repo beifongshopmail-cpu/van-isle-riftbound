@@ -171,9 +171,11 @@
     .pass .seamghost{display:flex;position:absolute;pointer-events:none;animation:seamghost .24s cubic-bezier(.4,0,1,1) both}
     /* the victory banner rises where a menu does */
     .win.winrise{animation:winrise .34s var(--mo-ease)}
+    .side > .rolein{animation:rolein var(--mo-travel) var(--mo-ease)}
   }
   @keyframes seamroll{0%{transform:translateY(26px);opacity:0}100%{transform:none;opacity:1}}
   @keyframes seamghost{0%{transform:none;opacity:1}100%{transform:translateY(-26px);opacity:0}}
+  @keyframes rolein{0%{opacity:0}100%{opacity:1}}
   @keyframes winrise{0%{transform:translateY(24px);opacity:0}100%{transform:none;opacity:1}}
   @keyframes ptland{0%{transform:scale(1.06)}100%{transform:none}}
   @keyframes railin{0%{transform:scaleX(0)}100%{transform:none}}
@@ -1826,8 +1828,21 @@
     if (!m || MODES.indexOf(m) < 0 || m === mode) { return; }
     mode = m;
     saveMode(); render();
+    // THE INSIDES FADE IN ACROSS THE TRAVEL (motion sweep, 2026-10-16): a role change rebuilds a
+    // side's contents in the new layout at once, so while the sides travel to their new sizes the
+    // fresh contents fade in (.rolein) instead of snapping. Fresh nodes only, so it never replays.
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
+    var kids = stage.querySelectorAll(".side > *");
+    for (var q = 0; q < kids.length; q++) { kids[q].classList.add("rolein"); kids[q].addEventListener("animationend", roleOut); }
   });
 
+  // The fade's class comes off when it ends, so it can never stand in for a later motion on the
+  // same node (the numeral's point land).
+  function roleOut(e){
+    if (e.animationName !== "rolein") { return; }
+    e.currentTarget.classList.remove("rolein");
+    e.currentTarget.removeEventListener("animationend", roleOut);
+  }
   // Restart a motion class: remove it, force a reflow, add it back.
   function restartFx(el, cls){
     if (!el) { return; }

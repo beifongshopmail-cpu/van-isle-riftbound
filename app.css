@@ -416,6 +416,18 @@ html.lock,html.lock body{overflow:hidden}
   .reveal{animation:reveal .26s var(--ease)}
 }
 @keyframes reveal{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:none}}
+/* A NUMBER A TAP CHANGES SETTLES from 1.06, the counter's point-land move (.32s), added by the
+   page script after the tap, never on a render (motion sweep, 2026-10-16). Flex and grid items
+   only: an inline span cannot scale. */
+@media (prefers-reduced-motion:no-preference){
+  .settle{animation:settle .32s var(--ease)}
+}
+@keyframes settle{0%{transform:scale(1.06)}100%{transform:none}}
+/* A PICK-ONE TRACK SLIDES (motion sweep, 2026-10-16): when a tap moves the choice, pages.js
+   draws .sgth, the chosen fill, at the old option and slides it to the new one in .26s, then
+   hands the fill back to the button. Every .seg except .multi, .swatch and the wrapping
+   .lgpchips. */
+.sgth{position:absolute;pointer-events:none;z-index:0}
 
 /* THE INSTALL SCREEN (STYLE.md, The install screen). In a browser tab
    pages.js adds html.gate and puts #ravigate first in the body; every other

@@ -435,6 +435,21 @@ a{color:inherit;text-decoration:none}
   // THE UNDO ROW HIDES ONLY WHEN THERE IS NOTHING TO UNDO. Clearing both
   // sides leaves an entry, so the row stays and the clear can be undone.
   // The log is a still glass wrapper; only the list inside it scrolls.
+  // A NUMBER A TAP CHANGES SETTLES (app.css .settle; motion sweep, 2026-10-16): only while a
+  // tap is being handled (TAP, set by onClick), never on a render or a load.
+  var TAP = false;
+  function settle(e){
+    if(!e) return;
+    e.classList.remove("settle");
+    void e.offsetWidth;
+    e.classList.add("settle");
+  }
+  function setN(e, txt){
+    if(!e || e.textContent === String(txt)) return;
+    e.textContent = txt;
+    if(TAP) settle(e);
+  }
+
   function udBar(){
     var w = el("undo"), h = "", k;
     if(!w) return;
@@ -448,6 +463,8 @@ a{color:inherit;text-decoration:none}
     el("udn").textContent = UDS.length;
     for(k = 0; k < UDS.length; k++) h += "<li>" + esc(UDS[k].t) + "</li>";
     el("udlog").innerHTML = h;
+    // the bar a tap brings up eases in like any content a tap opens (motion sweep, 2026-10-16)
+    if(w.hidden && TAP) reveal(w);
     w.hidden = false;
   }
 
@@ -810,8 +827,8 @@ a{color:inherit;text-decoration:none}
     el("side" + role).setAttribute("data-s", n);
     el("h" + role).textContent = Nm(n);
     el("pc" + role).textContent = (PCT[n] !== 100) ? ("at " + PCT[n] + "%") : "";
-    el("c" + role).textContent = cnt + (cnt === 1 ? " card" : " cards");
-    el("t" + role).textContent = money(sideTotal(n));
+    setN(el("c" + role), cnt + (cnt === 1 ? " card" : " cards"));
+    setN(el("t" + role), money(sideTotal(n)));
     el("tog" + role).setAttribute("aria-expanded", EXP[role] ? "true" : "false");
     // A list is rewritten only when its markup changes, so opening or
     // closing the other side never reloads this side's card images (they
@@ -825,8 +842,8 @@ a{color:inherit;text-decoration:none}
   function renderSides(){
     el("sw1").textContent = Nm(1);
     el("sw2").textContent = Nm(2);
-    el("n1").textContent = sideCount(1);
-    el("n2").textContent = sideCount(2);
+    setN(el("n1"), sideCount(1));
+    setN(el("n2"), sideCount(2));
     pressGroup(el("sides"), "data-side", String(SIDE));
     plate("A", SIDE);
     plate("B", SIDE === 1 ? 2 : 1);
@@ -921,7 +938,7 @@ a{color:inherit;text-decoration:none}
   // follow the names and rates even with both sides empty.
   function pcMark(){
     for(var n = 1; n <= 2; n++){
-      el("pv" + n).textContent = PCT[n] + "%";
+      setN(el("pv" + n), PCT[n] + "%");
       el("pcd" + n).disabled = PCT[n] <= 0;
       el("pcu" + n).disabled = PCT[n] >= 200;
     }
@@ -970,6 +987,8 @@ a{color:inherit;text-decoration:none}
   function onClick(ev){
     var t = ev.target.closest ? ev.target.closest("button") : null;
     if(!t) return;
+    TAP = true;
+    setTimeout(function(){ TAP = false; }, 0);
 
     var op = t.getAttribute("data-open");
     if(op){
@@ -1148,15 +1167,19 @@ a{color:inherit;text-decoration:none}
       }
       save();
       paint();
+      if(act === "inc" || act === "dec") settle(document.querySelector(".ln.open .stp > span"));
       return;
     }
 
     var side = t.getAttribute("data-side");
     if(side && !act){
+      var was = SIDE;
       SIDE = parseInt(side, 10);
       OPEN = "";
       save();
       renderSides();
+      // the two sides trade places: both ease in, as the month list does (motion sweep, 2026-10-16)
+      if(was !== SIDE){ reveal(el("sideA")); reveal(el("sideB")); }
       // open results redraw, so every pill wears the side it now adds to
       resAgain();
     }
