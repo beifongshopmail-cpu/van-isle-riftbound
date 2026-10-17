@@ -52,6 +52,11 @@ jobs:
           echo "cards=$(node -e "console.log(require('./cards/catalogue.json').cards.length)")" >> "$GITHUB_OUTPUT"
           echo "mapped=$(node -e "console.log(Object.keys(require('./cards/art.json').art).length)")" >> "$GITHUB_OUTPUT"
           echo "mb=$(du -sm cards/art | cut -f1)" >> "$GITHUB_OUTPUT"
+          if [ -n "$(git status --porcelain -- cards/fields.json)" ]; then
+            echo "fields=changed" >> "$GITHUB_OUTPUT"
+          else
+            echo "fields=same" >> "$GITHUB_OUTPUT"
+          fi
           if git diff --quiet -- cards/art cards/catalogue.json cards/art.json; then
             echo "changed=no" >> "$GITHUB_OUTPUT"
           else
@@ -68,7 +73,9 @@ jobs:
           A=${{ steps.after.outputs.files }}
           BC=${{ steps.before.outputs.cards }}
           AC=${{ steps.after.outputs.cards }}
-          if [ "$A" -ne "$B" ] || [ "$AC" -ne "$BC" ]; then
+          # A change in Riot's fields (cards/fields.json) is also worth a
+          # pull request: it is how a new field is noticed.
+          if [ "$A" -ne "$B" ] || [ "$AC" -ne "$BC" ] || [ "${{ steps.after.outputs.fields }}" = "changed" ]; then
             echo "open=yes" >> "$GITHUB_OUTPUT"
           else
             echo "open=no" >> "$GITHUB_OUTPUT"
@@ -121,6 +128,7 @@ jobs:
             echo "| cards in catalogue | ${{ steps.before.outputs.cards }} | ${{ steps.after.outputs.cards }} |"
             echo "| cached image files | ${{ steps.before.outputs.files }} | ${{ steps.after.outputs.files }} |"
             echo ""
+            echo "Riot's card fields (cards/fields.json): ${{ steps.after.outputs.fields }}"
             echo "New cards: ${{ steps.gate.outputs.new_cards }}"
             echo "New image files: ${{ steps.gate.outputs.new_files }}"
             echo "Products mapped to art: ${{ steps.after.outputs.mapped }}"

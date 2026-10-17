@@ -209,6 +209,48 @@ function probe(items, list) {
   return lines.join('\n') + '\n';
 }
 
+// Every field Riot sends, by path, with how many cards carry it and up to
+// three short examples. Written to cards/fields.json with no timestamp and
+// sorted paths, so the file changes only when Riot's fields change, and a
+// change opens the cards pull request. It is how a later feature finds what
+// Riot offers without a new fetch (M11, 2026-10-17).
+var FIELDS = path.join('cards', 'fields.json');
+function fieldReport(items) {
+  var paths = {};
+  function note(p, v) {
+    var e = paths[p];
+    if (!e) { e = paths[p] = { n: 0, ex: [], seen: {} }; }
+    e.n++;
+    if (v !== undefined && e.ex.length < 3) {
+      var t = String(v).replace(/[^\x20-\x7e]/g, '?').slice(0, 60);
+      if (!e.seen[t]) { e.seen[t] = 1; e.ex.push(t); }
+    }
+  }
+  function walk(v, p, depth, mark) {
+    if (v === null || v === undefined) { return; }
+    if (Array.isArray(v)) {
+      for (var i = 0; i < v.length; i++) { walk(v[i], p + '[]', depth + 1, mark); }
+      return;
+    }
+    if (typeof v === 'object') {
+      var ks = Object.keys(v);
+      for (var j = 0; j < ks.length; j++) {
+        var q = p ? p + '.' + ks[j] : ks[j];
+        if (depth >= 5) { if (!mark[q]) { mark[q] = 1; note(q); } continue; }
+        walk(v[ks[j]], q, depth + 1, mark);
+      }
+      return;
+    }
+    if (!mark[p]) { mark[p] = 1; note(p, v); }
+  }
+  for (var c = 0; c < items.length; c++) { walk(items[c], '', 0, {}); }
+  var out = {};
+  Object.keys(paths).sort().forEach(function (k) {
+    out[k] = { n: paths[k].n, ex: paths[k].ex };
+  });
+  return { cards: items.length, paths: out };
+}
+
 function shape(c) {
   var img = c.cardImage || {};
   var set = (c.set && c.set.value) || {};
@@ -456,6 +498,10 @@ function main() {
     var probeText = probe(items, list);
     console.log(probeText);
     if (process.env.CARDS_PROBE) { fs.writeFileSync(process.env.CARDS_PROBE, probeText, 'utf8'); }
+    var report = fieldReport(items);
+    fs.mkdirSync(OUT_DIR, { recursive: true });
+    fs.writeFileSync(FIELDS, JSON.stringify(report, null, 1) + '\n', 'utf8');
+    console.log('field report: ' + Object.keys(report.paths).length + ' paths across ' + report.cards + ' cards');
     console.log('cards with no image hash: ' + noHash.length);
     for (var q = 0; q < Math.min(noHash.length, 8); q++) {
       console.log('  NO IMAGE: ' + noHash[q]);
@@ -736,7 +782,7 @@ function main() {
   });
 }
 
-module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf };
+module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport };
 
 // Run directly (node fetch-cards.js) it fetches; required by a test it only
 // hands over its functions.
