@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117073785007006396@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261115T180000
-DTEND;TZID=America/Vancouver:20261115T210000
+DTSTART;TZID=America/Vancouver:20261115T170000
+DTEND;TZID=America/Vancouver:20261115T200000
 SUMMARY:Radiance Skirmish #1
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le

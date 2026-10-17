@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117454301417787736@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261122T170000
+DTEND;TZID=America/Vancouver:20261122T200000
+SUMMARY:Skyhaven Sunday Nexus Night
+LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
+DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\n$
+ 5.00 CAD\nSign up: https://playriftbound.com/en-US/events/1174543014177877
+ 36
+URL:https://playriftbound.com/en-US/events/117454301417787736
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

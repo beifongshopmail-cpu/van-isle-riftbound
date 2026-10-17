@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117454327448500237@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261113T180000
+DTEND;TZID=America/Vancouver:20261113T210000
+SUMMARY:Skyhaven Friday Learn to Play
+LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
+DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\n
+ Free\nSign up: https://playriftbound.com/en-US/events/117454327448500237
+URL:https://playriftbound.com/en-US/events/117454327448500237
+CATEGORIES:Learn-to-Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
