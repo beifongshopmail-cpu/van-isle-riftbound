@@ -115,6 +115,39 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
   container.setAttribute("data-k", "pick");
 };
 
+// DATES AND TIMES, written one way on every page (M9.6 consistency sweep, 2026-10-16):
+// RAVI_DATE("2026-09-16") is "Sep 16, 2026"; RAVI_DATE(x, true) is the short "Sep 16".
+// RAVI_WHEN(ms) is "Oct 15, 8:01 PM", with the year after the day when it is not this year.
+// Island time and US-style AM/PM whatever the phone's language, so no page reads "p.m.".
+// A "YYYY-MM-DD" string is split, never run through Date, so no time zone can shift its day.
+(function(){
+  var MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  var TZ = "America/Vancouver";
+  function parts(ms){
+    var o = {};
+    new Intl.DateTimeFormat("en-US", { timeZone:TZ, year:"numeric", month:"numeric", day:"numeric",
+      hour:"numeric", minute:"2-digit", hour12:true }).formatToParts(new Date(ms)).forEach(function(p){ o[p.type] = p.value; });
+    return { y:+o.year, m:+o.month, d:+o.day, h:o.hour, mi:o.minute, ap:String(o.dayPeriod || "").toUpperCase() };
+  }
+  function ymd(x){
+    var s = /^(\d{4})-(\d{2})-(\d{2})/.exec(typeof x === "string" ? x : "");
+    if (s) { return { y:+s[1], m:+s[2], d:+s[3] }; }
+    var ms = x instanceof Date ? x.getTime() : (typeof x === "number" ? x : NaN);
+    return isFinite(ms) ? parts(ms) : {};
+  }
+  window.RAVI_DATE = function(x, short){
+    var p = ymd(x);
+    if (!p.m) { return ""; }
+    return MON[p.m - 1] + " " + p.d + (short ? "" : ", " + p.y);
+  };
+  window.RAVI_WHEN = function(x){
+    var ms = x instanceof Date ? x.getTime() : +x;
+    if (!isFinite(ms)) { return ""; }
+    var p = parts(ms), now = parts(Date.now());
+    return MON[p.m - 1] + " " + p.d + (p.y !== now.y ? ", " + p.y : "") + ", " + p.h + ":" + p.mi + " " + p.ap;
+  };
+})();
+
 // THE BAR (from M9.6). Every page's bar is built here, so a slot two pages share is the same
 // copy, and every bar icon comes from the SVG table above by name. A page holds an empty
 // <nav class="bar frost" id="tabs"></nav> (the counter's strip holds only its Layout track)

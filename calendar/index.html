@@ -79,10 +79,7 @@ a{color:inherit;text-decoration:none}
 .hl{border-radius:calc(var(--sz-sm) / 2) 5px 5px calc(var(--sz-sm) / 2);margin-right:-4px}
 .hr{border-radius:5px calc(var(--sz-sm) / 2) calc(var(--sz-sm) / 2) 5px}
 .mrow .circ svg{stroke:currentColor;stroke-width:2.4;fill:none}
-#filt svg{stroke-width:2} /* a drawn icon in a round button keeps the icon line (2); bare glyphs (chevrons, Close, Back) take 2.4 */
 #prev svg,#next svg{width:18px;height:18px;stroke-width:2.4} /* the round-button chevron, the same as the collapse chevron beside them */
-/* filters set: the same glass fill as a selected day */
-#filt.filtered{background:rgba(255,255,255,.18)}
 
 .dow{display:grid;grid-template-columns:repeat(7,1fr);column-gap:2px;padding-bottom:4px}
 .dow span{text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
@@ -185,7 +182,7 @@ a{color:inherit;text-decoration:none}
 .evact .evaddr{flex:1;min-width:0;font-size:13px;line-height:1.4;color:var(--bone)}
 .evact .evaddr .evend{display:block;font-size:12px;color:var(--muted);margin-top:2px}
 .evact .evbtns{display:flex;gap:8px;flex:0 0 auto}
-.evact .evbtns .circ svg{stroke:currentColor;stroke-width:2;fill:none} /* drawn icons: the icon line, as the header gear */
+.evact .evbtns .circ svg{stroke:currentColor;stroke-width:2;fill:none} /* drawn icons: the icon line (2), as every drawn icon in a round button */
 .evact[hidden]{display:none}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
@@ -219,7 +216,7 @@ a{color:inherit;text-decoration:none}
    of its count. */
 #psub .phead{gap:8px}
 #psub .phead .ttl{margin-right:auto}
-.finfo{font-size:13px;line-height:1.4;color:var(--muted);margin:0 2px 14px}
+.finfo{font-size:12px;line-height:1.5;color:var(--muted);margin:0 2px 14px} /* menu small print: 12 on 18, grey, 2 in (app.css .pnote) */
 .finfo p{margin:0}
 .finfo p + p{margin-top:8px}
 .fhead .sp,.pick a .sp{flex:1}
@@ -249,9 +246,6 @@ a{color:inherit;text-decoration:none}
     <span class="sp"></span>
     <button type="button" class="hemi hl btn glass" id="prev" aria-label="Previous month" data-k="do"><svg viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></svg></button>
     <button type="button" class="hemi hr btn glass" id="next" aria-label="Next month" data-k="do"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
-    <button type="button" class="circ btn glass" id="filt" aria-label="Calendar settings" data-k="do" data-fills="panel">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M21.23 10.21A9.4 9.4 0 0 1 21.23 13.79Q15.05 13.76 18.17 19.09A9.4 9.4 0 0 1 15.06 20.89Q12 15.52 8.94 20.89A9.4 9.4 0 0 1 5.83 19.09Q8.95 13.76 2.77 13.79A9.4 9.4 0 0 1 2.77 10.21Q8.95 10.24 5.83 4.91A9.4 9.4 0 0 1 8.94 3.11Q12 8.48 15.06 3.11A9.4 9.4 0 0 1 18.17 4.91Q15.05 10.24 21.23 10.21z"/><path d="M9.8 12a2.2 2.2 0 1 0 4.4 0a2.2 2.2 0 1 0 -4.4 0z"/></g><g class="icf"><mask id="rvs-cal-gear" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M21.23 10.21A9.4 9.4 0 0 1 21.23 13.79Q15.05 13.76 18.17 19.09A9.4 9.4 0 0 1 15.06 20.89Q12 15.52 8.94 20.89A9.4 9.4 0 0 1 5.83 19.09Q8.95 13.76 2.77 13.79A9.4 9.4 0 0 1 2.77 10.21Q8.95 10.24 5.83 4.91A9.4 9.4 0 0 1 8.94 3.11Q12 8.48 15.06 3.11A9.4 9.4 0 0 1 18.17 4.91Q15.05 10.24 21.23 10.21z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.8 12a2.2 2.2 0 1 0 4.4 0a2.2 2.2 0 1 0 -4.4 0z" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#rvs-cal-gear)"/></g></svg>
-    </button>
     <button type="button" class="circ btn glass" id="mtog" aria-expanded="true" aria-label="Collapse the calendar" data-k="open"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
   </div>
 
@@ -498,7 +492,6 @@ a{color:inherit;text-decoration:none}
   var tabs = document.getElementById("tabs");
   var panel = document.getElementById("panel");
   var scrim = document.getElementById("scrim");
-  var filt = document.getElementById("filt");
 
   var anchorRow = 0;
   // The one open card, by data-id, memory only -- re-applied after every
@@ -696,8 +689,10 @@ a{color:inherit;text-decoration:none}
       });
       document.getElementById("atitle").textContent = "Whole month";
     }
+    var hid = hiddenCount(selected ? function(e){ return e.day === selected; }
+      : function(e){ var q = parseKey(e.day); return q.y === cursor.y && q.m === cursor.m; });
     document.getElementById("acount").textContent =
-      rows.length ? rows.length + (rows.length === 1 ? " event" : " events") : "";
+      (rows.length || hid ? rows.length + (rows.length === 1 ? " event" : " events") : "") + (hid ? ", " + hid + " hidden" : "");
 
     listEl.innerHTML = "";
     if (!rows.length){
@@ -828,7 +823,6 @@ a{color:inherit;text-decoration:none}
       box.appendChild(b);
       if (hidden[k]) any = true;
     }
-    syncFiltOn();
   }
 
   /* stores: a recessed track like Event types, copied verbatim, one row
@@ -862,16 +856,20 @@ a{color:inherit;text-decoration:none}
         '<span class="box"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>');
       box.appendChild(b);
     }
-    syncFiltOn();
   }
 
-  /* whatever marks filters as active counts hidden types AND hidden
-     stores, so it is computed once and called from both renders. */
-  function syncFiltOn(){
-    var any = false, k;
-    for (k in hidden){ if (hidden.hasOwnProperty(k) && hidden[k]) any = true; }
-    for (k in hiddenStores){ if (hiddenStores.hasOwnProperty(k) && hiddenStores[k]) any = true; }
-    filt.classList.toggle("filtered", any);
+  /* HIDDEN, IN WORDS (M9.6 consistency sweep, 2026-10-16). Calendar settings
+     has one way in, the bar's Settings; what its type and store rows hide is
+     said on the list head ("15 events, 4 hidden"). Counted over the same
+     days the list shows and the same area, so shown plus hidden is what the
+     list would show with nothing hidden. */
+  function hiddenCount(inWindow){
+    var t = todayKey(), n = 0;
+    for (var i = 0; i < EVENTS.length; i++){
+      var e = EVENTS[i];
+      if (e.day >= t && inScope(e) && inWindow(e) && (hidden[e.type] || hiddenStores[storeKeyOf(e)])) n++;
+    }
+    return n;
   }
 
   /* FOLLOW. Each row links to a calendar feed the refresh writes (ics.js):
@@ -933,7 +931,7 @@ a{color:inherit;text-decoration:none}
     s.innerHTML = "";
     s.appendChild(document.createTextNode("Events read from PlayRiftbound and the official Riftbound locator. Last checked "));
     var b = document.createElement("b");
-    b.textContent = when.toLocaleString(undefined, {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+    b.textContent = window.RAVI_WHEN(when);
     s.appendChild(b);
     s.appendChild(document.createTextNode(hrs > 30 ? ". This may be out of date." : "."));
   }
@@ -1125,7 +1123,6 @@ a{color:inherit;text-decoration:none}
       scrim.classList.remove("show");
     }
   }
-  filt.addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
   document.getElementById("tabset").addEventListener("click", function(){ openPanel(openP === panel ? null : panel); });
   var psub = document.getElementById("psub"), psinfo = document.getElementById("psinfo");
   psinfo.innerHTML = window.RAVI_ICON("info");

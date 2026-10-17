@@ -207,6 +207,9 @@ svg .icb{display:none} /* a hub-only drawing at the hub's thinner line (Trade's 
 html.lock,html.lock body{overflow:hidden}
 .row{margin-bottom:14px}
 .lb{font-size:13px;font-weight:600;margin:0 0 6px}
+/* menu small print (M9.6 consistency sweep): one look in every menu, 12 on 18, grey, 2 in
+   from the content edge. A page sets only the space above and below it. */
+.pnote{font-size:12px;line-height:1.5;color:var(--muted);margin:8px 2px 0}
 
 /* option tracks: a recessed track, borderless options, the chosen one in bone.
    A track is for a few short options side by side; a list of rows is a

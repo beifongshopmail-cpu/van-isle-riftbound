@@ -257,7 +257,6 @@
   .pact.armed{background:var(--glass-press)}
   .pick svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:var(--muted);stroke-width:2.2;
     stroke-linecap:round;stroke-linejoin:round}
-  .pnote{font-size:12px;color:var(--muted);margin:8px 2px 0;line-height:1.5}
   .cred{font-size:12px;color:var(--muted);line-height:1.5;margin:18px 2px 4px}
 
   /* players */
@@ -390,13 +389,13 @@
   #impmsg:empty{display:none}
 
   /* the legend picker: search and sort hold still under the head */
-  .lpf{flex:0 0 auto;display:flex;gap:8px;margin:0 0 10px}
-  .sf{flex:1;min-width:0}
+  /* the search on its own row with its Clear, the sort track under it, as Trade's search and its
+     Yours | Theirs (M9.6 consistency sweep: beside the track, Clear left too little room to type) */
+  .lpf{flex:0 0 auto;display:flex;flex-direction:column;gap:8px;margin:0 0 10px}
   .lgpq{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--bone);font-family:var(--text);
     font-size:16px;padding:0;-webkit-appearance:none;appearance:none;-webkit-user-select:text;user-select:text}
   .lgpq::placeholder{color:var(--muted)}
   .lgpq::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}
-  .lpf .seg{flex:0 0 132px}
   .lgpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;align-content:start;
     background:var(--recess);border-radius:20px;padding:10px}
   .lgpempty{grid-column:1/-1;padding:18px 0;text-align:center;font-size:13px;color:var(--muted)}
@@ -524,7 +523,7 @@
 <section class="panel frost" id="pleg" aria-hidden="true" aria-label="Legend">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="lgptitle">Legend</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="lpf">
-    <label class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" class="lgpq" id="lgpq" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"></label>
+    <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" class="lgpq" id="lgpq" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"><button type="button" class="fbtn glass" id="lgpqx" disabled data-k="do">Clear</button></div>
     <div class="seg" id="lgpsort" role="group" aria-label="Sort order" data-k="pick"><button type="button" class="lgpsb" data-lgps="rel" aria-pressed="true">Release</button><button type="button" class="lgpsb" data-lgps="az" aria-pressed="false">A-Z</button></div>
   </div>
   <div class="pbody"><div class="lgpgrid" id="lgpgrid" data-k="pick"></div></div>
@@ -551,13 +550,12 @@
       <button type="button" class="sidebtn btn glass" id="pendw2" data-endw="2" style="color:var(--pc)" data-k="do">Player 2</button>
     </div></div>
     <div class="row"><p class="lb">Agreed</p><button type="button" class="pact btn glass" id="pendagree" data-endagree="1" data-k="do">Intentional draw</button></div>
-    <p class="pnote">Each one needs a second tap within 3 seconds.</p>
   </div>
 </section>
 
 <!-- LOG: this game, with the way into past matches always in the foot -->
 <section class="panel frost" id="plog" aria-hidden="true" aria-label="Log">
-  <div class="phead"><div class="ht"><h4 class="ttl">This game</h4><span class="cnt" id="logcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="phead"><div class="ht"><h4 class="ttl">Log</h4><span class="cnt" id="logcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div id="logtime" class="pnote"></div><ol id="log"></ol></div>
   <div class="pfoot"><div class="doors"><button type="button" class="door btn glass" id="pastbtn" data-k="deeper"><span class="t">Past matches</span><span class="sp"></span><small id="pastn">0</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
 </section>
@@ -1928,7 +1926,7 @@
     if (!resetArmed) {
       resetArmed = true;
       elReset.classList.add("armed");
-      elReset.textContent = "Sure?";
+      elReset.textContent = "Sure? Tap again";
       resetTimer = setTimeout(disarmReset, 3000);
       return;
     }
@@ -2653,9 +2651,17 @@
     lgpBuild();
   });
 
+  // Every search clears the same way: the Kit's Clear, dimmed while the field is empty
+  // (Rules, Trade; M9.6 consistency sweep).
   document.getElementById("lgpq").addEventListener("input", function(e){
     lgpQ = String(e.target.value || "").toLowerCase().trim();
+    document.getElementById("lgpqx").disabled = !e.target.value;
     lgpBuild();
+  });
+  document.getElementById("lgpqx").addEventListener("click", function(){
+    var q = document.getElementById("lgpq");
+    q.value = ""; lgpQ = ""; this.disabled = true;
+    lgpBuild(); q.focus();
   });
 
   function lgpSortSync(){

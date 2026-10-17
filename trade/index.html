@@ -47,8 +47,6 @@ a{color:inherit;text-decoration:none}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .hold{height:122px}   /* plate at rest: 10 + 40 + 8 + 40 + 10 = 108, plus a 14 gap */
 /* .sf is an app.css alias of .nf now; nothing left to add here. */
-.qx{width:var(--sz-sm);height:var(--sz-sm);display:grid;place-items:center;border-radius:999px;color:var(--muted)}
-.qx svg{width:18px;height:18px;stroke-width:2.4} /* a round button's bare glyph: the same as Close (18, line 2.4) */
 .sides{margin-top:8px}
 .sides button{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;padding:0 10px}
 .sides .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -166,7 +164,6 @@ a{color:inherit;text-decoration:none}
 .nmf.r1 input{color:var(--yc)} .nmf.r2 input{color:var(--tc)}
 .nmf input::placeholder{color:var(--muted);font-weight:400}
 /* panels */
-.pnote{font-size:12px;color:var(--muted);margin:6px 2px 0}
 .rates{display:flex;gap:8px;margin-bottom:6px}
 .rate{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:var(--sz-row);border-radius:999px;background:var(--recess);padding:0 14px 0 16px}
 .rate label{font-family:var(--disp);font-weight:600;font-size:15px}
@@ -192,7 +189,7 @@ a{color:inherit;text-decoration:none}
 
 /* THE SAVED TRADE AND ITS RECEIPT ARE MENUS, deeper ones: each takes the
    place of the menu it was opened from and carries a back arrow. */
-.frozen{font-size:12px;color:var(--muted);margin:0 2px 14px}
+.frozen{font-size:12px;line-height:1.5;color:var(--muted);margin:0 2px 14px} /* menu small print, as app.css .pnote */
 .tlname{margin-bottom:10px}
 .sum{border-radius:22px;padding:10px 14px;margin:0 0 12px}
 .sum div{display:flex;justify-content:space-between;padding:4px 0;font-size:15px}
@@ -239,7 +236,7 @@ a{color:inherit;text-decoration:none}
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
       <input id="q" type="search" placeholder="Search cards by name or number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-      <button type="button" class="qx glass" id="qx" data-act="qx" aria-label="Clear search" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button type="button" class="fbtn glass" id="qx" data-act="qx" disabled data-k="do">Clear</button>
     </div>
     <div class="seg sides" id="sides" role="group" aria-label="Show first, and add cards to" data-k="pick">
       <button type="button" data-side="1" aria-pressed="true"><span class="t" id="sw1">Yours</span><span class="n" id="n1">0</span></button>
@@ -332,7 +329,7 @@ a{color:inherit;text-decoration:none}
 </section>
 
 <section class="panel frost" id="psav" aria-hidden="true" aria-label="Saved trades">
-  <div class="phead"><div class="ht"><h4 class="ttl">Saved trades</h4><span class="cnt" id="tlcount"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="phead"><div class="ht"><h4 class="ttl">Saved trades</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
   <div class="row">
     <div class="nf tall"><input id="tlnote" type="text" maxlength="60" placeholder="Title (optional)" autocomplete="off" data-k="type"></div>
@@ -347,8 +344,8 @@ a{color:inherit;text-decoration:none}
   <div class="pbody"><div class="doors" id="tlall" data-k="deeper"></div></div>
   <div class="pfoot">
     <div class="two"><button type="button" class="pact btn glass" data-act="tlexp" data-k="do">Export</button><button type="button" class="pact btn glass" data-act="tlimp" data-k="do">Import</button></div>
-    <button type="button" class="pact btn glass" id="tlclear" data-act="tlclear" data-k="do">Delete all saved</button>
-    <p class="pnote">Saved trades live on this phone only. Export makes a file you can import on another.</p>
+    <button type="button" class="pact btn glass" id="tlclear" data-act="tlclear" data-k="do">Delete all saved trades</button>
+    <p class="pnote">Saved trades are kept on this phone. Export makes a file you can import on another.</p>
     <input id="tlfile" type="file" accept="application/json,.json" hidden>
   </div>
 </section>
@@ -358,7 +355,7 @@ a{color:inherit;text-decoration:none}
   <div class="pbody" id="tlbody"></div>
   <div class="pfoot">
     <button type="button" class="pact btn glass" id="tlload" data-act="tlload" data-idx="0" data-k="do">Load into the calculator</button>
-    <div class="two"><button type="button" class="pact btn glass" id="tlrcp" data-act="rcpshow" data-idx="0" data-k="deeper">Receipt image<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button><button type="button" class="pact btn glass" id="tldel" data-act="tldel" data-idx="0" data-k="do">Delete</button></div>
+    <div class="two"><button type="button" class="pact btn glass" id="tlrcp" data-act="rcpshow" data-idx="0" data-k="do">Receipt image</button><button type="button" class="pact btn glass" id="tldel" data-act="tldel" data-idx="0" data-k="do">Delete</button></div>
   </div>
 </section>
 
@@ -598,14 +595,9 @@ a{color:inherit;text-decoration:none}
   // never rolls and means "since we started tracking".
   var DLTW = ["off","7","30","365","all"];
   var DLTL = {"7":"7-day","30":"30-day","365":"1-year","all":"all-time"};
-  var DLTM = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-  function dltWhen(ymd){
-    var t = Date.parse(String(ymd).slice(0,10) + "T00:00:00Z");
-    if(!isFinite(t)) return "";
-    var d = new Date(t);
-    return d.getUTCDate() + " " + DLTM[d.getUTCMonth()] + " " + d.getUTCFullYear();
-  }
+  // dates are written one way on every page: pages.js RAVI_DATE ("Sep 16, 2026")
+  function dltWhen(ymd){ return window.RAVI_DATE(String(ymd).slice(0,10)); }
 
   // Each anchor drifts in age, so the page names the ACTUAL date it
   // compared against rather than claiming a fixed period. An empty
@@ -715,7 +707,7 @@ a{color:inherit;text-decoration:none}
   function search(term){
     var t = term.trim().toLowerCase();
     var box = el("res");
-    el("qx").style.visibility = t ? "visible" : "hidden";
+    el("qx").disabled = !t;
     if(t.length < 2){ resClose(); return; }
 
     var hits = [], i, c, n, at, numAt;
@@ -1070,10 +1062,10 @@ a{color:inherit;text-decoration:none}
         toast("Deleted all saved trades");
         return;
       }
-      el("tlclear").textContent = "Tap again to delete all";
+      el("tlclear").textContent = "Sure? Tap again";
       TLARM = setTimeout(function(){
         TLARM = 0;
-        el("tlclear").textContent = "Delete all saved";
+        el("tlclear").textContent = "Delete all saved trades";
       }, 3000);
       return;
     }
@@ -1089,7 +1081,7 @@ a{color:inherit;text-decoration:none}
         toast("Deleted");
         return;
       }
-      t.textContent = "Tap again to delete";
+      t.textContent = "Sure? Tap again";
       TLDARM = setTimeout(function(){
         TLDARM = 0;
         el("tldel").textContent = "Delete";
@@ -1196,10 +1188,10 @@ a{color:inherit;text-decoration:none}
   function stampText(){
     var gen = new Date(D.generated_at);
     var age = (Date.now() - gen.getTime()) / 3600000;
-    var d = gen.toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+    var d = window.RAVI_DATE(gen, true);
     var s = "Prices are TCGplayer market price via tcgcsv.com, updated <b>" + esc(d) + "</b>";
     s += (age > 48) ? ". These may be out of date." : ".";
-    s += " 1 USD = <b>" + esc(String(D.fx.rate)) + "</b> CAD, Bank of Canada, " + esc(D.fx.date) + ".";
+    s += " 1 USD = <b>" + esc(String(D.fx.rate)) + "</b> CAD, Bank of Canada, " + esc(window.RAVI_DATE(D.fx.date) || D.fx.date) + ".";
     if(D.totals) s += " " + D.totals.priced + " products priced across " + D.totals.sets + " sets.";
     return s;
   }
@@ -1267,11 +1259,8 @@ a{color:inherit;text-decoration:none}
     return t;
   }
 
-  function tlWhen(ms){
-    var d = new Date(ms);
-    return d.toLocaleDateString("en-CA", { month: "short", day: "numeric" })
-      + " " + d.toLocaleTimeString("en-CA", { hour: "numeric", minute: "2-digit" });
-  }
+  // "Oct 15, 8:01 PM", as every page writes a time (pages.js RAVI_WHEN)
+  function tlWhen(ms){ return window.RAVI_WHEN(ms); }
 
   // One saved trade as a list row: one line at 44, like every deeper row
   // (STYLE.md, Control kinds). The note, or the date when there is none;
@@ -1281,7 +1270,7 @@ a{color:inherit;text-decoration:none}
   // recent and the whole history is one menu deeper; both open the same way.
   function tlRow(r, k){
     var t1 = tlTotal(r, 1), t2 = tlTotal(r, 2), d = Math.abs(t1 - t2), dir;
-    var day = new Date(r.at).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+    var day = window.RAVI_DATE(r.at, true);
     if(!(t1 + t2)) dir = "";
     else if(d < 0.005) dir = " &middot; Even";
     else dir = ' &middot; ' + esc(tlMoney(d, r)) + (t1 > t2 ? ' <span class="a">' + IC.left : ' <span class="b">' + IC.right) + '</span>';
@@ -1291,10 +1280,9 @@ a{color:inherit;text-decoration:none}
 
   function tlRender(){
     var a = tlLoad(), h = "", all = "", k;
-    el("tlcount").textContent = a.length ? (a.length + " saved") : "";
     el("hlcount").textContent = a.length ? String(a.length) : "";
     el("tlclear").disabled = !a.length;
-    el("tlclear").textContent = "Delete all saved";
+    el("tlclear").textContent = "Delete all saved trades";
     for(k = 0; k < a.length; k++){
       if(k < 3) h += tlRow(a[k], k);
       all += tlRow(a[k], k);
@@ -1386,10 +1374,10 @@ a{color:inherit;text-decoration:none}
     nr = r.nm || {};
     el("tlttl").textContent = r.note || "Saved trade";
     el("tlbody").innerHTML = ''
-      + '<div class="nf tall tlname"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>'
+      + '<div class="nf tall tlname">'
       + '<input id="tltitle" type="text" maxlength="60" placeholder="Title (optional)" autocomplete="off" aria-label="Title of this saved trade" data-k="type" value="' + esc(r.note || "") + '"></div>'
       + '<p class="frozen">Prices, rates, names and currency stay as they were when saved, ' + esc(tlWhen(r.at)) + ', in ' + esc(r.cur)
-      + (r.cur === "CAD" ? " at " + esc(String(r.fx.rate)) : "") + (r.pd ? ", prices of " + esc(String(r.pd).slice(0, 10)) : "") + '.</p>'
+      + (r.cur === "CAD" ? " at " + esc(String(r.fx.rate)) : "") + (r.pd ? ", prices of " + esc(window.RAVI_DATE(String(r.pd).slice(0, 10))) : "") + '.</p>'
       + tlSideHTML(r, 1) + tlSideHTML(r, 2)
       + '<div class="sum glass"><div><span class="a">' + esc(Nm(1, nr)) + '</span><span>' + esc(tlMoney(t1, r)) + '</span></div>'
       + '<div><span class="b">' + esc(Nm(2, nr)) + '</span><span>' + esc(tlMoney(t2, r)) + '</span></div>'
@@ -1920,7 +1908,7 @@ a{color:inherit;text-decoration:none}
       if(e.propertyName === "height" && !this.classList.contains("open")) el("res").innerHTML = "";
     });
     el("gt").setAttribute("d", ringAnn());
-    el("qx").style.visibility = "hidden";
+    el("qx").disabled = true;
     pressGroup(el("cur"), "data-cur", CUR);
     pressGroup(el("sides"), "data-side", String(SIDE));
     el("nm1").value = NAMES[1];
