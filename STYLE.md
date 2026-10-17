@@ -314,6 +314,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Content a tap opens eases in under its row in .26s (.reveal), added after the tap, never on a render. Its height changes in one frame.
 - A month change: the new month's weeks slide 24 in from the side the arrow points and fade in, .26s; the list under it eases in (.reveal). A day tap eases the list in too. [T] (Mako's yes 2026-10-16)
 - A number a tap changes settles from 1.06 (.settle, .32s), the point-land move: the trade's quantities, side totals, counts and percents. Never on a render. [T] (Mako's yes 2026-10-16)
+- A pick-one track slides its chosen fill to the new option in .26s, as iPhone's segmented control does (pages.js). Not multi-select tracks, colour swatches or the legend's printing chips. [T] (Mako's yes 2026-10-16)
 - A point lands: the numeral settles from 1.06 and the newest rail line draws in (--mo-rise .32s).
 - Pass turn: the button flashes the incoming player's colour, its turn line rolls up, and a glow fades in across the button into their half, .56s.
 - The victory banner rises where a menu does, when a game ends in front of you; never on first paint.
