@@ -87,6 +87,7 @@ Lists
 - Inside a card, sections are divided by a 1px solid line at rgba(255,255,255,.07) across the card's content width, never inset: the event card's open row (.evact), trade, counter and feedback cards. [C] (m95c-test.js checks the event card's; Mako's yes 2026-10-12)
 - A group you press in is glass (.doors). A group you choose in is sunken (.pick); its chosen row wears an 18px bone check, 16 from the right.
 - A pick-many list shows the same check on every row that is on (calendar .tyrow with .box).
+- Follow (calendar) is one sunken group of rows you tap: a row marks itself with a bone bell once tapped, as a pick-many list marks a row with a check. (Mako's look, 2026-10-16)
 - An on/off setting is a check row in a sunken group (.pick), never a switch.
 Kinds (firm: every tappable carries data-k on itself or its nearest container) [A]
 - do: acts once. Glass, or a side pill (.sidebtn) when it acts for one player. Arm-then-confirm is a do.
@@ -175,6 +176,7 @@ Page shell (feedback/index.html, settings/index.html)
 - Main wrapper (page-local id, e.g. #fb): max-width 480, margin 0 auto, padding 0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px). The calendar's wrapper is .body (calendar/index.html) and the trade page's is #trd with .tail (trade/index.html), with the same idea; scrollbar-gutter stable and body min-height 100vh come from app.css.
 - Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone.
     <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
+- Every page with words ends in the footer credit; a page showing what others publish (Calendar, Trade, Rules) ends it with "Something wrong or missing? Tell us." (Mako's yes 2026-10-16)
 
 Page head, section head, glass card (feedback/index.html)
 - .lede: a text page opens with one plain line under the wordmark, 13 muted, no glass; its title is an h2.sr for screen readers (Mako 2026-10-15: the glass header block retired on Feedback, Rules and App settings). .pghead.glass stays in app.css for now, used on no page.
@@ -203,6 +205,7 @@ Tracks and fields (app.css; calendar and trade menus)
 - .seg.swatch: each option is the colour, set inline as --sw; chosen wears the double ring.
 - .nf and .sf: sunken field, 40 high (.tall: 44), padding 0 6 0 16, input a real 16px Nunito, optional icon 18 muted, optional .fbtn at the right end (13, Poppins 600; .armed shades it --hi). .nf is the canonical class; .sf is its alias for search.
     <div class="sf"><svg ...></svg><input type="search" placeholder="Search" data-k="type"></div>
+- Every search field carries Clear (.fbtn) at its right end, dimmed while the field is empty. A track never shares the search's row; it sits on the row under it (trade .plate, the counter's legend picker). (Mako's yes 2026-10-16)
 
 Buttons (calendar/index.html, app.css)
 - .btn.glass: round glass pill, shade --glass-press on press. .circ: 36 round, icon 18. Use .circ.btn.glass for round icon buttons (close X, back, gear, chevron toggle).
@@ -235,6 +238,7 @@ Menus
 - Head with a count: .ht holds an optional .back, h4 and .cnt (12 muted).
 - Edges: while the body runs under the head or foot, pages.js adds .edge and the body fades out softly toward that edge over 24, with no line and no shadow. Nothing for a page to do. (Mako's yes 2026-10-16)
 - Tray (.panel.tray): a menu holding one track and nothing else. No title, no X; padding 6, corner 30.
+- .pnote (app.css): small print in a menu, 12 on 18, muted, 2 in from the content edge, the same in every menu. A page sets only the space above and below it; a page's own note class matches it. (Mako's yes 2026-10-16)
     <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages"><div class="pbody"><div class="goto" id="pnavgoto"></div></div></section>
 - Deeper menu: replaces the menu it came from. Shows .back (a .circ.btn.glass) and no X. Its title is the label of the row that opened it. Back returns; the scrim or the X on a root menu closes the whole stack. Moves: .fromr (arriving from the right), .froml, .tol, .tor (leaving); the page script sets one per move.
 - Scrim (.scrim, .show): rgba(0,0,0,.35); the counter's full-card viewer uses .7.
@@ -252,6 +256,7 @@ Go to (pages.js)
 
 Confirm and motion helpers
 - Two-tap confirm: first tap adds .armed (and shows the one-line prompt); a second tap within 3000 ms acts; the timer or a cancel removes .armed. Toggle the class; never rewrite className. The armed look is page-local (settings .tab.armed and .starm, counter .pact.armed, .sidebtn.armed) and uses --glass-press, or the side colour at .50 for a side control.
+- The armed button's words become "Sure? Tap again"; "Sure?" alone only where that does not fit on one line (the counter's three-across row, the timer's buttons). An icon slot shows its prompt as a line on the page. No standing note explains the second tap. (Mako's yes 2026-10-16)
 - Flashes: .flash-n (bone, neutral) and .flash-p (--pc, the player colour), .42s. Apply after the render: find the fresh node, remove the class, force reflow, add it.
 - .reveal: content a tap opens eases in (.26s, up 6 and fade). Add it after the tap; never on a render.
 - [hidden] always wins (display none).
@@ -295,6 +300,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Every overlay is a menu: head (title, X), body, optional foot. Only the body scrolls. [T]
 - While the body runs under the head or foot, the body fades out softly toward that edge (24, no line, no shadow); with nothing underneath it stays sharp. [T] (Mako's yes 2026-10-16)
 - Going deeper replaces the menu: back arrow, no X. A deeper menu's title is the label of the row that opened it.
+- A menu the bar or the strip opens is titled after the slot that opens it; a Settings slot's menu is "<Page> settings". (Mako's yes 2026-10-16)
 - A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar.
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
 - One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides. Every bar is built by RAVI_BAR (pages.js) from the one icon table, so no page draws its own bar and a slot two pages share is the same copy. [T] (Mako's yes 2026-10-13)
@@ -336,6 +342,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - No member of a new class or function family is a prefix of another.
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
+- Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
 - Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
