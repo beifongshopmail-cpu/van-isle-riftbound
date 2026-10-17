@@ -252,6 +252,8 @@
   .two{display:flex;gap:8px}
   .two > *{flex:1;min-width:0}
   .three{display:flex;gap:6px}
+  /* End game: Intentional draw names itself, so it has no label and stands 6 under the time-called row, in its group (Mako 2026-10-16) */
+  #pend .three + .pact{margin-top:6px}
   .three > *{flex:1;min-width:0}
   .pfoot .two + .pact,.pfoot > .pact + .pact{margin-top:8px}
   .pact.armed{background:var(--glass-press)}
@@ -548,8 +550,7 @@
       <button type="button" class="sidebtn btn glass" id="pendw1" data-endw="1" style="color:var(--pc)" data-k="do">Player 1</button>
       <button type="button" class="pact btn glass" id="pendtd" data-endw="0" data-k="do">Draw</button>
       <button type="button" class="sidebtn btn glass" id="pendw2" data-endw="2" style="color:var(--pc)" data-k="do">Player 2</button>
-    </div></div>
-    <div class="row"><button type="button" class="pact btn glass" id="pendagree" data-endagree="1" data-k="do">Intentional draw</button></div>
+    </div><button type="button" class="pact btn glass" id="pendagree" data-endagree="1" data-k="do">Intentional draw</button></div>
   </div>
 </section>
 
