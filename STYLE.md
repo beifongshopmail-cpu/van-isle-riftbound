@@ -216,6 +216,7 @@ The bar (every page except the hub)
 - .bar.frost: fixed pill, 56 high, 12 from the sides, max-width 456, bottom max(4px, safe-area bottom minus 12px), padding 5, four columns, gap 4, z-index 20. Round slots (.tab), 24 icon.
 - Four slots, always in this order: Hub, Go to, the page's one action, Settings. Slots never move between pages; an unused slot is dimmed in place (disabled).
 - Built by RAVI_BAR (pages.js), never written by hand: the page holds an empty nav and, straight after it, one line naming its four slots. "hub" is slot 1 (the Hub link). {go:"<page id>"} is slot 2 (button, id tabnav, class "tab on", its icon and name from RAVI_PAGES, filled while on; a: adds attributes after its id). Every other slot is {tag, icon, a}: "a" or "button", an icon name from the table, and its attributes in order ([name, null] writes a bare one such as disabled). Slot 4 opens the page's settings menu with data-fills, or is dimmed. [T]
+- A bar slot may switch a mode instead of opening a menu (Decks' Edit): it is on, filled, while the mode is on, and dimmed where the mode has no use.
 - .tab.on shows the pill --on and the filled drawing (.icf) instead of the outline (.ico). The active slot stays on while its menu or a deeper menu from it is open. [T]
     <nav class="bar frost" id="tabs"></nav>
     <script>RAVI_BAR(document.getElementById("tabs"), [
