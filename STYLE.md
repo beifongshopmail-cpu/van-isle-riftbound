@@ -307,6 +307,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
 - Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub and is never in Go to. [T]
 - App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
+- The Decks page is worked in, like the counter, and bends three defaults (Mako 2026-10-17): its card browser is a full-screen view, not a menu; the page holds two screens, the list of decks and one deck; the add tile that ends a section in Edit wears a dashed outline.
 
 ## 8. Motion
 
