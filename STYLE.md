@@ -96,7 +96,7 @@ Kinds (firm: every tappable carries data-k on itself or its nearest container) [
 - type: a text field in a sunken shape.
 - open: opens in place. Carries aria-expanded and a .chev that points at what a tap will do.
 - slot: an icon slot on the bar or the counter's strip, nowhere else.
-- play: the counter's field. grid: the calendar's day cells. view: the counter's full-card viewer. Nowhere else.
+- play: the counter's field. grid: the calendar's day cells. view: the full-card viewer (counter, Decks). card: a card's picture or row on the Decks page; a tap opens it, or adds it in the card browser. Nowhere else.
 - Text you only read carries no data-k and is not tappable.
 - Every control that opens a menu carries data-fills="<menu id>" and fills (shows its .icf drawing) while that menu or a deeper one is open. [T]
 - Pressed: a glass or sunken-group row takes the shade only; a free-standing button also scales to .96 (button:active). A large tappable surface (hub block, event card head) scales to .97 with brightness 1.2.
