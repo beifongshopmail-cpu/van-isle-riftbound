@@ -77,7 +77,7 @@ Surfaces
 - Sunken (--recess): means choose or type. Tracks (.seg, .goto), groups (.pick), fields (.nf, .sf). Chosen option: bone fill, ink text. A track whose options own a colour (trade .sides) fills the chosen one in that colour, with ink text.
 - Chosen picture or colour: a bone ring, inset 0 0 0 2px bone then 2px ground (.seg.swatch).
 - Frost (.frost): chrome that blurs what passes behind it. Fallback --frost-solid; with blur, --frost, blur 20 saturate 160% on the bar and strip, blur 24 saturate 160% on menus, 1px rim --frost-rim.
-- Plate frost: the calendar's month card (.card) and the trade control plate (.plate) are page-local sticky surfaces: fallback rgba(10,11,13,.94); with blur rgba(10,11,13,.5), blur 18 saturate 180%; shadow --glass-base then 0 8px 24px rgba(0,0,0,.45); corner 24.
+- Plate frost: the calendar's month card (.card), the trade control plate (.plate) and the Decks plate (.plate) are page-local sticky surfaces: fallback rgba(10,11,13,.94); with blur rgba(10,11,13,.5), blur 18 saturate 180%; shadow --glass-base then 0 8px 24px rgba(0,0,0,.45); corner 24.
 - Bone: chosen in a track. A bone check on the right means chosen in a list.
 - A fill means selected, never important.
 - A glass surface is never its own scroller. A still glass wrapper holds a plain scrolling child.
