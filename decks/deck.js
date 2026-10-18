@@ -656,12 +656,52 @@
   }
   // keep: the hand's positions to keep; the rest (at most 2) go to the bottom
   function mulligan(state, out) {
-    if (state.mull) { return state; }
+    if (state.mull || (state.drawn || []).length) { return state; }
     out = (out || []).filter(function (p, i, a) { return a.indexOf(p) === i && p >= 0 && p < state.hand.length; }).slice(0, 2);
     var keep = state.hand.filter(function (c, i) { return out.indexOf(i) < 0; });
     var aside = state.hand.filter(function (c, i) { return out.indexOf(i) > -1; });
     var drawn = state.lib.slice(0, aside.length);
     return { hand: keep.concat(drawn), lib: state.lib.slice(aside.length).concat(aside), mull: true };
+  }
+  // ---- THE TURNS AFTER IT (refinement, 2026-10-18) ----
+  // Riot's draws: 4 to open (Core Rules 116), then 1 in each Draw Phase (315.4.b); in a 1v1
+  // game the first player draws on turn 1 too (Riot's ruling). So by turn N a player has seen
+  // 4 + N cards, whichever player goes first. A draw ends the chance to mulligan.
+  function draw(state) {
+    if (!state.lib.length) { return state; }
+    return { hand: state.hand, lib: state.lib.slice(1), mull: state.mull, drawn: (state.drawn || []).concat([state.lib[0]]) };
+  }
+  // the chance of at least one of codes among the first seen cards of the library (the
+  // hypergeometric chance; the Chosen Champion's own copy is not in the library)
+  function odds(deck, codes, seen) {
+    var lib = library(deck), L = lib.length, k = 0, i, p = 1;
+    lib.forEach(function (c) { if (codes.indexOf(c) > -1) { k++; } });
+    if (!k || !L) { return 0; }
+    var n = Math.min(seen, L);
+    for (i = 0; i < n; i++) { p *= Math.max(0, L - k - i) / (L - i); }
+    return 1 - p;
+  }
+  // how the Main deck splits between the Legend's two domains: a card of both counts for both
+  function share(I, deck) {
+    var L = card(I, deck.legend), ds = ((L && L.d) || []).filter(function (v) { return v !== "colorless"; });
+    var o = { a: ds[0] || "", b: ds[1] || "", na: 0, nb: 0, s: 0.5 };
+    keys(deck.main).forEach(function (c) {
+      var x = card(I, c), n = deck.main[c];
+      if (!x) { return; }
+      if (o.a && (x.d || []).indexOf(o.a) > -1) { o.na += n; }
+      if (o.b && (x.d || []).indexOf(o.b) > -1) { o.nb += n; }
+    });
+    if (o.na + o.nb) { o.s = o.na / (o.na + o.nb); }
+    return o;
+  }
+  // a deck found by a search: every word in its name, its Legend, its Champion or any card in it
+  function matches(I, deck, q) {
+    var w = norm(q).split(" ").filter(Boolean);
+    if (!w.length) { return true; }
+    var hay = [deck.name || ""], codes = [deck.legend, deck.champ].concat(keys(deck.main), keys(deck.side), keys(deck.maybe), keys(deck.runes), deck.bf || []);
+    codes.forEach(function (c) { var x = card(I, c); if (x) { hay.push(full(I, x)); } });
+    var h = norm(hay.join(" | "));
+    return w.every(function (x) { return h.indexOf(x) > -1; });
   }
 
   var API = {
@@ -669,7 +709,8 @@
     sectionOf: sectionOf, isChampUnit: isChampUnit, anyNumber: anyNumber, empty: empty, sum: sum,
     add: add, take: take, setChamp: setChamp, check: check, bannedFrom: bannedFrom, isBanned: isBanned,
     encode: encode, decode: decode, toText: toText, toCode: toCode, toTTS: toTTS, parse: parse,
-    findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan
+    findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan,
+    draw: draw, odds: odds, share: share, matches: matches
   };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_DECK = API; }
