@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-17T16:10:08.422Z",
- "generated_local": "2026-10-17T09:10:08-07:00",
+ "generated_at": "2026-10-18T05:30:11.213Z",
+ "generated_local": "2026-10-17T22:30:11-07:00",
  "window_start": "2026-10-17T07:00:00.000Z",
  "anchors": [
   {
@@ -21,8 +21,8 @@
    "name": "Campbell River",
    "region": "island",
    "source": "playriftbound",
-   "returned": 4,
-   "added": 4
+   "returned": 3,
+   "added": 3
   },
   {
    "name": "Victoria",
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 42,
-  "unique": 42,
-  "prev_unique": 44
+  "fetched": 41,
+  "unique": 41,
+  "prev_unique": 42
  },
  "unknown_templates": {},
  "old_feed_error": null,
@@ -67,7 +67,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 24,
+   "reg": 23,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -111,7 +111,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 30,
-   "reg": 9,
+   "reg": 10,
    "cents": 3500,
    "currency": "CAD",
    "updated": null,
@@ -133,7 +133,7 @@
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 7,
+   "reg": 19,
    "cents": 4000,
    "currency": "CAD",
    "updated": null,
@@ -141,28 +141,6 @@
    "wins": null,
    "sid": 2069,
    "store": "Gauntlet"
-  },
-  {
-   "id": "rb117089686336807689",
-   "name": "Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-17T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-17",
-   "time": "6:00 PM",
-   "venue": "AJ's Games",
-   "city": "Campbell River",
-   "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
-   "region": "island",
-   "cap": 16,
-   "reg": 2,
-   "cents": 4000,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 21894,
-   "store": "AJ's"
   },
   {
    "id": "rb117021049810644601",
@@ -177,7 +155,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 15,
+   "reg": 16,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -221,7 +199,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 2,
+   "reg": 3,
    "cents": 3500,
    "currency": "CAD",
    "updated": null,
@@ -331,7 +309,7 @@
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 3,
+   "reg": 4,
    "cents": 4000,
    "currency": "CAD",
    "updated": null,
@@ -353,7 +331,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 15,
+   "reg": 16,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
@@ -551,7 +529,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
