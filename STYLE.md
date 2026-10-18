@@ -167,6 +167,7 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - feedback/index.html: .fbn .fbody .fgrp .lead .ship
 - settings/index.html: .sts .starm
 - rules/index.html: .empty .extl .old .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
+- decks/index.html: .addt .art .aside .avg .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .cbox .cgrid .champ .chart .chcol .chlab .cmid .cname .cnm .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dnone .dnote .dpic .dprice .dsec .dsub .dtn .epill .fchip .gcell .gpic .gq .gsh .gstar .gstp .hacts .hc .hgrid .hmark .hnone .hold .ires .kw .land .mpic .n .open .pair .phd .plate .pr .ptl .qrow .rgl .rn .rns .rnt .rq .shut .sm .spot .spotpic .srow .star .stick .stools .stp .toast .two .vw .xbox .z
 
 Page shell (feedback/index.html, settings/index.html)
 - Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, the page's own style block (in that order).
@@ -372,6 +373,8 @@ Rules (rules/index.html)
 - Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty), then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, names first, at most 40.
 - Bar: Hub, Go to, Latest (#pnew, data-fills; Riot's articles newest first, each opening #part deeper; its icon key is whatsnew), Settings dimmed. The footer ends with Tell us, as Calendar and Trade.
+Decks (decks/index.html)
+- Two screens: the list of decks, and one deck: a sticky .plate (Back, name and price, Export; Deck, Stats, Hand), Legend beside Runes, Battlefields, then Main, Side and Considering, each with its own view and sort, and Notes. Edit (the bar's third slot, a mode) adds steppers and add tiles; the card browser is full screen; the card menu (#pcard) opens from a card. Logic and formats in decks/deck.js.
 
 ## 11. Checks
 
