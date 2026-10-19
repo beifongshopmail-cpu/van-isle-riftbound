@@ -672,14 +672,119 @@
     return { hand: state.hand, lib: state.lib.slice(1), mull: state.mull, drawn: (state.drawn || []).concat([state.lib[0]]) };
   }
   // the chance of at least one of codes among the first seen cards of the library (the
-  // hypergeometric chance; the Chosen Champion's own copy is not in the library)
-  function odds(deck, codes, seen) {
-    var lib = library(deck), L = lib.length, k = 0, i, p = 1;
-    lib.forEach(function (c) { if (codes.indexOf(c) > -1) { k++; } });
-    if (!k || !L) { return 0; }
-    var n = Math.min(seen, L);
+  // hypergeometric chance; the Chosen Champion's own copy is not in the library).
+  // codes may instead be a list of lists: then the chance of at least one card from EVERY
+  // list (one card AND another), by inclusion and exclusion over the lists.
+  // A mulligan of m cards that are not wanted sets them aside to the bottom and draws m, so
+  // with it the cards seen by turn t are 4 + m + t: the caller passes seen accordingly.
+  function missAll(L, k, n) {
+    var i, p = 1;
     for (i = 0; i < n; i++) { p *= Math.max(0, L - k - i) / (L - i); }
-    return 1 - p;
+    return p;
+  }
+  function odds(deck, codes, seen) {
+    var lib = library(deck), L = lib.length;
+    var groups = (codes.length && Array.isArray(codes[0])) ? codes : [codes];
+    groups = groups.filter(function (g) { return g && g.length; });
+    if (!groups.length || !L) { return 0; }
+    var n = Math.min(seen, L), counts = groups.map(function (g) { var k = 0; lib.forEach(function (c) { if (g.indexOf(c) > -1) { k++; } }); return k; });
+    if (counts.some(function (k) { return !k; })) { return 0; }
+    // P(every group hit) = sum over subsets S of the groups of (-1)^|S| P(no card of S seen)
+    var total = 0, G = groups.length, mask, s;
+    for (mask = 0; mask < (1 << G); mask++) {
+      var k = 0, bits = 0, seenCodes = {};
+      for (s = 0; s < G; s++) {
+        if (mask & (1 << s)) {
+          bits++;
+          groups[s].forEach(function (c) { seenCodes[c] = 1; });
+        }
+      }
+      lib.forEach(function (c) { if (seenCodes[c]) { k++; } });
+      total += (bits % 2 ? -1 : 1) * missAll(L, k, n);
+    }
+    return Math.max(0, Math.min(1, total));
+  }
+
+  // ---- THE TOKENS A DECK MAKES: card text that plays a 'Name unit token' or 'Name gear token' ----
+  function tokens(I, deck) {
+    var out = {}, order = [];
+    keys(deck.main).concat(keys(deck.side)).forEach(function (code) {
+      var x = card(I, code);
+      if (!x) { return; }
+      var q = String(x.q || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " "), re = /([A-Z][\w']*(?: [A-Z][\w']*)*) (unit|gear) tokens?/g, m;
+      while ((m = re.exec(q))) {
+        var nm = m[1].replace(/^(?:Play|Create|Make|A|An|Your|Each|That|Those|The|Two|Three)\s+/, "");
+        if (!nm || /^(?:A|An|Your|Each)$/.test(nm)) { continue; }
+        if (!out[nm]) { out[nm] = { name: nm, kind: m[2], by: [], code: "" }; order.push(nm); }
+        if (out[nm].by.indexOf(code) < 0) { out[nm].by.push(code); }
+      }
+    });
+    // the token's own card, where Riot lists one (Gold, Recruit, Sprite, Bird, Reflection)
+    order.forEach(function (nm) {
+      var best = null;
+      I.list.forEach(function (x) { if (isToken(x) && (x.n === nm || x.n.indexOf(nm + " (") === 0) && (!best || codeOf(x.c) < codeOf(best.c))) { best = x; } });
+      if (best) { out[nm].code = codeOf(best.c); }
+    });
+    return order.map(function (nm) { return out[nm]; });
+  }
+
+  // ---- THE CARDS AN EVENT NEEDS: 40 main, 12 runes, 1 legend, 3 battlefields (56; the
+  // sideboard is extra) ----
+  function needed(deck) {
+    var have = Math.min(sum(deck.main), 40) + Math.min(sum(deck.runes), 12) + (deck.legend ? 1 : 0) + Math.min((deck.bf || []).length, 3);
+    return { have: have, need: 56 };
+  }
+
+  // ---- PRINTINGS AND FINISHES FROM THE PRICE FEED (refinement round 2, 2026-10-19) ----
+  // Riot's gallery lists only base and showcase printings; TCGplayer's list (data/prices.json)
+  // has every printing: each set's base, promos (Top 8, Champion, Organized Play), Normal and
+  // Foil. A version is one product and one finish, priced on its own; the card's picture and
+  // its deck code stay Riot's.
+  function pkey(n) { return norm(String(n || "").replace(/\s*\([^)]*\)\s*$/, "").replace(/\s+-\s+/g, ", ")); }
+  function priceIndex(P) {
+    var sets = {}, order = {}, byName = {}, bySetNum = {}, byId = {};
+    (P && P.sets || []).forEach(function (s, i) { sets[s.g] = s; order[s.g] = Date.parse(s.p) || i; });
+    (P && P.cards || []).forEach(function (c) {
+      if (!c.c || !c.p) { return; }
+      var s = sets[c.g]; if (!s) { return; }
+      byId[c.i] = c;
+      (byName[pkey(c.n)] = byName[pkey(c.n)] || []).push(c);
+      var k = s.a + "-" + String(c.c).split("/")[0];
+      (bySetNum[k] = bySetNum[k] || []).push(c);
+    });
+    return { sets: sets, order: order, byName: byName, bySetNum: bySetNum, byId: byId };
+  }
+  // every version of a card, the base printing's own first: [{id, fin, price, set, setName, label}]
+  function versionsOf(I, PX, x) {
+    if (!PX || !x) { return []; }
+    var found = {}, list = [];
+    function take(c) { if (c && !found[c.i]) { found[c.i] = 1; list.push(c); } }
+    (PX.byName[pkey(full(I, x))] || []).forEach(take);
+    (PX.byName[pkey(x.n)] || []).forEach(function (c) { if (x.t !== "legend" || pkey(c.n) === pkey(full(I, x))) { take(c); } });
+    // and every product sharing a set and number with any of this card's Riot printings
+    (I.names[norm(full(I, x))] || []).forEach(function (y) {
+      if (full(I, y) !== full(I, x)) { return; }
+      var p = parts(codeOf(y.c)); if (!p) { return; }
+      (PX.bySetNum[p.set + "-" + p.pre + p.num + p.v] || []).forEach(take);
+    });
+    var own = parts(codeOf(x.c)) || {}, ownKey = own.set + "-" + (own.pre || "") + own.num + (own.v || "");
+    var out = [];
+    list.forEach(function (c) {
+      var s = PX.sets[c.g], m = /\(([^)]*)\)\s*$/.exec(c.n), note = m ? m[1] : "";
+      Object.keys(c.p).forEach(function (fin) {
+        out.push({ id: c.i, fin: fin, price: c.p[fin], set: s.a, setName: s.n, rarity: c.r || "", note: note, num: String(c.c).split("/")[0],
+          own: (s.a + "-" + String(c.c).split("/")[0]) === ownKey, t: PX.order[c.g] || 0 });
+      });
+    });
+    out.sort(function (a, b) {
+      return (b.own - a.own) || (a.t - b.t) || (a.id - b.id) || ((a.fin === "Normal" ? 0 : 1) - (b.fin === "Normal" ? 0 : 1));
+    });
+    return out;
+  }
+  function verLabel(v) {
+    var w = v.setName.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, "");
+    var bits = [v.note || v.rarity].filter(Boolean);
+    return w + (bits.length ? ", " + bits.join(", ") : "");
   }
   // how the Main deck splits between the Legend's two domains: a card of both counts for both
   function share(I, deck) {
@@ -710,7 +815,8 @@
     add: add, take: take, setChamp: setChamp, check: check, bannedFrom: bannedFrom, isBanned: isBanned,
     encode: encode, decode: decode, toText: toText, toCode: toCode, toTTS: toTTS, parse: parse,
     findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan,
-    draw: draw, odds: odds, share: share, matches: matches
+    draw: draw, odds: odds, share: share, matches: matches,
+    tokens: tokens, needed: needed, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, isToken: isToken, rank: rank
   };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_DECK = API; }
