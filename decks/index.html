@@ -38,32 +38,53 @@ body{-webkit-font-smoothing:antialiased;
 .hacts .pact{flex:1}
 #hhold{height:126px}   /* plate at rest: 10 + 40 + 8 + 44 + 10 = 112, plus a 14 gap */
 #hmain .lede{margin-top:0}
+.hsort{display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.hsort .lede{flex:1;min-width:0;margin:0}
+/* Edit on the list arranges decks: a drag handle on each, My order on (round 2, 2026-10-19) */
+.dgrip{flex:0 0 auto;width:var(--sz-sm);height:var(--sz-sm);margin-left:-4px;border-radius:50%;display:grid;place-items:center;color:var(--muted);touch-action:none;cursor:grab}
+.dgrip svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.dwrap{position:relative}
+.dwrap.lift{z-index:5}
+.dwrap.lift .dcard{box-shadow:var(--glass-base),0 10px 28px rgba(0,0,0,.55)}
 /* a deck's block wears its Legend's two domains, the split following the Main deck's share
    (--s); the coloured glass recipe (.cg) with two colours */
-.dcard.cg2{background:linear-gradient(90deg,rgba(var(--c),var(--cg)) calc(var(--s) - 22%),rgba(var(--c2),var(--cg)) calc(var(--s) + 22%)),var(--frost-solid)}
+.dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),var(--cg)) calc(var(--s) - 22%),rgba(var(--c2),var(--cg)) calc(var(--s) + 22%)),var(--frost-solid)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .dcard.cg2{background:linear-gradient(90deg,rgba(var(--c),var(--cg)) calc(var(--s) - 22%),rgba(var(--c2),var(--cg)) calc(var(--s) + 22%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+  .dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),var(--cg)) calc(var(--s) - 22%),rgba(var(--c2),var(--cg)) calc(var(--s) + 22%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 }
 .dcard.cg2 .dcsub{color:#DCDEE2}
-.dcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 14px 10px 10px;border-radius:22px;text-align:left}
+.dcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 14px 10px 10px;border-radius:22px;text-align:left;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .dcard:active{transform:scale(.98)}
-.dcpic{flex:0 0 54px;width:54px;height:75px;border-radius:7px;overflow:hidden;background:var(--recess)} /* size-exempt: card art image */
+.dcpic{flex:0 0 54px;width:54px;height:75px;border-radius:5px;overflow:hidden;background:var(--recess)} /* size-exempt: card art image */
 .dcpic img{display:block;width:100%;height:100%;object-fit:cover}
 .dcrun{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
 .dcmid{flex:1;min-width:0}
 .dcname{display:block;font-family:var(--disp);font-size:17px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dcsub{display:block;margin-top:2px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dcstat{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:600;white-space:nowrap}
-.dcstat svg{flex:0 0 auto;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.dcstat .pr{margin-left:auto;font-family:var(--disp);font-weight:700}
+.dcname{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.dcend{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
+.dcstat{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap}
+.dcstat svg{flex:0 0 auto;width:15px;height:15px}
+.dcend .n{font-size:12px;font-weight:600;color:var(--muted)}
+.dcard.cg2 .dcend .n{color:#DCDEE2}
+.dcend .pr{margin-top:2px;font-family:var(--disp);font-size:15px;font-weight:700}
 .hnone{margin:24px 4px 0;font-size:15px;line-height:1.45;color:var(--muted);text-align:center}
 
 /* ---- ONE DECK: the plate (the trade page's construction) ---- */
-.stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);height:0;z-index:10}
+/* the plate's words and buttons start at --top-clear, clear of iOS's blur under the status
+   bar; only its own top edge may sit in it (Mako 2026-10-19) */
+.stick{position:sticky;top:calc(var(--top-clear) - 10px);height:0;z-index:10}
 .plate{width:calc(100% - 24px);max-width:456px;margin:0 auto;border-radius:24px;padding:10px;
   background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.hold{height:118px}   /* plate at rest: 10 + 36 + 8 + 40 + 10 = 104, plus a 14 gap */
+.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.22) calc(var(--s) - 30%),rgba(var(--c2),.22) calc(var(--s) + 30%)),rgba(10,11,13,.94)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.22) calc(var(--s) - 30%),rgba(var(--c2),.22) calc(var(--s) + 30%)),rgba(10,11,13,.5)}}
+.plate.cg2 .ptl span{color:#DCDEE2}
+/* the deck's plate: 10 + 36 + 8 + 40 (+ 8 + 40, the view row in Deck) + 10, plus a 14 gap */
+.hold{height:118px}
+#deck.dv .hold{height:166px}
+.pvrow{margin-top:8px}
+.pvrow .dvrow{margin:0}
 .phd{display:flex;align-items:center;gap:10px}
 .ptl{flex:1;min-width:0;text-align:center}
 .ptl b{display:block;font-family:var(--disp);font-size:17px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -79,17 +100,17 @@ body{-webkit-font-smoothing:antialiased;
 .res .bnone{padding:14px 8px}
 
 /* the view row at the top of the deck: how every section shows, and its sort */
-.dvrow{display:flex;align-items:center;gap:8px;margin:0 0 14px}
+.dvrow{display:flex;align-items:center;gap:8px}
 .dvseg button{width:40px;padding:0;display:grid;place-items:center}
 .dvseg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .dvseg.cols button{width:var(--sz-seg);font-size:13px}
 .dvsort{margin-left:auto;flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
   font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
 .dvsort svg{flex:0 0 auto;width:14px;height:14px}
-/* on a narrow phone with Grid's size showing, the pill reads just the sort */
-@media (max-width:389px){ .dvrow:has(#dcols:not([hidden])) .dvsort .pre{display:none} }
+/* with Grid's size showing, the pill reads just the sort */
+.dvrow:has(#dcols:not([hidden])) .dvsort .pre{display:none}
 .dvsort:active{transform:scale(.96)}
-.shead .circ + .circ{margin-left:6px}
+.sbtns{display:flex;gap:6px;margin-right:-4px}
 .shead .circ.on{background:var(--glass-press)}   /* a section shown its own way */
 
 /* glass cards, the settings page's construction */
@@ -109,7 +130,19 @@ body{-webkit-font-smoothing:antialiased;
 .dcnt span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dchk{list-style:none;margin:10px 0 0;padding:0}
 .dchk li{display:flex;align-items:flex-start;gap:8px;padding:5px 4px;font-size:13px;line-height:1.4}
-.dchk svg{flex:0 0 auto;width:16px;height:16px;margin-top:1px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.dchk svg{flex:0 0 auto;width:18px;height:18px;margin-top:0}
+.wmk{color:var(--over)}   /* the warning mark: red, and always its triangle and words */
+.wmk svg,svg.wmk{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.okmk svg,svg.okmk{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.dsec.bad{box-shadow:var(--glass-base),inset 0 0 0 1px rgba(229,72,77,.35)}
+.dsec.okc .dchk{margin:0}
+/* BANNED: a red pill with a no-entry mark and the word, wherever the card shows (Mako's 20) */
+.ban{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:11px;background:var(--over);color:#fff;
+  font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap}
+.ban svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.gban{position:absolute;left:5px;bottom:5px;pointer-events:none}
+.gcell .gban + .gq,.ctile .gban{left:5px}
+.lcell .gban{left:6px;top:6px;bottom:auto}
 .dprice{margin:6px 4px 0;font-size:12px;color:var(--muted)}
 .dprice b{font-family:var(--disp);font-weight:800;font-size:13px;color:var(--bone)}
 
@@ -117,6 +150,7 @@ body{-webkit-font-smoothing:antialiased;
    Piltover Archive's badge; Mako 2026-10-18). In Edit only minus and plus come in, beside
    the badge, which never moves. */
 .lrhd{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 0}
+#vdeck > :first-child{margin-top:0}
 .lrhd .shead{margin:0 4px 10px}
 .lrhd .shead + .shead{grid-column:span 2}
 .lrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -158,8 +192,7 @@ body{-webkit-font-smoothing:antialiased;
 /* a card in a section: a row (List), a picture (Grid), a line (Text) */
 .crd{display:flex;align-items:center;gap:10px;padding:6px 0 6px 4px}
 .crd + .crd{box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
-.crd.champ{border-radius:16px;box-shadow:inset 0 0 0 2px var(--bone);padding-right:6px;margin:2px 0}
-.crd.champ + .crd{box-shadow:none}
+/* the Chosen Champion wears its badge only, no outline (Mako 2026-10-19) */
 .crb{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left;padding:2px 0;border-radius:10px}
 .crb:active{transform:none;background:rgba(255,255,255,.05)}
 .art{display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden; /* size-exempt: card art image */
@@ -179,7 +212,7 @@ body{-webkit-font-smoothing:antialiased;
 .gcell{position:relative;min-width:0}
 .gpic{display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
 .gpic.land{aspect-ratio:1039/744}
-.gpic.champ{box-shadow:0 0 0 2px var(--bone),0 0 0 4px var(--ground)}
+
 .gq{position:absolute;right:5px;bottom:5px;min-width:30px;height:24px;padding:0 7px;border-radius:12px;display:grid;place-items:center;pointer-events:none;
   background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:700}
 .gstar{position:absolute;left:5px;top:5px;width:26px;height:26px;border-radius:13px;display:grid;place-items:center;pointer-events:none;background:var(--bone)}
@@ -204,6 +237,44 @@ body{-webkit-font-smoothing:antialiased;
 .dnote{display:block;width:100%;box-sizing:border-box;min-height:96px;border:0;outline:none;resize:vertical;border-radius:22px;
   background:var(--recess);padding:12px 16px;color:var(--bone);font-family:var(--text);font-size:16px;line-height:1.4}
 .dnote::placeholder{color:var(--muted)}
+
+/* STATS (round 2, Mako 2026-10-19): a grid of summary tiles; a tap opens that tile's detail
+   under the grid, several at once, remembered. Each tile is an 'open' control (its chevron). */
+.stiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.stile{position:relative;min-width:0;border-radius:16px;background:var(--recess);padding:10px 4px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
+.stile:active{background:var(--hi)}
+.stile[aria-expanded="true"]{background:var(--bone);color:var(--ink)}
+.stile[aria-expanded="true"] span{color:var(--ink);opacity:.72}
+.stile b{font-family:var(--disp);font-size:20px;font-weight:800;line-height:1.2;white-space:nowrap}
+.stile span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.stile .chev{width:14px;height:14px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transform:rotate(180deg);transition:transform .2s var(--ease)}
+.stile[aria-expanded="true"] .chev{transform:none}
+.sdet{margin-top:14px}
+.sdet .shead{margin:0 4px 10px}
+.pdrow{display:flex;align-items:center;gap:10px;padding:7px 4px;font-size:15px}
+.pdrow .t{flex:0 0 66px;font-family:var(--disp);font-weight:600}
+.pdrow .pbar{flex:1;height:10px;border-radius:5px;background:var(--track);overflow:hidden}
+.pdrow .pbar i{display:block;height:100%;border-radius:5px;background:rgb(var(--rc))}
+.pdrow b{flex:0 0 auto;min-width:28px;text-align:right;font-family:var(--disp);font-weight:700}
+.tokrow{display:flex;align-items:center;gap:12px;padding:6px 4px}
+.tokrow + .tokrow{box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.tokrow .art{flex:0 0 36px}
+.tokrow .art.none{display:grid;place-items:center;font-family:var(--disp);font-size:13px;font-weight:700;color:var(--muted)}
+
+/* HAND's odds (round 2): the cards asked about, the mulligan, turns 1 to 6 */
+.ochips{display:flex;flex-wrap:wrap;gap:6px}
+.ochip{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:var(--sz-sm);padding:0 6px 0 14px;border-radius:18px;font-family:var(--disp);font-size:13px;font-weight:600}
+.ochip .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ochip svg{flex:0 0 auto;width:16px;height:16px}
+.ochip.add{padding:0 14px 0 10px;color:var(--muted)}
+.omull{margin-top:10px}
+
+/* THE CARD MENU (round 2): a stepper per section, the printing and finish with prices */
+.qrows{border-radius:22px;background:var(--recess);margin:0 0 11px}   /* 3 + 11: 14 to the next label */
+.qrows .qrow{margin:0;padding:3px 6px 3px 16px;min-height:var(--sz-row)}   /* steppers 6 apart */
+.qrows .qrow + .qrow{box-shadow:inset 16px 1px 0 -15px rgba(255,255,255,.08)}
+.qrows .qrow .stp{background:none}
+.mban{display:flex;justify-content:center;margin:-4px 0 12px}
 
 /* STATS: the count on every bar, so height is never the only signal */
 .avg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
@@ -330,7 +401,7 @@ body{-webkit-font-smoothing:antialiased;
     <div class="hold" id="hhold"></div>
     <main id="hmain" class="dkmain">
       <h2 class="sr">Decks</h2>
-      <p class="lede" id="hlede">Your decks, kept on this phone.</p>
+      <div class="hsort"><p class="lede" id="hlede"></p><button type="button" class="dvsort glass" id="hsortb" data-act="hsort" data-fills="pdsort" data-k="do"><span>Last edited</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button></div>
       <div id="hlist"></div>
     </main>
   </div>
@@ -342,6 +413,7 @@ body{-webkit-font-smoothing:antialiased;
         <div class="phd">
           <button type="button" class="circ btn glass" data-act="home" aria-label="Back to your decks" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
           <div class="ptl"><b id="ptname"></b><span id="ptprice"></span></div>
+          <button type="button" class="circ btn glass" data-act="undo" id="undob" aria-label="Undo" disabled data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3.5 3 8l4.5 4.5"/><path d="M3 8h12.5a5.5 5.5 0 0 1 0 11H8"/></svg></button>
           <button type="button" class="circ btn glass" data-act="exp" aria-label="Export this deck" data-fills="pexp" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></button>
         </div>
         <div class="seg vw" id="vw" role="group" aria-label="Show" data-k="pick"><button type="button" data-vw="deck" aria-pressed="true">Deck</button><button type="button" data-vw="stats" aria-pressed="false">Stats</button><button type="button" data-vw="hand" aria-pressed="false">Hand</button></div>
@@ -350,7 +422,8 @@ body{-webkit-font-smoothing:antialiased;
           <input id="eq" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Search cards to add" data-k="type">
           <button type="button" class="fbtn glass" id="eqx" disabled data-k="do">Clear</button>
         </div>
-        <div class="resw" id="eresw"><div class="res" id="eres"></div></div>
+        <div class="pvrow" id="pvrow"></div>
+        <div class="resw" id="eresw"><div class="bchips" id="echips"></div><div class="res" id="eres"></div></div>
       </section>
     </div>
     <div class="hold"></div>
@@ -428,7 +501,7 @@ body{-webkit-font-smoothing:antialiased;
   <div class="phead"><h4 class="ttl">Deck settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row" id="sname"><p class="lb">Deck name</p><div class="nf"><input id="dname" type="text" maxlength="40" placeholder="Deck name" autocomplete="off" aria-label="Deck name" data-k="type"></div></div>
-    <div class="row"><p class="lb">Show</p><div class="pick" id="sshow" data-k="pick"><button type="button" data-v="price">Prices</button><button type="button" data-v="maybe">Considering</button><button type="button" data-v="prints">Every printing when adding cards</button></div>
+    <div class="row"><p class="lb">Show</p><div class="pick" id="sshow" data-k="pick"><button type="button" data-v="price">Prices</button><button type="button" data-v="maybe">Considering</button><button type="button" data-v="allp">Every printing in card searches</button></div>
       <p class="pnote" style="margin-top:8px">How cards show, and their sort, are at the top of each deck.</p></div>
     <div id="sdeck">
       <div class="row"><p class="lb">This deck</p><div class="doors">
@@ -440,10 +513,25 @@ body{-webkit-font-smoothing:antialiased;
   </div>
 </section>
 
+<section class="panel frost" id="pdsort" aria-hidden="true" aria-label="Sort decks">
+  <div class="phead"><h4 class="ttl">Sort decks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="dsortpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">My order is the order you arrange: tap the pencil on this screen, then drag a deck by its handle.</p></div>
+</section>
+
+<section class="panel frost" id="pdeck" aria-hidden="true" aria-label="Deck">
+  <div class="phead"><h4 class="ttl" id="pdttl">Deck</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors">
+    <button type="button" class="door btn glass act" data-act="dmopen" data-k="do"><span class="t">Open</span></button>
+    <button type="button" class="door btn glass act" data-act="dmexp" data-k="do"><span class="t">Export</span></button>
+    <button type="button" class="door btn glass act" data-act="dmdup" data-k="do"><span class="t">Duplicate</span></button>
+    <button type="button" class="door btn glass act" data-act="dmdel" id="dmdel" data-k="do"><span class="t">Delete this deck</span></button>
+  </div></div>
+</section>
+
 <section class="panel frost" id="psort" aria-hidden="true" aria-label="Sort and group">
   <div class="phead"><h4 class="ttl">Sort and group</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="row"><p class="lb">Sort by</p><div class="seg" id="ssort" role="group" aria-label="Sort by" data-k="pick"><button type="button" data-v="energy">Energy</button><button type="button" data-v="name">Name</button><button type="button" data-v="price">Price</button></div></div>
+    <div class="row"><p class="lb">Sort by</p><div class="seg" id="ssort" role="group" aria-label="Sort by" data-k="pick"><button type="button" data-v="energy">Energy</button><button type="button" data-v="power">Power</button><button type="button" data-v="name">Name</button><button type="button" data-v="price">Price</button></div></div>
     <div class="row"><p class="lb">Group by</p><div class="seg" id="sgroup" role="group" aria-label="Group by" data-k="pick"><button type="button" data-v="type">Type</button><button type="button" data-v="energy">Energy</button><button type="button" data-v="domain">Domain</button><button type="button" data-v="none">None</button></div></div>
     <p class="pnote">For every deck. A section's own menu can sort it its own way.</p>
   </div>
@@ -479,9 +567,11 @@ body{-webkit-font-smoothing:antialiased;
 (function(){
   var X = window.RAVI_DECK;
   var KEY = "vir.decks.v1", SKEY = "vir.decks.set.v1";
-  var I = null, BAN = null, PR = {}, CUR = "CAD", FX = 1.4;
+  var I = null, BAN = null, PR = {}, PX = null, ART = {}, BASE = {}, HASH = {}, CUR = "CAD", FX = 1.4;
   var DECKS = [], CURID = "", SCREEN = "home", VIEW = "deck", EDIT = false, HAND = null, ASIDE = [], CARD = null;
-  var SET = { view: "list", cols: 3, group: "type", sort: "energy", exp: "text", price: true, maybe: true, prints: true, sv: {}, ss: {}, shut: {} };
+  // round 2 (Mako 2026-10-19): the 3-across grid is the default; search shows base cards only
+  // (allp); decks list order (dsort: recent, name, legend, mine); stats tiles open (sopen)
+  var SET = { view: "grid", cols: 3, group: "type", sort: "energy", exp: "text", price: true, maybe: true, allp: false, sv: {}, ss: {}, shut: {}, dsort: "recent", sopen: {}, r2: true };
   // the domains' colours; colourless is the palette's spare White (Neeko's silver name plate)
   var RUNE_RGB = { body: "232,118,0", calm: "72,140,56", chaos: "106,64,148", fury: "223,22,32", mind: "15,111,166", order: "210,180,0", colorless: "240,240,245" };
   var SECNAME = { main: "Main deck", side: "Sideboard", maybe: "Considering", legend: "Legend", bf: "Battlefields", runes: "Runes" };
@@ -494,27 +584,55 @@ body{-webkit-font-smoothing:antialiased;
     plus: svgi("M12 6v12M6 12h12"), minus: svgi("M6 12h12"),
     bin: svgi("M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"),
     down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
-    warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.8 19.5h18.4z"/><path d="M12 10v4.2M12 17.2v.1"/></svg>',
+    // the warning: a softened triangle with its mark (round 2 polish; a full redraw is noted)
+    warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.27 4.3a2 2 0 0 1 3.46 0l7.6 13.2A2 2 0 0 1 19.6 20.5H4.4a2 2 0 0 1-1.73-3l7.6-13.2z"/><path d="M12 9.5v4.5M12 17.2v.1"/></svg>',
+    x: svgi("M7 7l10 10M17 7L7 17"),
+    // no entry, for Banned
+    noent: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg>',
+    // the app's gear (pages.js), its outline, for a section's own menu (Mako 2026-10-19)
+    gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.23 10.21A9.4 9.4 0 0 1 21.23 13.79Q15.05 13.76 18.17 19.09A9.4 9.4 0 0 1 15.06 20.89Q12 15.52 8.94 20.89A9.4 9.4 0 0 1 5.83 19.09Q8.95 13.76 2.77 13.79A9.4 9.4 0 0 1 2.77 10.21Q8.95 10.24 5.83 4.91A9.4 9.4 0 0 1 8.94 3.11Q12 8.48 15.06 3.11A9.4 9.4 0 0 1 18.17 4.91Q15.05 10.24 21.23 10.21z"/><path d="M9.8 12a2.2 2.2 0 1 0 4.4 0a2.2 2.2 0 1 0 -4.4 0z"/></svg>',
     ok: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.7 2.7L16 9.6"/></svg>',
     star: '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.6 6.1.7-4.5 4.2 1.2 6.1L12 16.8l-5.4 3 1.2-6.1-4.5-4.2 6.1-.7z"/></svg>',
     // the three views, after Lucide's layout-list, layout-grid and text (ISC), on the app's line
     vlist: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 4.5h7M14 8.5h5M14 15.5h7M14 19.5h5"/></svg>',
     vgrid: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
     vtext: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h11"/></svg>',
-    // a section's own menu: two sliders, after Lucide's sliders-horizontal (ISC)
-    sliders: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h8M18 7h2M4 17h2M12 17h8"/><circle cx="15" cy="7" r="2.5"/><circle cx="9" cy="17" r="2.5"/></svg>'
+    // the counter's undo arrow (pages.js), for the plate's Undo
+    undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3.5 3 8l4.5 4.5"/><path d="M3 8h12.5a5.5 5.5 0 0 1 0 11H8"/></svg>'
   };
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>';
 
   // ---- storage: decks and settings on this phone, wrapped so a blocked store never breaks the page ----
   function load(){
-    try{ var s = JSON.parse(localStorage.getItem(SKEY)); if(s){ for(var k in SET){ if(s.hasOwnProperty(k) && typeof s[k] === typeof SET[k]) SET[k] = s[k]; } } }catch(e){}
+    try{ var s = JSON.parse(localStorage.getItem(SKEY)); if(s){ for(var k in SET){ if(s.hasOwnProperty(k) && typeof s[k] === typeof SET[k]) SET[k] = s[k]; } if(!s.r2){ SET.view = "grid"; SET.sv = {}; } } }catch(e){}
     try{ var d = JSON.parse(localStorage.getItem(KEY)); if(d && Array.isArray(d.decks)){ DECKS = d.decks.filter(function(x){ return x && x.id; }); CURID = d.cur || ""; } }catch(e){}
     try{ var t = JSON.parse(localStorage.getItem("vir.trade.v1")); if(t && (t.cur === "USD" || t.cur === "CAD")) CUR = t.cur; }catch(e){}
   }
-  function save(){
-    var d = deck(); if(d) d.t = Date.now();
+  // UNDO (round 2, Mako 2026-10-19): every save of a deck keeps the state before it, so the
+  // plate's Undo steps back one change at a time, as Trade's undo. Kept while the page is open.
+  var UND = [], LASTJ = "", LASTID = "";
+  function bare(d){ var c = JSON.parse(JSON.stringify(d)); delete c.t; return JSON.stringify(c); }
+  function snapNow(){ var d = deck(); LASTJ = d ? bare(d) : ""; LASTID = d ? d.id : ""; }
+  function save(quiet){
+    var d = deck();
+    if(d){
+      var now = bare(d);
+      if(!quiet && LASTID === d.id && LASTJ && LASTJ !== now){ UND.push({ id: d.id, j: LASTJ }); if(UND.length > 60) UND.shift(); }
+      LASTJ = now; LASTID = d.id; d.t = Date.now();
+    }
     try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
+    var ub = document.getElementById("undob"); if(ub) ub.disabled = !UND.some(function(u){ return u.id === CURID; });
+  }
+  function undo(){
+    for(var i = UND.length - 1; i >= 0; i--){
+      if(UND[i].id !== CURID) continue;
+      var back = JSON.parse(UND[i].j); UND.splice(i, 1);
+      for(var k = 0; k < DECKS.length; k++){ if(DECKS[k].id === CURID){ back.t = Date.now(); DECKS[k] = back; } }
+      snapNow(); HAND = null; ASIDE = [];
+      try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
+      render(); if(EQ) eRender(); toast("Undone");
+      return;
+    }
   }
   function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
   function deck(){ for(var i = 0; i < DECKS.length; i++){ if(DECKS[i].id === CURID) return DECKS[i]; } return null; }
@@ -534,14 +652,29 @@ body{-webkit-font-smoothing:antialiased;
   function domWords(x){ var d = doms(x); return d.length ? d.map(cap).join(" and ") : "Colorless"; }
   function typeWord(x){ return x.t ? cap(x.t) : "Card"; }
   function money(usd){ return "$" + (CUR === "CAD" ? usd * FX : usd).toFixed(2); }
-  function price(code){ var p = PR[code]; return p == null ? null : p; }
+  // a card's price: the version picked in its menu (a printing and a finish from the price
+  // feed), else the cheapest Normal of its own set and number
+  function price(code, d){
+    d = d || deck();
+    var v = d && d.ver && d.ver[code];
+    if(v && PX){ var bits = v.split("|"), c = PX.byId[bits[0]]; if(c && c.p[bits[1]] != null) return c.p[bits[1]]; }
+    var p = PR[code]; return p == null ? null : p;
+  }
   function deckPrice(d){
     var t = 0;
-    function addm(m){ Object.keys(m).forEach(function(c){ var p = price(c); if(p != null) t += p * m[c]; }); }
-    if(d.legend){ var lp = price(d.legend); if(lp != null) t += lp; }
+    function addm(m){ Object.keys(m).forEach(function(c){ var p = price(c, d); if(p != null) t += p * m[c]; }); }
+    if(d.legend){ var lp = price(d.legend, d); if(lp != null) t += lp; }
     addm(d.main); addm(d.side); addm(d.runes);
-    d.bf.forEach(function(c){ var p = price(c); if(p != null) t += p; });
+    d.bf.forEach(function(c){ var p = price(c, d); if(p != null) t += p; });
     return t;
+  }
+  function banned(x){ return !!(BAN && x && X.isBanned(BAN, nm(x))); }
+  function banPill(x, cls){ return banned(x) ? '<span class="ban' + (cls ? " " + cls : "") + '">' + IC.noent + 'Banned</span>' : ""; }
+  // the deck's two colours, for its block and its plate
+  function colours(d){
+    var sh = X.share(I, d);
+    if(!sh.a) return null;
+    return { c: RUNE_RGB[sh.a], c2: RUNE_RGB[sh.b || sh.a], s: Math.round(Math.min(.7, Math.max(.3, sh.s)) * 100) };
   }
   function runeGlass(d, cls){
     // colourless has no symbol from Riot: a plain ring on the White disc, beside the word
@@ -556,28 +689,74 @@ body{-webkit-font-smoothing:antialiased;
 
   // ---- THE DECKS LIST ----
   var HQ = "";
+  var DSORTS = [["recent", "Last edited"], ["name", "Name"], ["legend", "Legend"], ["mine", "My order"]];
+  function listOrder(){
+    var all = DECKS.slice();
+    if(SET.dsort === "name") all.sort(function(a, b){ return (a.name || "").localeCompare(b.name || ""); });
+    else if(SET.dsort === "legend") all.sort(function(a, b){ var x = C(a.legend), y = C(b.legend); return (x ? nm(x) : "~").localeCompare(y ? nm(y) : "~") || (a.name || "").localeCompare(b.name || ""); });
+    else if(SET.dsort === "recent") all.sort(function(a, b){ return (b.t || 0) - (a.t || 0); });
+    return all;   // mine: DECKS as kept
+  }
   function renderHome(){
     var h = "";
-    var all = DECKS.slice().sort(function(a, b){ return (b.t || 0) - (a.t || 0); });
+    var all = listOrder();
     var list = all.filter(function(d){ return X.matches(I, d, HQ); });
     if(!all.length) h = '<p class="hnone">No decks yet. Make one, or import one from Piltover Archive, Riftmana or another builder.</p>';
     else if(!list.length) h = '<p class="hnone">No deck matches. Try another word.</p>';
     el("hqx").disabled = !HQ;
     list.forEach(function(d){
-      var L = C(d.legend), p = X.check(I, d, BAN).length, run = "", sh = X.share(I, d), cg = "";
+      var L = C(d.legend), p = X.check(I, d, BAN).length, run = "", co = colours(d), cg = "", nd = X.needed(d);
       if(L) doms(L).forEach(function(v){ run += runeGlass(v, "md"); });
-      // both domains' colours, split by how much of the Main deck each one holds; the split
-      // stays between 30 and 70 so both colours always show
-      if(sh.a){ var b = sh.b || sh.a; cg = ' cg2" style="--c:' + RUNE_RGB[sh.a] + ';--c2:' + RUNE_RGB[b] + ';--s:' + Math.round(Math.min(.7, Math.max(.3, sh.s)) * 100) + '%'; }
-      h += '<button type="button" class="dcard btn glass' + cg + '" data-act="open" data-id="' + esc(d.id) + '" data-k="do">'
+      // both domains' colours, top to bottom, split by how much of the Main deck each holds
+      // (kept between 30 and 70 so both always show)
+      if(co) cg = ' cg2" style="--c:' + co.c + ';--c2:' + co.c2 + ';--s:' + co.s + '%';
+      h += '<div class="dwrap" data-id="' + esc(d.id) + '">'
+        + '<button type="button" class="dcard btn glass' + cg + '" data-act="open" data-id="' + esc(d.id) + '" data-k="do">'
+        + (EDIT ? '<span class="dgrip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h14"/></svg></span>' : '')
         + '<span class="dcpic">' + (L ? img(L) : "") + '</span>' + (run ? '<span class="dcrun">' + run + '</span>' : '')
-        + '<span class="dcmid"><span class="dcname">' + esc(d.name || "Untitled deck") + '</span><span class="dcsub">' + esc(L ? nm(L) : "No Legend yet") + '</span>'
-        + '<span class="dcstat">' + (p ? IC.warn + '<span>' + p + ' to fix</span>' : IC.ok + '<span>Ready</span>') + '<span>&middot; ' + X.sum(d.main) + '/40</span>'
-        + (SET.price ? '<span class="pr">' + money(deckPrice(d)) + '</span>' : '') + '</span></span></button>';
+        + '<span class="dcmid"><span class="dcname">' + esc(d.name || "Untitled deck") + '</span><span class="dcsub">' + esc(L ? nm(L) : "No Legend yet") + '</span></span>'
+        + '<span class="dcend"><span class="dcstat">' + (p ? '<span class="wmk">' + IC.warn + '</span><span>' + p + ' to fix</span>' : '<span class="okmk">' + IC.ok + '</span><span>Ready</span>') + '</span>'
+        + '<span class="n">' + nd.have + '/' + nd.need + '</span>'
+        + (SET.price ? '<span class="pr">' + money(deckPrice(d)) + '</span>' : '') + '</span></button></div>';
     });
     el("hlist").innerHTML = h;
-    el("hlede").textContent = list.length ? "Your decks, kept on this phone. " + list.length + (list.length === 1 ? " deck." : " decks.") : "Your decks, kept on this phone.";
+    el("hlede").textContent = all.length ? (list.length === all.length ? all.length + (all.length === 1 ? " deck" : " decks") : list.length + " of " + all.length + " decks") + (EDIT ? ". Drag to arrange." : "") : "";
+    var ds = DSORTS.filter(function(x){ return x[0] === SET.dsort; })[0] || DSORTS[0];
+    el("hsortb").querySelector("span").textContent = ds[1];
+    el("hsortb").hidden = !all.length;
   }
+  // ARRANGE (Edit on the list): drag a deck by its handle; the order becomes My order
+  var DRAG = null;
+  document.addEventListener("pointerdown", function(ev){
+    var g = ev.target.closest && ev.target.closest(".dgrip");
+    if(!g) return;
+    ev.preventDefault();
+    var w = g.closest(".dwrap");
+    DRAG = { w: w, id: w.getAttribute("data-id"), y0: ev.clientY, dy: 0, rows: Array.from(el("hlist").querySelectorAll(".dwrap")) };
+    w.classList.add("lift");
+  });
+  document.addEventListener("pointermove", function(ev){
+    if(!DRAG) return;
+    DRAG.dy = ev.clientY - DRAG.y0;
+    DRAG.w.style.transform = "translateY(" + DRAG.dy + "px)";
+  });
+  function dragEnd(){
+    if(!DRAG) return;
+    var D = DRAG; DRAG = null;
+    D.w.classList.remove("lift"); D.w.style.transform = "";
+    var mid = D.w.getBoundingClientRect().top + D.dy + D.w.offsetHeight / 2, order = [];
+    var ids = D.rows.map(function(r){ return r.getAttribute("data-id"); }).filter(function(x){ return x !== D.id; }), at = ids.length;
+    D.rows.forEach(function(r){ if(r === D.w) return; var b = r.getBoundingClientRect(); if(at === ids.length && mid < b.top + b.height / 2) at = ids.indexOf(r.getAttribute("data-id")); });
+    ids.splice(at, 0, D.id);
+    var byId = {}; DECKS.forEach(function(x){ byId[x.id] = x; });
+    var rest = DECKS.filter(function(x){ return ids.indexOf(x.id) < 0; });
+    DECKS = ids.map(function(i){ return byId[i]; }).concat(rest);
+    SET.dsort = "mine"; saveSet();
+    try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
+    renderHome();
+  }
+  document.addEventListener("pointerup", dragEnd);
+  document.addEventListener("pointercancel", dragEnd);
 
   // ---- ONE DECK ----
   function sorter(sec){
@@ -586,6 +765,7 @@ body{-webkit-font-smoothing:antialiased;
       var x = C(a), y = C(b);
       if(s === "price"){ var pa = price(a) || 0, pb = price(b) || 0; if(pb !== pa) return pb - pa; }
       if(s === "energy"){ var ea = typeof x.e === "number" ? x.e : 99, eb = typeof y.e === "number" ? y.e : 99; if(ea !== eb) return ea - eb; }
+      if(s === "power"){ var wa = typeof x.w === "number" ? x.w : 0, wb = typeof y.w === "number" ? y.w : 0; if(wa !== wb) return wa - wb; var e1 = typeof x.e === "number" ? x.e : 99, e2 = typeof y.e === "number" ? y.e : 99; if(e1 !== e2) return e1 - e2; }
       return nm(x).localeCompare(nm(y));
     };
   }
@@ -608,6 +788,7 @@ body{-webkit-font-smoothing:antialiased;
   function rowSub(x, code, champ){
     var a = "";
     if(champ) a += IC.star + '<span class="cw">Chosen Champion</span>';
+    a += banPill(x);
     if(typeof x.e === "number") a += '<span class="epill" aria-label="' + x.e + ' energy">' + x.e + '</span>';
     doms(x).forEach(function(v){ a += runeGlass(v, "sm"); });
     if(!doms(x).length && (x.d || []).indexOf("colorless") > -1) a += runeGlass("colorless", "sm") + '<span>Colorless</span>';
@@ -625,9 +806,9 @@ body{-webkit-font-smoothing:antialiased;
         h += '<div class="cgrid" style="--gc:' + cols + '">';
         g.codes.forEach(function(c){
           var x = C(c), champ = sec === "main" && d.champ === c;
-          h += '<div class="gcell"><button type="button" class="gpic' + (champ ? " champ" : "") + '" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + m[c] + (champ ? ', Chosen Champion' : '') + '" data-k="card">' + img(x) + '</button>'
+          h += '<div class="gcell"><button type="button" class="gpic" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + m[c] + (champ ? ', Chosen Champion' : '') + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>'
             + (champ ? '<span class="gstar">' + IC.star + '</span>' : '')
-            + (EDIT && cols === 3 ? '<div class="gstp">' + stepper(sec, c, m[c]) + '</div>' : '<span class="gq">x' + m[c] + '</span>') + '</div>';
+            + (EDIT && cols === 3 ? '<div class="gstp">' + stepper(sec, c, m[c]) + '</div>' : banPill(x, "gban") + '<span class="gq">x' + m[c] + '</span>') + '</div>';
         });
         if(gi === gs.length - 1 && EDIT) h += addTile.replace('<span>Add cards</span>', '<span>Add</span>');
         h += '</div>';
@@ -635,12 +816,12 @@ body{-webkit-font-smoothing:antialiased;
         g.codes.forEach(function(c){
           var x = C(c), champ = sec === "main" && d.champ === c;
           h += '<div class="ctx"><button type="button" class="crb" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" data-k="card"><span class="cq">' + m[c] + '</span><span class="cnm">' + esc(nm(x)) + '</span>'
-            + '<small>' + (champ ? "Champion" : (typeof x.e === "number" ? x.e + " energy" : esc(typeWord(x)))) + '</small></button>' + (EDIT ? stepper(sec, c, m[c]) : '') + '</div>';
+            + (banned(x) ? banPill(x) : '<small>' + (champ ? "Champion" : (typeof x.e === "number" ? x.e + " energy" : esc(typeWord(x)))) + '</small>') + '</button>' + (EDIT ? stepper(sec, c, m[c]) : '') + '</div>';
         });
       } else {
         g.codes.forEach(function(c){
           var x = C(c), champ = sec === "main" && d.champ === c;
-          h += '<div class="crd' + (champ ? " champ" : "") + '"><button type="button" class="crb" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" data-k="card"><span class="art">' + img(x) + '</span>'
+          h += '<div class="crd"><button type="button" class="crb" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" data-k="card"><span class="art">' + img(x) + '</span>'
             + '<span class="cmid"><span class="cnm">' + esc(nm(x)) + '</span><span class="csb">' + rowSub(x, c, champ) + '</span></span></button>'
             + (EDIT ? stepper(sec, c, m[c]) : '<span class="cq">x' + m[c] + '</span>') + '</div>';
         });
@@ -649,21 +830,21 @@ body{-webkit-font-smoothing:antialiased;
     if(v !== "grid") h += addTile;
     return h;
   }
-  // THE VIEW ROW at the top of the deck: how every section shows (List, Grid, Text as icons),
-  // the grid size only while Grid is on, and Sort, which opens Sort and group. A section's
-  // own menu (the sliders in its head) can show it its own way.
+  // THE VIEW ROW, in the deck's plate while Deck shows (Mako 2026-10-19): how every section
+  // shows (List, Grid, Text as icons), the grid size only while Grid is on, and Sort, which
+  // opens Sort and group. A section's own menu (the gear in its head) can show it its own way.
   function viewRow(){
     var v = SET.view, s = SORTS.filter(function(x){ return x[0] === SET.sort; })[0] || SORTS[0];
     function b(val, label){ return '<button type="button" data-dv="' + val + '" aria-label="' + label + '" aria-pressed="' + (v === val) + '">' + IC["v" + val] + '</button>'; }
     return '<div class="dvrow" id="dview"><div class="seg dvseg" role="group" aria-label="Cards show as" data-k="pick">' + b("list", "List") + b("grid", "Grid") + b("text", "Text") + '</div>'
       + '<div class="seg dvseg cols" id="dcols" role="group" aria-label="Grid size" data-k="pick"' + (v === "grid" ? "" : " hidden") + '><button type="button" data-dc="3" aria-label="3 across" aria-pressed="' + (SET.cols !== 4) + '">3</button><button type="button" data-dc="4" aria-label="4 across" aria-pressed="' + (SET.cols === 4) + '">4</button></div>'
-      + '<button type="button" class="dvsort glass" data-act="dsort" data-fills="psort" data-k="do"><span><span class="pre">Sort: </span>' + esc(s[1].split(",")[0]) + '</span>' + IC.down + '</button></div>';
+      + '<button type="button" class="dvsort glass" data-act="dsort" data-fills="psort" data-k="do"><span><span class="pre">Sort: </span>' + esc(s[0] === "number" ? "Number" : s[1].split(",")[0]) + '</span>' + IC.down + '</button></div>';
   }
   function headHTML(sec, title, cnt){
     var shut = !!SET.shut[sec], own = !!(SET.sv[sec] || SET.ss[sec]);
-    return '<div class="shead"><h2>' + title + '</h2><span class="sp"></span><span class="cnt">' + cnt + '</span>'
-      + '<button type="button" class="circ btn glass' + (own ? " on" : "") + '" data-act="smenu" data-sec="' + sec + '" aria-label="How ' + title + ' shows' + (own ? ", its own way" : "") + '" data-fills="psec" data-k="do">' + IC.sliders + '</button>'
-      + '<button type="button" class="circ btn glass" data-act="shut" data-sec="' + sec + '" aria-expanded="' + !shut + '" aria-label="Show or hide ' + title + '" data-k="open">' + CHEV + '</button></div>';
+    return '<div class="shead"><h2>' + title + '</h2><span class="sp"></span><span class="cnt">' + cnt + '</span><span class="sbtns">'
+      + '<button type="button" class="circ btn glass' + (own ? " on" : "") + '" data-act="smenu" data-sec="' + sec + '" aria-label="How ' + title + ' shows' + (own ? ", its own way" : "") + '" data-fills="psec" data-k="do">' + IC.gear + '</button>'
+      + '<button type="button" class="circ btn glass" data-act="shut" data-sec="' + sec + '" aria-expanded="' + !shut + '" aria-label="Show or hide ' + title + '" data-k="open">' + CHEV + '</button></span></div>';
   }
   function sectionHTML(sec, d, title, cnt, empty){
     var shut = !!SET.shut[sec], body = cardsHTML(sec, d);
@@ -679,30 +860,32 @@ body{-webkit-font-smoothing:antialiased;
     var shut = !!SET.shut.bf, v = viewOf("bf"), h = "";
     h += '<section class="dsec glass' + (shut ? " shut" : "") + '" id="sbf">' + headHTML("bf", "Battlefields", d.bf.length + "/3");
     if(v === "grid" && d.bf.length){
-      h += '<div class="cgrid" style="--gc:2">';
+      // all three on one line (Mako 2026-10-19)
+      h += '<div class="cgrid" style="--gc:3">';
       d.bf.forEach(function(c){
         var x = C(c);
-        h += '<div class="gcell"><button type="button" class="gpic land" data-act="card" data-sec="bf" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + '" data-k="card">' + img(x) + '</button>'
-          + (EDIT ? '<div class="lsteps" style="left:auto;right:5px;bottom:5px;transform:none;width:auto"><button type="button" class="lpm glass" data-act="sdec" data-sec="bf" data-code="' + esc(c) + '" aria-label="Remove ' + esc(nm(x)) + '" data-k="do">' + IC.bin + '</button></div>' : '') + '</div>';
+        h += '<div class="gcell"><button type="button" class="gpic land" data-act="card" data-sec="bf" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>' + banPill(x, "gban")
+          + (EDIT ? '<div class="lsteps" style="left:auto;right:3px;bottom:3px;transform:none;width:auto"><button type="button" class="lpm glass" data-act="sdec" data-sec="bf" data-code="' + esc(c) + '" aria-label="Remove ' + esc(nm(x)) + '" data-k="do">' + IC.bin + '</button></div>' : '') + '</div>';
       });
       h += '</div>';
     } else {
       d.bf.forEach(function(c){
         var x = C(c), bin = EDIT ? '<div class="stp" data-k="do"><button type="button" class="circ btn glass bin" data-act="sdec" data-sec="bf" data-code="' + esc(c) + '" aria-label="Remove ' + esc(nm(x)) + '" data-k="do">' + IC.bin + '</button></div>' : '';
-        if(v === "text") h += '<div class="ctx"><button type="button" class="crb" data-act="card" data-sec="bf" data-code="' + esc(c) + '" data-k="card"><span class="cq">1</span><span class="cnm">' + esc(nm(x)) + '</span>' + (SET.price && price(c) != null ? '<small>' + money(price(c)) + '</small>' : '') + '</button>' + bin + '</div>';
+        if(v === "text") h += '<div class="ctx"><button type="button" class="crb" data-act="card" data-sec="bf" data-code="' + esc(c) + '" data-k="card"><span class="cq">1</span><span class="cnm">' + esc(nm(x)) + '</span>' + (banned(x) ? banPill(x) : (SET.price && price(c) != null ? '<small>' + money(price(c)) + '</small>' : '')) + '</button>' + bin + '</div>';
         else h += '<div class="crd"><button type="button" class="crb" data-act="card" data-sec="bf" data-code="' + esc(c) + '" data-k="card"><span class="bfa">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(nm(x)) + '</span>'
-          + (SET.price && price(c) != null ? '<span class="csb"><span>' + money(price(c)) + '</span></span>' : '') + '</span></button>' + bin + '</div>';
+          + '<span class="csb">' + banPill(x) + (SET.price && price(c) != null ? '<span>' + money(price(c)) + '</span>' : '') + '</span></span></button>' + bin + '</div>';
       });
     }
     if(!d.bf.length && !EDIT) h += '<p class="dnone">No battlefields yet.</p>';
     if(EDIT && d.bf.length < 3) h += '<button type="button" class="addt btn glass" data-act="badd" data-sec="bf" data-k="do">' + IC.plus + '<span>Add battlefields</span></button>';
     return h + '</section>';
   }
-  // LEGEND AND RUNES: one row of the real cards, each with its count
+  // LEGEND AND RUNES: one row of the real cards; the runes carry their count, the Legend none
+  // (there is only ever one of a Legend)
   function legendRunesHTML(d){
     var L = C(d.legend), r = X.sum(d.runes), h = "";
     h += '<div class="lrhd"><div class="shead"><h2>Legend</h2></div><div class="shead"><h2>Runes</h2><span class="sp"></span><span class="cnt">' + r + '/12</span></div></div><div class="lrow" id="lrow">';
-    if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + '" data-k="card">' + img(L, true) + '</button><span class="lq">x1</span></div>';
+    if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + banPill(L, "gban") + '</div>';
     else h += '<div class="lcell">' + (EDIT ? '<button type="button" class="addt btn glass" data-act="badd" data-sec="legend" data-k="do">' + IC.plus + '<span>Legend</span></button>' : '<div class="lcard none">No Legend yet. Tap Edit to build this deck.</div>') + '</div>';
     var rcodes = Object.keys(d.runes).filter(function(c){ return d.runes[c] > 0; }), have = {};
     rcodes.forEach(function(c){ doms(C(c)).forEach(function(x){ have[x] = 1; }); });
@@ -716,22 +899,30 @@ body{-webkit-font-smoothing:antialiased;
     for(var i = rcodes.length; i < 2; i++) h += '<div class="lcell"><div class="lcard none">The Legend\'s runes show here.</div></div>';
     return h + '</div>';
   }
+  // THE COUNTS AND THE RULES: at the top only while something needs fixing (in red, with the
+  // triangle and the words); a ready deck shows them at the foot (Mako 2026-10-19)
+  function checkHTML(d, probs){
+    var m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side), nd = X.needed(d), h = "";
+    h += '<section class="dsec glass ' + (probs.length ? "bad" : "okc") + '"' + (probs.length ? ' style="margin-top:0"' : '') + ' id="schk">'
+      + '<div class="shead"><h2>' + (probs.length ? probs.length + (probs.length === 1 ? " thing to fix" : " things to fix") : "Ready for events") + '</h2><span class="sp"></span><span class="cnt">' + nd.have + '/' + nd.need + ' cards</span></div>'
+      + '<div class="dcnt"><div><b>' + m + '/40</b><span>Main</span></div><div><b>' + r + '/12</b><span>Runes</span></div><div><b>' + d.bf.length + '/3</b><span>Battlefields</span></div><div><b>' + s + '</b><span>Sideboard</span></div></div><ul class="dchk">';
+    if(!probs.length) h += '<li><span class="okmk">' + IC.ok + '</span><span>Every deck rule is met.</span></li>';
+    probs.forEach(function(p){ h += '<li><span class="wmk">' + IC.warn + '</span><span>' + esc(p.msg) + '</span></li>'; });
+    return h + '</ul></section>';
+  }
   function renderDeck(){
     var d = deck(), h = "";
-    var probs = X.check(I, d, BAN), m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side);
-    h += viewRow();
-    // the counts, then the rules in words
-    h += '<section class="dsec glass" style="margin-top:0"><div class="dcnt"><div><b>' + m + '/40</b><span>Main</span></div><div><b>' + r + '/12</b><span>Runes</span></div><div><b>' + d.bf.length + '/3</b><span>Battlefields</span></div><div><b>' + s + '</b><span>Sideboard</span></div></div><ul class="dchk">';
-    if(!probs.length) h += '<li>' + IC.ok + '<span>Ready for events: every deck rule is met.</span></li>';
-    probs.forEach(function(p){ h += '<li>' + IC.warn + '<span>' + esc(p.msg) + '</span></li>'; });
-    h += '</ul></section>';
+    var probs = X.check(I, d, BAN), m = X.sum(d.main), s = X.sum(d.side);
+    if(probs.length) h += checkHTML(d, probs);
     h += legendRunesHTML(d);
     h += bfHTML(d);
     h += sectionHTML("main", d, "Main deck", m + "/40", "No cards yet. Tap Edit, then Add cards.");
     h += sectionHTML("side", d, "Side deck", s + "/10", "Cards to swap in between games. Up to 10.");
     if(SET.maybe) h += sectionHTML("maybe", d, "Considering", X.sum(d.maybe), "Cards you are thinking about. They count toward nothing.");
+    if(!probs.length) h += checkHTML(d, probs);
     h += '<section class="dsec glass"><div class="shead"><h2>Notes</h2></div><textarea class="dnote" id="dnote" placeholder="Matchups, swaps, anything to remember" aria-label="Notes" data-k="type">' + esc(d.note) + '</textarea></section>';
     el("vdeck").innerHTML = h;
+    el("pvrow").innerHTML = viewRow();
   }
 
   // ---- STATS ----
@@ -743,44 +934,90 @@ body{-webkit-font-smoothing:antialiased;
     labels.forEach(function(l){ h += '<span>' + esc(l) + '</span>'; });
     return h + '</div>';
   }
+  // STATS (round 2, Mako 2026-10-19): one card of summary tiles; a tap opens a tile's detail
+  // under it, several at once, remembered for every deck
+  var STILES = [["energy", "Energy"], ["power", "Power"], ["might", "Might"], ["types", "Types"], ["domains", "Domains"], ["price", "Price"], ["keywords", "Keywords"], ["tokens", "Tokens"], ["rarity", "Epics"]];
+  function barRows(rows, max){
+    var h = "";
+    rows.forEach(function(r){ h += '<div class="pdrow">' + (r.mark || "") + '<span class="t">' + esc(r.t) + '</span><span class="pbar"><i style="width:' + (max ? Math.round(r.n / max * 100) : 0) + '%;' + (r.rc ? "--rc:" + r.rc : "--rc:237,234,227") + '"></i></span><b>' + r.b + '</b></div>'; });
+    return h;
+  }
   function renderStats(){
-    var d = deck(), S = X.stats(I, d), h = "";
+    var d = deck(), S = X.stats(I, d), h = "", L = C(d.legend), ld = L ? doms(L) : [];
     if(!S.cards){ el("vstats").innerHTML = '<section class="dsec glass" style="margin-top:0"><p class="dnone">Add cards to the Main deck to see its stats.</p></section>'; return; }
-    h += '<section class="dsec glass" style="margin-top:0"><div class="shead"><h2>Averages</h2><span class="sp"></span><span class="cnt">Main deck, ' + S.cards + ' cards</span></div>'
-      + '<div class="avg"><div><b>' + S.avgEnergy.toFixed(1) + '</b><span>Energy</span></div><div><b>' + S.avgPower.toFixed(1) + '</b><span>Power</span></div><div><b>' + (S.units ? S.avgMight.toFixed(1) : "-") + '</b><span>Might, ' + S.units + ' units</span></div></div></section>';
+    var dm = {}, pw = {}, rar = {}, top = [], epics = 0;
+    Object.keys(d.main).forEach(function(c){
+      var x = C(c); if(!x) return;
+      var n = d.main[c], ds = doms(x); if(!ds.length) ds = ["colorless"];
+      ds.forEach(function(v){ dm[v] = (dm[v] || 0) + n; if(typeof x.w === "number" && x.w) pw[v] = (pw[v] || 0) + x.w * n; });
+      var r = x.r || "other"; rar[r] = (rar[r] || 0) + n; if(r === "epic" || r === "showcase") epics += n;
+      var p = price(c); if(p != null) top.push({ c: c, p: p * n, n: n });
+    });
+    var toks = X.tokens(I, d), kws = Object.keys(S.keywords).sort(function(a, b){ return (S.keywords[b].n - S.keywords[a].n) || a.localeCompare(b); });
+    var tv = {
+      energy: S.avgEnergy.toFixed(1), power: S.avgPower.toFixed(1), might: S.units ? S.avgMight.toFixed(1) : "-",
+      types: [S.types.unit || 0, S.types.gear || 0, S.types.spell || 0].join("/"),
+      domains: ld.length ? ld.map(function(v){ return dm[v] || 0; }).join("/") : String(Object.keys(dm).length),
+      price: SET.price ? money(deckPrice(d)).replace(/\.\d\d$/, "") : "-", keywords: String(kws.length), tokens: String(toks.length), rarity: String(epics)
+    };
+    var sub = { types: "Units/gear/spells", domains: ld.length ? ld.map(cap).join("/") : "Domains", might: S.units + " units", rarity: "Epic or showcase" };
+    h += '<section class="dsec glass" style="margin-top:0"><div class="shead"><h2>Main deck</h2><span class="sp"></span><span class="cnt">' + S.cards + ' cards, averages and counts</span></div><div class="stiles">';
+    STILES.forEach(function(t){
+      var on = !!SET.sopen[t[0]];
+      h += '<button type="button" class="stile" data-act="stile" data-t="' + t[0] + '" aria-expanded="' + on + '" aria-label="' + t[1] + ': ' + esc(tv[t[0]]) + ', ' + (on ? "hide" : "show") + ' the detail" data-k="open"><b>' + esc(tv[t[0]]) + '</b><span>' + esc(sub[t[0]] || t[1]) + '</span>' + CHEV + '</button>';
+    });
+    h += '</div></section>';
+    function det(id, title, cnt, body){ return SET.sopen[id] ? '<section class="dsec glass sdet" id="sd' + id + '"><div class="shead"><h2>' + title + '</h2><span class="sp"></span><span class="cnt">' + (cnt || "") + '</span></div>' + body + '</section>' : ""; }
     var el9 = []; for(var i = 0; i <= 9; i++) el9.push(i === 9 ? "9+" : String(i));
-    h += '<section class="dsec glass"><div class="shead"><h2>Energy</h2></div>' + chartHTML(S.energy, el9) + '</section>';
-    h += '<section class="dsec glass"><div class="shead"><h2>Power</h2></div>' + chartHTML(S.power, ["0", "1", "2", "3", "4"]) + '</section>';
+    h += det("energy", "Energy", "average " + S.avgEnergy.toFixed(1), chartHTML(S.energy, el9));
+    var pmax = 0; Object.keys(pw).forEach(function(k){ if(pw[k] > pmax) pmax = pw[k]; });
+    var prow = (ld.length ? ld : Object.keys(pw)).map(function(v){ return { mark: runeGlass(v, "sm"), t: cap(v), n: pw[v] || 0, b: pw[v] || 0, rc: RUNE_RGB[v] }; });
+    h += det("power", "Power", "average " + S.avgPower.toFixed(1), chartHTML(S.power, ["0", "1", "2", "3", "4"])
+      + '<p class="gsh" style="margin-top:14px">Power needed by domain</p>' + barRows(prow, pmax) + '<p class="dsub" style="margin-top:6px">Each card\'s power cost times its copies, under its domain. A card with two domains counts under both.</p>');
     if(S.units){
-      var top = 0; S.might.forEach(function(b, j){ if(b.n) top = j; });
-      top = Math.max(top, 6);
-      var mg = S.might.slice(0, top + 1), ml = mg.map(function(b, j){ return String(j); });
-      h += '<section class="dsec glass"><div class="shead"><h2>Might</h2><span class="sp"></span><span class="cnt">' + S.units + ' units</span></div>' + chartHTML(mg, ml) + '</section>';
-    }
-    var dm = {};
-    Object.keys(d.main).forEach(function(c){ var x = C(c); if(!x) return; var ds = doms(x); if(!ds.length) ds = ["colorless"]; ds.forEach(function(v){ dm[v] = (dm[v] || 0) + d.main[c]; }); });
-    h += '<section class="dsec glass"><div class="shead"><h2>Domains</h2></div>';
-    X.DOMAINS.concat(["colorless"]).forEach(function(v){ if(dm[v]) h += '<div class="srow">' + runeGlass(v, "md") + '<span class="t">' + cap(v) + '</span><b>' + dm[v] + '</b></div>'; });
-    h += '<p class="dsub" style="margin-top:8px">A card with two domains counts under both.</p></section>';
-    h += '<section class="dsec glass"><div class="shead"><h2>Card types</h2></div>';
-    Object.keys(S.types).sort(function(a, b){ return S.types[b] - S.types[a]; }).forEach(function(t){ h += '<div class="srow"><span class="t">' + (t === "other" ? "Other" : cap(t)) + '</span><b>' + S.types[t] + '</b></div>'; });
-    h += '</section>';
-    var kws = Object.keys(S.keywords).sort(function(a, b){ return (S.keywords[b].n - S.keywords[a].n) || a.localeCompare(b); });
+      var mt = 0; S.might.forEach(function(b, j){ if(b.n) mt = j; });
+      mt = Math.max(mt, 6);
+      var mg = S.might.slice(0, mt + 1), ml = mg.map(function(b, j){ return String(j); });
+      h += det("might", "Might", S.units + " units", chartHTML(mg, ml));
+    } else h += det("might", "Might", "", '<p class="dnone">No units yet.</p>');
+    var tmax = 0; Object.keys(S.types).forEach(function(k){ if(S.types[k] > tmax) tmax = S.types[k]; });
+    h += det("types", "Card types", "", barRows(Object.keys(S.types).sort(function(a, b){ return S.types[b] - S.types[a]; }).map(function(t){ return { t: t === "other" ? "Other" : cap(t), n: S.types[t], b: S.types[t] }; }), tmax));
+    var dmax = 0; Object.keys(dm).forEach(function(k){ if(dm[k] > dmax) dmax = dm[k]; });
+    h += det("domains", "Domains", "", barRows(X.DOMAINS.concat(["colorless"]).filter(function(v){ return dm[v]; }).map(function(v){ return { mark: runeGlass(v, "sm"), t: cap(v), n: dm[v], b: dm[v], rc: RUNE_RGB[v] }; }), dmax)
+      + '<p class="dsub" style="margin-top:6px">A card with two domains counts under both.</p>');
+    top.sort(function(a, b){ return b.p - a.p; });
+    var ph = '<div class="dcnt" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><b>' + money(deckPrice(d)) + '</b><span>Whole deck</span></div><div><b>' + money(top.reduce(function(t, x){ return t + x.p; }, 0)) + '</b><span>Main deck</span></div><div><b>' + CUR + '</b><span>Currency</span></div></div><p class="gsh" style="margin-top:14px">Priciest in the Main deck</p>';
+    top.slice(0, 5).forEach(function(t){ var x = C(t.c); ph += '<div class="tokrow"><span class="art">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(nm(x)) + '</span><span class="csb"><span>' + t.n + ' at ' + money(t.p / t.n) + '</span></span></span><b class="cq" style="font-size:15px">' + money(t.p) + '</b></div>'; });
+    h += det("price", "Price", "market, " + CUR, SET.price ? ph : '<p class="dnone">Prices are off in Deck settings.</p>');
+    var kh = "";
     if(kws.length){
-      h += '<section class="dsec glass"><div class="shead"><h2>Keywords</h2></div><table class="kw"><thead><tr><th>Keyword</th><th>All</th><th>Unit</th><th>Spell</th><th>Gear</th></tr></thead><tbody>';
-      kws.forEach(function(k){ var e = S.keywords[k]; h += '<tr><td>' + esc(k) + '</td><td>' + e.n + '</td><td>' + (e.by.unit || "-") + '</td><td>' + (e.by.spell || "-") + '</td><td>' + (e.by.gear || "-") + '</td></tr>'; });
-      h += '</tbody></table><p class="dsub" style="margin-top:8px">Copies of cards that carry each keyword in their text.</p></section>';
-    }
+      kh = '<table class="kw"><thead><tr><th>Keyword</th><th>All</th><th>Unit</th><th>Spell</th><th>Gear</th></tr></thead><tbody>';
+      kws.forEach(function(k){ var e = S.keywords[k]; kh += '<tr><td>' + esc(k) + '</td><td>' + e.n + '</td><td>' + (e.by.unit || "-") + '</td><td>' + (e.by.spell || "-") + '</td><td>' + (e.by.gear || "-") + '</td></tr>'; });
+      kh += '</tbody></table><p class="dsub" style="margin-top:8px">Copies of cards that carry each keyword in their text.</p>';
+    } else kh = '<p class="dnone">No keywords in this deck.</p>';
+    h += det("keywords", "Keywords", kws.length + " kinds", kh);
+    var th = "";
+    toks.forEach(function(t){
+      var x = C(t.code);
+      th += '<div class="tokrow">' + (x ? '<button type="button" class="art" data-act="spot" data-code="' + esc(t.code) + '" aria-label="See ' + esc(t.name) + '" data-k="view" style="padding:0">' + img(x) + '</button>' : '<span class="art none">' + esc(t.name.charAt(0)) + '</span>')
+        + '<span class="cmid"><span class="cnm">' + esc(t.name) + ' ' + t.kind + '</span><span class="csb"><span>From ' + esc(t.by.map(function(c){ return nm(C(c)); }).join(", ")) + '</span></span></span></div>';
+    });
+    h += det("tokens", "Tokens", toks.length ? toks.length + " kinds" : "", th || '<p class="dnone">No card here makes a token.</p>');
+    var rmax = 0; Object.keys(rar).forEach(function(k){ if(rar[k] > rmax) rmax = rar[k]; });
+    h += det("rarity", "Rarity", "", barRows(["common", "uncommon", "rare", "epic", "showcase", "other"].filter(function(r){ return rar[r]; }).map(function(r){ return { t: cap(r), n: rar[r], b: rar[r] }; }), rmax));
     el("vstats").innerHTML = h;
   }
 
   // ---- HAND: the opening four, the turns after, and the odds ----
-  var OD = "";
-  function oddsCard(d){
+  // ODDS (round 2): one or more cards (the chance of drawing every one of them), with no
+  // mulligan or a mulligan of 1 or 2 cards (Core Rules 117: set aside up to two, draw as many,
+  // the set-aside cards go to the bottom), by each of the first six turns.
+  var OD = [], OM = 0, OREP = false;
+  function oddsCards(d){
     var lib = {}; Object.keys(d.main).forEach(function(c){ var n = d.main[c] - (c === d.champ ? 1 : 0); if(n > 0) lib[c] = n; });
-    if(OD && lib[OD]) return OD;
-    var best = ""; Object.keys(lib).forEach(function(c){ if(!best || lib[c] > lib[best] || (lib[c] === lib[best] && nm(C(c)) < nm(C(best)))) best = c; });
-    return best;
+    OD = OD.filter(function(c){ return lib[c]; });
+    if(!OD.length){ var best = ""; Object.keys(lib).forEach(function(c){ if(!best || lib[c] > lib[best] || (lib[c] === lib[best] && nm(C(c)) < nm(C(best)))) best = c; }); if(best) OD = [best]; }
+    return lib;
   }
   function renderHand(){
     var d = deck(), lib = X.sum(d.main) - (d.champ ? 1 : 0), h = "";
@@ -797,23 +1034,31 @@ body{-webkit-font-smoothing:antialiased;
     h += '<div class="two"><button type="button" class="pact btn glass" data-act="hnew" data-k="do">New hand</button><button type="button" class="pact btn glass" data-act="hmull" data-k="do"' + (!canMull || !ASIDE.length ? " disabled" : "") + '>Mulligan' + (ASIDE.length ? " " + ASIDE.length : "") + '</button>'
       + '<button type="button" class="pact btn glass" data-act="hdraw" data-k="do"' + (HAND.lib.length ? "" : " disabled") + '>Draw a card</button></div>';
     var ch = C(d.champ);
-    h += '<p class="hnote">' + (drawn.length ? "Each draw is your next turn's card." : (HAND.mull ? "Mulliganed: the cards set aside went to the bottom." : "Tap up to two cards to set aside, then Mulligan. Hold a card to see it big.")) + (ch ? " " + esc(nm(ch)) + " starts in the Champion Zone." : "") + '</p>';
+    if(canMull) h += '<p class="hnote">Tap up to two cards to set aside, then Mulligan. Hold a card to see it big.' + (ch ? " " + esc(nm(ch)) + " starts in the Champion Zone." : "") + '</p>';
     h += '<div class="hdrawn">';
     drawn.forEach(function(c, i){ var x = C(c); h += '<button type="button" class="hc" data-act="hview" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', turn ' + (i + 1) + '" data-k="card">' + img(x, true) + '<span class="hmark">Turn ' + (i + 1) + '</span></button>'; });
     h += '</div>';
-    // the odds of one card by each of the first six turns (4 to open, 1 a turn, Riot's draws)
-    var oc = oddsCard(d), ox = C(oc), copies = oc ? d.main[oc] - (oc === d.champ ? 1 : 0) : 0;
-    h += '<section class="dsec glass odds"><div class="shead"><h2>Odds</h2><span class="sp"></span><span class="cnt">no mulligan</span></div>'
-      + '<div class="doors" data-k="deeper"><button type="button" class="door btn glass" data-act="opick" data-code="' + esc(oc) + '" data-fills="podds" data-k="deeper"><span class="t">' + esc(ox ? nm(ox) : "Pick a card") + '</span><span class="sp"></span><small>' + copies + (copies === 1 ? " copy" : " copies") + '</small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div><div class="otiles">';
-    for(var t = 1; t <= 6; t++) h += '<div class="otile"><b>' + Math.round(X.odds(d, [oc], 4 + t) * 100) + '%</b><span>Turn ' + t + '</span></div>';
-    h += '</div><p class="dsub" style="margin-top:8px">The chance of at least one by your turn: 4 cards to open, then 1 each turn. In a 1v1 game both players draw on turn 1.</p></section>';
+    // the odds
+    var have = oddsCards(d);
+    h += '<section class="dsec glass odds"><div class="shead"><h2>Odds</h2><span class="sp"></span><span class="cnt">' + (OD.length > 1 ? "all of these" : "at least one") + '</span></div><div class="ochips">';
+    OD.forEach(function(c){
+      var n = have[c];
+      if(OD.length === 1) h += '<button type="button" class="ochip glass" data-act="opick" data-rep="1" data-code="' + esc(c) + '" data-fills="podds" aria-label="Change the card: ' + esc(nm(C(c))) + '" data-k="do"><span class="t">' + esc(nm(C(c))) + ' (' + n + ')</span>' + IC.down + '</button>';
+      else h += '<button type="button" class="ochip glass" data-act="oout" data-code="' + esc(c) + '" aria-label="Take ' + esc(nm(C(c))) + ' out of the odds" data-k="do"><span class="t">' + esc(nm(C(c))) + ' (' + n + ')</span>' + IC.x + '</button>';
+    });
+    if(OD.length < 3) h += '<button type="button" class="ochip glass add" data-act="opick" data-fills="podds" data-k="do">' + IC.plus + '<span class="t">And another card</span></button>';
+    h += '</div><div class="seg omull" id="omull" role="group" aria-label="Mulligan" data-k="pick">'
+      + [[0, "No mulligan"], [1, "Mulligan 1"], [2, "Mulligan 2"]].map(function(m){ return '<button type="button" data-om="' + m[0] + '" aria-pressed="' + (OM === m[0]) + '">' + m[1] + '</button>'; }).join("") + '</div><div class="otiles">';
+    var groups = OD.map(function(c){ return [c]; });
+    for(var t = 1; t <= 6; t++) h += '<div class="otile"><b>' + Math.round(X.odds(d, groups, 4 + OM + t) * 100) + '%</b><span>Turn ' + t + '</span></div>';
+    h += '</div><p class="dsub" style="margin-top:8px">The chance by your turn: 4 cards to open, then 1 each turn' + (OM ? ", with " + OM + (OM === 1 ? " card" : " cards") + " mulliganed away when the hand misses" : "") + '. In a 1v1 game both players draw on turn 1.</p></section>';
     el("vhand").innerHTML = h;
   }
   function fillOdds(){
-    var d = deck(), oc = oddsCard(d), h = "";
-    Object.keys(d.main).filter(function(c){ return d.main[c] - (c === d.champ ? 1 : 0) > 0; }).sort(function(a, b){ return nm(C(a)).localeCompare(nm(C(b))); }).forEach(function(c){
-      var n = d.main[c] - (c === d.champ ? 1 : 0);
-      h += '<button type="button" data-act="opset" data-code="' + esc(c) + '"' + (c === oc ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span>' + esc(nm(C(c))) + '</span><span class="sp"></span><small>' + n + '</small></button>';
+    var d = deck(), have = oddsCards(d), h = "";
+    Object.keys(have).sort(function(a, b){ return nm(C(a)).localeCompare(nm(C(b))); }).forEach(function(c){
+      var on = OD.indexOf(c) > -1;
+      h += '<button type="button" data-act="opset" data-code="' + esc(c) + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + (on && !OREP ? " disabled" : "") + '><span>' + esc(nm(C(c))) + '</span><span class="sp"></span><small>' + have[c] + '</small></button>';
     });
     el("oddspick").innerHTML = h;
   }
@@ -827,24 +1072,38 @@ body{-webkit-font-smoothing:antialiased;
     if(s === "runes") return d.runes[c] || 0;
     return d.main[c] || 0;
   }
+  // Edit's search has the browser's filters and sort (round 2, Mako 2026-10-19)
+  var EF = { f: { dom: [], type: [], energy: [], set: [] }, sort: "name" };
+  function eMatch(x){
+    var f = EF.f;
+    if(f.dom.length){ var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; }
+    if(f.type.length && f.type.indexOf(x.t) < 0) return false;
+    if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
+    if(f.set.length && f.set.indexOf(x.s) < 0) return false;
+    return true;
+  }
   function eRender(){
     var box = el("eres"), w = el("eresw"), q = EQ.trim().toLowerCase(), h = "";
     el("eqx").disabled = !EQ;
-    if(!q){ box.innerHTML = ""; w.classList.remove("open"); w.style.height = "0px"; return; }
+    if(!q){ box.innerHTML = ""; el("echips").innerHTML = ""; w.classList.remove("open"); w.style.height = "0px"; return; }
+    el("echips").innerHTML = chipsHTML(EF, "main");
+    var keep = BR.sort; BR.sort = EF.sort;
     var hits = I.list.filter(function(x){
       if(!X.sectionOf(x)) return false;
-      if(!SET.prints){ var p = X.codeOf(x.c); if(/[a-z*]$/.test(p) || /-SP/.test(p) || x.r === "showcase") return false; }
+      if(!SET.allp && !BASE[X.codeOf(x.c)]) return false;
+      if(!eMatch(x)) return false;
       var hay = (nm(x) + " " + X.codeOf(x.c) + " " + (x.g || []).join(" ")).toLowerCase();
       return q.split(/\s+/).every(function(t){ return hay.indexOf(t) > -1; });
-    }).sort(function(a, b){ return nm(a).localeCompare(nm(b)) || X.codeOf(a.c).localeCompare(X.codeOf(b.c)); });
+    }).sort(brSort);
+    BR.sort = keep;
     hits.slice(0, 60).forEach(function(x){
       var c = X.codeOf(x.c), n = eCount(x), s = X.sectionOf(x), land = x.o === "landscape" || s === "bf";
       var mark = n ? (s === "main" ? '<div class="gstp">' + stepper("main", c, n) + '</div>' : '<span class="gq">' + (s === "runes" ? "x" + n : "In deck") + '</span>') : "";
-      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + '" data-k="card">' + img(x) + '</button>' + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + (n && s === "main" ? "" : banPill(x, "gban")) + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
     });
     box.innerHTML = hits.length ? '<div class="bgrid">' + h + '</div>' + (hits.length > 60 ? '<p class="bnote">' + (hits.length - 60) + ' more: add a word to narrow it.</p>' : '') : '<p class="bnone">No cards match. Try another word.</p>';
     w.classList.add("open");
-    w.style.height = box.offsetHeight + "px";
+    w.style.height = (box.offsetHeight + el("echips").offsetHeight + 10) + "px";
   }
   function ePick(code){
     var d = deck(), x = C(code), s = X.sectionOf(x), L = C(d.legend);
@@ -880,18 +1139,25 @@ body{-webkit-font-smoothing:antialiased;
     if(SCREEN === "deck" && !deck()) SCREEN = "home";
     el("home").hidden = SCREEN !== "home";
     el("deck").hidden = SCREEN !== "deck";
+    // Edit: on a deck, steppers and search; on the list, arrange the decks by dragging
     var te = el("tabedit");
-    te.disabled = SCREEN !== "deck" || VIEW !== "deck";
+    te.disabled = SCREEN === "deck" ? VIEW !== "deck" : DECKS.length < 2;
     if(te.disabled && EDIT) EDIT = false;
     te.classList.toggle("on", EDIT);
     te.setAttribute("aria-pressed", EDIT ? "true" : "false");
-    te.setAttribute("aria-label", EDIT ? "Done editing" : "Edit deck");
+    te.setAttribute("aria-label", SCREEN === "home" ? (EDIT ? "Done arranging" : "Arrange decks") : (EDIT ? "Done editing" : "Edit deck"));
     // Edit puts Search cards in the plate; leaving Edit takes it out, and its results
     el("esf").hidden = !EDIT;
     el("vw").hidden = EDIT;
     if(!EDIT && EQ){ EQ = ""; el("eq").value = ""; eRender(); }
     if(SCREEN === "home"){ renderHome(); return; }
-    var d = deck();
+    var d = deck(), pl = el("plate"), co = colours(d);
+    // the plate wears the deck's two colours, softer than the list's blocks (Mako 2026-10-19)
+    pl.classList.toggle("cg2", !!co);
+    if(co){ pl.style.setProperty("--c", co.c); pl.style.setProperty("--c2", co.c2); pl.style.setProperty("--s", co.s + "%"); }
+    el("deck").classList.toggle("dv", VIEW === "deck");
+    el("pvrow").hidden = VIEW !== "deck";
+    el("undob").disabled = !UND.some(function(u){ return u.id === CURID; });
     el("ptname").textContent = d.name || "Untitled deck";
     el("ptprice").textContent = SET.price ? money(deckPrice(d)) + " " + CUR + (EDIT ? " · editing" : "") : (EDIT ? "Editing" : "");
     el("vdeck").hidden = VIEW !== "deck"; el("vstats").hidden = VIEW !== "stats"; el("vhand").hidden = VIEW !== "hand";
@@ -899,7 +1165,8 @@ body{-webkit-font-smoothing:antialiased;
   }
   function go(screen, id){
     if(id && id !== CURID){ CURID = id; try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){} }
-    SCREEN = screen; VIEW = "deck"; HAND = null; ASIDE = [];
+    SCREEN = screen; VIEW = "deck"; HAND = null; ASIDE = []; EDIT = false;
+    snapNow();
     pressSeg(el("vw"), "data-vw", VIEW);
     render(); window.scrollTo(0, 0);
   }
@@ -912,7 +1179,7 @@ body{-webkit-font-smoothing:antialiased;
     energy: { title: "Energy", opts: function(){ var a = []; for(var i = 0; i <= 8; i++) a.push([String(i), i + " energy"]); a.push(["9", "9 or more"]); return a; } },
     set: { title: "Set", opts: function(){ var L = (window.__CATL && window.__CATL.sets) || {}; return ["OGN", "OGS", "SFD", "UNL", "VEN", "RAD"].filter(function(s){ return L[s]; }).map(function(s){ return [s, L[s]]; }); } }
   };
-  var SORTS = [["energy", "Energy"], ["name", "Name"], ["number", "Set and number"], ["price", "Price, highest first"]];
+  var SORTS = [["energy", "Energy"], ["power", "Power"], ["name", "Name"], ["number", "Set and number"], ["price", "Price, highest first"]];
   function brDefaults(sec){
     var d = deck(), L = C(d.legend);
     BR.sec = sec; BR.q = ""; BR.n = 120; BR.f = { dom: [], type: [], energy: [], set: [] };
@@ -937,7 +1204,7 @@ body{-webkit-font-smoothing:antialiased;
     if(f.type.length && BR.sec !== "legend" && BR.sec !== "bf" && f.type.indexOf(x.t) < 0) return false;
     if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
     if(f.set.length && f.set.indexOf(x.s) < 0) return false;
-    if(!SET.prints){ var p = X.codeOf(x.c); if(/[a-z*]$/.test(p) || /-SP/.test(p) || x.r === "showcase") return false; }
+    if(!SET.allp && !BASE[X.codeOf(x.c)]) return false;
     return true;
   }
   function brSort(a, b){
@@ -951,6 +1218,16 @@ body{-webkit-font-smoothing:antialiased;
     if(s === "legend") return d.legend === code ? 1 : 0;
     if(s === "bf") return d.bf.indexOf(code) > -1 ? 1 : 0;
     return d[s][code] || 0;
+  }
+  function chipsHTML(st, sec){
+    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">Sort: ' + esc(SORTS.filter(function(s){ return s[0] === st.sort; })[0][1].split(",")[0]) + IC.down + '</button>';
+    ["dom", "type", "energy", "set"].forEach(function(k){
+      if((k === "type" || k === "energy") && (sec === "legend" || sec === "bf")) return;
+      var n = st.f[k].length;
+      h += '<button type="button" class="fchip btn glass' + (n ? " on" : "") + '" data-act="fl" data-f="' + k + '" data-k="do">' + FILTERS[k].title + (n ? '<span class="n">' + n + '</span>' : IC.down) + '</button>';
+    });
+    if(st.f.dom.length || st.f.type.length || st.f.energy.length || st.f.set.length) h += '<button type="button" class="fchip btn glass" data-act="freset" data-k="do">Show all</button>';
+    return h;
   }
   function brChips(){
     var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">Sort: ' + esc(SORTS.filter(function(s){ return s[0] === BR.sort; })[0][1].split(",")[0]) + IC.down + '</button>';
@@ -979,7 +1256,7 @@ body{-webkit-font-smoothing:antialiased;
     var stp = "";
     if(n && (BR.sec === "main" || BR.sec === "side" || BR.sec === "maybe")) stp = '<div class="gstp">' + stepper(BR.sec, c, n) + '</div>';
     else if(n) stp = '<span class="gq">In deck</span>';
-    return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + '" data-k="card">' + img(x) + '</button>' + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+    return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + (stp && stp.indexOf("gstp") > -1 ? "" : banPill(x, "gban")) + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
   }
   function brRender(keepScroll){
     var list = brPool().filter(brMatch).sort(brSort), h = "";
@@ -1020,12 +1297,13 @@ body{-webkit-font-smoothing:antialiased;
     save(); brRender(true);
   }
   // the filter menu for one chip
-  var FL = "";
+  var FL = "", FLS = "br";
+  function FO(){ return FLS === "e" ? EF : BR; }
   function fillFl(){
-    var h = "";
+    var h = "", st = FO();
     el("flttl").textContent = FL === "sort" ? "Sort" : FILTERS[FL].title;
-    if(FL === "sort"){ SORTS.forEach(function(s){ h += '<button type="button" data-act="flpick" data-v="' + s[0] + '"' + (BR.sort === s[0] ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + esc(s[1]) + '</button>'; }); }
-    else FILTERS[FL].opts().forEach(function(o){ var on = BR.f[FL].indexOf(o[0]) > -1; h += '<button type="button" data-act="flpick" data-v="' + esc(o[0]) + '"' + (on ? ' class="on"' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>'; });
+    if(FL === "sort"){ SORTS.forEach(function(s){ h += '<button type="button" data-act="flpick" data-v="' + s[0] + '"' + (st.sort === s[0] ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + esc(s[1]) + '</button>'; }); }
+    else FILTERS[FL].opts().forEach(function(o){ var on = st.f[FL].indexOf(o[0]) > -1; h += '<button type="button" data-act="flpick" data-v="' + esc(o[0]) + '"' + (on ? ' class="on"' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>'; });
     el("flpick").innerHTML = h;
     el("flfoot").hidden = FL === "sort";
   }
@@ -1039,30 +1317,44 @@ body{-webkit-font-smoothing:antialiased;
     if(m[2] === "SP") w += " special"; else if(m[3] === "a" || m[3] === "b") w += " alt art"; else if(m[3] === "*") w += " signed"; else if(y.r === "showcase") w += " showcase";
     return w;
   }
+  // THE CARD MENU (round 2, Mako 2026-10-19): the card, its count in each of the three piles,
+  // the art (Riot's printings) and the printing and finish it is priced as (the price feed)
   function fillCard(){
-    var d = deck(), x = C(CARD.code), sec = CARD.sec, h = "", f = "", n;
+    var d = deck(), x = C(CARD.code), sec = CARD.sec, h = "", f = "";
     if(!x){ return false; }
     el("cttl").textContent = nm(x);
     h += '<button type="button" class="mpic' + (x.o === "landscape" ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card" data-k="card">' + img(x, true) + '</button>';
-    if(sec === "main" || sec === "side" || sec === "maybe" || sec === "runes"){
-      n = d[sec][CARD.code] || 0;
-      h += '<div class="qrow"><span class="t">In the ' + SECNAME[sec] + '</span><div class="stp" data-k="do">'
-        + '<button type="button" class="circ btn glass" data-act="cdec" aria-label="One fewer"' + (n < 1 ? " disabled" : "") + '>' + IC.minus + '</button><span>' + n + '</span>'
-        + '<button type="button" class="circ btn glass" data-act="cinc" aria-label="One more">' + IC.plus + '</button></div></div>';
-      if(sec !== "runes"){
-        var L = C(d.legend), tag = L ? X.legendChamp(I, L) : "";
-        if(sec === "main" && X.isChampUnit(x) && d.champ !== CARD.code && (!tag || (x.g || []).indexOf(tag) > -1)) f += '<button type="button" class="pact btn glass" data-act="champ" data-k="do">Make Chosen Champion</button>';
-        var mv = ["main", "side", "maybe"].filter(function(to){ return to !== sec && n > 0 && !(to === "maybe" && !SET.maybe); });
-        if(mv.length) f += '<div class="two"' + (f ? '' : ' style="margin-top:0"') + '>' + mv.map(function(to){ return '<button type="button" class="pact btn glass" data-act="move" data-to="' + to + '" data-k="do">To ' + (to === "side" ? "Side deck" : SECNAME[to]) + '</button>'; }).join("") + '</div>';
-      }
+    if(banned(x)) h += '<div class="mban">' + banPill(x) + '</div>';
+    function qrow(s2, label){
+      var n = s2 === "runes" ? (d.runes[CARD.code] || 0) : (d[s2][CARD.code] || 0);
+      return '<div class="qrow"><span class="t">' + label + '</span><div class="stp" data-k="do">'
+        + '<button type="button" class="circ btn glass" data-act="cstep" data-sec="' + s2 + '" data-dir="-1" aria-label="One fewer in the ' + label + '"' + (n < 1 ? " disabled" : "") + '>' + IC.minus + '</button><span>' + n + '</span>'
+        + '<button type="button" class="circ btn glass" data-act="cstep" data-sec="' + s2 + '" data-dir="1" aria-label="One more in the ' + label + '">' + IC.plus + '</button></div></div>';
+    }
+    if(sec === "main" || sec === "side" || sec === "maybe"){
+      h += '<div class="qrows">' + qrow("main", "Main deck") + qrow("side", "Side deck") + (SET.maybe ? qrow("maybe", "Considering") : "") + '</div>';
+      var L = C(d.legend), tag = L ? X.legendChamp(I, L) : "";
+      if(X.isChampUnit(x) && d.champ !== CARD.code && (!tag || (x.g || []).indexOf(tag) > -1)) f += '<button type="button" class="pact btn glass" data-act="champ" data-k="do">Make Chosen Champion</button>';
+    } else if(sec === "runes"){
+      h += '<div class="qrows">' + qrow("runes", "Runes") + '</div>';
     } else if(sec === "legend" || sec === "bf"){
       f += '<button type="button" class="pact btn glass" data-act="cdrop" data-k="do">' + (sec === "legend" ? "Remove the Legend" : "Remove this battlefield") + '</button>';
     }
     var pr = printings(x);
     if(pr.length > 1){
-      h += '<div class="row"><p class="lb">Printing</p><div class="pick" data-k="pick">';
+      h += '<div class="row"><p class="lb">Card art</p><div class="pick" data-k="pick">';
       pr.forEach(function(y){ var c = X.codeOf(y.c); h += '<button type="button"' + (c === CARD.code ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + ' data-act="print" data-code="' + esc(c) + '"><span>' + esc(prLabel(y)) + '</span><span class="sp"></span><small>' + esc(c) + '</small></button>'; });
       h += '</div></div>';
+    }
+    var vs = X.versionsOf(I, PX, x), cur = (d.ver || {})[CARD.code] || "";
+    if(vs.length && SET.price){
+      var dflt = !cur;
+      h += '<div class="row"><p class="lb">Printing and finish, for the price</p><div class="pick" data-k="pick">';
+      vs.forEach(function(v, i){
+        var key = v.id + "|" + v.fin, on = key === cur || (dflt && price(CARD.code) === v.price && v.own && (dflt = false, true));
+        h += '<button type="button"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + ' data-act="ver" data-v="' + esc(key) + '"><span>' + esc(X.verLabel(v)) + '</span><span class="sp"></span><small>' + esc(v.fin) + ' ' + money(v.price) + '</small></button>';
+      });
+      h += '</div><p class="pnote" style="margin-top:8px">The same card in play. This sets only what it costs; promos and foils from TCGplayer\'s list.</p></div>';
     }
     var facts = [typeWord(x), domWords(x)];
     if(typeof x.e === "number") facts.push(x.e + " energy");
@@ -1080,6 +1372,7 @@ body{-webkit-font-smoothing:antialiased;
     if(sec === "legend"){ d.legend = to; }
     else if(sec === "bf"){ d.bf = d.bf.map(function(c){ return c === from ? to : c; }); }
     else { var n = d[sec][from] || 0; delete d[sec][from]; d[sec][to] = (d[sec][to] || 0) + n; if(sec === "main" && d.champ === from) d.champ = to; }
+    if(d.ver && d.ver[from]){ d.ver[to] = d.ver[from]; delete d.ver[from]; }
     CARD.code = to;
   }
 
@@ -1182,14 +1475,30 @@ body{-webkit-font-smoothing:antialiased;
   // A LONG PRESS SHOWS THE FULL CARD (Runes' gesture): 450ms held without moving; the tap
   // that would follow it is swallowed.
   var LP = { t: 0, x: 0, y: 0, el: null, fired: false };
-  var LPSEL = ".cpic,.gpic,.crb,.lcard,.hc";
+  // On the list, a long press on a deck opens its menu instead (Mako 2026-10-19).
+  var LPSEL = ".cpic,.gpic,.crb,.lcard,.hc,.dcard";
   document.addEventListener("touchstart", function(ev){
     var t = ev.target.closest && ev.target.closest(LPSEL);
-    if(!t || ev.touches.length !== 1) return;
+    if(!t || ev.touches.length !== 1 || (ev.target.closest && ev.target.closest(".dgrip"))) return;
     LP.el = t; LP.fired = false; LP.x = ev.touches[0].clientX; LP.y = ev.touches[0].clientY;
     clearTimeout(LP.t);
-    LP.t = setTimeout(function(){ var c = t.getAttribute("data-code"); if(c){ LP.fired = true; spotOpen(c); } }, 450);
+    LP.t = setTimeout(function(){
+      if(t.classList.contains("dcard")){ LP.fired = true; deckMenu(t.getAttribute("data-id")); return; }
+      var c = t.getAttribute("data-code"); if(c){ LP.fired = true; spotOpen(c); }
+    }, 450);
   }, { passive: true });
+  // the deck's own menu, from a long press on the list
+  var DM = "";
+  function deckMenu(id){
+    var x = DECKS.filter(function(q){ return q.id === id; })[0]; if(!x) return;
+    DM = id; el("pdttl").textContent = x.name || "Untitled deck";
+    dmDisarm(); openPanel(el("pdeck"));
+  }
+  var DMT = 0;
+  function dmDisarm(){ clearTimeout(DMT); var b = el("dmdel"); b.classList.remove("armed"); b.querySelector(".t").textContent = "Delete this deck"; }
+  function fillDsort(){
+    el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = SET.dsort === x[0]; return '<button type="button" data-act="dsset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + x[1] + '</button>'; }).join("");
+  }
   document.addEventListener("touchmove", function(ev){
     if(!LP.el) return;
     var p = ev.touches[0];
@@ -1209,7 +1518,8 @@ body{-webkit-font-smoothing:antialiased;
 
   document.addEventListener("click", function(ev){
     if(LP.fired){ LP.fired = false; if(ev.target.closest(LPSEL)){ ev.preventDefault(); ev.stopPropagation(); return; } }
-    var t = ev.target.closest("[data-act],[data-close],[data-vw],[data-sv],[data-ss],[data-dv],[data-dc],#sgroup button,#ssort button,#sshow button,#xfmt button");
+    if(ev.target.closest && ev.target.closest(".dgrip")) return;
+    var t = ev.target.closest("[data-act],[data-close],[data-vw],[data-sv],[data-ss],[data-dv],[data-dc],[data-om],#sgroup button,#ssort button,#sshow button,#xfmt button");
     if(!t || t.disabled) return;
     var d = deck(), a = t.getAttribute("data-act");
     if(t.hasAttribute("data-close")){ openPanel(null); return; }
@@ -1233,11 +1543,46 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "smenu"){ SEC = t.getAttribute("data-sec"); fillSec(); openPanel(el("psec")); return; }
     if(a === "ssame"){ delete SET.sv[SEC]; delete SET.ss[SEC]; saveSet(); render(); fillSec(); return; }
     if(a === "epick"){ ePick(t.getAttribute("data-code")); return; }
-    if(a === "opick"){ fillOdds(); openPanel(el("podds")); return; }
-    if(a === "opset"){ OD = t.getAttribute("data-code"); openPanel(null); renderHand(); return; }
+    if(a === "opick"){ OREP = t.hasAttribute("data-rep"); fillOdds(); openPanel(el("podds")); return; }
+    if(a === "opset"){ var oc = t.getAttribute("data-code"); if(OREP) OD = [oc]; else if(OD.indexOf(oc) < 0 && OD.length < 3) OD.push(oc); openPanel(null); renderHand(); return; }
+    if(a === "oout"){ OD = OD.filter(function(c){ return c !== t.getAttribute("data-code"); }); renderHand(); return; }
+    if(t.hasAttribute("data-om")){ OM = +t.getAttribute("data-om"); renderHand(); return; }
+    if(a === "stile"){ var st = t.getAttribute("data-t"); SET.sopen[st] = !SET.sopen[st]; saveSet(); renderStats(); return; }
+    if(a === "undo"){ undo(); return; }
+    if(a === "hsort"){ fillDsort(); openPanel(el("pdsort")); return; }
+    if(a === "dsset"){ SET.dsort = t.getAttribute("data-v"); saveSet(); openPanel(null); renderHome(); return; }
+    if(a === "dmopen"){ openPanel(null); go("deck", DM); return; }
+    if(a === "dmexp"){ openPanel(null); go("deck", DM); XF = SET.exp; fillExp(); openPanel(el("pexp")); return; }
+    if(a === "dmdup"){
+      var src = DECKS.filter(function(q){ return q.id === DM; })[0]; if(!src) return;
+      var cp2 = JSON.parse(JSON.stringify(src)); cp2.id = fresh().id; cp2.name = (src.name || "Deck") + " copy"; cp2.t = Date.now();
+      var at2 = DECKS.indexOf(src); DECKS.splice(at2 + 1, 0, cp2);
+      try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
+      openPanel(null); renderHome(); toast("Duplicated"); return;
+    }
+    if(a === "dmdel"){
+      if(!t.classList.contains("armed")){ t.classList.add("armed"); t.querySelector(".t").textContent = "Sure? Tap again"; clearTimeout(DMT); DMT = setTimeout(dmDisarm, 3000); return; }
+      DECKS = DECKS.filter(function(q){ return q.id !== DM; }); if(CURID === DM) CURID = "";
+      try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
+      openPanel(null); render(); toast("Deleted"); return;
+    }
+    if(a === "cstep"){
+      var s3 = t.getAttribute("data-sec"), dir = +t.getAttribute("data-dir");
+      if(dir > 0) d[s3][CARD.code] = (d[s3][CARD.code] || 0) + 1; else X.take(d, s3, CARD.code);
+      HAND = null; ASIDE = [];
+      save(); render(); fillCard(); return;
+    }
+    if(a === "ver"){
+      var vk = t.getAttribute("data-v"), pid = vk.split("|")[0], am = ART[pid];
+      d.ver = d.ver || {}; d.ver[CARD.code] = vk;
+      // a version whose picture Riot also lists exactly switches the card's art to it
+      if(am && am.m === 1 && HASH[am.h] && HASH[am.h] !== CARD.code && nm(C(HASH[am.h])) === nm(C(CARD.code))) reprint(HASH[am.h]);
+      save(); render(); fillCard(); return;
+    }
     if(a === "hdraw"){ HAND = X.draw(HAND); renderHand(); return; }
     if(a === "hview"){ spotOpen(t.getAttribute("data-code")); return; }
     if(a === "home"){ go("home"); return; }
+    if(a === "open" && EDIT && SCREEN === "home") return;
     if(a === "open"){ go("deck", t.getAttribute("data-id")); return; }
     if(a === "new"){ var nd = fresh(); DECKS.unshift(nd); save(); go("deck", nd.id); EDIT = true; render(); toast("New deck: tap Legend to start"); return; }
     if(a === "imp"){ el("ires").textContent = ""; openPanel(el("pimp")); return; }
@@ -1254,32 +1599,20 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "bclose"){ brClose(); return; }
     if(a === "bpick"){ brPick(t.getAttribute("data-code")); return; }
     if(a === "bmore"){ BR.n += 120; brRender(true); return; }
-    if(a === "freset"){ BR.f = { dom: [], type: [], energy: [], set: [] }; brRender(); return; }
-    if(a === "fl"){ FL = t.getAttribute("data-f"); fillFl(); openPanel(el("pfl")); return; }
+    if(a === "freset"){ var fo = t.closest("#echips") ? EF : BR; fo.f = { dom: [], type: [], energy: [], set: [] }; if(fo === EF) eRender(); else brRender(); return; }
+    if(a === "fl"){ FL = t.getAttribute("data-f"); FLS = t.closest("#echips") ? "e" : "br"; fillFl(); openPanel(el("pfl")); return; }
     if(a === "flpick"){
-      var fv = t.getAttribute("data-v");
-      if(FL === "sort"){ BR.sort = fv; openPanel(null); brRender(); return; }
-      var arr = BR.f[FL], at = arr.indexOf(fv); if(at > -1) arr.splice(at, 1); else arr.push(fv);
-      fillFl(); brRender(); return;
+      var fv = t.getAttribute("data-v"), st = FO(), redo = FLS === "e" ? eRender : function(){ brRender(); };
+      if(FL === "sort"){ st.sort = fv; openPanel(null); redo(); return; }
+      var arr = st.f[FL], at = arr.indexOf(fv); if(at > -1) arr.splice(at, 1); else arr.push(fv);
+      fillFl(); redo(); return;
     }
-    if(a === "flclear"){ BR.f[FL] = []; fillFl(); brRender(); return; }
+    if(a === "flclear"){ FO().f[FL] = []; fillFl(); if(FLS === "e") eRender(); else brRender(); return; }
     if(a === "card"){
       if(t.closest("#vhand")) return;
       CARD = { code: t.getAttribute("data-code"), sec: t.getAttribute("data-sec") };
       if(CARD.sec === "legend" && EDIT){ brOpen("legend"); return; }
       if(fillCard()) openPanel(el("pcard")); return;
-    }
-    if(a === "cinc" || a === "cdec"){
-      if(a === "cinc") d[CARD.sec][CARD.code] = (d[CARD.sec][CARD.code] || 0) + 1; else X.take(d, CARD.sec, CARD.code);
-      HAND = null; ASIDE = [];
-      save(); render(); fillCard(); return;
-    }
-    if(a === "move"){
-      var to = t.getAttribute("data-to");
-      X.take(d, CARD.sec, CARD.code); d[to][CARD.code] = (d[to][CARD.code] || 0) + 1;
-      toast("Moved one to the " + (to === "side" ? "Side deck" : SECNAME[to]));
-      HAND = null; ASIDE = [];
-      save(); render(); fillCard(); return;
     }
     if(a === "champ"){ X.setChamp(I, d, CARD.code); toast("Chosen Champion: " + nm(C(CARD.code))); save(); render(); fillCard(); return; }
     if(a === "cdrop"){ X.take(d, CARD.sec, CARD.code); save(); render(); openPanel(null); return; }
@@ -1303,8 +1636,8 @@ body{-webkit-font-smoothing:antialiased;
   });
   document.addEventListener("input", function(ev){
     var d = deck();
-    if(ev.target.id === "dname" && d){ d.name = ev.target.value; save(); el("ptname").textContent = d.name || "Untitled deck"; return; }
-    if(ev.target.id === "dnote" && d){ d.note = ev.target.value; save(); return; }
+    if(ev.target.id === "dname" && d){ d.name = ev.target.value; save(true); el("ptname").textContent = d.name || "Untitled deck"; return; }
+    if(ev.target.id === "dnote" && d){ d.note = ev.target.value; save(true); return; }
     if(ev.target.id === "bq"){ BR.q = ev.target.value; BR.n = 120; brRender(); return; }
     if(ev.target.id === "hq"){ HQ = ev.target.value; renderHome(); return; }
     if(ev.target.id === "eq"){ EQ = ev.target.value; eRender(); return; }
@@ -1325,6 +1658,7 @@ body{-webkit-font-smoothing:antialiased;
   function pricesIn(P){
     var bySet = {}; (P.sets || []).forEach(function(s){ bySet[s.g] = s.a; });
     FX = (P.fx && P.fx.rate) || FX;
+    PX = X.priceIndex(P);
     (P.cards || []).forEach(function(c){
       var set = bySet[c.g]; if(!set || !c.c || !c.p) return;
       var code = set + "-" + String(c.c).split("/")[0], v = c.p.Normal != null ? c.p.Normal : Math.min.apply(null, Object.keys(c.p).map(function(k){ return c.p[k]; }));
@@ -1334,6 +1668,12 @@ body{-webkit-font-smoothing:antialiased;
   fetch("../cards/catalogue.json").then(function(r){ return r.json(); }).then(function(cat){
     I = X.prep(cat);
     window.__CATL = cat.labels || {};
+    // the base printing of each card (search shows only these unless Every printing is on),
+    // and each picture's card, so a priced version with Riot's exact art can switch to it
+    var best = {};
+    I.list.forEach(function(x){ var f = nm(x), r = X.rank(x); if(!best[f] || r < best[f].r) best[f] = { r: r, c: X.codeOf(x.c) }; if(x.h && (!HASH[x.h] || r < X.rank(C(HASH[x.h])))) HASH[x.h] = X.codeOf(x.c); });
+    Object.keys(best).forEach(function(f){ BASE[best[f].c] = 1; });
+    fetch("../cards/art.json").then(function(r){ return r.json(); }).then(function(A){ ART = (A && A.art) || {}; }).catch(function(){});
     el("boot").hidden = true; el("app").hidden = false;
     if(/[?&]deck=/.test(location.search)){ var m = /[?&]deck=([^&]+)/.exec(location.search); if(m && DECKS.some(function(x){ return x.id === m[1]; })){ CURID = m[1]; SCREEN = "deck"; } }
     render();
