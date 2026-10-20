@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-10-19T19:06:09.140Z",
- "generated_local": "2026-10-19T12:06:09-07:00",
+ "generated_at": "2026-10-20T05:43:34.066Z",
+ "generated_local": "2026-10-19T22:43:34-07:00",
  "window_start": "2026-10-19T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 27,
+   "returned": 28,
    "added": 27
   },
   {
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 31,
+  "fetched": 32,
   "unique": 31,
-  "prev_unique": 37
+  "prev_unique": 31
  },
  "unknown_templates": {},
  "old_feed_error": null,
@@ -67,7 +67,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 31,
+   "reg": 32,
    "cents": 3500,
    "currency": "CAD",
    "updated": null,
@@ -89,7 +89,7 @@
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 8,
+   "reg": 14,
    "cents": 4000,
    "currency": "CAD",
    "updated": null,
