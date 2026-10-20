@@ -781,6 +781,69 @@
     });
     return out;
   }
+  // ONE LIST OF PRINTINGS (round 3, 2026-10-20): Riot's printings and the price feed's merged
+  // by set and number, so each printing shows once, with its own picture and its finishes.
+  // Rows: { code: Riot's code or "" (a printing Riot's gallery does not show), pic: the code
+  // whose picture to show, own: true when the picture is this printing's, set, setName, num,
+  // kind: Base, Alternate art, Overnumbered, Signature, Special, Promo, Top 8, ..., fins:
+  // [{ id, fin, price }] }
+  var KIND_WORDS = /^(Alternate Art|Overnumbered|Signature|Top 8|Champion|Showcase)$/i;
+  function kindOf(x, note, rarity) {
+    var p = parts(codeOf(x ? x.c : "")) || {};
+    if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alternate art"); }
+    if (p.v === "a" || p.v === "b") { return "Alternate art"; }
+    if (p.v === "*") { return "Signature"; }
+    if (p.pre === "SP") { return "Special"; }
+    if (x && x.r === "showcase") {
+      var tot = /\/(\d+)$/.exec(x.c || ""); if (tot && +p.num > +tot[1]) { return "Overnumbered"; }
+      return "Showcase";
+    }
+    if (/promo/i.test(rarity || "")) { return note && !/^R\d|^\d/.test(note) ? note : "Promo"; }
+    return "Base";
+  }
+  // a printing only the price feed lists: its kind from its name's note, its rarity and number
+  function tcgKind(v, s) {
+    var note = v.note || "", codeLike = /^[A-Z]{0,3}\d/.test(note);
+    if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alternate art"); }
+    if (/promo/i.test(v.rarity) || /promo/i.test(s.n)) { return "Promo" + (note && !codeLike ? ", " + note : ""); }
+    if (/a$/.test(v.num)) { return "Alternate art"; }
+    if (/showcase/i.test(v.rarity)) { return "Showcase"; }
+    return "Base";
+  }
+  function printingsOf(I, PX, x, setNames) {
+    if (!x) { return []; }
+    var name = full(I, x), seen = {}, riot = (I.names[norm(name)] || []).filter(function (y) {
+      // the name index holds a card under more than one name: keep each printing once
+      var c = codeOf(y.c); if (seen[c] || full(I, y) !== name || isToken(y)) { return false; } seen[c] = 1; return true;
+    });
+    var base = riot.slice().sort(function (a, b) { return rank(a) - rank(b); })[0] || x;
+    var rows = [], taken = {};
+    riot.forEach(function (y) {
+      var code = codeOf(y.c), p = parts(code) || {}, prods = PX ? (PX.bySetNum[code] || []) : [];
+      var fins = [];
+      prods.forEach(function (c) { taken[c.i] = 1; Object.keys(c.p).forEach(function (f) { fins.push({ id: c.i, fin: f, price: c.p[f] }); }); });
+      var m = prods[0] ? /\(([^)]*)\)\s*$/.exec(prods[0].n) : null;
+      rows.push({ code: code, pic: code, own: true, set: p.set, setName: (setNames && setNames[p.set]) || p.set, num: (p.pre || "") + p.num + (p.v || ""),
+        kind: kindOf(y, m ? m[1] : "", prods[0] ? prods[0].r : ""), fins: fins, t: SETS.indexOf(p.set) * 1000 + (p.v || p.pre ? 500 : 0) + (+p.num || 0) });
+    });
+    if (PX) {
+      versionsOf(I, PX, x).forEach(function (v) {
+        if (taken[v.id]) { return; }
+        var row = null;
+        rows.forEach(function (r) { if (!r.code && r.id === v.id) { row = r; } });
+        if (!row) {
+          var s = PX.sets[PX.byId[v.id].g];
+          row = { code: "", id: v.id, pic: codeOf(base.c), own: false, set: s.a, setName: s.n.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, "").replace(/Promotional/, "promo"),
+            num: v.num, kind: tcgKind(v, s), fins: [], t: 100000 + v.t / 1e6 + v.id / 1e9 };
+          rows.push(row);
+        }
+        row.fins.push({ id: v.id, fin: v.fin, price: v.price });
+      });
+    }
+    rows.forEach(function (r) { r.fins.sort(function (a, b) { return (a.fin === "Normal" ? 0 : 1) - (b.fin === "Normal" ? 0 : 1); }); });
+    rows.sort(function (a, b) { return a.t - b.t; });
+    return rows;
+  }
   function verLabel(v) {
     var w = v.setName.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, "");
     var bits = [v.note || v.rarity].filter(Boolean);
@@ -816,7 +879,7 @@
     encode: encode, decode: decode, toText: toText, toCode: toCode, toTTS: toTTS, parse: parse,
     findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan,
     draw: draw, odds: odds, share: share, matches: matches,
-    tokens: tokens, needed: needed, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, isToken: isToken, rank: rank
+    tokens: tokens, needed: needed, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
   };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_DECK = API; }
