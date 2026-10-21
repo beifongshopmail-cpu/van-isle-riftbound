@@ -39,8 +39,10 @@ body{-webkit-font-smoothing:antialiased;
 #hhold{height:126px}   /* plate at rest: 10 + 40 + 8 + 44 + 10 = 112, plus a 14 gap */
 #hmain .lede{margin-top:0}
 /* a long press on a deck opens its menu; nothing on the list is selected by it (round 3) */
-#home,#plate,#vdeck,#vstats,#vhand{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-#home input,#plate input,.dnote{-webkit-user-select:text;user-select:text}
+/* round 4: the whole page, so a hold never lands on selectable words anywhere near it; fields,
+   notes and the export text stay selectable */
+html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .hsort{display:flex;align-items:center;gap:8px;margin:0 0 10px}
 .hsort .lede{flex:1;min-width:0;margin:0}
 /* Edit on the list arranges decks: a drag handle on each, My order on (round 2, 2026-10-19) */
@@ -252,17 +254,25 @@ body{-webkit-font-smoothing:antialiased;
 
 /* STATS (round 2, Mako 2026-10-19): a grid of summary tiles; a tap opens that tile's detail
    under the grid, several at once, remembered. Each tile is an 'open' control (its chevron). */
-.stiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+/* round 4 (Mako 2026-10-21): an open tile IS the detail: it widens to the full row in place
+   (grid-auto-flow dense lets the tiles after it close the gap) and its detail opens inside it */
+.stiles{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:row dense;gap:6px}
+.stile.open{grid-column:1 / -1;display:block;padding:0;text-align:left}
+.stile.open:active{background:var(--recess)}
+.stile .sth{display:flex;align-items:center;gap:12px;width:100%;min-height:var(--sz-row);padding:8px 14px 6px;text-align:left;border-radius:16px}
+.stile .sth b{font-family:var(--disp);font-size:20px;font-weight:800;line-height:1.2}
+.stile .sth span{flex:1;min-width:0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stile .sth .chev{transform:none}
+.stile .stb{padding:4px 10px 12px}
+.stile .stb .gsh:first-child{margin-top:4px}
+.stile.ghost{position:absolute;z-index:3;pointer-events:none;margin:0}
 .stile{position:relative;min-width:0;border-radius:16px;background:var(--recess);padding:10px 4px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
 .stile:active{background:var(--hi)}
-.stile[aria-expanded="true"]{background:var(--bone);color:var(--ink)}
-.stile[aria-expanded="true"] span{color:var(--ink);opacity:.72}
+
 .stile b{font-family:var(--disp);font-size:20px;font-weight:800;line-height:1.2;white-space:nowrap}
 .stile span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .stile .chev{width:14px;height:14px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transform:rotate(180deg);transition:transform .2s var(--ease)}
-.stile[aria-expanded="true"] .chev{transform:none}
-.sdet{margin-top:14px}
-.sdet .shead{margin:0 4px 10px}
+
 .pdrow{display:flex;align-items:center;gap:10px;padding:7px 4px;font-size:15px}
 .pdrow .t{flex:0 0 66px;font-family:var(--disp);font-weight:600}
 .pdrow .pbar{flex:1;height:10px;border-radius:5px;background:var(--track);overflow:hidden}
@@ -297,6 +307,15 @@ body{-webkit-font-smoothing:antialiased;
 .prb .art{flex:0 0 36px}
 .prb .cnm{white-space:normal}
 .pchk{flex:0 0 auto;width:18px;height:18px;margin-right:4px;fill:none;stroke:var(--bone);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+/* A PRINTING WITH NO PICTURE OF ITS OWN carries its kind as a badge on the picture it borrows
+   (round 4, Mako 2026-10-21): bone, so it never reads as Banned's red */
+.vbadge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;background:var(--bone);color:var(--ink);
+  font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
+.art.pv{position:relative;overflow:visible}
+.art.pv img{border-radius:5px}
+.vbadge.sm{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);height:18px;padding:0 6px;border-radius:9px;font-size:12px}
+.gvb{position:absolute;left:50%;top:6px;transform:translateX(-50%)}
+.mbox .vbadge{position:absolute;left:50%;top:10px;transform:translateX(-50%)}
 .pfins{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0 48px}
 .pfin{height:var(--sz-seg);padding:0 12px;border-radius:17px;background:rgba(255,255,255,.07);font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
 .pfin.on{background:var(--bone);color:var(--ink)}
@@ -389,21 +408,6 @@ body{-webkit-font-smoothing:antialiased;
   pointer-events:none;white-space:nowrap;max-width:calc(100% - 48px);overflow:hidden;text-overflow:ellipsis;transition:opacity .2s ease,transform .2s ease}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 .brwon .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
-.udbar{position:fixed;left:12px;right:12px;max-width:456px;margin:0 auto;z-index:19;border-radius:24px;padding:4px 4px 4px 12px;
-  bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px)}
-.udrow{display:flex;align-items:center;gap:8px}
-.udtog{flex:1;min-width:0;height:var(--sz-sm);padding:0 4px;display:flex;align-items:center;gap:8px;text-align:left;font-size:13px}
-.udl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.udn{font-size:12px;font-weight:600;color:var(--muted)}
-.udtog .chev{flex:0 0 auto;width:16px;height:16px;stroke-width:2.2;transition:transform .2s var(--ease)}
-.udtog[aria-expanded="true"] .chev{transform:rotate(180deg)}
-.udob{height:var(--sz-sm);padding:0 18px;font-family:var(--disp);font-weight:600;font-size:13px}
-.udlogw{margin:2px 0 6px}
-.udlog{list-style:none;margin:0;padding:0 4px;max-height:200px;overflow:auto;-webkit-overflow-scrolling:touch}
-.udlog li{padding:9px 0;font-size:13px;color:var(--muted);border-top:1px solid rgba(255,255,255,.07)}
-.udlog li:first-child{border-top:0;color:var(--bone)}
-html.udon .toast{bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 64px)}
-html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 92px)}
 
 /* THE FULL CARD STAYS A TAP-ANYWHERE IMAGE VIEWER, not a menu (the counter's) */
 .spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
@@ -454,6 +458,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
         <div class="phd">
           <button type="button" class="circ btn glass" data-act="home" aria-label="Back to your decks" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
           <div class="ptl"><b id="ptname"></b><span id="ptprice"></span></div>
+          <button type="button" class="circ btn glass" data-act="umenu" id="undob" aria-label="Undo" disabled data-fills="pundo" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3.5 3 8l4.5 4.5"/><path d="M3 8h12.5a5.5 5.5 0 0 1 0 11H8"/></svg></button>
           <button type="button" class="circ btn glass" data-act="exp" aria-label="Export this deck" data-fills="pexp" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></button>
         </div>
         <div class="seg vw" id="vw" role="group" aria-label="Show" data-k="pick"><button type="button" data-vw="deck" aria-pressed="true">Deck</button><button type="button" data-vw="stats" aria-pressed="false">Stats</button><button type="button" data-vw="hand" aria-pressed="false">Hand</button></div>
@@ -553,6 +558,11 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
   </div>
 </section>
 
+<section class="panel frost" id="pundo" aria-hidden="true" aria-label="Undo">
+  <div class="phead"><div class="ht"><h4 class="ttl">Undo</h4><span class="cnt" id="undocnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="undolist"></div><p class="pnote" style="margin-top:10px">Newest first. Tapping a change undoes it and every change above it.</p></div>
+</section>
+
 <section class="panel frost" id="pdsort" aria-hidden="true" aria-label="Sort decks">
   <div class="phead"><h4 class="ttl">Sort decks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="pick" id="dsortpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">My order is the order you arrange: tap the pencil on this screen, then drag a deck by its handle.</p></div>
@@ -602,15 +612,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
 
 <button class="spot" id="spotsheet" type="button" aria-label="Close card" data-k="view"><img class="spotpic" id="spotpic" alt="" decoding="async"></button>
 <div class="toast frost" id="toast" role="status" aria-live="polite"></div>
-<!-- UNDO, as Trade's (round 3, Mako 2026-10-20): the last change in words, how many can be
-     undone, the list of them, and Undo; it floats above the bar while a deck has changes -->
-<div class="udbar frost" id="udbar" hidden>
-  <div class="udlogw" id="udlogw" hidden><ol class="udlog" id="udlog"></ol></div>
-  <div class="udrow">
-    <button type="button" class="udtog" id="udtog" data-act="udtog" aria-expanded="false" aria-controls="udlogw" data-k="open"><span class="udl" id="udl"></span><span class="udn" id="udn"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <button type="button" class="udob btn glass" id="undob" data-act="undo" data-k="do">Undo</button>
-  </div>
-</div>
+
 
 <script>
 (function(){
@@ -682,14 +684,17 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     if(JSON.stringify(a.ver || {}) !== JSON.stringify(b.ver || {})){ var vk = Object.keys(b.ver || {}).filter(function(k){ return (a.ver || {})[k] !== b.ver[k]; })[0] || Object.keys(a.ver || {})[0]; if(vk) out.push("Price of " + cn(vk)); }
     return out.length ? out[0] + (out.length > 1 ? " and " + (out.length - 1) + " more" : "") : "A change";
   }
+  // UNDO (round 4, Mako 2026-10-21): a button in the plate, beside Export; it opens a menu
+  // listing the changes newest first, in words; a tap undoes that change and those above it
   function udBar(){
-    var mine = UND.filter(function(u){ return u.id === CURID; }), on = SCREEN === "deck" && VIEW === "deck" && mine.length > 0 && el("brw").hidden;
-    el("udbar").hidden = !on;
-    document.documentElement.classList.toggle("udon", on);
-    if(!on){ el("udlogw").hidden = true; el("udtog").setAttribute("aria-expanded", "false"); return; }
-    el("udl").textContent = mine[mine.length - 1].t;
-    el("udn").textContent = mine.length;
-    el("udlog").innerHTML = mine.slice().reverse().map(function(u){ return "<li>" + esc(u.t) + "</li>"; }).join("");
+    var mine = UND.filter(function(u){ return u.id === CURID; }), b = el("undob");
+    b.disabled = !mine.length;
+    b.setAttribute("aria-label", mine.length ? "Undo: " + mine[mine.length - 1].t : "Nothing to undo");
+  }
+  function fillUndo(){
+    var mine = UND.filter(function(u){ return u.id === CURID; }).reverse();
+    el("undocnt").textContent = mine.length + (mine.length === 1 ? " change" : " changes");
+    el("undolist").innerHTML = mine.map(function(u, i){ return '<button type="button" class="door btn glass act" data-act="undoto" data-n="' + (i + 1) + '" data-k="do"><span class="t">' + esc(u.t) + '</span>' + (i ? '<span class="sp"></span><small>' + (i + 1) + ' steps</small>' : '') + '</button>'; }).join("");
   }
   function save(quiet){
     var d = deck();
@@ -701,16 +706,24 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
     if(I) udBar();
   }
-  function undo(){
+  function undo(times){
+    times = times || 1;
+    var said = [];
+    for(var n = 0; n < times; n++){ var w = undoOne(); if(!w) break; said.push(w); }
+    if(!said.length) return;
+    render(); if(EQ) eRender();
+    toast(said.length === 1 ? "Undone: " + said[0] : "Undone " + said.length + " changes");
+  }
+  function undoOne(){
     for(var i = UND.length - 1; i >= 0; i--){
       if(UND[i].id !== CURID) continue;
       var back = JSON.parse(UND[i].j), what = UND[i].t; UND.splice(i, 1);
       for(var k = 0; k < DECKS.length; k++){ if(DECKS[k].id === CURID){ back.t = Date.now(); DECKS[k] = back; } }
       snapNow(); HAND = null; ASIDE = [];
       try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
-      render(); if(EQ) eRender(); toast("Undone: " + what);
-      return;
+      return what;
     }
+    return "";
   }
   function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
   function deck(){ for(var i = 0; i < DECKS.length; i++){ if(DECKS[i].id === CURID) return DECKS[i]; } return null; }
@@ -747,6 +760,18 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     return t;
   }
   function banned(x){ return !!(BAN && x && X.isBanned(BAN, nm(x))); }
+  // a card priced as a printing with no picture of its own (a promo, Top 8, Champion) wears
+  // that printing's kind on the picture it borrows (round 4)
+  var VKC = {};
+  function verKind(code){
+    var d = deck(), v = d && d.ver && d.ver[code];
+    if(!v || !PX || !I) return "";
+    var key = code + "#" + v; if(VKC[key] != null) return VKC[key];
+    var id = +v.split("|")[0], k = "";
+    X.printingsOf(I, PX, C(code), (window.__CATL && window.__CATL.sets) || {}).forEach(function(r){ if(!r.code && r.fins.some(function(f){ return f.id === id; })) k = r.kind.split(",")[0]; });
+    return (VKC[key] = k);
+  }
+  function vbPill(code, cls){ var k = verKind(code); return k ? '<span class="vbadge' + (cls ? " " + cls : "") + '">' + esc(k) + '</span>' : ""; }
   function banPill(x, cls){ return banned(x) ? '<span class="ban' + (cls ? " " + cls : "") + '">' + IC.noent + 'Banned</span>' : ""; }
   // the deck's two colours, for its block and its plate
   function colours(d){
@@ -866,7 +891,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
   function rowSub(x, code, champ){
     var a = "";
     if(champ) a += IC.star + '<span class="cw">Chosen Champion</span>';
-    a += banPill(x);
+    a += banPill(x) + vbPill(code);
     if(typeof x.e === "number") a += '<span class="epill" aria-label="' + x.e + ' energy">' + x.e + '</span>';
     doms(x).forEach(function(v){ a += runeGlass(v, "sm"); });
     if(!doms(x).length && (x.d || []).indexOf("colorless") > -1) a += runeGlass("colorless", "sm") + '<span>Colorless</span>';
@@ -885,7 +910,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
         g.codes.forEach(function(c){
           var x = C(c), champ = sec === "main" && d.champ === c;
           h += '<div class="gcell"><button type="button" class="gpic" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + m[c] + (champ ? ', Chosen Champion' : '') + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>'
-            + (champ ? '<span class="gstar">' + IC.star + '</span>' : '')
+            + (champ ? '<span class="gstar">' + IC.star + '</span>' : '') + vbPill(c, "gvb")
             + (EDIT && cols === 3 ? '<div class="gstp">' + stepper(sec, c, m[c]) + '</div>' : banPill(x, "gban") + '<span class="gq">x' + m[c] + '</span>') + '</div>';
         });
         if(gi === gs.length - 1 && EDIT) h += addTile.replace('<span>Add cards</span>', '<span>Add</span>');
@@ -963,7 +988,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
   function legendRunesHTML(d){
     var L = C(d.legend), r = X.sum(d.runes), h = "";
     h += '<div class="lrhd"><div class="shead"><h2>Legend</h2></div><div class="shead"><h2>Runes</h2><span class="sp"></span><span class="cnt">' + r + '/12</span></div></div><div class="lrow" id="lrow">';
-    if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + banPill(L, "gban") + '</div>';
+    if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + banPill(L, "gban") + vbPill(d.legend, "gvb") + '</div>';
     else h += '<div class="lcell">' + (EDIT ? '<button type="button" class="addt btn glass" data-act="badd" data-sec="legend" data-k="do">' + IC.plus + '<span>Legend</span></button>' : '<div class="lcard none">No Legend yet. Tap Edit to build this deck.</div>') + '</div>';
     var rcodes = Object.keys(d.runes).filter(function(c){ return d.runes[c] > 0; }), have = {};
     rcodes.forEach(function(c){ doms(C(c)).forEach(function(x){ have[x] = 1; }); });
@@ -971,7 +996,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     if(L){ var ord = doms(L); rcodes.sort(function(a, b){ return ord.indexOf(doms(C(a))[0]) - ord.indexOf(doms(C(b))[0]); }); }
     rcodes.forEach(function(c){
       var x = C(c), n = d.runes[c] || 0;
-      h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="runes" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + n + '" data-k="card">' + img(x, true) + '</button><span class="lq">x' + n + '</span>'
+      h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="runes" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + n + '" data-k="card">' + img(x, true) + '</button>' + vbPill(c, "gvb") + '<span class="lq">x' + n + '</span>'
         + (EDIT ? '<div class="lsteps"><button type="button" class="lpm glass" data-act="rdec" data-code="' + esc(c) + '"' + (n < 1 ? " disabled" : "") + ' aria-label="One fewer ' + esc(nm(x)) + '" data-k="do">' + IC.minus + '</button><button type="button" class="lpm glass" data-act="rinc" data-code="' + esc(c) + '" aria-label="One more ' + esc(nm(x)) + '" data-k="do">' + IC.plus + '</button></div>' : '') + '</div>';
     });
     for(var i = rcodes.length; i < 2; i++) h += '<div class="lcell"><div class="lcard none">The Legend\'s runes show here.</div></div>';
@@ -1039,13 +1064,8 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
       price: SET.price ? money(deckPrice(d)).replace(/\.\d\d$/, "") : "-", keywords: String(kws.length), tokens: String(toks.length), rarity: String(epics)
     };
     var sub = { types: "Units/gear/spells", domains: ld.length ? ld.map(cap).join("/") : "Domains", might: S.units + " units", rarity: "Epic or showcase" };
-    h += '<section class="dsec glass" style="margin-top:0"><div class="shead"><h2>Main deck</h2><span class="sp"></span><span class="cnt">' + S.cards + ' cards, averages and counts</span></div><div class="stiles">';
-    STILES.forEach(function(t){
-      var on = !!SET.sopen[t[0]];
-      h += '<button type="button" class="stile" data-act="stile" data-t="' + t[0] + '" aria-expanded="' + on + '" aria-label="' + t[1] + ': ' + esc(tv[t[0]]) + ', ' + (on ? "hide" : "show") + ' the detail" data-k="open"><b>' + esc(tv[t[0]]) + '</b><span>' + esc(sub[t[0]] || t[1]) + '</span>' + CHEV + '</button>';
-    });
-    h += '</div></section>';
-    function det(id, title, cnt, body){ return SET.sopen[id] ? '<section class="dsec glass sdet" id="sd' + id + '"><div class="shead"><h2>' + title + '</h2><span class="sp"></span><span class="cnt">' + (cnt || "") + '</span></div>' + body + '</section>' : ""; }
+    var DET = {};
+    function det(id, title, cnt, body){ DET[id] = { title: title, cnt: cnt || "", body: body }; return ""; }
     var el9 = []; for(var i = 0; i <= 9; i++) el9.push(i === 9 ? "9+" : String(i));
     h += det("energy", "Energy", "average " + S.avgEnergy.toFixed(1), chartHTML(S.energy, el9));
     var pmax = 0; Object.keys(pw).forEach(function(k){ if(pw[k] > pmax) pmax = pw[k]; });
@@ -1083,29 +1103,67 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     h += det("tokens", "Tokens", toks.length ? toks.length + " kinds" : "", th || '<p class="dnone">No card here makes a token.</p>');
     var rmax = 0; Object.keys(rar).forEach(function(k){ if(rar[k] > rmax) rmax = rar[k]; });
     h += det("rarity", "Rarity", "", barRows(["common", "uncommon", "rare", "epic", "showcase", "other"].filter(function(r){ return rar[r]; }).map(function(r){ return { t: cap(r), n: rar[r], b: rar[r] }; }), rmax));
+    // the tiles: a closed tile is a button; an open one is the same block, the full row wide,
+    // its header a button (value, what it is, the chevron) and its detail inside it
+    h = '<section class="dsec glass" style="margin-top:0"><div class="shead"><h2>Main deck</h2><span class="sp"></span><span class="cnt">' + S.cards + ' cards</span></div><div class="stiles" id="stiles">';
+    STILES.forEach(function(t){
+      var id = t[0], on = !!SET.sopen[id], D = DET[id] || { title: t[1], cnt: "", body: "" };
+      if(on) h += '<div class="stile open" data-t="' + id + '" id="sd' + id + '"><button type="button" class="sth" data-act="stile" data-t="' + id + '" aria-expanded="true" aria-label="' + esc(D.title) + ': ' + esc(tv[id]) + ', hide the detail" data-k="open"><b>' + esc(tv[id]) + '</b><span>' + esc(D.title + (D.cnt && !/^average/.test(D.cnt) ? ", " + D.cnt : (/^average/.test(D.cnt) ? ", average" : ""))) + '</span>' + CHEV + '</button><div class="stb">' + D.body + '</div></div>';
+      else h += '<button type="button" class="stile" data-act="stile" data-t="' + id + '" aria-expanded="false" aria-label="' + t[1] + ': ' + esc(tv[id]) + ', show the detail" data-k="open"><b>' + esc(tv[id]) + '</b><span>' + esc(sub[id] || t[1]) + '</span>' + CHEV + '</button>';
+    });
+    h += '</div></section>';
     el("vstats").innerHTML = h;
   }
 
-  // A TILE'S DETAIL GROWS OUT OF THE TILE and folds back into it (round 3, Mako 2026-10-20):
-  // the detail starts at the tile's own box and eases to its place (and back on close)
-  function tileMove(sec, tile, open, done){
-    var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if(!sec || !tile || calm || !sec.animate){ if(done) done(); return; }
-    var a = tile.getBoundingClientRect(), b = sec.getBoundingClientRect();
-    var from = "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px) scale(" + (a.width / b.width) + "," + (a.height / b.height) + ")";
-    sec.style.transformOrigin = "0 0";
-    var kf = [{ transform: from, opacity: 0, borderRadius: "16px" }, { transform: "none", opacity: 1 }];
-    var an = sec.animate(open ? kf : kf.slice().reverse(), { duration: open ? 340 : 240, easing: "cubic-bezier(.22,.72,.2,1)", fill: "both" });
-    an.onfinish = function(){ if(open) an.cancel(); if(done) done(); };
-  }
+  // THE TILE OPENS INTO ITS DETAIL (round 4, Mako 2026-10-21: the block the motion comes from
+  // must itself move). Before a change, every tile's box is measured; after it, each tile
+  // slides from its old box to its new one, and the tile that opens grows from its own small
+  // box into the full row (a closing one shrinks back into its box), so the tile is what
+  // grows. Reduced motion: no movement.
   function statTile(id){
-    var tile = document.querySelector('#vstats [data-t="' + id + '"]');
-    if(SET.sopen[id]){
-      tileMove(el("sd" + id), tile, false, function(){ SET.sopen[id] = false; saveSet(); renderStats(); });
-      return;
+    var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var box = el("stiles"), before = {}, ghost = null;
+    if(box){ box.querySelectorAll(".stile").forEach(function(t){ before[t.getAttribute("data-t")] = t.getBoundingClientRect(); }); }
+    var closing = !!SET.sopen[id];
+    if(closing && box && !calm){
+      // the open tile, kept for a moment as a picture of itself, folds into the small tile
+      var old = el("sd" + id), br = box.getBoundingClientRect(), r = old.getBoundingClientRect();
+      ghost = old.cloneNode(true); ghost.removeAttribute("id"); ghost.classList.add("ghost");
+      ghost.style.left = (r.left - br.left) + "px"; ghost.style.top = (r.top - br.top) + "px"; ghost.style.width = r.width + "px";
     }
-    SET.sopen[id] = true; saveSet(); renderStats();
-    tileMove(el("sd" + id), document.querySelector('#vstats [data-t="' + id + '"]'), true);
+    SET.sopen[id] = !closing; saveSet(); renderStats();
+    if(calm || !box) return;
+    box = el("stiles");
+    var ease = "cubic-bezier(.22,.72,.2,1)";
+    box.querySelectorAll(".stile").forEach(function(t){
+      var k = t.getAttribute("data-t"), a = before[k], b = t.getBoundingClientRect();
+      if(!a || !t.animate) return;
+      if(k === id && !closing){
+        // opening: start as the small tile's box, clipped, then grow to the full row
+        var dy = a.top - b.top, dx = a.left - b.left;
+        t.animate([
+          { transform: "translateY(" + dy + "px)", clipPath: "inset(0px " + Math.max(0, b.width - dx - a.width) + "px " + Math.max(0, b.height - a.height) + "px " + Math.max(0, dx) + "px round 16px)" },
+          { transform: "none", clipPath: "inset(0px 0px 0px 0px round 16px)" }
+        ], { duration: 360, easing: ease });
+        var inner = t.querySelector(".stb");
+        if(inner && inner.animate) inner.animate([{ opacity: 0 }, { opacity: 0, offset: .35 }, { opacity: 1 }], { duration: 360, easing: "linear" });
+        return;
+      }
+      if(k === id && closing){
+        t.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: 300, easing: "linear" });
+      }
+      if(Math.abs(a.left - b.left) > .5 || Math.abs(a.top - b.top) > .5) t.animate([{ transform: "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px)" }, { transform: "none" }], { duration: 360, easing: ease });
+    });
+    if(ghost){
+      box.appendChild(ghost);
+      var small = box.querySelector('.stile[data-t="' + id + '"]').getBoundingClientRect(), gb = ghost.getBoundingClientRect();
+      var ddx = small.left - gb.left, ddy = small.top - gb.top;
+      var an = ghost.animate([
+        { clipPath: "inset(0px 0px 0px 0px round 16px)", opacity: 1 },
+        { clipPath: "inset(" + Math.max(0, ddy) + "px " + Math.max(0, gb.width - ddx - small.width) + "px " + Math.max(0, gb.height - ddy - small.height) + "px " + Math.max(0, ddx) + "px round 16px)", opacity: .2 }
+      ], { duration: 300, easing: ease, fill: "forwards" });
+      an.onfinish = function(){ ghost.remove(); };
+    }
   }
 
   // ---- HAND: the opening four, the turns after, and the odds ----
@@ -1375,7 +1433,6 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     el("bq").value = "";
     el("brw").hidden = false;
     document.documentElement.classList.add("lock", "brwon");
-    udBar();
     brRender();
   }
   function brClose(){
@@ -1417,7 +1474,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     var d = deck(), x = C(CARD.code), sec = CARD.sec, h = "", f = "";
     if(!x){ return false; }
     el("cttl").textContent = nm(x);
-    h += '<div class="mbox"' + (x.o === "landscape" ? ' style="width:200px"' : '') + '><button type="button" class="mpic' + (x.o === "landscape" ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + banPill(x) + '</div>';
+    h += '<div class="mbox"' + (x.o === "landscape" ? ' style="width:200px"' : '') + '><button type="button" class="mpic' + (x.o === "landscape" ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + banPill(x) + vbPill(CARD.code) + '</div>';
     function qrow(s2, label){
       var n = s2 === "runes" ? (d.runes[CARD.code] || 0) : (d[s2][CARD.code] || 0);
       return '<div class="qrow"><span class="t">' + label + '</span><div class="stp" data-k="do">'
@@ -1442,7 +1499,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
         var mine = r.code ? (r.code === CARD.code && (!cur || r.fins.some(function(f){ return f.id + "|" + f.fin === cur; }))) : r.fins.some(function(f){ return f.id + "|" + f.fin === cur; });
         var dfin = r.fins.filter(function(f){ return f.fin === "Normal"; })[0] || r.fins[0];
         h += '<div class="prow' + (mine ? " on" : "") + '"><button type="button" class="prb" data-act="pset" data-code="' + esc(r.code) + '" data-v="' + (r.code ? "" : esc(dfin.id + "|" + dfin.fin)) + '" aria-pressed="' + mine + '" data-k="pick">'
-          + '<span class="art">' + img(C(r.pic)) + '</span><span class="cmid"><span class="cnm">' + esc(r.setName + ", " + r.kind) + '</span><span class="csb"><span>' + esc(r.set + " " + r.num) + (r.own ? "" : ". Riot shows no picture of it") + '</span></span></span>'
+          + '<span class="art pv">' + img(C(r.pic)) + (r.own ? '' : '<span class="vbadge sm">' + esc(r.kind.split(",")[0]) + '</span>') + '</span><span class="cmid"><span class="cnm">' + esc(r.setName + ", " + r.kind) + '</span><span class="csb"><span>' + esc(r.set + " " + r.num) + (r.own ? "" : ". No picture available") + '</span></span></span>'
           + (mine ? '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') + '</button>';
         if(r.fins.length && SET.price){
           h += '<div class="pfins" role="group" aria-label="Finish" data-k="pick">';
@@ -1583,7 +1640,7 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     LP.el = t; LP.fired = false; LP.x = ev.touches[0].clientX; LP.y = ev.touches[0].clientY;
     clearTimeout(LP.t);
     LP.t = setTimeout(function(){
-      if(t.classList.contains("dcard")){ LP.fired = true; deckMenu(t.getAttribute("data-id")); return; }
+      if(t.classList.contains("dcard")){ LP.fired = true; try{ window.getSelection().removeAllRanges(); }catch(e){} deckMenu(t.getAttribute("data-id")); return; }
       var c = t.getAttribute("data-code"); if(c){ LP.fired = true; spotOpen(c); }
     }, 450);
   }, { passive: true });
@@ -1648,8 +1705,8 @@ html.udon #dkfoot{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0p
     if(a === "oout"){ OD = OD.filter(function(c){ return c !== t.getAttribute("data-code"); }); renderHand(); return; }
     if(t.hasAttribute("data-om")){ OM = +t.getAttribute("data-om"); renderHand(); return; }
     if(a === "stile"){ statTile(t.getAttribute("data-t")); return; }
-    if(a === "undo"){ undo(); return; }
-    if(a === "udtog"){ var op = el("udlogw").hidden; el("udlogw").hidden = !op; t.setAttribute("aria-expanded", op ? "true" : "false"); return; }
+    if(a === "umenu"){ fillUndo(); openPanel(el("pundo")); return; }
+    if(a === "undoto"){ openPanel(null); undo(+t.getAttribute("data-n")); return; }
     if(a === "hsort"){ fillDsort(); openPanel(el("pdsort")); return; }
     if(a === "dsset"){ SET.dsort = t.getAttribute("data-v"); saveSet(); openPanel(null); renderHome(); return; }
     if(a === "dmopen"){ openPanel(null); go("deck", DM); return; }
