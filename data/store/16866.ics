@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117437289555157382@van-isle-riftbound
-DTSTAMP:20261021T054643Z
+DTSTAMP:20261021T175558Z
 DTSTART:20261025T010000Z
 DTEND:20261025T040000Z
 SUMMARY:Saturday evening nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
-DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n32 of 32 spots left\
- , checked Oct 20\, 10:46 PM\nFree\nSign up: https://playriftbound.com/en-U
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n31 of 32 spots left\
+ , checked Oct 21\, 10:55 AM\nFree\nSign up: https://playriftbound.com/en-U
  S/events/117437289555157382
 URL:https://playriftbound.com/en-US/events/117437289555157382
 CATEGORIES:Nexus Nights
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117437297319078671@van-isle-riftbound
-DTSTAMP:20261021T054643Z
+DTSTAMP:20261021T175558Z
 DTSTART:20261025T183000Z
 DTEND:20261025T213000Z
 SUMMARY:Sunday morning Nexus"night"
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n24 of 24 spots left\
- , checked Oct 20\, 10:46 PM\n$6.00 USD\nSign up: https://playriftbound.com
+ , checked Oct 21\, 10:55 AM\n$6.00 USD\nSign up: https://playriftbound.com
  /en-US/events/117437297319078671
 URL:https://playriftbound.com/en-US/events/117437297319078671
 CATEGORIES:Nexus Nights
@@ -41,13 +41,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096953908084886@van-isle-riftbound
-DTSTAMP:20261021T054643Z
+DTSTAMP:20261021T175558Z
 DTSTART:20261122T183000Z
 DTEND:20261122T213000Z
 SUMMARY:Radiance Summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n31 of 32 spots 
- left\, checked Oct 20\, 10:46 PM\n$20.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 21\, 10:55 AM\n$20.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117096953908084886
 URL:https://playriftbound.com/en-US/events/117096953908084886
 CATEGORIES:Summoner Skirmish
@@ -56,13 +56,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096961730592935@van-isle-riftbound
-DTSTAMP:20261021T054643Z
+DTSTAMP:20261021T175558Z
 DTSTART:20261227T183000Z
 DTEND:20261227T213000Z
 SUMMARY:Radiance summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 
- left\, checked Oct 20\, 10:46 PM\n$20.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 21\, 10:55 AM\n$20.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117096961730592935
 URL:https://playriftbound.com/en-US/events/117096961730592935
 CATEGORIES:Summoner Skirmish
