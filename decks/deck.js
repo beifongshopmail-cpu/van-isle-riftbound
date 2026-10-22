@@ -866,8 +866,8 @@
   var KIND_WORDS = /^(Alternate Art|Overnumbered|Signature|Top 8|Champion|Showcase)$/i;
   function kindOf(x, note, rarity) {
     var p = parts(codeOf(x ? x.c : "")) || {};
-    if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alternate art"); }
-    if (p.v === "a" || p.v === "b") { return "Alternate art"; }
+    if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alt art"); }
+    if (p.v === "a" || p.v === "b") { return "Alt art"; }
     if (p.v === "*") { return "Signature"; }
     if (p.pre === "SP") { return "Special"; }
     if (x && x.r === "showcase") {
@@ -880,9 +880,9 @@
   // a printing only the price feed lists: its kind from its name's note, its rarity and number
   function tcgKind(v, s) {
     var note = v.note || "", codeLike = /^[A-Z]{0,3}\d/.test(note);
-    if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alternate art"); }
+    if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alt art"); }
     if (/promo/i.test(v.rarity) || /promo/i.test(s.n)) { return "Promo" + (note && !codeLike ? ", " + note : ""); }
-    if (/a$/.test(v.num)) { return "Alternate art"; }
+    if (/a$/.test(v.num)) { return "Alt art"; }
     if (/showcase/i.test(v.rarity)) { return "Showcase"; }
     return "Base";
   }
@@ -909,7 +909,7 @@
         rows.forEach(function (r) { if (!r.code && r.id === v.id) { row = r; } });
         if (!row) {
           var s = PX.sets[PX.byId[v.id].g];
-          row = { code: "", id: v.id, pic: codeOf(base.c), own: false, set: s.a, setName: s.n.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, "").replace(/Promotional/, "promo"),
+          row = { code: "", id: v.id, pic: codeOf(base.c), own: false, set: s.a, setName: s.n.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, "").replace(/\s+Promotional$/, ""),
             num: v.num, kind: tcgKind(v, s), fins: [], t: 100000 + v.t / 1e6 + v.id / 1e9 };
           rows.push(row);
         }

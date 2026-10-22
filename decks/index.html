@@ -149,14 +149,16 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .ban{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:11px;background:var(--over);color:#fff;
   font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap}
 .ban svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
-.gban{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.35)}
-.ctile .gban{bottom:8px}
-.lcell .gban{bottom:8px}
-.gpic.land ~ .gban{bottom:6px}
+/* every badge sits in one stack, centred on the picture above its count (round 7) */
+.bstack{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:1}
+.bstack > *{box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.bstack.low{bottom:8px}
+.bstack.ed{bottom:52px}
+.bstack.menu{bottom:10px}
 /* in the card menu the pill sits on the card's foot */
 .mbox{position:relative;width:150px;margin:0 auto 12px}
 .mbox .mpic{margin:0}
-.mbox .ban{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.35)}
+
 .dprice{margin:6px 4px 0;font-size:12px;color:var(--muted)}
 .dprice b{font-family:var(--disp);font-weight:800;font-size:13px;color:var(--bone)}
 
@@ -301,13 +303,17 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 /* the printing list: a sunken group; a row is the printing (its picture, kind, number) and
    under it the finishes it is sold in, each its price */
 .plist{border-radius:22px;background:var(--recess);overflow:hidden}
-.prow{padding:6px 12px 10px}
+/* round 7 (Mako 2026-10-22): the finishes sit beside the picture, under the title, so a row
+   is no taller than its picture */
+.prow{position:relative;padding:8px 12px 8px 16px}
 .prow + .prow{box-shadow:inset 16px 1px 0 -15px rgba(255,255,255,.08)}
-.prb{display:flex;align-items:center;gap:12px;width:100%;min-height:var(--sz-row);padding:4px 0;text-align:left;border-radius:10px}
+.prb{display:flex;align-items:flex-start;gap:12px;width:100%;min-height:61px;padding:0;text-align:left;border-radius:10px}
 .prb:active{background:var(--hi)}
-.prb .art{flex:0 0 36px}
-.prb .cnm{white-space:normal}
-.pchk{flex:0 0 auto;width:18px;height:18px;margin-right:4px;fill:none;stroke:var(--bone);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.prb .art{flex:0 0 44px;width:44px;height:61px} /* size-exempt: card art image */
+.pti{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;padding-top:4px}
+.pti .cnm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pti small{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--muted)}
+.pchk{flex:0 0 auto;width:18px;height:18px;margin:5px 4px 0 0;fill:none;stroke:var(--bone);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 /* A PRINTING WITH NO PICTURE OF ITS OWN carries its kind as a badge on the picture it borrows
    (round 4, Mako 2026-10-21): bone, so it never reads as Banned's red */
 .vbadge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;background:var(--bone);color:var(--ink);
@@ -315,12 +321,11 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .art.pv{position:relative;overflow:visible}
 .art.pv img{border-radius:5px}
 .vbadge.sm{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);height:18px;padding:0 6px;border-radius:9px;font-size:12px}
-.gvb{position:absolute;left:50%;top:6px;transform:translateX(-50%)}
-.mbox .vbadge{position:absolute;left:50%;top:10px;transform:translateX(-50%)}
-.pfins{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0 48px}
+
+.pfins{position:absolute;left:72px;top:35px;display:flex;gap:6px}   /* 16 + 44 + 12; its foot on the picture's */
 .pfin{height:var(--sz-seg);padding:0 12px;border-radius:17px;background:rgba(255,255,255,.07);font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
 .pfin.on{background:var(--bone);color:var(--ink)}
-.pnone{margin:4px 0 0 48px;font-size:12px;color:var(--muted)}
+.pnone{position:absolute;left:72px;top:46px;margin:0;font-size:12px;color:var(--muted)}
 
 /* STATS: the count on every bar, so height is never the only signal */
 .avg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
@@ -776,6 +781,12 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     return (VKC[key] = k);
   }
   function vbPill(code, cls){ var k = verKind(code); return k ? '<span class="vbadge' + (cls ? " " + cls : "") + '">' + esc(k) + '</span>' : ""; }
+  // ONE PLACE FOR EVERY BADGE (round 7, Mako 2026-10-22): where Banned sits, centred on the
+  // picture above its count; a printing's kind (Promo, Top 8, Alt art...) goes under Banned
+  function badges(x, code, place){
+    var b = banPill(x) + (code ? vbPill(code) : "");
+    return b ? '<span class="bstack' + (place ? " " + place : "") + '">' + b + '</span>' : "";
+  }
   function banPill(x, cls){ return banned(x) ? '<span class="ban' + (cls ? " " + cls : "") + '">' + IC.noent + 'Banned</span>' : ""; }
   // the deck's two colours, for its block and its plate
   function colours(d){
@@ -914,8 +925,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         g.codes.forEach(function(c){
           var x = C(c), champ = sec === "main" && d.champ === c;
           h += '<div class="gcell"><button type="button" class="gpic" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + m[c] + (champ ? ', Chosen Champion' : '') + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>'
-            + (champ ? '<span class="gstar">' + IC.star + '</span>' : '') + vbPill(c, "gvb")
-            + (EDIT && cols === 3 ? '<div class="gstp">' + stepper(sec, c, m[c]) + '</div>' : banPill(x, "gban") + '<span class="gq">x' + m[c] + '</span>') + '</div>';
+            + (champ ? '<span class="gstar">' + IC.star + '</span>' : '') + badges(x, c, EDIT && cols === 3 ? "ed" : "")
+            + (EDIT && cols === 3 ? '<div class="gstp">' + stepper(sec, c, m[c]) + '</div>' : '<span class="gq">x' + m[c] + '</span>') + '</div>';
         });
         if(gi === gs.length - 1 && EDIT) h += addTile.replace('<span>Add cards</span>', '<span>Add</span>');
         h += '</div>';
@@ -971,7 +982,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       h += '<div class="cgrid" style="--gc:3">';
       d.bf.forEach(function(c){
         var x = C(c);
-        h += '<div class="gcell"><button type="button" class="gpic land" data-act="card" data-sec="bf" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>' + banPill(x, "gban")
+        h += '<div class="gcell"><button type="button" class="gpic land" data-act="card" data-sec="bf" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>' + badges(x, c, "low")
           + (EDIT ? '<div class="lsteps" style="left:auto;right:3px;bottom:3px;transform:none;width:auto"><button type="button" class="lpm glass" data-act="sdec" data-sec="bf" data-code="' + esc(c) + '" aria-label="Remove ' + esc(nm(x)) + '" data-k="do">' + IC.bin + '</button></div>' : '') + '</div>';
       });
       h += '</div>';
@@ -992,7 +1003,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   function legendRunesHTML(d){
     var L = C(d.legend), r = X.sum(d.runes), h = "";
     h += '<div class="lrhd"><div class="shead"><h2>Legend</h2></div><div class="shead"><h2>Runes</h2><span class="sp"></span><span class="cnt">' + r + '/12</span></div></div><div class="lrow" id="lrow">';
-    if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + banPill(L, "gban") + vbPill(d.legend, "gvb") + '</div>';
+    if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + badges(L, d.legend, "low") + '</div>';
     else h += '<div class="lcell">' + (EDIT ? '<button type="button" class="addt btn glass" data-act="badd" data-sec="legend" data-k="do">' + IC.plus + '<span>Legend</span></button>' : '<div class="lcard none">No Legend yet. Tap Edit to build this deck.</div>') + '</div>';
     var rcodes = Object.keys(d.runes).filter(function(c){ return d.runes[c] > 0; }), have = {};
     rcodes.forEach(function(c){ doms(C(c)).forEach(function(x){ have[x] = 1; }); });
@@ -1000,7 +1011,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(L){ var ord = doms(L); rcodes.sort(function(a, b){ return ord.indexOf(doms(C(a))[0]) - ord.indexOf(doms(C(b))[0]); }); }
     rcodes.forEach(function(c){
       var x = C(c), n = d.runes[c] || 0;
-      h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="runes" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + n + '" data-k="card">' + img(x, true) + '</button>' + vbPill(c, "gvb") + '<span class="lq">x' + n + '</span>'
+      h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="runes" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + n + '" data-k="card">' + img(x, true) + '</button>' + badges(x, c) + '<span class="lq">x' + n + '</span>'
         + (EDIT ? '<div class="lsteps"><button type="button" class="lpm glass" data-act="rdec" data-code="' + esc(c) + '"' + (n < 1 ? " disabled" : "") + ' aria-label="One fewer ' + esc(nm(x)) + '" data-k="do">' + IC.minus + '</button><button type="button" class="lpm glass" data-act="rinc" data-code="' + esc(c) + '"' + (r >= 12 && n >= r ? " disabled" : "") + ' aria-label="One more ' + esc(nm(x)) + '" data-k="do">' + IC.plus + '</button></div>' : '') + '</div>';
     });
     for(var i = rcodes.length; i < 2; i++) h += '<div class="lcell"><div class="lcard none">The Legend\'s runes show here.</div></div>';
@@ -1273,7 +1284,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     hits.slice(0, 60).forEach(function(x){
       var c = X.codeOf(x.c), n = eCount(x), s = X.sectionOf(x), land = x.o === "landscape" || s === "bf";
       var mark = n ? (s === "main" ? '<div class="gstp">' + stepper("main", c, n) + '</div>' : '<span class="gq">' + (s === "runes" ? "x" + n : "In deck") + '</span>') : "";
-      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + (n && s === "main" ? "" : banPill(x, "gban")) + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", n && s === "main" ? "ed" : "low") + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
     });
     box.innerHTML = hits.length ? '<div class="bgrid">' + h + '</div>' + (hits.length > 60 ? '<p class="bnote">' + (hits.length - 60) + ' more: add a word to narrow it.</p>' : '') : '<p class="bnone">No cards match. Try another word.</p>';
     w.classList.add("open");
@@ -1431,7 +1442,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     var stp = "";
     if(n && (BR.sec === "main" || BR.sec === "side" || BR.sec === "maybe")) stp = '<div class="gstp">' + stepper(BR.sec, c, n) + '</div>';
     else if(n) stp = '<span class="gq">In deck</span>';
-    return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + (stp && stp.indexOf("gstp") > -1 ? "" : banPill(x, "gban")) + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+    return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", stp && stp.indexOf("gstp") > -1 ? "ed" : "low") + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
   }
   function brRender(keepScroll){
     var list = brPool().filter(brMatch).sort(brSort), h = "";
@@ -1490,7 +1501,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     var d = deck(), x = C(CARD.code), sec = CARD.sec, h = "", f = "";
     if(!x){ return false; }
     el("cttl").textContent = nm(x);
-    h += '<div class="mbox"' + (x.o === "landscape" ? ' style="width:200px"' : '') + '><button type="button" class="mpic' + (x.o === "landscape" ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + banPill(x) + vbPill(CARD.code) + '</div>';
+    h += '<div class="mbox"' + (x.o === "landscape" ? ' style="width:200px"' : '') + '><button type="button" class="mpic' + (x.o === "landscape" ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + badges(x, CARD.code, "menu") + '</div>';
     function qrow(s2, label){
       var n = s2 === "runes" ? (d.runes[CARD.code] || 0) : (d[s2][CARD.code] || 0);
       return '<div class="qrow"><span class="t">' + label + '</span><div class="stp" data-k="do">'
@@ -1515,13 +1526,14 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         var mine = r.code ? (r.code === CARD.code && (!cur || r.fins.some(function(f){ return f.id + "|" + f.fin === cur; }))) : r.fins.some(function(f){ return f.id + "|" + f.fin === cur; });
         var dfin = r.fins.filter(function(f){ return f.fin === "Normal"; })[0] || r.fins[0];
         h += '<div class="prow' + (mine ? " on" : "") + '"><button type="button" class="prb" data-act="pset" data-code="' + esc(r.code) + '" data-v="' + (r.code ? "" : esc(dfin.id + "|" + dfin.fin)) + '" aria-pressed="' + mine + '" data-k="pick">'
-          + '<span class="art pv">' + img(C(r.pic)) + (r.own ? '' : '<span class="vbadge sm">' + esc(r.kind.split(",")[0]) + '</span>') + '</span><span class="cmid"><span class="cnm">' + esc(r.setName + ", " + r.kind) + '</span><span class="csb"><span>' + esc(r.set + " " + r.num) + (r.own ? "" : ". No picture available") + '</span></span></span>'
+          + '<span class="art pv">' + img(C(r.pic)) + (r.own ? '' : '<span class="vbadge sm">' + esc(r.kind.split(",")[0]) + '</span>') + '</span><span class="pti"><span class="cnm">' + esc(r.setName + ", " + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small></span>'
           + (mine ? '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') + '</button>';
         if(r.fins.length && SET.price){
           h += '<div class="pfins" role="group" aria-label="Finish" data-k="pick">';
           r.fins.forEach(function(f){
             var key = f.id + "|" + f.fin, on = mine && (cur ? cur === key : f === dfin);
-            h += '<button type="button" class="pfin' + (on ? " on" : "") + '" data-act="pfin" data-code="' + esc(r.code) + '" data-v="' + esc(key) + '" aria-pressed="' + on + '">' + esc(f.fin) + ' ' + money(f.price) + '</button>';
+            // one finish only: just its price (Mako 2026-10-22: no 'Foil' when there is nothing else)
+            h += '<button type="button" class="pfin' + (on ? " on" : "") + '" data-act="pfin" data-code="' + esc(r.code) + '" data-v="' + esc(key) + '" aria-pressed="' + on + '" aria-label="' + esc(f.fin) + ', ' + money(f.price) + '">' + (r.fins.length > 1 ? esc(f.fin) + ' ' : '') + money(f.price) + '</button>';
           });
           h += '</div>';
         } else if(SET.price) h += '<p class="pnone">No price yet</p>';
