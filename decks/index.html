@@ -266,6 +266,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .stile .stb{padding:4px 10px 12px}
 .stile .stb .gsh:first-child{margin-top:4px}
 .stile.ghost{position:absolute;z-index:3;pointer-events:none;margin:0}
+.sall{height:var(--sz-sm);padding:0 14px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
 .stile{position:relative;min-width:0;border-radius:16px;background:var(--recess);padding:10px 4px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1px}
 .stile:active{background:var(--hi)}
 
@@ -560,7 +561,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 
 <section class="panel frost" id="pundo" aria-hidden="true" aria-label="Undo">
   <div class="phead"><div class="ht"><h4 class="ttl">Undo</h4><span class="cnt" id="undocnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="doors" id="undolist"></div><p class="pnote" style="margin-top:10px">Newest first. Tapping a change undoes it and every change above it.</p></div>
+  <div class="pbody"><div class="doors" id="undolist"></div><p class="pnote" style="margin-top:10px">Newest first. Tap a change to undo just that one.</p></div>
 </section>
 
 <section class="panel frost" id="pdsort" aria-hidden="true" aria-label="Sort decks">
@@ -694,36 +695,31 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   function fillUndo(){
     var mine = UND.filter(function(u){ return u.id === CURID; }).reverse();
     el("undocnt").textContent = mine.length + (mine.length === 1 ? " change" : " changes");
-    el("undolist").innerHTML = mine.map(function(u, i){ return '<button type="button" class="door btn glass act" data-act="undoto" data-n="' + (i + 1) + '" data-k="do"><span class="t">' + esc(u.t) + '</span>' + (i ? '<span class="sp"></span><small>' + (i + 1) + ' steps</small>' : '') + '</button>'; }).join("");
+    el("undolist").innerHTML = mine.map(function(u, i){ return '<button type="button" class="door btn glass act" data-act="undoat" data-i="' + i + '" data-k="do"><span class="t">' + esc(u.t) + '</span></button>'; }).join("");
   }
   function save(quiet){
     var d = deck();
     if(d){
       var now = bare(d);
-      if(!quiet && LASTID === d.id && LASTJ && LASTJ !== now){ UND.push({ id: d.id, j: LASTJ, t: changeWords(JSON.parse(LASTJ), JSON.parse(now)) }); if(UND.length > 60) UND.shift(); }
+      if(!quiet && LASTID === d.id && LASTJ && LASTJ !== now){ UND.push({ id: d.id, j: LASTJ, n: now, t: changeWords(JSON.parse(LASTJ), JSON.parse(now)) }); if(UND.length > 60) UND.shift(); }
       LASTJ = now; LASTID = d.id; d.t = Date.now();
     }
     try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
     if(I) udBar();
   }
-  function undo(times){
-    times = times || 1;
-    var said = [];
-    for(var n = 0; n < times; n++){ var w = undoOne(); if(!w) break; said.push(w); }
-    if(!said.length) return;
+  // UNDO JUST ONE CHANGE (round 5, Mako 2026-10-21): any change in the list can be taken back
+  // on its own; the changes after it stay (deck.js unchange)
+  function undoAt(i){
+    var mine = [], k;
+    for(k = 0; k < UND.length; k++){ if(UND[k].id === CURID) mine.push(k); }
+    var at = mine[mine.length - 1 - i]; if(at == null) return;
+    var u = UND[at], d = deck(); if(!d) return;
+    X.unchange(d, JSON.parse(u.j), JSON.parse(u.n || u.j));
+    UND.splice(at, 1);
+    d.t = Date.now(); snapNow(); HAND = null; ASIDE = [];
+    try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
     render(); if(EQ) eRender();
-    toast(said.length === 1 ? "Undone: " + said[0] : "Undone " + said.length + " changes");
-  }
-  function undoOne(){
-    for(var i = UND.length - 1; i >= 0; i--){
-      if(UND[i].id !== CURID) continue;
-      var back = JSON.parse(UND[i].j), what = UND[i].t; UND.splice(i, 1);
-      for(var k = 0; k < DECKS.length; k++){ if(DECKS[k].id === CURID){ back.t = Date.now(); DECKS[k] = back; } }
-      snapNow(); HAND = null; ASIDE = [];
-      try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
-      return what;
-    }
-    return "";
+    toast("Undone: " + u.t);
   }
   function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
   function deck(){ for(var i = 0; i < DECKS.length; i++){ if(DECKS[i].id === CURID) return DECKS[i]; } return null; }
@@ -1105,7 +1101,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     h += det("rarity", "Rarity", "", barRows(["common", "uncommon", "rare", "epic", "showcase", "other"].filter(function(r){ return rar[r]; }).map(function(r){ return { t: cap(r), n: rar[r], b: rar[r] }; }), rmax));
     // the tiles: a closed tile is a button; an open one is the same block, the full row wide,
     // its header a button (value, what it is, the chevron) and its detail inside it
-    h = '<section class="dsec glass" style="margin-top:0"><div class="shead"><h2>Main deck</h2><span class="sp"></span><span class="cnt">' + S.cards + ' cards</span></div><div class="stiles" id="stiles">';
+    var allOpen = STILES.every(function(t){ return SET.sopen[t[0]]; });
+    h = '<section class="dsec glass" style="margin-top:0"><div class="shead"><h2>Main deck</h2><span class="cnt">' + S.cards + ' cards</span><span class="sp"></span>'
+      + '<button type="button" class="sall btn glass" data-act="sall" data-k="do">' + (allOpen ? "Close all" : "Open all") + '</button></div><div class="stiles" id="stiles">';
     STILES.forEach(function(t){
       var id = t[0], on = !!SET.sopen[id], D = DET[id] || { title: t[1], cnt: "", body: "" };
       if(on) h += '<div class="stile open" data-t="' + id + '" id="sd' + id + '"><button type="button" class="sth" data-act="stile" data-t="' + id + '" aria-expanded="true" aria-label="' + esc(D.title) + ': ' + esc(tv[id]) + ', hide the detail" data-k="open"><b>' + esc(tv[id]) + '</b><span>' + esc(D.title + (D.cnt && !/^average/.test(D.cnt) ? ", " + D.cnt : (/^average/.test(D.cnt) ? ", average" : ""))) + '</span>' + CHEV + '</button><div class="stb">' + D.body + '</div></div>';
@@ -1120,25 +1118,37 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   // slides from its old box to its new one, and the tile that opens grows from its own small
   // box into the full row (a closing one shrinks back into its box), so the tile is what
   // grows. Reduced motion: no movement.
-  function statTile(id){
+  function statTile(id){ statSet([id], !SET.sopen[id]); }
+  // OPEN ALL OR CLOSE ALL (round 5, Mako 2026-10-21), with the same motion for each tile
+  function statAll(){
+    var all = STILES.map(function(t){ return t[0]; }), open = !all.every(function(k){ return SET.sopen[k]; });
+    statSet(all.filter(function(k){ return !!SET.sopen[k] !== open; }), open);
+  }
+  function statSet(ids, open){
+    if(!ids.length) return;
     var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var box = el("stiles"), before = {}, ghost = null;
+    var box = el("stiles"), before = {}, ghosts = [];
     if(box){ box.querySelectorAll(".stile").forEach(function(t){ before[t.getAttribute("data-t")] = t.getBoundingClientRect(); }); }
-    var closing = !!SET.sopen[id];
-    if(closing && box && !calm){
-      // the open tile, kept for a moment as a picture of itself, folds into the small tile
-      var old = el("sd" + id), br = box.getBoundingClientRect(), r = old.getBoundingClientRect();
-      ghost = old.cloneNode(true); ghost.removeAttribute("id"); ghost.classList.add("ghost");
-      ghost.style.left = (r.left - br.left) + "px"; ghost.style.top = (r.top - br.top) + "px"; ghost.style.width = r.width + "px";
+    if(!open && box && !calm){
+      // each open tile, kept for a moment as a picture of itself, folds into its small tile
+      var br = box.getBoundingClientRect();
+      ids.forEach(function(id){
+        var old = el("sd" + id); if(!old) return;
+        var r = old.getBoundingClientRect(), g = old.cloneNode(true);
+        g.removeAttribute("id"); g.classList.add("ghost");
+        g.style.left = (r.left - br.left) + "px"; g.style.top = (r.top - br.top) + "px"; g.style.width = r.width + "px";
+        ghosts.push({ id: id, g: g });
+      });
     }
-    SET.sopen[id] = !closing; saveSet(); renderStats();
+    ids.forEach(function(id){ SET.sopen[id] = open; });
+    saveSet(); renderStats();
     if(calm || !box) return;
     box = el("stiles");
     var ease = "cubic-bezier(.22,.72,.2,1)";
     box.querySelectorAll(".stile").forEach(function(t){
-      var k = t.getAttribute("data-t"), a = before[k], b = t.getBoundingClientRect();
+      var k = t.getAttribute("data-t"), a = before[k], b = t.getBoundingClientRect(), mine = ids.indexOf(k) > -1;
       if(!a || !t.animate) return;
-      if(k === id && !closing){
+      if(mine && open){
         // opening: start as the small tile's box, clipped, then grow to the full row
         var dy = a.top - b.top, dx = a.left - b.left;
         t.animate([
@@ -1149,21 +1159,19 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         if(inner && inner.animate) inner.animate([{ opacity: 0 }, { opacity: 0, offset: .35 }, { opacity: 1 }], { duration: 360, easing: "linear" });
         return;
       }
-      if(k === id && closing){
-        t.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: 300, easing: "linear" });
-      }
+      if(mine && !open) t.animate([{ opacity: 0 }, { opacity: 0, offset: .55 }, { opacity: 1 }], { duration: 300, easing: "linear" });
       if(Math.abs(a.left - b.left) > .5 || Math.abs(a.top - b.top) > .5) t.animate([{ transform: "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px)" }, { transform: "none" }], { duration: 360, easing: ease });
     });
-    if(ghost){
-      box.appendChild(ghost);
-      var small = box.querySelector('.stile[data-t="' + id + '"]').getBoundingClientRect(), gb = ghost.getBoundingClientRect();
+    ghosts.forEach(function(G){
+      box.appendChild(G.g);
+      var small = box.querySelector('.stile[data-t="' + G.id + '"]').getBoundingClientRect(), gb = G.g.getBoundingClientRect();
       var ddx = small.left - gb.left, ddy = small.top - gb.top;
-      var an = ghost.animate([
+      var an = G.g.animate([
         { clipPath: "inset(0px 0px 0px 0px round 16px)", opacity: 1 },
         { clipPath: "inset(" + Math.max(0, ddy) + "px " + Math.max(0, gb.width - ddx - small.width) + "px " + Math.max(0, gb.height - ddy - small.height) + "px " + Math.max(0, ddx) + "px round 16px)", opacity: .2 }
       ], { duration: 300, easing: ease, fill: "forwards" });
-      an.onfinish = function(){ ghost.remove(); };
-    }
+      an.onfinish = function(){ G.g.remove(); };
+    });
   }
 
   // ---- HAND: the opening four, the turns after, and the odds ----
@@ -1704,9 +1712,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "opset"){ var oc = t.getAttribute("data-code"); if(OREP) OD = [oc]; else if(OD.indexOf(oc) < 0 && OD.length < 3) OD.push(oc); openPanel(null); renderHand(); return; }
     if(a === "oout"){ OD = OD.filter(function(c){ return c !== t.getAttribute("data-code"); }); renderHand(); return; }
     if(t.hasAttribute("data-om")){ OM = +t.getAttribute("data-om"); renderHand(); return; }
+    if(a === "sall"){ statAll(); return; }
     if(a === "stile"){ statTile(t.getAttribute("data-t")); return; }
     if(a === "umenu"){ fillUndo(); openPanel(el("pundo")); return; }
-    if(a === "undoto"){ openPanel(null); undo(+t.getAttribute("data-n")); return; }
+    if(a === "undoat"){ openPanel(null); undoAt(+t.getAttribute("data-i")); return; }
     if(a === "hsort"){ fillDsort(); openPanel(el("pdsort")); return; }
     if(a === "dsset"){ SET.dsort = t.getAttribute("data-v"); saveSet(); openPanel(null); renderHome(); return; }
     if(a === "dmopen"){ openPanel(null); go("deck", DM); return; }
