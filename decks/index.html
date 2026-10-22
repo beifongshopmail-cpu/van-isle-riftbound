@@ -666,24 +666,32 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   function bare(d){ var c = JSON.parse(JSON.stringify(d)); delete c.t; return JSON.stringify(c); }
   function snapNow(){ var d = deck(); LASTJ = d ? bare(d) : ""; LASTID = d ? d.id : ""; }
   // a change in words, read from the deck before and after it
+  // a change in words, read from the deck before and after it (round 6, Mako 2026-10-22: short,
+  // '+1 Chaos Rune'; only the Sideboard and Considering are named, the rest is clear)
   function changeWords(a, b){
     function cn(c){ var x = C(c); return x ? nm(x) : c; }
-    var SEC = { main: "Main deck", side: "Side deck", maybe: "Considering", runes: "Runes" }, out = [];
-    if(a.legend !== b.legend) out.push(b.legend ? "Legend: " + cn(b.legend) : "Removed the Legend");
-    b.bf.forEach(function(c){ if(a.bf.indexOf(c) < 0) out.push("Added " + cn(c)); });
-    a.bf.forEach(function(c){ if(b.bf.indexOf(c) < 0) out.push("Removed " + cn(c)); });
+    var MINUS = "−", WHERE = { side: "Sideboard", maybe: "Considering" }, out = [];
+    function num(n){ return (n > 0 ? "+" : MINUS) + Math.abs(n) + " "; }
+    var legend = a.legend !== b.legend;
+    if(legend) out.push(b.legend ? "Legend: " + cn(b.legend) : "Removed the Legend");
+    b.bf.forEach(function(c){ if(a.bf.indexOf(c) < 0) out.push("+1 " + cn(c)); });
+    a.bf.forEach(function(c){ if(b.bf.indexOf(c) < 0) out.push(MINUS + "1 " + cn(c)); });
     var moves = [];
-    Object.keys(SEC).forEach(function(s){
+    ["main", "side", "maybe", "runes"].forEach(function(s){
+      if(s === "runes" && legend) return;   // the Legend's own 6 and 6
       var keys = {}; Object.keys(a[s] || {}).concat(Object.keys(b[s] || {})).forEach(function(k){ keys[k] = 1; });
       Object.keys(keys).forEach(function(c){ var n = ((b[s] || {})[c] || 0) - ((a[s] || {})[c] || 0); if(n) moves.push({ s: s, c: c, n: n }); });
     });
     // one card's new printing: the same name out and in
     if(moves.length === 2 && moves[0].s === moves[1].s && moves[0].n === -moves[1].n && cn(moves[0].c) === cn(moves[1].c)) return "Printing: " + cn(moves[0].c);
-    if(moves.length === 2 && moves[0].c === moves[1].c && moves[0].n === -moves[1].n){ var to = moves[0].n > 0 ? moves[0] : moves[1]; return "Moved " + cn(to.c) + " to the " + SEC[to.s]; }
-    moves.forEach(function(m){ out.push((m.n > 0 ? "Added " : "Took out ") + (Math.abs(m.n) > 1 ? Math.abs(m.n) + " " : "") + cn(m.c) + (m.s === "main" ? "" : (m.n > 0 ? " to " : " from ") + (m.s === "runes" ? "Runes" : "the " + SEC[m.s]))); });
+    // one card moved between piles
+    if(moves.length === 2 && moves[0].c === moves[1].c && moves[0].n === -moves[1].n){ var to = moves[0].n > 0 ? moves[0] : moves[1]; return cn(to.c) + " to " + (WHERE[to.s] || "Main deck"); }
+    moves.sort(function(x, y){ return y.n - x.n; });
+    moves.forEach(function(m){ out.push(num(m.n) + cn(m.c) + (WHERE[m.s] ? (m.n > 0 ? " to " : " from ") + WHERE[m.s] : "")); });
     if(a.champ !== b.champ && b.champ) out.push("Chosen Champion: " + cn(b.champ));
     if(JSON.stringify(a.ver || {}) !== JSON.stringify(b.ver || {})){ var vk = Object.keys(b.ver || {}).filter(function(k){ return (a.ver || {})[k] !== b.ver[k]; })[0] || Object.keys(a.ver || {})[0]; if(vk) out.push("Price of " + cn(vk)); }
-    return out.length ? out[0] + (out.length > 1 ? " and " + (out.length - 1) + " more" : "") : "A change";
+    if(!out.length) return "A change";
+    return out.slice(0, 2).join(", ") + (out.length > 2 ? " and " + (out.length - 2) + " more" : "");
   }
   // UNDO (round 4, Mako 2026-10-21): a button in the plate, beside Export; it opens a menu
   // listing the changes newest first, in words; a tap undoes that change and those above it
@@ -993,7 +1001,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     rcodes.forEach(function(c){
       var x = C(c), n = d.runes[c] || 0;
       h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="runes" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + n + '" data-k="card">' + img(x, true) + '</button>' + vbPill(c, "gvb") + '<span class="lq">x' + n + '</span>'
-        + (EDIT ? '<div class="lsteps"><button type="button" class="lpm glass" data-act="rdec" data-code="' + esc(c) + '"' + (n < 1 ? " disabled" : "") + ' aria-label="One fewer ' + esc(nm(x)) + '" data-k="do">' + IC.minus + '</button><button type="button" class="lpm glass" data-act="rinc" data-code="' + esc(c) + '" aria-label="One more ' + esc(nm(x)) + '" data-k="do">' + IC.plus + '</button></div>' : '') + '</div>';
+        + (EDIT ? '<div class="lsteps"><button type="button" class="lpm glass" data-act="rdec" data-code="' + esc(c) + '"' + (n < 1 ? " disabled" : "") + ' aria-label="One fewer ' + esc(nm(x)) + '" data-k="do">' + IC.minus + '</button><button type="button" class="lpm glass" data-act="rinc" data-code="' + esc(c) + '"' + (r >= 12 && n >= r ? " disabled" : "") + ' aria-label="One more ' + esc(nm(x)) + '" data-k="do">' + IC.plus + '</button></div>' : '') + '</div>';
     });
     for(var i = rcodes.length; i < 2; i++) h += '<div class="lcell"><div class="lcard none">The Legend\'s runes show here.</div></div>';
     return h + '</div>';
@@ -1273,13 +1281,13 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   function ePick(code){
     var d = deck(), x = C(code), s = X.sectionOf(x), L = C(d.legend);
-    if(s === "legend"){ X.add(I, d, code); toast("Legend: " + nm(x)); }
+    if(s === "legend"){ X.add(I, d, code); X.fitRunes(I, d); toast("Legend: " + nm(x)); }
     else if(s === "bf"){
       if(d.bf.indexOf(code) > -1){ toast("Already in the deck"); return; }
       if(d.bf.length >= 3){ toast("Three battlefields already: remove one first"); return; }
       X.add(I, d, code); toast("Battlefield: " + nm(x));
     }
-    else if(s === "runes"){ d.runes[code] = (d.runes[code] || 0) + 1; }
+    else if(s === "runes"){ X.runeStep(I, d, code, 1); }
     else if(!d.champ && X.isChampUnit(x) && L && (x.g || []).indexOf(X.legendChamp(I, L)) > -1 && !d.main[code]){ X.setChamp(I, d, code); toast("Chosen Champion: " + nm(x)); }
     else d.main[code] = (d.main[code] || 0) + 1;
     HAND = null; ASIDE = [];
@@ -1451,7 +1459,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   function brPick(code){
     var d = deck(), x = C(code), s = BR.sec, L = C(d.legend);
-    if(s === "legend"){ X.add(I, d, code); save(); toast("Legend: " + nm(x)); brClose(); return; }
+    if(s === "legend"){ X.add(I, d, code); X.fitRunes(I, d); save(); toast("Legend: " + nm(x)); brClose(); return; }
     if(s === "bf"){
       if(d.bf.indexOf(code) > -1){ X.take(d, "bf", code); }
       else if(d.bf.length >= 3){ toast("Three battlefields already: remove one first"); return; }
@@ -1735,7 +1743,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     }
     if(a === "cstep"){
       var s3 = t.getAttribute("data-sec"), dir = +t.getAttribute("data-dir");
-      if(dir > 0) d[s3][CARD.code] = (d[s3][CARD.code] || 0) + 1; else X.take(d, s3, CARD.code);
+      if(s3 === "runes") X.runeStep(I, d, CARD.code, dir);
+      else if(dir > 0) d[s3][CARD.code] = (d[s3][CARD.code] || 0) + 1; else X.take(d, s3, CARD.code);
       HAND = null; ASIDE = [];
       save(); render(); fillCard(); return;
     }
@@ -1760,7 +1769,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "xsave"){ saveFile(xText()); return; }
     if(a === "shut"){ var sc = t.getAttribute("data-sec"); SET.shut[sc] = !SET.shut[sc]; saveSet(); render(); return; }
     if(a === "spot"){ spotOpen(t.getAttribute("data-code")); return; }
-    if(a === "rinc" || a === "rdec"){ var rc = t.getAttribute("data-code"); if(a === "rinc") d.runes[rc] = (d.runes[rc] || 0) + 1; else X.take(d, "runes", rc); save(); render(); return; }
+    // runes stay 12: a plus takes one from the other domain, a minus gives one to it (round 6)
+    if(a === "rinc" || a === "rdec"){ var rc = t.getAttribute("data-code"); if(X.runeStep(I, d, rc, a === "rinc" ? 1 : -1)){ save(); render(); } return; }
     if(a === "sinc" || a === "sdec"){ bump(t.getAttribute("data-sec"), t.getAttribute("data-code"), a === "sinc" ? 1 : -1); if(!el("brw").hidden) brRender(true); else { render(); if(EQ) eRender(); } return; }
     if(a === "badd"){ brOpen(t.getAttribute("data-sec")); return; }
     if(a === "bclose"){ brClose(); return; }
