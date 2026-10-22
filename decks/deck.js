@@ -705,6 +705,39 @@
     return Math.max(0, Math.min(1, total));
   }
 
+  // ---- UNDO ONE CHANGE, WHENEVER IT WAS (round 5, Mako 2026-10-21) ----
+  // prev and next are the deck just before and just after one change; cur is the deck now,
+  // perhaps with later changes on top. unchange() takes back only what that change did:
+  // counts by their difference (never below 0), and the Legend, Chosen Champion, battlefields
+  // and priced printings only where they still hold what the change set. Later changes stay.
+  function unchange(cur, prev, next) {
+    if (cur.legend === next.legend && prev.legend !== next.legend) { cur.legend = prev.legend; }
+    ["main", "side", "maybe", "runes"].forEach(function (s) {
+      var a = prev[s] || {}, b = next[s] || {}, all = {};
+      Object.keys(a).concat(Object.keys(b)).forEach(function (k) { all[k] = 1; });
+      cur[s] = cur[s] || {};
+      Object.keys(all).forEach(function (c) {
+        var dn = (b[c] || 0) - (a[c] || 0);
+        if (!dn) { return; }
+        var n = Math.max(0, (cur[s][c] || 0) - dn);
+        if (n) { cur[s][c] = n; } else { delete cur[s][c]; }
+      });
+    });
+    var pb = prev.bf || [], nb = next.bf || [];
+    nb.forEach(function (c) { if (pb.indexOf(c) < 0) { cur.bf = cur.bf.filter(function (x) { return x !== c; }); } });
+    pb.forEach(function (c) { if (nb.indexOf(c) < 0 && cur.bf.indexOf(c) < 0 && cur.bf.length < 3) { cur.bf.push(c); } });
+    if (cur.champ === next.champ && prev.champ !== next.champ) { cur.champ = prev.champ; }
+    var pv = prev.ver || {}, nv = next.ver || {}, vk = {};
+    Object.keys(pv).concat(Object.keys(nv)).forEach(function (k) { vk[k] = 1; });
+    Object.keys(vk).forEach(function (c) {
+      if (pv[c] === nv[c]) { return; }
+      cur.ver = cur.ver || {};
+      if (cur.ver[c] === nv[c]) { if (pv[c]) { cur.ver[c] = pv[c]; } else { delete cur.ver[c]; } }
+    });
+    if (cur.champ && !(cur.main || {})[cur.champ]) { cur.champ = ""; }
+    return cur;
+  }
+
   // ---- THE TOKENS A DECK MAKES: card text that plays a 'Name unit token' or 'Name gear token' ----
   function tokens(I, deck) {
     var out = {}, order = [];
@@ -879,7 +912,7 @@
     encode: encode, decode: decode, toText: toText, toCode: toCode, toTTS: toTTS, parse: parse,
     findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan,
     draw: draw, odds: odds, share: share, matches: matches,
-    tokens: tokens, needed: needed, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
+    tokens: tokens, needed: needed, unchange: unchange, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
   };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_DECK = API; }
