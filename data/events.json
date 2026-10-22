@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-22T05:49:40.653Z",
- "generated_local": "2026-10-21T22:49:40-07:00",
- "window_start": "2026-10-21T07:00:00.000Z",
+ "generated_at": "2026-10-22T17:52:37.549Z",
+ "generated_local": "2026-10-22T10:52:37-07:00",
+ "window_start": "2026-10-22T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 29,
-   "added": 29
+   "returned": 28,
+   "added": 28
   },
   {
    "name": "Courtenay",
@@ -47,35 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 33,
-  "unique": 33,
-  "prev_unique": 32
+  "fetched": 32,
+  "unique": 32,
+  "prev_unique": 33
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117129739220447379",
-   "name": "Gauntlet Games Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-21T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-21",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 29,
-   "cents": 4000,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 2069,
-   "store": "Gauntlet"
-  },
   {
    "id": "rb117125741673379397",
    "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
