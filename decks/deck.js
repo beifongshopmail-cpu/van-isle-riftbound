@@ -705,6 +705,49 @@
     return Math.max(0, Math.min(1, total));
   }
 
+  // ---- RUNES ARE ALWAYS 12 (round 6, Mako 2026-10-22) ----
+  // A Legend's two domains split the 12: picking a Legend fills 6 and 6 (12 of one for a
+  // one-domain Legend) unless the deck's runes already fit it. A plus on one domain takes one
+  // from the other once there are 12; a minus gives it to the other.
+  function baseRuneOf(I, dm) {
+    var best = null;
+    I.list.forEach(function (x) { if (x.t === "rune" && (x.d || [])[0] === dm && (!best || rank(x) < rank(best))) { best = x; } });
+    return best ? codeOf(best.c) : "";
+  }
+  function legendDomains(I, deck) {
+    var L = card(I, deck.legend);
+    return ((L && L.d) || []).filter(function (d) { return d !== "colorless"; });
+  }
+  function fitRunes(I, deck) {
+    var ds = legendDomains(I, deck);
+    if (!ds.length) { return false; }
+    var fits = sum(deck.runes) > 0 && keys(deck.runes).every(function (c) { var x = card(I, c); return x && ds.indexOf((x.d || [])[0]) > -1; });
+    if (fits) { return false; }
+    deck.runes = {};
+    if (ds.length === 1) { deck.runes[baseRuneOf(I, ds[0])] = 12; }
+    else { deck.runes[baseRuneOf(I, ds[0])] = 6; deck.runes[baseRuneOf(I, ds[1])] = 6; }
+    return true;
+  }
+  // dir +1 or -1 on one rune card; returns true when something changed
+  function runeStep(I, deck, code, dir) {
+    var x = card(I, code), dm = x && (x.d || [])[0], ds = legendDomains(I, deck);
+    var other = ds.filter(function (d) { return d !== dm; })[0];
+    function biggest(d) { var best = ""; keys(deck.runes).forEach(function (c) { var y = card(I, c); if (y && (y.d || [])[0] === d && (!best || deck.runes[c] > deck.runes[best])) { best = c; } }); return best; }
+    var total = sum(deck.runes);
+    if (dir > 0) {
+      if (total < 12) { deck.runes[code] = (deck.runes[code] || 0) + 1; return true; }
+      var from = other ? biggest(other) : "";
+      if (!from) { return false; }
+      deck.runes[from] -= 1; if (!deck.runes[from]) { delete deck.runes[from]; }
+      deck.runes[code] = (deck.runes[code] || 0) + 1;
+      return true;
+    }
+    if (!deck.runes[code]) { return false; }
+    deck.runes[code] -= 1; if (!deck.runes[code]) { delete deck.runes[code]; }
+    if (other && sum(deck.runes) < 12) { var to = biggest(other) || baseRuneOf(I, other); deck.runes[to] = (deck.runes[to] || 0) + 1; }
+    return true;
+  }
+
   // ---- UNDO ONE CHANGE, WHENEVER IT WAS (round 5, Mako 2026-10-21) ----
   // prev and next are the deck just before and just after one change; cur is the deck now,
   // perhaps with later changes on top. unchange() takes back only what that change did:
@@ -912,7 +955,7 @@
     encode: encode, decode: decode, toText: toText, toCode: toCode, toTTS: toTTS, parse: parse,
     findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan,
     draw: draw, odds: odds, share: share, matches: matches,
-    tokens: tokens, needed: needed, unchange: unchange, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
+    tokens: tokens, needed: needed, unchange: unchange, fitRunes: fitRunes, runeStep: runeStep, baseRuneOf: baseRuneOf, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
   };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_DECK = API; }
