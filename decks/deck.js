@@ -947,8 +947,18 @@
     if (!w.length) { return true; }
     var hay = [deck.name || ""], codes = [deck.legend, deck.champ].concat(keys(deck.main), keys(deck.side), keys(deck.maybe), keys(deck.runes), deck.bf || []);
     codes.forEach(function (c) { var x = card(I, c); if (x) { hay.push(full(I, x)); } });
+    // the Legend's domains, by name and by the colour players call them (round 9, Mako
+    // 2026-10-22: 'yellow' finds an Order deck)
+    // a colour word checks only the domains, so 'red' does not find every card named '...red...'
+    var L = card(I, deck.legend), COLOUR = { fury: "red", calm: "green", mind: "blue", body: "orange", chaos: "purple", order: "yellow" };
+    var doms = ((L && L.d) || []).filter(function (d) { return COLOUR[d]; });
+    doms.forEach(function (d) { hay.push(d); });
+    var cols = doms.map(function (d) { return COLOUR[d]; });
     var h = norm(hay.join(" | "));
-    return w.every(function (x) { return h.indexOf(x) > -1; });
+    return w.every(function (x) {
+      if (/^(red|green|blue|orange|purple|yellow)$/.test(x)) { return cols.indexOf(x) > -1; }
+      return h.indexOf(x) > -1;
+    });
   }
 
   var API = {

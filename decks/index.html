@@ -53,9 +53,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dwrap.lift .dcard{box-shadow:var(--glass-base),0 10px 28px rgba(0,0,0,.55)}
 /* a deck's block wears its Legend's two domains, the split following the Main deck's share
    (--s); the coloured glass recipe (.cg) with two colours */
-.dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),.44) calc(var(--s) - 7%),rgba(var(--c2),.44) calc(var(--s) + 7%)),var(--frost-solid)}
+.dcard.cg2{background:linear-gradient(115deg,rgba(var(--c),.44) calc(var(--s) - 12%),rgba(var(--c2),.44) calc(var(--s) + 12%)),var(--frost-solid)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),.44) calc(var(--s) - 7%),rgba(var(--c2),.44) calc(var(--s) + 7%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+  .dcard.cg2{background:linear-gradient(115deg,rgba(var(--c),.44) calc(var(--s) - 12%),rgba(var(--c2),.44) calc(var(--s) + 12%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 }
 .dcard.cg2 .dcsub{color:#DCDEE2}
 .dcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 14px 10px 10px;border-radius:22px;text-align:left;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
@@ -63,8 +63,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dcpic{flex:0 0 54px;width:54px;height:75px;border-radius:5px;overflow:hidden;background:var(--recess)} /* size-exempt: card art image */
 .dcpic img{display:block;width:100%;height:100%;object-fit:cover}
 /* round 8 (Mako 2026-10-22): the domain marks span the Legend art, top to foot, a touch bigger */
-.dcrun{flex:0 0 auto;align-self:center;height:75px;display:flex;flex-direction:column;justify-content:space-between}
-.dcrun .rgl.md{width:33px;height:33px} /* size-exempt: rune image */
+.dcrun{flex:0 0 auto;align-self:center;height:71px;display:flex;flex-direction:column;justify-content:space-between}   /* 2 inside the art's top and foot (round 9) */
+.dcrun .rgl.md{width:30px;height:30px} /* size-exempt: rune image */
 .dcmid{flex:1;min-width:0}
 .dcname{display:block;font-family:var(--disp);font-size:20px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dcsub{display:block;margin-top:4px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -84,8 +84,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .plate{width:calc(100% - 24px);max-width:456px;margin:0 auto;border-radius:24px;padding:10px;
   background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.32) calc(var(--s) - 9%),rgba(var(--c2),.32) calc(var(--s) + 9%)),rgba(10,11,13,.94)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.32) calc(var(--s) - 9%),rgba(var(--c2),.32) calc(var(--s) + 9%)),rgba(10,11,13,.5)}}
+.plate.cg2{background:linear-gradient(115deg,rgba(var(--c),.32) calc(var(--s) - 12%),rgba(var(--c2),.32) calc(var(--s) + 12%)),rgba(10,11,13,.94)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(115deg,rgba(var(--c),.32) calc(var(--s) - 12%),rgba(var(--c2),.32) calc(var(--s) + 12%)),rgba(10,11,13,.5)}}
 .plate.cg2 .ptl span{color:#DCDEE2}
 /* the deck's plate: 10 + 36 + 8 + 40 (+ 8 + 40, the view row in Deck) + 10, plus a 14 gap */
 .hold{height:118px}
@@ -177,9 +177,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .lcard img{display:block;width:100%;height:100%;object-fit:cover}
 .lcard.none{display:grid;place-items:center;padding:8px;font-size:12px;line-height:1.4;color:var(--muted);text-align:center}
 .lcell .addt{margin:0;height:auto;min-height:0;aspect-ratio:744/1039;flex-direction:column}
-.lq{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:44px;height:24px;padding:0;border-radius:12px;display:grid;place-items:center;pointer-events:none;
+.lq{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:40px;height:24px;padding:0;border-radius:12px;display:grid;place-items:center;pointer-events:none;
   background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:700} /* the count, Piltover's xN */
-.lsteps{position:absolute;left:50%;bottom:1px;transform:translateX(-50%);width:116px;display:flex;justify-content:space-between;pointer-events:none}   /* 34 + 2 + the 44 badge + 2 + 34 */
+.lsteps{position:absolute;left:50%;bottom:1px;transform:translateX(-50%);width:112px;display:flex;justify-content:space-between;pointer-events:none}   /* 34 + 2 + the 40 badge + 2 + 34: fits a 3-across card */
+.lpm.glass.bin{background:rgba(229,72,77,.32)}   /* at one copy the minus is the bin, as in List */
 .lpm.glass{flex:0 0 auto;pointer-events:auto;width:var(--sz-seg);height:var(--sz-seg);border-radius:50%;display:grid;place-items:center;
   background:rgba(10,11,13,.82);color:var(--bone);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
 .lpm.glass svg{width:18px;height:18px}
@@ -233,8 +234,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 /* BATTLEFIELDS IN GRID, the size of every other card (round 8, Mako 2026-10-22): the
    landscape picture turned a quarter on its side in a portrait slot, three across; a tap
    shows it upright and full size */
-.gpic.rot{position:relative}
-.gpic.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(90deg)}
+.gpic.rot,.mpic.rot,.art.rot{position:relative;overflow:hidden}
+.gpic.rot img,.mpic.rot img,.art.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
 
 .gq{position:absolute;right:5px;bottom:5px;min-width:30px;height:24px;padding:0 7px;border-radius:12px;display:grid;place-items:center;pointer-events:none;
   background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:700}
@@ -320,12 +321,13 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .pti{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;padding-top:4px}
 .pti .cnm{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pti small{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--muted)}
-.pchk{flex:0 0 auto;width:18px;height:18px;margin:5px 4px 0 0;fill:none;stroke:var(--bone);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pchk{flex:0 0 auto;align-self:center;width:18px;height:18px;margin:0 4px 0 0;fill:none;stroke:var(--bone);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 /* A PRINTING WITH NO PICTURE OF ITS OWN carries its kind as a badge on the picture it borrows
    (round 4, Mako 2026-10-21): bone, so it never reads as Banned's red */
 .vbadge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;background:var(--bone);color:var(--ink);
   font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.35);pointer-events:none}
 .art.pv{position:relative;overflow:visible}
+.art.pv.rot{overflow:hidden}
 .art.pv img{border-radius:5px}
 .vbadge.sm{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);height:18px;padding:0 6px;border-radius:9px;font-size:12px}
 
@@ -806,6 +808,15 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(d === "colorless") return '<span class="rgl' + (cls ? " " + cls : "") + '" role="img" aria-label="Colorless" style="--rc:' + RUNE_RGB.colorless + '"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.2" fill="none" stroke="#121316" stroke-width="2.2"/></svg></span>';
     return '<span class="rgl' + (cls ? " " + cls : "") + '" role="img" aria-label="' + esc(cap(d)) + '" style="--rc:' + (RUNE_RGB[d] || "128,128,128") + '"><svg viewBox="0 0 24 24" aria-hidden="true"><image href="../cards/runes/rune_' + esc(d) + '.svg" width="24" height="24" filter="url(#rglyph)"/></svg></span>';
   }
+  // A CARD'S COUNT ON ITS PICTURE, the runes' way, everywhere (round 9, Mako 2026-10-22): a
+  // pill centred at the foot; Edit adds only minus (the bin at one copy) and plus beside it
+  function qty(sec, code, n, edit){
+    var h = '<span class="lq">x' + n + '</span>';
+    if(!edit) return h;
+    var dec = n <= 1 ? '<button type="button" class="lpm glass bin" data-act="sdec" data-sec="' + sec + '" data-code="' + esc(code) + '" aria-label="Remove" data-k="do">' + IC.bin + '</button>'
+                     : '<button type="button" class="lpm glass" data-act="sdec" data-sec="' + sec + '" data-code="' + esc(code) + '" aria-label="One fewer" data-k="do">' + IC.minus + '</button>';
+    return h + '<div class="lsteps">' + dec + '<button type="button" class="lpm glass" data-act="sinc" data-sec="' + sec + '" data-code="' + esc(code) + '" aria-label="One more" data-k="do">' + IC.plus + '</button></div>';
+  }
   function stepper(sec, code, n, small){
     var dec = n <= 1 ? '<button type="button" class="circ btn glass bin" data-act="sdec" data-sec="' + sec + '" data-code="' + esc(code) + '" aria-label="Remove" data-k="do">' + IC.bin + '</button>'
                      : '<button type="button" class="circ btn glass" data-act="sdec" data-sec="' + sec + '" data-code="' + esc(code) + '" aria-label="One fewer" data-k="do">' + IC.minus + '</button>';
@@ -932,8 +943,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         g.codes.forEach(function(c){
           var x = C(c), champ = sec === "main" && d.champ === c;
           h += '<div class="gcell"><button type="button" class="gpic" data-act="card" data-sec="' + sec + '" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', ' + m[c] + (champ ? ', Chosen Champion' : '') + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>'
-            + (champ ? '<span class="gstar">' + IC.star + '</span>' : '') + badges(x, c, EDIT && cols === 3 ? "ed" : "")
-            + (EDIT && cols === 3 ? '<div class="gstp">' + stepper(sec, c, m[c]) + '</div>' : '<span class="gq">x' + m[c] + '</span>') + '</div>';
+            + (champ ? '<span class="gstar">' + IC.star + '</span>' : '') + badges(x, c)
+            + qty(sec, c, m[c], EDIT && cols === 3) + '</div>';
         });
         if(gi === gs.length - 1 && EDIT) h += addTile.replace('<span>Add cards</span>', '<span>Add</span>');
         h += '</div>';
@@ -1290,8 +1301,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     BR.sort = keep;
     hits.slice(0, 60).forEach(function(x){
       var c = X.codeOf(x.c), n = eCount(x), s = X.sectionOf(x), land = x.o === "landscape" || s === "bf";
-      var mark = n ? (s === "main" ? '<div class="gstp">' + stepper("main", c, n) + '</div>' : '<span class="gq">' + (s === "runes" ? "x" + n : "In deck") + '</span>') : "";
-      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", n && s === "main" ? "ed" : "low") + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+      var mark = n ? (s === "main" ? qty("main", c, n, true) : '<span class="gq">' + (s === "runes" ? "x" + n : "In deck") + '</span>') : "";
+      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", n && s === "main" ? "" : "low") + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
     });
     box.innerHTML = hits.length ? '<div class="bgrid">' + h + '</div>' + (hits.length > 60 ? '<p class="bnote">' + (hits.length - 60) + ' more: add a word to narrow it.</p>' : '') : '<p class="bnone">No cards match. Try another word.</p>';
     w.classList.add("open");
@@ -1447,9 +1458,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   function brTile(x){
     var c = X.codeOf(x.c), n = inDeck(c), land = x.o === "landscape";
     var stp = "";
-    if(n && (BR.sec === "main" || BR.sec === "side" || BR.sec === "maybe")) stp = '<div class="gstp">' + stepper(BR.sec, c, n) + '</div>';
+    if(n && (BR.sec === "main" || BR.sec === "side" || BR.sec === "maybe")) stp = qty(BR.sec, c, n, true);
     else if(n) stp = '<span class="gq">In deck</span>';
-    return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", stp && stp.indexOf("gstp") > -1 ? "ed" : "low") + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+    return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", stp && stp.indexOf("lsteps") > -1 ? "" : "low") + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
   }
   function brRender(keepScroll){
     var list = brPool().filter(brMatch).sort(brSort), h = "";
@@ -1508,7 +1519,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     var d = deck(), x = C(CARD.code), sec = CARD.sec, h = "", f = "";
     if(!x){ return false; }
     el("cttl").textContent = nm(x);
-    h += '<div class="mbox"' + (x.o === "landscape" ? ' style="width:200px"' : '') + '><button type="button" class="mpic' + (x.o === "landscape" ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + badges(x, CARD.code, "menu") + '</div>';
+    // a battlefield shows turned, portrait, as in the deck's Grid (round 9); the full card stays upright
+    var turn = x.t === "battlefield" || x.o === "landscape";
+    h += '<div class="mbox"><button type="button" class="mpic' + (turn ? " rot" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + badges(x, CARD.code, "menu") + '</div>';
     function qrow(s2, label){
       var n = s2 === "runes" ? (d.runes[CARD.code] || 0) : (d[s2][CARD.code] || 0);
       return '<div class="qrow"><span class="t">' + label + '</span><div class="stp" data-k="do">'
@@ -1535,7 +1548,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         var mine = r.code ? (r.code === CARD.code && (!cur || r.fins.some(function(f){ return f.id + "|" + f.fin === cur; }))) : r.fins.some(function(f){ return f.id + "|" + f.fin === cur; });
         var dfin = r.fins.filter(function(f){ return f.fin === "Normal"; })[0] || r.fins[0];
         h += '<div class="prow' + (mine ? " on" : "") + '"><button type="button" class="prb" data-act="pset" data-code="' + esc(r.code) + '" data-v="' + (r.code ? "" : esc(dfin.id + "|" + dfin.fin)) + '" aria-pressed="' + mine + '" data-k="pick">'
-          + '<span class="art pv">' + img(C(r.pic)) + (r.promo ? '<span class="vbadge sm">PROMO</span>' : '') + '</span><span class="pti"><span class="cnm">' + esc((r.setName ? r.setName + ", " : "") + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small></span>'
+          + '<span class="art pv' + (x.t === "battlefield" ? " rot" : "") + '">' + img(C(r.pic)) + (r.promo ? '<span class="vbadge sm">PROMO</span>' : '') + '</span><span class="pti"><span class="cnm">' + esc((r.setName ? r.setName + ", " : "") + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small></span>'
           + (mine ? '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') + '</button>';
         if(r.fins.length && SET.price){
           h += '<div class="pfins" role="group" aria-label="Finish" data-k="pick">';
