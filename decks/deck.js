@@ -886,6 +886,8 @@
     if (/showcase/i.test(v.rarity)) { return "Showcase"; }
     return "Base";
   }
+  // short kinds, so a printing's title always fits (Mako 2026-10-22: ON, Sig.)
+  function shortKind(k) { return String(k || "").replace(/^Overnumbered\b/, "ON").replace(/^Signature\b/, "Sig."); }
   function printingsOf(I, PX, x, setNames) {
     if (!x) { return []; }
     var name = full(I, x), seen = {}, riot = (I.names[norm(name)] || []).filter(function (y) {
@@ -900,7 +902,7 @@
       prods.forEach(function (c) { taken[c.i] = 1; Object.keys(c.p).forEach(function (f) { fins.push({ id: c.i, fin: f, price: c.p[f] }); }); });
       var m = prods[0] ? /\(([^)]*)\)\s*$/.exec(prods[0].n) : null;
       rows.push({ code: code, pic: code, own: true, set: p.set, setName: (setNames && setNames[p.set]) || p.set, num: (p.pre || "") + p.num + (p.v || ""),
-        kind: kindOf(y, m ? m[1] : "", prods[0] ? prods[0].r : ""), fins: fins, t: SETS.indexOf(p.set) * 1000 + (p.v || p.pre ? 500 : 0) + (+p.num || 0) });
+        kind: shortKind(kindOf(y, m ? m[1] : "", prods[0] ? prods[0].r : "")), promo: false, fins: fins, t: SETS.indexOf(p.set) * 1000 + (p.v || p.pre ? 500 : 0) + (+p.num || 0) });
     });
     if (PX) {
       versionsOf(I, PX, x).forEach(function (v) {
@@ -908,9 +910,10 @@
         var row = null;
         rows.forEach(function (r) { if (!r.code && r.id === v.id) { row = r; } });
         if (!row) {
-          var s = PX.sets[PX.byId[v.id].g];
-          row = { code: "", id: v.id, pic: codeOf(base.c), own: false, set: s.a, setName: s.n.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, "").replace(/\s+Promotional$/, ""),
-            num: v.num, kind: tcgKind(v, s), fins: [], t: 100000 + v.t / 1e6 + v.id / 1e9 };
+          var s = PX.sets[PX.byId[v.id].g], promoSet = /promo/i.test(s.n), kind = tcgKind(v, s);
+          row = { code: "", id: v.id, pic: codeOf(base.c), own: false, set: s.a,
+            setName: promoSet ? "" : s.n.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, ""),
+            num: v.num, kind: shortKind(kind), promo: promoSet || /promo|top 8|champion/i.test(kind) || /promo/i.test(v.rarity), fins: [], t: 100000 + v.t / 1e6 + v.id / 1e9 };
           rows.push(row);
         }
         row.fins.push({ id: v.id, fin: v.fin, price: v.price });

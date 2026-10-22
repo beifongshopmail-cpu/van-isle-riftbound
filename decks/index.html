@@ -53,19 +53,21 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dwrap.lift .dcard{box-shadow:var(--glass-base),0 10px 28px rgba(0,0,0,.55)}
 /* a deck's block wears its Legend's two domains, the split following the Main deck's share
    (--s); the coloured glass recipe (.cg) with two colours */
-.dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),var(--cg)) calc(var(--s) - 22%),rgba(var(--c2),var(--cg)) calc(var(--s) + 22%)),var(--frost-solid)}
+.dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),.44) calc(var(--s) - 7%),rgba(var(--c2),.44) calc(var(--s) + 7%)),var(--frost-solid)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),var(--cg)) calc(var(--s) - 22%),rgba(var(--c2),var(--cg)) calc(var(--s) + 22%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+  .dcard.cg2{background:linear-gradient(180deg,rgba(var(--c),.44) calc(var(--s) - 7%),rgba(var(--c2),.44) calc(var(--s) + 7%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 }
 .dcard.cg2 .dcsub{color:#DCDEE2}
 .dcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 14px 10px 10px;border-radius:22px;text-align:left;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .dcard:active{transform:scale(.98)}
 .dcpic{flex:0 0 54px;width:54px;height:75px;border-radius:5px;overflow:hidden;background:var(--recess)} /* size-exempt: card art image */
 .dcpic img{display:block;width:100%;height:100%;object-fit:cover}
-.dcrun{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
+/* round 8 (Mako 2026-10-22): the domain marks span the Legend art, top to foot, a touch bigger */
+.dcrun{flex:0 0 auto;align-self:center;height:75px;display:flex;flex-direction:column;justify-content:space-between}
+.dcrun .rgl.md{width:33px;height:33px} /* size-exempt: rune image */
 .dcmid{flex:1;min-width:0}
-.dcname{display:block;font-family:var(--disp);font-size:17px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dcsub{display:block;margin-top:2px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dcname{display:block;font-family:var(--disp);font-size:20px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dcsub{display:block;margin-top:4px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dcname{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .dcend{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
 .dcstat{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap}
@@ -82,8 +84,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .plate{width:calc(100% - 24px);max-width:456px;margin:0 auto;border-radius:24px;padding:10px;
   background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.22) calc(var(--s) - 30%),rgba(var(--c2),.22) calc(var(--s) + 30%)),rgba(10,11,13,.94)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.22) calc(var(--s) - 30%),rgba(var(--c2),.22) calc(var(--s) + 30%)),rgba(10,11,13,.5)}}
+.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.32) calc(var(--s) - 9%),rgba(var(--c2),.32) calc(var(--s) + 9%)),rgba(10,11,13,.94)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(180deg,rgba(var(--c),.32) calc(var(--s) - 9%),rgba(var(--c2),.32) calc(var(--s) + 9%)),rgba(10,11,13,.5)}}
 .plate.cg2 .ptl span{color:#DCDEE2}
 /* the deck's plate: 10 + 36 + 8 + 40 (+ 8 + 40, the view row in Deck) + 10, plus a 14 gap */
 .hold{height:118px}
@@ -228,6 +230,11 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .gcell{position:relative;min-width:0}
 .gpic{display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
 .gpic.land{aspect-ratio:1039/744}
+/* BATTLEFIELDS IN GRID, the size of every other card (round 8, Mako 2026-10-22): the
+   landscape picture turned a quarter on its side in a portrait slot, three across; a tap
+   shows it upright and full size */
+.gpic.rot{position:relative}
+.gpic.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(90deg)}
 
 .gq{position:absolute;right:5px;bottom:5px;min-width:30px;height:24px;padding:0 7px;border-radius:12px;display:grid;place-items:center;pointer-events:none;
   background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:700}
@@ -777,7 +784,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(!v || !PX || !I) return "";
     var key = code + "#" + v; if(VKC[key] != null) return VKC[key];
     var id = +v.split("|")[0], k = "";
-    X.printingsOf(I, PX, C(code), (window.__CATL && window.__CATL.sets) || {}).forEach(function(r){ if(!r.code && r.fins.some(function(f){ return f.id === id; })) k = r.kind.split(",")[0]; });
+    X.printingsOf(I, PX, C(code), (window.__CATL && window.__CATL.sets) || {}).forEach(function(r){ if(!r.code && r.promo && r.fins.some(function(f){ return f.id === id; })) k = "PROMO"; });
     return (VKC[key] = k);
   }
   function vbPill(code, cls){ var k = verKind(code); return k ? '<span class="vbadge' + (cls ? " " + cls : "") + '">' + esc(k) + '</span>' : ""; }
@@ -787,7 +794,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     var b = banPill(x) + (code ? vbPill(code) : "");
     return b ? '<span class="bstack' + (place ? " " + place : "") + '">' + b + '</span>' : "";
   }
-  function banPill(x, cls){ return banned(x) ? '<span class="ban' + (cls ? " " + cls : "") + '">' + IC.noent + 'Banned</span>' : ""; }
+  function banPill(x, cls){ return banned(x) ? '<span class="ban' + (cls ? " " + cls : "") + '">' + IC.noent + 'BANNED</span>' : ""; }
   // the deck's two colours, for its block and its plate
   function colours(d){
     var sh = X.share(I, d);
@@ -982,7 +989,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       h += '<div class="cgrid" style="--gc:3">';
       d.bf.forEach(function(c){
         var x = C(c);
-        h += '<div class="gcell"><button type="button" class="gpic land" data-act="card" data-sec="bf" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>' + badges(x, c, "low")
+        h += '<div class="gcell"><button type="button" class="gpic rot" data-act="card" data-sec="bf" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x) + '</button>' + badges(x, c, "low")
           + (EDIT ? '<div class="lsteps" style="left:auto;right:3px;bottom:3px;transform:none;width:auto"><button type="button" class="lpm glass" data-act="sdec" data-sec="bf" data-code="' + esc(c) + '" aria-label="Remove ' + esc(nm(x)) + '" data-k="do">' + IC.bin + '</button></div>' : '') + '</div>';
       });
       h += '</div>';
@@ -1515,7 +1522,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     } else if(sec === "runes"){
       h += '<div class="qrows">' + qrow("runes", "Runes") + '</div>';
     } else if(sec === "legend" || sec === "bf"){
-      f += '<button type="button" class="pact btn glass" data-act="cdrop" data-k="do">' + (sec === "legend" ? "Remove the Legend" : "Remove this battlefield") + '</button>';
+      // the Legend's menu changes it too (Mako 2026-10-22: its printing must be choosable in Edit)
+      if(sec === "legend") f += '<div class="two" style="margin-top:0"><button type="button" class="pact btn glass" data-act="lchange" data-k="do">Change Legend</button><button type="button" class="pact btn glass" data-act="cdrop" data-k="do">Remove</button></div>';
+      else f += '<button type="button" class="pact btn glass" data-act="cdrop" data-k="do">Remove this battlefield</button>';
     }
     // ONE PRINTING LIST (round 3, Mako 2026-10-20): each printing once, with its picture, its
     // kind and number, and the finishes it is sold in; a finish sets what the card costs
@@ -1526,7 +1535,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         var mine = r.code ? (r.code === CARD.code && (!cur || r.fins.some(function(f){ return f.id + "|" + f.fin === cur; }))) : r.fins.some(function(f){ return f.id + "|" + f.fin === cur; });
         var dfin = r.fins.filter(function(f){ return f.fin === "Normal"; })[0] || r.fins[0];
         h += '<div class="prow' + (mine ? " on" : "") + '"><button type="button" class="prb" data-act="pset" data-code="' + esc(r.code) + '" data-v="' + (r.code ? "" : esc(dfin.id + "|" + dfin.fin)) + '" aria-pressed="' + mine + '" data-k="pick">'
-          + '<span class="art pv">' + img(C(r.pic)) + (r.own ? '' : '<span class="vbadge sm">' + esc(r.kind.split(",")[0]) + '</span>') + '</span><span class="pti"><span class="cnm">' + esc(r.setName + ", " + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small></span>'
+          + '<span class="art pv">' + img(C(r.pic)) + (r.promo ? '<span class="vbadge sm">PROMO</span>' : '') + '</span><span class="pti"><span class="cnm">' + esc((r.setName ? r.setName + ", " : "") + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small></span>'
           + (mine ? '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') + '</button>';
         if(r.fins.length && SET.price){
           h += '<div class="pfins" role="group" aria-label="Finish" data-k="pick">';
@@ -1800,10 +1809,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "card"){
       if(t.closest("#vhand")) return;
       CARD = { code: t.getAttribute("data-code"), sec: t.getAttribute("data-sec") };
-      if(CARD.sec === "legend" && EDIT){ brOpen("legend"); return; }
       if(fillCard()) openPanel(el("pcard")); return;
     }
     if(a === "champ"){ X.setChamp(I, d, CARD.code); toast("Chosen Champion: " + nm(C(CARD.code))); save(); render(); fillCard(); return; }
+    if(a === "lchange"){ openPanel(null); brOpen("legend"); return; }
     if(a === "cdrop"){ X.take(d, CARD.sec, CARD.code); save(); render(); openPanel(null); return; }
     if(a === "hpick"){
       var i = +t.getAttribute("data-i"), ai = ASIDE.indexOf(i);
