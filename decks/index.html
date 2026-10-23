@@ -379,11 +379,13 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .otile span{display:block;font-size:12px;color:var(--muted);white-space:nowrap}
 
 /* ---- THE CARD BROWSER: full screen, as Runes' (a bend of STYLE.md's every-overlay-is-a-menu, Mako 2026-10-17) ---- */
-.brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
-  padding-top:calc(var(--top-clear) - 10px)}
+.brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 /* its search rides the pages' floating plate (round 10, Mako 2026-10-23): parked where the
-   deck's plate parks, so its words start at --top-clear */
-.bhead{position:sticky;top:calc(var(--top-clear) - 10px);z-index:2}
+   deck's plate parks, so its words start at --top-clear. The gap above it is a margin, never
+   the scroller's padding: a sticky's top counts from inside that padding, so padding doubled
+   the gap (160 on an iPhone 17, not 80; round 11) */
+.bhead{position:sticky;top:calc(var(--top-clear) - 10px);margin-top:calc(var(--top-clear) - 10px);z-index:2}
+.bnote b{display:block;font-weight:inherit}
 .bin1{max-width:456px;margin:0 auto}
 .bsr{display:flex;align-items:center;gap:8px}
 .bsr .sf{flex:1;min-width:0}
@@ -1455,7 +1457,12 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(BR.f.energy.length) on.push(BR.f.energy.map(function(e){ return e === "9" ? "9+" : e; }).join(", ") + " energy");
     if(BR.f.set.length) on.push(BR.f.set.join(", "));
     var any = on.length;
-    el("bnote").textContent = where + ". " + count + (count === 1 ? " card" : " cards") + (any ? ", showing " + on.join("; ") + "." : ". Tap a card to add it; hold it to see it big.");
+    // two lines (round 11, Mako): where the cards go, then how many and which
+    var mine = BR.f.dom.length && L && BR.f.dom.join() === doms(L).concat(["colorless"]).join();
+    if(mine) on.shift();
+    var many = count + (count === 1 ? " card" : " cards") + (mine ? " in your Legend's domains" : "");
+    var line2 = on.length ? many + (mine ? ": " : ", showing ") + on.join("; ") + "." : (mine ? many + "." : many + ". Tap a card to add it; hold it to see it big.");
+    el("bnote").innerHTML = "<b>" + esc(where) + ".</b><b>" + esc(line2) + "</b>";
   }
   function brTile(x){
     var c = X.codeOf(x.c), n = inDeck(c), land = x.o === "landscape";
@@ -1477,6 +1484,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   function brOpen(sec){
     brDefaults(sec);
+    // the plate wears the deck's two colours, as the deck's plate does (round 11, Mako)
+    var bp = document.querySelector("#brw .plate"), co = colours(deck());
+    bp.classList.toggle("cg2", !!co);
+    if(co){ bp.style.setProperty("--c", co.c); bp.style.setProperty("--c2", co.c2); bp.style.setProperty("--s", co.s + "%"); }
     el("bq").value = "";
     el("brw").hidden = false;
     document.documentElement.classList.add("lock", "brwon");
