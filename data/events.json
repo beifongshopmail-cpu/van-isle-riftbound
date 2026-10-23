@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-23T05:48:23.935Z",
- "generated_local": "2026-10-22T22:48:23-07:00",
- "window_start": "2026-10-22T07:00:00.000Z",
+ "generated_at": "2026-10-23T17:45:20.722Z",
+ "generated_local": "2026-10-23T10:45:20-07:00",
+ "window_start": "2026-10-23T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 28,
-   "added": 28
+   "returned": 27,
+   "added": 27
   },
   {
    "name": "Courtenay",
@@ -47,35 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 32,
-  "unique": 32,
+  "fetched": 31,
+  "unique": 31,
   "prev_unique": 32
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117125741673379397",
-   "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-22T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-22",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 16,
-   "cents": 4500,
-   "currency": "USD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing"
-  },
   {
    "id": "rb117473609547786875",
    "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
