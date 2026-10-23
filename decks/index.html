@@ -53,9 +53,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dwrap.lift .dcard{box-shadow:var(--glass-base),0 10px 28px rgba(0,0,0,.55)}
 /* a deck's block wears its Legend's two domains, the split following the Main deck's share
    (--s); the coloured glass recipe (.cg) with two colours */
-.dcard.cg2{background:linear-gradient(115deg,rgba(var(--c),.44) calc(var(--s) - 12%),rgba(var(--c2),.44) calc(var(--s) + 12%)),var(--frost-solid)}
+.dcard.cg2{background:linear-gradient(145deg,rgba(var(--c),.44) calc(var(--s) - 15%),rgba(var(--c2),.44) calc(var(--s) + 15%)),var(--frost-solid)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .dcard.cg2{background:linear-gradient(115deg,rgba(var(--c),.44) calc(var(--s) - 12%),rgba(var(--c2),.44) calc(var(--s) + 12%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+  .dcard.cg2{background:linear-gradient(145deg,rgba(var(--c),.44) calc(var(--s) - 15%),rgba(var(--c2),.44) calc(var(--s) + 15%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 }
 .dcard.cg2 .dcsub{color:#DCDEE2}
 .dcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 14px 10px 10px;border-radius:22px;text-align:left;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
@@ -84,8 +84,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .plate{width:calc(100% - 24px);max-width:456px;margin:0 auto;border-radius:24px;padding:10px;
   background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.plate.cg2{background:linear-gradient(115deg,rgba(var(--c),.32) calc(var(--s) - 12%),rgba(var(--c2),.32) calc(var(--s) + 12%)),rgba(10,11,13,.94)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(115deg,rgba(var(--c),.32) calc(var(--s) - 12%),rgba(var(--c2),.32) calc(var(--s) + 12%)),rgba(10,11,13,.5)}}
+.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) calc(var(--s) - 15%),rgba(var(--c2),.32) calc(var(--s) + 15%)),rgba(10,11,13,.94)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) calc(var(--s) - 15%),rgba(var(--c2),.32) calc(var(--s) + 15%)),rgba(10,11,13,.5)}}
 .plate.cg2 .ptl span{color:#DCDEE2}
 /* the deck's plate: 10 + 36 + 8 + 40 (+ 8 + 40, the view row in Deck) + 10, plus a 14 gap */
 .hold{height:118px}
@@ -379,22 +379,23 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .otile span{display:block;font-size:12px;color:var(--muted);white-space:nowrap}
 
 /* ---- THE CARD BROWSER: full screen, as Runes' (a bend of STYLE.md's every-overlay-is-a-menu, Mako 2026-10-17) ---- */
-.brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.bhead{position:sticky;top:0;z-index:2;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 10px;
-  background:rgba(8,9,10,.94)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.bhead{background:rgba(8,9,10,.72);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}}
+.brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding-top:calc(var(--top-clear) - 10px)}
+/* its search rides the pages' floating plate (round 10, Mako 2026-10-23): parked where the
+   deck's plate parks, so its words start at --top-clear */
+.bhead{position:sticky;top:calc(var(--top-clear) - 10px);z-index:2}
 .bin1{max-width:456px;margin:0 auto}
 .bsr{display:flex;align-items:center;gap:8px}
 .bsr .sf{flex:1;min-width:0}
 .bsr .circ{flex:0 0 auto}
-.bchips{display:flex;gap:6px;margin:10px -12px 0;padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.bchips{display:flex;gap:6px;margin:10px -10px 0;padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .bchips::-webkit-scrollbar{display:none}
 .fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .fchip .n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--ink);color:var(--bone);font-size:12px}
 .fchip svg{width:14px;height:14px}
 .bnote{margin:8px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-.bbody{max-width:480px;margin:0 auto;padding:12px 12px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.bbody{max-width:480px;margin:0 auto;padding:14px 12px calc(env(safe-area-inset-bottom,0px) + 28px)}
 .bgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px}
 .ctile{position:relative;min-width:0}
 .cpic{position:relative;display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
@@ -407,7 +408,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 
 /* menus */
 .mpic{display:block;width:150px;aspect-ratio:744/1039;margin:0 auto 12px;padding:0;border-radius:10px;overflow:hidden;background:var(--recess)}
-.mpic.land{width:200px;aspect-ratio:1039/744}
+.mbox.land{width:292px;max-width:100%}
+.mpic.land{width:100%;aspect-ratio:1039/744}
 .mpic img{display:block;width:100%;height:100%;object-fit:cover}
 .qrow{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:0 4px}
 .qrow .stp{display:flex}
@@ -426,7 +428,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 
 /* THE FULL CARD STAYS A TAP-ANYWHERE IMAGE VIEWER, not a menu (the counter's) */
 .spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.7);border:0;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));
+  background:rgba(0,0,0,.7);border:0;padding:var(--top-clear) 14px max(14px,env(safe-area-inset-bottom));
   font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
 .spot:active{transform:none}
 .spot.open{display:flex}
@@ -509,7 +511,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 
 <!-- the card browser -->
 <section class="brw" id="brw" hidden aria-label="Add cards">
-  <div class="bhead"><div class="bin1">
+  <div class="bhead"><div class="bin1 plate glass">
     <div class="bsr">
       <button type="button" class="circ btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="sf">
@@ -1519,9 +1521,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     var d = deck(), x = C(CARD.code), sec = CARD.sec, h = "", f = "";
     if(!x){ return false; }
     el("cttl").textContent = nm(x);
-    // a battlefield shows turned, portrait, as in the deck's Grid (round 9); the full card stays upright
-    var turn = x.t === "battlefield" || x.o === "landscape";
-    h += '<div class="mbox"><button type="button" class="mpic' + (turn ? " rot" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + badges(x, CARD.code, "menu") + '</div>';
+    // a battlefield shows landscape, as it lies on the table, the height of a portrait card's
+    // picture (round 10); its printing pictures below stay turned, portrait, as in the Grid
+    var land = x.t === "battlefield" || x.o === "landscape";
+    h += '<div class="mbox' + (land ? " land" : "") + '"><button type="button" class="mpic' + (land ? " land" : "") + '" data-act="spot" data-code="' + esc(CARD.code) + '" aria-label="See the full card' + (banned(x) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + badges(x, CARD.code, "menu") + '</div>';
     function qrow(s2, label){
       var n = s2 === "runes" ? (d.runes[CARD.code] || 0) : (d[s2][CARD.code] || 0);
       return '<div class="qrow"><span class="t">' + label + '</span><div class="stp" data-k="do">'

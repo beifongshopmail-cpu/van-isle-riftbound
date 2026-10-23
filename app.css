@@ -145,7 +145,7 @@ svg .icb{display:none} /* a hub-only drawing at the hub's thinner line (Trade's 
   border-radius:24px;padding:16px;z-index:40;box-shadow:0 14px 36px rgba(0,0,0,.5);
   /* THE CAP COUNTS THE BAR. The panel sits above the bar, so a cap of the
      whole screen let a tall menu run off the top by the bar's height. */
-  max-height:calc(100% - max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) - var(--barH) - 8px - 16px - env(safe-area-inset-top,0px));
+  max-height:calc(100% - max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) - var(--barH) - 8px - var(--top-clear) + 10px);
   display:flex;flex-direction:column;overflow:hidden;
   /* A MENU ARRIVES SLOWER THAN IT LEAVES (STYLE.md, Motion): it glides up
      and settles in .34s, and drops away in .2s. */

@@ -414,7 +414,7 @@
 
   /* THE EXPANDED CARD STAYS A TAP-ANYWHERE IMAGE VIEWER, not a menu */
   .spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
-    background:rgba(0,0,0,.7);border:0;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom));
+    background:rgba(0,0,0,.7);border:0;padding:var(--top-clear) 14px max(14px,env(safe-area-inset-bottom));
     font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
   .spot:active{transform:none}
   .spot.open{display:flex}
