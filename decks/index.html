@@ -647,6 +647,44 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   var SECNAME = { main: "Main deck", side: "Sideboard", maybe: "Considering", legend: "Legend", bf: "Battlefields", runes: "Runes" };
 
   function el(id){ return document.getElementById(id); }
+  // PAINT IN PLACE (round 12, Mako: adding or removing a card made every card flicker): a
+  // change used to rebuild a whole section from markup, so every picture became a new element
+  // the phone drew again. paint() lays the new markup over the old and touches only what
+  // differs; a card keeps its own elements, matched by its section and code, so its picture
+  // stays put. The idea is morphdom's (MIT); this is a small rewrite of it, not a copy.
+  function pkey(n){
+    if(n.nodeType !== 1) return "";
+    if(n.id) return "#" + n.id;
+    for(var e = n, i = 0; e && i < 3; e = e.firstElementChild, i++){
+      var c = e.getAttribute("data-code"); if(c) return n.tagName + "|" + n.className + "|" + (e.getAttribute("data-sec") || "") + "|" + c;
+    }
+    return "";
+  }
+  function plike(a, b){ return a.nodeType === b.nodeType && (a.nodeType !== 1 || (a.tagName === b.tagName && a.className === b.className)); }
+  function pnode(o, n){
+    if(o.nodeType !== 1){ if(o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue; return; }
+    for(var i = o.attributes.length - 1; i >= 0; i--){ var an = o.attributes[i].name; if(!n.hasAttribute(an)) o.removeAttribute(an); }
+    for(var j = 0; j < n.attributes.length; j++){ var at = n.attributes[j]; if(o.getAttribute(at.name) !== at.value) o.setAttribute(at.name, at.value); }
+    if(o.tagName === "TEXTAREA" || o.tagName === "INPUT"){ if(document.activeElement !== o && o.value !== n.value) o.value = n.value; return; }
+    pkids(o, n);
+  }
+  function pkids(box, fresh){
+    var keyed = {}, kids = Array.prototype.slice.call(box.childNodes);
+    kids.forEach(function(k){ var key = pkey(k); if(key) (keyed[key] = keyed[key] || []).push(k); });
+    var cur = box.firstChild;
+    Array.prototype.slice.call(fresh.childNodes).forEach(function(n){
+      var key = pkey(n), m = null;
+      if(key){ if(keyed[key] && keyed[key].length && plike(keyed[key][0], n)) m = keyed[key].shift(); }
+      else if(cur && !pkey(cur) && plike(cur, n)) m = cur;
+      if(m){ if(m === cur) cur = cur.nextSibling; else box.insertBefore(m, cur); pnode(m, n); }
+      else box.insertBefore(n, cur);
+    });
+    while(cur){ var nx = cur.nextSibling; box.removeChild(cur); cur = nx; }
+  }
+  function paint(box, html){
+    if(!box.firstChild){ box.innerHTML = html; return; }
+    var t = document.createElement(box.tagName); t.innerHTML = html; pkids(box, t);
+  }
   function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
   function svgi(d){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>'; }
@@ -859,7 +897,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         + '<span class="n">' + nd.have + '/' + nd.need + '</span>'
         + (SET.price ? '<span class="pr">' + money(deckPrice(d)) + '</span>' : '') + '</span></button></div>';
     });
-    el("hlist").innerHTML = h;
+    paint(el("hlist"), h);
     el("hlede").textContent = all.length ? (list.length === all.length ? all.length + (all.length === 1 ? " deck" : " decks") : list.length + " of " + all.length + " decks") + (EDIT ? ". Drag to arrange." : "") : "";
     var ds = DSORTS.filter(function(x){ return x[0] === SET.dsort; })[0] || DSORTS[0];
     el("hsortb").querySelector("span").textContent = ds[1];
@@ -1061,8 +1099,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(SET.maybe) h += sectionHTML("maybe", d, "Considering", X.sum(d.maybe), "Cards you are thinking about. They count toward nothing.");
     if(!probs.length) h += checkHTML(d, probs);
     h += '<section class="dsec glass"><div class="shead"><h2>Notes</h2></div><textarea class="dnote" id="dnote" placeholder="Matchups, swaps, anything to remember" aria-label="Notes" data-k="type">' + esc(d.note) + '</textarea></section>';
-    el("vdeck").innerHTML = h;
-    el("pvrow").innerHTML = viewRow();
+    paint(el("vdeck"), h);
+    paint(el("pvrow"), viewRow());
   }
 
   // ---- STATS ----
@@ -1308,7 +1346,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       var mark = n ? (s === "main" ? qty("main", c, n, true) : '<span class="gq">' + (s === "runes" ? "x" + n : "In deck") + '</span>') : "";
       h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", n && s === "main" ? "" : "low") + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
     });
-    box.innerHTML = hits.length ? '<div class="bgrid">' + h + '</div>' + (hits.length > 60 ? '<p class="bnote">' + (hits.length - 60) + ' more: add a word to narrow it.</p>' : '') : '<p class="bnone">No cards match. Try another word.</p>';
+    paint(box, hits.length ? '<div class="bgrid">' + h + '</div>' + (hits.length > 60 ? '<p class="bnote">' + (hits.length - 60) + ' more: add a word to narrow it.</p>' : '') : '<p class="bnone">No cards match. Try another word.</p>');
     w.classList.add("open");
     w.style.height = (box.offsetHeight + el("echips").offsetHeight + 10) + "px";
   }
@@ -1474,7 +1512,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   function brRender(keepScroll){
     var list = brPool().filter(brMatch).sort(brSort), h = "";
     list.slice(0, BR.n).forEach(function(x){ h += brTile(x); });
-    el("bgrid").innerHTML = h;
+    paint(el("bgrid"), h);
     el("bgrid").style.gridTemplateColumns = BR.sec === "bf" ? "repeat(2,minmax(0,1fr))" : "";
     el("bmore").innerHTML = list.length > BR.n ? '<button type="button" class="pact btn glass bmore" data-act="bmore" data-k="do">Show ' + Math.min(120, list.length - BR.n) + ' more of ' + (list.length - BR.n) + '</button>'
       : (list.length ? "" : '<p class="bnone">No cards match. Try another word, or Show all.</p>');
@@ -1583,8 +1621,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(typeof x.w === "number" && x.w) facts.push("Power " + x.w);
     if(SET.price && price(CARD.code) != null) facts.push(money(price(CARD.code)) + " market");
     h += '<p class="pnote">' + esc(facts.join(", ")) + '</p>';
-    el("cbody").innerHTML = h;
-    el("cfoot").innerHTML = f;
+    paint(el("cbody"), h);
+    paint(el("cfoot"), f);
     el("cfoot").hidden = !f;
     return true;
   }
