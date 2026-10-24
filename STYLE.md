@@ -344,6 +344,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Links that act as tiles show no long-press preview (-webkit-touch-callout none, user-select none).
 - Every page is at least one screen tall (body min-height 100vh). The scrollbar stays put (scrollbar-gutter stable, overflow-y scroll). [C]
 - The wordmark row starts at safe-area top + 30, where the counter's stage starts. The hub's name is centred in its top area from --top-clear + 36.
+- A sticky plate parks 10 above --top-clear, so its words start on it. The gap above it is never a scroller's padding (a sticky's top counts from inside that padding). A menu at its tallest stops at the same place. [C] (Mako's yes 2026-10-24)
 - No member of a new class or function family is a prefix of another.
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
