@@ -164,10 +164,10 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - index.html (hub): .blk .bi .bn .hubfoot .low
 - calendar/index.html: .cell .dots .ev .evact .evhead .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .mk .mrow .spots .stick .tyrow
 - counter/index.html: .lgppic .lgptile .num .pass .rail .res .spot .tmv .win
-- trade/index.html: .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .ud .vd
+- trade/index.html: .bin .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .trow .udb .vd
 - feedback/index.html: .fbn .fbody .fgrp .lead .ship
 - settings/index.html: .sts .starm
-- rules/index.html: .empty .extl .old .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
+- rules/index.html: .empty .extl .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
 - decks/index.html: .add .addt .art .aside .avg .bad .ban .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .bstack .cbox .cg2 .cgrid .chart .chcol .chlab .cmid .cname .cnm .cols .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dcend .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dgrip .dnone .dnote .dprice .dsec .dsub .dv .dvrow .dvseg .dvsort .dwrap .ed .epill .esf .fchip .gcell .ghost .gpic .gq .gsh .gstar .gstp .hacts .hc .hdrawn .hhd .hmark .hnone .hnote .hold .hrow .hsort .ires .kw .land .lcard .lcell .lift .low .lpm .lq .lrhd .lrow .lsteps .mban .mbox .menu .mpic .n .none .ochip .ochips .odds .okc .okmk .omull .open .otile .otiles .pbar .pchk .pdrow .pfin .pfins .phd .plate .plist .pnone .pr .prb .pre .prow .pti .ptl .pv .pvrow .qrow .qrows .res .resw .rgl .rot .sall .sbtns .shut .sm .spot .spotpic .srow .star .stb .sth .stick .stile .stiles .stools .stp .toast .tokrow .two .vbadge .vw .wmk .xbox .z
 
 Page shell (feedback/index.html, settings/index.html)
@@ -364,15 +364,15 @@ Counter (counter/index.html)
 - Fixed .stage with two sides (.side, data-role major, equal or minor), score numerals .num, .rail log, cut score buttons .acts, Pass turn .pass, round timer line .tmv, victory banner .win. Strip (.bar.strip.frost) of four controls; Go to has Hub (withHub true).
 - Menus #pgame (Game settings), #pnew, #pleg, #pevt, #pend, #plog, #ppast with a stack (OPENP, STACK). Game settings and New match have no section labels and share #shared: the top group (.pcards.doors: Pause clock while the clock is on, Match timer, Event), then the player cards; Game settings adds Show on the field, and its foot holds Go to, then End game and New match side by side. The strip's Log opens #plog, titled Log. The legend picker (#pleg) holds its search (with Clear) on one row and the Release | A-Z track on the row under it. The Match timer, Show on the field and each player open in place (.pcard, .pchead), one at a time. End game (#pend) labels only Who concedes? and Time called: who won?; with no label between, Intentional draw is in the time-called group, 6 under its row (Mako 2026-10-16: Agreed went). Full-card viewer .spot (view kind, scrim .7).
 Trade (trade/index.html)
-- Sticky .plate (search .sf with Clear, .sides track with side colours, results .res), ring .vd for the difference, side panels .sidep with .ln lines and steppers .stp, undo bar .ud, toast .toast.
-- Bar: Hub, Go to, Saved trades (#psav, data-fills), Settings (#pset, data-fills). Menus #pnav, #pset, #psav, #phist, #ptrade, #prcp.
+- Sticky .plate (search .sf with Clear; on the row under it the .sides track with side colours and Undo .udb; results .res), ring .vd for the difference, side panels .sidep with .ln lines and steppers .stp (the minus is the bin at one copy), toast .toast.
+- Bar: Hub, Go to, Saved trades (#psav, data-fills), Settings (#pset, data-fills). Menus #pnav, #pset, #psav, #phist, #ptrade, #prcp, #pundo (Undo).
 - Trade settings (#pset): currency (no label), Price movement (Off, 7D, 30D, 1Y, All; Off hides the note and every movement mark; a stored 1D reads as 7D), Percent of market price with a small Reset (.rrs) at the label's end, then one row per side (.sidr, two equal columns): the name field (.nf.tall in the side's colour) and the percent in the cards' stepper (.stp), steps of 5 inside 0 to 200. Clear both sides is the menu's foot. Saved trades (#psav) carries no head count (its All saved trades row counts them); a saved trade (#ptrade) has its title field with no icon, and Receipt image is a foot button with no chevron.
 Feedback (feedback/index.html)
 - .lede, the form folded in one group under a Send feedback row (kind open; the Tally embed loads again when it opens), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
 App settings (settings/index.html)
 - .lede, two glass cards (.sts) holding a .shead and a .pick: Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row), then the footer credit. Reset in the bar's third slot, two taps; its fourth slot shows Soon, dimmed (Mako 2026-10-15).
 Rules (rules/index.html)
-- Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty), then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
+- Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty) in a sticky .plate, then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, names first, at most 40.
 - Bar: Hub, Go to, Latest (#pnew, data-fills; Riot's articles newest first, each opening #part deeper; its icon key is whatsnew), Settings dimmed. The footer ends with Tell us, as Calendar and Trade.
 Decks (decks/index.html)
@@ -411,12 +411,13 @@ Decks (decks/index.html)
 - m96c-test.js: the calendar's Follow menu (one sunken group, areas in place with their rows set in, links to files that exist, the bell remembered) and NEW since the last visit.
 - m96t-test.js: Trade settings after M9.6 (no Names, Currency or This trade label; Off; side rows half and half; steps of 5; Reset) and the counter strip (icons 24, the Layout track 6 from its top and bottom).
 - m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
-- m96s-test.js: the motion sweep: the form, a month change and a day tap ease in; pick-one tracks slide their fill; numbers a tap changes settle; the trade's Undo bar and Yours/Theirs, the counter's Focus and Split.
+- m96s-test.js: the motion sweep: the form, a month change and a day tap ease in; pick-one tracks slide their fill; numbers a tap changes settle; the trade's Undo turns on in place and Yours/Theirs eases in; the counter's Focus and Split.
 - m96w-test.js: the consistency sweep: Calendar settings has one way in and hidden events show in words; one confirm wording; every search clears with Clear; menu small print is one style; dates and times are written one way; no pencil, no head count and no foot chevron in Trade's saved trades; Log is titled Log; the footers.
 - colour-test.js: the colour system: each page's glass takes its colour at .30, a glass group carries the tint once, the counter's side buttons keep no page colour, grey text on tinted glass is lifted, the bar's pill wears the page colour.
 - icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - m11d-test.js: the deck logic (Piltover Archive's golden codes, six formats in, three out, Riot's deck rules in words, the ban list, stats, the hand).
 - m11p-test.js: the Decks page's flow in a browser.
+- m11zd-test.js and m11ze-test.js: the M11 consistency sweep (Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
 - m11r-test.js to m11zc-test.js: the Decks refinement, one per round of Mako's notes (2026-10-18 to 23): the list plate, view row and section menus, printings from the price feed, Stats tiles, odds, Undo, runes at 12, badges, battlefields, counts, deck colours, the safe zone on every sticky plate, the Add cards plate, and changes painted in place.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
