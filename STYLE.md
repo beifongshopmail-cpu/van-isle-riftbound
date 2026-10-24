@@ -379,6 +379,7 @@ Rules (rules/index.html)
 Decks (decks/index.html)
 - Two screens: the list of decks, and one deck: a sticky .plate (Back, name and price, Export; Deck, Stats, Hand), Legend beside Runes, Battlefields, then Main, Side and Considering, each with its own view and sort, and Notes. Edit (the bar's third slot, a mode) adds steppers and add tiles; the card browser is full screen; the card menu (#pcard) opens from a card. Logic and formats in decks/deck.js.
 - On Decks, the view (List, Grid, Text), the size and the sort sit in one row in the plate. A section's gear overrides them for that section. (Mako's yes 2026-10-24)
+- A card's count is one pill centred at its foot. Edit adds minus (a bin at one copy) and plus beside it, and the pill does not move. (Mako's yes 2026-10-24)
 
 ## 11. Checks
 
