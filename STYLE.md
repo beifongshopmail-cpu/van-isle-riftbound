@@ -382,6 +382,7 @@ Decks (decks/index.html)
 - A card's count is one pill centred at its foot. Edit adds minus (a bin at one copy) and plus beside it, and the pill does not move. (Mako's yes 2026-10-24)
 - A card picture carries at most two badges, centred low, in capitals: BANNED and PROMO. (Mako's yes 2026-10-24)
 - Undo sits in the plate beside Export. It opens a list of changes, newest first, in short words ('+1 Gust'). A row undoes only that change. (Mako's yes 2026-10-24)
+- Stats are tiles. A tapped tile opens in place to the full row with its chart, and Open all and Close all sit above them. (Mako's yes 2026-10-24)
 
 ## 11. Checks
 
