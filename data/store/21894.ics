@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117089694282897798@van-isle-riftbound
-DTSTAMP:20261023T174521Z
+DTSTAMP:20261024T052854Z
 DTSTART:20261121T220000Z
 DTEND:20261122T010000Z
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
 DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 
- left\, checked Oct 23\, 10:45 AM\n$10.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 23\, 10:28 PM\n$10.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117089694282897798
 URL:https://playriftbound.com/en-US/events/117089694282897798
 CATEGORIES:Summoner Skirmish
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089697560448344@van-isle-riftbound
-DTSTAMP:20261023T174521Z
+DTSTAMP:20261024T052854Z
 DTSTART:20261219T220000Z
 DTEND:20261220T010000Z
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
 DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 
- left\, checked Oct 23\, 10:45 AM\n$10.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 23\, 10:28 PM\n$10.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117089697560448344
 URL:https://playriftbound.com/en-US/events/117089697560448344
 CATEGORIES:Summoner Skirmish
