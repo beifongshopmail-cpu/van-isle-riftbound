@@ -420,7 +420,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   font-family:var(--text);font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word;color:var(--bone)}
 .ires{margin:10px 2px 0;font-size:13px;line-height:1.45}
 .ires:empty{display:none}
-.door.armed{background:var(--glass-press)}
+.door.armed,.pact.armed{background:var(--glass-press)}
 #cfoot .pact + .two{margin-top:8px}
 .toast{position:fixed;left:50%;z-index:60;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 14px);
   transform:translate(-50%,10px);opacity:0;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;
@@ -568,9 +568,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     <div class="row"><p class="lb">Show</p><div class="pick" id="sshow" data-k="pick"><button type="button" data-v="price">Prices</button><button type="button" data-v="maybe">Considering</button><button type="button" data-v="allp">Every printing in card searches</button></div>
       <p class="pnote" style="margin-top:8px">How cards show, and their sort, are at the top of each deck.</p></div>
     <div id="sdeck">
-      <div class="row"><p class="lb">This deck</p><div class="doors">
-        <button type="button" class="door btn glass act" data-act="dup" data-k="do"><span class="t">Duplicate</span></button>
-        <button type="button" class="door btn glass act" data-act="del" id="dkdel" data-k="do"><span class="t">Delete this deck</span></button>
+      <div class="row"><p class="lb">This deck</p><div class="two" style="margin-top:0">
+        <button type="button" class="pact btn glass" data-act="dup" data-k="do"><span class="t">Duplicate</span></button>
+        <button type="button" class="pact btn glass" data-act="del" id="dkdel" data-k="do"><span class="t">Delete this deck</span></button>
       </div></div>
     </div>
   </div>
