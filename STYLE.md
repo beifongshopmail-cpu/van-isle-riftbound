@@ -152,6 +152,7 @@ Colour
 - Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240; Decks 80,230,170 (Mint). Feedback, Rules and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game, Trade and Decks keep clear glass.
 - Rules sections by kind: Current documents jade 0,190,140, Errata garnet 200,35,70, FAQs and rulings gold 255,200,40; always beside the words that name them.
 - Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 for the next page (Soon 1), White 240,240,245 spare. A Soon block stays dim and grey (dim means disabled) until its page lands with its colour. The palette is these nine plus the players' blue and pink; a new colour use picks from it first.
+- A card with no domain (colourless) uses the palette's White, 240,240,245, so White is no longer spare. (Mako's yes 2026-10-24)
 - Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
 - On a page colour, grey text inside glass is #DCDEE2, not --muted.
 
