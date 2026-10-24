@@ -145,7 +145,8 @@ a{color:inherit;text-decoration:none}
 .mvp .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mvp svg{width:16px;height:16px;flex:0 0 auto}
 .mvp.d1 svg{color:var(--yc)} .mvp.d2 svg{color:var(--tc)}
-.lact .del{flex:0 0 auto;margin-left:auto;color:var(--muted);height:var(--sz-track)}
+/* at one copy the minus is the bin, as Decks (M11 sweep, 2026-10-24): shape and colour */
+.stp .bin{background:rgba(229,72,77,.22)}
 /* THE CHIP IS PART OF ITS LINE. Size, weight and colour all inherit, so it
    matches the text it sits after. The arrow is sized in em to the line,
    and its stroke lands near that text's stem width once scaled. */
@@ -837,12 +838,13 @@ a{color:inherit;text-decoration:none}
         + '<span class="lsub">' + esc(it.s) + ' &middot; ' + it.q + ' &times; ' + money(unit) + dltChip(c, it.s) + '</span></span>'
         + '<span class="lamt">' + money(unit * it.q) + '</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>'
         + '<div class="lact"><div class="stp">'
-        + '<button type="button" class="circ btn glass" data-act="dec"' + at + (it.q < 2 ? " disabled" : "") + ' aria-label="One fewer" data-k="do">' + IC.minus + '</button>'
+        + (it.q < 2
+          ? '<button type="button" class="circ btn glass bin" data-act="del"' + at + ' aria-label="Remove from the trade" data-k="do">' + IC.bin + '</button>'
+          : '<button type="button" class="circ btn glass" data-act="dec"' + at + ' aria-label="One fewer" data-k="do">' + IC.minus + '</button>')
         + '<span>' + it.q + '</span>'
         + '<button type="button" class="circ btn glass" data-act="inc"' + at + ' aria-label="One more" data-k="do">' + IC.plus + '</button></div>'
         + '<button type="button" class="btn glass mvp d' + dest + '" data-act="mv"' + at + ' data-k="do">' + (role === "A" ? IC.down : IC.up)
-        + '<span class="t">To ' + esc(nmIn(dest)) + '</span></button>'
-        + '<button type="button" class="circ btn glass del" data-act="del"' + at + ' aria-label="Remove from the trade" data-k="do">' + IC.bin + '</button></div></div>';
+        + '<span class="t">To ' + esc(nmIn(dest)) + '</span></button></div></div>';
     }
     return h;
   }

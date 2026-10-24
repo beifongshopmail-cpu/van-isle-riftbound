@@ -518,7 +518,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       <button type="button" class="circ btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="sf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
-        <input id="bq" type="search" placeholder="Search for a card" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+        <input id="bq" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
         <button type="button" class="fbtn glass" id="bqx" disabled data-k="do">Clear</button>
       </div>
     </div>
@@ -569,7 +569,6 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       <p class="pnote" style="margin-top:8px">How cards show, and their sort, are at the top of each deck.</p></div>
     <div id="sdeck">
       <div class="row"><p class="lb">This deck</p><div class="doors">
-        <button type="button" class="door btn glass" data-act="exp2" data-k="deeper"><span class="t">Export</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
         <button type="button" class="door btn glass act" data-act="dup" data-k="do"><span class="t">Duplicate</span></button>
         <button type="button" class="door btn glass act" data-act="del" id="dkdel" data-k="do"><span class="t">Delete this deck</span></button>
       </div></div>
@@ -758,7 +757,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   function fillUndo(){
     var mine = UND.filter(function(u){ return u.id === CURID; }).reverse();
-    el("undocnt").textContent = mine.length + (mine.length === 1 ? " change" : " changes");
+    el("undocnt").textContent = mine.length;   // a bare count, as every menu head (M11 sweep)
     el("undolist").innerHTML = mine.map(function(u, i){ return '<button type="button" class="door btn glass act" data-act="undoat" data-i="' + i + '" data-k="do"><span class="t">' + esc(u.t) + '</span></button>'; }).join("");
   }
   function save(quiet){
@@ -1850,7 +1849,6 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "imp"){ el("ires").textContent = ""; openPanel(el("pimp")); return; }
     if(a === "idone"){ doImport(); return; }
     if(a === "exp"){ XF = SET.exp; fillExp(); openPanel(el("pexp")); return; }
-    if(a === "exp2"){ XF = SET.exp; fillExp(); deeper(el("pexp")); return; }
     if(a === "xcopy"){ copyText(xText()); return; }
     if(a === "xsave"){ saveFile(xText()); return; }
     if(a === "shut"){ var sc = t.getAttribute("data-sec"); SET.shut[sc] = !SET.shut[sc]; saveSet(); render(); return; }
