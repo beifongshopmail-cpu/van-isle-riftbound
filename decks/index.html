@@ -726,7 +726,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   // '+1 Chaos Rune'; only the Sideboard and Considering are named, the rest is clear)
   function changeWords(a, b){
     function cn(c){ var x = C(c); return x ? nm(x) : c; }
-    var MINUS = "−", WHERE = { side: "Sideboard", maybe: "Considering" }, out = [];
+    var MINUS = "\u2212", WHERE = { side: "Sideboard", maybe: "Considering" }, out = [];
     function num(n){ return (n > 0 ? "+" : MINUS) + Math.abs(n) + " "; }
     var legend = a.legend !== b.legend;
     if(legend) out.push(b.legend ? "Legend: " + cn(b.legend) : "Removed the Legend");
@@ -1405,7 +1405,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     el("pvrow").hidden = VIEW !== "deck";
 
     el("ptname").textContent = d.name || "Untitled deck";
-    el("ptprice").textContent = SET.price ? money(deckPrice(d)) + " " + CUR + (EDIT ? " · editing" : "") : (EDIT ? "Editing" : "");
+    el("ptprice").textContent = SET.price ? money(deckPrice(d)) + " " + CUR + (EDIT ? " \u00b7 editing" : "") : (EDIT ? "Editing" : "");
     el("vdeck").hidden = VIEW !== "deck"; el("vstats").hidden = VIEW !== "stats"; el("vhand").hidden = VIEW !== "hand";
     if(VIEW === "deck") renderDeck(); else if(VIEW === "stats") renderStats(); else renderHand();
   }

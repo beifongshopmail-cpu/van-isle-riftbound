@@ -1605,7 +1605,7 @@
   function timeLineText(list, nm){
     var t = gameTimes(list);
     if (!t) { return "Time not recorded"; }
-    return nm(1) + " " + fmtDur(t[1]) + " · " + nm(2) + " " + fmtDur(t[2]);
+    return nm(1) + " " + fmtDur(t[1]) + " \u00b7 " + nm(2) + " " + fmtDur(t[2]);
   }
 
   // "Match time 45:10" -- first event of game 1 to last event of the
