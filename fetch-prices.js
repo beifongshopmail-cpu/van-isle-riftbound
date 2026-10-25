@@ -299,6 +299,14 @@ async function main() {
   } catch (e) {
     console.log("day log failed: " + e.message);
   }
+  // The Collection chart's history (hist.js): this day's month rebuilt from
+  // the day logs. Like the day log, a failure here never fails the publish.
+  try {
+    const h = require("./hist.js").update(OUT_DIR, String(payload.generated_at).slice(0, 10));
+    console.log("hist " + h.m + " " + h.days.length + " days");
+  } catch (e) {
+    console.log("hist failed: " + e.message);
+  }
   console.log("wrote " + OUT_FILE + " " + fs.statSync(OUT_FILE).size + " bytes, " +
     cards.length + " priced, " + unpriced + " unpriced");
 }
