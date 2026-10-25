@@ -308,6 +308,9 @@ html.lock,html.lock body{overflow:hidden}
 .door small{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .doors{display:flex;flex-direction:column;border-radius:22px;overflow:hidden}
 .doors > .door{background-color:transparent;box-shadow:none;border-radius:0;--tint:transparent}   /* the group carries the page colour, once */
+/* GO TO IS CHROME, so it stays clear on a coloured page (Mako 2026-10-24: nav and settings menus
+   are chrome; a page's own content keeps its colour) */
+.panel.tray{--tint:transparent}
 .doors > .door::before{content:none}
 .doors > .door:active{background-color:var(--glass-press);transform:none}
 /* the hairline between rows, in either group */

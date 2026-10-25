@@ -30,7 +30,11 @@ body{-webkit-font-smoothing:antialiased;
 #home > section,#res{margin-top:22px}
 /* THE SEARCH STAYS AT THE TOP (M11 sweep, 2026-10-24): it sits in a sticky plate, as Trade's
    and Decks', parked 10 above --top-clear so its words start on it; plate frost, clear. */
-.srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10}
+.srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
+/* RULES COLOURS BY SECTION, NEVER BY THE PAGE (Mako 2026-10-24): an entry wears its section's colour
+   wherever it shows (KC below). Latest mixes sections, so the menu is clear and each row carries its own. */
+#pnew{--tint:transparent}
+#newlist > .door{background-color:var(--rc)}   /* under the group's hairlines, which are background-image */
 .plate{border-radius:24px;padding:10px;
   background:rgba(10,11,13,.94);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
@@ -224,6 +228,7 @@ body{-webkit-font-smoothing:antialiased;
   // source line and Riot's own warning where it has one.
   function fillArticle(id){
     var s = SRC[id], list = BYSRC[id] || [], h = "", group = null, open = false, i;
+    el("part").style.setProperty("--tint", kc(s.kind));
     el("arttl").textContent = s.kind === "hub" ? s.title : cap(s.set) + (s.kind === "errata" ? " errata" : " FAQ");
     el("artcnt").textContent = list.length;
     if(s.notice) h += '<div class="rnote">' + s.notice + '</div>';
@@ -242,12 +247,16 @@ body{-webkit-font-smoothing:antialiased;
   }
   function fillLegal(it){
     var s = SRC[it.source];
+    el("part").style.setProperty("--tint", kc("legal"));
     el("arttl").textContent = it.title;
     el("artcnt").textContent = "";
     el("artbody").innerHTML = rtx(it.html, s.url) + '<p class="rsrc">From Riot\'s Rules Hub. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Open it on playriftbound.com</a></p>';
   }
 
   // ---- the page ----
+  // THE SECTION COLOURS, one place: a new section adds its kind here (and its colour from the palette)
+  var KC = { doc: "0,190,140", legal: "0,190,140", errata: "200,35,70", faq: "255,200,40", ruling: "255,200,40" };
+  function kc(kind){ return "rgba(" + (KC[kind] || KC.faq) + ",var(--cg))"; }
   function srcRow(s, act){
     var n = (BYSRC[s.id] || []).length, unit = s.kind === "errata" ? (n === 1 ? " card" : " cards") : (n === 1 ? " entry" : " entries");
     return '<button type="button" class="door btn glass" data-act="' + act + '" data-src="' + esc(s.id) + '" data-k="deeper"><span class="t">' + esc(cap(s.set)) + '</span><span class="sp"></span><small>' + n + unit + '</small>' + CVR + '</button>';
@@ -270,7 +279,7 @@ body{-webkit-font-smoothing:antialiased;
     srcs.forEach(function(s){
       if(s.kind === "errata") err += srcRow(s, "art");
       else faq += srcRow(s, "art");
-      news += '<button type="button" class="door btn glass rec" data-act="art" data-src="' + esc(s.id) + '" data-k="deeper"><span class="t wrap">' + esc(s.title) + '</span><small>' + esc(day(s.published)) + '</small>' + CVR + '</button>';
+      news += '<button type="button" class="door btn glass rec" data-act="art" data-src="' + esc(s.id) + '" style="--rc:' + kc(s.kind) + '" data-k="deeper"><span class="t wrap">' + esc(s.title) + '</span><small>' + esc(day(s.published)) + '</small>' + CVR + '</button>';
     });
     el("docs").innerHTML = docs;
     el("errata").innerHTML = err;
