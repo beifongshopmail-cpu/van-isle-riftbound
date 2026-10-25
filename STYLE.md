@@ -380,7 +380,7 @@ Decks (decks/index.html)
 - On Decks, the view (List, Grid, Text), the size and the sort sit in one row in the plate. A section's gear overrides them for that section. (Mako's yes 2026-10-24)
 - On a card's picture, the count is one pill centred at its foot; Edit adds minus (a bin at one copy) and plus beside it, and the pill does not move. A row keeps the stepper (Trade's lines, Decks' List). (Mako's yes 2026-10-24)
 - A card picture carries at most two badges, centred low, in capitals: BANNED and PROMO. (Mako's yes 2026-10-24)
-- Undo sits in the plate: on Decks beside Export, on Trade at the end of the Yours | Theirs row. It opens a list of changes, newest first, in short words ('+1 Gust'). A row undoes only that change. (Mako's yes 2026-10-24)
+- Undo sits in the plate: on Decks at the right of the head, on Trade at the end of the Yours | Theirs row. It opens a list of changes, newest first, in short words ('+1 Gust'). A row undoes only that change. (Mako's yes 2026-10-24)
 - Stats are tiles. A tapped tile opens in place to the full row with its chart, and Open all and Close all sit above them. (Mako's yes 2026-10-24)
 - A change updates the page in place; pictures that stay are never rebuilt (paint() in decks/index.html). (Mako's yes 2026-10-24)
 
