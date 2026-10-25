@@ -53,12 +53,18 @@ body{-webkit-font-smoothing:antialiased;
 /* SECTIONS */
 #app > section{margin-top:24px}
 /* MOVERS: gains and losses in two glass cards, each titled with its arrow (Mako's pick: no colour) */
+/* Movers folds away: its head opens it in place, closed on every visit (Mako 2026-10-25, round 2) */
+.mvtog{display:flex;align-items:center;gap:8px;width:100%;padding:0;background:none;text-align:left;color:var(--bone)}
+.mvtog:active{transform:none;opacity:.7}
+.mvtog .chev{flex:0 0 auto;fill:none;stroke:var(--muted);stroke-linecap:round;stroke-linejoin:round}
 .mvc{border-radius:22px;padding:0 14px}
 .mvc + .mvc{margin-top:12px}
 .mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
 .mvh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 /* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
 .cards{border-radius:22px;padding:0 14px}
+/* List sits on the page as Grid does, no glass behind it (Mako 2026-10-25, round 2) */
+.cards.plain{padding:0 2px;border-radius:0}
 .crow{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:66px;padding:8px 0;text-align:left;background:none}
 .crow + .crow{border-top:1px solid rgba(255,255,255,.07)}
 .crow:active{transform:none;background:rgba(255,255,255,.05)}
@@ -75,6 +81,9 @@ body{-webkit-font-smoothing:antialiased;
   background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .art img{display:block;width:100%;height:100%;object-fit:cover}
 .art.sq img,.cpic.sq img{object-fit:contain}
+/* A BATTLEFIELD (a landscape picture) turned a quarter in its portrait slot, as Decks' (round 8) */
+.cpic.rot img,.art.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
+.hpic.land img{width:100%;max-width:292px} /* size-exempt: a battlefield shown upright */
 /* A HOLDING AS A TILE (Grid, the default): its picture, the count pill at its foot, the name,
    the price of one with its move, and the total when there is more than one */
 .cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
@@ -131,8 +140,13 @@ body{-webkit-font-smoothing:antialiased;
 .bsr{display:flex;align-items:center;gap:8px}
 .bsr .sf{flex:1;min-width:0}
 .bsr .circ{flex:0 0 auto}
-.bchips{display:flex;gap:6px;margin:10px -10px 0;padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.bchips::-webkit-scrollbar{display:none}
+/* the browser's second row: which set (a menu, Mako 2026-10-25: sets only grow) and Held here */
+.bopts{display:flex;align-items:center;gap:8px;margin-top:10px}
+.bopts .dvsort{flex:1 1 auto;justify-content:space-between}
+/* the Sets menu: each set's release day, how much of it is held, and what that is worth */
+#setpick button.rec{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;text-align:left}
+#setpick button.rec .t{display:block;align-self:stretch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#setpick button.rec small{display:block;align-self:stretch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;color:var(--bone)}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .bnote{margin:8px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)}
@@ -201,9 +215,11 @@ input[type="file"]{display:none}
     <p class="cnote" id="mnote"></p>
 
     <section id="movers">
-      <div class="shead"><h2>Movers</h2><span class="sp"></span><span class="cnt" id="mvcnt"></span></div>
+      <button type="button" class="shead mvtog" id="mvtog" aria-expanded="false" aria-controls="mvbody" data-k="open"><h2>Movers</h2><span class="sp"></span><span class="cnt" id="mvcnt"></span><svg class="chev" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button>
+      <div id="mvbody" hidden>
       <div class="mvc glass" id="mvup"></div>
       <div class="mvc glass" id="mvdn"></div>
+      </div>
     </section>
 
     <section id="held">
@@ -257,7 +273,7 @@ input[type="file"]{display:none}
         <button type="button" class="fbtn fx glass" id="bqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
       </div>
     </div>
-    <div class="bchips" id="bchips" data-k="pick"></div>
+    <div class="bopts" id="bopts"></div>
     <p class="bnote" id="bnote"></p>
   </div></div>
   <div class="bbody"><div class="cgrid" id="bgrid"></div><button type="button" class="pact btn glass more" id="bmore" hidden data-k="do">Show more</button></div>
@@ -307,6 +323,11 @@ input[type="file"]{display:none}
   <div class="pbody"><div class="pick" id="sortpick" data-k="pick"></div></div>
 </section>
 
+<section class="panel frost" id="psets" aria-hidden="true" aria-label="Sets">
+  <div class="phead"><h4 class="ttl">Sets</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts the printings in every portfolio, not the Wishlist.</p></div>
+</section>
+
 <section class="panel frost" id="pmove" aria-hidden="true" aria-label="Move to">
   <div class="phead"><h4 class="ttl" id="mvttl">Move to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="doors" id="movelist" data-k="do"></div><p class="pnote" style="margin-top:10px">A card already there adds to its count.</p></div>
@@ -343,6 +364,7 @@ input[type="file"]{display:none}
       <div class="pick" id="mode" data-k="pick"><button type="button" data-m="market">Market movement</button><button type="button" data-m="total">Total value</button></div>
       <p class="pnote" style="margin-top:8px">Market movement prices what you hold now on every day, so adding cards never moves the line. Total value counts each card from the day it was added.</p>
     </div>
+    <div class="row"><div class="pick" id="showmv" data-k="pick"><button type="button" aria-pressed="true" class="on">Show Movers</button></div></div>
     <div class="row"><div class="doors" data-k="deeper">
       <button type="button" class="door btn glass" data-act="manage"><span class="t">Portfolios</span><span class="sp"></span><small id="setports"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="decks"><span class="t">Add a deck</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
@@ -380,7 +402,8 @@ input[type="file"]{display:none}
   var KEY = "vir.coll.v1", SKEY = "vir.coll.set.v1";
   var P = null, BYID = {}, SETS = {}, FX = 1.4, ART = null;
   var S = { v: 1, ports: [], wish: [], last: "" };
-  var SET = { view: "all", range: "30", mode: "market", cur: "CAD", sort: "value", hview: "grid" };
+  var SET = { view: "all", range: "30", mode: "market", cur: "CAD", sort: "value", hview: "grid", movers: true };
+  var MVOPEN = false;   // Movers opens on a tap and is closed on every visit
   // the history: DAYS (every day there is a price file for, oldest first), H[key] = cents per day
   var DAYS = [], H = {}, HALL = false, FILLC = {};
 
@@ -441,7 +464,13 @@ input[type="file"]{display:none}
     if(a && a.h && !sealed(c)) return "../cards/art/" + a.h + (big ? ".webp" : ".t.webp");
     return TCGIMG + c.i + (big ? "_in_1000x1000.jpg" : "_200w.jpg");
   }
-  function img(c, big){ return c ? '<img src="' + esc(picSrc(c, big)) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">' : ''; }
+  // a battlefield's picture is landscape: once it loads, its slot turns it (Riot's pictures only)
+  window.__cRot = function(im){
+    if(!(im.naturalWidth > im.naturalHeight) || im.src.indexOf("/cards/art/") < 0) return;
+    var p = im.parentNode; if(!p) return;
+    p.classList.add(p.classList.contains("hpic") ? "land" : "rot");
+  };
+  function img(c, big){ return c ? '<img src="' + esc(picSrc(c, big)) + '" alt="" loading="lazy" decoding="async" onload="window.__cRot(this)" onerror="this.remove()">' : ''; }
   function thumb(c){ return '<span class="art' + (sealed(c) ? " sq" : "") + '">' + img(c) + '</span>'; }
   function setOf(c){ return SETS[c.g] || {}; }
   function facts(c, f){
@@ -549,23 +578,25 @@ input[type="file"]{display:none}
     var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), top = 22, foot = 0;
     if(hi === lo){ hi = lo + 1; lo = lo - 1; }
     var span = hi - lo; lo -= span * 0.35; hi += span * 0.06;
-    var side = 10, step = (w - side * 2) / n, bw = Math.max(2, step * 0.72), rr = Math.min(bw / 2, 4);
-    function X(j){ return side + (j + 0.5) * step; }
+    // edge to edge, no gaps between the bars (Mako 2026-10-25, round 2): each bar fills its slot and
+    // overlaps the next by a hair so no seam shows; the glass card's corners crop the ends
+    var side = 0, step = w / n, bw = step + 0.6, rr = 0;
+    function X(j){ return (j + 0.5) * step; }
     function Y(x){ return top + (1 - (x - lo) / (hi - lo)) * (ht - top - foot); }
     var g = "cg" + (++GID), R = "220,90,30", body = "";
     var defs = '<linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".70"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity=".16"/></linearGradient>'
       + '<linearGradient id="' + g + 's" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>';
     for(i = 0; i < n; i++){
-      var x0 = X(i) - bw / 2, y0 = Y(v[i]), hh = ht - y0;
+      var x0 = i * step, y0 = Y(v[i]), hh = ht - y0;
       body += '<rect class="b" x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (hh + rr).toFixed(1) + '" rx="' + rr + '" fill="url(#' + g + ')"/>'
         + '<rect x="' + (x0 + 0.5).toFixed(1) + '" y="' + (y0 + 0.5).toFixed(1) + '" width="' + Math.max(bw - 1, 1).toFixed(1) + '" height="' + Math.min(hh, 18).toFixed(1) + '" rx="' + Math.max(rr - 0.5, 0) + '" fill="url(#' + g + 's)"/>'
-        + '<rect x="' + (x0 + rr * 0.6).toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + Math.max(bw - rr * 1.2, 1).toFixed(1) + '" height="1.2" fill="#fff" fill-opacity=".55"/>';
+        + '<rect x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="1.2" fill="#fff" fill-opacity=".55"/>';
     }
     box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + defs + '</defs>' + body
       + '<line class="mk" x1="0" x2="0" y1="0" y2="' + ht + '" visibility="hidden"/><circle class="dot" r="4" cx="0" cy="0" visibility="hidden"/></svg>';
     var svg = box.firstChild, mk = svg.querySelector(".mk"), dot = svg.querySelector(".dot"), on = false;
     function at(ev){
-      var r = box.getBoundingClientRect(), x = ev.clientX - r.left, j = Math.min(n - 1, Math.max(0, Math.floor((x - side) / ((r.width - side * 2) / n))));
+      var r = box.getBoundingClientRect(), x = ev.clientX - r.left, j = Math.min(n - 1, Math.max(0, Math.floor(x / (r.width / n))));
       mk.setAttribute("x1", X(j)); mk.setAttribute("x2", X(j)); dot.setAttribute("cx", X(j)); dot.setAttribute("cy", Y(v[j]));
       mk.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
       onScrub && onScrub(pts[j], N > 62);
@@ -613,9 +644,9 @@ input[type="file"]{display:none}
   }
   function isSel(x){ return !!(SEL && SEL[x.p + "|" + x.h.id]); }
   // a holding as a row: the price of one (Mako 2026-10-25: never just the total) and its move
-  function rowHtml(x, showPort){
-    var h = x.h, c = BYID[h.i], m = moveOf(h);
-    return '<button type="button" class="crow' + (isSel(x) ? " sel" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" data-k="card">' + (SEL ? CHECK : '') + thumb(c)
+  function rowHtml(x, showPort, noSel){
+    var h = x.h, c = BYID[h.i], m = moveOf(h), sel = SEL && !noSel;
+    return '<button type="button" class="crow' + (sel && isSel(x) ? " sel" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" data-k="card">' + (sel ? CHECK : '') + thumb(c)
       + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "Unknown product") + '</span><span class="csub">' + subOf(h, c, showPort, x.p).map(esc).join(" &middot; ") + '</span></span>'
       + '<span class="cend"><span class="camt">' + money(nowCents(h) / 100) + '</span><span class="cmv">' + (m ? pctChip(pctOf(m[0], m[1])) : "") + '</span></span></button>';
   }
@@ -633,13 +664,9 @@ input[type="file"]{display:none}
     items.forEach(function(x){ var m = moveOf(x.h); if(m && m[1] !== m[0]) rows.push({ x: x, d: (m[1] - m[0]) * x.h.q, m: m }); });
     var up = rows.filter(function(r){ return r.d > 0; }).sort(function(a, b){ return b.d - a.d; }).slice(0, 5);
     var dn = rows.filter(function(r){ return r.d < 0; }).sort(function(a, b){ return a.d - b.d; }).slice(0, 5);
-    function one(r){
-      var h = r.x.h, c = BYID[h.i], sub = c ? facts(c, h.f) : [h.f];
-      if(h.q > 1) sub.unshift(copies(h.q));
-      return '<button type="button" class="crow" data-h="' + esc(h.id) + '" data-p="' + esc(r.x.p) + '" data-k="card">' + thumb(c)
-        + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "") + '</span><span class="csub">' + sub.map(esc).join(" &middot; ") + '</span></span>'
-        + '<span class="cend"><span class="camt">' + fmt(conv(r.d / 100)) + '</span><span class="cmv">' + pctChip(pctOf(r.m[0], r.m[1])) + '</span></span></button>';
-    }
+    // a mover's row is a Cards row: the price of one, its move, and the total for all copies in its line
+    // (Mako 2026-10-25, round 2); the list is still ranked by what the move did to the whole holding
+    function one(r){ return rowHtml(r.x, false, true); }
     function card(title, svg, list){
       return '<div class="mvh">' + svg + title + '</div>' + (list.length ? list.map(one).join("") : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
     }
@@ -685,9 +712,11 @@ input[type="file"]{display:none}
       ? "Cards you want go here. Add them with the plus in the bar while this list is showing. The Wishlist never counts toward your value."
       : "Add cards and sealed product while browsing every one, add a whole deck, or bring your collection over from Collectr.";
     if(empty){ selEnd(); return; }
-    var mv = movers(items);
+    el("movers").hidden = !SET.movers;
+    el("mvtog").setAttribute("aria-expanded", MVOPEN ? "true" : "false");
+    el("mvbody").hidden = !MVOPEN;
     el("mvcnt").textContent = rangeWords().replace(/^in /, "");
-    el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn;
+    if(SET.movers && MVOPEN){ var mv = movers(items); el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn; }
     el("hview").innerHTML = viewRow();
     var q = el("hq").value.trim().toLowerCase(), list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
     list.sort(SORTS[SET.sort][1]);
@@ -695,7 +724,7 @@ input[type="file"]{display:none}
     el("heldttl").textContent = SET.view === "wish" ? "Wanted" : "Cards";
     el("heldcnt").textContent = (q ? list.length + " of " : "") + items.length + (items.length === 1 ? " row" : " rows");
     var many = S.ports.length > 1 && SET.view === "all", grid = SET.hview === "grid", box = el("hlist");
-    box.className = list.length ? (grid ? "cgrid" : "cards glass") : "";
+    box.className = list.length ? (grid ? "cgrid" : "cards plain") : "";
     box.innerHTML = list.length ? list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("") : '<p class="cempty">Nothing matches.</p>';
     el("hmore").hidden = list.length <= LIMIT;
     el("hmore").textContent = "Show all " + list.length;
@@ -707,6 +736,7 @@ input[type="file"]{display:none}
     el("range").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-r") === SET.range ? "true" : "false"); });
     el("cur").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-c") === SET.cur ? "true" : "false"); });
     el("mode").querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-m") === SET.mode); });
+    var sm = el("showmv").firstChild; sm.classList.toggle("on", SET.movers); sm.setAttribute("aria-pressed", SET.movers ? "true" : "false");
   }
 
   // ---- SELECT: choose holdings, then move them or remove them ----
@@ -860,7 +890,7 @@ input[type="file"]{display:none}
   // ---- THE CARD BROWSER (Mako 2026-10-25: browse every card and add or remove while browsing, as
   // Collectr or the Decks page): one tile per printing and finish; a tap on the picture adds one to
   // the portfolio on show; once held, minus (the bin at one) and plus sit on the picture ----
-  var BR = { q: "", set: "", lim: 60, list: [] };
+  var BR = { q: "", set: "", own: false, lim: 60, list: [] };
   var IC = {
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>',
     minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/></svg>',
@@ -874,21 +904,39 @@ input[type="file"]{display:none}
       return (fa - fb) || String(b.p).localeCompare(String(a.p)) || a.g - b.g;
     });
   }
-  function brChips(){
-    var h = '<button type="button" class="fchip glass' + (BR.set === "" ? " on" : "") + '" data-bs="" aria-pressed="' + (BR.set === "") + '">All</button>'
-      + '<button type="button" class="fchip glass' + (BR.set === "own" ? " on" : "") + '" data-bs="own" aria-pressed="' + (BR.set === "own") + '">Held here</button>';
-    setsInOrder().forEach(function(s){ var v = String(s.g); h += '<button type="button" class="fchip glass' + (BR.set === v ? " on" : "") + '" data-bs="' + v + '" aria-pressed="' + (BR.set === v) + '">' + esc(s.a || s.n) + '</button>'; });
-    h += '<button type="button" class="fchip glass' + (BR.set === "sealed" ? " on" : "") + '" data-bs="sealed" aria-pressed="' + (BR.set === "sealed") + '">Sealed</button>';
-    el("bchips").innerHTML = h;
+  function setName(v){
+    if(v === "") return "All sets";
+    if(v === "sealed") return "Sealed product";
+    var x = SETS[v]; return x ? x.n : "All sets";
+  }
+  function brOpts(){
+    el("bopts").innerHTML = '<button type="button" class="dvsort glass" data-act="sets" data-fills="psets" data-k="do"><span>' + esc(setName(BR.set)) + '</span>' + IV.down + '</button>'
+      + '<button type="button" class="fchip glass' + (BR.own ? " on" : "") + '" data-act="own" aria-pressed="' + !!BR.own + '" data-k="pick">Held here</button>';
+  }
+  // THE SETS MENU (Mako 2026-10-25, after Collectr's Sets screen): newest first, each with its
+  // release day, how many of its printings you hold (every portfolio) and what they are worth
+  function fillSets(){
+    var held = {}, val = {}, all = {}, tot = 0;
+    viewItems("all").forEach(function(x){ var c = BYID[x.h.i]; if(!c) return; var g = sealed(c) ? "sealed" : String(c.g); held[g] = held[g] || {}; held[g][c.i] = 1; val[g] = (val[g] || 0) + x.h.q * nowCents(x.h); });
+    P.cards.forEach(function(c){ var g = sealed(c) ? "sealed" : String(c.g); all[g] = (all[g] || 0) + 1; tot++; });
+    function n(o){ return o ? Object.keys(o).length : 0; }
+    function row(v, name, sub){ return '<button type="button" class="rec' + (BR.set === v ? " on" : "") + '" data-bs="' + esc(v) + '"><span class="t">' + esc(name) + '</span><small>' + esc(sub) + '</small></button>'; }
+    var h = row("", "All sets", tot.toLocaleString("en-US") + " products");
+    setsInOrder().forEach(function(x){
+      var g = String(x.g); if(!all[g]) return;
+      h += row(g, x.n, [window.RAVI_DATE(String(x.p).slice(0, 10)), n(held[g]) + " of " + all[g] + " held", money((val[g] || 0) / 100)].join(" \u00b7 "));
+    });
+    if(all.sealed) h += row("sealed", "Sealed product", [n(held.sealed) + " of " + all.sealed + " held", money((val.sealed || 0) / 100)].join(" \u00b7 "));
+    el("setpick").innerHTML = h;
   }
   function brList(){
-    var words = BR.q.toLowerCase().split(/\s+/).filter(Boolean), out = [], to = target(), ord = {};
+    var words = BR.q.toLowerCase().split(/\s+/).filter(Boolean), out = [], to = target(), ord = {}, setg = BR.set;
     setsInOrder().forEach(function(s, i){ ord[s.g] = i; });
     P.cards.forEach(function(c){
-      if(BR.set === "sealed" && !sealed(c)) return;
-      if(BR.set && BR.set !== "sealed" && BR.set !== "own" && String(c.g) !== BR.set) return;
+      if(setg === "sealed" && !sealed(c)) return;
+      if(setg && setg !== "sealed" && (String(c.g) !== setg || sealed(c))) return;
       if(words.length){ var hay = (c.n + " " + (c.c || "") + " " + (setOf(c).a || "") + " " + (setOf(c).n || "")).toLowerCase(); if(!words.every(function(w){ return hay.indexOf(w) > -1; })) return; }
-      Object.keys(c.p).sort(FINORD).forEach(function(f){ if(BR.set === "own" && !owned(c.i, f, to)) return; out.push({ c: c, f: f }); });
+      Object.keys(c.p).sort(FINORD).forEach(function(f){ if(BR.own && !owned(c.i, f, to)) return; out.push({ c: c, f: f }); });
     });
     out.sort(function(a, b){
       var x = a.c, y = b.c;
@@ -919,7 +967,7 @@ input[type="file"]{display:none}
     el("bgrid").className = BR.list.length ? "cgrid" : "";
     el("bmore").hidden = BR.list.length <= BR.lim;
     el("bqx").hidden = !BR.q;
-    brChips(); brNote();
+    brOpts(); brNote();
     if(!keep) el("brw").scrollTop = 0;
   }
   // a change paints in place: only that tile's count and steppers, never its picture (STYLE, Decks)
@@ -1139,9 +1187,10 @@ input[type="file"]{display:none}
 
   // ---- TAPS ----
   document.addEventListener("click", function(ev){
-    var t = ev.target.closest("[data-act],[data-close],[data-badd],[data-bup],[data-bdn],[data-bs],[data-hv],.crow,.cpic[data-h],#portpick > button,#sortpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#cur > button,#mode > button");
+    var t = ev.target.closest("[data-act],[data-close],[data-badd],[data-bup],[data-bdn],[data-bs],[data-hv],.crow,.cpic[data-h],#portpick > button,#sortpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#cur > button,#mode > button,#showmv > button,#mvtog");
     if(!t) return;
     if(t.hasAttribute("data-close")){ openPanel(null); return; }
+    if(t.id === "mvtog"){ MVOPEN = !MVOPEN; render(); if(MVOPEN){ var mb = el("mvbody"); mb.classList.remove("reveal"); void mb.offsetWidth; mb.classList.add("reveal"); } return; }
     // the browser
     if(t.hasAttribute("data-badd") || t.hasAttribute("data-bup")){
       var kb = (t.getAttribute("data-badd") || t.getAttribute("data-bup")).split("|"), c = BYID[kb[0]];
@@ -1150,7 +1199,7 @@ input[type="file"]{display:none}
       return;
     }
     if(t.hasAttribute("data-bdn")){ var kd = t.getAttribute("data-bdn").split("|"), cd = BYID[kd[0]]; var left = takeOne(cd.i, kd[1]); save(); brPaint(kd[0] + "|" + kd[1]); if(!left) toast("Removed " + cd.n); return; }
-    if(t.hasAttribute("data-bs")){ BR.set = t.getAttribute("data-bs"); BR.lim = 60; brRender(); return; }
+    if(t.hasAttribute("data-bs")){ BR.set = t.getAttribute("data-bs"); BR.lim = 60; openPanel(null); brRender(); return; }
     if(t.hasAttribute("data-hv")){ SET.hview = t.getAttribute("data-hv"); saveSet(); render(); return; }
     if(t.classList.contains("crow") || t.classList.contains("cpic")){
       if(SEL && !t.closest("#movers")){ selToggle(t); return; }
@@ -1162,6 +1211,7 @@ input[type="file"]{display:none}
     if(par === "range"){ SET.range = t.getAttribute("data-r"); saveSet(); render(); return; }
     if(par === "cur"){ SET.cur = t.getAttribute("data-c"); saveSet(); render(); return; }
     if(par === "mode"){ SET.mode = t.getAttribute("data-m"); saveSet(); render(); return; }
+    if(par === "showmv"){ SET.movers = !SET.movers; saveSet(); render(); return; }
     if(par === "hport"){
       var np = t.getAttribute("data-v"); if(np === HPORT) return;
       var from = listOf(HPORT); from.splice(from.indexOf(HOLD), 1);
@@ -1179,6 +1229,8 @@ input[type="file"]{display:none}
     var a = t.getAttribute("data-act");
     if(a === "back"){ back(); return; }
     if(a === "browse"){ brOpen(); return; }
+    if(a === "sets"){ fillSets(); openPanel(el("psets")); return; }
+    if(a === "own"){ BR.own = !BR.own; BR.lim = 60; brRender(); return; }
     if(a === "bclose"){ brClose(); return; }
     if(a === "sort"){ el("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ return '<button type="button" data-s="' + k + '"' + (SET.sort === k ? ' class="on"' : '') + '>' + esc(SORTS[k][0]) + '</button>'; }).join(""); openPanel(el("psort")); return; }
     if(a === "select"){ if(SEL){ selEnd(); render(); } else selStart(); return; }
