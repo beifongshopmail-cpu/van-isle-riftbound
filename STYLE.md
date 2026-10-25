@@ -207,7 +207,7 @@ Tracks and fields (app.css; calendar and trade menus)
 - .seg.swatch: each option is the colour, set inline as --sw; chosen wears the double ring.
 - .nf and .sf: sunken field, 40 high (.tall: 44), padding 0 6 0 16, input a real 16px Nunito, optional icon 18 muted, optional .fbtn at the right end (13, Poppins 600; .armed shades it --hi). .nf is the canonical class; .sf is its alias for search.
     <div class="sf"><svg ...></svg><input type="search" placeholder="Search" data-k="type"></div>
-- Every search field carries Clear (.fbtn) at its right end, dimmed while the field is empty. A track never shares the search's row; it sits on the row under it (trade .plate, the counter's legend picker). (Mako's yes 2026-10-16)
+- Every search field clears with a round X at its right end (.fbtn.fx: the field's glass button made round, the bare X glyph), shown only while there is text; hidden, it keeps its place. A track never shares the search's row; it sits on the row under it (trade .plate, the counter's legend picker). (Mako's yes 2026-10-16)
 
 Buttons (calendar/index.html, app.css)
 - .btn.glass: round glass pill, shade --glass-press on press. .circ: 36 round, icon 18. Use .circ.btn.glass for round icon buttons (close X, back, gear, chevron toggle).
