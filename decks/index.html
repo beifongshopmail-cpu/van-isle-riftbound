@@ -572,11 +572,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 <section class="panel frost" id="pset" aria-hidden="true" aria-label="Deck settings">
   <div class="phead"><h4 class="ttl">Deck settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="row" id="sname"><p class="lb">Deck name</p><div class="nf"><input id="dname" type="text" maxlength="40" placeholder="Deck name" autocomplete="off" aria-label="Deck name" data-k="type"></div></div>
-    <div class="row"><p class="lb">Show</p><div class="pick" id="sshow" data-k="pick"><button type="button" data-v="price">Prices</button><button type="button" data-v="maybe">Considering</button><button type="button" data-v="allp">Every printing in card searches</button></div>
-      <p class="pnote" style="margin-top:8px">How cards show, and their sort, are at the top of each deck.</p></div>
+    <div class="row" id="sname"><p class="lb">Name</p><div class="nf"><input id="dname" type="text" maxlength="40" placeholder="Deck name" autocomplete="off" aria-label="Deck name" data-k="type"></div></div>
+    <div class="row"><p class="lb">Show</p><div class="pick" id="sshow" data-k="pick"><button type="button" data-v="price">Prices</button><button type="button" data-v="maybe">Considering</button><button type="button" data-v="allp">Every printing in card searches</button></div></div>
     <div id="sdeck">
-      <div class="row"><p class="lb">This deck</p><div class="trio">
+      <div class="row"><div class="trio">
         <button type="button" class="glass" data-act="exp2" data-k="do"><span class="t">Export</span></button>
         <button type="button" class="glass" data-act="dup" data-k="do"><span class="t">Duplicate</span></button>
         <button type="button" class="glass" data-act="del" id="dkdel" data-k="do"><span class="t">Delete</span></button>
