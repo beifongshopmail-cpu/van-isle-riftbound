@@ -211,7 +211,7 @@ input[type="file"]{display:none}
     <!-- THE PLATE (round 3, Mako 2026-10-25: as Decks', one sticky block): which portfolio, its search,
          and how its cards show -->
     <div class="stk"><div class="plate glass">
-      <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All portfolios</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+      <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All binders</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
       <div class="sf psf" id="hsf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
@@ -303,28 +303,28 @@ input[type="file"]{display:none}
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
 
-<section class="panel frost" id="pport" aria-hidden="true" aria-label="Portfolios">
-  <div class="phead"><h4 class="ttl">Portfolios</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pport" aria-hidden="true" aria-label="Binders">
+  <div class="phead"><h4 class="ttl">Binders</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="pick" id="portpick" data-k="pick"></div>
-    <div class="row" style="margin-top:14px"><div class="doors" data-k="deeper"><button type="button" class="door btn glass" data-act="manage"><span class="t">Edit portfolios</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
+    <div class="row" style="margin-top:14px"><div class="doors" data-k="deeper"><button type="button" class="door btn glass" data-act="manage"><span class="t">Edit binders</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
   </div>
 </section>
 
-<section class="panel frost" id="pmng" aria-hidden="true" aria-label="Edit portfolios">
-  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Edit portfolios</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pmng" aria-hidden="true" aria-label="Edit binders">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Edit binders</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="doors" id="mnglist" data-k="deeper"></div></div>
-  <div class="pfoot"><button type="button" class="pact btn glass" data-act="newport" data-k="do">New portfolio</button></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="newport" data-k="do">New binder</button></div>
 </section>
 
-<section class="panel frost" id="pone" aria-hidden="true" aria-label="Portfolio">
-  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="onettl">Portfolio</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pone" aria-hidden="true" aria-label="Binder">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="onettl">Binder</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <p class="lb">Name</p>
     <div class="nf tall"><input id="onename" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
     <p class="pnote" id="onenote"></p>
   </div>
-  <div class="pfoot"><button type="button" class="pact btn glass" id="onedel" data-act="delport" data-k="do">Delete portfolio</button></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="onedel" data-act="delport" data-k="do">Delete binder</button></div>
 </section>
 
 <section class="panel frost" id="psort" aria-hidden="true" aria-label="Sort">
@@ -334,7 +334,7 @@ input[type="file"]{display:none}
 
 <section class="panel frost" id="psets" aria-hidden="true" aria-label="Sets">
   <div class="phead"><h4 class="ttl">Sets</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts the printings in every portfolio, not the Wishlist. Sealed product sits in its set.</p></div>
+  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts the printings in every binder, not the Wishlist. Sealed product sits in its set.</p></div>
 </section>
 
 <section class="panel frost" id="pmove" aria-hidden="true" aria-label="Move to">
@@ -358,7 +358,7 @@ input[type="file"]{display:none}
       <button type="button" class="door btn glass act" data-act="pickcsv"><span class="t">A Collectr file</span><span class="sp"></span><small>CSV</small></button>
       <button type="button" class="door btn glass act" data-act="pickbak"><span class="t">A RAVI backup</span><span class="sp"></span><small>JSON</small></button>
     </div>
-    <p class="pnote" style="margin-top:10px">In Collectr, export a portfolio as a CSV file and pick it here. Each Collectr portfolio becomes a portfolio here with the same name; one already here with that name is replaced. Watchlist items go to the Wishlist. A RAVI backup replaces everything on this page.</p>
+    <p class="pnote" style="margin-top:10px">In Collectr, export a portfolio as a CSV file and pick it here. Each Collectr portfolio becomes a binder here with the same name; one already here with that name is replaced. Watchlist items go to the Wishlist. A RAVI backup replaces everything on this page.</p>
     <input type="file" id="fcsv" accept=".csv,text/csv,text/plain">
     <input type="file" id="fbak" accept=".json,application/json">
   </div>
@@ -375,7 +375,7 @@ input[type="file"]{display:none}
     </div>
     <div class="row"><div class="pick" id="showmv" data-k="pick"><button type="button" aria-pressed="true" class="on">Show Movers</button></div></div>
     <div class="row"><div class="doors" data-k="deeper">
-      <button type="button" class="door btn glass" data-act="manage"><span class="t">Portfolios</span><span class="sp"></span><small id="setports"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door btn glass" data-act="manage"><span class="t">Binders</span><span class="sp"></span><small id="setports"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="decks"><span class="t">Add a deck</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="export"><span class="t">Export</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
@@ -441,7 +441,7 @@ input[type="file"]{display:none}
     S.ports.forEach(function(p){ if(v === "all" || v === p.id) p.items.forEach(function(h){ out.push({ h: h, p: p.id }); }); });
     return out;
   }
-  function viewName(v){ v = v || SET.view; return v === "all" ? "All portfolios" : (v === "wish" ? "Wishlist" : (port(v) || {}).name || ""); }
+  function viewName(v){ v = v || SET.view; return v === "all" ? "All binders" : (v === "wish" ? "Wishlist" : (port(v) || {}).name || ""); }
   function key(h){ return h.i + "|" + h.f; }
   function count(list){ var n = 0; list.forEach(function(x){ n += x.h.q; }); return n; }
 
@@ -586,7 +586,9 @@ input[type="file"]{display:none}
     var v = pts.map(function(k){ return all[k]; }), n = v.length;
     var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), top = 22, foot = 0;
     if(hi === lo){ hi = lo + 1; lo = lo - 1; }
-    var span = hi - lo; lo -= span * 0.35; hi += span * 0.06;
+    // the scale: the move fills a little over half the card, so a small list's few cents do not look
+    // like a cliff (round 4)
+    var span = hi - lo; lo -= span * 0.75; hi += span * 0.06;
     // edge to edge, one slot a bar (round 2); the glass card's corners crop the ends
     var step = w / n;
     function X(j){ return (j + 0.5) * step; }
@@ -595,30 +597,17 @@ input[type="file"]{display:none}
     // corners rounded a touch (up on a rise, down on a fall, 3 at most, never past half the step); a faint
     // rim along the top instead of a lit cap on every bar
     var g = "cg" + (++GID), R = "220,90,30";
-    var V = [[0, Y(v[0])]];
-    for(i = 0; i < n; i++){
-      var yy = Y(v[i]), xe = (i + 1) * step;
-      if(i) V.push([i * step, yy]);
-      V.push([xe, yy]);
-    }
-    // drop points that sit on a straight run (two equal bars side by side)
-    var Q = [V[0]];
-    for(i = 1; i < V.length - 1; i++){
-      var a = Q[Q.length - 1], b = V[i], c = V[i + 1];
-      if((a[1] === b[1] && b[1] === c[1]) || (a[0] === b[0] && b[0] === c[0])) continue;
-      Q.push(b);
-    }
-    Q.push(V[V.length - 1]);
     function f1(x){ return x.toFixed(1); }
-    var top0 = "M" + f1(Q[0][0]) + " " + f1(Q[0][1]);
-    for(i = 1; i < Q.length - 1; i++){
-      var A = Q[i - 1], P0 = Q[i], B = Q[i + 1];
-      var da = Math.hypot(A[0] - P0[0], A[1] - P0[1]), db = Math.hypot(B[0] - P0[0], B[1] - P0[1]);
-      var r = Math.min(3, da / 2, db / 2);
-      var p1 = [P0[0] + (A[0] - P0[0]) * r / da, P0[1] + (A[1] - P0[1]) * r / da], p2 = [P0[0] + (B[0] - P0[0]) * r / db, P0[1] + (B[1] - P0[1]) * r / db];
-      top0 += "L" + f1(p1[0]) + " " + f1(p1[1]) + "Q" + f1(P0[0]) + " " + f1(P0[1]) + " " + f1(p2[0]) + " " + f1(p2[1]);
+    // EVERY STEP SMOOTH (round 4, Mako 2026-10-25: a small step still had sharp corners, its rounding
+    // capped at half its height): each change is one S-curve, flat into it and flat out of it, over 3
+    // either side of the step (less where the bars are narrow), whatever its height
+    var rs = Math.min(3, step * 0.45), top0 = "M0 " + f1(Y(v[0]));
+    for(i = 0; i < n - 1; i++){
+      var ya = Y(v[i]), yb = Y(v[i + 1]), xs = (i + 1) * step;
+      if(Math.abs(ya - yb) < 0.05) continue;
+      top0 += "L" + f1(xs - rs) + " " + f1(ya) + "C" + f1(xs) + " " + f1(ya) + " " + f1(xs) + " " + f1(yb) + " " + f1(xs + rs) + " " + f1(yb);
     }
-    top0 += "L" + f1(Q[Q.length - 1][0]) + " " + f1(Q[Q.length - 1][1]);
+    top0 += "L" + w + " " + f1(Y(v[n - 1]));
     var shape = top0 + "L" + w + " " + (ht + 2) + "L0 " + (ht + 2) + "Z";
     var defs = '<linearGradient id="' + g + '" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + ht + '"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".70"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity=".16"/></linearGradient>'
       + '<linearGradient id="' + g + 's" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + (top + (ht - top) * 0.45) + '"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
@@ -652,7 +641,7 @@ input[type="file"]{display:none}
     var items = viewItems(), n = count(items), now = 0;
     items.forEach(function(x){ now += x.h.q * nowCents(x.h); });
     el("portname").textContent = viewName();
-    el("hq").placeholder = SET.view === "all" ? "Search your collection" : "Search " + viewName();
+    el("hq").placeholder = SET.view === "all" ? "Search your collection" : (SET.view === "wish" ? "Search your wishlist" : "Search this binder");
     el("portcnt").textContent = n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards";
     el("val").textContent = money(now / 100);
     el("valu").textContent = SET.cur;
@@ -802,7 +791,7 @@ input[type="file"]{display:none}
     el("movelist").innerHTML = all.map(function(a){
       var only = Object.keys(here).length === 1 && here[a[0]];
       return '<button type="button" class="door btn glass act" data-act="moveto" data-v="' + esc(a[0]) + '"' + (only ? ' disabled' : '') + '><span class="t">' + esc(a[1]) + '</span><span class="sp"></span><small>' + count(viewItems(a[0])).toLocaleString("en-US") + '</small></button>';
-    }).join("") + '<button type="button" class="door btn glass act" data-act="movenew"><span class="t">A new portfolio</span></button>';
+    }).join("") + '<button type="button" class="door btn glass act" data-act="movenew"><span class="t">A new binder</span></button>';
   }
   function moveTo(to){
     var l = selList();
@@ -872,11 +861,11 @@ input[type="file"]{display:none}
 
   // ---- PORTFOLIOS ----
   function newPort(name){ var p = { id: uid(), name: name, items: [] }; S.ports.push(p); return p; }
-  var PORTB = false;   // the Portfolios menu opened from the browser: no All, and a pick is where taps add
+  var PORTB = false;   // the Binders menu opened from the browser: a pick changes the page's choice too
   function fillPorts(){
     var h = "", all = viewItems("all");
     function row(v, nm, n){ return '<button type="button" data-v="' + esc(v) + '"' + (SET.view === v ? ' class="on"' : '') + '><span class="t">' + esc(nm) + '</span><span class="sp"></span><small>' + n.toLocaleString("en-US") + '</small></button>'; }
-    if(!PORTB) h += row("all", "All portfolios", count(all));
+    h += row("all", "All binders", count(all));
     S.ports.forEach(function(p){ h += row(p.id, p.name, count(viewItems(p.id))); });
     h += row("wish", "Wishlist", count(viewItems("wish")));
     el("portpick").innerHTML = h;
@@ -884,7 +873,7 @@ input[type="file"]{display:none}
   function fillManage(){
     el("mnglist").innerHTML = S.ports.length ? S.ports.map(function(p){
       return '<button type="button" class="door btn glass" data-act="one" data-id="' + esc(p.id) + '"><span class="t">' + esc(p.name) + '</span><span class="sp"></span><small>' + count(viewItems(p.id)).toLocaleString("en-US") + '</small>' + CVR + '</button>';
-    }).join("") : '<p class="cempty" style="padding:12px 16px">No portfolios yet. Adding a card makes the first one.</p>';
+    }).join("") : '<p class="cempty" style="padding:12px 16px">No binders yet. Adding a card makes the first one.</p>';
     el("setports").textContent = S.ports.length;
   }
   var ONE = null;
@@ -924,6 +913,16 @@ input[type="file"]{display:none}
     return h.q;
   }
   function owned(i, f, to){ var n = 0; (listOf(to || target()) || []).forEach(function(x){ if(x.i === i && x.f === f) n += x.q; }); return n; }
+  // THE BROWSER FOLLOWS THE PAGE (round 4, Mako): under All binders its counts are every binder's; a tap
+  // adds to the last binder added to (its pill says which); minus takes from that binder first
+  function bOwned(i, f){ if(SET.view !== "all") return owned(i, f); var n = 0; S.ports.forEach(function(p){ n += owned(i, f, p.id); }); return n; }
+  function bTake(i, f){
+    if(SET.view !== "all") return takeOne(i, f);
+    var from = owned(i, f, target()) ? target() : null;
+    if(!from) S.ports.forEach(function(p){ if(!from && owned(i, f, p.id)) from = p.id; });
+    if(from) takeOne(i, f, from);
+    return bOwned(i, f);
+  }
   var FINORD = function(a, b){ return (a === "Normal" ? 0 : 1) - (b === "Normal" ? 0 : 1) || (a < b ? -1 : 1); };
 
   // ---- THE CARD BROWSER (Mako 2026-10-25: browse every card and add or remove while browsing, as
@@ -982,7 +981,7 @@ input[type="file"]{display:none}
     P.cards.forEach(function(c){
       if(setg && groupOf(c) !== setg) return;
       if(words.length){ var hay = (c.n + " " + (c.c || "") + " " + (setOf(c).a || "") + " " + (setOf(c).n || "")).toLowerCase(); if(!words.every(function(w){ return hay.indexOf(w) > -1; })) return; }
-      Object.keys(c.p).sort(FINORD).forEach(function(f){ if(BR.own && !owned(c.i, f, to)) return; out.push({ c: c, f: f }); });
+      Object.keys(c.p).sort(FINORD).forEach(function(f){ if(BR.own && !bOwned(c.i, f)) return; out.push({ c: c, f: f }); });
     });
     out.sort(function(a, b){
       var x = a.c, y = b.c;
@@ -991,7 +990,7 @@ input[type="file"]{display:none}
     return out;
   }
   function brBox(c, f){
-    var n = owned(c.i, f);
+    var n = bOwned(c.i, f);
     if(!n) return '';
     var k = c.i + "|" + f;
     return '<span class="lq">x' + n + '</span><span class="lsteps"><button type="button" class="lpm glass' + (n === 1 ? " bin" : "") + '" data-bdn="' + esc(k) + '" aria-label="' + (n === 1 ? "Remove" : "One fewer") + '" data-k="do">' + (n === 1 ? IC.bin : IC.minus) + '</button>'
@@ -1005,9 +1004,9 @@ input[type="file"]{display:none}
   }
   // the browser's portfolio pill: where a tap adds (the portfolio on show; under All, the last one added to)
   function brNote(){
-    el("bportname").textContent = targetName();
-    var n = count(viewItems(target() || "none"));
-    el("bportcnt").textContent = n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards";
+    el("bportname").textContent = viewName();
+    var n = count(viewItems());
+    el("bportcnt").textContent = SET.view === "all" ? "adds to " + targetName() : (n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards");
   }
   function brRender(keep){
     BR.list = brList();
@@ -1096,7 +1095,7 @@ input[type="file"]{display:none}
         + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ", the first day RAVI has prices for: " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
       + '<div class="row"><p class="lb">Added</p><div class="nf"><input id="hdate" type="date" value="' + esc(h.d || "") + '" max="' + today() + '" data-k="type"></div></div>'
       + (sealed(c) ? '' : '<div class="row"><p class="lb">Condition</p><div class="seg" role="group" aria-label="Condition" id="hcond" data-k="pick">' + CONDS.map(function(k){ return '<button type="button" data-c="' + k[0] + '" aria-pressed="' + (condCode(h.cond) === k[0]) + '">' + k[0] + '</button>'; }).join("") + '</div></div>')
-      + (S.ports.length > 1 && HPORT !== "wish" ? '<div class="row"><p class="lb">Portfolio</p><div class="pick" id="hport" data-k="pick">' + S.ports.map(function(p){ return '<button type="button" data-v="' + esc(p.id) + '"' + (p.id === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p.name) + '</span></button>'; }).join("") + '</div></div>' : '');
+      + (S.ports.length > 1 && HPORT !== "wish" ? '<div class="row"><p class="lb">Binder</p><div class="pick" id="hport" data-k="pick">' + S.ports.map(function(p){ return '<button type="button" data-v="' + esc(p.id) + '"' + (p.id === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p.name) + '</span></button>'; }).join("") + '</div></div>' : '');
     el("hbody").innerHTML = x;
     el("hfoot").innerHTML = HPORT === "wish" ? '<button type="button" class="pact btn glass" data-act="wishown" data-k="do">I own it now</button>' : '';
     el("hfoot").hidden = HPORT !== "wish";
@@ -1171,11 +1170,11 @@ input[type="file"]{display:none}
     if(!x){ el("isum").innerHTML = ""; el("ifoot").hidden = true; return; }
     if(x.err){ el("isum").innerHTML = '<div class="isum">' + esc(x.err) + '</div>'; el("ifoot").hidden = true; return; }
     if(x.backup){
-      h = '<b>A RAVI backup</b> from ' + esc(window.RAVI_DATE(String(x.backup.at || "").slice(0, 10))) + ': ' + x.backup.data.ports.length + (x.backup.data.ports.length === 1 ? " portfolio" : " portfolios") + '. It replaces everything on this page.';
+      h = '<b>A RAVI backup</b> from ' + esc(window.RAVI_DATE(String(x.backup.at || "").slice(0, 10))) + ': ' + x.backup.data.ports.length + (x.backup.data.ports.length === 1 ? " binder" : " binders") + '. It replaces everything on this page.';
       el("igo").textContent = "Restore the backup";
     } else {
       var n = 0;
-      h = x.order.map(function(pn){ var q = 0; x.ports[pn].forEach(function(it){ q += it.q; }); n += q; var ex = S.ports.some(function(p){ return p.name === pn; }); return '<b>' + esc(pn) + '</b>: ' + q.toLocaleString("en-US") + (q === 1 ? " card" : " cards") + (ex ? ", replacing the portfolio of that name" : ", a new portfolio"); }).join("<br>");
+      h = x.order.map(function(pn){ var q = 0; x.ports[pn].forEach(function(it){ q += it.q; }); n += q; var ex = S.ports.some(function(p){ return p.name === pn; }); return '<b>' + esc(pn) + '</b>: ' + q.toLocaleString("en-US") + (q === 1 ? " card" : " cards") + (ex ? ", replacing the binder of that name" : ", a new binder"); }).join("<br>");
       if(x.wish.length) h += (h ? "<br>" : "") + '<b>Wishlist</b>: ' + x.wish.length + " more";
       h += '<br>' + x.rows + (x.rows === 1 ? " row" : " rows") + ' read; ' + (x.miss.length ? x.miss.length + ' not found:' : 'every one found.');
       if(x.miss.length) h += '<ul>' + x.miss.slice(0, 30).map(function(m){ return '<li>' + esc(m) + '</li>'; }).join("") + (x.miss.length > 30 ? '<li>and ' + (x.miss.length - 30) + ' more</li>' : '') + '</ul>';
@@ -1242,11 +1241,11 @@ input[type="file"]{display:none}
     // the browser
     if(t.hasAttribute("data-badd") || t.hasAttribute("data-bup")){
       var kb = (t.getAttribute("data-badd") || t.getAttribute("data-bup")).split("|"), c = BYID[kb[0]];
-      var hh = addOne(c.i, kb[1], 1); save(); brPaint(kb[0] + "|" + kb[1]); brNote();
-      if(t.hasAttribute("data-badd")) toast("Added " + c.n + (sealed(c) ? "" : ", " + kb[1]) + " (" + hh.q + " in " + targetName() + ")");
+      var tn = targetName(), hh = addOne(c.i, kb[1], 1); save(); brPaint(kb[0] + "|" + kb[1]); brNote();
+      if(t.hasAttribute("data-badd")) toast("Added " + c.n + (sealed(c) ? "" : ", " + kb[1]) + " (" + hh.q + " in " + tn + ")");
       return;
     }
-    if(t.hasAttribute("data-bdn")){ var kd = t.getAttribute("data-bdn").split("|"), cd = BYID[kd[0]]; var left = takeOne(cd.i, kd[1]); save(); brPaint(kd[0] + "|" + kd[1]); if(!left) toast("Removed " + cd.n); return; }
+    if(t.hasAttribute("data-bdn")){ var kd = t.getAttribute("data-bdn").split("|"), cd = BYID[kd[0]]; var left = bTake(cd.i, kd[1]); save(); brPaint(kd[0] + "|" + kd[1]); if(!left) toast("Removed " + cd.n); return; }
     if(t.hasAttribute("data-bs")){ BR.set = t.getAttribute("data-bs"); BR.lim = 60; openPanel(null); brRender(); return; }
     if(t.hasAttribute("data-hv")){ SET.hview = t.getAttribute("data-hv"); saveSet(); render(); return; }
     if(t.classList.contains("crow") || t.classList.contains("cpic")){
@@ -1286,7 +1285,7 @@ input[type="file"]{display:none}
     if(a === "selall"){ var all = true; VIS.forEach(function(x){ if(!SEL[x.p + "|" + x.h.id]) all = false; }); VIS.forEach(function(x){ if(all) delete SEL[x.p + "|" + x.h.id]; else SEL[x.p + "|" + x.h.id] = 1; }); render(); return; }
     if(a === "selmove"){ fillMove(); openPanel(el("pmove")); return; }
     if(a === "moveto"){ moveTo(t.getAttribute("data-v")); return; }
-    if(a === "movenew"){ moveTo(newPort("Portfolio " + (S.ports.length + 1)).id); return; }
+    if(a === "movenew"){ moveTo(newPort("Binder " + (S.ports.length + 1)).id); return; }
     if(a === "selrm"){
       if(!armed(t)) return;
       var gone = selList();
@@ -1295,7 +1294,7 @@ input[type="file"]{display:none}
     }
     if(a === "manage"){ fillManage(); go(el("pmng")); return; }
     if(a === "one"){ fillOne(t.getAttribute("data-id")); deeper(el("pone")); return; }
-    if(a === "newport"){ var p = newPort("Portfolio " + (S.ports.length + 1)); changed(); fillManage(); fillOne(p.id); deeper(el("pone")); return; }
+    if(a === "newport"){ var p = newPort("Binder " + (S.ports.length + 1)); changed(); fillManage(); fillOne(p.id); deeper(el("pone")); return; }
     if(a === "delport"){
       if(!armed(t)) return;
       S.ports = S.ports.filter(function(x){ return x !== ONE; });
