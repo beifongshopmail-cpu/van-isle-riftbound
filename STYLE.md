@@ -167,7 +167,7 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - trade/index.html: .bin .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .trow .udb .vd
 - feedback/index.html: .fbn .fbody .fgrp .lead .ship
 - settings/index.html: .sts .starm
-- rules/index.html: .empty .extl .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
+- rules/index.html: .empty .extl .new .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
 - decks/index.html: .add .addt .art .aside .avg .bad .ban .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .bstack .cbox .cg2 .cgrid .chart .chcol .chlab .cmid .cname .cnm .cols .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dcend .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dgrip .dnone .dnote .dprice .dsec .dsub .dv .dvrow .dvseg .dvsort .dwrap .ed .epill .esf .fchip .gcell .ghost .gpic .gq .gsh .gstar .gstp .hacts .hc .hdrawn .hhd .hmark .hnone .hnote .hold .hrow .hsort .ires .kw .land .lcard .lcell .lift .low .lpm .lq .lrhd .lrow .lsteps .mban .mbox .menu .mpic .n .none .ochip .ochips .odds .okc .okmk .omull .open .otile .otiles .pbar .pchk .pdrow .pfin .pfins .phd .plate .plist .pnone .pr .prb .pre .prow .pti .ptl .pv .pvrow .qrow .qrows .res .resw .rgl .rot .sall .sbtns .shut .sm .spot .spotpic .srow .star .stb .sth .stick .stile .stiles .stools .stp .toast .tokrow .trio .two .vbadge .vw .wmk .xbox .z
 
 Page shell (feedback/index.html, settings/index.html)
@@ -348,7 +348,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
 - Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
-- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
+- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
 
@@ -374,7 +374,7 @@ App settings (settings/index.html)
 Rules (rules/index.html)
 - Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty) in a sticky .plate, then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, grouped by kind (Errata, then FAQs and rulings, each in its section's colour), names first, at most 40.
-- Bar: Hub, Go to, Latest (#pnew, data-fills; Riot's articles newest first, each opening #part deeper; its icon key is whatsnew), Settings dimmed. The footer ends with Tell us, as Calendar and Trade.
+- Bar: Hub, Go to, the third slot dimmed (Soon) until it has a use, Settings dimmed. NEW on an entry, a document or an article's row means changed since the last visit (vir.rules.seen.v1, the newest 'changed' day; a first visit is the baseline), as the calendar's NEW: badges stay while the page is open, leaving it records the visit. Latest retired for it (Mako 2026-10-24). The footer ends with Tell us, as Calendar and Trade.
 Decks (decks/index.html)
 - Two screens: the list of decks, and one deck: a sticky .plate (Back, name and price, Undo; Deck, Stats, Hand), Legend beside Runes, Battlefields, then Main, Side and Considering, each with its own view and sort, and Notes. Edit (the bar's third slot, a mode) adds steppers and add tiles; the card browser is full screen; the card menu (#pcard) opens from a card. Logic and formats in decks/deck.js.
 - On Decks, the view (List, Grid, Text), the size and the sort sit in one row in the plate. A section's gear overrides them for that section. (Mako's yes 2026-10-24)
@@ -417,7 +417,7 @@ Decks (decks/index.html)
 - icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - m11d-test.js: the deck logic (Piltover Archive's golden codes, six formats in, three out, Riot's deck rules in words, the ban list, stats, the hand).
 - m11p-test.js: the Decks page's flow in a browser.
-- m11zd-test.js to m11zf-test.js: the M11 consistency sweep and Mako's phone check (Export in Deck settings as a cut track, round X, hub wordmark 48; Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
+- m11zd-test.js to m11zh-test.js: the M11 consistency sweep and Mako's phone checks (Rules by section and NEW in place of Latest, clear chrome; Export in Deck settings as a cut track, round X, hub wordmark 48; Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
 - m11r-test.js to m11zc-test.js: the Decks refinement, one per round of Mako's notes (2026-10-18 to 23): the list plate, view row and section menus, printings from the price feed, Stats tiles, odds, Undo, runes at 12, badges, battlefields, counts, deck colours, the safe zone on every sticky plate, the Add cards plate, and changes painted in place.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
