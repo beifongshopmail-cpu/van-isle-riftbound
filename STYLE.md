@@ -259,7 +259,7 @@ Go to (pages.js)
 
 Confirm and motion helpers
 - Two-tap confirm: first tap adds .armed (and shows the one-line prompt); a second tap within 3000 ms acts; the timer or a cancel removes .armed. Toggle the class; never rewrite className. The armed look is page-local (settings .tab.armed and .starm, counter .pact.armed, .sidebtn.armed) and uses --glass-press, or the side colour at .50 for a side control.
-- The armed button's words become "Sure? Tap again"; "Sure?" alone only where that does not fit on one line (the counter's three-across row, the timer's buttons). An icon slot shows its prompt as a line on the page. No standing note explains the second tap. (Mako's yes 2026-10-16)
+- The armed button's words become "Sure? Tap again"; "Sure?" alone only where that does not fit on one line (the counter's three-across row, Decks' This deck row, the timer's buttons). An icon slot shows its prompt as a line on the page. No standing note explains the second tap. (Mako's yes 2026-10-16)
 - Flashes: .flash-n (bone, neutral) and .flash-p (--pc, the player colour), .42s. Apply after the render: find the fresh node, remove the class, force reflow, add it.
 - .reveal: content a tap opens eases in (.26s, up 6 and fade). Add it after the tap; never on a render.
 - [hidden] always wins (display none).
