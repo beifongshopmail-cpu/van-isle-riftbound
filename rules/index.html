@@ -78,13 +78,13 @@ body{-webkit-font-smoothing:antialiased;
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
       <input id="q" type="search" placeholder="Search cards and rulings" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-      <button type="button" class="fbtn glass" id="qx" disabled data-k="do">Clear</button>
+      <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
   </div>
 
   <section id="res" hidden>
     <div class="shead"><h2>Results</h2><span class="sp"></span><span class="cnt" id="rescnt"></span></div>
-    <div class="doors" id="reslist" data-k="open"></div>
+    <div id="reslist"></div>
     <p class="empty" id="resnone" hidden>Nothing matches. Try a card name or a few words from the question.</p>
   </section>
 
@@ -298,8 +298,12 @@ body{-webkit-font-smoothing:antialiased;
     el("home").hidden = !!q;
     el("res").hidden = !q;
     if(!q) return;
-    var hits = find(q), h = "";
-    hits.forEach(function(x){ h += entry(x.it, (SRC[x.it.source] || {}).title); });
+    // RESULTS BY KIND, each in its section's colour (Mako 2026-10-24: not the page's green): Errata
+    // garnet, then FAQs and rulings gold, as the sections below them; the order inside each kept
+    var hits = find(q), h = "", err = "", faq = "";
+    hits.forEach(function(x){ var e = entry(x.it, (SRC[x.it.source] || {}).title); if(x.it.kind === "errata") err += e; else faq += e; });
+    if(err) h += '<div class="row"><p class="lb">Errata</p><div class="doors" data-k="open" style="--tint:rgba(200,35,70,var(--cg))">' + err + '</div></div>';
+    if(faq) h += '<div class="row"><p class="lb">FAQs and rulings</p><div class="doors" data-k="open" style="--tint:rgba(255,200,40,var(--cg))">' + faq + '</div></div>';
     el("reslist").innerHTML = h;
     el("reslist").hidden = !hits.length;
     el("resnone").hidden = !!hits.length;

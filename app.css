@@ -363,6 +363,12 @@ html.lock,html.lock body{overflow:hidden}
 .nf .fbtn,.sf .fbtn{flex:0 0 auto;height:calc(100% - 6px);box-sizing:border-box;padding:0 14px;border-radius:999px;
   font-family:var(--disp);font-weight:600;font-size:13px}
 .nf .fbtn.armed,.sf .fbtn.armed{background:var(--hi)}
+/* A SEARCH CLEARS WITH A ROUND X (Mako 2026-10-24: an icon, not the word): the field's glass button made
+   round, holding the bare X glyph (18, line 2.4, as a round button's Close). It shows only while there
+   is text; hidden, it keeps its place, so nothing moves. */
+.nf .fbtn.fx,.sf .fbtn.fx{width:var(--sz-seg);padding:0;display:grid;place-items:center;color:var(--bone)}
+.nf .fbtn.fx svg,.sf .fbtn.fx svg{width:18px;height:18px}
+.nf .fbtn.fx:disabled,.sf .fbtn.fx:disabled{visibility:hidden}
 
 /* SEG.MULTI: a multi-select track -- every segment is its own independent
    on/off switch (aria-pressed), not a single choice. Same recess as .seg;

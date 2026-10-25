@@ -420,7 +420,16 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   font-family:var(--text);font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word;color:var(--bone)}
 .ires{margin:10px 2px 0;font-size:13px;line-height:1.45}
 .ires:empty{display:none}
-.door.armed,.pact.armed{background:var(--glass-press)}
+.door.armed,.pact.armed,.trio .armed{background:var(--glass-press)}
+/* THIS DECK'S THREE ACTIONS AS ONE PILL CUT IN THREE (Mako 2026-10-24: the counter's Conquer | Hold |
+   Other): row height, outer ends half of it, --r-cut inside, --gap-cut between; Export lives only here */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap-cut)}
+.trio button{height:var(--sz-row);min-width:0;padding:0 8px;font-family:var(--disp);font-weight:600;font-size:15px;color:var(--bone)}
+.trio button .t{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trio button:active{background:var(--glass-press)}
+.trio button:first-child{border-radius:calc(var(--sz-row) / 2) var(--r-cut) var(--r-cut) calc(var(--sz-row) / 2)}
+.trio button:nth-child(2){border-radius:var(--r-cut)}
+.trio button:last-child{border-radius:var(--r-cut) calc(var(--sz-row) / 2) calc(var(--sz-row) / 2) var(--r-cut)}
 #cfoot .pact + .two{margin-top:8px}
 .toast{position:fixed;left:50%;z-index:60;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 14px);
   transform:translate(-50%,10px);opacity:0;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;
@@ -457,7 +466,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
         <div class="sf">
           <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
           <input id="hq" type="search" placeholder="Search decks" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Search decks by name, Legend or card" data-k="type">
-          <button type="button" class="fbtn glass" id="hqx" disabled data-k="do">Clear</button>
+          <button type="button" class="fbtn fx glass" id="hqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         </div>
         <div class="hacts"><button type="button" class="pact btn glass" data-act="new" data-k="do">New deck</button><button type="button" class="pact btn glass" data-act="imp" data-k="do">Import</button></div>
       </section>
@@ -478,13 +487,12 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
           <button type="button" class="circ btn glass" data-act="home" aria-label="Back to your decks" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
           <div class="ptl"><b id="ptname"></b><span id="ptprice"></span></div>
           <button type="button" class="circ btn glass" data-act="umenu" id="undob" aria-label="Undo" disabled data-fills="pundo" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 3.5 3 8l4.5 4.5"/><path d="M3 8h12.5a5.5 5.5 0 0 1 0 11H8"/></svg></button>
-          <button type="button" class="circ btn glass" data-act="exp" aria-label="Export this deck" data-fills="pexp" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></button>
         </div>
         <div class="seg vw" id="vw" role="group" aria-label="Show" data-k="pick"><button type="button" data-vw="deck" aria-pressed="true">Deck</button><button type="button" data-vw="stats" aria-pressed="false">Stats</button><button type="button" data-vw="hand" aria-pressed="false">Hand</button></div>
         <div class="sf esf" id="esf" hidden>
           <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
           <input id="eq" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Search cards to add" data-k="type">
-          <button type="button" class="fbtn glass" id="eqx" disabled data-k="do">Clear</button>
+          <button type="button" class="fbtn fx glass" id="eqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         </div>
         <div class="pvrow" id="pvrow"></div>
         <div class="resw" id="eresw"><div class="bchips" id="echips"></div><div class="res" id="eres"></div></div>
@@ -519,7 +527,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       <div class="sf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="bq" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-        <button type="button" class="fbtn glass" id="bqx" disabled data-k="do">Clear</button>
+        <button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div class="bchips" id="bchips"></div>
@@ -568,9 +576,10 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     <div class="row"><p class="lb">Show</p><div class="pick" id="sshow" data-k="pick"><button type="button" data-v="price">Prices</button><button type="button" data-v="maybe">Considering</button><button type="button" data-v="allp">Every printing in card searches</button></div>
       <p class="pnote" style="margin-top:8px">How cards show, and their sort, are at the top of each deck.</p></div>
     <div id="sdeck">
-      <div class="row"><p class="lb">This deck</p><div class="two" style="margin-top:0">
-        <button type="button" class="pact btn glass" data-act="dup" data-k="do"><span class="t">Duplicate</span></button>
-        <button type="button" class="pact btn glass" data-act="del" id="dkdel" data-k="do"><span class="t">Delete this deck</span></button>
+      <div class="row"><p class="lb">This deck</p><div class="trio">
+        <button type="button" class="glass" data-act="exp2" data-k="do"><span class="t">Export</span></button>
+        <button type="button" class="glass" data-act="dup" data-k="do"><span class="t">Duplicate</span></button>
+        <button type="button" class="glass" data-act="del" id="dkdel" data-k="do"><span class="t">Delete</span></button>
       </div></div>
     </div>
   </div>
@@ -1692,7 +1701,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     disarm();
   }
   var ARMT = 0;
-  function disarm(){ clearTimeout(ARMT); var b = el("dkdel"); b.classList.remove("armed"); b.querySelector(".t").textContent = "Delete this deck"; }
+  function disarm(){ clearTimeout(ARMT); var b = el("dkdel"); b.classList.remove("armed"); b.querySelector(".t").textContent = "Delete"; }
 
   // ---- menus: one on screen, a stack behind it (the trade page's) ----
   var OPENP = null, STACK = [];
@@ -1848,7 +1857,6 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "new"){ var nd = fresh(); DECKS.unshift(nd); save(); go("deck", nd.id); EDIT = true; render(); toast("New deck: tap Legend to start"); return; }
     if(a === "imp"){ el("ires").textContent = ""; openPanel(el("pimp")); return; }
     if(a === "idone"){ doImport(); return; }
-    if(a === "exp"){ XF = SET.exp; fillExp(); openPanel(el("pexp")); return; }
     if(a === "xcopy"){ copyText(xText()); return; }
     if(a === "xsave"){ saveFile(xText()); return; }
     if(a === "shut"){ var sc = t.getAttribute("data-sec"); SET.shut[sc] = !SET.shut[sc]; saveSet(); render(); return; }
@@ -1885,12 +1893,13 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     }
     if(a === "hnew"){ HAND = X.deal(deck()); ASIDE = []; renderHand(); return; }
     if(a === "hmull"){ HAND = X.mulligan(HAND, ASIDE); ASIDE = []; renderHand(); return; }
+    if(a === "exp2"){ XF = SET.exp; fillExp(); deeper(el("pexp")); return; }
     if(a === "dup"){
       var cp = JSON.parse(JSON.stringify(d)); cp.id = fresh().id; cp.name = (d.name || "Deck") + " copy"; cp.t = Date.now();
       DECKS.unshift(cp); save(); openPanel(null); go("deck", cp.id); toast("Duplicated"); return;
     }
     if(a === "del"){
-      if(!t.classList.contains("armed")){ t.classList.add("armed"); t.querySelector(".t").textContent = "Sure? Tap again"; clearTimeout(ARMT); ARMT = setTimeout(disarm, 3000); return; }
+      if(!t.classList.contains("armed")){ t.classList.add("armed"); t.querySelector(".t").textContent = t.closest(".trio") ? "Sure?" : "Sure? Tap again"; clearTimeout(ARMT); ARMT = setTimeout(disarm, 3000); return; }
       DECKS = DECKS.filter(function(x){ return x.id !== CURID; }); CURID = ""; save(); openPanel(null); go("home"); toast("Deleted"); return;
     }
   });

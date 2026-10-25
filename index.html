@@ -44,7 +44,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
   position:relative;flex:0 0 auto;
   /* ONE LINE: replace with an image or texture */
   background:var(--ground)}
-.hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:.01em;color:var(--bone)} /* rung-exempt: the wordmark */
+.hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:48px;letter-spacing:.01em;color:var(--bone)} /* rung-exempt: the wordmark, the size the intro's full name starts at (Mako 2026-10-24) */
 /* THE LAUNCH INTRO (STYLE.md, Motion). While it plays the name is four
    capitals that travel, and .introfull is the full name laid over them.
    The script builds both only while it plays; at rest the name is the
@@ -52,7 +52,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .hubname.intro{position:relative}
 .hubname.intro span{display:inline-block}
 .introfull{position:absolute;left:50%;top:50%;width:max-content;text-align:center;white-space:nowrap;pointer-events:none;
-  font-family:var(--disp);font-weight:800;font-size:34px;letter-spacing:.01em;line-height:1.15;color:var(--bone);
+  font-family:var(--disp);font-weight:800;font-size:48px;letter-spacing:.01em;line-height:1.15;color:var(--bone);
   transform-origin:50% 50%} /* rung-exempt: the wordmark */
 .hubname.intro .introfull .il{display:block}
 .introfull span span{display:inline-block}
@@ -205,14 +205,14 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
     ov.setAttribute("aria-hidden", "true");
     ov.innerHTML = s;
     h.appendChild(ov);
-    // the full name starts up to 1.4 times the wordmark's size, inside the
-    // 16px gutters, centred on the screen
+    // the full name starts at the wordmark's own size (Mako 2026-10-24: RAVI rests at the size the
+    // name starts at), shrunk only if it would pass the 16px gutters, centred on the screen
     var wide = 0, ls = ov.querySelectorAll(".il");
     for (i = 0; i < ls.length; i++) {
       var a0 = ls[i].firstChild.getBoundingClientRect(), a1 = ls[i].lastChild.getBoundingClientRect();
       wide = Math.max(wide, a1.right - a0.left);
     }
-    var fit = Math.min(1.4, (top.clientWidth - 32) / Math.max(1, wide));
+    var fit = Math.min(1, (top.clientWidth - 32) / Math.max(1, wide));
     ov.style.transform = "translate(-50%,-50%) scale(" + fit + ")";
     // where each capital starts, as a move from its place at rest
     var cap = h.querySelectorAll(".hubname > .logo1, .hubname > .logo2"), ic = ov.querySelectorAll(".ic"), M = [];
