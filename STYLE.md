@@ -113,7 +113,7 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 34 on the hub (.hubname); 40 on the install screen (.gwname). Go to tile labels are 12 with letter-spacing -.08em.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 48 on the hub (.hubname), the size the launch intro's full name starts at; 40 on the install screen (.gwname). Go to tile labels are 12 with letter-spacing -.08em.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
