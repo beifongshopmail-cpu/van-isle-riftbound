@@ -18,7 +18,10 @@
 /* The Collection page (M13, 2026-10-25). The cards and sealed product you own, in portfolios,
    priced from data/prices.json (TCGplayer market price), with a chart drawn from the month
    files in data/hist (hist.js). Kept on this phone only (vir.coll.v1) until accounts exist.
-   The shared layer is app.css; this block holds only the page's own rules. */
+   Refinement round 1 (Mako's phone check, 2026-10-25): glass bars, the arrow on the percent
+   only, Movers as two cards, a grid by default, price each, Select to move or remove, and a
+   full-screen card browser (the Decks page's bend). The shared layer is app.css; this block
+   holds only the page's own rules. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;
@@ -34,24 +37,29 @@ body{-webkit-font-smoothing:antialiased;
 .cval .u{font-family:var(--disp);font-weight:700;font-size:15px;color:var(--muted)}
 .cchg{margin:6px 4px 0;min-height:21px;display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden}
 .cchg .w{color:var(--muted);font-weight:400;overflow:hidden;text-overflow:ellipsis}
-/* the movement chip, as Trade's: an arrow carries the direction, never a colour */
+/* the movement chip, as Trade's: the arrow rides the percent and carries the direction, never a colour */
 .chip{display:inline-flex;align-items:center;gap:.25em;font:inherit;color:inherit;white-space:nowrap}
 .chip svg{width:.6em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
-/* THE CHART: Rust, the page colour; a finger on it reads one day */
-.chw{position:relative;margin:12px -4px 0;height:170px;touch-action:pan-y;-webkit-user-select:none;user-select:none}
-.chw svg{display:block;width:100%;height:100%;overflow:visible}
-.chw .ln{fill:none;stroke:rgb(var(--page));stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.chw .ar{stroke:none}
+/* THE CHART: glass bars in Rust inside a glass card (Mako's pick, 2026-10-25), one a day, a week
+   a bar past 62 days; a finger on it reads one bar */
+.chw{position:relative;margin:12px 0 0;height:190px;border-radius:22px;overflow:hidden;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.chw svg{position:relative;display:block;width:100%;height:100%}
 .chw .mk{stroke:rgba(237,234,227,.5);stroke-width:1}
-.chw .dot{fill:var(--bone);stroke:rgb(var(--page));stroke-width:2}
+.chw .dot{fill:var(--bone);stroke:rgb(220,90,30);stroke-width:2}
 .chw .none{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 24px;font-size:13px;color:var(--muted)}
+#hchart{height:130px;margin:4px 0 0}
 .cseg{margin-top:10px}
 .cnote{margin:8px 6px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 /* SECTIONS */
 #app > section{margin-top:24px}
-/* A HOLDING ROW: the picture, the name and its printing, the value and how it moved */
+/* MOVERS: gains and losses in two glass cards, each titled with its arrow (Mako's pick: no colour) */
+.mvc{border-radius:22px;padding:0 14px}
+.mvc + .mvc{margin-top:12px}
+.mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
+.mvh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
 .cards{border-radius:22px;padding:0 14px}
-.crow{display:flex;align-items:center;gap:12px;width:100%;min-height:66px;padding:8px 0;text-align:left;background:none}
+.crow{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:66px;padding:8px 0;text-align:left;background:none}
 .crow + .crow{border-top:1px solid rgba(255,255,255,.07)}
 .crow:active{transform:none;background:rgba(255,255,255,.05)}
 .cmid{flex:1;min-width:0}
@@ -60,38 +68,96 @@ body{-webkit-font-smoothing:antialiased;
 .cend{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:3px;text-align:right}
 .camt{font-family:var(--disp);font-size:15px;font-weight:700;white-space:nowrap}
 .cmv{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
-.clb{margin:0;padding:12px 2px 0;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
-.clb:first-child{padding-top:14px}
 .cempty{padding:14px 2px;font-size:15px;line-height:1.4;color:var(--muted)}
+.mvc .cempty{padding:4px 2px 14px;font-size:13px}
 /* card art: Riot's picture where the art map has one, the store listing's photo otherwise */
-.art{display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden; /* size-exempt: card art image */
+.art{position:relative;display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden; /* size-exempt: card art image */
   background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .art img{display:block;width:100%;height:100%;object-fit:cover}
-.art.sq{height:36px} /* size-exempt: a sealed product's photo is square */
-.art.sq img{object-fit:contain;background:#fff}
-.more{margin-top:10px}
-.hsf{margin-bottom:8px}
-.hseg{margin-bottom:10px}
+.art.sq img,.cpic.sq img{object-fit:contain}
+/* A HOLDING AS A TILE (Grid, the default): its picture, the count pill at its foot, the name,
+   the price of one with its move, and the total when there is more than one */
+.cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
+.ctile{position:relative;min-width:0}
+.cpic{position:relative;display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
+.cpic img{display:block;width:100%;height:100%;object-fit:cover}
+.cpic:active{transform:scale(.97)}
+.tcap{margin:6px 2px 0;min-width:0}
+.tnm{display:block;font-family:var(--disp);font-size:13px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpr{display:flex;align-items:baseline;gap:6px;margin-top:2px;white-space:nowrap;overflow:hidden}
+.tpr b{font-family:var(--disp);font-size:13px;font-weight:700}
+.tpr span,.ttot{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.ttot{display:block;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lq{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);min-width:40px;height:24px;padding:0 6px;border-radius:12px;display:grid;place-items:center;pointer-events:none;
+  background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:700} /* the count, as Decks' */
+/* SELECT (Mako 2026-10-25: move between portfolios, remove in bulk): a chosen tile or row wears a
+   bone check; the plate above the bar acts on what is chosen */
+.ck{position:absolute;left:6px;top:6px;z-index:1;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;pointer-events:none;
+  background:rgba(10,11,13,.6);box-shadow:inset 0 0 0 1.5px rgba(237,234,227,.7)}
+.ck svg{width:14px;height:14px;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.sel .ck{background:var(--bone);box-shadow:none}
+.sel .ck svg{opacity:1}
+.ctile.sel .cpic{box-shadow:0 0 0 2px var(--bone)}
+.crow .ck{left:-4px;top:4px}
+.crow.sel{background:rgba(255,255,255,.06)}
+.selp{position:fixed;left:12px;right:12px;max-width:456px;margin:0 auto;z-index:21;
+  bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);
+  border-radius:24px;padding:10px;display:flex;align-items:center;gap:6px;
+  background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.selp{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.selp .n{flex:1;min-width:0;padding-left:8px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.selp button{flex:0 0 auto;height:var(--sz-sm);padding:0 12px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
+.selp button:disabled{opacity:.4;pointer-events:none}
+.selon #cl{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 110px)}
+/* THE VIEW ROW (as Decks'): Grid or List, then Select and Sort */
+.dvrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dvseg button{width:40px;padding:0;display:grid;place-items:center}
+.dvseg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dvsort{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
+  font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--bone)}
+.dvsort svg{flex:0 0 auto;width:14px;height:14px}
+.dvrow .sp{flex:1}
+.dvsort.on{background:var(--glass-press)}
+.dvsort:active{transform:scale(.96)}
+.more{margin-top:12px}
+.hsf{margin-bottom:10px}
 .first .pact + .pact{margin-top:8px}
-/* the add menu's results, as Trade's */
-.rrow{display:flex;align-items:center;gap:10px;padding:8px 2px 8px 4px}
-.rrow + .rrow{border-top:1px solid rgba(255,255,255,.07)}
-.buy{flex:0 0 84px;width:84px;height:var(--sz-sm);padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
-  background:rgba(var(--page),.18);color:var(--bone);font-family:var(--disp);font-weight:600;font-size:13px}
-.buy:active{background:rgba(var(--page),.5)}
-.rnone{padding:12px 6px;font-size:15px;color:var(--muted)}
-.own{color:var(--bone);font-weight:600}
+/* THE CARD BROWSER: full screen, as Decks' (the same bend of every-overlay-is-a-menu) */
+.brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.bhead{position:sticky;top:calc(var(--top-clear) - 10px);margin-top:calc(var(--top-clear) - 10px);z-index:2;padding:0 12px}
+.plate{border-radius:24px;padding:10px;background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.bin1{max-width:456px;margin:0 auto}
+.bsr{display:flex;align-items:center;gap:8px}
+.bsr .sf{flex:1;min-width:0}
+.bsr .circ{flex:0 0 auto}
+.bchips{display:flex;gap:6px;margin:10px -10px 0;padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.bchips::-webkit-scrollbar{display:none}
+.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;color:var(--bone)}
+.fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
+.bnote{margin:8px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.bbody{max-width:480px;margin:0 auto;padding:14px 12px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.bnone{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
+/* a browser tile's stepper on its picture, Decks' at one copy: minus (the bin at one), the count, plus */
+/* the count and steppers sit on the picture: .cbox lies over the picture only, never the caption */
+.ctile .cbox{position:absolute;left:0;right:0;top:0;aspect-ratio:744/1039;pointer-events:none}
+.lsteps{position:absolute;left:50%;bottom:1px;transform:translateX(-50%);width:112px;display:flex;justify-content:space-between;pointer-events:none}
+.lpm.glass{flex:0 0 auto;pointer-events:auto;width:var(--sz-seg);height:var(--sz-seg);border-radius:50%;display:grid;place-items:center;
+  background:rgba(10,11,13,.82);color:var(--bone);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.lpm.glass.bin{background:rgba(229,72,77,.32)}
+.lpm.glass svg{width:18px;height:18px}
+.lpm.glass:active{background:var(--hi)}
+.brwon .toast{bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
 /* THE CARD MENU: its picture, its own chart, and what you hold */
 .hpic{display:flex;justify-content:center;margin:2px 0 12px}
 .hpic img{display:block;width:150px;height:auto;border-radius:8px} /* size-exempt: card picture */
-.hpic.sq img{width:150px;height:150px;object-fit:contain;background:#fff;border-radius:12px} /* size-exempt: sealed photo */
 .hfacts{margin:0 2px 10px;font-size:13px;line-height:1.45;color:var(--muted);text-align:center}
 .hnow{margin:0 0 4px;text-align:center;font-family:var(--disp);font-weight:800;font-size:20px}
 .hchg{margin:0 0 6px;display:flex;justify-content:center;gap:6px;font-size:13px;font-weight:600;min-height:18px}
 .hchg .w{color:var(--muted);font-weight:400}
-#hchart{height:120px;margin:4px 0 0}
 .hrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .hrow .lbl{flex:1;min-width:0;font-family:var(--disp);font-weight:600;font-size:15px}
+.hrow .lbl small{display:block;margin-top:2px;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 .stp{display:inline-flex;align-items:center;height:var(--sz-track);border-radius:999px;background:rgba(0,0,0,.28);padding:3px}
 .stp button{width:var(--sz-seg);height:var(--sz-seg);border-radius:999px;display:grid;place-items:center;background:none}
 .stp button:active{background:var(--hi)}
@@ -111,6 +177,8 @@ body{-webkit-font-smoothing:antialiased;
   transform:translate(-50%,10px);opacity:0;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;
   pointer-events:none;white-space:nowrap;max-width:calc(100% - 48px);overflow:hidden;text-overflow:ellipsis;transition:opacity .2s ease,transform .2s ease}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.selon .toast{bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 76px)}
+.cpic,.crow{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .foot a{color:var(--bone)}
 input[type="file"]{display:none}
 </style>
@@ -126,7 +194,7 @@ input[type="file"]{display:none}
     <div class="doors cport" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All portfolios</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <div class="cval"><span class="v" id="val">$0.00</span><span class="u" id="valu">CAD</span></div>
     <div class="cchg" id="chg"></div>
-    <div class="chw" id="chart" data-k="view"></div>
+    <div class="chw glass" id="chart" data-k="view"></div>
     <div class="seg cseg" role="group" aria-label="Range" id="range" data-k="pick">
       <button type="button" data-r="7" aria-pressed="false">7D</button><button type="button" data-r="30" aria-pressed="true">30D</button><button type="button" data-r="365" aria-pressed="false">1Y</button><button type="button" data-r="all" aria-pressed="false">All</button>
     </div>
@@ -134,7 +202,8 @@ input[type="file"]{display:none}
 
     <section id="movers">
       <div class="shead"><h2>Movers</h2><span class="sp"></span><span class="cnt" id="mvcnt"></span></div>
-      <div class="cards glass" id="mvlist"></div>
+      <div class="mvc glass" id="mvup"></div>
+      <div class="mvc glass" id="mvdn"></div>
     </section>
 
     <section id="held">
@@ -144,17 +213,16 @@ input[type="file"]{display:none}
         <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
         <button type="button" class="fbtn fx glass" id="hqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
       </div>
-      <div class="seg hseg" role="group" aria-label="Sort" id="sort" data-k="pick">
-        <button type="button" data-s="value" aria-pressed="true">Value</button><button type="button" data-s="move" aria-pressed="false">Change</button><button type="button" data-s="name" aria-pressed="false">Name</button><button type="button" data-s="added" aria-pressed="false">Added</button>
-      </div>
-      <div class="cards glass" id="hlist"></div>
+      <div class="dvrow" id="hview"></div>
+      <div id="hlist"></div>
       <button type="button" class="pact btn glass more" id="hmore" hidden data-k="do">Show all</button>
     </section>
 
     <section id="first" class="first" hidden>
       <div class="shead"><h2 id="firstttl">Start your collection</h2></div>
-      <p class="cempty" id="firsttx">Add cards and sealed product one at a time, add a whole deck, or bring your collection over from Collectr.</p>
-      <button type="button" class="pact btn glass" data-act="add" data-k="do">Add cards</button>
+      <p class="cempty" id="firsttx"></p>
+      <button type="button" class="pact btn glass" data-act="browse" data-k="do">Add cards</button>
+      <button type="button" class="pact btn glass" data-act="decks" data-k="do">Add a deck</button>
       <button type="button" class="pact btn glass" data-act="import" data-k="do">Import from Collectr</button>
     </section>
   </div>
@@ -169,12 +237,38 @@ input[type="file"]{display:none}
   </footer>
 </main>
 
-<!-- THE STANDARD BAR: Hub, Go to, Add cards, Collection settings. -->
+<!-- SELECT: what is chosen, and what to do with it -->
+<div class="selp" id="selp" hidden>
+  <span class="n" id="seln">Tap cards to choose them</span>
+  <button type="button" class="glass" data-act="selall" data-k="do">All</button>
+  <button type="button" class="glass" data-act="selmove" id="selmove" data-fills="pmove" data-k="do">Move</button>
+  <button type="button" class="glass" data-act="selrm" id="selrm" data-k="do"><span class="t">Remove</span></button>
+  <button type="button" class="glass" data-act="seldone" data-k="do">Done</button>
+</div>
+
+<!-- THE CARD BROWSER: every product, a tap adds one -->
+<section class="brw" id="brw" hidden aria-label="Add cards">
+  <div class="bhead"><div class="bin1 plate glass">
+    <div class="bsr">
+      <button type="button" class="circ btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="sf">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+        <input id="bq" type="search" placeholder="Search cards and products" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+        <button type="button" class="fbtn fx glass" id="bqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="bchips" id="bchips" data-k="pick"></div>
+    <p class="bnote" id="bnote"></p>
+  </div></div>
+  <div class="bbody"><div class="cgrid" id="bgrid"></div><button type="button" class="pact btn glass more" id="bmore" hidden data-k="do">Show more</button></div>
+</section>
+
+<!-- THE STANDARD BAR: Hub, Go to, Add cards (the browser), Collection settings. -->
 <nav class="bar frost" id="tabs"></nav>
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"collection"},
-  {tag:"button", icon:"add", a:[["class", "tab"], ["id", "tabadd"], ["aria-label", "Add cards"], ["data-fills", "padd"], ["data-k", "slot"]]},
+  {tag:"button", icon:"add", a:[["class", "tab"], ["id", "tabadd"], ["aria-label", "Add cards"], ["data-k", "slot"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["id", "tabset"], ["aria-label", "Collection settings"], ["data-fills", "pset"], ["data-k", "slot"]]}
 ]);</script>
 
@@ -208,21 +302,14 @@ input[type="file"]{display:none}
   <div class="pfoot"><button type="button" class="pact btn glass" id="onedel" data-act="delport" data-k="do">Delete portfolio</button></div>
 </section>
 
-<section class="panel frost" id="padd" aria-hidden="true" aria-label="Add cards">
-  <div class="phead"><h4 class="ttl">Add cards</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <div class="row"><div class="sf">
-      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
-      <input id="aq" type="search" placeholder="Card or product name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-      <button type="button" class="fbtn fx glass" id="aqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
-    </div>
-    <p class="pnote" id="addto" style="margin:8px 2px 0"></p></div>
-    <div id="ares"></div>
-    <div id="aways" class="row"><p class="lb">More ways to add</p><div class="doors" data-k="deeper">
-      <button type="button" class="door btn glass" data-act="decks"><span class="t">Add a deck</span><span class="sp"></span><small id="deckcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
-      <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><small>Collectr, a backup</small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
-    </div></div>
-  </div>
+<section class="panel frost" id="psort" aria-hidden="true" aria-label="Sort">
+  <div class="phead"><h4 class="ttl">Sort</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="sortpick" data-k="pick"></div></div>
+</section>
+
+<section class="panel frost" id="pmove" aria-hidden="true" aria-label="Move to">
+  <div class="phead"><h4 class="ttl" id="mvttl">Move to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="movelist" data-k="do"></div><p class="pnote" style="margin-top:10px">A card already there adds to its count.</p></div>
 </section>
 
 <section class="panel frost" id="pdeck" aria-hidden="true" aria-label="Add a deck">
@@ -258,7 +345,8 @@ input[type="file"]{display:none}
     </div>
     <div class="row"><div class="doors" data-k="deeper">
       <button type="button" class="door btn glass" data-act="manage"><span class="t">Portfolios</span><span class="sp"></span><small id="setports"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
-      <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><small>Collectr, a backup</small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door btn glass" data-act="decks"><span class="t">Add a deck</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="export"><span class="t">Export</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
     </div></div>
   </div>
@@ -292,7 +380,7 @@ input[type="file"]{display:none}
   var KEY = "vir.coll.v1", SKEY = "vir.coll.set.v1";
   var P = null, BYID = {}, SETS = {}, FX = 1.4, ART = null;
   var S = { v: 1, ports: [], wish: [], last: "" };
-  var SET = { view: "all", range: "30", mode: "market", cur: "CAD", sort: "value" };
+  var SET = { view: "all", range: "30", mode: "market", cur: "CAD", sort: "value", hview: "grid" };
   // the history: DAYS (every day there is a price file for, oldest first), H[key] = cents per day
   var DAYS = [], H = {}, HALL = false, FILLC = {};
 
@@ -307,6 +395,7 @@ input[type="file"]{display:none}
     if(cur) SET.cur = cur;
     try{ var z = JSON.parse(localStorage.getItem(SKEY)); if(z){ for(var k in SET){ if(z.hasOwnProperty(k) && typeof z[k] === typeof SET[k]) SET[k] = z[k]; } } }catch(e){}
     if(SET.view !== "all" && SET.view !== "wish" && !port(SET.view)) SET.view = "all";
+    if(!SORTS[SET.sort]) SET.sort = "value";
   }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
   function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
@@ -330,17 +419,19 @@ input[type="file"]{display:none}
   function money(usd){ return fmt(conv(usd)); }
   var UP = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 11V1.5M1.5 5L5 1.5 8.5 5"/></svg>';
   var DN = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 1v9.5M1.5 7L5 10.5 8.5 7"/></svg>';
-  // a change: the arrow carries the direction (STYLE: never a colour); amounts are unsigned
-  function chip(dUsd, pct){
-    if(dUsd == null || !isFinite(dUsd)) return "";
-    if(Math.abs(conv(dUsd)) < 0.005) return '<span class="chip">No change</span>';
-    return '<span class="chip">' + (dUsd > 0 ? UP : DN) + fmt(conv(dUsd)) + (pct != null && isFinite(pct) ? " (" + Math.abs(pct).toFixed(pct !== 0 && Math.abs(pct) < 10 ? 1 : 0) + "%)" : "") + '</span>';
-  }
+  // the percent carries the arrow (STYLE: direction is an arrow, never a colour); amounts are unsigned
+  // and wear no arrow of their own (Mako 2026-10-25: one arrow, on the percent)
   function pctChip(pct){
     if(pct == null || !isFinite(pct)) return "";
     if(Math.abs(pct) < 0.05) return '<span class="chip">0%</span>';
     return '<span class="chip">' + (pct > 0 ? UP : DN) + Math.abs(pct).toFixed(Math.abs(pct) < 10 ? 1 : 0) + '%</span>';
   }
+  function chip(dUsd, pct){
+    if(dUsd == null || !isFinite(dUsd)) return "";
+    if(Math.abs(conv(dUsd)) < 0.005) return '<span class="chip">No change</span>';
+    return '<span class="chip">' + fmt(conv(dUsd)) + '</span>' + (pct != null && isFinite(pct) ? ' ' + pctChip(pct) : '');
+  }
+  function pctOf(a, b){ return a ? (b - a) / a * 100 : null; }
 
   // ---- A PRODUCT: its picture, its facts ----
   var TCGIMG = "https://tcgplayer-cdn.tcgplayer.com/product/";
@@ -350,10 +441,8 @@ input[type="file"]{display:none}
     if(a && a.h && !sealed(c)) return "../cards/art/" + a.h + (big ? ".webp" : ".t.webp");
     return TCGIMG + c.i + (big ? "_in_1000x1000.jpg" : "_200w.jpg");
   }
-  function thumb(c){
-    if(!c) return '<span class="art"></span>';
-    return '<span class="art' + (sealed(c) ? " sq" : "") + '"><img src="' + esc(picSrc(c)) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()"></span>';
-  }
+  function img(c, big){ return c ? '<img src="' + esc(picSrc(c, big)) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">' : ''; }
+  function thumb(c){ return '<span class="art' + (sealed(c) ? " sq" : "") + '">' + img(c) + '</span>'; }
   function setOf(c){ return SETS[c.g] || {}; }
   function facts(c, f){
     var s = setOf(c), b = [];
@@ -364,11 +453,12 @@ input[type="file"]{display:none}
     if(c.r) b.push(c.r);
     return b;
   }
+  function copies(q){ return q === 1 ? "1 copy" : q + " copies"; }
 
   // ---- THE HISTORY (data/hist, hist.js): cents per day; today from prices.json ----
   function histMerge(m){
     if(!m || !m.days) return;
-    var base = DAYS.length, add = m.days.filter(function(d){ return DAYS.indexOf(d) < 0; });
+    var add = m.days.filter(function(d){ return DAYS.indexOf(d) < 0; });
     if(!add.length) return;
     // months arrive newest first, then older ones: rebuild in day order
     var all = DAYS.concat(add).sort(), pos = {}, k;
@@ -381,7 +471,6 @@ input[type="file"]{display:none}
       for(var j = 0; j < m.days.length; j++){ if(a[j] != null && DAYS.indexOf(m.days[j]) < 0) NH[k][pos[m.days[j]]] = a[j]; }
     }
     DAYS = all; H = NH; FILLC = {};
-    void base;
   }
   // today's prices (prices.json) as the last day, whether or not a month file has it yet
   function histToday(){
@@ -410,7 +499,8 @@ input[type="file"]{display:none}
     for(i = 0; i < out.length && out[i] == null; i++) out[i] = first == null ? 0 : first;
     return (FILLC[k] = out);
   }
-  function nowCents(h){ var c = BYID[h.i]; var p = c && c.p[h.f]; if(p == null && c){ var fs = Object.keys(c.p); p = fs.length ? c.p[fs[0]] : null; } return p == null ? 0 : Math.round(p * 100); }
+  function priceNow(i, f){ var c = BYID[i]; var p = c && c.p[f]; if(p == null && c){ var fs = Object.keys(c.p); p = fs.length ? c.p[fs[0]] : null; } return p == null ? 0 : Math.round(p * 100); }
+  function nowCents(h){ return priceNow(h.i, h.f); }
   // the first day of a range: the earliest day on or after today minus N days
   function startIdx(r){
     if(!DAYS.length) return 0;
@@ -430,7 +520,7 @@ input[type="file"]{display:none}
     });
     return { days: DAYS.slice(s), v: v };
   }
-  // one holding's move over the range, per copy, in cents: [then, now]
+  // one printing's move over the range, per copy, in cents: [then, now]
   function moveOf(h, r){
     if(!DAYS.length) return null;
     var f = filled(key(h)), s = startIdx(r || SET.range);
@@ -444,42 +534,55 @@ input[type="file"]{display:none}
     return f[0];
   }
 
-  // ---- THE CHART: an SVG line and its fill, Rust. Its construction follows tiny-spark's
-  // (github.com/graphieros/tiny-spark, MIT): a path scaled to the box, the same points closed
-  // to the floor for the fill, a marker line and dot for the day under the finger. ----
+  // ---- THE CHART: glass bars in Rust (Mako's pick, 2026-10-25), one a day; past 62 days one a
+  // week, each week's last day. Each bar is the verdict ring's glass (Trade): the colour at .70
+  // fading to .16, a white sheen over its top and a lit cap. The scale and the marker follow
+  // tiny-spark's construction (github.com/graphieros/tiny-spark, MIT). ----
   var GID = 0;
   function drawChart(box, sr, onScrub){
-    var w = Math.max(box.clientWidth, 100), ht = box.clientHeight || 170, v = sr.v, n = v.length;
-    if(n < 2){ box.innerHTML = '<div class="none">The price history starts ' + esc(window.RAVI_DATE(DAYS[0] || "")) + '. More days, more line.</div>'; return; }
-    var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), pad = 8;
+    var w = Math.max(box.clientWidth, 100), ht = box.clientHeight || 190, all = sr.v, N = all.length;
+    if(N < 2){ box.innerHTML = '<div class="none">The price history starts ' + esc(window.RAVI_DATE(DAYS[0] || "")) + '. More days, more bars.</div>'; return; }
+    // the points drawn: every day, or every seventh counted back from the last
+    var pts = [], i;
+    if(N > 62){ for(i = N - 1; i >= 0; i -= 7) pts.unshift(i); } else { for(i = 0; i < N; i++) pts.push(i); }
+    var v = pts.map(function(k){ return all[k]; }), n = v.length;
+    var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), top = 22, foot = 0;
     if(hi === lo){ hi = lo + 1; lo = lo - 1; }
-    var span = hi - lo; lo -= span * 0.08; hi += span * 0.08;
-    function X(i){ return (i / (n - 1)) * w; }
-    function Y(x){ return pad + (1 - (x - lo) / (hi - lo)) * (ht - pad * 2); }
-    var d = "", i;
-    for(i = 0; i < n; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v[i]).toFixed(1);
-    var g = "cg" + (++GID);
-    box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(220,90,30)" stop-opacity=".30"/><stop offset="1" stop-color="rgb(220,90,30)" stop-opacity="0"/></linearGradient></defs>'
-      + '<path class="ar" fill="url(#' + g + ')" d="' + d + 'L' + w + ' ' + ht + 'L0 ' + ht + 'Z"/><path class="ln" d="' + d + '"/>'
+    var span = hi - lo; lo -= span * 0.35; hi += span * 0.06;
+    var side = 10, step = (w - side * 2) / n, bw = Math.max(2, step * 0.72), rr = Math.min(bw / 2, 4);
+    function X(j){ return side + (j + 0.5) * step; }
+    function Y(x){ return top + (1 - (x - lo) / (hi - lo)) * (ht - top - foot); }
+    var g = "cg" + (++GID), R = "220,90,30", body = "";
+    var defs = '<linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".70"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity=".16"/></linearGradient>'
+      + '<linearGradient id="' + g + 's" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>';
+    for(i = 0; i < n; i++){
+      var x0 = X(i) - bw / 2, y0 = Y(v[i]), hh = ht - y0;
+      body += '<rect class="b" x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (hh + rr).toFixed(1) + '" rx="' + rr + '" fill="url(#' + g + ')"/>'
+        + '<rect x="' + (x0 + 0.5).toFixed(1) + '" y="' + (y0 + 0.5).toFixed(1) + '" width="' + Math.max(bw - 1, 1).toFixed(1) + '" height="' + Math.min(hh, 18).toFixed(1) + '" rx="' + Math.max(rr - 0.5, 0) + '" fill="url(#' + g + 's)"/>'
+        + '<rect x="' + (x0 + rr * 0.6).toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + Math.max(bw - rr * 1.2, 1).toFixed(1) + '" height="1.2" fill="#fff" fill-opacity=".55"/>';
+    }
+    box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + defs + '</defs>' + body
       + '<line class="mk" x1="0" x2="0" y1="0" y2="' + ht + '" visibility="hidden"/><circle class="dot" r="4" cx="0" cy="0" visibility="hidden"/></svg>';
     var svg = box.firstChild, mk = svg.querySelector(".mk"), dot = svg.querySelector(".dot"), on = false;
     function at(ev){
-      var r = box.getBoundingClientRect(), x = Math.min(Math.max(ev.clientX - r.left, 0), r.width), k = Math.round(x / r.width * (n - 1));
-      mk.setAttribute("x1", X(k)); mk.setAttribute("x2", X(k)); dot.setAttribute("cx", X(k)); dot.setAttribute("cy", Y(v[k]));
+      var r = box.getBoundingClientRect(), x = ev.clientX - r.left, j = Math.min(n - 1, Math.max(0, Math.floor((x - side) / ((r.width - side * 2) / n))));
+      mk.setAttribute("x1", X(j)); mk.setAttribute("x2", X(j)); dot.setAttribute("cx", X(j)); dot.setAttribute("cy", Y(v[j]));
       mk.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
-      onScrub && onScrub(k);
+      onScrub && onScrub(pts[j], N > 62);
     }
     function off(){ on = false; mk.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); onScrub && onScrub(null); }
     box.onpointerdown = function(ev){ on = true; at(ev); };
     box.onpointermove = function(ev){ if(on) at(ev); };
     box.onpointerup = box.onpointercancel = box.onpointerleave = off;
   }
+  function dayWords(d, week){ return (week ? "Week to " : "") + window.RAVI_DATE(d); }
 
   // ---- THE PAGE ----
-  var RANGEW = { "7": "7 days", "30": "30 days", "365": "1 year", "all": "since " };
+  var RANGEW = { "7": "7 days", "30": "30 days", "365": "1 year" };
   function rangeWords(){ return SET.range === "all" ? "since " + window.RAVI_DATE(DAYS[0] || "", true) : "in " + RANGEW[SET.range]; }
   var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
-  var SR = null, LIMIT = 60;
+  var CHECK = '<span class="ck"><svg viewBox="0 0 24 24"><polyline points="5 12.5 10 17.5 19 7"/></svg></span>';
+  var SR = null, LIMIT = 60, SEL = null;
   function head(){
     var items = viewItems(), n = count(items), now = 0;
     items.forEach(function(x){ now += x.h.q * nowCents(x.h); });
@@ -491,26 +594,39 @@ input[type="file"]{display:none}
     headChange();
     el("mnote").textContent = (SET.view === "wish" ? "The Wishlist never counts toward your value. " : "")
       + (SET.mode === "market" ? "Market movement: what you hold now, priced on each day." : "Total value: each card counted from the day it was added.");
-    drawChart(el("chart"), SR, function(k){
+    drawChart(el("chart"), SR, function(k, week){
       if(k == null){ el("val").textContent = money(now / 100); headChange(); return; }
       el("val").textContent = money(SR.v[k] / 100);
-      el("chg").innerHTML = '<span class="w">' + esc(window.RAVI_DATE(SR.days[k])) + '</span>';
+      el("chg").innerHTML = '<span class="w">' + esc(dayWords(SR.days[k], week)) + '</span>';
     });
   }
   function headChange(){
     var v = SR ? SR.v : [], a = v[0], b = v[v.length - 1];
     if(v.length < 2){ el("chg").innerHTML = ""; return; }
-    el("chg").innerHTML = chip((b - a) / 100, a ? (b - a) / a * 100 : null) + '<span class="w">' + esc(rangeWords()) + '</span>';
+    el("chg").innerHTML = chip((b - a) / 100, pctOf(a, b)) + '<span class="w">' + esc(rangeWords()) + '</span>';
   }
-  // a holding's row: its value now (count times price) and its move over the range
+  function subOf(h, c, showPort, p){
+    var sub = c ? facts(c, h.f) : [h.f];
+    if(h.q > 1) sub.unshift(copies(h.q) + ", " + money(h.q * nowCents(h) / 100));
+    if(showPort) sub.push(viewName(p));
+    return sub;
+  }
+  function isSel(x){ return !!(SEL && SEL[x.p + "|" + x.h.id]); }
+  // a holding as a row: the price of one (Mako 2026-10-25: never just the total) and its move
   function rowHtml(x, showPort){
-    var h = x.h, c = BYID[h.i], m = moveOf(h), now = nowCents(h), sub = c ? facts(c, h.f) : [h.f];
-    if(h.q > 1) sub.unshift(h.q + " x");
-    if(showPort) sub.push(viewName(x.p));
-    var mv = m ? pctChip(m[0] ? (m[1] - m[0]) / m[0] * 100 : null) : "";
-    return '<button type="button" class="crow" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" data-k="card">' + thumb(c)
-      + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "Unknown product") + '</span><span class="csub">' + sub.map(esc).join(" &middot; ") + '</span></span>'
-      + '<span class="cend"><span class="camt">' + money(h.q * now / 100) + '</span><span class="cmv">' + mv + '</span></span></button>';
+    var h = x.h, c = BYID[h.i], m = moveOf(h);
+    return '<button type="button" class="crow' + (isSel(x) ? " sel" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" data-k="card">' + (SEL ? CHECK : '') + thumb(c)
+      + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "Unknown product") + '</span><span class="csub">' + subOf(h, c, showPort, x.p).map(esc).join(" &middot; ") + '</span></span>'
+      + '<span class="cend"><span class="camt">' + money(nowCents(h) / 100) + '</span><span class="cmv">' + (m ? pctChip(pctOf(m[0], m[1])) : "") + '</span></span></button>';
+  }
+  // a holding as a tile: the picture with its count, the name, the price of one and its move, the total
+  function tileHtml(x){
+    var h = x.h, c = BYID[h.i], m = moveOf(h);
+    return '<div class="ctile' + (isSel(x) ? " sel" : "") + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" aria-label="' + esc(c ? c.n : "") + '" data-k="card">' + (SEL ? CHECK : '') + img(c)
+      + '<span class="lq">x' + h.q + '</span></button>'
+      + '<div class="tcap"><span class="tnm">' + esc(c ? c.n : "Unknown product") + '</span>'
+      + '<span class="tpr"><b>' + money(nowCents(h) / 100) + '</b><span>' + (m ? pctChip(pctOf(m[0], m[1])) : "") + '</span></span>'
+      + (h.q > 1 ? '<span class="ttot">' + money(h.q * nowCents(h) / 100) + ' for ' + h.q + '</span>' : '') + '</div></div>';
   }
   function movers(items){
     var rows = [];
@@ -519,58 +635,117 @@ input[type="file"]{display:none}
     var dn = rows.filter(function(r){ return r.d < 0; }).sort(function(a, b){ return a.d - b.d; }).slice(0, 5);
     function one(r){
       var h = r.x.h, c = BYID[h.i], sub = c ? facts(c, h.f) : [h.f];
-      if(h.q > 1) sub.unshift(h.q + " x");
+      if(h.q > 1) sub.unshift(copies(h.q));
       return '<button type="button" class="crow" data-h="' + esc(h.id) + '" data-p="' + esc(r.x.p) + '" data-k="card">' + thumb(c)
         + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "") + '</span><span class="csub">' + sub.map(esc).join(" &middot; ") + '</span></span>'
-        + '<span class="cend"><span class="camt">' + chip(r.d / 100) + '</span><span class="cmv">' + pctChip(r.m[0] ? (r.m[1] - r.m[0]) / r.m[0] * 100 : null) + '</span></span></button>';
+        + '<span class="cend"><span class="camt">' + fmt(conv(r.d / 100)) + '</span><span class="cmv">' + pctChip(pctOf(r.m[0], r.m[1])) + '</span></span></button>';
     }
-    var h = "";
-    if(up.length) h += '<p class="clb">Gains</p>' + up.map(one).join("");
-    if(dn.length) h += '<p class="clb">Losses</p>' + dn.map(one).join("");
-    return h;
+    function card(title, svg, list){
+      return '<div class="mvh">' + svg + title + '</div>' + (list.length ? list.map(one).join("") : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
+    }
+    return {
+      up: card("Gains", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>', up),
+      dn: card("Losses", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>', dn)
+    };
   }
+  function numKey(x){ var c = BYID[x.h.i] || {}, s = setOf(c); return [String(s.p || ""), String(c.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })]; }
   var SORTS = {
-    value: function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); },
-    move: function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; },
-    name: function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); },
-    added: function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }
+    value: ["Value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }],
+    price: ["Price of one", function(a, b){ return nowCents(b.h) - nowCents(a.h); }],
+    move: ["Change", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }],
+    name: ["Name", function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); }],
+    number: ["Set and number", function(a, b){ var x = numKey(a), y = numKey(b); return x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]) || (a.h.f < b.h.f ? -1 : 1); }],
+    added: ["Added", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }]
   };
   function nameHit(x, q){
     var c = BYID[x.h.i]; if(!c) return false;
     var hay = (c.n + " " + (setOf(c).n || "") + " " + (setOf(c).a || "") + " " + c.c + " " + x.h.f).toLowerCase();
     return q.split(/\s+/).every(function(w){ return hay.indexOf(w) > -1; });
   }
+  var IV = {
+    grid: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+    list: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 4.5h7M14 8.5h5M14 15.5h7M14 19.5h5"/></svg>',
+    down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>'
+  };
+  function viewRow(){
+    function b(v, label){ return '<button type="button" data-hv="' + v + '" aria-label="' + label + '" aria-pressed="' + (SET.hview === v) + '">' + IV[v] + '</button>'; }
+    return '<div class="seg dvseg" id="hvseg" role="group" aria-label="Cards show as" data-k="pick">' + b("grid", "Grid") + b("list", "List") + '</div><span class="sp"></span>'
+      + '<button type="button" class="dvsort glass' + (SEL ? " on" : "") + '" data-act="select" aria-pressed="' + !!SEL + '" data-k="do">Select</button>'
+      + '<button type="button" class="dvsort glass" data-act="sort" data-fills="psort" data-k="do"><span>' + esc(SORTS[SET.sort][0]) + '</span>' + IV.down + '</button>';
+  }
   function render(){
     if(!P) return;
     var items = viewItems(), empty = !items.length;
     head();
     el("movers").hidden = empty; el("held").hidden = empty; el("first").hidden = !empty;
-    // an empty list has nothing to chart: the value stays, the line and its controls go
+    // an empty list has nothing to chart: the value stays, the bars and their controls go
     el("chg").hidden = empty; el("chart").hidden = empty; el("range").hidden = empty; el("mnote").hidden = empty;
     el("firstttl").textContent = SET.view === "wish" ? "Your wishlist is empty" : "Start your collection";
     el("firsttx").textContent = SET.view === "wish"
       ? "Cards you want go here. Add them with the plus in the bar while this list is showing. The Wishlist never counts toward your value."
-      : "Add cards and sealed product one at a time, add a whole deck, or bring your collection over from Collectr.";
-    if(empty) return;
+      : "Add cards and sealed product while browsing every one, add a whole deck, or bring your collection over from Collectr.";
+    if(empty){ selEnd(); return; }
     var mv = movers(items);
     el("mvcnt").textContent = rangeWords().replace(/^in /, "");
-    el("mvlist").innerHTML = mv || '<p class="cempty">Nothing you hold moved ' + esc(rangeWords()) + '.</p>';
+    el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn;
+    el("hview").innerHTML = viewRow();
     var q = el("hq").value.trim().toLowerCase(), list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
-    list.sort(SORTS[SET.sort] || SORTS.value);
+    list.sort(SORTS[SET.sort][1]);
+    VIS = list;
     el("heldttl").textContent = SET.view === "wish" ? "Wanted" : "Cards";
     el("heldcnt").textContent = (q ? list.length + " of " : "") + items.length + (items.length === 1 ? " row" : " rows");
-    var many = S.ports.length > 1 && SET.view === "all";
-    el("hlist").innerHTML = list.length ? list.slice(0, LIMIT).map(function(x){ return rowHtml(x, many); }).join("") : '<p class="cempty">Nothing matches.</p>';
+    var many = S.ports.length > 1 && SET.view === "all", grid = SET.hview === "grid", box = el("hlist");
+    box.className = list.length ? (grid ? "cgrid" : "cards glass") : "";
+    box.innerHTML = list.length ? list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("") : '<p class="cempty">Nothing matches.</p>';
     el("hmore").hidden = list.length <= LIMIT;
     el("hmore").textContent = "Show all " + list.length;
     el("hqx").hidden = !q;
-    segs();
+    segs(); selPaint();
   }
+  var VIS = [];
   function segs(){
     el("range").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-r") === SET.range ? "true" : "false"); });
-    el("sort").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-s") === SET.sort ? "true" : "false"); });
     el("cur").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-c") === SET.cur ? "true" : "false"); });
     el("mode").querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-m") === SET.mode); });
+  }
+
+  // ---- SELECT: choose holdings, then move them or remove them ----
+  function selStart(){ SEL = {}; document.documentElement.classList.add("selon"); el("selp").hidden = false; render(); }
+  function selEnd(){ if(!SEL) return; SEL = null; document.documentElement.classList.remove("selon"); el("selp").hidden = true; disarm(); }
+  function selList(){ var out = []; if(!SEL) return out; Object.keys(SEL).forEach(function(k){ var b = k.split("|"), h = find(b.slice(1).join("|"), b[0]); if(h) out.push({ h: h, p: b[0] }); }); return out; }
+  function selPaint(){
+    if(!SEL) return;
+    var l = selList();
+    el("seln").textContent = l.length ? l.length + " chosen" : "Tap cards to choose";
+    el("selmove").disabled = !l.length; el("selrm").disabled = !l.length;
+  }
+  function selToggle(t){
+    var k = t.getAttribute("data-p") + "|" + t.getAttribute("data-h");
+    if(SEL[k]) delete SEL[k]; else SEL[k] = 1;
+    var on = !!SEL[k], tile = t.closest(".ctile");
+    (tile || t).classList.toggle("sel", on);
+    selPaint();
+  }
+  function fillMove(){
+    var l = selList(), here = {};
+    l.forEach(function(x){ here[x.p] = 1; });
+    var all = S.ports.map(function(p){ return [p.id, p.name]; }).concat([["wish", "Wishlist"]]);
+    el("mvttl").textContent = "Move " + (l.length === 1 ? "1 card" : l.length + " cards");
+    el("movelist").innerHTML = all.map(function(a){
+      var only = Object.keys(here).length === 1 && here[a[0]];
+      return '<button type="button" class="door btn glass act" data-act="moveto" data-v="' + esc(a[0]) + '"' + (only ? ' disabled' : '') + '><span class="t">' + esc(a[1]) + '</span><span class="sp"></span><small>' + count(viewItems(a[0])).toLocaleString("en-US") + '</small></button>';
+    }).join("") + '<button type="button" class="door btn glass act" data-act="movenew"><span class="t">A new portfolio</span></button>';
+  }
+  function moveTo(to){
+    var l = selList();
+    l.forEach(function(x){
+      if(x.p === to) return;
+      var from = listOf(x.p); from.splice(from.indexOf(x.h), 1);
+      var into = listOf(to), same = null; into.forEach(function(y){ if(y.i === x.h.i && y.f === x.h.f) same = y; });
+      if(same) same.q += x.h.q; else into.push(x.h);
+    });
+    selEnd(); changed(); openPanel(null);
+    toast("Moved " + (l.length === 1 ? "1 card" : l.length + " cards") + " to " + viewName(to));
   }
 
   // ---- MENUS: one on screen, a stack behind it (as Trade and Rules) ----
@@ -601,7 +776,7 @@ input[type="file"]{display:none}
       if(b && !keep) b.scrollTop = 0;
       sc.classList.add("show");
     } else {
-      document.documentElement.classList.remove("lock");
+      if(el("brw").hidden) document.documentElement.classList.remove("lock");
       sc.classList.remove("show");
       disarm();
     }
@@ -619,7 +794,7 @@ input[type="file"]{display:none}
     if(ARMED === btn){ disarm(); return true; }
     disarm();
     var t = btn.querySelector(".t") || btn;
-    ARMED = btn; ARMW = t.textContent; t.textContent = "Sure? Tap again"; btn.classList.add("armed");
+    ARMED = btn; ARMW = t.textContent; t.textContent = btn.closest(".selp") ? "Sure?" : "Sure? Tap again"; btn.classList.add("armed");
     ARMT = setTimeout(disarm, 3000);
     return false;
   }
@@ -672,32 +847,101 @@ input[type="file"]{display:none}
     if(to !== "wish") S.last = to;
     return h;
   }
+  function takeOne(i, f, to){
+    var list = listOf(to || target()) || [], h = null;
+    list.forEach(function(x){ if(x.i === i && x.f === f) h = x; });
+    if(!h) return 0;
+    h.q--; if(h.q < 1) list.splice(list.indexOf(h), 1);
+    return h.q;
+  }
   function owned(i, f, to){ var n = 0; (listOf(to || target()) || []).forEach(function(x){ if(x.i === i && x.f === f) n += x.q; }); return n; }
   var FINORD = function(a, b){ return (a === "Normal" ? 0 : 1) - (b === "Normal" ? 0 : 1) || (a < b ? -1 : 1); };
-  function search(){
-    var t = el("aq").value.trim().toLowerCase(), box = el("ares");
-    el("aqx").hidden = !t;
-    el("aways").hidden = !!t;
-    el("addto").textContent = "Adds to " + targetName() + (SET.view === "all" ? ". Pick a portfolio at the top of the page to add somewhere else." : ".");
-    if(t.length < 2){ box.innerHTML = ""; return; }
-    var hits = [], words = t.split(/\s+/);
-    P.cards.forEach(function(c){
-      var n = c.n.toLowerCase(), hay = n + " " + (c.c || "").toLowerCase() + " " + (setOf(c).a || "").toLowerCase();
-      if(!words.every(function(w){ return hay.indexOf(w) > -1; })) return;
-      hits.push({ c: c, r: n.indexOf(t) === 0 ? 0 : (n.indexOf(t) > -1 ? 1 : 2) });
+
+  // ---- THE CARD BROWSER (Mako 2026-10-25: browse every card and add or remove while browsing, as
+  // Collectr or the Decks page): one tile per printing and finish; a tap on the picture adds one to
+  // the portfolio on show; once held, minus (the bin at one) and plus sit on the picture ----
+  var BR = { q: "", set: "", lim: 60, list: [] };
+  var IC = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>',
+    minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/></svg>',
+    bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/></svg>'
+  };
+  // newest released set first; a set not out yet (its date after today) goes last
+  function setsInOrder(){
+    var t = today();
+    return P.sets.filter(function(s){ return s.count > 0; }).sort(function(a, b){
+      var fa = String(a.p).slice(0, 10) > t, fb = String(b.p).slice(0, 10) > t;
+      return (fa - fb) || String(b.p).localeCompare(String(a.p)) || a.g - b.g;
     });
-    hits.sort(function(a, b){ return a.r - b.r || a.c.n.localeCompare(b.c.n); });
-    var h = "", rows = 0;
-    for(var k = 0; k < hits.length && rows < 40; k++){
-      var c = hits[k].c, fs = Object.keys(c.p).sort(FINORD);
-      for(var j = 0; j < fs.length && rows < 40; j++, rows++){
-        var f = fs[j], have = owned(c.i, f), sub = facts(c, f).map(esc).join(" &middot; ");
-        h += '<div class="rrow">' + thumb(c) + '<div class="cmid"><span class="cnm">' + esc(c.n) + '</span><span class="csub">' + sub + (have ? ' &middot; <span class="own">' + have + ' held</span>' : '') + '</span></div>'
-          + '<button type="button" class="buy" data-add="' + c.i + '|' + esc(f) + '" aria-label="Add ' + esc(c.n) + ', ' + esc(f) + '" data-k="do">' + money(c.p[f]) + '</button></div>';
-      }
-    }
-    box.innerHTML = h || '<div class="rnone">Nothing matches "' + esc(el("aq").value.trim()) + '".</div>';
   }
+  function brChips(){
+    var h = '<button type="button" class="fchip glass' + (BR.set === "" ? " on" : "") + '" data-bs="" aria-pressed="' + (BR.set === "") + '">All</button>'
+      + '<button type="button" class="fchip glass' + (BR.set === "own" ? " on" : "") + '" data-bs="own" aria-pressed="' + (BR.set === "own") + '">Held here</button>';
+    setsInOrder().forEach(function(s){ var v = String(s.g); h += '<button type="button" class="fchip glass' + (BR.set === v ? " on" : "") + '" data-bs="' + v + '" aria-pressed="' + (BR.set === v) + '">' + esc(s.a || s.n) + '</button>'; });
+    h += '<button type="button" class="fchip glass' + (BR.set === "sealed" ? " on" : "") + '" data-bs="sealed" aria-pressed="' + (BR.set === "sealed") + '">Sealed</button>';
+    el("bchips").innerHTML = h;
+  }
+  function brList(){
+    var words = BR.q.toLowerCase().split(/\s+/).filter(Boolean), out = [], to = target(), ord = {};
+    setsInOrder().forEach(function(s, i){ ord[s.g] = i; });
+    P.cards.forEach(function(c){
+      if(BR.set === "sealed" && !sealed(c)) return;
+      if(BR.set && BR.set !== "sealed" && BR.set !== "own" && String(c.g) !== BR.set) return;
+      if(words.length){ var hay = (c.n + " " + (c.c || "") + " " + (setOf(c).a || "") + " " + (setOf(c).n || "")).toLowerCase(); if(!words.every(function(w){ return hay.indexOf(w) > -1; })) return; }
+      Object.keys(c.p).sort(FINORD).forEach(function(f){ if(BR.set === "own" && !owned(c.i, f, to)) return; out.push({ c: c, f: f }); });
+    });
+    out.sort(function(a, b){
+      var x = a.c, y = b.c;
+      return (ord[x.g] - ord[y.g]) || (sealed(x) - sealed(y)) || String(x.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); }).localeCompare(String(y.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })) || x.n.localeCompare(y.n) || FINORD(a.f, b.f);
+    });
+    return out;
+  }
+  function brBox(c, f){
+    var n = owned(c.i, f);
+    if(!n) return '';
+    var k = c.i + "|" + f;
+    return '<span class="lq">x' + n + '</span><span class="lsteps"><button type="button" class="lpm glass' + (n === 1 ? " bin" : "") + '" data-bdn="' + esc(k) + '" aria-label="' + (n === 1 ? "Remove" : "One fewer") + '" data-k="do">' + (n === 1 ? IC.bin : IC.minus) + '</button>'
+      + '<button type="button" class="lpm glass" data-bup="' + esc(k) + '" aria-label="One more" data-k="do">' + IC.plus + '</button></span>';
+  }
+  function brTile(r){
+    var c = r.c, f = r.f, k = c.i + "|" + f;
+    return '<div class="ctile" data-bk="' + esc(k) + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-badd="' + esc(k) + '" aria-label="Add ' + esc(c.n) + ', ' + esc(f) + '" data-k="card">' + img(c) + '</button>'
+      + '<span class="cbox">' + brBox(c, f) + '</span>'
+      + '<div class="tcap"><span class="tnm">' + esc(c.n) + '</span><span class="tpr"><b>' + money(c.p[f]) + '</b><span>' + esc(sealed(c) ? "Sealed" : f) + '</span></span></div></div>';
+  }
+  function brNote(){
+    var n = BR.list.length;
+    el("bnote").textContent = "Adding to " + targetName() + ". Tap a picture to add one. " + (n === 1 ? "1 printing" : n.toLocaleString("en-US") + " printings") + (BR.lim < n ? ", the first " + BR.lim + " shown" : "") + ".";
+  }
+  function brRender(keep){
+    BR.list = brList();
+    el("bgrid").innerHTML = BR.list.length ? BR.list.slice(0, BR.lim).map(brTile).join("") : '<p class="bnone">Nothing matches. Try another word, or All.</p>';
+    el("bgrid").className = BR.list.length ? "cgrid" : "";
+    el("bmore").hidden = BR.list.length <= BR.lim;
+    el("bqx").hidden = !BR.q;
+    brChips(); brNote();
+    if(!keep) el("brw").scrollTop = 0;
+  }
+  // a change paints in place: only that tile's count and steppers, never its picture (STYLE, Decks)
+  function brPaint(k){
+    var t = el("bgrid").querySelector('[data-bk="' + k + '"]'); if(!t) return;
+    var b = k.split("|"), c = BYID[b[0]];
+    t.querySelector(".cbox").innerHTML = brBox(c, b[1]);
+  }
+  function brOpen(){
+    if(!target()) { newPort("My collection"); save(); }
+    BR.q = ""; BR.lim = 60; el("bq").value = "";
+    el("brw").hidden = false;
+    document.documentElement.classList.add("lock", "brwon");
+    brRender();
+  }
+  function brClose(){
+    el("brw").hidden = true;
+    document.documentElement.classList.remove("brwon");
+    if(!OPENP) document.documentElement.classList.remove("lock");
+    render();
+  }
+
   // A DECK INTO THE COLLECTION: every card of the Decks page's deck (Legend, Main, Side, Runes,
   // Battlefields), each as the printing the deck priced it at, else its set's base printing
   var CODE2 = null;
@@ -741,21 +985,16 @@ input[type="file"]{display:none}
   function find(id, p){ var l = listOf(p) || []; for(var i = 0; i < l.length; i++){ if(l[i].id === id) return l[i]; } return null; }
   var CONDS = [["NM", "Near Mint"], ["LP", "Lightly Played"], ["MP", "Moderately Played"], ["HP", "Heavily Played"], ["DMG", "Damaged"]];
   function condCode(w){ w = String(w || "").toLowerCase(); for(var i = 0; i < CONDS.length; i++){ if(w === CONDS[i][0].toLowerCase() || w === CONDS[i][1].toLowerCase()) return CONDS[i][0]; } return ""; }
-  var IC = {
-    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>',
-    minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/></svg>',
-    bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/></svg>'
-  };
   function fillHold(){
-    var h = HOLD, c = BYID[h.i], big = c ? picSrc(c, true) : "", fs = c ? Object.keys(c.p).sort(FINORD) : [h.f];
+    var h = HOLD, c = BYID[h.i], fs = c ? Object.keys(c.p).sort(FINORD) : [h.f];
     el("httl").textContent = c ? c.n : "Card";
     var now = nowCents(h), base = h.paid != null ? Math.round((h.pc === SET.cur ? h.paid : (h.pc === "CAD" ? h.paid / FX : h.paid * FX)) / (SET.cur === "CAD" ? FX : 1) * 100) : priceOn(h);
     var gain = base != null ? (now - base) * h.q : null;
-    var x = '<div class="hpic' + (sealed(c) ? " sq" : "") + '">' + (big ? '<img src="' + esc(big) + '" alt="" decoding="async" onerror="this.remove()">' : '') + '</div>'
+    var x = '<div class="hpic">' + (c ? img(c, true) : '') + '</div>'
       + '<p class="hfacts">' + (c ? facts(c, h.f).map(esc).join(" &middot; ") : "") + (c && setOf(c).n ? '<br>' + esc(setOf(c).n) : '') + '</p>'
       + '<p class="hnow" id="hnow">' + money(now / 100) + '</p><div class="hchg" id="hchg"></div>'
-      + '<div class="chw" id="hchart"></div>'
-      + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count</span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + h.q + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
+      + '<div class="chw glass" id="hchart"></div>'
+      + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count<small>' + (h.q > 1 ? money(h.q * now / 100) + " for " + h.q : money(now / 100) + " for one") + '</small></span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + h.q + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
       + (fs.length > 1 ? '<div class="row"><p class="lb">Finish</p><div class="seg" role="group" aria-label="Finish" id="hfin" data-k="pick">' + fs.map(function(f){ return '<button type="button" data-f="' + esc(f) + '" aria-pressed="' + (f === h.f) + '">' + esc(f) + '</button>'; }).join("") + '</div></div>' : '')
       + (HPORT !== "wish" ? '<div class="row"><p class="lb">Price paid for one</p><div class="nf"><input id="hpaid" type="text" inputmode="decimal" placeholder="Not set" value="' + (h.paid != null ? esc(Number(h.paid).toFixed(2)) : "") + '" data-k="type"><span class="unit">' + esc(h.paid != null ? h.pc : SET.cur) + '</span></div></div>'
         + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ", the first day RAVI has prices for: " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
@@ -766,9 +1005,9 @@ input[type="file"]{display:none}
     el("hfoot").innerHTML = HPORT === "wish" ? '<button type="button" class="pact btn glass" data-act="wishown" data-k="do">I own it now</button>' : '';
     el("hfoot").hidden = HPORT !== "wish";
     var sr = series([{ h: { i: h.i, f: h.f, q: 1, d: "" } }], "market");
-    function hc(){ var v = sr.v; el("hnow").textContent = money(now / 100); el("hchg").innerHTML = v.length > 1 ? chip((v[v.length - 1] - v[0]) / 100, v[0] ? (v[v.length - 1] - v[0]) / v[0] * 100 : null) + '<span class="w">a copy, ' + esc(rangeWords()) + '</span>' : ""; }
+    function hc(){ var v = sr.v; el("hnow").textContent = money(now / 100); el("hchg").innerHTML = v.length > 1 ? chip((v[v.length - 1] - v[0]) / 100, pctOf(v[0], v[v.length - 1])) + '<span class="w">' + esc(rangeWords()) + '</span>' : ""; }
     hc();
-    requestAnimationFrame(function(){ drawChart(el("hchart"), sr, function(k){ if(k == null){ hc(); return; } el("hnow").textContent = money(sr.v[k] / 100); el("hchg").innerHTML = '<span class="w">' + esc(window.RAVI_DATE(sr.days[k])) + '</span>'; }); });
+    requestAnimationFrame(function(){ drawChart(el("hchart"), sr, function(k, week){ if(k == null){ hc(); return; } el("hnow").textContent = money(sr.v[k] / 100); el("hchg").innerHTML = '<span class="w">' + esc(dayWords(sr.days[k], week)) + '</span>'; }); });
   }
   function openHold(id, p){ HOLD = find(id, p); HPORT = p; if(!HOLD) return; fillHold(); go(el("phold")); }
   function changed(){ save(); render(); }
@@ -864,6 +1103,7 @@ input[type="file"]{display:none}
       if(first){ SET.view = first.id; S.last = first.id; saveSet(); }
     }
     PLAN = null;
+    selEnd();
     changed();
     openPanel(null);
     toast(x.backup ? "Backup restored" : "Imported");
@@ -899,22 +1139,27 @@ input[type="file"]{display:none}
 
   // ---- TAPS ----
   document.addEventListener("click", function(ev){
-    var t = ev.target.closest("[data-act],[data-close],[data-add],.crow,#portpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#sort > button,#cur > button,#mode > button");
+    var t = ev.target.closest("[data-act],[data-close],[data-badd],[data-bup],[data-bdn],[data-bs],[data-hv],.crow,.cpic[data-h],#portpick > button,#sortpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#cur > button,#mode > button");
     if(!t) return;
     if(t.hasAttribute("data-close")){ openPanel(null); return; }
-    if(t.hasAttribute("data-add")){
-      var b = t.getAttribute("data-add").split("|"), c = BYID[b[0]], to = target();
-      var hh = addOne(c.i, b[1], 1);
-      changed();
-      toast("Added " + c.n + (sealed(c) ? "" : ", " + b[1]) + " (" + hh.q + " in " + viewName(target() || to) + ")");
-      search();
+    // the browser
+    if(t.hasAttribute("data-badd") || t.hasAttribute("data-bup")){
+      var kb = (t.getAttribute("data-badd") || t.getAttribute("data-bup")).split("|"), c = BYID[kb[0]];
+      var hh = addOne(c.i, kb[1], 1); save(); brPaint(kb[0] + "|" + kb[1]); brNote();
+      if(t.hasAttribute("data-badd")) toast("Added " + c.n + (sealed(c) ? "" : ", " + kb[1]) + " (" + hh.q + " in " + targetName() + ")");
       return;
     }
-    if(t.classList.contains("crow")){ openHold(t.getAttribute("data-h"), t.getAttribute("data-p")); return; }
+    if(t.hasAttribute("data-bdn")){ var kd = t.getAttribute("data-bdn").split("|"), cd = BYID[kd[0]]; var left = takeOne(cd.i, kd[1]); save(); brPaint(kd[0] + "|" + kd[1]); if(!left) toast("Removed " + cd.n); return; }
+    if(t.hasAttribute("data-bs")){ BR.set = t.getAttribute("data-bs"); BR.lim = 60; brRender(); return; }
+    if(t.hasAttribute("data-hv")){ SET.hview = t.getAttribute("data-hv"); saveSet(); render(); return; }
+    if(t.classList.contains("crow") || t.classList.contains("cpic")){
+      if(SEL && !t.closest("#movers")){ selToggle(t); return; }
+      openHold(t.getAttribute("data-h"), t.getAttribute("data-p")); return;
+    }
     var par = t.parentNode && t.parentNode.id;
-    if(par === "portpick"){ SET.view = t.getAttribute("data-v"); saveSet(); LIMIT = 60; render(); openPanel(null); return; }
+    if(par === "portpick"){ SET.view = t.getAttribute("data-v"); saveSet(); LIMIT = 60; selEnd(); render(); openPanel(null); return; }
+    if(par === "sortpick"){ SET.sort = t.getAttribute("data-s"); saveSet(); render(); openPanel(null); return; }
     if(par === "range"){ SET.range = t.getAttribute("data-r"); saveSet(); render(); return; }
-    if(par === "sort"){ SET.sort = t.getAttribute("data-s"); saveSet(); render(); return; }
     if(par === "cur"){ SET.cur = t.getAttribute("data-c"); saveSet(); render(); return; }
     if(par === "mode"){ SET.mode = t.getAttribute("data-m"); saveSet(); render(); return; }
     if(par === "hport"){
@@ -933,7 +1178,21 @@ input[type="file"]{display:none}
     if(par === "hcond"){ HOLD.cond = t.getAttribute("data-c"); changed(); fillHold(); return; }
     var a = t.getAttribute("data-act");
     if(a === "back"){ back(); return; }
-    if(a === "add"){ el("aq").value = ""; search(); openPanel(el("padd")); return; }
+    if(a === "browse"){ brOpen(); return; }
+    if(a === "bclose"){ brClose(); return; }
+    if(a === "sort"){ el("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ return '<button type="button" data-s="' + k + '"' + (SET.sort === k ? ' class="on"' : '') + '>' + esc(SORTS[k][0]) + '</button>'; }).join(""); openPanel(el("psort")); return; }
+    if(a === "select"){ if(SEL){ selEnd(); render(); } else selStart(); return; }
+    if(a === "seldone"){ selEnd(); render(); return; }
+    if(a === "selall"){ var all = true; VIS.forEach(function(x){ if(!SEL[x.p + "|" + x.h.id]) all = false; }); VIS.forEach(function(x){ if(all) delete SEL[x.p + "|" + x.h.id]; else SEL[x.p + "|" + x.h.id] = 1; }); render(); return; }
+    if(a === "selmove"){ fillMove(); openPanel(el("pmove")); return; }
+    if(a === "moveto"){ moveTo(t.getAttribute("data-v")); return; }
+    if(a === "movenew"){ moveTo(newPort("Portfolio " + (S.ports.length + 1)).id); return; }
+    if(a === "selrm"){
+      if(!armed(t)) return;
+      var gone = selList();
+      gone.forEach(function(x){ var ls = listOf(x.p); ls.splice(ls.indexOf(x.h), 1); });
+      selEnd(); changed(); toast("Removed " + (gone.length === 1 ? "1 card" : gone.length + " cards")); return;
+    }
     if(a === "manage"){ fillManage(); go(el("pmng")); return; }
     if(a === "one"){ fillOne(t.getAttribute("data-id")); deeper(el("pone")); return; }
     if(a === "newport"){ var p = newPort("Portfolio " + (S.ports.length + 1)); changed(); fillManage(); fillOne(p.id); deeper(el("pone")); return; }
@@ -945,12 +1204,12 @@ input[type="file"]{display:none}
     }
     if(a === "import"){ PLAN = null; showPlan(); go(el("pimp")); return; }
     if(a === "export"){ go(el("pexp")); return; }
-    if(a === "decks"){ fillDecks(); deeper(el("pdeck")); return; }
+    if(a === "decks"){ fillDecks(); go(el("pdeck")); return; }
     if(a === "adddeck"){
       if(!armed(t)) return;
       var d = decks().filter(function(x){ return x.id === t.getAttribute("data-id"); })[0]; if(!d) return;
       var r = deckCards(d), n = 0;
-      Object.keys(r.cards).forEach(function(k){ var kb = k.split("|"); addOne(+kb[0], kb[1], r.cards[k]); n += r.cards[k]; });
+      Object.keys(r.cards).forEach(function(k){ var kk = k.split("|"); addOne(+kk[0], kk[1], r.cards[k]); n += r.cards[k]; });
       changed(); fillDecks();
       toast("Added " + n + " cards from " + (d.name || "the deck") + (r.miss ? "; " + r.miss + " had no price to match" : ""));
       return;
@@ -987,13 +1246,14 @@ input[type="file"]{display:none}
   });
   el("scrim").addEventListener("click", function(){ openPanel(null); });
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
-  el("tabadd").addEventListener("click", function(){ if(OPENP === el("padd")){ openPanel(null); return; } el("aq").value = ""; search(); openPanel(el("padd")); });
+  el("tabadd").addEventListener("click", function(){ openPanel(null); brOpen(); });
   el("tabset").addEventListener("click", function(){ if(OPENP === el("pset")){ openPanel(null); return; } fillManage(); segs(); openPanel(el("pset")); });
   el("portbtn").addEventListener("click", function(){ fillPorts(); openPanel(el("pport")); });
   window.RAVI_GOTO(el("pnavgoto"), "collection", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
-  el("aq").addEventListener("input", search);
-  el("aqx").addEventListener("click", function(){ el("aq").value = ""; search(); el("aq").focus(); });
+  el("bq").addEventListener("input", function(){ BR.q = el("bq").value.trim(); BR.lim = 60; brRender(); });
+  el("bqx").addEventListener("click", function(){ el("bq").value = ""; BR.q = ""; brRender(); el("bq").focus(); });
+  el("bmore").addEventListener("click", function(){ BR.lim += 120; brRender(true); });
   el("hq").addEventListener("input", function(){ LIMIT = 60; render(); });
   el("hqx").addEventListener("click", function(){ el("hq").value = ""; render(); el("hq").focus(); });
   el("hmore").addEventListener("click", function(){ LIMIT = 100000; render(); });

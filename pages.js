@@ -370,14 +370,26 @@ window.RAVI_BAR = function(nav, slots){
     var bs = picks(seg), from = chosen(bs);
     if (from < 0 || bs[from] === b) { return; }
     // the track is the box every option is measured in (offsets, so a pressed option's scale
-    // does not count), so it is positioned from here until the slide ends
-    var stat = getComputedStyle(seg).position === "static";
+    // does not count), so it is positioned from here until the last slide on it ends. A second
+    // tap while one slides must not clear it under the new fill (M13, Mako 2026-10-25: two quick
+    // taps on Collection's range sent the fill to the top of the screen): the track counts its
+    // slides and keeps what it was before the first
+    if (!seg.__rvSlides) { seg.__rvStat = getComputedStyle(seg).position === "static"; }
+    var stat = seg.__rvStat;
     if (stat) { seg.style.position = "relative"; }
     var cs = getComputedStyle(bs[from]);
-    var was = { at: box(bs[from]), bg: cs.backgroundColor, r: cs.borderRadius, n: bs.length, stat: stat,
+    var was = { at: box(bs[from]), bg: cs.backgroundColor, r: cs.borderRadius, n: bs.length,
       col: bs.map(function(x){ return getComputedStyle(x).color; }) };
-    requestAnimationFrame(function(){ if (!slide(seg, from, was) && stat) { seg.style.position = ""; } });
+    seg.__rvSlides = (seg.__rvSlides || 0) + 1;
+    requestAnimationFrame(function(){ if (!slide(seg, from, was)) { ended(seg); } });
   }, true);
+  // the last slide on a track to end hands the track and its options back
+  function ended(seg){
+    seg.__rvSlides = Math.max((seg.__rvSlides || 1) - 1, 0);
+    if (seg.__rvSlides) { return; }
+    picks(seg).forEach(function(x){ x.style.position = ""; x.style.zIndex = ""; });
+    if (seg.__rvStat) { seg.style.position = ""; }
+  }
   function slide(seg, from, was){
     if (!seg.isConnected) { return false; }
     var bs = picks(seg), to = chosen(bs);
@@ -385,7 +397,6 @@ window.RAVI_BAR = function(nav, slots){
     var A = bs[from], B = bs[to];
     A.style.transition = "none"; B.style.transition = "none";
     var bc = getComputedStyle(B), fill = bc.backgroundColor, rad = bc.borderRadius;
-    var stat = was.stat;
     bs.forEach(function(x){ x.style.position = "relative"; x.style.zIndex = "1"; });
     var g = document.createElement("i");
     g.className = "sgth"; g.setAttribute("aria-hidden", "true");
@@ -404,8 +415,7 @@ window.RAVI_BAR = function(nav, slots){
       B.style.backgroundColor = "";
       void B.offsetWidth;
       if (g.parentNode) { g.parentNode.removeChild(g); }
-      bs.forEach(function(x){ x.style.position = ""; x.style.zIndex = ""; });
-      if (stat) { seg.style.position = ""; }
+      ended(seg);
       requestAnimationFrame(function(){ A.style.transition = ""; B.style.transition = ""; });
     }
     an.onfinish = done; an.oncancel = done;
