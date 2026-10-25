@@ -11,15 +11,15 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117473609547786875@van-isle-riftbound
-DTSTAMP:20261024T162709Z
+DTSTAMP:20261025T054707Z
 DTSTART:20261024T190000Z
 DTEND:20261024T220000Z
 SUMMARY:Saturday Afternoon Nexus Play @ North Park Picture Framing and Coll
  ectables
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
- toria\n21 of 28 spots left\, checked Oct 24\, 9:27 AM\n$5.00 CAD\nSign up:
-  https://playriftbound.com/en-US/events/117473609547786875
+ toria\n17 of 28 spots left\, checked Oct 24\, 10:47 PM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117473609547786875
 URL:https://playriftbound.com/en-US/events/117473609547786875
 CATEGORIES:Nexus Nights
 STATUS:CONFIRMED
@@ -27,15 +27,15 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117473617815091551@van-isle-riftbound
-DTSTAMP:20261024T162709Z
+DTSTAMP:20261025T054707Z
 DTSTART:20261030T010000Z
 DTEND:20261030T040000Z
 SUMMARY:Thursday Casual Nexus Nights @ North Park Picture Framing and Colle
  ctables
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
- toria\n28 of 28 spots left\, checked Oct 24\, 9:27 AM\nFree\nSign up: http
- s://playriftbound.com/en-US/events/117473617815091551
+ toria\n28 of 28 spots left\, checked Oct 24\, 10:47 PM\nFree\nSign up: htt
+ ps://playriftbound.com/en-US/events/117473617815091551
 URL:https://playriftbound.com/en-US/events/117473617815091551
 CATEGORIES:Nexus Nights
 STATUS:CONFIRMED
@@ -43,15 +43,15 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125749989086783@van-isle-riftbound
-DTSTAMP:20261024T162709Z
+DTSTAMP:20261025T054707Z
 DTSTART:20261121T190000Z
 DTEND:20261121T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish I
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 24\, 9:27 AM\n$10.00 CAD\nSi
- gn up: https://playriftbound.com/en-US/events/117125749989086783
+ , Victoria\n27 of 28 spots left\, checked Oct 24\, 10:47 PM\n$10.00 CAD\nS
+ ign up: https://playriftbound.com/en-US/events/117125749989086783
 URL:https://playriftbound.com/en-US/events/117125749989086783
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED
@@ -59,15 +59,15 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125756345638695@van-isle-riftbound
-DTSTAMP:20261024T162709Z
+DTSTAMP:20261025T054707Z
 DTSTART:20261219T190000Z
 DTEND:20261219T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish II
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 24\, 9:27 AM\n$10.00 CAD\nSi
- gn up: https://playriftbound.com/en-US/events/117125756345638695
+ , Victoria\n27 of 28 spots left\, checked Oct 24\, 10:47 PM\n$10.00 CAD\nS
+ ign up: https://playriftbound.com/en-US/events/117125756345638695
 URL:https://playriftbound.com/en-US/events/117125756345638695
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED

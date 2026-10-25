@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117497230052513843@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261107T170000
+DTEND;TZID=America/Vancouver:20261107T200000
+SUMMARY:Nexus Night's at Colossal Cards & Collectables Courtenay
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n48 of 
+ 48 spots left\nFree\nSign up: https://playriftbound.com/en-US/events/11749
+ 7230052513843
+URL:https://playriftbound.com/en-US/events/117497230052513843
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
