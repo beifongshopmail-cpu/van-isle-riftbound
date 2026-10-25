@@ -32,9 +32,12 @@ body{-webkit-font-smoothing:antialiased;
    and Decks', parked 10 above --top-clear so its words start on it; plate frost, clear. */
 .srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
 /* RULES COLOURS BY SECTION, NEVER BY THE PAGE (Mako 2026-10-24): an entry wears its section's colour
-   wherever it shows (KC below). Latest mixes sections, so the menu is clear and each row carries its own. */
-#pnew{--tint:transparent}
-#newlist > .door{background-color:var(--rc)}   /* under the group's hairlines, which are background-image */
+   wherever it shows (KC below). */
+/* NEW means changed since the last visit (Mako 2026-10-24, in place of the Latest menu): the
+   calendar's badge; badges stay while the page is open, leaving it records the visit */
+.new{display:inline-block;vertical-align:2px;margin-left:8px;flex:0 0 auto;font-size:12px;font-weight:700;letter-spacing:.06em;
+  color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
+.door > .new{vertical-align:0}
 .plate{border-radius:24px;padding:10px;
   background:rgba(10,11,13,.94);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
@@ -117,22 +120,18 @@ body{-webkit-font-smoothing:antialiased;
   </footer>
 </main>
 
-<!-- THE STANDARD BAR: Hub, Go to, Latest, Settings (dimmed). -->
+<!-- THE STANDARD BAR: Hub, Go to, the third slot unused for now (dimmed), Settings (dimmed). -->
 <nav class="bar frost" id="tabs"></nav>
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"rules"},
-  {tag:"button", icon:"whatsnew", a:[["class", "tab"], ["id", "tabnew"], ["aria-label", "Latest"], ["data-fills", "pnew"], ["data-k", "slot"]]},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
-</section>
-<section class="panel frost" id="pnew" aria-hidden="true" aria-label="Latest">
-  <div class="phead"><h4 class="ttl">Latest</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="doors" id="newlist" data-k="deeper"></div><p class="rsrc">Riot's rules articles, newest first. RAVI checks Riot's pages every few hours.</p></div>
 </section>
 <section class="panel frost" id="part" aria-hidden="true" aria-label="Article">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="arttl">Article</h4><span class="cnt" id="artcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -175,7 +174,7 @@ body{-webkit-font-smoothing:antialiased;
   }
   // One entry: the row that opens in place, and its body under it.
   function entry(it, sub){
-    return '<button type="button" class="door btn glass rec" aria-expanded="false" data-id="' + esc(it.id) + '" data-k="open"><span class="t wrap">' + esc(title(it)) + '</span>'
+    return '<button type="button" class="door btn glass rec" aria-expanded="false" data-id="' + esc(it.id) + '" data-k="open"><span class="t wrap">' + esc(title(it)) + (isNew(it) ? NEWB : '') + '</span>'
       + (sub ? '<small>' + esc(sub) + '</small>' : '') + CHEV + '</button><div class="rbody" hidden></div>';
   }
   var ITEM = {};
@@ -254,37 +253,48 @@ body{-webkit-font-smoothing:antialiased;
   }
 
   // ---- the page ----
+  // NEW SINCE THE LAST VISIT (in place of the Latest menu, Mako 2026-10-24): an entry or document whose
+  // 'changed' day (fetch-rules.js) is after the visit stored in vir.rules.seen.v1. A first visit is the
+  // baseline: nothing is NEW. Badges stay while the page is open; leaving it records the newest change.
+  var SEENK = "vir.rules.seen.v1", SEEN = null, NEWB = '<span class="new">NEW</span>';
+  function isNew(it){ return !!(SEEN && it && it.changed && it.changed > SEEN); }
+  function newest(){ var m = ""; D.items.forEach(function(it){ if(it.changed && it.changed > m) m = it.changed; }); return m; }
+  function seenStart(){
+    try{ SEEN = localStorage.getItem(SEENK); }catch(e){ SEEN = null; }
+    if(!SEEN){ SEEN = newest(); try{ localStorage.setItem(SEENK, SEEN); }catch(e){} }
+    var leave = function(){ try{ localStorage.setItem(SEENK, newest()); }catch(e){} };
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") leave(); });
+  }
   // THE SECTION COLOURS, one place: a new section adds its kind here (and its colour from the palette)
   var KC = { doc: "0,190,140", legal: "0,190,140", errata: "200,35,70", faq: "255,200,40", ruling: "255,200,40" };
   function kc(kind){ return "rgba(" + (KC[kind] || KC.faq) + ",var(--cg))"; }
   function srcRow(s, act){
     var n = (BYSRC[s.id] || []).length, unit = s.kind === "errata" ? (n === 1 ? " card" : " cards") : (n === 1 ? " entry" : " entries");
-    return '<button type="button" class="door btn glass" data-act="' + act + '" data-src="' + esc(s.id) + '" data-k="deeper"><span class="t">' + esc(cap(s.set)) + '</span><span class="sp"></span><small>' + n + unit + '</small>' + CVR + '</button>';
+    return '<button type="button" class="door btn glass" data-act="' + act + '" data-src="' + esc(s.id) + '" data-k="deeper"><span class="t">' + esc(cap(s.set)) + '</span>' + ((BYSRC[s.id] || []).some(isNew) ? NEWB : '') + '<span class="sp"></span><small>' + n + unit + '</small>' + CVR + '</button>';
   }
   function render(){
-    var docs = "", err = "", faq = "", news = "", i;
+    var docs = "", err = "", faq = "", i;
     var hub = BYSRC.hub || [];
     hub.forEach(function(it){
       if(it.kind === "doc"){
         var up = /last updated:\s*([^<)]+)/i.exec(it.html);
-        docs += '<a class="door btn glass act" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span><span class="sp"></span>' + (up ? '<small>' + esc(up[1].trim()) + '</small>' : '') + OUT + '</a>';
+        docs += '<a class="door btn glass act" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + (up ? '<small>' + esc(up[1].trim()) + '</small>' : '') + OUT + '</a>';
       }
     });
     hub.forEach(function(it){
       if(it.kind === "legal"){
-        docs += '<button type="button" class="door btn glass" data-act="legal" data-id="' + esc(it.id) + '" data-k="deeper"><span class="t">' + esc(it.title) + '</span><span class="sp"></span>' + CVR + '</button>';
+        docs += '<button type="button" class="door btn glass" data-act="legal" data-id="' + esc(it.id) + '" data-k="deeper"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + CVR + '</button>';
       }
     });
     var srcs = D.sources.filter(function(s){ return s.kind !== "hub"; }).sort(function(a, b){ return (b.published || "").localeCompare(a.published || ""); });
     srcs.forEach(function(s){
       if(s.kind === "errata") err += srcRow(s, "art");
       else faq += srcRow(s, "art");
-      news += '<button type="button" class="door btn glass rec" data-act="art" data-src="' + esc(s.id) + '" style="--rc:' + kc(s.kind) + '" data-k="deeper"><span class="t wrap">' + esc(s.title) + '</span><small>' + esc(day(s.published)) + '</small>' + CVR + '</button>';
     });
     el("docs").innerHTML = docs;
     el("errata").innerHTML = err;
     el("faqs").innerHTML = faq;
-    el("newlist").innerHTML = news;
     window.RAVI_EDGES && window.RAVI_EDGES();
   }
 
@@ -328,6 +338,7 @@ body{-webkit-font-smoothing:antialiased;
       var head = title(it);
       IDX.push({ it: it, h: head.toLowerCase(), t: (head + " " + (it.group || "") + " " + strip(it["new"]) + " " + strip(it.old) + " " + strip(it.a) + " " + strip(it.html)).toLowerCase() });
     });
+    seenStart();
     render();
   }
 
@@ -340,14 +351,13 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "back"){ back(); return; }
     if(a === "art"){
       fillArticle(t.getAttribute("data-src"));
-      if(OPENP === el("pnew")) deeper(el("part")); else openPanel(el("part"));
+      openPanel(el("part"));
       return;
     }
     if(a === "legal"){ fillLegal(ITEM[t.getAttribute("data-id")]); openPanel(el("part")); return; }
   });
   el("scrim").addEventListener("click", function(){ openPanel(null); });
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
-  el("tabnew").addEventListener("click", function(){ openPanel(STACK[0] === el("pnew") ? null : el("pnew")); });
   window.RAVI_GOTO(el("pnavgoto"), "rules", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
   el("q").addEventListener("input", search);
