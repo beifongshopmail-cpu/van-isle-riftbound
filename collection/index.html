@@ -31,7 +31,11 @@ body{-webkit-font-smoothing:antialiased;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 .boot{padding:28px 4px 0;font-size:15px;color:var(--muted)}
 /* THE HEAD: which portfolio, its value, how it moved over the range */
-.cport{margin-top:14px}
+/* THE PLATE: a sticky block as Decks' and Trade's, parked 10 above --top-clear; chrome, so clear */
+.stk{position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;margin-top:14px;--tint:transparent}
+.plate .psf{margin-top:8px}
+.plate .dvrow{margin:8px 0 0}
+.bsr .doors{flex:1;min-width:0}
 .cval{margin:18px 4px 0;display:flex;align-items:baseline;gap:8px;min-width:0}
 .cval .v{font-family:var(--disp);font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.02em;white-space:nowrap} /* size-exempt: the collection's value */
 .cval .u{font-family:var(--disp);font-weight:700;font-size:15px;color:var(--muted)}
@@ -49,14 +53,14 @@ body{-webkit-font-smoothing:antialiased;
 .chw .none{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 24px;font-size:13px;color:var(--muted)}
 #hchart{height:130px;margin:4px 0 0}
 .cseg{margin-top:10px}
-.cnote{margin:8px 6px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.cnote{margin:8px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 /* SECTIONS */
 #app > section{margin-top:24px}
 /* MOVERS: gains and losses in two glass cards, each titled with its arrow (Mako's pick: no colour) */
 /* Movers folds away: its head opens it in place, closed on every visit (Mako 2026-10-25, round 2) */
-.mvtog{display:flex;align-items:center;gap:8px;width:100%;padding:0;background:none;text-align:left;color:var(--bone)}
-.mvtog:active{transform:none;opacity:.7}
-.mvtog .chev{flex:0 0 auto;fill:none;stroke:var(--muted);stroke-linecap:round;stroke-linejoin:round}
+/* its head is a glass row with a chevron, so it reads as something to open (round 3) */
+#mvtog .chev{flex:0 0 auto;margin-left:6px;color:var(--muted)}
+#mvbody{margin-top:12px}
 .mvc{border-radius:22px;padding:0 14px}
 .mvc + .mvc{margin-top:12px}
 .mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
@@ -119,7 +123,7 @@ body{-webkit-font-smoothing:antialiased;
 .selp button:disabled{opacity:.4;pointer-events:none}
 .selon #cl{padding-bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 110px)}
 /* THE VIEW ROW (as Decks'): Grid or List, then Select and Sort */
-.dvrow{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dvrow{display:flex;align-items:center;gap:8px}
 .dvseg button{width:40px;padding:0;display:grid;place-items:center}
 .dvseg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .dvsort{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
@@ -129,7 +133,6 @@ body{-webkit-font-smoothing:antialiased;
 .dvsort.on{background:var(--glass-press)}
 .dvsort:active{transform:scale(.96)}
 .more{margin-top:12px}
-.hsf{margin-bottom:10px}
 .first .pact + .pact{margin-top:8px}
 /* THE CARD BROWSER: full screen, as Decks' (the same bend of every-overlay-is-a-menu) */
 .brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
@@ -205,7 +208,18 @@ input[type="file"]{display:none}
   <h2 class="sr">Collection</h2>
   <p class="boot" id="boot">Loading prices...</p>
   <div id="app" hidden>
-    <div class="doors cport" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All portfolios</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    <!-- THE PLATE (round 3, Mako 2026-10-25: as Decks', one sticky block): which portfolio, its search,
+         and how its cards show -->
+    <div class="stk"><div class="plate glass">
+      <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All portfolios</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+      <div class="sf psf" id="hsf">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+        <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+        <button type="button" class="fbtn fx glass" id="hqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="dvrow" id="hview"></div>
+    </div></div>
+    <div id="top">
     <div class="cval"><span class="v" id="val">$0.00</span><span class="u" id="valu">CAD</span></div>
     <div class="cchg" id="chg"></div>
     <div class="chw glass" id="chart" data-k="view"></div>
@@ -213,9 +227,10 @@ input[type="file"]{display:none}
       <button type="button" data-r="7" aria-pressed="false">7D</button><button type="button" data-r="30" aria-pressed="true">30D</button><button type="button" data-r="365" aria-pressed="false">1Y</button><button type="button" data-r="all" aria-pressed="false">All</button>
     </div>
     <p class="cnote" id="mnote"></p>
+    </div>
 
     <section id="movers">
-      <button type="button" class="shead mvtog" id="mvtog" aria-expanded="false" aria-controls="mvbody" data-k="open"><h2>Movers</h2><span class="sp"></span><span class="cnt" id="mvcnt"></span><svg class="chev" viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg></button>
+      <div class="doors" data-k="open"><button type="button" class="door btn glass" id="mvtog" aria-expanded="false" aria-controls="mvbody"><span class="t">Movers</span><span class="sp"></span><small id="mvcnt"></small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button></div>
       <div id="mvbody" hidden>
       <div class="mvc glass" id="mvup"></div>
       <div class="mvc glass" id="mvdn"></div>
@@ -223,13 +238,7 @@ input[type="file"]{display:none}
     </section>
 
     <section id="held">
-      <div class="shead"><h2 id="heldttl">Cards</h2><span class="sp"></span><span class="cnt" id="heldcnt"></span></div>
-      <div class="sf hsf">
-        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
-        <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-        <button type="button" class="fbtn fx glass" id="hqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
-      </div>
-      <div class="dvrow" id="hview"></div>
+      <p class="cempty" id="hnone" hidden>Nothing matches.</p>
       <div id="hlist"></div>
       <button type="button" class="pact btn glass more" id="hmore" hidden data-k="do">Show all</button>
     </section>
@@ -267,14 +276,14 @@ input[type="file"]{display:none}
   <div class="bhead"><div class="bin1 plate glass">
     <div class="bsr">
       <button type="button" class="circ btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <div class="sf">
+      <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="bportbtn" data-fills="pport"><span class="t" id="bportname"></span><span class="sp"></span><small id="bportcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    </div>
+    <div class="sf psf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="bq" type="search" placeholder="Search cards and products" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
         <button type="button" class="fbtn fx glass" id="bqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
-      </div>
     </div>
     <div class="bopts" id="bopts"></div>
-    <p class="bnote" id="bnote"></p>
   </div></div>
   <div class="bbody"><div class="cgrid" id="bgrid"></div><button type="button" class="pact btn glass more" id="bmore" hidden data-k="do">Show more</button></div>
 </section>
@@ -325,7 +334,7 @@ input[type="file"]{display:none}
 
 <section class="panel frost" id="psets" aria-hidden="true" aria-label="Sets">
   <div class="phead"><h4 class="ttl">Sets</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts the printings in every portfolio, not the Wishlist.</p></div>
+  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts the printings in every portfolio, not the Wishlist. Sealed product sits in its set.</p></div>
 </section>
 
 <section class="panel frost" id="pmove" aria-hidden="true" aria-label="Move to">
@@ -578,20 +587,45 @@ input[type="file"]{display:none}
     var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), top = 22, foot = 0;
     if(hi === lo){ hi = lo + 1; lo = lo - 1; }
     var span = hi - lo; lo -= span * 0.35; hi += span * 0.06;
-    // edge to edge, no gaps between the bars (Mako 2026-10-25, round 2): each bar fills its slot and
-    // overlaps the next by a hair so no seam shows; the glass card's corners crop the ends
-    var side = 0, step = w / n, bw = step + 0.6, rr = 0;
+    // edge to edge, one slot a bar (round 2); the glass card's corners crop the ends
+    var step = w / n;
     function X(j){ return (j + 0.5) * step; }
     function Y(x){ return top + (1 - (x - lo) / (hi - lo)) * (ht - top - foot); }
-    var g = "cg" + (++GID), R = "220,90,30", body = "";
-    var defs = '<linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".70"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity=".16"/></linearGradient>'
-      + '<linearGradient id="' + g + 's" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>';
+    // ONE PIECE OF GLASS (round 3, Mako 2026-10-25): the bars' outline as one shape, no seams; each step's
+    // corners rounded a touch (up on a rise, down on a fall, 3 at most, never past half the step); a faint
+    // rim along the top instead of a lit cap on every bar
+    var g = "cg" + (++GID), R = "220,90,30";
+    var V = [[0, Y(v[0])]];
     for(i = 0; i < n; i++){
-      var x0 = i * step, y0 = Y(v[i]), hh = ht - y0;
-      body += '<rect class="b" x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (hh + rr).toFixed(1) + '" rx="' + rr + '" fill="url(#' + g + ')"/>'
-        + '<rect x="' + (x0 + 0.5).toFixed(1) + '" y="' + (y0 + 0.5).toFixed(1) + '" width="' + Math.max(bw - 1, 1).toFixed(1) + '" height="' + Math.min(hh, 18).toFixed(1) + '" rx="' + Math.max(rr - 0.5, 0) + '" fill="url(#' + g + 's)"/>'
-        + '<rect x="' + x0.toFixed(1) + '" y="' + y0.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="1.2" fill="#fff" fill-opacity=".55"/>';
+      var yy = Y(v[i]), xe = (i + 1) * step;
+      if(i) V.push([i * step, yy]);
+      V.push([xe, yy]);
     }
+    // drop points that sit on a straight run (two equal bars side by side)
+    var Q = [V[0]];
+    for(i = 1; i < V.length - 1; i++){
+      var a = Q[Q.length - 1], b = V[i], c = V[i + 1];
+      if((a[1] === b[1] && b[1] === c[1]) || (a[0] === b[0] && b[0] === c[0])) continue;
+      Q.push(b);
+    }
+    Q.push(V[V.length - 1]);
+    function f1(x){ return x.toFixed(1); }
+    var top0 = "M" + f1(Q[0][0]) + " " + f1(Q[0][1]);
+    for(i = 1; i < Q.length - 1; i++){
+      var A = Q[i - 1], P0 = Q[i], B = Q[i + 1];
+      var da = Math.hypot(A[0] - P0[0], A[1] - P0[1]), db = Math.hypot(B[0] - P0[0], B[1] - P0[1]);
+      var r = Math.min(3, da / 2, db / 2);
+      var p1 = [P0[0] + (A[0] - P0[0]) * r / da, P0[1] + (A[1] - P0[1]) * r / da], p2 = [P0[0] + (B[0] - P0[0]) * r / db, P0[1] + (B[1] - P0[1]) * r / db];
+      top0 += "L" + f1(p1[0]) + " " + f1(p1[1]) + "Q" + f1(P0[0]) + " " + f1(P0[1]) + " " + f1(p2[0]) + " " + f1(p2[1]);
+    }
+    top0 += "L" + f1(Q[Q.length - 1][0]) + " " + f1(Q[Q.length - 1][1]);
+    var shape = top0 + "L" + w + " " + (ht + 2) + "L0 " + (ht + 2) + "Z";
+    var defs = '<linearGradient id="' + g + '" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + ht + '"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".70"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity=".16"/></linearGradient>'
+      + '<linearGradient id="' + g + 's" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + (top + (ht - top) * 0.45) + '"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+      + '<clipPath id="' + g + 'c"><path d="' + shape + '"/></clipPath>';
+    var body = '<path class="shape" data-bars="' + n + '" d="' + shape + '" fill="url(#' + g + ')"/>'
+      + '<rect x="0" y="0" width="' + w + '" height="' + ht + '" fill="url(#' + g + 's)" clip-path="url(#' + g + 'c)"/>'
+      + '<path d="' + top0 + '" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="1"/>';
     box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + defs + '</defs>' + body
       + '<line class="mk" x1="0" x2="0" y1="0" y2="' + ht + '" visibility="hidden"/><circle class="dot" r="4" cx="0" cy="0" visibility="hidden"/></svg>';
     var svg = box.firstChild, mk = svg.querySelector(".mk"), dot = svg.querySelector(".dot"), on = false;
@@ -618,6 +652,7 @@ input[type="file"]{display:none}
     var items = viewItems(), n = count(items), now = 0;
     items.forEach(function(x){ now += x.h.q * nowCents(x.h); });
     el("portname").textContent = viewName();
+    el("hq").placeholder = SET.view === "all" ? "Search your collection" : "Search " + viewName();
     el("portcnt").textContent = n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards";
     el("val").textContent = money(now / 100);
     el("valu").textContent = SET.cur;
@@ -677,12 +712,12 @@ input[type="file"]{display:none}
   }
   function numKey(x){ var c = BYID[x.h.i] || {}, s = setOf(c); return [String(s.p || ""), String(c.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })]; }
   var SORTS = {
-    value: ["Value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }],
-    price: ["Price of one", function(a, b){ return nowCents(b.h) - nowCents(a.h); }],
-    move: ["Change", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }],
+    value: ["Total value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }],
+    price: ["Individual value", function(a, b){ return nowCents(b.h) - nowCents(a.h); }],
+    move: ["Movement", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }],
     name: ["Name", function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); }],
     number: ["Set and number", function(a, b){ var x = numKey(a), y = numKey(b); return x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]) || (a.h.f < b.h.f ? -1 : 1); }],
-    added: ["Added", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }]
+    added: ["Recently added", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }]
   };
   function nameHit(x, q){
     var c = BYID[x.h.i]; if(!c) return false;
@@ -711,21 +746,24 @@ input[type="file"]{display:none}
     el("firsttx").textContent = SET.view === "wish"
       ? "Cards you want go here. Add them with the plus in the bar while this list is showing. The Wishlist never counts toward your value."
       : "Add cards and sealed product while browsing every one, add a whole deck, or bring your collection over from Collectr.";
+    el("hsf").hidden = empty; el("hview").hidden = empty;
     if(empty){ selEnd(); return; }
-    el("movers").hidden = !SET.movers;
+    // while searching, the results sit right under the plate: the value, the bars and Movers step aside
+    var q = el("hq").value.trim().toLowerCase();
+    el("top").hidden = !!q;
+    el("movers").hidden = !SET.movers || !!q;
     el("mvtog").setAttribute("aria-expanded", MVOPEN ? "true" : "false");
     el("mvbody").hidden = !MVOPEN;
     el("mvcnt").textContent = rangeWords().replace(/^in /, "");
     if(SET.movers && MVOPEN){ var mv = movers(items); el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn; }
     el("hview").innerHTML = viewRow();
-    var q = el("hq").value.trim().toLowerCase(), list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
+    var list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
     list.sort(SORTS[SET.sort][1]);
     VIS = list;
-    el("heldttl").textContent = SET.view === "wish" ? "Wanted" : "Cards";
-    el("heldcnt").textContent = (q ? list.length + " of " : "") + items.length + (items.length === 1 ? " row" : " rows");
     var many = S.ports.length > 1 && SET.view === "all", grid = SET.hview === "grid", box = el("hlist");
     box.className = list.length ? (grid ? "cgrid" : "cards plain") : "";
-    box.innerHTML = list.length ? list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("") : '<p class="cempty">Nothing matches.</p>';
+    box.innerHTML = list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("");
+    el("hnone").hidden = !!list.length;
     el("hmore").hidden = list.length <= LIMIT;
     el("hmore").textContent = "Show all " + list.length;
     el("hqx").hidden = !q;
@@ -834,10 +872,11 @@ input[type="file"]{display:none}
 
   // ---- PORTFOLIOS ----
   function newPort(name){ var p = { id: uid(), name: name, items: [] }; S.ports.push(p); return p; }
+  var PORTB = false;   // the Portfolios menu opened from the browser: no All, and a pick is where taps add
   function fillPorts(){
     var h = "", all = viewItems("all");
     function row(v, nm, n){ return '<button type="button" data-v="' + esc(v) + '"' + (SET.view === v ? ' class="on"' : '') + '><span class="t">' + esc(nm) + '</span><span class="sp"></span><small>' + n.toLocaleString("en-US") + '</small></button>'; }
-    h += row("all", "All portfolios", count(all));
+    if(!PORTB) h += row("all", "All portfolios", count(all));
     S.ports.forEach(function(p){ h += row(p.id, p.name, count(viewItems(p.id))); });
     h += row("wish", "Wishlist", count(viewItems("wish")));
     el("portpick").innerHTML = h;
@@ -896,51 +935,58 @@ input[type="file"]{display:none}
     minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/></svg>',
     bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/></svg>'
   };
-  // newest released set first; a set not out yet (its date after today) goes last
+  // THE SET GROUPS (Mako 2026-10-25, round 3): a set's sealed product sits in its set; Organized Play and
+  // Judge promos are one group; every other promo or bundle (Promotional Cards, Worlds, Secret Garden, T1,
+  // Gift of the Rift) is Other promos. Read from the set's name, so a new set falls in on its own.
+  var GROUPN = { op: "Organized Play promos", promo: "Other promos" };
+  function groupOf(c){
+    var n = setOf(c).n || "";
+    if(/organized play|judge/i.test(n)) return "op";
+    if(/promotional|bundle|garden|champion/i.test(n)) return "promo";
+    return String(c.g);
+  }
+  // the sets themselves, newest released first; a set not out yet (its date after today) goes last
   function setsInOrder(){
     var t = today();
-    return P.sets.filter(function(s){ return s.count > 0; }).sort(function(a, b){
+    return P.sets.filter(function(x){ return x.count > 0 && groupOf({ g: x.g }) === String(x.g); }).sort(function(a, b){
       var fa = String(a.p).slice(0, 10) > t, fb = String(b.p).slice(0, 10) > t;
       return (fa - fb) || String(b.p).localeCompare(String(a.p)) || a.g - b.g;
     });
   }
   function setName(v){
     if(v === "") return "All sets";
-    if(v === "sealed") return "Sealed product";
+    if(GROUPN[v]) return GROUPN[v];
     var x = SETS[v]; return x ? x.n : "All sets";
   }
   function brOpts(){
     el("bopts").innerHTML = '<button type="button" class="dvsort glass" data-act="sets" data-fills="psets" data-k="do"><span>' + esc(setName(BR.set)) + '</span>' + IV.down + '</button>'
       + '<button type="button" class="fchip glass' + (BR.own ? " on" : "") + '" data-act="own" aria-pressed="' + !!BR.own + '" data-k="pick">Held here</button>';
   }
-  // THE SETS MENU (Mako 2026-10-25, after Collectr's Sets screen): newest first, each with its
-  // release day, how many of its printings you hold (every portfolio) and what they are worth
+  // THE SETS MENU (after Collectr's Sets screen): each set with its release day, how many of its
+  // printings you hold (every portfolio) and what they are worth; then the two promo groups
   function fillSets(){
     var held = {}, val = {}, all = {}, tot = 0;
-    viewItems("all").forEach(function(x){ var c = BYID[x.h.i]; if(!c) return; var g = sealed(c) ? "sealed" : String(c.g); held[g] = held[g] || {}; held[g][c.i] = 1; val[g] = (val[g] || 0) + x.h.q * nowCents(x.h); });
-    P.cards.forEach(function(c){ var g = sealed(c) ? "sealed" : String(c.g); all[g] = (all[g] || 0) + 1; tot++; });
+    viewItems("all").forEach(function(x){ var c = BYID[x.h.i]; if(!c) return; var g = groupOf(c); held[g] = held[g] || {}; held[g][c.i] = 1; val[g] = (val[g] || 0) + x.h.q * nowCents(x.h); });
+    P.cards.forEach(function(c){ var g = groupOf(c); all[g] = (all[g] || 0) + 1; tot++; });
     function n(o){ return o ? Object.keys(o).length : 0; }
     function row(v, name, sub){ return '<button type="button" class="rec' + (BR.set === v ? " on" : "") + '" data-bs="' + esc(v) + '"><span class="t">' + esc(name) + '</span><small>' + esc(sub) + '</small></button>'; }
+    function heldOf(g){ return n(held[g]) + " of " + all[g] + " held \u00b7 " + money((val[g] || 0) / 100); }
     var h = row("", "All sets", tot.toLocaleString("en-US") + " products");
-    setsInOrder().forEach(function(x){
-      var g = String(x.g); if(!all[g]) return;
-      h += row(g, x.n, [window.RAVI_DATE(String(x.p).slice(0, 10)), n(held[g]) + " of " + all[g] + " held", money((val[g] || 0) / 100)].join(" \u00b7 "));
-    });
-    if(all.sealed) h += row("sealed", "Sealed product", [n(held.sealed) + " of " + all.sealed + " held", money((val.sealed || 0) / 100)].join(" \u00b7 "));
+    setsInOrder().forEach(function(x){ var g = String(x.g); if(all[g]) h += row(g, x.n, window.RAVI_DATE(String(x.p).slice(0, 10)) + " \u00b7 " + heldOf(g)); });
+    ["op", "promo"].forEach(function(g){ if(all[g]) h += row(g, GROUPN[g], heldOf(g)); });
     el("setpick").innerHTML = h;
   }
   function brList(){
     var words = BR.q.toLowerCase().split(/\s+/).filter(Boolean), out = [], to = target(), ord = {}, setg = BR.set;
     setsInOrder().forEach(function(s, i){ ord[s.g] = i; });
     P.cards.forEach(function(c){
-      if(setg === "sealed" && !sealed(c)) return;
-      if(setg && setg !== "sealed" && (String(c.g) !== setg || sealed(c))) return;
+      if(setg && groupOf(c) !== setg) return;
       if(words.length){ var hay = (c.n + " " + (c.c || "") + " " + (setOf(c).a || "") + " " + (setOf(c).n || "")).toLowerCase(); if(!words.every(function(w){ return hay.indexOf(w) > -1; })) return; }
       Object.keys(c.p).sort(FINORD).forEach(function(f){ if(BR.own && !owned(c.i, f, to)) return; out.push({ c: c, f: f }); });
     });
     out.sort(function(a, b){
       var x = a.c, y = b.c;
-      return (ord[x.g] - ord[y.g]) || (sealed(x) - sealed(y)) || String(x.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); }).localeCompare(String(y.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })) || x.n.localeCompare(y.n) || FINORD(a.f, b.f);
+      return ((ord[x.g] == null ? 99 : ord[x.g]) - (ord[y.g] == null ? 99 : ord[y.g])) || (x.g - y.g) || (sealed(x) - sealed(y)) || String(x.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); }).localeCompare(String(y.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })) || x.n.localeCompare(y.n) || FINORD(a.f, b.f);
     });
     return out;
   }
@@ -957,9 +1003,11 @@ input[type="file"]{display:none}
       + '<span class="cbox">' + brBox(c, f) + '</span>'
       + '<div class="tcap"><span class="tnm">' + esc(c.n) + '</span><span class="tpr"><b>' + money(c.p[f]) + '</b><span>' + esc(sealed(c) ? "Sealed" : f) + '</span></span></div></div>';
   }
+  // the browser's portfolio pill: where a tap adds (the portfolio on show; under All, the last one added to)
   function brNote(){
-    var n = BR.list.length;
-    el("bnote").textContent = "Adding to " + targetName() + ". Tap a picture to add one. " + (n === 1 ? "1 printing" : n.toLocaleString("en-US") + " printings") + (BR.lim < n ? ", the first " + BR.lim + " shown" : "") + ".";
+    el("bportname").textContent = targetName();
+    var n = count(viewItems(target() || "none"));
+    el("bportcnt").textContent = n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards";
   }
   function brRender(keep){
     BR.list = brList();
@@ -1206,7 +1254,7 @@ input[type="file"]{display:none}
       openHold(t.getAttribute("data-h"), t.getAttribute("data-p")); return;
     }
     var par = t.parentNode && t.parentNode.id;
-    if(par === "portpick"){ SET.view = t.getAttribute("data-v"); saveSet(); LIMIT = 60; selEnd(); render(); openPanel(null); return; }
+    if(par === "portpick"){ SET.view = t.getAttribute("data-v"); saveSet(); LIMIT = 60; selEnd(); if(PORTB){ openPanel(null); brRender(true); return; } render(); openPanel(null); return; }
     if(par === "sortpick"){ SET.sort = t.getAttribute("data-s"); saveSet(); render(); openPanel(null); return; }
     if(par === "range"){ SET.range = t.getAttribute("data-r"); saveSet(); render(); return; }
     if(par === "cur"){ SET.cur = t.getAttribute("data-c"); saveSet(); render(); return; }
@@ -1300,7 +1348,8 @@ input[type="file"]{display:none}
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
   el("tabadd").addEventListener("click", function(){ openPanel(null); brOpen(); });
   el("tabset").addEventListener("click", function(){ if(OPENP === el("pset")){ openPanel(null); return; } fillManage(); segs(); openPanel(el("pset")); });
-  el("portbtn").addEventListener("click", function(){ fillPorts(); openPanel(el("pport")); });
+  el("portbtn").addEventListener("click", function(){ PORTB = false; fillPorts(); openPanel(el("pport")); });
+  el("bportbtn").addEventListener("click", function(){ PORTB = true; fillPorts(); openPanel(el("pport")); });
   window.RAVI_GOTO(el("pnavgoto"), "collection", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
   el("bq").addEventListener("input", function(){ BR.q = el("bq").value.trim(); BR.lim = 60; brRender(); });
