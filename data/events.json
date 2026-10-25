@@ -1,21 +1,21 @@
 {
- "generated_at": "2026-10-25T05:47:07.171Z",
- "generated_local": "2026-10-24T22:47:07-07:00",
- "window_start": "2026-10-24T07:00:00.000Z",
+ "generated_at": "2026-10-25T16:58:41.488Z",
+ "generated_local": "2026-10-25T09:58:41-07:00",
+ "window_start": "2026-10-25T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 27,
-   "added": 27
+   "returned": 25,
+   "added": 25
   },
   {
    "name": "Courtenay",
    "region": "island",
    "source": "playriftbound",
-   "returned": 7,
-   "added": 7
+   "returned": 6,
+   "added": 6
   },
   {
    "name": "Campbell River",
@@ -47,79 +47,13 @@
   }
  ],
  "totals": {
-  "fetched": 36,
-  "unique": 36,
-  "prev_unique": 31
+  "fetched": 33,
+  "unique": 33,
+  "prev_unique": 36
  },
  "unknown_templates": {},
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117473609547786875",
-   "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
-   "type": "nexus",
-   "start": "2026-10-24T12:00:00-07:00",
-   "end": null,
-   "day": "2026-10-24",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 11,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing"
-  },
-  {
-   "id": "rb117497226094640921",
-   "name": "Nexus Night at Colossal Cards & Collectables Courtenay",
-   "type": "nexus",
-   "start": "2026-10-24T17:00:00-07:00",
-   "end": null,
-   "day": "2026-10-24",
-   "time": "5:00 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
-   "region": "island",
-   "cap": 48,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 902,
-   "store": "Colossal Courtenay"
-  },
-  {
-   "id": "rb117437289555157382",
-   "name": "Saturday evening nexus night",
-   "type": "nexus",
-   "start": "2026-10-24T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-24",
-   "time": "6:00 PM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 4,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 16866,
-   "store": "Everything Games"
-  },
   {
    "id": "rb117437297319078671",
    "name": "Sunday morning Nexus\"night\"",
@@ -133,7 +67,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 8,
-   "reg": 5,
+   "reg": 6,
    "cents": 600,
    "currency": "USD",
    "updated": null,
