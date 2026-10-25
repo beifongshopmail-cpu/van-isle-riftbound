@@ -84,6 +84,9 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 .blk .bi svg:has(.icb) .ico{display:none}
 .blk .bi svg .icb{display:inline}
 .blk .bn{font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* M13: "Collection" is the longest name, 77.7 wide in a 76 block at 375; a phone narrower than 390
+   draws the names a touch tighter so it fits whole (402, Mako's phone, is unchanged) */
+@media (max-width:389px){.blk .bn{letter-spacing:-.02em}}
 /* the arc gives about 10px; the extra 4px exaggerates the curve, Mako's call. */
 .grid > .blk:nth-child(2), .grid > .blk:nth-child(5){top:-14px}
 /* a last row of two spreads a little, so it doesn't hug the centre gap */

@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Your Riftbound collection: what it is worth and how it moves.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Collection - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<style>
+/* The Collection page (M13, 2026-10-25). The cards and sealed product you own, in portfolios,
+   priced from data/prices.json (TCGplayer market price), with a chart drawn from the month
+   files in data/hist (hist.js). Kept on this phone only (vir.coll.v1) until accounts exist.
+   The shared layer is app.css; this block holds only the page's own rules. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;
+  /* THIS DOES NOT STOP DOUBLE-TAP ZOOM. The touchend guard at the end of the page is the fix. */
+  touch-action:manipulation}
+#cl{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.boot{padding:28px 4px 0;font-size:15px;color:var(--muted)}
+/* THE HEAD: which portfolio, its value, how it moved over the range */
+.cport{margin-top:14px}
+.cval{margin:18px 4px 0;display:flex;align-items:baseline;gap:8px;min-width:0}
+.cval .v{font-family:var(--disp);font-weight:800;font-size:34px;line-height:1.05;letter-spacing:-.02em;white-space:nowrap} /* size-exempt: the collection's value */
+.cval .u{font-family:var(--disp);font-weight:700;font-size:15px;color:var(--muted)}
+.cchg{margin:6px 4px 0;min-height:21px;display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden}
+.cchg .w{color:var(--muted);font-weight:400;overflow:hidden;text-overflow:ellipsis}
+/* the movement chip, as Trade's: an arrow carries the direction, never a colour */
+.chip{display:inline-flex;align-items:center;gap:.25em;font:inherit;color:inherit;white-space:nowrap}
+.chip svg{width:.6em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+/* THE CHART: Rust, the page colour; a finger on it reads one day */
+.chw{position:relative;margin:12px -4px 0;height:170px;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.chw svg{display:block;width:100%;height:100%;overflow:visible}
+.chw .ln{fill:none;stroke:rgb(var(--page));stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chw .ar{stroke:none}
+.chw .mk{stroke:rgba(237,234,227,.5);stroke-width:1}
+.chw .dot{fill:var(--bone);stroke:rgb(var(--page));stroke-width:2}
+.chw .none{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 24px;font-size:13px;color:var(--muted)}
+.cseg{margin-top:10px}
+.cnote{margin:8px 6px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+/* SECTIONS */
+#app > section{margin-top:24px}
+/* A HOLDING ROW: the picture, the name and its printing, the value and how it moved */
+.cards{border-radius:22px;padding:0 14px}
+.crow{display:flex;align-items:center;gap:12px;width:100%;min-height:66px;padding:8px 0;text-align:left;background:none}
+.crow + .crow{border-top:1px solid rgba(255,255,255,.07)}
+.crow:active{transform:none;background:rgba(255,255,255,.05)}
+.cmid{flex:1;min-width:0}
+.cnm{display:block;font-family:var(--text);font-size:15px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csub{display:block;margin-top:3px;font-family:var(--text);font-size:12px;font-weight:400;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cend{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:3px;text-align:right}
+.camt{font-family:var(--disp);font-size:15px;font-weight:700;white-space:nowrap}
+.cmv{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.clb{margin:0;padding:12px 2px 0;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.clb:first-child{padding-top:14px}
+.cempty{padding:14px 2px;font-size:15px;line-height:1.4;color:var(--muted)}
+/* card art: Riot's picture where the art map has one, the store listing's photo otherwise */
+.art{display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden; /* size-exempt: card art image */
+  background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.art img{display:block;width:100%;height:100%;object-fit:cover}
+.art.sq{height:36px} /* size-exempt: a sealed product's photo is square */
+.art.sq img{object-fit:contain;background:#fff}
+.more{margin-top:10px}
+.hsf{margin-bottom:8px}
+.hseg{margin-bottom:10px}
+.first .pact + .pact{margin-top:8px}
+/* the add menu's results, as Trade's */
+.rrow{display:flex;align-items:center;gap:10px;padding:8px 2px 8px 4px}
+.rrow + .rrow{border-top:1px solid rgba(255,255,255,.07)}
+.buy{flex:0 0 84px;width:84px;height:var(--sz-sm);padding:0 8px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(var(--page),.18);color:var(--bone);font-family:var(--disp);font-weight:600;font-size:13px}
+.buy:active{background:rgba(var(--page),.5)}
+.rnone{padding:12px 6px;font-size:15px;color:var(--muted)}
+.own{color:var(--bone);font-weight:600}
+/* THE CARD MENU: its picture, its own chart, and what you hold */
+.hpic{display:flex;justify-content:center;margin:2px 0 12px}
+.hpic img{display:block;width:150px;height:auto;border-radius:8px} /* size-exempt: card picture */
+.hpic.sq img{width:150px;height:150px;object-fit:contain;background:#fff;border-radius:12px} /* size-exempt: sealed photo */
+.hfacts{margin:0 2px 10px;font-size:13px;line-height:1.45;color:var(--muted);text-align:center}
+.hnow{margin:0 0 4px;text-align:center;font-family:var(--disp);font-weight:800;font-size:20px}
+.hchg{margin:0 0 6px;display:flex;justify-content:center;gap:6px;font-size:13px;font-weight:600;min-height:18px}
+.hchg .w{color:var(--muted);font-weight:400}
+#hchart{height:120px;margin:4px 0 0}
+.hrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.hrow .lbl{flex:1;min-width:0;font-family:var(--disp);font-weight:600;font-size:15px}
+.stp{display:inline-flex;align-items:center;height:var(--sz-track);border-radius:999px;background:rgba(0,0,0,.28);padding:3px}
+.stp button{width:var(--sz-seg);height:var(--sz-seg);border-radius:999px;display:grid;place-items:center;background:none}
+.stp button:active{background:var(--hi)}
+.stp svg{width:18px;height:18px} /* the stepper's buttons are near round-button size (34): the same glyph as a round button (18, line 2.4) */
+.stp span{min-width:28px;text-align:center;font-size:15px;font-weight:700}
+.stp .bin{background:rgba(229,72,77,.22)}
+.hgain{margin:2px 2px 12px;font-size:13px;line-height:1.5;color:var(--muted)}
+.hgain b{color:var(--bone);font-weight:600}
+.nf input[type="date"]{-webkit-appearance:none;appearance:none;text-align:left;color:var(--bone)}
+.nf .unit{flex:0 0 auto;margin-left:8px;font-size:13px;color:var(--muted)}
+.armed{background:var(--glass-press)}
+/* the import summary */
+.isum{margin:0 0 12px;padding:12px 16px;border-radius:22px;background:var(--recess);font-size:13px;line-height:1.5;color:var(--muted)}
+.isum b{color:var(--bone);font-weight:600}
+.isum ul{margin:6px 0 0;padding-left:18px}
+.toast{position:fixed;left:50%;z-index:60;bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 14px);
+  transform:translate(-50%,10px);opacity:0;padding:10px 16px;border-radius:999px;font-size:13px;font-weight:600;
+  pointer-events:none;white-space:nowrap;max-width:calc(100% - 48px);overflow:hidden;text-overflow:ellipsis;transition:opacity .2s ease,transform .2s ease}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.foot a{color:var(--bone)}
+input[type="file"]{display:none}
+</style>
+</head>
+<body>
+
+<div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+
+<main id="cl">
+  <h2 class="sr">Collection</h2>
+  <p class="boot" id="boot">Loading prices...</p>
+  <div id="app" hidden>
+    <div class="doors cport" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All portfolios</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    <div class="cval"><span class="v" id="val">$0.00</span><span class="u" id="valu">CAD</span></div>
+    <div class="cchg" id="chg"></div>
+    <div class="chw" id="chart" data-k="view"></div>
+    <div class="seg cseg" role="group" aria-label="Range" id="range" data-k="pick">
+      <button type="button" data-r="7" aria-pressed="false">7D</button><button type="button" data-r="30" aria-pressed="true">30D</button><button type="button" data-r="365" aria-pressed="false">1Y</button><button type="button" data-r="all" aria-pressed="false">All</button>
+    </div>
+    <p class="cnote" id="mnote"></p>
+
+    <section id="movers">
+      <div class="shead"><h2>Movers</h2><span class="sp"></span><span class="cnt" id="mvcnt"></span></div>
+      <div class="cards glass" id="mvlist"></div>
+    </section>
+
+    <section id="held">
+      <div class="shead"><h2 id="heldttl">Cards</h2><span class="sp"></span><span class="cnt" id="heldcnt"></span></div>
+      <div class="sf hsf">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+        <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+        <button type="button" class="fbtn fx glass" id="hqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="seg hseg" role="group" aria-label="Sort" id="sort" data-k="pick">
+        <button type="button" data-s="value" aria-pressed="true">Value</button><button type="button" data-s="move" aria-pressed="false">Change</button><button type="button" data-s="name" aria-pressed="false">Name</button><button type="button" data-s="added" aria-pressed="false">Added</button>
+      </div>
+      <div class="cards glass" id="hlist"></div>
+      <button type="button" class="pact btn glass more" id="hmore" hidden data-k="do">Show all</button>
+    </section>
+
+    <section id="first" class="first" hidden>
+      <div class="shead"><h2 id="firstttl">Start your collection</h2></div>
+      <p class="cempty" id="firsttx">Add cards and sealed product one at a time, add a whole deck, or bring your collection over from Collectr.</p>
+      <button type="button" class="pact btn glass" data-act="add" data-k="do">Add cards</button>
+      <button type="button" class="pact btn glass" data-act="import" data-k="do">Import from Collectr</button>
+    </section>
+  </div>
+  <p class="boot" id="loadfail" hidden>The prices could not be loaded. Check your connection and open the page again.</p>
+
+  <footer class="foot">
+    <p>Prices are TCGplayer's market price in US dollars, updated daily; Canadian dollars at the Bank of Canada's rate. Your collection is kept on this phone only.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
+  </footer>
+</main>
+
+<!-- THE STANDARD BAR: Hub, Go to, Add cards, Collection settings. -->
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"collection"},
+  {tag:"button", icon:"add", a:[["class", "tab"], ["id", "tabadd"], ["aria-label", "Add cards"], ["data-fills", "padd"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["id", "tabset"], ["aria-label", "Collection settings"], ["data-fills", "pset"], ["data-k", "slot"]]}
+]);</script>
+
+<div class="toast frost" id="toast" role="status" aria-live="polite"></div>
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+
+<section class="panel frost" id="pport" aria-hidden="true" aria-label="Portfolios">
+  <div class="phead"><h4 class="ttl">Portfolios</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="portpick" data-k="pick"></div>
+    <div class="row" style="margin-top:14px"><div class="doors" data-k="deeper"><button type="button" class="door btn glass" data-act="manage"><span class="t">Edit portfolios</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
+  </div>
+</section>
+
+<section class="panel frost" id="pmng" aria-hidden="true" aria-label="Edit portfolios">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Edit portfolios</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="mnglist" data-k="deeper"></div></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="newport" data-k="do">New portfolio</button></div>
+</section>
+
+<section class="panel frost" id="pone" aria-hidden="true" aria-label="Portfolio">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="onettl">Portfolio</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p class="lb">Name</p>
+    <div class="nf tall"><input id="onename" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
+    <p class="pnote" id="onenote"></p>
+  </div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="onedel" data-act="delport" data-k="do">Delete portfolio</button></div>
+</section>
+
+<section class="panel frost" id="padd" aria-hidden="true" aria-label="Add cards">
+  <div class="phead"><h4 class="ttl">Add cards</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="row"><div class="sf">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+      <input id="aq" type="search" placeholder="Card or product name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+      <button type="button" class="fbtn fx glass" id="aqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    </div>
+    <p class="pnote" id="addto" style="margin:8px 2px 0"></p></div>
+    <div id="ares"></div>
+    <div id="aways" class="row"><p class="lb">More ways to add</p><div class="doors" data-k="deeper">
+      <button type="button" class="door btn glass" data-act="decks"><span class="t">Add a deck</span><span class="sp"></span><small id="deckcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><small>Collectr, a backup</small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+    </div></div>
+  </div>
+</section>
+
+<section class="panel frost" id="pdeck" aria-hidden="true" aria-label="Add a deck">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Add a deck</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="doors" id="decklist" data-k="do"></div>
+    <p class="pnote" id="decknote" style="margin-top:10px"></p>
+  </div>
+</section>
+
+<section class="panel frost" id="pimp" aria-hidden="true" aria-label="Import">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Import</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div id="isum"></div>
+    <div class="doors" data-k="do">
+      <button type="button" class="door btn glass act" data-act="pickcsv"><span class="t">A Collectr file</span><span class="sp"></span><small>CSV</small></button>
+      <button type="button" class="door btn glass act" data-act="pickbak"><span class="t">A RAVI backup</span><span class="sp"></span><small>JSON</small></button>
+    </div>
+    <p class="pnote" style="margin-top:10px">In Collectr, export a portfolio as a CSV file and pick it here. Each Collectr portfolio becomes a portfolio here with the same name; one already here with that name is replaced. Watchlist items go to the Wishlist. A RAVI backup replaces everything on this page.</p>
+    <input type="file" id="fcsv" accept=".csv,text/csv,text/plain">
+    <input type="file" id="fbak" accept=".json,application/json">
+  </div>
+  <div class="pfoot" id="ifoot" hidden><button type="button" class="pact btn glass" id="igo" data-act="importgo" data-k="do">Import</button></div>
+</section>
+
+<section class="panel frost" id="pset" aria-hidden="true" aria-label="Collection settings">
+  <div class="phead"><h4 class="ttl">Collection settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="row"><div class="seg" role="group" aria-label="Currency" id="cur" data-k="pick"><button type="button" data-c="CAD" aria-pressed="true">CAD</button><button type="button" data-c="USD" aria-pressed="false">USD</button></div></div>
+    <div class="row"><p class="lb">The chart shows</p>
+      <div class="pick" id="mode" data-k="pick"><button type="button" data-m="market">Market movement</button><button type="button" data-m="total">Total value</button></div>
+      <p class="pnote" style="margin-top:8px">Market movement prices what you hold now on every day, so adding cards never moves the line. Total value counts each card from the day it was added.</p>
+    </div>
+    <div class="row"><div class="doors" data-k="deeper">
+      <button type="button" class="door btn glass" data-act="manage"><span class="t">Portfolios</span><span class="sp"></span><small id="setports"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><small>Collectr, a backup</small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door btn glass" data-act="export"><span class="t">Export</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+    </div></div>
+  </div>
+</section>
+
+<section class="panel frost" id="pexp" aria-hidden="true" aria-label="Export">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Export</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="doors" data-k="do">
+      <button type="button" class="door btn glass act" data-act="savebak"><span class="t">A RAVI backup</span><span class="sp"></span><small>JSON</small></button>
+      <button type="button" class="door btn glass act" data-act="savecsv"><span class="t">A spreadsheet</span><span class="sp"></span><small>CSV</small></button>
+    </div>
+    <p class="pnote" style="margin-top:10px">Your collection lives on this phone only. Save a backup now and then; Import puts it back. The spreadsheet uses Collectr's columns, so Collectr and spreadsheet apps can read it.</p>
+  </div>
+</section>
+
+<section class="panel frost" id="phold" aria-hidden="true" aria-label="Card">
+  <div class="phead"><h4 class="ttl" id="httl">Card</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="hbody"></div>
+  <div class="pfoot" id="hfoot"></div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  // ---- THE DATA ----
+  // P: data/prices.json. BYID: a product by its TCGplayer id. A HOLDING is one printing and finish
+  // in one portfolio: { id, i: product id, f: finish, q: count, d: "YYYY-MM-DD" added,
+  // paid: price paid for one, or null, pc: the currency it was paid in, cond: condition words }.
+  // THE STORE (vir.coll.v1): { v: 1, ports: [{ id, name, items: [holding] }], wish: [holding], last: id }
+  var KEY = "vir.coll.v1", SKEY = "vir.coll.set.v1";
+  var P = null, BYID = {}, SETS = {}, FX = 1.4, ART = null;
+  var S = { v: 1, ports: [], wish: [], last: "" };
+  var SET = { view: "all", range: "30", mode: "market", cur: "CAD", sort: "value" };
+  // the history: DAYS (every day there is a price file for, oldest first), H[key] = cents per day
+  var DAYS = [], H = {}, HALL = false, FILLC = {};
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function today(){ return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+  function load(){
+    try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && Array.isArray(s.ports)){ S = s; S.wish = S.wish || []; } }catch(e){}
+    var cur = null;
+    try{ var t = JSON.parse(localStorage.getItem("vir.trade.v1")); if(t && (t.cur === "USD" || t.cur === "CAD")) cur = t.cur; }catch(e){}
+    if(cur) SET.cur = cur;
+    try{ var z = JSON.parse(localStorage.getItem(SKEY)); if(z){ for(var k in SET){ if(z.hasOwnProperty(k) && typeof z[k] === typeof SET[k]) SET[k] = z[k]; } } }catch(e){}
+    if(SET.view !== "all" && SET.view !== "wish" && !port(SET.view)) SET.view = "all";
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+  function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
+  function port(id){ for(var i = 0; i < S.ports.length; i++){ if(S.ports[i].id === id) return S.ports[i]; } return null; }
+  function listOf(id){ return id === "wish" ? S.wish : (port(id) || {}).items || null; }
+  // the holdings a view shows: a portfolio's own, the wishlist's, or every portfolio's (All)
+  function viewItems(v){
+    v = v || SET.view;
+    if(v === "wish") return S.wish.map(function(h){ return { h: h, p: "wish" }; });
+    var out = [];
+    S.ports.forEach(function(p){ if(v === "all" || v === p.id) p.items.forEach(function(h){ out.push({ h: h, p: p.id }); }); });
+    return out;
+  }
+  function viewName(v){ v = v || SET.view; return v === "all" ? "All portfolios" : (v === "wish" ? "Wishlist" : (port(v) || {}).name || ""); }
+  function key(h){ return h.i + "|" + h.f; }
+  function count(list){ var n = 0; list.forEach(function(x){ n += x.h.q; }); return n; }
+
+  // ---- MONEY: prices are USD; shown in the chosen currency ----
+  function conv(usd){ return SET.cur === "CAD" ? usd * FX : usd; }
+  function fmt(v){ return "$" + Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function money(usd){ return fmt(conv(usd)); }
+  var UP = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 11V1.5M1.5 5L5 1.5 8.5 5"/></svg>';
+  var DN = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 1v9.5M1.5 7L5 10.5 8.5 7"/></svg>';
+  // a change: the arrow carries the direction (STYLE: never a colour); amounts are unsigned
+  function chip(dUsd, pct){
+    if(dUsd == null || !isFinite(dUsd)) return "";
+    if(Math.abs(conv(dUsd)) < 0.005) return '<span class="chip">No change</span>';
+    return '<span class="chip">' + (dUsd > 0 ? UP : DN) + fmt(conv(dUsd)) + (pct != null && isFinite(pct) ? " (" + Math.abs(pct).toFixed(pct !== 0 && Math.abs(pct) < 10 ? 1 : 0) + "%)" : "") + '</span>';
+  }
+  function pctChip(pct){
+    if(pct == null || !isFinite(pct)) return "";
+    if(Math.abs(pct) < 0.05) return '<span class="chip">0%</span>';
+    return '<span class="chip">' + (pct > 0 ? UP : DN) + Math.abs(pct).toFixed(Math.abs(pct) < 10 ? 1 : 0) + '%</span>';
+  }
+
+  // ---- A PRODUCT: its picture, its facts ----
+  var TCGIMG = "https://tcgplayer-cdn.tcgplayer.com/product/";
+  function sealed(c){ return c && c.k === 0; }
+  function picSrc(c, big){
+    var a = ART && ART[c.i];
+    if(a && a.h && !sealed(c)) return "../cards/art/" + a.h + (big ? ".webp" : ".t.webp");
+    return TCGIMG + c.i + (big ? "_in_1000x1000.jpg" : "_200w.jpg");
+  }
+  function thumb(c){
+    if(!c) return '<span class="art"></span>';
+    return '<span class="art' + (sealed(c) ? " sq" : "") + '"><img src="' + esc(picSrc(c)) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()"></span>';
+  }
+  function setOf(c){ return SETS[c.g] || {}; }
+  function facts(c, f){
+    var s = setOf(c), b = [];
+    if(sealed(c)){ b.push("Sealed"); if(s.a) b.push(s.a); return b; }
+    b.push(f);
+    var sn = [s.a, c.c].filter(Boolean).join(" ");
+    if(sn) b.push(sn);
+    if(c.r) b.push(c.r);
+    return b;
+  }
+
+  // ---- THE HISTORY (data/hist, hist.js): cents per day; today from prices.json ----
+  function histMerge(m){
+    if(!m || !m.days) return;
+    var base = DAYS.length, add = m.days.filter(function(d){ return DAYS.indexOf(d) < 0; });
+    if(!add.length) return;
+    // months arrive newest first, then older ones: rebuild in day order
+    var all = DAYS.concat(add).sort(), pos = {}, k;
+    all.forEach(function(d, i){ pos[d] = i; });
+    var NH = {};
+    for(k in H){ NH[k] = new Array(all.length).fill(null); for(var i = 0; i < DAYS.length; i++){ NH[k][pos[DAYS[i]]] = H[k][i]; } }
+    for(k in m.s){
+      if(!NH[k]) NH[k] = new Array(all.length).fill(null);
+      var a = m.s[k];
+      for(var j = 0; j < m.days.length; j++){ if(a[j] != null && DAYS.indexOf(m.days[j]) < 0) NH[k][pos[m.days[j]]] = a[j]; }
+    }
+    DAYS = all; H = NH; FILLC = {};
+    void base;
+  }
+  // today's prices (prices.json) as the last day, whether or not a month file has it yet
+  function histToday(){
+    var d = String(P.generated_at || "").slice(0, 10);
+    if(!d) return;
+    var i = DAYS.indexOf(d), k;
+    if(i < 0){
+      if(DAYS.length && d < DAYS[DAYS.length - 1]) return;
+      DAYS.push(d); for(k in H) H[k].push(null); i = DAYS.length - 1;
+    }
+    P.cards.forEach(function(c){ Object.keys(c.p).forEach(function(f){ var kk = c.i + "|" + f; if(!H[kk]) H[kk] = new Array(DAYS.length).fill(null); H[kk][i] = Math.round(c.p[f] * 100); }); });
+    FILLC = {};
+  }
+  // a series with its gaps filled: the last known price carried forward, the first one carried back
+  function filled(k){
+    if(FILLC[k]) return FILLC[k];
+    var a = H[k], out = new Array(DAYS.length), last = null, i;
+    if(!a){
+      var c = BYID[k.split("|")[0]], p = c && c.p[k.split("|")[1]];
+      out.fill(p != null ? Math.round(p * 100) : 0);
+      return (FILLC[k] = out);
+    }
+    for(i = 0; i < a.length; i++){ if(a[i] != null) last = a[i]; out[i] = last; }
+    var first = null;
+    for(i = 0; i < a.length; i++){ if(a[i] != null){ first = a[i]; break; } }
+    for(i = 0; i < out.length && out[i] == null; i++) out[i] = first == null ? 0 : first;
+    return (FILLC[k] = out);
+  }
+  function nowCents(h){ var c = BYID[h.i]; var p = c && c.p[h.f]; if(p == null && c){ var fs = Object.keys(c.p); p = fs.length ? c.p[fs[0]] : null; } return p == null ? 0 : Math.round(p * 100); }
+  // the first day of a range: the earliest day on or after today minus N days
+  function startIdx(r){
+    if(!DAYS.length) return 0;
+    if(r === "all") return 0;
+    var last = DAYS[DAYS.length - 1], t = Date.parse(last + "T00:00:00Z") - (+r) * 86400000, cut = new Date(t).toISOString().slice(0, 10), i;
+    for(i = 0; i < DAYS.length; i++){ if(DAYS[i] >= cut) return i; }
+    return DAYS.length - 1;
+  }
+  // THE CHART'S NUMBERS, in cents: market movement prices today's holdings on every day; total
+  // value counts a holding only from the day it was added (one added before the history starts
+  // counts from the start)
+  function series(items, mode, r){
+    var s = startIdx(r || SET.range), n = DAYS.length - s, v = new Array(Math.max(n, 0)).fill(0);
+    items.forEach(function(x){
+      var f = filled(key(x.h)), q = x.h.q, d = x.h.d || "";
+      for(var i = 0; i < n; i++){ if(mode === "total" && d && DAYS[s + i] < d) continue; v[i] += q * f[s + i]; }
+    });
+    return { days: DAYS.slice(s), v: v };
+  }
+  // one holding's move over the range, per copy, in cents: [then, now]
+  function moveOf(h, r){
+    if(!DAYS.length) return null;
+    var f = filled(key(h)), s = startIdx(r || SET.range);
+    return [f[s], f[DAYS.length - 1]];
+  }
+  // the price on the day a holding was added (the gain's base when no price was paid)
+  function priceOn(h){
+    var f = filled(key(h)), d = h.d || "", i;
+    if(!DAYS.length) return null;
+    for(i = DAYS.length - 1; i >= 0; i--){ if(DAYS[i] <= d) return f[i]; }
+    return f[0];
+  }
+
+  // ---- THE CHART: an SVG line and its fill, Rust. Its construction follows tiny-spark's
+  // (github.com/graphieros/tiny-spark, MIT): a path scaled to the box, the same points closed
+  // to the floor for the fill, a marker line and dot for the day under the finger. ----
+  var GID = 0;
+  function drawChart(box, sr, onScrub){
+    var w = Math.max(box.clientWidth, 100), ht = box.clientHeight || 170, v = sr.v, n = v.length;
+    if(n < 2){ box.innerHTML = '<div class="none">The price history starts ' + esc(window.RAVI_DATE(DAYS[0] || "")) + '. More days, more line.</div>'; return; }
+    var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), pad = 8;
+    if(hi === lo){ hi = lo + 1; lo = lo - 1; }
+    var span = hi - lo; lo -= span * 0.08; hi += span * 0.08;
+    function X(i){ return (i / (n - 1)) * w; }
+    function Y(x){ return pad + (1 - (x - lo) / (hi - lo)) * (ht - pad * 2); }
+    var d = "", i;
+    for(i = 0; i < n; i++) d += (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(v[i]).toFixed(1);
+    var g = "cg" + (++GID);
+    box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(220,90,30)" stop-opacity=".30"/><stop offset="1" stop-color="rgb(220,90,30)" stop-opacity="0"/></linearGradient></defs>'
+      + '<path class="ar" fill="url(#' + g + ')" d="' + d + 'L' + w + ' ' + ht + 'L0 ' + ht + 'Z"/><path class="ln" d="' + d + '"/>'
+      + '<line class="mk" x1="0" x2="0" y1="0" y2="' + ht + '" visibility="hidden"/><circle class="dot" r="4" cx="0" cy="0" visibility="hidden"/></svg>';
+    var svg = box.firstChild, mk = svg.querySelector(".mk"), dot = svg.querySelector(".dot"), on = false;
+    function at(ev){
+      var r = box.getBoundingClientRect(), x = Math.min(Math.max(ev.clientX - r.left, 0), r.width), k = Math.round(x / r.width * (n - 1));
+      mk.setAttribute("x1", X(k)); mk.setAttribute("x2", X(k)); dot.setAttribute("cx", X(k)); dot.setAttribute("cy", Y(v[k]));
+      mk.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
+      onScrub && onScrub(k);
+    }
+    function off(){ on = false; mk.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); onScrub && onScrub(null); }
+    box.onpointerdown = function(ev){ on = true; at(ev); };
+    box.onpointermove = function(ev){ if(on) at(ev); };
+    box.onpointerup = box.onpointercancel = box.onpointerleave = off;
+  }
+
+  // ---- THE PAGE ----
+  var RANGEW = { "7": "7 days", "30": "30 days", "365": "1 year", "all": "since " };
+  function rangeWords(){ return SET.range === "all" ? "since " + window.RAVI_DATE(DAYS[0] || "", true) : "in " + RANGEW[SET.range]; }
+  var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
+  var SR = null, LIMIT = 60;
+  function head(){
+    var items = viewItems(), n = count(items), now = 0;
+    items.forEach(function(x){ now += x.h.q * nowCents(x.h); });
+    el("portname").textContent = viewName();
+    el("portcnt").textContent = n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards";
+    el("val").textContent = money(now / 100);
+    el("valu").textContent = SET.cur;
+    SR = series(items, SET.mode);
+    headChange();
+    el("mnote").textContent = (SET.view === "wish" ? "The Wishlist never counts toward your value. " : "")
+      + (SET.mode === "market" ? "Market movement: what you hold now, priced on each day." : "Total value: each card counted from the day it was added.");
+    drawChart(el("chart"), SR, function(k){
+      if(k == null){ el("val").textContent = money(now / 100); headChange(); return; }
+      el("val").textContent = money(SR.v[k] / 100);
+      el("chg").innerHTML = '<span class="w">' + esc(window.RAVI_DATE(SR.days[k])) + '</span>';
+    });
+  }
+  function headChange(){
+    var v = SR ? SR.v : [], a = v[0], b = v[v.length - 1];
+    if(v.length < 2){ el("chg").innerHTML = ""; return; }
+    el("chg").innerHTML = chip((b - a) / 100, a ? (b - a) / a * 100 : null) + '<span class="w">' + esc(rangeWords()) + '</span>';
+  }
+  // a holding's row: its value now (count times price) and its move over the range
+  function rowHtml(x, showPort){
+    var h = x.h, c = BYID[h.i], m = moveOf(h), now = nowCents(h), sub = c ? facts(c, h.f) : [h.f];
+    if(h.q > 1) sub.unshift(h.q + " x");
+    if(showPort) sub.push(viewName(x.p));
+    var mv = m ? pctChip(m[0] ? (m[1] - m[0]) / m[0] * 100 : null) : "";
+    return '<button type="button" class="crow" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" data-k="card">' + thumb(c)
+      + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "Unknown product") + '</span><span class="csub">' + sub.map(esc).join(" &middot; ") + '</span></span>'
+      + '<span class="cend"><span class="camt">' + money(h.q * now / 100) + '</span><span class="cmv">' + mv + '</span></span></button>';
+  }
+  function movers(items){
+    var rows = [];
+    items.forEach(function(x){ var m = moveOf(x.h); if(m && m[1] !== m[0]) rows.push({ x: x, d: (m[1] - m[0]) * x.h.q, m: m }); });
+    var up = rows.filter(function(r){ return r.d > 0; }).sort(function(a, b){ return b.d - a.d; }).slice(0, 5);
+    var dn = rows.filter(function(r){ return r.d < 0; }).sort(function(a, b){ return a.d - b.d; }).slice(0, 5);
+    function one(r){
+      var h = r.x.h, c = BYID[h.i], sub = c ? facts(c, h.f) : [h.f];
+      if(h.q > 1) sub.unshift(h.q + " x");
+      return '<button type="button" class="crow" data-h="' + esc(h.id) + '" data-p="' + esc(r.x.p) + '" data-k="card">' + thumb(c)
+        + '<span class="cmid"><span class="cnm">' + esc(c ? c.n : "") + '</span><span class="csub">' + sub.map(esc).join(" &middot; ") + '</span></span>'
+        + '<span class="cend"><span class="camt">' + chip(r.d / 100) + '</span><span class="cmv">' + pctChip(r.m[0] ? (r.m[1] - r.m[0]) / r.m[0] * 100 : null) + '</span></span></button>';
+    }
+    var h = "";
+    if(up.length) h += '<p class="clb">Gains</p>' + up.map(one).join("");
+    if(dn.length) h += '<p class="clb">Losses</p>' + dn.map(one).join("");
+    return h;
+  }
+  var SORTS = {
+    value: function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); },
+    move: function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; },
+    name: function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); },
+    added: function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }
+  };
+  function nameHit(x, q){
+    var c = BYID[x.h.i]; if(!c) return false;
+    var hay = (c.n + " " + (setOf(c).n || "") + " " + (setOf(c).a || "") + " " + c.c + " " + x.h.f).toLowerCase();
+    return q.split(/\s+/).every(function(w){ return hay.indexOf(w) > -1; });
+  }
+  function render(){
+    if(!P) return;
+    var items = viewItems(), empty = !items.length;
+    head();
+    el("movers").hidden = empty; el("held").hidden = empty; el("first").hidden = !empty;
+    // an empty list has nothing to chart: the value stays, the line and its controls go
+    el("chg").hidden = empty; el("chart").hidden = empty; el("range").hidden = empty; el("mnote").hidden = empty;
+    el("firstttl").textContent = SET.view === "wish" ? "Your wishlist is empty" : "Start your collection";
+    el("firsttx").textContent = SET.view === "wish"
+      ? "Cards you want go here. Add them with the plus in the bar while this list is showing. The Wishlist never counts toward your value."
+      : "Add cards and sealed product one at a time, add a whole deck, or bring your collection over from Collectr.";
+    if(empty) return;
+    var mv = movers(items);
+    el("mvcnt").textContent = rangeWords().replace(/^in /, "");
+    el("mvlist").innerHTML = mv || '<p class="cempty">Nothing you hold moved ' + esc(rangeWords()) + '.</p>';
+    var q = el("hq").value.trim().toLowerCase(), list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
+    list.sort(SORTS[SET.sort] || SORTS.value);
+    el("heldttl").textContent = SET.view === "wish" ? "Wanted" : "Cards";
+    el("heldcnt").textContent = (q ? list.length + " of " : "") + items.length + (items.length === 1 ? " row" : " rows");
+    var many = S.ports.length > 1 && SET.view === "all";
+    el("hlist").innerHTML = list.length ? list.slice(0, LIMIT).map(function(x){ return rowHtml(x, many); }).join("") : '<p class="cempty">Nothing matches.</p>';
+    el("hmore").hidden = list.length <= LIMIT;
+    el("hmore").textContent = "Show all " + list.length;
+    el("hqx").hidden = !q;
+    segs();
+  }
+  function segs(){
+    el("range").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-r") === SET.range ? "true" : "false"); });
+    el("sort").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-s") === SET.sort ? "true" : "false"); });
+    el("cur").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-c") === SET.cur ? "true" : "false"); });
+    el("mode").querySelectorAll("button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-m") === SET.mode); });
+  }
+
+  // ---- MENUS: one on screen, a stack behind it (as Trade and Rules) ----
+  var OPENP = null, STACK = [];
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  function show(p, keep, dir){
+    var sc = el("scrim"), b;
+    if(OPENP && p && OPENP !== p && dir) slideMenus(OPENP, p, dir);
+    if(OPENP && OPENP !== p){ OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    document.querySelectorAll(".panel").forEach(function(q){
+      var x = q.querySelector(".phead [data-close]"), bk = q.querySelector(".phead .back");
+      if(bk) bk.hidden = !(STACK.length > 1 && q === p);
+      if(x && bk) x.hidden = STACK.length > 1 && q === p;
+    });
+    if(p){
+      document.documentElement.classList.add("lock");
+      p.classList.add("show"); p.classList.remove("fromr", "froml");
+      p.setAttribute("aria-hidden", "false");
+      b = p.querySelector(".pbody");
+      if(b && !keep) b.scrollTop = 0;
+      sc.classList.add("show");
+    } else {
+      document.documentElement.classList.remove("lock");
+      sc.classList.remove("show");
+      disarm();
+    }
+  }
+  function openPanel(p){ STACK = p ? [p] : []; disarm(); show(p); }
+  function deeper(p){ disarm(); STACK.push(p); show(p, false, 1); }
+  function back(){ disarm(); STACK.pop(); show(STACK.length ? STACK[STACK.length - 1] : null, true, -1); }
+  // a menu opened from a bar slot or the page: deeper when one is already open
+  function go(p){ if(OPENP) deeper(p); else openPanel(p); }
+
+  // ---- TWO-TAP CONFIRM (STYLE: Sure? Tap again) ----
+  var ARMED = null, ARMT = 0, ARMW = "";
+  function disarm(){ if(ARMED){ ARMED.classList.remove("armed"); var t = ARMED.querySelector(".t") || ARMED; t.textContent = ARMW; ARMED = null; clearTimeout(ARMT); } }
+  function armed(btn){
+    if(ARMED === btn){ disarm(); return true; }
+    disarm();
+    var t = btn.querySelector(".t") || btn;
+    ARMED = btn; ARMW = t.textContent; t.textContent = "Sure? Tap again"; btn.classList.add("armed");
+    ARMT = setTimeout(disarm, 3000);
+    return false;
+  }
+
+  var TT = 0;
+  function toast(msg){ var t = el("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(TT); TT = setTimeout(function(){ t.classList.remove("show"); }, 2200); }
+
+  // ---- PORTFOLIOS ----
+  function newPort(name){ var p = { id: uid(), name: name, items: [] }; S.ports.push(p); return p; }
+  function fillPorts(){
+    var h = "", all = viewItems("all");
+    function row(v, nm, n){ return '<button type="button" data-v="' + esc(v) + '"' + (SET.view === v ? ' class="on"' : '') + '><span class="t">' + esc(nm) + '</span><span class="sp"></span><small>' + n.toLocaleString("en-US") + '</small></button>'; }
+    h += row("all", "All portfolios", count(all));
+    S.ports.forEach(function(p){ h += row(p.id, p.name, count(viewItems(p.id))); });
+    h += row("wish", "Wishlist", count(viewItems("wish")));
+    el("portpick").innerHTML = h;
+  }
+  function fillManage(){
+    el("mnglist").innerHTML = S.ports.length ? S.ports.map(function(p){
+      return '<button type="button" class="door btn glass" data-act="one" data-id="' + esc(p.id) + '"><span class="t">' + esc(p.name) + '</span><span class="sp"></span><small>' + count(viewItems(p.id)).toLocaleString("en-US") + '</small>' + CVR + '</button>';
+    }).join("") : '<p class="cempty" style="padding:12px 16px">No portfolios yet. Adding a card makes the first one.</p>';
+    el("setports").textContent = S.ports.length;
+  }
+  var ONE = null;
+  function fillOne(id){
+    ONE = port(id);
+    if(!ONE) return;
+    el("onettl").textContent = ONE.name;
+    el("onename").value = ONE.name;
+    var n = count(viewItems(ONE.id));
+    el("onenote").textContent = n ? "Deleting it removes its " + n.toLocaleString("en-US") + (n === 1 ? " card" : " cards") + " from this page." : "It holds no cards yet.";
+  }
+  // where a new card goes: the portfolio or wishlist on show; under All, the last one added to
+  function target(){
+    if(SET.view === "wish") return "wish";
+    if(SET.view !== "all" && port(SET.view)) return SET.view;
+    if(S.last && port(S.last)) return S.last;
+    return S.ports.length ? S.ports[0].id : "";
+  }
+  function targetName(){ var t = target(); return t ? viewName(t) : "My collection"; }
+
+  // ---- ADDING ----
+  function addOne(i, f, n, to, extra){
+    to = to || target();
+    if(!to){ to = newPort("My collection").id; }
+    var list = listOf(to), h = null;
+    list.forEach(function(x){ if(x.i === i && x.f === f) h = x; });
+    if(h) h.q += n;
+    else { h = { id: uid(), i: i, f: f, q: n, d: today(), paid: null, pc: SET.cur, cond: "" }; if(extra) for(var k in extra) h[k] = extra[k]; list.push(h); }
+    if(to !== "wish") S.last = to;
+    return h;
+  }
+  function owned(i, f, to){ var n = 0; (listOf(to || target()) || []).forEach(function(x){ if(x.i === i && x.f === f) n += x.q; }); return n; }
+  var FINORD = function(a, b){ return (a === "Normal" ? 0 : 1) - (b === "Normal" ? 0 : 1) || (a < b ? -1 : 1); };
+  function search(){
+    var t = el("aq").value.trim().toLowerCase(), box = el("ares");
+    el("aqx").hidden = !t;
+    el("aways").hidden = !!t;
+    el("addto").textContent = "Adds to " + targetName() + (SET.view === "all" ? ". Pick a portfolio at the top of the page to add somewhere else." : ".");
+    if(t.length < 2){ box.innerHTML = ""; return; }
+    var hits = [], words = t.split(/\s+/);
+    P.cards.forEach(function(c){
+      var n = c.n.toLowerCase(), hay = n + " " + (c.c || "").toLowerCase() + " " + (setOf(c).a || "").toLowerCase();
+      if(!words.every(function(w){ return hay.indexOf(w) > -1; })) return;
+      hits.push({ c: c, r: n.indexOf(t) === 0 ? 0 : (n.indexOf(t) > -1 ? 1 : 2) });
+    });
+    hits.sort(function(a, b){ return a.r - b.r || a.c.n.localeCompare(b.c.n); });
+    var h = "", rows = 0;
+    for(var k = 0; k < hits.length && rows < 40; k++){
+      var c = hits[k].c, fs = Object.keys(c.p).sort(FINORD);
+      for(var j = 0; j < fs.length && rows < 40; j++, rows++){
+        var f = fs[j], have = owned(c.i, f), sub = facts(c, f).map(esc).join(" &middot; ");
+        h += '<div class="rrow">' + thumb(c) + '<div class="cmid"><span class="cnm">' + esc(c.n) + '</span><span class="csub">' + sub + (have ? ' &middot; <span class="own">' + have + ' held</span>' : '') + '</span></div>'
+          + '<button type="button" class="buy" data-add="' + c.i + '|' + esc(f) + '" aria-label="Add ' + esc(c.n) + ', ' + esc(f) + '" data-k="do">' + money(c.p[f]) + '</button></div>';
+      }
+    }
+    box.innerHTML = h || '<div class="rnone">Nothing matches "' + esc(el("aq").value.trim()) + '".</div>';
+  }
+  // A DECK INTO THE COLLECTION: every card of the Decks page's deck (Legend, Main, Side, Runes,
+  // Battlefields), each as the printing the deck priced it at, else its set's base printing
+  var CODE2 = null;
+  function codeIndex(){
+    if(CODE2) return CODE2;
+    CODE2 = {};
+    P.cards.forEach(function(c){
+      var s = setOf(c); if(!s.a || !c.c) return;
+      var k = s.a + "-" + String(c.c).split("/")[0], f = c.p.Normal != null ? "Normal" : Object.keys(c.p)[0];
+      if(!CODE2[k] || (CODE2[k].c.p.Normal == null && c.p.Normal != null)) CODE2[k] = { c: c, f: f };
+    });
+    return CODE2;
+  }
+  function decks(){ try{ var d = JSON.parse(localStorage.getItem("vir.decks.v1")); return d && Array.isArray(d.decks) ? d.decks.filter(function(x){ return x && x.id; }) : []; }catch(e){ return []; } }
+  function deckCards(d){
+    var out = {}, ix = codeIndex(), miss = 0;
+    function put(code, n){
+      var v = d.ver && d.ver[code], c = null, f = null;
+      if(v){ var b = v.split("|"); c = BYID[b[0]]; f = b[1]; if(c && c.p[f] == null) c = null; }
+      if(!c){ var m = ix[code]; if(m){ c = m.c; f = m.f; } }
+      if(!c){ miss += n; return; }
+      var k = c.i + "|" + f; out[k] = (out[k] || 0) + n;
+    }
+    function many(m){ Object.keys(m || {}).forEach(function(c){ if(m[c] > 0) put(c, m[c]); }); }
+    if(d.legend) put(d.legend, 1);
+    many(d.main); many(d.side); many(d.runes);
+    (d.bf || []).forEach(function(c){ put(c, 1); });
+    return { cards: out, miss: miss };
+  }
+  function fillDecks(){
+    var ds = decks();
+    el("decklist").innerHTML = ds.length ? ds.map(function(d){
+      var r = deckCards(d), n = 0; Object.keys(r.cards).forEach(function(k){ n += r.cards[k]; });
+      return '<button type="button" class="door btn glass act" data-act="adddeck" data-id="' + esc(d.id) + '"><span class="t">' + esc(d.name || "Untitled deck") + '</span><span class="sp"></span><small>' + n + (n === 1 ? " card" : " cards") + '</small></button>';
+    }).join("") : '<p class="cempty" style="padding:12px 16px">No decks on this phone yet. Build one on the Decks page.</p>';
+    el("decknote").textContent = "Adds every card of the deck to " + targetName() + ", in the printing the deck is priced at.";
+  }
+
+  // ---- THE CARD MENU ----
+  var HOLD = null, HPORT = "";
+  function find(id, p){ var l = listOf(p) || []; for(var i = 0; i < l.length; i++){ if(l[i].id === id) return l[i]; } return null; }
+  var CONDS = [["NM", "Near Mint"], ["LP", "Lightly Played"], ["MP", "Moderately Played"], ["HP", "Heavily Played"], ["DMG", "Damaged"]];
+  function condCode(w){ w = String(w || "").toLowerCase(); for(var i = 0; i < CONDS.length; i++){ if(w === CONDS[i][0].toLowerCase() || w === CONDS[i][1].toLowerCase()) return CONDS[i][0]; } return ""; }
+  var IC = {
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>',
+    minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12h12"/></svg>',
+    bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/></svg>'
+  };
+  function fillHold(){
+    var h = HOLD, c = BYID[h.i], big = c ? picSrc(c, true) : "", fs = c ? Object.keys(c.p).sort(FINORD) : [h.f];
+    el("httl").textContent = c ? c.n : "Card";
+    var now = nowCents(h), base = h.paid != null ? Math.round((h.pc === SET.cur ? h.paid : (h.pc === "CAD" ? h.paid / FX : h.paid * FX)) / (SET.cur === "CAD" ? FX : 1) * 100) : priceOn(h);
+    var gain = base != null ? (now - base) * h.q : null;
+    var x = '<div class="hpic' + (sealed(c) ? " sq" : "") + '">' + (big ? '<img src="' + esc(big) + '" alt="" decoding="async" onerror="this.remove()">' : '') + '</div>'
+      + '<p class="hfacts">' + (c ? facts(c, h.f).map(esc).join(" &middot; ") : "") + (c && setOf(c).n ? '<br>' + esc(setOf(c).n) : '') + '</p>'
+      + '<p class="hnow" id="hnow">' + money(now / 100) + '</p><div class="hchg" id="hchg"></div>'
+      + '<div class="chw" id="hchart"></div>'
+      + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count</span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + h.q + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
+      + (fs.length > 1 ? '<div class="row"><p class="lb">Finish</p><div class="seg" role="group" aria-label="Finish" id="hfin" data-k="pick">' + fs.map(function(f){ return '<button type="button" data-f="' + esc(f) + '" aria-pressed="' + (f === h.f) + '">' + esc(f) + '</button>'; }).join("") + '</div></div>' : '')
+      + (HPORT !== "wish" ? '<div class="row"><p class="lb">Price paid for one</p><div class="nf"><input id="hpaid" type="text" inputmode="decimal" placeholder="Not set" value="' + (h.paid != null ? esc(Number(h.paid).toFixed(2)) : "") + '" data-k="type"><span class="unit">' + esc(h.paid != null ? h.pc : SET.cur) + '</span></div></div>'
+        + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ", the first day RAVI has prices for: " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
+      + '<div class="row"><p class="lb">Added</p><div class="nf"><input id="hdate" type="date" value="' + esc(h.d || "") + '" max="' + today() + '" data-k="type"></div></div>'
+      + (sealed(c) ? '' : '<div class="row"><p class="lb">Condition</p><div class="seg" role="group" aria-label="Condition" id="hcond" data-k="pick">' + CONDS.map(function(k){ return '<button type="button" data-c="' + k[0] + '" aria-pressed="' + (condCode(h.cond) === k[0]) + '">' + k[0] + '</button>'; }).join("") + '</div></div>')
+      + (S.ports.length > 1 && HPORT !== "wish" ? '<div class="row"><p class="lb">Portfolio</p><div class="pick" id="hport" data-k="pick">' + S.ports.map(function(p){ return '<button type="button" data-v="' + esc(p.id) + '"' + (p.id === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p.name) + '</span></button>'; }).join("") + '</div></div>' : '');
+    el("hbody").innerHTML = x;
+    el("hfoot").innerHTML = HPORT === "wish" ? '<button type="button" class="pact btn glass" data-act="wishown" data-k="do">I own it now</button>' : '';
+    el("hfoot").hidden = HPORT !== "wish";
+    var sr = series([{ h: { i: h.i, f: h.f, q: 1, d: "" } }], "market");
+    function hc(){ var v = sr.v; el("hnow").textContent = money(now / 100); el("hchg").innerHTML = v.length > 1 ? chip((v[v.length - 1] - v[0]) / 100, v[0] ? (v[v.length - 1] - v[0]) / v[0] * 100 : null) + '<span class="w">a copy, ' + esc(rangeWords()) + '</span>' : ""; }
+    hc();
+    requestAnimationFrame(function(){ drawChart(el("hchart"), sr, function(k){ if(k == null){ hc(); return; } el("hnow").textContent = money(sr.v[k] / 100); el("hchg").innerHTML = '<span class="w">' + esc(window.RAVI_DATE(sr.days[k])) + '</span>'; }); });
+  }
+  function openHold(id, p){ HOLD = find(id, p); HPORT = p; if(!HOLD) return; fillHold(); go(el("phold")); }
+  function changed(){ save(); render(); }
+
+  // ---- IMPORT: Collectr's CSV (and any sheet with its columns), a RAVI backup ----
+  function csvRows(t){
+    var rows = [], r = [], f = "", q = false, i, c;
+    t = String(t).replace(/^﻿/, "");
+    for(i = 0; i < t.length; i++){
+      c = t[i];
+      if(q){ if(c === '"'){ if(t[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+      else if(c === '"') q = true;
+      else if(c === ","){ r.push(f); f = ""; }
+      else if(c === "\n" || c === "\r"){ if(c === "\r" && t[i + 1] === "\n") i++; r.push(f); rows.push(r); r = []; f = ""; }
+      else f += c;
+    }
+    if(f !== "" || r.length){ r.push(f); rows.push(r); }
+    return rows.filter(function(x){ return x.length > 1 || (x[0] || "").trim(); });
+  }
+  function nrm(s){ return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  // the columns, by name: Collectr's, and TCGplayer's where they differ
+  var COLS = {
+    port: ["portfolio name", "portfolio"], set: ["set", "set name"], name: ["product name", "name", "card name"],
+    num: ["card number", "number"], fin: ["variance", "printing", "finish"], qty: ["quantity", "total quantity", "qty", "count"],
+    paid: ["average cost paid", "price paid", "purchase price", "cost"], date: ["date added", "added"], cond: ["card condition", "condition"],
+    watch: ["watchlist"], id: ["tcgplayer id", "tcgplayer product id"], grade: ["grade"]
+  };
+  function plan(text){
+    var rows = csvRows(text);
+    if(rows.length < 2) return { err: "That file has no rows." };
+    var hd = rows[0].map(function(h){ return h.trim().toLowerCase(); }), at = {}, k;
+    for(k in COLS){ at[k] = -1; for(var j = 0; j < COLS[k].length && at[k] < 0; j++) at[k] = hd.indexOf(COLS[k][j]); }
+    if(at.name < 0 && at.id < 0) return { err: "That file has no product name column. Is it Collectr's CSV export?" };
+    var bySetNum = {}, bySetName = {}, byName = {};
+    P.cards.forEach(function(c){
+      var s = setOf(c), sn = nrm(s.n);
+      if(c.c) (bySetNum[sn + "|" + nrm(c.c)] = bySetNum[sn + "|" + nrm(c.c)] || []).push(c);
+      (bySetName[sn + "|" + nrm(c.n)] = bySetName[sn + "|" + nrm(c.n)] || []).push(c);
+      (byName[nrm(c.n)] = byName[nrm(c.n)] || []).push(c);
+    });
+    function get(r, k){ return at[k] > -1 ? String(r[at[k]] || "").trim() : ""; }
+    var out = { ports: {}, order: [], wish: [], miss: [], rows: 0, cards: 0 };
+    rows.slice(1).forEach(function(r){
+      var c = null, L, nm = get(r, "name"), st = nrm(get(r, "set")), id = get(r, "id");
+      if(id && BYID[id]) c = BYID[id];
+      if(!c && get(r, "num")){ L = bySetNum[st + "|" + nrm(get(r, "num"))] || []; if(L.length > 1){ var m = L.filter(function(x){ return nrm(x.n) === nrm(nm); }); if(m.length) L = m; } c = L[0] || null; }
+      if(!c){ L = bySetName[st + "|" + nrm(nm)] || []; c = L[0] || null; }
+      if(!c){ L = byName[nrm(nm)] || []; if(L.length === 1) c = L[0]; }
+      var q = parseInt(get(r, "qty"), 10); if(!(q > 0)) q = 1;
+      out.rows++;
+      if(!c){ out.miss.push([get(r, "set"), nm, get(r, "num")].filter(Boolean).join(", ") + " (" + q + ")"); return; }
+      var fw = get(r, "fin"), fs = Object.keys(c.p), f = fs.indexOf(fw) > -1 ? fw : (/foil|holo/i.test(fw) && c.p.Foil != null ? "Foil" : (c.p.Normal != null ? "Normal" : fs[0]));
+      var paid = parseFloat(String(get(r, "paid")).replace(/[^0-9.]/g, "")), d = get(r, "date"), it = { i: c.i, f: f, q: q, d: /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : today(), paid: paid > 0 ? paid : null, pc: SET.cur, cond: get(r, "cond") };
+      var g = get(r, "grade"); if(g && !/^ungraded$/i.test(g)) it.grade = g;
+      if(/^true$/i.test(get(r, "watch"))){ out.wish.push(it); out.cards += q; return; }
+      var pn = get(r, "port") || "Imported";
+      if(!out.ports[pn]){ out.ports[pn] = []; out.order.push(pn); }
+      out.ports[pn].push(it); out.cards += q;
+    });
+    return out;
+  }
+  var PLAN = null;
+  function showPlan(){
+    var x = PLAN, h = "";
+    if(!x){ el("isum").innerHTML = ""; el("ifoot").hidden = true; return; }
+    if(x.err){ el("isum").innerHTML = '<div class="isum">' + esc(x.err) + '</div>'; el("ifoot").hidden = true; return; }
+    if(x.backup){
+      h = '<b>A RAVI backup</b> from ' + esc(window.RAVI_DATE(String(x.backup.at || "").slice(0, 10))) + ': ' + x.backup.data.ports.length + (x.backup.data.ports.length === 1 ? " portfolio" : " portfolios") + '. It replaces everything on this page.';
+      el("igo").textContent = "Restore the backup";
+    } else {
+      var n = 0;
+      h = x.order.map(function(pn){ var q = 0; x.ports[pn].forEach(function(it){ q += it.q; }); n += q; var ex = S.ports.some(function(p){ return p.name === pn; }); return '<b>' + esc(pn) + '</b>: ' + q.toLocaleString("en-US") + (q === 1 ? " card" : " cards") + (ex ? ", replacing the portfolio of that name" : ", a new portfolio"); }).join("<br>");
+      if(x.wish.length) h += (h ? "<br>" : "") + '<b>Wishlist</b>: ' + x.wish.length + " more";
+      h += '<br>' + x.rows + (x.rows === 1 ? " row" : " rows") + ' read; ' + (x.miss.length ? x.miss.length + ' not found:' : 'every one found.');
+      if(x.miss.length) h += '<ul>' + x.miss.slice(0, 30).map(function(m){ return '<li>' + esc(m) + '</li>'; }).join("") + (x.miss.length > 30 ? '<li>and ' + (x.miss.length - 30) + ' more</li>' : '') + '</ul>';
+      el("igo").textContent = "Import " + n.toLocaleString("en-US") + (n === 1 ? " card" : " cards");
+    }
+    el("isum").innerHTML = '<div class="isum">' + h + '</div>';
+    el("ifoot").hidden = false;
+  }
+  function applyPlan(){
+    var x = PLAN, first = null;
+    if(!x || x.err) return;
+    if(x.backup){ S = x.backup.data; S.wish = S.wish || []; SET.view = "all"; saveSet(); }
+    else {
+      x.order.forEach(function(pn){
+        var p = null; S.ports.forEach(function(q){ if(q.name === pn) p = q; });
+        if(!p) p = newPort(pn);
+        p.items = x.ports[pn].map(function(it){ it.id = uid(); return it; });
+        if(!first) first = p;
+      });
+      x.wish.forEach(function(it){ addOne(it.i, it.f, it.q, "wish", { d: it.d, cond: it.cond }); });
+      if(first){ SET.view = first.id; S.last = first.id; saveSet(); }
+    }
+    PLAN = null;
+    changed();
+    openPanel(null);
+    toast(x.backup ? "Backup restored" : "Imported");
+  }
+  function readFile(inp, fn){
+    var f = inp.files && inp.files[0]; if(!f) return;
+    var rd = new FileReader();
+    rd.onload = function(){ fn(String(rd.result || "")); inp.value = ""; };
+    rd.readAsText(f);
+  }
+
+  // ---- EXPORT ----
+  function saveFile(name, type, text){
+    var blob = new Blob([text], { type: type }), url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+  function csvCell(v){ v = String(v == null ? "" : v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function toCSV(){
+    var day = String(P.generated_at || "").slice(0, 10);
+    var out = [["Portfolio Name", "Category", "Set", "Product Name", "Card Number", "Rarity", "Variance", "Grade", "Card Condition", "Average Cost Paid", "Quantity", "Market Price (As of " + day + ")", "Price Override", "Watchlist", "Date Added", "Notes"]];
+    function rows(list, pn, w){
+      list.forEach(function(h){
+        var c = BYID[h.i]; if(!c) return;
+        var cw = (CONDS.filter(function(k){ return k[0] === condCode(h.cond); })[0] || [0, "Near Mint"])[1];
+        out.push([pn, "Riftbound", setOf(c).n || "", c.n, c.c || "", c.r || "", h.f, h.grade || "Ungraded", cw, h.paid != null ? h.paid : 0, h.q, (conv(c.p[h.f] || 0)).toFixed(2), 0, w ? "true" : "false", h.d || "", ""]);
+      });
+    }
+    S.ports.forEach(function(p){ rows(p.items, p.name, false); });
+    rows(S.wish, S.ports.length ? S.ports[0].name : "Wishlist", true);
+    return out.map(function(r){ return r.map(csvCell).join(","); }).join("\n") + "\n";
+  }
+
+  // ---- TAPS ----
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-act],[data-close],[data-add],.crow,#portpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#sort > button,#cur > button,#mode > button");
+    if(!t) return;
+    if(t.hasAttribute("data-close")){ openPanel(null); return; }
+    if(t.hasAttribute("data-add")){
+      var b = t.getAttribute("data-add").split("|"), c = BYID[b[0]], to = target();
+      var hh = addOne(c.i, b[1], 1);
+      changed();
+      toast("Added " + c.n + (sealed(c) ? "" : ", " + b[1]) + " (" + hh.q + " in " + viewName(target() || to) + ")");
+      search();
+      return;
+    }
+    if(t.classList.contains("crow")){ openHold(t.getAttribute("data-h"), t.getAttribute("data-p")); return; }
+    var par = t.parentNode && t.parentNode.id;
+    if(par === "portpick"){ SET.view = t.getAttribute("data-v"); saveSet(); LIMIT = 60; render(); openPanel(null); return; }
+    if(par === "range"){ SET.range = t.getAttribute("data-r"); saveSet(); render(); return; }
+    if(par === "sort"){ SET.sort = t.getAttribute("data-s"); saveSet(); render(); return; }
+    if(par === "cur"){ SET.cur = t.getAttribute("data-c"); saveSet(); render(); return; }
+    if(par === "mode"){ SET.mode = t.getAttribute("data-m"); saveSet(); render(); return; }
+    if(par === "hport"){
+      var np = t.getAttribute("data-v"); if(np === HPORT) return;
+      var from = listOf(HPORT); from.splice(from.indexOf(HOLD), 1);
+      var into = listOf(np), same = null; into.forEach(function(x){ if(x.i === HOLD.i && x.f === HOLD.f) same = x; });
+      if(same){ same.q += HOLD.q; HOLD = same; } else into.push(HOLD);
+      HPORT = np; changed(); fillHold(); toast("Moved to " + viewName(np)); return;
+    }
+    if(par === "hfin"){
+      var nf = t.getAttribute("data-f"), l = listOf(HPORT), twin = null;
+      l.forEach(function(x){ if(x !== HOLD && x.i === HOLD.i && x.f === nf) twin = x; });
+      if(twin){ twin.q += HOLD.q; l.splice(l.indexOf(HOLD), 1); HOLD = twin; } else HOLD.f = nf;
+      changed(); fillHold(); return;
+    }
+    if(par === "hcond"){ HOLD.cond = t.getAttribute("data-c"); changed(); fillHold(); return; }
+    var a = t.getAttribute("data-act");
+    if(a === "back"){ back(); return; }
+    if(a === "add"){ el("aq").value = ""; search(); openPanel(el("padd")); return; }
+    if(a === "manage"){ fillManage(); go(el("pmng")); return; }
+    if(a === "one"){ fillOne(t.getAttribute("data-id")); deeper(el("pone")); return; }
+    if(a === "newport"){ var p = newPort("Portfolio " + (S.ports.length + 1)); changed(); fillManage(); fillOne(p.id); deeper(el("pone")); return; }
+    if(a === "delport"){
+      if(!armed(t)) return;
+      S.ports = S.ports.filter(function(x){ return x !== ONE; });
+      if(SET.view === ONE.id){ SET.view = "all"; saveSet(); }
+      changed(); fillManage(); back(); return;
+    }
+    if(a === "import"){ PLAN = null; showPlan(); go(el("pimp")); return; }
+    if(a === "export"){ go(el("pexp")); return; }
+    if(a === "decks"){ fillDecks(); deeper(el("pdeck")); return; }
+    if(a === "adddeck"){
+      if(!armed(t)) return;
+      var d = decks().filter(function(x){ return x.id === t.getAttribute("data-id"); })[0]; if(!d) return;
+      var r = deckCards(d), n = 0;
+      Object.keys(r.cards).forEach(function(k){ var kb = k.split("|"); addOne(+kb[0], kb[1], r.cards[k]); n += r.cards[k]; });
+      changed(); fillDecks();
+      toast("Added " + n + " cards from " + (d.name || "the deck") + (r.miss ? "; " + r.miss + " had no price to match" : ""));
+      return;
+    }
+    if(a === "pickcsv"){ el("fcsv").click(); return; }
+    if(a === "pickbak"){ el("fbak").click(); return; }
+    if(a === "importgo"){ if(PLAN && PLAN.backup && !armed(t)) return; applyPlan(); return; }
+    if(a === "savebak"){ saveFile("ravi-collection-" + today() + ".json", "application/json", JSON.stringify({ app: "RAVI", kind: "collection", v: 1, at: new Date().toISOString(), data: S })); return; }
+    if(a === "savecsv"){ saveFile("ravi-collection-" + today() + ".csv", "text/csv", toCSV()); return; }
+    if(a === "qup"){ HOLD.q++; changed(); fillHold(); return; }
+    if(a === "qdn"){
+      if(HOLD.q > 1){ HOLD.q--; changed(); fillHold(); return; }
+      var lst = listOf(HPORT), c2 = BYID[HOLD.i]; lst.splice(lst.indexOf(HOLD), 1);
+      changed(); openPanel(null); toast("Removed " + (c2 ? c2.n : "the card")); return;
+    }
+    if(a === "wishown"){
+      var w = HOLD; S.wish.splice(S.wish.indexOf(w), 1);
+      var to2 = S.last && port(S.last) ? S.last : (S.ports.length ? S.ports[0].id : newPort("My collection").id);
+      addOne(w.i, w.f, w.q, to2);
+      changed(); openPanel(null); toast("Moved to " + viewName(to2)); return;
+    }
+  });
+  document.addEventListener("change", function(ev){
+    var t = ev.target;
+    if(t.id === "hpaid"){ var v = parseFloat(String(t.value).replace(/[^0-9.]/g, "")); HOLD.paid = v > 0 ? v : null; HOLD.pc = SET.cur; changed(); fillHold(); }
+    if(t.id === "hdate"){ if(/^\d{4}-\d{2}-\d{2}$/.test(t.value)){ HOLD.d = t.value; changed(); fillHold(); } }
+    if(t.id === "onename"){ var nm = t.value.trim(); if(nm && ONE){ ONE.name = nm; el("onettl").textContent = nm; changed(); fillManage(); } }
+    if(t.id === "fcsv") readFile(t, function(s){ PLAN = plan(s); showPlan(); });
+    if(t.id === "fbak") readFile(t, function(s){
+      var j = null; try{ j = JSON.parse(s); }catch(e){}
+      PLAN = j && j.app === "RAVI" && j.kind === "collection" && j.data && Array.isArray(j.data.ports) ? { backup: j } : { err: "That file is not a RAVI collection backup." };
+      showPlan();
+    });
+  });
+  el("scrim").addEventListener("click", function(){ openPanel(null); });
+  el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
+  el("tabadd").addEventListener("click", function(){ if(OPENP === el("padd")){ openPanel(null); return; } el("aq").value = ""; search(); openPanel(el("padd")); });
+  el("tabset").addEventListener("click", function(){ if(OPENP === el("pset")){ openPanel(null); return; } fillManage(); segs(); openPanel(el("pset")); });
+  el("portbtn").addEventListener("click", function(){ fillPorts(); openPanel(el("pport")); });
+  window.RAVI_GOTO(el("pnavgoto"), "collection", "../");
+  el("pnhere").addEventListener("click", function(){ openPanel(null); });
+  el("aq").addEventListener("input", search);
+  el("aqx").addEventListener("click", function(){ el("aq").value = ""; search(); el("aq").focus(); });
+  el("hq").addEventListener("input", function(){ LIMIT = 60; render(); });
+  el("hqx").addEventListener("click", function(){ el("hq").value = ""; render(); el("hq").focus(); });
+  el("hmore").addEventListener("click", function(){ LIMIT = 100000; render(); });
+  var RT = 0;
+  window.addEventListener("resize", function(){ clearTimeout(RT); RT = setTimeout(function(){ if(P) head(); }, 150); });
+
+  // ---- BOOT: prices first, then the newest two months of history, then the rest ----
+  load();
+  fetch("../cards/art.json").then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if(j && j.art){ ART = j.art; if(P) render(); } }).catch(function(){});
+  fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
+    P = d; FX = (d.fx && d.fx.rate) || FX;
+    d.sets.forEach(function(s){ SETS[s.g] = s; });
+    d.cards.forEach(function(c){ BYID[c.i] = c; });
+    return fetch("../data/hist/index.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(ix){
+      var ms = (ix.months || []).slice().reverse(), first = ms.slice(0, 2), rest = ms.slice(2);
+      function month(m){ return fetch("../data/hist/" + m + ".json", { cache: "no-cache" }).then(function(r){ return r.json(); }); }
+      return Promise.all(first.map(month)).then(function(list){
+        list.forEach(histMerge); histToday();
+        el("boot").hidden = true; el("app").hidden = false; render();
+        if(rest.length) Promise.all(rest.map(month)).then(function(more){ more.forEach(histMerge); histToday(); HALL = true; render(); }).catch(function(){});
+        else HALL = true;
+      });
+    }).catch(function(){ histToday(); el("boot").hidden = true; el("app").hidden = false; render(); });
+  }).catch(function(){ el("boot").hidden = true; el("loadfail").hidden = false; });
+
+  // for the tests (rb-tools m13p-test.js): the numbers behind the head and the chart
+  window.RAVI_COLL = { series: function(v, m, r){ return series(viewItems(v), m, r); }, days: function(){ return DAYS.slice(); }, all: function(){ return HALL; }, state: function(){ return S; } };
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>
