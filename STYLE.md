@@ -96,7 +96,7 @@ Kinds (firm: every tappable carries data-k on itself or its nearest container) [
 - type: a text field in a sunken shape.
 - open: opens in place. Carries aria-expanded and a .chev that points at what a tap will do.
 - slot: an icon slot on the bar or the counter's strip, nowhere else.
-- play: the counter's field. grid: the calendar's day cells. view: the full-card viewer (counter, Decks). card: a card's picture or row on the Decks page; a tap opens it, or adds it in the card browser. Nowhere else.
+- play: the counter's field. grid: the calendar's day cells. view: the full-card viewer (counter, Decks). card: a card's picture or row on the Decks page, and a holding's tile or row on the Collection page; a tap opens it, or adds it in a card browser. Nowhere else. (Collection: Mako's yes 2026-10-25)
 - Text you only read carries no data-k and is not tappable.
 - Every control that opens a menu carries data-fills="<menu id>" and fills (shows its .icf drawing) while that menu or a deeper one is open. [T]
 - Pressed: a glass or sunken-group row takes the shade only; a free-standing button also scales to .96 (button:active). A large tappable surface (hub block, event card head) scales to .97 with brightness 1.2.
@@ -113,7 +113,7 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 48 on the hub (.hubname), the size the launch intro's full name starts at; 40 on the install screen (.gwname). Go to tile labels are 12 with letter-spacing -.08em.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 48 on the hub (.hubname), the size the launch intro's full name starts at; 40 on the install screen (.gwname); 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25). Go to tile labels are 12 with letter-spacing -.08em.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
@@ -122,7 +122,7 @@ Sizes
 - Chevrons: one shape (12-unit arms), the same size in every direction: in a round button 18 at line 2.4, trailing in a row 16 at line 2.2. (Mako 2026-10-16)
 Corners
 - A shape whose corners differ uses real values (a pill end is half its height), never 999px: the browser shrinks every corner together and flattens the small ones. A plain pill with four equal round corners may use 999px. [D]
-- Cut track (.seg.multi, counter score buttons, Decks' This deck row): round outer ends of half the height, 6 inner corners (--r-cut), 3 gaps (--gap-cut). [D]
+- Cut track (.seg.multi, counter score buttons, Decks' This deck row and Hand's New hand | Mulligan | Draw a card): round outer ends of half the height, 6 inner corners (--r-cut), 3 gaps (--gap-cut). [D]
 - Surface corners: 24 for menus, the Go to track and the two sticky surfaces; 22 (half a row) for every group and card (.pick, .doors, .ev, saved-trade cards, the feedback form group); 20 for tiles (.gt Go to tiles, .blk hub blocks); a tray is 30 (24 plus its 6 padding).
 - Pictures and inner joins may use smaller page-local corners: trade .lnh 14 and .rcpimgs img 12, counter .lgptile 10 and .lgppic 8, the calendar .hl and .hr join 5, the install step icon .gwstep img 6. A new surface uses one of the three.
 Spacing
@@ -149,9 +149,9 @@ Colour
 - The counter's domain runes are coloured glass (Mako 2026-10-16): Riot's rune file untouched, its white glyph over a disc of the domain colour at .90 with a lit top edge, a light rim and a soft shade at the foot. A named exception to the one-glass .30 rule.
 - Coloured glass (Mako 2026-10-15): a coloured surface carries its colour at --cg (.30) inside the glass, with the usual rim and base glow, frosted (blur 20, saturate 160%), and no solid base. One recipe (.cg, colour as --c) for hub blocks, event cards, trade side cards, Rules sections and a coloured page's glass. Fallback without blur: the same colour over --frost-solid. Plain glass inside glass is not frosted again.
 - See-through chrome stays clear unless it shows what it is about. Chrome is what moves you around or sets things: the bar, the strip, Go to, a page's settings menus, and the sticky plates (the calendar month card, the trade, Decks and Rules plates). A plate may wear its subject's colours (the open deck's two domains, on a 145-degree band 30 wide, at .32; the deck blocks at .44). A menu that shows a page's own content (a Rules article) is content, coloured as the page codes it. The bar's you-are-here pill wears the page colour. (Mako's yes 2026-10-24)
-- Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240; Decks 80,230,170 (Mint). Feedback, Rules and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game, Trade and Decks keep clear glass.
+- Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240; Decks 80,230,170 (Mint); Collection 220,90,30 (Rust; Mako's yes 2026-10-25). Feedback, Rules and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game, Trade, Decks and Collection keep clear glass; Collection's bars and bar pill wear Rust.
 - Rules colours by section, never by the page: Current documents jade 0,190,140, Errata garnet 200,35,70, FAQs and rulings gold 255,200,40, wherever an entry shows (the page, search results, an opened article). A new section takes its own palette colour. Always beside the words that name it. (Mako's yes 2026-10-24)
-- Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 for the next page (Soon 1), White 240,240,245 spare. A Soon block stays dim and grey (dim means disabled) until its page lands with its colour. The palette is these nine plus the players' blue and pink; a new colour use picks from it first.
+- Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 is the Collection page (2026-10-25). A Soon block stays dim and grey (dim means disabled) until its page lands with its colour. The palette is these nine plus the players' blue and pink; a new colour use picks from it first.
 - A card with no domain (colourless) uses the palette's White, 240,240,245, so White is no longer spare. (Mako's yes 2026-10-24)
 - Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
 - On a page colour, grey text inside glass is #DCDEE2, not --muted.
@@ -168,7 +168,8 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - feedback/index.html: .fbn .fbody .fgrp .lead .ship
 - settings/index.html: .sts .starm
 - rules/index.html: .empty .extl .new .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
-- decks/index.html: .add .addt .art .aside .avg .bad .ban .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .bstack .cbox .cg2 .cgrid .chart .chcol .chlab .cmid .cname .cnm .cols .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dcend .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dgrip .dnone .dnote .dprice .dsec .dsub .dv .dvrow .dvseg .dvsort .dwrap .ed .epill .esf .fchip .gcell .ghost .gpic .gq .gsh .gstar .gstp .hacts .hc .hdrawn .hhd .hmark .hnone .hnote .hold .hrow .hsort .ires .kw .land .lcard .lcell .lift .low .lpm .lq .lrhd .lrow .lsteps .mban .mbox .menu .mpic .n .none .ochip .ochips .odds .okc .okmk .omull .open .otile .otiles .pbar .pchk .pdrow .pfin .pfins .phd .plate .plist .pnone .pr .prb .pre .prow .pti .ptl .pv .pvrow .qrow .qrows .res .resw .rgl .rot .sall .sbtns .shut .sm .spot .spotpic .srow .star .stb .sth .stick .stile .stiles .stools .stp .toast .tokrow .trio .two .vbadge .vw .wmk .xbox .z
+- collection/index.html: .armed .art .bhead .bin1 .bopts .boot .bsr .brw .camt .cards .cchg .cempty .cend .cgrid .chip .chw .ck .cmid .cmv .cnm .cnote .cpic .crow .cseg .csub .ctile .cval .dvrow .dvseg .dvsort .fchip .first .hchg .hfacts .hgain .hnow .hpic .hrow .isum .lpm .lq .lsteps .more .mvbox .mvh .mvsep .owd .plate .psf .rot .sel .selp .stk .stp .tcap .tnm .toast .tpr .ttot
+- decks/index.html: .add .addt .art .aside .avg .bad .ban .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .bstack .cbox .cg2 .cgrid .chart .chcol .chlab .cmid .cname .cnm .cols .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dcend .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dgrip .dnone .dnote .dprice .dsec .dsub .dv .dvrow .dvseg .dvsort .dwrap .ed .epill .esf .fchip .gcell .ghost .gpic .gq .gsh .gstar .gstp .hacts .hc .hdrawn .hhd .hmark .hnone .hnote .hold .hrow .hsort .ires .kw .land .lcard .lcell .lift .low .lpm .lq .lrhd .lrow .lsteps .mban .mbox .menu .mpic .n .none .ochip .ochips .odds .okc .okmk .omull .open .otile .otiles .owd .owp .pbar .pchk .pdrow .pfin .pfins .phd .plate .plist .pnone .pr .prb .pre .prow .pti .ptl .pv .pvrow .qrow .qrows .res .resw .rgl .rot .sall .sbtns .shut .sm .spot .spotpic .srow .star .stb .sth .stick .stile .stiles .stools .stp .toast .tokrow .trio .two .vbadge .vw .wmk .xbox .z
 
 Page shell (feedback/index.html, settings/index.html)
 - Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, the page's own style block (in that order).
@@ -277,7 +278,7 @@ The hub block (index.html)
 - .blk (rendered from RAVI_PAGES into nav#grid.grid): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 60 centred above the name .bn (Poppins 700 15). Link with data-k="do".
     <a class="blk glass" href="calendar/" style="--cl:255,176,32;--ci:...;" data-k="do"><span class="bi">icon</span><span class="bn">Events</span></a>
 - .blk.dead: a Soon slot, a div, dimmed (.4), inert.
-- The hub: eight blocks; a new page takes the first Soon slot; App settings stays last. Plate .low.glass under the name .hubname (34, Poppins 800); hub footer .hubfoot (12 muted, Riot notice).
+- The hub: eight blocks; a new page takes the first Soon slot; App settings stays last. Collection took the last Soon (2026-10-25): a ninth page needs a hub layout call first. On a phone narrower than 390, block names track -.02em so Collection fits whole (Mako's yes 2026-10-25). Plate .low.glass under the name .hubname (34, Poppins 800); hub footer .hubfoot (12 muted, Riot notice).
 
 The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - In a browser tab every page shows only #ravigate, first in the body; html.gate hides every other child of the body. The page's own markup and scripts are untouched.
@@ -310,7 +311,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
 - Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub and is never in Go to. [T]
 - App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
-- The Decks page is worked in, like the counter, and bends three defaults (Mako 2026-10-17): its card browser is a full-screen view, not a menu; the page holds two screens, the list of decks and one deck; the add tile that ends a section in Edit wears a dashed outline.
+- The Decks page is worked in, like the counter, and bends three defaults (Mako 2026-10-17): its card browser is a full-screen view, not a menu (the Collection page's too, the same bend; Mako's yes 2026-10-25); the page holds two screens, the list of decks and one deck; the add tile that ends a section in Edit wears a dashed outline.
 
 ## 8. Motion
 
@@ -348,7 +349,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
 - Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
-- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1; session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
+- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
 
@@ -375,7 +376,14 @@ Rules (rules/index.html)
 - Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty) in a sticky .plate, then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, grouped by kind (Errata, then FAQs and rulings, each in its section's colour), names first, at most 40.
 - Bar: Hub, Go to, the third slot dimmed (Soon) until it has a use, Settings dimmed. NEW on an entry, a document or an article's row means changed since the last visit (vir.rules.seen.v1, the newest 'changed' day; a first visit is the baseline), as the calendar's NEW: badges stay while the page is open, leaving it records the visit. Latest retired for it (Mako 2026-10-24). The footer ends with Tell us, as Calendar and Trade.
+Collection (collection/index.html)
+- Prices from data/prices.json; the bars from data/hist (hist.js, one file a month, rebuilt daily). A sticky plate as Decks': the binder pill (Collection, each binder, Wishlist), the search ('Search your collection', 'Search this binder'), the view row (Grid | List, Select, Sort). Then the value, the change line (the arrow on the percent only), the bars, 7D 30D 1Y All, a note; Movers; the cards. Bar: Hub, Go to, Add cards (the full-screen browser), Collection settings.
+- The bars are one piece of glass in Rust inside a glass card, edge to edge, each step one smooth curve, a faint rim on top; one bar a day, a week a bar past 62 days. Market movement by default, Total value in settings. (Mako 2026-10-25)
+- Movers: one glass row that opens in place into one block: Gains, a line, Losses, each titled with its arrow; no colour (the firm rule). Closed on every visit; Show Movers in settings. (Mako's yes 2026-10-25)
+- Collection is the whole: every binder and the cards in no binder; the Wishlist never counts. A tap under Collection adds into no binder; minus only takes from what the view itself holds. Grid by default (the count pill at the picture's foot, the price of one, the total past one copy); List without glass.
+- The browser: the same three-row plate (close and the binder pill, the search, Sets and Held here); Sets is a menu (each set with its day, held and worth; Organized Play promos; Other promos; sealed in its set); a tap on a picture adds one; minus (the bin at one) and plus on the picture.
 Decks (decks/index.html)
+- Owned (M13): a thin sunken row under the status block's head, only when the Collection holds something; it opens in place to Any printing | This printing, the count by section, the missing cards and Add missing cards to Wishlist. No warning when cards are missing. (Mako 2026-10-25)
 - Two screens: the list of decks, and one deck: a sticky .plate (Back, name and price, Undo; Deck, Stats, Hand), Legend beside Runes, Battlefields, then Main, Side and Considering, each with its own view and sort, and Notes. Edit (the bar's third slot, a mode) adds steppers and add tiles; the card browser is full screen; the card menu (#pcard) opens from a card. Logic and formats in decks/deck.js.
 - On Decks, the view (List, Grid, Text), the size and the sort sit in one row in the plate. A section's gear overrides them for that section. (Mako's yes 2026-10-24)
 - On a card's picture, the count is one pill centred at its foot; Edit adds minus (a bin at one copy) and plus beside it, and the pill does not move. A row keeps the stepper (Trade's lines, Decks' List). (Mako's yes 2026-10-24)
@@ -417,6 +425,7 @@ Decks (decks/index.html)
 - icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - m11d-test.js: the deck logic (Piltover Archive's golden codes, six formats in, three out, Riot's deck rules in words, the ban list, stats, the hand).
 - m11p-test.js: the Decks page's flow in a browser.
+- m13-test.js: the price history (data/hist). m13p-test.js to m13w-test.js: the Collection page and Mako's five rounds, and Owned and Missing on Decks.
 - m11zd-test.js to m11zh-test.js: the M11 consistency sweep and Mako's phone checks (Rules by section and NEW in place of Latest, clear chrome; Export in Deck settings as a cut track, round X, hub wordmark 48; Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
 - m11r-test.js to m11zc-test.js: the Decks refinement, one per round of Mako's notes (2026-10-18 to 23): the list plate, view row and section menus, printings from the price feed, Stats tiles, odds, Undo, runes at 12, badges, battlefields, counts, deck colours, the safe zone on every sticky plate, the Add cards plate, and changes painted in place.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
