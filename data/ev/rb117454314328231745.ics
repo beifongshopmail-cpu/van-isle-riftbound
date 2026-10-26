@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117454314328231745@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261206T170000
-DTEND;TZID=America/Vancouver:20261206T200000
+DTSTART;TZID=America/Vancouver:20261206T180000
+DTEND;TZID=America/Vancouver:20261206T210000
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\n$

@@ -11,14 +11,14 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117473617815091551@van-isle-riftbound
-DTSTAMP:20261026T054959Z
+DTSTAMP:20261026T190333Z
 DTSTART:20261030T010000Z
 DTEND:20261030T040000Z
 SUMMARY:Thursday Casual Nexus Nights @ North Park Picture Framing and Colle
  ctables
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
- toria\n28 of 28 spots left\, checked Oct 25\, 10:49 PM\nFree\nSign up: htt
+ toria\n28 of 28 spots left\, checked Oct 26\, 12:03 PM\nFree\nSign up: htt
  ps://playriftbound.com/en-US/events/117473617815091551
 URL:https://playriftbound.com/en-US/events/117473617815091551
 CATEGORIES:Nexus Nights
@@ -27,14 +27,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125749989086783@van-isle-riftbound
-DTSTAMP:20261026T054959Z
+DTSTAMP:20261026T190333Z
 DTSTART:20261121T190000Z
 DTEND:20261121T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish I
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 25\, 10:49 PM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 26\, 12:03 PM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125749989086783
 URL:https://playriftbound.com/en-US/events/117125749989086783
 CATEGORIES:Summoner Skirmish
@@ -43,14 +43,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125756345638695@van-isle-riftbound
-DTSTAMP:20261026T054959Z
+DTSTAMP:20261026T190333Z
 DTSTART:20261219T190000Z
 DTEND:20261219T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish II
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 25\, 10:49 PM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 26\, 12:03 PM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125756345638695
 URL:https://playriftbound.com/en-US/events/117125756345638695
 CATEGORIES:Summoner Skirmish
