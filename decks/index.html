@@ -131,10 +131,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dnone{margin:0 4px;font-size:13px;line-height:1.45;color:var(--muted)}
 
 /* the counts and the rules, in words with a mark (colour never alone) */
-/* Owned, its own block under Notes (M13): its head opens it in place; no warning when cards are missing */
-.owh{width:100%;padding:0 4px;background:none;text-align:left;color:var(--bone)}
-.owh:active{transform:none;opacity:.7}
-.owh .chev{flex:0 0 auto;width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* Owned, its own block under Notes (M13): its round chevron opens it in place, as every folding section (M13 sweep); no warning when cards are missing */
 #sown .shead{margin-bottom:0}
 #owb{margin-top:10px}
 .dcnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -515,6 +512,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 
   <div id="dkfoot">
     <footer class="foot">
+      <p id="stamp">&nbsp;</p>
       <p>Decks are kept on this phone. Card data and pictures by Riot Games; the deck rules follow Riot's Core Rules and Tournament Rules. Market price is a public benchmark, not an offer from any store.</p>
       <p>
           Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
@@ -1118,7 +1116,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   function ownedHTML(d){
     if(!PX) return "";
     var o = ownedOf(d); if(!o.any) return "";
-    return '<section class="dsec glass" id="sown"><button type="button" class="shead owh" data-act="owned" aria-expanded="' + OWOPEN + '" data-k="open"><h2>Owned</h2><span class="sp"></span><span class="cnt" id="owcnt">' + o.have + '/' + o.total + ' cards</span>' + CHEV + '</button>'
+    return '<section class="dsec glass" id="sown"><div class="shead"><h2>Owned</h2><span class="sp"></span><span class="cnt" id="owcnt">' + o.have + '/' + o.total + ' cards</span><span class="sbtns"><button type="button" class="circ btn glass" data-act="owned" aria-expanded="' + OWOPEN + '" aria-label="Show or hide Owned" data-k="open">' + CHEV + '</button></span></div>'
       + (OWOPEN ? '<div id="owb"><div class="seg" id="oexact" role="group" aria-label="Which printings count" data-k="pick"><button type="button" data-act="exact" data-v="0" aria-pressed="' + !SET.exact + '">Any printing</button><button type="button" data-act="exact" data-v="1" aria-pressed="' + !!SET.exact + '">This printing</button></div><div id="owin">' + ownedInner(d) + '</div></div>' : '') + '</section>';
   }
   // the missing cards into a place: the Wishlist tops up to what is missing; a binder or the collection
@@ -1141,7 +1139,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   function fillMiss(){
     var c = collRead() || { ports: [] };
-    var rows = [["wish", "Wishlist"], ["loose", "Collection, no binder"]].concat(c.ports.map(function(p){ return [p.id, p.name]; }));
+    var rows = [["loose", "No binder"]].concat(c.ports.map(function(p){ return [p.id, p.name]; })).concat([["wish", "Wishlist"]]); // as Collection's Move menu (M13 sweep)
     el("misslist").innerHTML = rows.map(function(r){ return '<button type="button" class="door btn glass act" data-act="missto" data-v="' + esc(r[0]) + '"><span class="t">' + esc(r[1]) + '</span></button>'; }).join("");
   }
   function checkHTML(d, probs){
@@ -2087,7 +2085,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     el("boot").hidden = true; el("app").hidden = false;
     if(/[?&]deck=/.test(location.search)){ var m = /[?&]deck=([^&]+)/.exec(location.search); if(m && DECKS.some(function(x){ return x.id === m[1]; })){ CURID = m[1]; SCREEN = "deck"; } }
     render();
-    fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(P){ pricesIn(P); render(); }).catch(function(){});
+    fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(P){ pricesIn(P); var st = el("stamp"); if(st) st.innerHTML = window.RAVI_STAMP(P) || "&nbsp;"; render(); }).catch(function(){});
     fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(R){
       var it = (R.items || []).filter(function(i){ return i.id === "hub#constructed-format-legality"; })[0];
       if(it){ BAN = X.bannedFrom(it.html); render(); }

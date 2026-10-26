@@ -1220,16 +1220,7 @@ a{color:inherit;text-decoration:none}
 
   // The footer's source line. The public-benchmark sentence is its own
   // paragraph in the markup and is not built here.
-  function stampText(){
-    var gen = new Date(D.generated_at);
-    var age = (Date.now() - gen.getTime()) / 3600000;
-    var d = window.RAVI_DATE(gen, true);
-    var s = "Prices are TCGplayer market price via tcgcsv.com, updated <b>" + esc(d) + "</b>";
-    s += (age > 48) ? ". These may be out of date." : ".";
-    s += " 1 USD = <b>" + esc(String(D.fx.rate)) + "</b> CAD, Bank of Canada, " + esc(window.RAVI_DATE(D.fx.date) || D.fx.date) + ".";
-    if(D.totals) s += " " + D.totals.priced + " products priced across " + D.totals.sets + " sets.";
-    return s;
-  }
+  function stampText(){ return window.RAVI_STAMP(D); } // pages.js: one wording on every page with prices
 
   var TLKEY = "vir.trade.log.v1", TLCAP = 50, TLARM = 0;
 

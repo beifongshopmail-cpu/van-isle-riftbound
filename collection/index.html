@@ -253,7 +253,8 @@ input[type="file"]{display:none}
   <p class="boot" id="loadfail" hidden>The prices could not be loaded. Check your connection and open the page again.</p>
 
   <footer class="foot">
-    <p>Prices are TCGplayer's market price in US dollars, updated daily; Canadian dollars at the Bank of Canada's rate. Your collection is kept on this phone only.</p>
+    <p id="stamp">&nbsp;</p>
+    <p>Your collection is kept on this phone only. Card data and pictures by Riot Games. Market price is a public benchmark, not an offer from any store.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -343,7 +344,7 @@ input[type="file"]{display:none}
 
 <section class="panel frost" id="psets" aria-hidden="true" aria-label="Sets">
   <div class="phead"><h4 class="ttl">Sets</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts the printings in every binder, not the Wishlist. Sealed product sits in its set.</p></div>
+  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts every printing in your Collection, not the Wishlist. Sealed product sits in its set.</p></div>
 </section>
 
 <section class="panel frost" id="pmove" aria-hidden="true" aria-label="Move to">
@@ -384,7 +385,6 @@ input[type="file"]{display:none}
     </div>
     <div class="row"><div class="pick" id="showmv" data-k="pick"><button type="button" aria-pressed="true" class="on">Show Movers</button></div></div>
     <div class="row"><div class="doors" data-k="deeper">
-      <button type="button" class="door btn glass" data-act="manage"><span class="t">Binders</span><span class="sp"></span><small id="setports"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="decks"><span class="t">Add a deck</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="import"><span class="t">Import</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door btn glass" data-act="export"><span class="t">Export</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
@@ -503,7 +503,6 @@ input[type="file"]{display:none}
     if(c.r) b.push(c.r);
     return b;
   }
-  function copies(q){ return q === 1 ? "1 copy" : q + " copies"; }
 
   // ---- THE HISTORY (data/hist, hist.js): cents per day; today from prices.json ----
   function histMerge(m){
@@ -682,7 +681,7 @@ input[type="file"]{display:none}
   }
   function subOf(h, c, showPort, p){
     var sub = c ? facts(c, h.f) : [h.f];
-    if(h.q > 1) sub.unshift(copies(h.q) + ", " + money(h.q * nowCents(h) / 100));
+    if(h.q > 1) sub.unshift(money(h.q * nowCents(h) / 100) + " for " + h.q); // as a tile words it (M13 sweep)
     if(showPort) sub.push(viewName(p));
     return sub;
   }
@@ -753,7 +752,7 @@ input[type="file"]{display:none}
     el("chg").hidden = empty; el("chart").hidden = empty; el("range").hidden = empty; el("mnote").hidden = empty;
     el("firstttl").textContent = SET.view === "wish" ? "Your wishlist is empty" : "Start your collection";
     el("firsttx").textContent = SET.view === "wish"
-      ? "Cards you want go here. Add them with the plus in the bar while this list is showing. The Wishlist never counts toward your value."
+      ? "Cards you want go here. The Wishlist never counts toward your value."
       : "Add cards and sealed product while browsing every one, add a whole deck, or bring your collection over from Collectr.";
     el("hsf").hidden = empty; el("hview").hidden = empty;
     if(empty){ selEnd(); return; }
@@ -894,7 +893,6 @@ input[type="file"]{display:none}
     el("mnglist").innerHTML = S.ports.length ? S.ports.map(function(p){
       return '<button type="button" class="door btn glass" data-act="one" data-id="' + esc(p.id) + '"><span class="t">' + esc(p.name) + '</span><span class="sp"></span><small>' + count(viewItems(p.id)).toLocaleString("en-US") + '</small>' + CVR + '</button>';
     }).join("") : '<p class="cempty" style="padding:12px 16px">No binders yet. Adding a card makes the first one.</p>';
-    el("setports").textContent = S.ports.length;
   }
   var ONE = null;
   function fillOne(id){
@@ -1123,7 +1121,7 @@ input[type="file"]{display:none}
   // ---- IMPORT: Collectr's CSV (and any sheet with its columns), a RAVI backup ----
   function csvRows(t){
     var rows = [], r = [], f = "", q = false, i, c;
-    t = String(t).replace(/^﻿/, "");
+    t = String(t).replace(/^\uFEFF/, "");
     for(i = 0; i < t.length; i++){
       c = t[i];
       if(q){ if(c === '"'){ if(t[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
@@ -1383,6 +1381,7 @@ input[type="file"]{display:none}
   fetch("../cards/art.json").then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if(j && j.art){ ART = j.art; if(P) render(); } }).catch(function(){});
   fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
     P = d; FX = (d.fx && d.fx.rate) || FX;
+    el("stamp").innerHTML = window.RAVI_STAMP(d) || "&nbsp;";
     d.sets.forEach(function(s){ SETS[s.g] = s; });
     d.cards.forEach(function(c){ BYID[c.i] = c; });
     return fetch("../data/hist/index.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(ix){

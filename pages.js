@@ -153,6 +153,19 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
     var p = parts(ms), now = parts(Date.now());
     return MON[p.m - 1] + " " + p.d + (p.y !== now.y ? ", " + p.y : "") + ", " + p.h + ":" + p.mi + " " + p.ap;
   };
+  // THE PRICE SOURCE LINE (M13 sweep, Mako 2026-10-25): one wording on every page that shows prices
+  // (Trade, Decks, Collection), built from data/prices.json. Returns HTML; the benchmark sentence is
+  // each page's own paragraph.
+  window.RAVI_STAMP = function(D){
+    if (!D || !D.generated_at) { return ""; }
+    function e(v){ return String(v).replace(/[&<>"]/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+    var gen = new Date(D.generated_at), age = (Date.now() - gen.getTime()) / 3600000;
+    var s = "Prices are TCGplayer market price via tcgcsv.com, updated <b>" + e(window.RAVI_DATE(gen, true)) + "</b>";
+    s += (age > 48) ? ". These may be out of date." : ".";
+    if (D.fx && D.fx.rate) { s += " 1 USD = <b>" + e(String(D.fx.rate)) + "</b> CAD, Bank of Canada, " + e(window.RAVI_DATE(D.fx.date) || D.fx.date || "") + "."; }
+    if (D.totals) { s += " " + D.totals.priced + " products priced across " + D.totals.sets + " sets."; }
+    return s;
+  };
 })();
 
 // THE BAR (from M9.6). Every page's bar is built here, so a slot two pages share is the same
