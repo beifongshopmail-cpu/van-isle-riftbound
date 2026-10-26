@@ -180,6 +180,7 @@ Page shell (feedback/index.html, settings/index.html)
 - Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone.
     <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
 - Every page with words ends in the footer credit; a page showing what others publish (Calendar, Trade, Rules) ends it with "Something wrong or missing? Tell us." (Mako's yes 2026-10-16)
+- A page that shows prices (Trade, Decks, Collection) starts its footer with the one price source line (RAVI_STAMP in pages.js: tcgcsv.com, the day, the rate) and says "Market price is a public benchmark, not an offer from any store." (Mako's yes 2026-10-25)
 
 Page head, section head, glass card (feedback/index.html)
 - .lede: a text page opens with one plain line under the wordmark, 13 muted, no glass; its title is an h2.sr for screen readers (Mako 2026-10-15: the glass header block retired on Feedback, Rules and App settings). .pghead.glass stays in app.css for now, used on no page.
