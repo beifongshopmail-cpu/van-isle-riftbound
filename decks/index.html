@@ -131,12 +131,12 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dnone{margin:0 4px;font-size:13px;line-height:1.45;color:var(--muted)}
 
 /* the counts and the rules, in words with a mark (colour never alone) */
-/* the Owned row in the status block, under its head (M13): a thin sunken row, no warning when cards are missing */
-.owp{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-seg);margin:0 0 6px;padding:0 12px 0 14px;border-radius:17px;background:var(--recess);color:var(--muted);font-family:var(--disp);font-size:13px;font-weight:600}
-.owp .sp{flex:1}
-.owp b{color:var(--bone);font-weight:700}
-.owp .chev{width:14px;height:14px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.owp:active{background:var(--hi)}
+/* Owned, its own block under Notes (M13): its head opens it in place; no warning when cards are missing */
+.owh{width:100%;padding:0 4px;background:none;text-align:left;color:var(--bone)}
+.owh:active{transform:none;opacity:.7}
+.owh .chev{flex:0 0 auto;width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#sown .shead{margin-bottom:0}
+#owb{margin-top:10px}
 .dcnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .dcnt div{border-radius:16px;background:var(--recess);padding:8px 4px;text-align:center;min-width:0}
 .dcnt b{display:block;font-family:var(--disp);font-size:17px;font-weight:700;line-height:1.2}
@@ -588,6 +588,11 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       </div></div>
     </div>
   </div>
+</section>
+
+<section class="panel frost" id="pmiss" aria-hidden="true" aria-label="Add missing cards to">
+  <div class="phead"><h4 class="ttl">Add missing cards to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="misslist" data-k="do"></div><p class="pnote" style="margin-top:10px">Each card in the printing the deck is priced at. The Wishlist only tops up to what is missing.</p></div>
 </section>
 
 <section class="panel frost" id="pundo" aria-hidden="true" aria-label="Undo">
@@ -1092,36 +1097,61 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   // THE COUNTS AND THE RULES: at the top only while something needs fixing (in red, with the
   // triangle and the words); a ready deck shows them at the foot (Mako 2026-10-19)
-  // OWNED, QUIETLY (M13, Mako 2026-10-25): not a Stats tile. A thin pill in this block's head, shown only
-  // when the Collection holds something (no warning when cards are missing); it opens in place to the
-  // count by section, Any or Exact printing, the missing cards and the Wishlist
+  // OWNED (M13, Mako 2026-10-25): its own block at the foot of the deck, under Notes, only when the
+  // Collection holds something; closed until tapped; no warning when cards are missing. Inside: Any
+  // printing | This printing, the count by section, the missing cards, and Add missing cards to (a menu:
+  // the Wishlist, the collection in no binder, or a binder)
   var OWOPEN = false;
-  function ownedPill(d){
-    if(!PX) return "";
-    var o = ownedOf(d); if(!o.any) return "";
-    return '<button type="button" class="owp" data-act="owned" aria-expanded="' + OWOPEN + '" data-k="open"><span>Owned</span><span class="sp"></span><b>' + o.have + '/' + o.total + '</b>' + CHEV + '</button>';
-  }
-  function ownedBody(d){
+  var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
+  function ownedInner(d){
     var o = ownedOf(d), h = "";
     var SN = [["main", "Main"], ["runes", "Runes"], ["legend", "Legend"], ["bf", "Battlefields"], ["side", "Side"]].filter(function(q){ return o.secs[q[0]][1]; });
-    h += '<div class="owd reveal"><div class="seg" id="oexact" style="margin-top:12px" role="group" aria-label="Which printings count" data-k="pick"><button type="button" data-act="exact" data-v="0" aria-pressed="' + !SET.exact + '">Any printing</button><button type="button" data-act="exact" data-v="1" aria-pressed="' + !!SET.exact + '">This printing</button></div>'
-      + '<div class="dcnt" style="margin-top:8px;grid-template-columns:repeat(' + Math.min(SN.length, 3) + ',minmax(0,1fr))">' + SN.map(function(q){ return '<div><b>' + o.secs[q[0]][0] + '/' + o.secs[q[0]][1] + '</b><span>' + q[1] + '</span></div>'; }).join("") + '</div>';
+    h += '<div class="dcnt" style="margin-top:8px;grid-template-columns:repeat(' + Math.min(SN.length, 3) + ',minmax(0,1fr))">' + SN.map(function(q){ return '<div><b>' + o.secs[q[0]][0] + '/' + o.secs[q[0]][1] + '</b><span>' + q[1] + '</span></div>'; }).join("") + '</div>';
     if(o.miss.length){
       var mt = 0; o.miss.forEach(function(m){ mt += m.need - m.got; });
       h += '<p class="gsh" style="margin-top:14px">Missing, ' + mt + (mt === 1 ? " card" : " cards") + '</p>';
       o.miss.forEach(function(m){ var x = C(m.code); h += '<div class="tokrow"><span class="art">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(x ? nm(x) : m.code) + '</span><span class="csb"><span>Need ' + m.need + ', own ' + m.got + '</span></span></span><b class="cq">x' + (m.need - m.got) + '</b></div>'; });
-      h += '<button type="button" class="pact btn glass" data-act="wishmiss" data-k="do" style="margin-top:10px">Add missing cards to Wishlist</button>';
+      h += '<div class="doors" data-k="deeper" style="margin-top:10px"><button type="button" class="door btn glass" data-act="missmenu" data-fills="pmiss"><span class="t">Add missing cards to</span><span class="sp"></span>' + CVR + '</button></div>';
     } else h += '<p class="dnone" style="margin-top:12px">You own every card in this deck.</p>';
-    return h + '</div>';
+    return h;
+  }
+  function ownedHTML(d){
+    if(!PX) return "";
+    var o = ownedOf(d); if(!o.any) return "";
+    return '<section class="dsec glass" id="sown"><button type="button" class="shead owh" data-act="owned" aria-expanded="' + OWOPEN + '" data-k="open"><h2>Owned</h2><span class="sp"></span><span class="cnt" id="owcnt">' + o.have + '/' + o.total + ' cards</span>' + CHEV + '</button>'
+      + (OWOPEN ? '<div id="owb"><div class="seg" id="oexact" role="group" aria-label="Which printings count" data-k="pick"><button type="button" data-act="exact" data-v="0" aria-pressed="' + !SET.exact + '">Any printing</button><button type="button" data-act="exact" data-v="1" aria-pressed="' + !!SET.exact + '">This printing</button></div><div id="owin">' + ownedInner(d) + '</div></div>' : '') + '</section>';
+  }
+  // the missing cards into a place: the Wishlist tops up to what is missing; a binder or the collection
+  // gets what is missing (then nothing is, so a second pick adds nothing)
+  function addMissing(d, to){
+    if(to === "wish") return wishMissing(d);
+    var o = ownedOf(d), c = collRead() || { v: 1, ports: [], wish: [], loose: [], last: "" }, n = 0, day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    c.loose = c.loose || [];
+    var list = to === "loose" ? c.loose : ((c.ports.filter(function(p){ return p.id === to; })[0] || {}).items);
+    if(!list) return 0;
+    o.miss.forEach(function(m){
+      var w = wishProduct(d, m.code); if(!w) return;
+      var q = m.need - m.got, h = null;
+      list.forEach(function(x){ if(x.i === w.i && x.f === w.f) h = x; });
+      if(h) h.q += q; else list.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), i: w.i, f: w.f, q: q, d: day, paid: null, pc: CUR, cond: "" });
+      n += q;
+    });
+    try{ localStorage.setItem(CKEY, JSON.stringify(c)); }catch(e){}
+    return n;
+  }
+  function fillMiss(){
+    var c = collRead() || { ports: [] };
+    var rows = [["wish", "Wishlist"], ["loose", "Collection, no binder"]].concat(c.ports.map(function(p){ return [p.id, p.name]; }));
+    el("misslist").innerHTML = rows.map(function(r){ return '<button type="button" class="door btn glass act" data-act="missto" data-v="' + esc(r[0]) + '"><span class="t">' + esc(r[1]) + '</span></button>'; }).join("");
   }
   function checkHTML(d, probs){
-    var m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side), nd = X.needed(d), h = "", op = ownedPill(d);
+    var m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side), nd = X.needed(d), h = "";
     h += '<section class="dsec glass ' + (probs.length ? "bad" : "okc") + '"' + (probs.length ? ' style="margin-top:0"' : '') + ' id="schk">'
-      + '<div class="shead"><h2>' + (probs.length ? probs.length + (probs.length === 1 ? " thing to fix" : " things to fix") : "Ready for events") + '</h2><span class="sp"></span><span class="cnt">' + nd.have + '/' + nd.need + ' cards</span></div>' + op
+      + '<div class="shead"><h2>' + (probs.length ? probs.length + (probs.length === 1 ? " thing to fix" : " things to fix") : "Ready for events") + '</h2><span class="sp"></span><span class="cnt">' + nd.have + '/' + nd.need + ' cards</span></div>'
       + '<div class="dcnt"><div><b>' + m + '/40</b><span>Main</span></div><div><b>' + r + '/12</b><span>Runes</span></div><div><b>' + d.bf.length + '/3</b><span>Battlefields</span></div><div><b>' + s + '</b><span>Sideboard</span></div></div><ul class="dchk">';
     if(!probs.length) h += '<li><span class="okmk">' + IC.ok + '</span><span>Every deck rule is met.</span></li>';
     probs.forEach(function(p){ h += '<li><span class="wmk">' + IC.warn + '</span><span>' + esc(p.msg) + '</span></li>'; });
-    return h + '</ul>' + (op && OWOPEN ? ownedBody(d) : '') + '</section>';
+    return h + '</ul></section>';
   }
   function renderDeck(){
     var d = deck(), h = "";
@@ -1133,7 +1163,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     h += sectionHTML("side", d, "Side deck", s + "/10", "Cards to swap in between games. Up to 10.");
     if(SET.maybe) h += sectionHTML("maybe", d, "Considering", X.sum(d.maybe), "Cards you are thinking about. They count toward nothing.");
     if(!probs.length) h += checkHTML(d, probs);
-    h += '<section class="dsec glass"><div class="shead"><h2>Notes</h2></div><textarea class="dnote" id="dnote" placeholder="Matchups, swaps, anything to remember" aria-label="Notes" data-k="type">' + esc(d.note) + '</textarea></section>';
+    h += '<section class="dsec glass"><div class="shead"><h2>Notes</h2></div><textarea class="dnote" id="dnote" placeholder="Matchups, swaps, anything to remember" aria-label="Notes" data-k="type">' + esc(d.note) + '</textarea></section>' + ownedHTML(d);
     paint(el("vdeck"), h);
     paint(el("pvrow"), viewRow());
   }
@@ -1914,9 +1944,20 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "oout"){ OD = OD.filter(function(c){ return c !== t.getAttribute("data-code"); }); renderHand(); return; }
     if(t.hasAttribute("data-om")){ OM = +t.getAttribute("data-om"); renderHand(); return; }
     if(a === "sall"){ statAll(); return; }
-    if(a === "owned"){ OWOPEN = !OWOPEN; render(); return; }
-    if(a === "exact"){ SET.exact = t.getAttribute("data-v") === "1"; saveSet(); render(); return; }
-    if(a === "wishmiss"){ var wn = wishMissing(deck()); toast(wn ? "Added " + wn + (wn === 1 ? " card" : " cards") + " to the Wishlist" : "The Wishlist already has them"); return; }
+    if(a === "owned"){ OWOPEN = !OWOPEN; render(); if(OWOPEN){ var ob = el("owb"); if(ob){ ob.classList.remove("reveal"); void ob.offsetWidth; ob.classList.add("reveal"); } } return; }
+    // the track changes in place (its fill slides); only the counts and the list under it repaint
+    if(a === "exact"){
+      SET.exact = t.getAttribute("data-v") === "1"; saveSet();
+      el("oexact").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", String((b.getAttribute("data-v") === "1") === SET.exact)); });
+      var od = deck(), oo = ownedOf(od); el("owin").innerHTML = ownedInner(od); el("owcnt").textContent = oo.have + "/" + oo.total + " cards"; return;
+    }
+    if(a === "missmenu"){ fillMiss(); openPanel(el("pmiss")); return; }
+    if(a === "missto"){
+      var to = t.getAttribute("data-v"), nm2 = t.querySelector(".t").textContent, wn = addMissing(deck(), to);
+      openPanel(null); render();
+      toast(wn ? "Added " + wn + (wn === 1 ? " card" : " cards") + " to " + (to === "wish" ? "the Wishlist" : (to === "loose" ? "your collection" : nm2)) : (to === "wish" ? "The Wishlist already has them" : "Nothing to add"));
+      return;
+    }
     if(a === "stile"){ statTile(t.getAttribute("data-t")); return; }
     if(a === "umenu"){ fillUndo(); openPanel(el("pundo")); return; }
     if(a === "undoat"){ openPanel(null); undoAt(+t.getAttribute("data-i")); return; }
