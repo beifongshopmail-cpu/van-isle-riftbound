@@ -648,7 +648,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   var DECKS = [], CURID = "", SCREEN = "home", VIEW = "deck", EDIT = false, HAND = null, ASIDE = [], CARD = null;
   // round 2 (Mako 2026-10-19): the 3-across grid is the default; search shows base cards only
   // (allp); decks list order (dsort: recent, name, legend, mine); stats tiles open (sopen)
-  var SET = { view: "grid", cols: 3, group: "type", sort: "energy", exp: "text", price: true, maybe: true, allp: false, sv: {}, ss: {}, shut: {}, dsort: "recent", sopen: {}, r2: true };
+  var SET = { view: "grid", cols: 3, group: "type", sort: "energy", exp: "text", price: true, maybe: true, allp: false, sv: {}, ss: {}, shut: {}, dsort: "recent", sopen: {}, r2: true, exact: false };
   // the domains' colours; colourless is the palette's spare White (Neeko's silver name plate)
   var RUNE_RGB = { body: "232,118,0", calm: "72,140,56", chaos: "106,64,148", fury: "223,22,32", mind: "15,111,166", order: "210,180,0", colorless: "240,240,245" };
   var SECNAME = { main: "Main deck", side: "Sideboard", maybe: "Considering", legend: "Legend", bf: "Battlefields", runes: "Runes" };
@@ -1121,7 +1121,78 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   // STATS (round 2, Mako 2026-10-19): one card of summary tiles; a tap opens a tile's detail
   // under it, several at once, remembered for every deck
-  var STILES = [["energy", "Energy"], ["power", "Power"], ["might", "Might"], ["types", "Types"], ["domains", "Domains"], ["price", "Price"], ["keywords", "Keywords"], ["tokens", "Tokens"], ["rarity", "Epics"]];
+  var STILES = [["owned", "Owned"], ["energy", "Energy"], ["power", "Power"], ["might", "Might"], ["types", "Types"], ["domains", "Domains"], ["price", "Price"], ["keywords", "Keywords"], ["tokens", "Tokens"], ["rarity", "Epics"]];
+  // ---- OWNED AND MISSING (M13 step 3, 2026-10-25): what of this deck the Collection page holds ----
+  // The collection is the Collection page's store (vir.coll.v1): every binder and the cards in no binder,
+  // never the Wishlist. By default any printing of a card counts (Runes' 'exact card versions match' is
+  // the switch, off); with Exact printings on, only the printing the deck uses counts (its picked version,
+  // else its own set and number).
+  var CKEY = "vir.coll.v1";
+  function collRead(){ try{ var c = JSON.parse(localStorage.getItem(CKEY)); if(c && Array.isArray(c.ports)){ c.wish = c.wish || []; c.loose = c.loose || []; return c; } }catch(e){} return null; }
+  function collHeld(c){
+    var by = {}, any = false;
+    if(!c) return { by: by, any: false };
+    [c.loose].concat(c.ports.map(function(p){ return p.items || []; })).forEach(function(list){
+      (list || []).forEach(function(h){ by[h.i + "|" + h.f] = (by[h.i + "|" + h.f] || 0) + h.q; by[h.i] = (by[h.i] || 0) + h.q; any = true; });
+    });
+    return { by: by, any: any };
+  }
+  // the printings that count for a card: [ids or "id|finish"], and a key shared by every card that pools them
+  function countsFor(d, code){
+    var x = C(code), v = d.ver && d.ver[code];
+    if(SET.exact){
+      if(v) return { keys: [v], pool: "v:" + v };
+      var ids = (PX.bySetNum[code] || []).map(function(c){ return String(c.i); });
+      return { keys: ids, pool: "c:" + code };
+    }
+    var all = {}; X.versionsOf(I, PX, x).forEach(function(r){ all[r.id] = 1; });
+    (PX.bySetNum[code] || []).forEach(function(c){ all[c.i] = 1; });
+    var ks = Object.keys(all).sort();
+    return { keys: ks, pool: "n:" + (x ? nm(x) : code) };
+  }
+  // what the deck needs, by section, against what the collection holds; a card in two sections (Main
+  // and Side) draws on one pool, Main first
+  function ownedOf(d){
+    var held = collHeld(collRead()), need = [], pools = {};
+    function add(sec, code, n){ need.push({ sec: sec, code: code, n: n }); }
+    if(d.legend) add("legend", d.legend, 1);
+    Object.keys(d.main || {}).forEach(function(c){ if(d.main[c] > 0) add("main", c, d.main[c]); });
+    Object.keys(d.runes || {}).forEach(function(c){ if(d.runes[c] > 0) add("runes", c, d.runes[c]); });
+    (d.bf || []).forEach(function(c){ add("bf", c, 1); });
+    Object.keys(d.side || {}).forEach(function(c){ if(d.side[c] > 0) add("side", c, d.side[c]); });
+    var secs = { main: [0, 0], runes: [0, 0], legend: [0, 0], bf: [0, 0], side: [0, 0] }, miss = [], have = 0, total = 0;
+    need.forEach(function(r){
+      var cf = countsFor(d, r.code);
+      if(pools[cf.pool] == null){ var q = 0; cf.keys.forEach(function(k){ q += held.by[k] || 0; }); pools[cf.pool] = q; }
+      var got = Math.min(r.n, pools[cf.pool]);
+      pools[cf.pool] -= got;
+      secs[r.sec][0] += got; secs[r.sec][1] += r.n; have += got; total += r.n;
+      if(got < r.n) miss.push({ code: r.code, sec: r.sec, need: r.n, got: got });
+    });
+    return { any: held.any, have: have, total: total, secs: secs, miss: miss };
+  }
+  // the printing to wish for: the deck's own pick, else its set and number's Normal (as Collection's Add a deck)
+  function wishProduct(d, code){
+    var v = d.ver && d.ver[code];
+    if(v){ var b = v.split("|"), c = PX.byId[b[0]]; if(c && c.p[b[1]] != null) return { i: c.i, f: b[1] }; }
+    var best = null;
+    (PX.bySetNum[code] || []).forEach(function(c){ if(!best || (best.p.Normal == null && c.p.Normal != null)) best = c; });
+    return best ? { i: best.i, f: best.p.Normal != null ? "Normal" : Object.keys(best.p)[0] } : null;
+  }
+  // the missing copies onto the Wishlist: each up to what is missing, never past it (a second tap adds nothing)
+  function wishMissing(d){
+    var o = ownedOf(d), c = collRead() || { v: 1, ports: [], wish: [], loose: [], last: "" }, n = 0, day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    var want = {};
+    o.miss.forEach(function(m){ var w = wishProduct(d, m.code); if(!w) return; var k = w.i + "|" + w.f; want[k] = (want[k] || 0) + (m.need - m.got); });
+    Object.keys(want).forEach(function(k){
+      var b = k.split("|"), h = null;
+      c.wish.forEach(function(x){ if(x.i + "|" + x.f === k) h = x; });
+      if(h){ if(h.q < want[k]){ n += want[k] - h.q; h.q = want[k]; } }
+      else { c.wish.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), i: +b[0], f: b[1], q: want[k], d: day, paid: null, pc: CUR, cond: "" }); n += want[k]; }
+    });
+    try{ localStorage.setItem(CKEY, JSON.stringify(c)); }catch(e){}
+    return n;
+  }
   function barRows(rows, max){
     var h = "";
     rows.forEach(function(r){ h += '<div class="pdrow">' + (r.mark || "") + '<span class="t">' + esc(r.t) + '</span><span class="pbar"><i style="width:' + (max ? Math.round(r.n / max * 100) : 0) + '%;' + (r.rc ? "--rc:" + r.rc : "--rc:237,234,227") + '"></i></span><b>' + r.b + '</b></div>'; });
@@ -1139,15 +1210,34 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       var p = price(c); if(p != null) top.push({ c: c, p: p * n, n: n });
     });
     var toks = X.tokens(I, d), kws = Object.keys(S.keywords).sort(function(a, b){ return (S.keywords[b].n - S.keywords[a].n) || a.localeCompare(b); });
+    var OW = PX ? ownedOf(d) : null;
     var tv = {
       energy: S.avgEnergy.toFixed(1), power: S.avgPower.toFixed(1), might: S.units ? S.avgMight.toFixed(1) : "-",
       types: [S.types.unit || 0, S.types.gear || 0, S.types.spell || 0].join("/"),
       domains: ld.length ? ld.map(function(v){ return dm[v] || 0; }).join("/") : String(Object.keys(dm).length),
+      owned: OW ? OW.have + "/" + OW.total : "-",
       price: SET.price ? money(deckPrice(d)).replace(/\.\d\d$/, "") : "-", keywords: String(kws.length), tokens: String(toks.length), rarity: String(epics)
     };
-    var sub = { types: "Units/gear/spells", domains: ld.length ? ld.map(cap).join("/") : "Domains", might: S.units + " units", rarity: "Epic or showcase" };
+    var sub = { owned: "Owned", types: "Units/gear/spells", domains: ld.length ? ld.map(cap).join("/") : "Domains", might: S.units + " units", rarity: "Epic or showcase" };
     var DET = {};
     function det(id, title, cnt, body){ DET[id] = { title: title, cnt: cnt || "", body: body }; return ""; }
+    // OWNED: what of the deck the collection holds, by section; the missing list; the Wishlist
+    var oh = "";
+    if(!OW) oh = '<p class="dnone">Prices are loading.</p>';
+    else {
+      var SN = [["main", "Main"], ["runes", "Runes"], ["legend", "Legend"], ["bf", "Battlefields"], ["side", "Side"]].filter(function(q){ return OW.secs[q[0]][1]; });
+      oh = '<div class="dcnt" style="grid-template-columns:repeat(' + Math.min(SN.length, 3) + ',minmax(0,1fr))">' + SN.map(function(q){ return '<div><b>' + OW.secs[q[0]][0] + '/' + OW.secs[q[0]][1] + '</b><span>' + q[1] + '</span></div>'; }).join("") + '</div>'
+        + '<div class="pick" id="oexact" data-k="pick" style="margin-top:12px"><button type="button" data-act="exact" aria-pressed="' + !!SET.exact + '"' + (SET.exact ? ' class="on"' : '') + '>Exact printings only</button></div>'
+        + '<p class="dsub" style="margin-top:6px">' + (SET.exact ? "Only the printing this deck uses counts." : "Any printing of a card counts.") + ' Your Collection is every binder and the cards in no binder, not the Wishlist.</p>';
+      if(!OW.any) oh += '<p class="dnone">Your Collection is empty. Add cards on the <a href="../collection/" style="color:var(--bone)">Collection page</a>.</p>';
+      if(OW.miss.length){
+        var mt = 0; OW.miss.forEach(function(m){ mt += m.need - m.got; });
+        oh += '<p class="gsh" style="margin-top:14px">Missing, ' + mt + (mt === 1 ? " card" : " cards") + '</p>';
+        OW.miss.forEach(function(m){ var x = C(m.code); oh += '<div class="tokrow"><span class="art">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(x ? nm(x) : m.code) + '</span><span class="csb"><span>Need ' + m.need + ', own ' + m.got + '</span></span></span><b class="cq">x' + (m.need - m.got) + '</b></div>'; });
+        oh += '<button type="button" class="pact btn glass" data-act="wishmiss" data-k="do" style="margin-top:10px">Add the missing to the Wishlist</button>';
+      } else if(OW.any) oh += '<p class="dnone" style="margin-top:12px">You own every card in this deck.</p>';
+    }
+    h += det("owned", "Owned", OW ? OW.have + " of " + OW.total : "", oh);
     var el9 = []; for(var i = 0; i <= 9; i++) el9.push(i === 9 ? "9+" : String(i));
     h += det("energy", "Energy", "average " + S.avgEnergy.toFixed(1), chartHTML(S.energy, el9));
     var pmax = 0; Object.keys(pw).forEach(function(k){ if(pw[k] > pmax) pmax = pw[k]; });
@@ -1814,6 +1904,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "oout"){ OD = OD.filter(function(c){ return c !== t.getAttribute("data-code"); }); renderHand(); return; }
     if(t.hasAttribute("data-om")){ OM = +t.getAttribute("data-om"); renderHand(); return; }
     if(a === "sall"){ statAll(); return; }
+    if(a === "exact"){ SET.exact = !SET.exact; saveSet(); renderStats(); return; }
+    if(a === "wishmiss"){ var wn = wishMissing(deck()); toast(wn ? "Added " + wn + (wn === 1 ? " card" : " cards") + " to the Wishlist" : "The Wishlist already has them"); return; }
     if(a === "stile"){ statTile(t.getAttribute("data-t")); return; }
     if(a === "umenu"){ fillUndo(); openPanel(el("pundo")); return; }
     if(a === "undoat"){ openPanel(null); undoAt(+t.getAttribute("data-i")); return; }
