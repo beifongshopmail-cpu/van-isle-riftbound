@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-10-25T16:58:41.488Z",
- "generated_local": "2026-10-25T09:58:41-07:00",
+ "generated_at": "2026-10-26T05:49:59.319Z",
+ "generated_local": "2026-10-25T22:49:59-07:00",
  "window_start": "2026-10-25T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 25,
+   "returned": 26,
    "added": 25
   },
   {
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 33,
+  "fetched": 34,
   "unique": 33,
-  "prev_unique": 36
+  "prev_unique": 33
  },
  "unknown_templates": {},
  "old_feed_error": null,
@@ -67,7 +67,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 8,
-   "reg": 6,
+   "reg": 8,
    "cents": 600,
    "currency": "USD",
    "updated": null,
@@ -78,7 +78,7 @@
   },
   {
    "id": "rb117454291705531862",
-   "name": "Skyhaven Sunday Nexus Night",
+   "name": "Skyhaven Sunday Nexus Night (CANCELLED)",
    "type": "nexus",
    "start": "2026-10-25T17:00:00-07:00",
    "end": null,
@@ -89,7 +89,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 15,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -199,7 +199,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 0,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
