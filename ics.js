@@ -20,24 +20,30 @@ const FEEDS = [
   { file: "island.ics",   name: "RAVI - Island",   regions: ["victoria", "island"] }
 ];
 
+// An event id goes into a .ics line (UID, URL) and a file name: letters,
+// digits, _ and - only, so it can never start a line of its own (M14).
+function safeId(id) {
+  return String(id == null ? "" : id).replace(/[^A-Za-z0-9_-]/g, "");
+}
 // An event's own page, the same rule as the calendar page's eventUrl:
 // PlayRiftbound ids ("rb" + its number) open on playriftbound.com; the old
 // locator's numeric ids keep the locator.
 function eventUrl(id) {
-  const s = String(id);
+  const s = safeId(id);
   return /^rb\d+$/.test(s) ? "https://playriftbound.com/en-US/events/" + s.slice(2)
     : "https://locator.riftbound.uvsgames.com/events/" + s;
 }
 const DEFAULT_MINUTES = 180;
 const FIXED_STAMP = "20260901T000000Z";
 
-// RFC 5545 text escaping: backslash, semicolon, comma, newline.
+// RFC 5545 text escaping: backslash, semicolon, comma, newline (CRLF, LF or
+// a lone CR, so no event text can start a line of its own; M14).
 function esc(value) {
   return String(value == null ? "" : value)
     .replace(/\\/g, "\\\\")
     .replace(/;/g, "\\;")
     .replace(/,/g, "\\,")
-    .replace(/\r?\n/g, "\\n");
+    .replace(/\r\n|\r|\n/g, "\\n");
 }
 
 // RFC 5545 line folding: no line may exceed 75 octets. Continuation
@@ -119,7 +125,7 @@ function buildFeed(name, events, stamp, checked) {
       : new Date(start.getTime() + DEFAULT_MINUTES * 60000);
 
     lines.push("BEGIN:VEVENT");
-    lines.push("UID:" + ev.id + "@van-isle-riftbound");
+    lines.push("UID:" + safeId(ev.id) + "@van-isle-riftbound");
     lines.push("DTSTAMP:" + (stamp || FIXED_STAMP));
     if (name === null) {
       lines.push("DTSTART;TZID=" + TZ + ":" + localStamp(start));

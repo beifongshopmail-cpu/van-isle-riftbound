@@ -896,7 +896,7 @@
     for(i = 0; i < cseList.length; i++){
       var e = cseList[i], on = cur && cur.id === e.id;
       var elab = cseLabel({ name:e.name, type:TYPE_LABELS[e.type] || TYPE_LABELS.other, store:e.store || e.venue });
-      h += "<button type=\"button\" data-ev=\"" + e.id + "\"" +
+      h += "<button type=\"button\" data-ev=\"" + esc(e.id) + "\"" +
         (on ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">" +
         "<span class=\"t\">" + esc(elab) + "</span><small>" +
         esc((e.venue || "") + ", " + (e.time || "")) + "</small></button>";
@@ -1635,7 +1635,7 @@
           (pastFilter === null ? " class=\"on\"" : "") + ">All matches</button>";
         for (var ti = 0; ti < pfTags.length; ti++) {
           var tg = pfTags[ti];
-          fh += "<button type=\"button\" data-tagf=\"" + tg.id + "\"" +
+          fh += "<button type=\"button\" data-tagf=\"" + esc(tg.id) + "\"" +
             (pastFilter === String(tg.id) ? " class=\"on\"" : "") + ">" +
             esc(cseLabel(tg)) + " &middot; " + esc(shortDate(tg.day)) + "</button>";
         }

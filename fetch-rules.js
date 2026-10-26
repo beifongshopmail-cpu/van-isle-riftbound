@@ -83,12 +83,20 @@ function attr(raw, name) {
   return m ? (m[2] !== undefined ? m[2] : m[3]) : null;
 }
 
+// A link or picture address is copied into a double-quoted attribute, so it
+// may not hold a double quote, an angle bracket, a backtick or a space: one
+// that does could close the attribute and add its own (M14). Real addresses
+// encode those characters, so none of Riot's is lost.
+function plainUrl(u) {
+  return !/["<>`\s]/.test(u);
+}
+
 function okHref(h) {
-  return !!h && /^https?:\/\//i.test(h) && !/^https?:\/\/cms\.riotgames\.com\//i.test(h);
+  return !!h && plainUrl(h) && /^https?:\/\//i.test(h) && !/^https?:\/\/cms\.riotgames\.com\//i.test(h);
 }
 
 function okSrc(s) {
-  return !!s && /^https:\/\/cmsassets\.rgpub\.io\//i.test(s);
+  return !!s && plainUrl(s) && /^https:\/\/cmsassets\.rgpub\.io\//i.test(s);
 }
 
 function sanitize(html) {

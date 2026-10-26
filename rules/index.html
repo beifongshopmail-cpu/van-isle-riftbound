@@ -158,11 +158,57 @@ body{-webkit-font-smoothing:antialiased;
   var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
   var OUT = '<svg class="extl" viewBox="0 0 24 24"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg>';
 
-  // Riot's markup as fetch-rules.js kept it. Pictures stay on Riot's page
-  // for now (a link to the article instead); links open outside the app.
+  // THE SECOND WALL (M14). fetch-rules.js cleans Riot's markup before it is
+  // stored; the page cleans it again before showing it, in the inert
+  // document above (it runs no script and fetches nothing), keeping only the
+  // tags and attributes fetch-rules.js allows. Anything else is unwrapped to
+  // its text, or dropped whole with its contents (scripts, styles, frames,
+  // svg and math). Pictures stay on Riot's page for now (a link to the
+  // article instead); links must be web addresses and open outside the app.
+  var KEEP = { P:1, BR:1, STRONG:1, B:1, EM:1, I:1, U:1, S:1, SUP:1, SUB:1, UL:1, OL:1, LI:1, H1:1, H2:1, H3:1, H4:1, H5:1, H6:1,
+    BLOCKQUOTE:1, HR:1, TABLE:1, THEAD:1, TBODY:1, TR:1, TH:1, TD:1, A:1, IMG:1 };
+  var GONE = { SCRIPT:1, STYLE:1, NOSCRIPT:1, IFRAME:1, FRAME:1, FRAMESET:1, OBJECT:1, EMBED:1, TEMPLATE:1, TEXTAREA:1, SELECT:1,
+    TITLE:1, XMP:1, NOEMBED:1, NOFRAMES:1, PLAINTEXT:1, LINK:1, META:1, BASE:1, FORM:1 };
+  var HTMLNS = "http://www.w3.org/1999/xhtml", HUB = "https://playriftbound.com/en-us/rules-hub/";
+  // a Riot page RAVI links to: https only, else the Rules Hub
+  function web(u){ u = String(u || ""); return /^https:\/\/[^\s"<>`]+$/i.test(u) ? u : HUB; }
+  function clean(html, url){
+    var b = PARSE.parseFromString("<!doctype html><body>" + (html || "") + "</body>", "text/html").body;
+    function walk(n){
+      var c = n.firstChild, next, t, i, at, v, a;
+      while(c){
+        next = c.nextSibling;
+        if(c.nodeType === 3){ c = next; continue; }
+        if(c.nodeType !== 1){ n.removeChild(c); c = next; continue; }
+        t = c.namespaceURI === HTMLNS ? c.tagName.toUpperCase() : "";
+        if(!t || GONE[t]){ n.removeChild(c); c = next; continue; }
+        if(!KEEP[t] || (t === "A" && !/^https?:\/\/[^\s"<>`]+$/i.test(c.getAttribute("href") || ""))){
+          next = c.firstChild || next;
+          while(c.firstChild) n.insertBefore(c.firstChild, c);
+          n.removeChild(c); c = next; continue;
+        }
+        if(t === "IMG"){
+          a = c.ownerDocument.createElement("a");
+          a.className = "rpic"; a.href = web(url); a.textContent = "Picture on Riot's page";
+          n.replaceChild(a, c); c = a; t = "A";
+        }
+        for(i = c.attributes.length - 1; i >= 0; i--){
+          at = c.attributes[i].name; v = c.attributes[i].value;
+          if(t === "A" && at === "href") continue;
+          if(c.className === "rpic" && at === "class") continue;
+          if((t === "TH" || t === "TD") && (at === "colspan" || at === "rowspan") && /^\d+$/.test(v)) continue;
+          c.removeAttribute(at);
+        }
+        if(c.tagName.toUpperCase() === "A"){ c.setAttribute("target", "_blank"); c.setAttribute("rel", "noopener"); }
+        walk(c);
+        c = next;
+      }
+    }
+    walk(b);
+    return b.innerHTML;
+  }
   function rtx(html, url, cls){
-    var h = (html || "").replace(/<img[^>]*>/g, '<a class="rpic" href="' + esc(url) + '">Picture on Riot\'s page</a>');
-    return '<div class="rtx' + (cls ? " " + cls : "") + '">' + h + '</div>';
+    return '<div class="rtx' + (cls ? " " + cls : "") + '">' + clean(html, url) + '</div>';
   }
   function title(it){ return it.cards ? it.cards[0] : (it.q || it.title || ""); }
   function body(it){
@@ -230,7 +276,7 @@ body{-webkit-font-smoothing:antialiased;
     el("part").style.setProperty("--tint", kc(s.kind));
     el("arttl").textContent = s.kind === "hub" ? s.title : cap(s.set) + (s.kind === "errata" ? " errata" : " FAQ");
     el("artcnt").textContent = list.length;
-    if(s.notice) h += '<div class="rnote">' + s.notice + '</div>';
+    if(s.notice) h += '<div class="rnote">' + clean(s.notice, s.url) + '</div>';
     for(i = 0; i < list.length; i++){
       var it = list[i], g = it.kind === "errata" ? (it.group || "") : (it.group || it.section || "");
       if(i === 0 || g !== group){
@@ -241,7 +287,7 @@ body{-webkit-font-smoothing:antialiased;
       h += entry(it);
     }
     if(open) h += '</div></div>';
-    h += '<p class="rsrc">' + esc(s.title) + (s.published ? ', published ' + day(s.published) : '') + '. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Read it on playriftbound.com</a></p>';
+    h += '<p class="rsrc">' + esc(s.title) + (s.published ? ', published ' + day(s.published) : '') + '. <a href="' + esc(web(s.url)) + '" target="_blank" rel="noopener">Read it on playriftbound.com</a></p>';
     el("artbody").innerHTML = h;
   }
   function fillLegal(it){
@@ -249,7 +295,7 @@ body{-webkit-font-smoothing:antialiased;
     el("part").style.setProperty("--tint", kc("legal"));
     el("arttl").textContent = it.title;
     el("artcnt").textContent = "";
-    el("artbody").innerHTML = rtx(it.html, s.url) + '<p class="rsrc">From Riot\'s Rules Hub. <a href="' + esc(s.url) + '" target="_blank" rel="noopener">Open it on playriftbound.com</a></p>';
+    el("artbody").innerHTML = rtx(it.html, s.url) + '<p class="rsrc">From Riot\'s Rules Hub. <a href="' + esc(web(s.url)) + '" target="_blank" rel="noopener">Open it on playriftbound.com</a></p>';
   }
 
   // ---- the page ----
@@ -279,7 +325,7 @@ body{-webkit-font-smoothing:antialiased;
     hub.forEach(function(it){
       if(it.kind === "doc"){
         var up = /last updated:\s*([^<)]+)/i.exec(it.html);
-        docs += '<a class="door btn glass act" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + (up ? '<small>' + esc(up[1].trim()) + '</small>' : '') + OUT + '</a>';
+        docs += '<a class="door btn glass act" href="' + esc(web(it.url)) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + (up ? '<small>' + esc(up[1].trim()) + '</small>' : '') + OUT + '</a>';
       }
     });
     hub.forEach(function(it){
