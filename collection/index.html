@@ -60,9 +60,10 @@ body{-webkit-font-smoothing:antialiased;
 /* Movers folds away: its head opens it in place, closed on every visit (Mako 2026-10-25, round 2) */
 /* its head is a glass row with a chevron, so it reads as something to open (round 3) */
 #mvtog .chev{flex:0 0 auto;margin-left:6px;color:var(--muted)}
-#mvbody{margin-top:12px}
-.mvc{border-radius:22px;padding:0 14px}
-.mvc + .mvc{margin-top:12px}
+/* it opens in place, one glass block (round 5, Mako): a hairline under its head, Gains, a line, Losses */
+#mvbody{position:relative;padding:0 14px 4px}
+#mvbody::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:rgba(255,255,255,.08)}
+.mvsep{height:1px;background:rgba(255,255,255,.07);margin-top:6px}
 .mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
 .mvh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 /* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
@@ -79,7 +80,7 @@ body{-webkit-font-smoothing:antialiased;
 .camt{font-family:var(--disp);font-size:15px;font-weight:700;white-space:nowrap}
 .cmv{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .cempty{padding:14px 2px;font-size:15px;line-height:1.4;color:var(--muted)}
-.mvc .cempty{padding:4px 2px 14px;font-size:13px}
+#mvbody .cempty{padding:4px 2px 12px;font-size:13px}
 /* card art: Riot's picture where the art map has one, the store listing's photo otherwise */
 .art{position:relative;display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden; /* size-exempt: card art image */
   background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
@@ -211,7 +212,7 @@ input[type="file"]{display:none}
     <!-- THE PLATE (round 3, Mako 2026-10-25: as Decks', one sticky block): which portfolio, its search,
          and how its cards show -->
     <div class="stk"><div class="plate glass">
-      <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">All binders</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+      <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">Collection</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
       <div class="sf psf" id="hsf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
@@ -230,10 +231,8 @@ input[type="file"]{display:none}
     </div>
 
     <section id="movers">
-      <div class="doors" data-k="open"><button type="button" class="door btn glass" id="mvtog" aria-expanded="false" aria-controls="mvbody"><span class="t">Movers</span><span class="sp"></span><small id="mvcnt"></small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button></div>
-      <div id="mvbody" hidden>
-      <div class="mvc glass" id="mvup"></div>
-      <div class="mvc glass" id="mvdn"></div>
+      <div class="doors mvbox" data-k="open"><button type="button" class="door btn glass" id="mvtog" aria-expanded="false" aria-controls="mvbody"><span class="t">Movers</span><span class="sp"></span><small id="mvcnt"></small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+        <div id="mvbody" hidden><div id="mvup"></div><div class="mvsep"></div><div id="mvdn"></div></div>
       </div>
     </section>
 
@@ -315,6 +314,16 @@ input[type="file"]{display:none}
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Edit binders</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="doors" id="mnglist" data-k="deeper"></div></div>
   <div class="pfoot"><button type="button" class="pact btn glass" data-act="newport" data-k="do">New binder</button></div>
+</section>
+
+<section class="panel frost" id="pnew" aria-hidden="true" aria-label="New binder">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">New binder</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p class="lb">Name</p>
+    <div class="nf tall"><input id="newname" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
+    <p class="pnote">Cards can sit in a binder or in your collection outside any binder.</p>
+  </div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="createport" data-k="do">Create binder</button></div>
 </section>
 
 <section class="panel frost" id="pone" aria-hidden="true" aria-label="Binder">
@@ -410,7 +419,9 @@ input[type="file"]{display:none}
   // THE STORE (vir.coll.v1): { v: 1, ports: [{ id, name, items: [holding] }], wish: [holding], last: id }
   var KEY = "vir.coll.v1", SKEY = "vir.coll.set.v1";
   var P = null, BYID = {}, SETS = {}, FX = 1.4, ART = null;
-  var S = { v: 1, ports: [], wish: [], last: "" };
+  // S.loose: cards in the collection but in no binder (round 5, Mako: Collection is the whole, and a card
+  // added there sits in no binder)
+  var S = { v: 1, ports: [], wish: [], loose: [], last: "" };
   var SET = { view: "all", range: "30", mode: "market", cur: "CAD", sort: "value", hview: "grid", movers: true };
   var MVOPEN = false;   // Movers opens on a tap and is closed on every visit
   // the history: DAYS (every day there is a price file for, oldest first), H[key] = cents per day
@@ -421,7 +432,7 @@ input[type="file"]{display:none}
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function today(){ return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
   function load(){
-    try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && Array.isArray(s.ports)){ S = s; S.wish = S.wish || []; } }catch(e){}
+    try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && Array.isArray(s.ports)){ S = s; S.wish = S.wish || []; S.loose = S.loose || []; } }catch(e){}
     var cur = null;
     try{ var t = JSON.parse(localStorage.getItem("vir.trade.v1")); if(t && (t.cur === "USD" || t.cur === "CAD")) cur = t.cur; }catch(e){}
     if(cur) SET.cur = cur;
@@ -432,16 +443,17 @@ input[type="file"]{display:none}
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
   function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
   function port(id){ for(var i = 0; i < S.ports.length; i++){ if(S.ports[i].id === id) return S.ports[i]; } return null; }
-  function listOf(id){ return id === "wish" ? S.wish : (port(id) || {}).items || null; }
+  function listOf(id){ return id === "wish" ? S.wish : (id === "loose" ? S.loose : ((port(id) || {}).items || null)); }
   // the holdings a view shows: a portfolio's own, the wishlist's, or every portfolio's (All)
   function viewItems(v){
     v = v || SET.view;
     if(v === "wish") return S.wish.map(function(h){ return { h: h, p: "wish" }; });
     var out = [];
+    if(v === "all" || v === "loose") S.loose.forEach(function(h){ out.push({ h: h, p: "loose" }); });
     S.ports.forEach(function(p){ if(v === "all" || v === p.id) p.items.forEach(function(h){ out.push({ h: h, p: p.id }); }); });
     return out;
   }
-  function viewName(v){ v = v || SET.view; return v === "all" ? "All binders" : (v === "wish" ? "Wishlist" : (port(v) || {}).name || ""); }
+  function viewName(v){ v = v || SET.view; return v === "all" ? "Collection" : (v === "wish" ? "Wishlist" : (v === "loose" ? "No binder" : (port(v) || {}).name || "")); }
   function key(h){ return h.i + "|" + h.f; }
   function count(list){ var n = 0; list.forEach(function(x){ n += x.h.q; }); return n; }
 
@@ -577,8 +589,16 @@ input[type="file"]{display:none}
   // fading to .16, a white sheen over its top and a lit cap. The scale and the marker follow
   // tiny-spark's construction (github.com/graphieros/tiny-spark, MIT). ----
   var GID = 0;
+  // THE BARS FOLLOW THEIR BOX (round 5, Mako: the top edge looked off now and then until a range change).
+  // A chart drawn while its box was hidden (a search, an empty list) took 100 as its width and was
+  // stretched to fit when shown. Now a box with no width waits, and a box that changes width redraws.
+  var RO = window.ResizeObserver ? new ResizeObserver(function(es){ es.forEach(function(e){ var b = e.target; if(b.__draw && Math.abs(b.clientWidth - (b.__w || 0)) > 0.5) b.__draw(); }); }) : null;
   function drawChart(box, sr, onScrub){
-    var w = Math.max(box.clientWidth, 100), ht = box.clientHeight || 190, all = sr.v, N = all.length;
+    box.__draw = function(){ drawChart(box, sr, onScrub); };
+    if(RO && !box.__ro){ RO.observe(box); box.__ro = true; }
+    box.__w = box.clientWidth;
+    if(!box.clientWidth) return;
+    var w = box.clientWidth, ht = box.clientHeight || 190, all = sr.v, N = all.length;
     if(N < 2){ box.innerHTML = '<div class="none">The price history starts ' + esc(window.RAVI_DATE(DAYS[0] || "")) + '. More days, more bars.</div>'; return; }
     // the points drawn: every day, or every seventh counted back from the last
     var pts = [], i;
@@ -749,7 +769,7 @@ input[type="file"]{display:none}
     var list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
     list.sort(SORTS[SET.sort][1]);
     VIS = list;
-    var many = S.ports.length > 1 && SET.view === "all", grid = SET.hview === "grid", box = el("hlist");
+    var many = SET.view === "all" && (S.ports.length + (S.loose.length ? 1 : 0)) > 1, grid = SET.hview === "grid", box = el("hlist");
     box.className = list.length ? (grid ? "cgrid" : "cards plain") : "";
     box.innerHTML = list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("");
     el("hnone").hidden = !!list.length;
@@ -786,7 +806,7 @@ input[type="file"]{display:none}
   function fillMove(){
     var l = selList(), here = {};
     l.forEach(function(x){ here[x.p] = 1; });
-    var all = S.ports.map(function(p){ return [p.id, p.name]; }).concat([["wish", "Wishlist"]]);
+    var all = [["loose", "No binder"]].concat(S.ports.map(function(p){ return [p.id, p.name]; })).concat([["wish", "Wishlist"]]);
     el("mvttl").textContent = "Move " + (l.length === 1 ? "1 card" : l.length + " cards");
     el("movelist").innerHTML = all.map(function(a){
       var only = Object.keys(here).length === 1 && here[a[0]];
@@ -865,7 +885,7 @@ input[type="file"]{display:none}
   function fillPorts(){
     var h = "", all = viewItems("all");
     function row(v, nm, n){ return '<button type="button" data-v="' + esc(v) + '"' + (SET.view === v ? ' class="on"' : '') + '><span class="t">' + esc(nm) + '</span><span class="sp"></span><small>' + n.toLocaleString("en-US") + '</small></button>'; }
-    h += row("all", "All binders", count(all));
+    h += row("all", "Collection", count(all));
     S.ports.forEach(function(p){ h += row(p.id, p.name, count(viewItems(p.id))); });
     h += row("wish", "Wishlist", count(viewItems("wish")));
     el("portpick").innerHTML = h;
@@ -885,24 +905,22 @@ input[type="file"]{display:none}
     var n = count(viewItems(ONE.id));
     el("onenote").textContent = n ? "Deleting it removes its " + n.toLocaleString("en-US") + (n === 1 ? " card" : " cards") + " from this page." : "It holds no cards yet.";
   }
-  // where a new card goes: the portfolio or wishlist on show; under All, the last one added to
+  // where a new card goes: the binder or Wishlist on show; under Collection, into no binder (round 5)
   function target(){
     if(SET.view === "wish") return "wish";
     if(SET.view !== "all" && port(SET.view)) return SET.view;
-    if(S.last && port(S.last)) return S.last;
-    return S.ports.length ? S.ports[0].id : "";
+    return "loose";
   }
-  function targetName(){ var t = target(); return t ? viewName(t) : "My collection"; }
+  function targetName(){ var t = target(); return t === "loose" ? "your collection" : viewName(t); }
 
   // ---- ADDING ----
   function addOne(i, f, n, to, extra){
     to = to || target();
-    if(!to){ to = newPort("My collection").id; }
     var list = listOf(to), h = null;
     list.forEach(function(x){ if(x.i === i && x.f === f) h = x; });
     if(h) h.q += n;
     else { h = { id: uid(), i: i, f: f, q: n, d: today(), paid: null, pc: SET.cur, cond: "" }; if(extra) for(var k in extra) h[k] = extra[k]; list.push(h); }
-    if(to !== "wish") S.last = to;
+    if(to !== "wish" && to !== "loose") S.last = to;
     return h;
   }
   function takeOne(i, f, to){
@@ -913,16 +931,12 @@ input[type="file"]{display:none}
     return h.q;
   }
   function owned(i, f, to){ var n = 0; (listOf(to || target()) || []).forEach(function(x){ if(x.i === i && x.f === f) n += x.q; }); return n; }
-  // THE BROWSER FOLLOWS THE PAGE (round 4, Mako): under All binders its counts are every binder's; a tap
-  // adds to the last binder added to (its pill says which); minus takes from that binder first
-  function bOwned(i, f){ if(SET.view !== "all") return owned(i, f); var n = 0; S.ports.forEach(function(p){ n += owned(i, f, p.id); }); return n; }
-  function bTake(i, f){
-    if(SET.view !== "all") return takeOne(i, f);
-    var from = owned(i, f, target()) ? target() : null;
-    if(!from) S.ports.forEach(function(p){ if(!from && owned(i, f, p.id)) from = p.id; });
-    if(from) takeOne(i, f, from);
-    return bOwned(i, f);
-  }
+  // THE BROWSER FOLLOWS THE PAGE (round 4): under Collection its counts are the whole collection's and
+  // a tap adds outside any binder. MINUS ONLY TAKES FROM WHAT THE VIEW ITSELF HOLDS (round 5, Mako: a
+  // tap must never reach into a binder that is not on show): under Collection, only the copies in no
+  // binder; a card held only in binders shows its count with the minus dimmed
+  function bOwned(i, f){ if(SET.view !== "all") return owned(i, f); var n = 0; viewItems("all").forEach(function(x){ if(x.h.i === i && x.h.f === f) n += x.h.q; }); return n; }
+  function bTake(i, f){ takeOne(i, f, target()); return bOwned(i, f); }
   var FINORD = function(a, b){ return (a === "Normal" ? 0 : 1) - (b === "Normal" ? 0 : 1) || (a < b ? -1 : 1); };
 
   // ---- THE CARD BROWSER (Mako 2026-10-25: browse every card and add or remove while browsing, as
@@ -990,10 +1004,10 @@ input[type="file"]{display:none}
     return out;
   }
   function brBox(c, f){
-    var n = bOwned(c.i, f);
+    var n = bOwned(c.i, f), here = owned(c.i, f, target());
     if(!n) return '';
-    var k = c.i + "|" + f;
-    return '<span class="lq">x' + n + '</span><span class="lsteps"><button type="button" class="lpm glass' + (n === 1 ? " bin" : "") + '" data-bdn="' + esc(k) + '" aria-label="' + (n === 1 ? "Remove" : "One fewer") + '" data-k="do">' + (n === 1 ? IC.bin : IC.minus) + '</button>'
+    var k = c.i + "|" + f, last = here === 1;
+    return '<span class="lq">x' + n + '</span><span class="lsteps"><button type="button" class="lpm glass' + (last ? " bin" : "") + '" data-bdn="' + esc(k) + '" aria-label="' + (!here ? "Held only in binders" : (last ? "Remove" : "One fewer")) + '"' + (here ? '' : ' disabled') + ' data-k="do">' + (last ? IC.bin : IC.minus) + '</button>'
       + '<button type="button" class="lpm glass" data-bup="' + esc(k) + '" aria-label="One more" data-k="do">' + IC.plus + '</button></span>';
   }
   function brTile(r){
@@ -1006,7 +1020,7 @@ input[type="file"]{display:none}
   function brNote(){
     el("bportname").textContent = viewName();
     var n = count(viewItems());
-    el("bportcnt").textContent = SET.view === "all" ? "adds to " + targetName() : (n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards");
+    el("bportcnt").textContent = n === 1 ? "1 card" : n.toLocaleString("en-US") + " cards";
   }
   function brRender(keep){
     BR.list = brList();
@@ -1024,7 +1038,6 @@ input[type="file"]{display:none}
     t.querySelector(".cbox").innerHTML = brBox(c, b[1]);
   }
   function brOpen(){
-    if(!target()) { newPort("My collection"); save(); }
     BR.q = ""; BR.lim = 60; el("bq").value = "";
     el("brw").hidden = false;
     document.documentElement.classList.add("lock", "brwon");
@@ -1095,7 +1108,7 @@ input[type="file"]{display:none}
         + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ", the first day RAVI has prices for: " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
       + '<div class="row"><p class="lb">Added</p><div class="nf"><input id="hdate" type="date" value="' + esc(h.d || "") + '" max="' + today() + '" data-k="type"></div></div>'
       + (sealed(c) ? '' : '<div class="row"><p class="lb">Condition</p><div class="seg" role="group" aria-label="Condition" id="hcond" data-k="pick">' + CONDS.map(function(k){ return '<button type="button" data-c="' + k[0] + '" aria-pressed="' + (condCode(h.cond) === k[0]) + '">' + k[0] + '</button>'; }).join("") + '</div></div>')
-      + (S.ports.length > 1 && HPORT !== "wish" ? '<div class="row"><p class="lb">Binder</p><div class="pick" id="hport" data-k="pick">' + S.ports.map(function(p){ return '<button type="button" data-v="' + esc(p.id) + '"' + (p.id === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p.name) + '</span></button>'; }).join("") + '</div></div>' : '');
+      + (S.ports.length && HPORT !== "wish" ? '<div class="row"><p class="lb">Binder</p><div class="pick" id="hport" data-k="pick">' + [["loose", "No binder"]].concat(S.ports.map(function(p){ return [p.id, p.name]; })).map(function(p){ return '<button type="button" data-v="' + esc(p[0]) + '"' + (p[0] === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p[1]) + '</span></button>'; }).join("") + '</div></div>' : '');
     el("hbody").innerHTML = x;
     el("hfoot").innerHTML = HPORT === "wish" ? '<button type="button" class="pact btn glass" data-act="wishown" data-k="do">I own it now</button>' : '';
     el("hfoot").hidden = HPORT !== "wish";
@@ -1144,7 +1157,7 @@ input[type="file"]{display:none}
       (byName[nrm(c.n)] = byName[nrm(c.n)] || []).push(c);
     });
     function get(r, k){ return at[k] > -1 ? String(r[at[k]] || "").trim() : ""; }
-    var out = { ports: {}, order: [], wish: [], miss: [], rows: 0, cards: 0 };
+    var out = { ports: {}, order: [], wish: [], loose: [], miss: [], rows: 0, cards: 0 };
     rows.slice(1).forEach(function(r){
       var c = null, L, nm = get(r, "name"), st = nrm(get(r, "set")), id = get(r, "id");
       if(id && BYID[id]) c = BYID[id];
@@ -1158,7 +1171,8 @@ input[type="file"]{display:none}
       var paid = parseFloat(String(get(r, "paid")).replace(/[^0-9.]/g, "")), d = get(r, "date"), it = { i: c.i, f: f, q: q, d: /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : today(), paid: paid > 0 ? paid : null, pc: SET.cur, cond: get(r, "cond") };
       var g = get(r, "grade"); if(g && !/^ungraded$/i.test(g)) it.grade = g;
       if(/^true$/i.test(get(r, "watch"))){ out.wish.push(it); out.cards += q; return; }
-      var pn = get(r, "port") || "Imported";
+      var pn = get(r, "port");
+      if(!pn){ out.loose.push(it); out.cards += q; return; }
       if(!out.ports[pn]){ out.ports[pn] = []; out.order.push(pn); }
       out.ports[pn].push(it); out.cards += q;
     });
@@ -1175,6 +1189,7 @@ input[type="file"]{display:none}
     } else {
       var n = 0;
       h = x.order.map(function(pn){ var q = 0; x.ports[pn].forEach(function(it){ q += it.q; }); n += q; var ex = S.ports.some(function(p){ return p.name === pn; }); return '<b>' + esc(pn) + '</b>: ' + q.toLocaleString("en-US") + (q === 1 ? " card" : " cards") + (ex ? ", replacing the binder of that name" : ", a new binder"); }).join("<br>");
+      if(x.loose.length){ var lq = 0; x.loose.forEach(function(it){ lq += it.q; }); n += lq; h += (h ? "<br>" : "") + '<b>No binder</b>: ' + lq.toLocaleString("en-US") + (lq === 1 ? " card" : " cards"); }
       if(x.wish.length) h += (h ? "<br>" : "") + '<b>Wishlist</b>: ' + x.wish.length + " more";
       h += '<br>' + x.rows + (x.rows === 1 ? " row" : " rows") + ' read; ' + (x.miss.length ? x.miss.length + ' not found:' : 'every one found.');
       if(x.miss.length) h += '<ul>' + x.miss.slice(0, 30).map(function(m){ return '<li>' + esc(m) + '</li>'; }).join("") + (x.miss.length > 30 ? '<li>and ' + (x.miss.length - 30) + ' more</li>' : '') + '</ul>';
@@ -1186,7 +1201,7 @@ input[type="file"]{display:none}
   function applyPlan(){
     var x = PLAN, first = null;
     if(!x || x.err) return;
-    if(x.backup){ S = x.backup.data; S.wish = S.wish || []; SET.view = "all"; saveSet(); }
+    if(x.backup){ S = x.backup.data; S.wish = S.wish || []; S.loose = S.loose || []; SET.view = "all"; saveSet(); }
     else {
       x.order.forEach(function(pn){
         var p = null; S.ports.forEach(function(q){ if(q.name === pn) p = q; });
@@ -1195,6 +1210,7 @@ input[type="file"]{display:none}
         if(!first) first = p;
       });
       x.wish.forEach(function(it){ addOne(it.i, it.f, it.q, "wish", { d: it.d, cond: it.cond }); });
+      x.loose.forEach(function(it){ addOne(it.i, it.f, it.q, "loose", { d: it.d, cond: it.cond, paid: it.paid, pc: it.pc }); });
       if(first){ SET.view = first.id; S.last = first.id; saveSet(); }
     }
     PLAN = null;
@@ -1227,8 +1243,9 @@ input[type="file"]{display:none}
         out.push([pn, "Riftbound", setOf(c).n || "", c.n, c.c || "", c.r || "", h.f, h.grade || "Ungraded", cw, h.paid != null ? h.paid : 0, h.q, (conv(c.p[h.f] || 0)).toFixed(2), 0, w ? "true" : "false", h.d || "", ""]);
       });
     }
+    rows(S.loose, "", false);
     S.ports.forEach(function(p){ rows(p.items, p.name, false); });
-    rows(S.wish, S.ports.length ? S.ports[0].name : "Wishlist", true);
+    rows(S.wish, "", true);
     return out.map(function(r){ return r.map(csvCell).join(","); }).join("\n") + "\n";
   }
 
@@ -1242,7 +1259,7 @@ input[type="file"]{display:none}
     if(t.hasAttribute("data-badd") || t.hasAttribute("data-bup")){
       var kb = (t.getAttribute("data-badd") || t.getAttribute("data-bup")).split("|"), c = BYID[kb[0]];
       var tn = targetName(), hh = addOne(c.i, kb[1], 1); save(); brPaint(kb[0] + "|" + kb[1]); brNote();
-      if(t.hasAttribute("data-badd")) toast("Added " + c.n + (sealed(c) ? "" : ", " + kb[1]) + " (" + hh.q + " in " + tn + ")");
+      if(t.hasAttribute("data-badd")) toast("Added " + c.n + (sealed(c) ? "" : ", " + kb[1]) + (target() === "loose" ? " to your collection" : " (" + hh.q + " in " + tn + ")"));
       return;
     }
     if(t.hasAttribute("data-bdn")){ var kd = t.getAttribute("data-bdn").split("|"), cd = BYID[kd[0]]; var left = bTake(cd.i, kd[1]); save(); brPaint(kd[0] + "|" + kd[1]); if(!left) toast("Removed " + cd.n); return; }
@@ -1294,7 +1311,9 @@ input[type="file"]{display:none}
     }
     if(a === "manage"){ fillManage(); go(el("pmng")); return; }
     if(a === "one"){ fillOne(t.getAttribute("data-id")); deeper(el("pone")); return; }
-    if(a === "newport"){ var p = newPort("Binder " + (S.ports.length + 1)); changed(); fillManage(); fillOne(p.id); deeper(el("pone")); return; }
+    // A NEW BINDER IS NAMED, THEN MADE (round 5, Mako): nothing exists until Create binder
+    if(a === "newport"){ el("newname").value = ""; el("newname").placeholder = "Binder " + (S.ports.length + 1); deeper(el("pnew")); return; }
+    if(a === "createport"){ var nn = el("newname").value.trim() || el("newname").placeholder; newPort(nn); changed(); fillManage(); back(); toast("Made the binder " + nn); return; }
     if(a === "delport"){
       if(!armed(t)) return;
       S.ports = S.ports.filter(function(x){ return x !== ONE; });
@@ -1326,9 +1345,8 @@ input[type="file"]{display:none}
     }
     if(a === "wishown"){
       var w = HOLD; S.wish.splice(S.wish.indexOf(w), 1);
-      var to2 = S.last && port(S.last) ? S.last : (S.ports.length ? S.ports[0].id : newPort("My collection").id);
-      addOne(w.i, w.f, w.q, to2);
-      changed(); openPanel(null); toast("Moved to " + viewName(to2)); return;
+      addOne(w.i, w.f, w.q, "loose");
+      changed(); openPanel(null); toast("Moved to your collection"); return;
     }
   });
   document.addEventListener("change", function(ev){
