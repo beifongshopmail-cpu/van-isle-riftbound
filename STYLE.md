@@ -267,7 +267,8 @@ Confirm and motion helpers
 - [hidden] always wins (display none).
 
 Icons (pages.js RAVI_ICON)
-- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, decks, soon, settings) and the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log, edit).
+- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, decks, collection, soon, settings), the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log, edit, add) and the info icon.
+- M13 icon pass (Mako 2026-10-26): Collection is a safe on feet (hinges on the left wall, the dial with its centre marked, the bolt running to the wall, filled or not), after Phosphor's vault on the app's line; Collection's Add is a card with a plus; Decks' page icon is its fanned cards turned so they fan up like a hand. Decks' warning mark is a solid triangle with its mark cut out (Material Symbols warning, filled), red (--over), always beside its words.
 - Each icon has an outline group (.ico) and a filled group (.icf); the filled one shows when its parent has .on. The hub drawing and the strip's two are one drawing in every state.
 - Gaps in a filled icon are real holes cut by a mask, so every mask id on a page is unique. RAVI_ICON numbers its own (rvm1, rvm2, ...). Static markup names its own: rvs-<page>-<what>, e.g. rvs-fb-set.
 - Every icon a page or a bar draws is one entry in the SVG table; RAVI_BAR and RAVI_GOTO take it by name. A new icon is added there first, never drawn into a page's bar.
