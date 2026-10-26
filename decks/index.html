@@ -131,6 +131,12 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
 .dnone{margin:0 4px;font-size:13px;line-height:1.45;color:var(--muted)}
 
 /* the counts and the rules, in words with a mark (colour never alone) */
+/* the Owned row in the status block, under its head (M13): a thin sunken row, no warning when cards are missing */
+.owp{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-seg);margin:0 0 6px;padding:0 12px 0 14px;border-radius:17px;background:var(--recess);color:var(--muted);font-family:var(--disp);font-size:13px;font-weight:600}
+.owp .sp{flex:1}
+.owp b{color:var(--bone);font-weight:700}
+.owp .chev{width:14px;height:14px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.owp:active{background:var(--hi)}
 .dcnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .dcnt div{border-radius:16px;background:var(--recess);padding:8px 4px;text-align:center;min-width:0}
 .dcnt b{display:block;font-family:var(--disp);font-size:17px;font-weight:700;line-height:1.2}
@@ -1086,14 +1092,36 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   // THE COUNTS AND THE RULES: at the top only while something needs fixing (in red, with the
   // triangle and the words); a ready deck shows them at the foot (Mako 2026-10-19)
+  // OWNED, QUIETLY (M13, Mako 2026-10-25): not a Stats tile. A thin pill in this block's head, shown only
+  // when the Collection holds something (no warning when cards are missing); it opens in place to the
+  // count by section, Any or Exact printing, the missing cards and the Wishlist
+  var OWOPEN = false;
+  function ownedPill(d){
+    if(!PX) return "";
+    var o = ownedOf(d); if(!o.any) return "";
+    return '<button type="button" class="owp" data-act="owned" aria-expanded="' + OWOPEN + '" data-k="open"><span>Owned</span><span class="sp"></span><b>' + o.have + '/' + o.total + '</b>' + CHEV + '</button>';
+  }
+  function ownedBody(d){
+    var o = ownedOf(d), h = "";
+    var SN = [["main", "Main"], ["runes", "Runes"], ["legend", "Legend"], ["bf", "Battlefields"], ["side", "Side"]].filter(function(q){ return o.secs[q[0]][1]; });
+    h += '<div class="owd reveal"><div class="seg" id="oexact" style="margin-top:12px" role="group" aria-label="Which printings count" data-k="pick"><button type="button" data-act="exact" data-v="0" aria-pressed="' + !SET.exact + '">Any printing</button><button type="button" data-act="exact" data-v="1" aria-pressed="' + !!SET.exact + '">This printing</button></div>'
+      + '<div class="dcnt" style="margin-top:8px;grid-template-columns:repeat(' + Math.min(SN.length, 3) + ',minmax(0,1fr))">' + SN.map(function(q){ return '<div><b>' + o.secs[q[0]][0] + '/' + o.secs[q[0]][1] + '</b><span>' + q[1] + '</span></div>'; }).join("") + '</div>';
+    if(o.miss.length){
+      var mt = 0; o.miss.forEach(function(m){ mt += m.need - m.got; });
+      h += '<p class="gsh" style="margin-top:14px">Missing, ' + mt + (mt === 1 ? " card" : " cards") + '</p>';
+      o.miss.forEach(function(m){ var x = C(m.code); h += '<div class="tokrow"><span class="art">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(x ? nm(x) : m.code) + '</span><span class="csb"><span>Need ' + m.need + ', own ' + m.got + '</span></span></span><b class="cq">x' + (m.need - m.got) + '</b></div>'; });
+      h += '<button type="button" class="pact btn glass" data-act="wishmiss" data-k="do" style="margin-top:10px">Add missing cards to Wishlist</button>';
+    } else h += '<p class="dnone" style="margin-top:12px">You own every card in this deck.</p>';
+    return h + '</div>';
+  }
   function checkHTML(d, probs){
-    var m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side), nd = X.needed(d), h = "";
+    var m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side), nd = X.needed(d), h = "", op = ownedPill(d);
     h += '<section class="dsec glass ' + (probs.length ? "bad" : "okc") + '"' + (probs.length ? ' style="margin-top:0"' : '') + ' id="schk">'
-      + '<div class="shead"><h2>' + (probs.length ? probs.length + (probs.length === 1 ? " thing to fix" : " things to fix") : "Ready for events") + '</h2><span class="sp"></span><span class="cnt">' + nd.have + '/' + nd.need + ' cards</span></div>'
+      + '<div class="shead"><h2>' + (probs.length ? probs.length + (probs.length === 1 ? " thing to fix" : " things to fix") : "Ready for events") + '</h2><span class="sp"></span><span class="cnt">' + nd.have + '/' + nd.need + ' cards</span></div>' + op
       + '<div class="dcnt"><div><b>' + m + '/40</b><span>Main</span></div><div><b>' + r + '/12</b><span>Runes</span></div><div><b>' + d.bf.length + '/3</b><span>Battlefields</span></div><div><b>' + s + '</b><span>Sideboard</span></div></div><ul class="dchk">';
     if(!probs.length) h += '<li><span class="okmk">' + IC.ok + '</span><span>Every deck rule is met.</span></li>';
     probs.forEach(function(p){ h += '<li><span class="wmk">' + IC.warn + '</span><span>' + esc(p.msg) + '</span></li>'; });
-    return h + '</ul></section>';
+    return h + '</ul>' + (op && OWOPEN ? ownedBody(d) : '') + '</section>';
   }
   function renderDeck(){
     var d = deck(), h = "";
@@ -1121,7 +1149,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   // STATS (round 2, Mako 2026-10-19): one card of summary tiles; a tap opens a tile's detail
   // under it, several at once, remembered for every deck
-  var STILES = [["owned", "Owned"], ["energy", "Energy"], ["power", "Power"], ["might", "Might"], ["types", "Types"], ["domains", "Domains"], ["price", "Price"], ["keywords", "Keywords"], ["tokens", "Tokens"], ["rarity", "Epics"]];
+  var STILES = [["energy", "Energy"], ["power", "Power"], ["might", "Might"], ["types", "Types"], ["domains", "Domains"], ["price", "Price"], ["keywords", "Keywords"], ["tokens", "Tokens"], ["rarity", "Epics"]];
   // ---- OWNED AND MISSING (M13 step 3, 2026-10-25): what of this deck the Collection page holds ----
   // The collection is the Collection page's store (vir.coll.v1): every binder and the cards in no binder,
   // never the Wishlist. By default any printing of a card counts (Runes' 'exact card versions match' is
@@ -1210,34 +1238,15 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       var p = price(c); if(p != null) top.push({ c: c, p: p * n, n: n });
     });
     var toks = X.tokens(I, d), kws = Object.keys(S.keywords).sort(function(a, b){ return (S.keywords[b].n - S.keywords[a].n) || a.localeCompare(b); });
-    var OW = PX ? ownedOf(d) : null;
     var tv = {
       energy: S.avgEnergy.toFixed(1), power: S.avgPower.toFixed(1), might: S.units ? S.avgMight.toFixed(1) : "-",
       types: [S.types.unit || 0, S.types.gear || 0, S.types.spell || 0].join("/"),
       domains: ld.length ? ld.map(function(v){ return dm[v] || 0; }).join("/") : String(Object.keys(dm).length),
-      owned: OW ? OW.have + "/" + OW.total : "-",
       price: SET.price ? money(deckPrice(d)).replace(/\.\d\d$/, "") : "-", keywords: String(kws.length), tokens: String(toks.length), rarity: String(epics)
     };
-    var sub = { owned: "Owned", types: "Units/gear/spells", domains: ld.length ? ld.map(cap).join("/") : "Domains", might: S.units + " units", rarity: "Epic or showcase" };
+    var sub = { types: "Units/gear/spells", domains: ld.length ? ld.map(cap).join("/") : "Domains", might: S.units + " units", rarity: "Epic or showcase" };
     var DET = {};
     function det(id, title, cnt, body){ DET[id] = { title: title, cnt: cnt || "", body: body }; return ""; }
-    // OWNED: what of the deck the collection holds, by section; the missing list; the Wishlist
-    var oh = "";
-    if(!OW) oh = '<p class="dnone">Prices are loading.</p>';
-    else {
-      var SN = [["main", "Main"], ["runes", "Runes"], ["legend", "Legend"], ["bf", "Battlefields"], ["side", "Side"]].filter(function(q){ return OW.secs[q[0]][1]; });
-      oh = '<div class="dcnt" style="grid-template-columns:repeat(' + Math.min(SN.length, 3) + ',minmax(0,1fr))">' + SN.map(function(q){ return '<div><b>' + OW.secs[q[0]][0] + '/' + OW.secs[q[0]][1] + '</b><span>' + q[1] + '</span></div>'; }).join("") + '</div>'
-        + '<div class="pick" id="oexact" data-k="pick" style="margin-top:12px"><button type="button" data-act="exact" aria-pressed="' + !!SET.exact + '"' + (SET.exact ? ' class="on"' : '') + '>Exact printings only</button></div>'
-        + '<p class="dsub" style="margin-top:6px">' + (SET.exact ? "Only the printing this deck uses counts." : "Any printing of a card counts.") + ' Your Collection is every binder and the cards in no binder, not the Wishlist.</p>';
-      if(!OW.any) oh += '<p class="dnone">Your Collection is empty. Add cards on the <a href="../collection/" style="color:var(--bone)">Collection page</a>.</p>';
-      if(OW.miss.length){
-        var mt = 0; OW.miss.forEach(function(m){ mt += m.need - m.got; });
-        oh += '<p class="gsh" style="margin-top:14px">Missing, ' + mt + (mt === 1 ? " card" : " cards") + '</p>';
-        OW.miss.forEach(function(m){ var x = C(m.code); oh += '<div class="tokrow"><span class="art">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(x ? nm(x) : m.code) + '</span><span class="csb"><span>Need ' + m.need + ', own ' + m.got + '</span></span></span><b class="cq">x' + (m.need - m.got) + '</b></div>'; });
-        oh += '<button type="button" class="pact btn glass" data-act="wishmiss" data-k="do" style="margin-top:10px">Add the missing to the Wishlist</button>';
-      } else if(OW.any) oh += '<p class="dnone" style="margin-top:12px">You own every card in this deck.</p>';
-    }
-    h += det("owned", "Owned", OW ? OW.have + " of " + OW.total : "", oh);
     var el9 = []; for(var i = 0; i <= 9; i++) el9.push(i === 9 ? "9+" : String(i));
     h += det("energy", "Energy", "average " + S.avgEnergy.toFixed(1), chartHTML(S.energy, el9));
     var pmax = 0; Object.keys(pw).forEach(function(k){ if(pw[k] > pmax) pmax = pw[k]; });
@@ -1373,8 +1382,9 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     });
     h += '</div>';
     var canMull = !HAND.mull && !drawn.length;
-    h += '<div class="two"><button type="button" class="pact btn glass" data-act="hnew" data-k="do">New hand</button><button type="button" class="pact btn glass" data-act="hmull" data-k="do"' + (!canMull || !ASIDE.length ? " disabled" : "") + '>Mulligan' + (ASIDE.length ? " " + ASIDE.length : "") + '</button>'
-      + '<button type="button" class="pact btn glass" data-act="hdraw" data-k="do"' + (HAND.lib.length ? "" : " disabled") + '>Draw a card</button></div>';
+    // ONE PILL CUT IN THREE, as This deck's Export | Duplicate | Delete (Mako 2026-10-25)
+    h += '<div class="trio" style="margin-top:12px"><button type="button" class="glass" data-act="hnew" data-k="do"><span class="t">New hand</span></button><button type="button" class="glass" data-act="hmull" data-k="do"' + (!canMull || !ASIDE.length ? " disabled" : "") + '><span class="t">Mulligan' + (ASIDE.length ? " " + ASIDE.length : "") + '</span></button>'
+      + '<button type="button" class="glass" data-act="hdraw" data-k="do"' + (HAND.lib.length ? "" : " disabled") + '><span class="t">Draw a card</span></button></div>';
     var ch = C(d.champ);
     if(canMull) h += '<p class="hnote">Tap up to two cards to set aside, then Mulligan. Hold a card to see it big.' + (ch ? " " + esc(nm(ch)) + " starts in the Champion Zone." : "") + '</p>';
     h += '<div class="hdrawn">';
@@ -1904,7 +1914,8 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
     if(a === "oout"){ OD = OD.filter(function(c){ return c !== t.getAttribute("data-code"); }); renderHand(); return; }
     if(t.hasAttribute("data-om")){ OM = +t.getAttribute("data-om"); renderHand(); return; }
     if(a === "sall"){ statAll(); return; }
-    if(a === "exact"){ SET.exact = !SET.exact; saveSet(); renderStats(); return; }
+    if(a === "owned"){ OWOPEN = !OWOPEN; render(); return; }
+    if(a === "exact"){ SET.exact = t.getAttribute("data-v") === "1"; saveSet(); render(); return; }
     if(a === "wishmiss"){ var wn = wishMissing(deck()); toast(wn ? "Added " + wn + (wn === 1 ? " card" : " cards") + " to the Wishlist" : "The Wishlist already has them"); return; }
     if(a === "stile"){ statTile(t.getAttribute("data-t")); return; }
     if(a === "umenu"){ fillUndo(); openPanel(el("pundo")); return; }
