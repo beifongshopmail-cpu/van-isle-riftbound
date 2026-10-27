@@ -1060,6 +1060,62 @@
     return "focus";
   }
 
+  // A MATCH FROM OUTSIDE (an imported file, or what is saved here) is rebuilt from checked
+  // fields: players are 1 or 2, turn numbers and times are numbers, kinds and sources come from
+  // fixed lists, names are text. An event that fails is dropped; a match with no time or no
+  // readable game is not kept (M14: a shared file cannot carry markup or break the page).
+  function okNum(x){ return typeof x === "number" && isFinite(x); }
+  function okPl(x){ return x === 1 || x === 2 ? x : 0; }
+  function okTxt(x){ return typeof x === "string" ? x : ""; }
+  function cleanEv(e){
+    if (!e || typeof e !== "object") { return null; }
+    var o = null;
+    if (e.t === "turn") {
+      if (!okPl(e.p) || !okNum(e.n) || e.n < 1) { return null; }
+      o = { t:"turn", p:e.p, n:Math.floor(e.n) };
+    } else if (e.t === "point") {
+      if (!okPl(e.p) || !okPl(e.tp) || !okNum(e.tn) || e.tn < 1) { return null; }
+      o = { t:"point", p:e.p, src:Object.prototype.hasOwnProperty.call(SRC, e.src) ? e.src : "other",
+            tp:e.tp, tn:Math.floor(e.tn) };
+    } else if (e.t === "concede") {
+      if (!okPl(e.p)) { return null; }
+      o = { t:"concede", p:e.p };
+    } else if (e.t === "end") {
+      if (!(e.w === 0 || okPl(e.w))) { return null; }
+      o = { t:"end", w:e.w };
+      if (e.why === "agreed" || e.why === "time") { o.why = e.why; }
+    } else if (e.t === "pause" || e.t === "resume") {
+      o = { t:e.t };
+    } else { return null; }
+    if (okNum(e.at)) { o.at = e.at; }
+    return o;
+  }
+  function cleanSide(x){
+    x = x && typeof x === "object" ? x : {};
+    return { name:okTxt(x.name), legend:okTxt(x.legend), colour:okTxt(x.colour) };
+  }
+  function cleanMatch(m){
+    if (!m || typeof m !== "object" || m.v !== 1 || !okNum(m.at) || !m.games || !m.games.length) { return null; }
+    var games = [], i, j, g, ev;
+    for (i = 0; i < m.games.length; i++) {
+      g = m.games[i];
+      if (!g || !g.ev || !g.ev.length) { continue; }
+      ev = [];
+      for (j = 0; j < g.ev.length; j++) { var c = cleanEv(g.ev[j]); if (c) { ev.push(c); } }
+      if (!ev.length) { continue; }
+      var gp = g.p && typeof g.p === "object" ? g.p : {};
+      games.push({ ev:ev, p:{ 1:cleanSide(gp[1]), 2:cleanSide(gp[2]) } });
+    }
+    if (!games.length) { return null; }
+    var o = { v:1, at:m.at, bo:(m.bo === 1 || m.bo === 3) ? m.bo : (games.length > 1 ? 3 : 1), games:games };
+    if (m.tag && typeof m.tag === "object" && (typeof m.tag.id === "string" || okNum(m.tag.id))) {
+      o.tag = { id:m.tag.id, name:okTxt(m.tag.name), venue:okTxt(m.tag.venue), day:okTxt(m.tag.day) };
+      if (typeof m.tag.type === "string" && m.tag.type) { o.tag.type = m.tag.type; }
+      if (typeof m.tag.store === "string" && m.tag.store) { o.tag.store = m.tag.store; }
+    }
+    return o;
+  }
+
   function loadHistory(){
     try {
       var raw = localStorage.getItem(HKEY);
@@ -1068,9 +1124,8 @@
       if (!a || !a.length) { return []; }
       var out = [];
       for (var i = 0; i < a.length; i++) {
-        var m = a[i];
-        if (m && m.v === 1 && m.games && m.games.length && m.games[0] &&
-            m.games[0].ev && m.games[0].ev.length) { out.push(m); }
+        var m = cleanMatch(a[i]);
+        if (m) { out.push(m); }
       }
       return out;
     } catch (e) { return []; }
@@ -1116,10 +1171,7 @@
     var el = document.getElementById("impmsg");
     if(el){ el.textContent = s; }
   }
-  function impOK(m){
-    return !!(m && m.v === 1 && m.games && m.games.length && m.games[0]
-      && m.games[0].ev && m.games[0].ev.length);
-  }
+  function impOK(m){ return !!cleanMatch(m); }
   function importHistory(txt){
     var o;
     try{ o = JSON.parse(txt); }
@@ -1134,8 +1186,8 @@
       if(typeof history[i].at === "number"){ have[history[i].at] = 1; }
     }
     for(i = 0; i < o.matches.length; i++){
-      m = o.matches[i];
-      if(!impOK(m)){ bad++; continue; }
+      m = cleanMatch(o.matches[i]);
+      if(!m){ bad++; continue; }
       if(typeof m.at === "number"){
         if(have[m.at]){ dup++; continue; }
         have[m.at] = 1;
@@ -1491,8 +1543,8 @@
     for (var i = list.length - 1; i >= 0; i--) {
       var e = list[i];
       if (e.t === "point") {
-        out += "<li class=\"e" + e.p + "\"><span class=\"lt\">" + esc(nm(e.tp)) +
-               " turn " + e.tn + "</span><span class=\"rt\"><b>" + esc(nm(e.p)) +
+        out += "<li class=\"e" + (e.p === 2 ? 2 : 1) + "\"><span class=\"lt\">" + esc(nm(e.tp)) +
+               " turn " + Number(e.tn) + "</span><span class=\"rt\"><b>" + esc(nm(e.p)) +
                " +1</b> " + SRC[e.src] + "</span></li>";
       } else if (e.t === "concede") {
         out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
@@ -1522,7 +1574,7 @@
                  : gained === 0 ? "no points"
                  : gained === 1 ? "1 point"
                  : gained + " points";
-        out += "<li class=\"et\"><span class=\"lt\">" + esc(nm(e.p)) + " turn " + e.n +
+        out += "<li class=\"et\"><span class=\"lt\">" + esc(nm(e.p)) + " turn " + Number(e.n) +
                "</span><span class=\"rt\">" + tail + "</span></li>";
       }
     }

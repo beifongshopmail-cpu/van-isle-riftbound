@@ -198,6 +198,10 @@ function writeDayLog(payload) {
   return "written";
 }
 
+// A product or set id from the feed is kept only as a whole positive number: it is written
+// into the pages' markup and into URLs (M14: a hostile feed cannot carry markup through it).
+function okId(x) { return typeof x === "number" && Number.isInteger(x) && x > 0; }
+
 async function main() {
   const fx = await fxRate();
   console.log("fx USDCAD " + fx.rate + " as of " + fx.date);
@@ -211,6 +215,7 @@ async function main() {
   let unpriced = 0;
 
   for (const g of groups) {
+    if (!okId(g.groupId)) { console.log("set skipped: id is not a whole number"); continue; }
     await sleep(GAP_MS);
     const pj = await getJSON(BASE + "/" + g.groupId + "/products");
     await sleep(GAP_MS);
@@ -233,6 +238,7 @@ async function main() {
 
     let kept = 0;
     for (const p of products) {
+      if (!okId(p.productId)) { unpriced++; continue; }
       const bucket = priceById.get(String(p.productId));
       if (!bucket) { unpriced++; continue; }
       const num = ext(p, "Number");
@@ -311,8 +317,11 @@ async function main() {
     cards.length + " priced, " + unpriced + " unpriced");
 }
 
-main().catch(function (e) {
-  console.error("PRICE FETCH FAILED: " + e.message);
-  console.error("data/prices.json left untouched");
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(function (e) {
+    console.error("PRICE FETCH FAILED: " + e.message);
+    console.error("data/prices.json left untouched");
+    process.exit(1);
+  });
+}
+module.exports = { okId: okId };

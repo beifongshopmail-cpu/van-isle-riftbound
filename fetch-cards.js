@@ -409,6 +409,8 @@ function fetchRunes(list) {
   var got = 0, have = 0, failed = [];
   var chain = Promise.resolve();
   doms.forEach(function (d) {
+    // a domain id names a file: letters, digits, _ and - only (M14 hardening)
+    if (!/^[A-Za-z0-9_-]+$/.test(d)) { failed.push(d + ': not a plain id'); return; }
     var dest = path.join(RUNE_DIR, 'rune_' + d + '.svg');
     chain = chain.then(function () {
       if (fs.existsSync(dest)) { have++; return null; }
@@ -846,7 +848,7 @@ function main() {
   });
 }
 
-module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport, lookups: lookups };
+module.exports = { shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport, lookups: lookups, fetchRunes: fetchRunes };
 
 // Run directly (node fetch-cards.js) it fetches; required by a test it only
 // hands over its functions.

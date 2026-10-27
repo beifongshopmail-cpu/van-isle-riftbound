@@ -475,7 +475,7 @@
     var m = /^(.*?)\s*\(([A-Za-z]+)\)\s*([A-Za-z0-9*]+)\s*$/.exec(s);
     if (m) { at = findCode(I, m[2] + "-" + m[3]); s = m[1]; }
     if (at) { return at; }
-    var hit = I.names[norm(s)];
+    var k = norm(s), hit = Object.prototype.hasOwnProperty.call(I.names, k) ? I.names[k] : null;
     return hit && hit.length ? codeOf(hit[0].c) : null;
   }
   var HEADS = {

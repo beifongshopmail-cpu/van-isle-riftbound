@@ -556,8 +556,8 @@ a{color:inherit;text-decoration:none}
         if(r.dltx === true) DLTX = true;
       }
       if(r.side === 2) SIDE = 2;
-      if(Array.isArray(r.s1)) sides[1] = r.s1;
-      if(Array.isArray(r.s2)) sides[2] = r.s2;
+      if(Array.isArray(r.s1)) sides[1] = cleanLines(r.s1, false);
+      if(Array.isArray(r.s2)) sides[2] = cleanLines(r.s2, false);
       if(r.p1 != null) PCT[1] = pcClamp(r.p1);
       if(r.p2 != null) PCT[2] = pcClamp(r.p2);
       if(typeof r.n1 === "string") NAMES[1] = r.n1.slice(0, 16);
@@ -782,7 +782,7 @@ a{color:inherit;text-decoration:none}
           + '<div class="rmeta"><div class="rnm">' + esc(c.n) + '</div>'
           + '<div class="rsub"><span class="rset">' + rowFacts(c, sub).map(esc).join(" &middot; ") + '</span>'
           + dltChip(c, sub) + '</div></div>'
-          + '<button type="button" class="buy glass" data-add="' + c.i + '|' + esc(sub) + '" aria-label="Add ' + esc(sub) + ', ' + money(c.p[sub]) + ', to ' + esc(nmIn(SIDE)) + '" data-k="do">'
+          + '<button type="button" class="buy glass" data-add="' + esc(c.i) + '|' + esc(sub) + '" aria-label="Add ' + esc(sub) + ', ' + money(c.p[sub]) + ', to ' + esc(nmIn(SIDE)) + '" data-k="do">'
           + money(c.p[sub]) + '</button></div>';
       }
     }
@@ -835,13 +835,13 @@ a{color:inherit;text-decoration:none}
         + '<button type="button" class="lnh" data-act="row"' + at + ' aria-expanded="' + op + '" data-k="open">'
         + '<span class="art">' + thumbImg(it.i) + '</span>'
         + '<span class="lmid"><span class="lnm">' + esc(c ? c.n : "Unknown card") + '</span>'
-        + '<span class="lsub">' + esc(it.s) + ' &middot; ' + it.q + ' &times; ' + money(unit) + dltChip(c, it.s) + '</span></span>'
+        + '<span class="lsub">' + esc(it.s) + ' &middot; ' + Number(it.q) + ' &times; ' + money(unit) + dltChip(c, it.s) + '</span></span>'
         + '<span class="lamt">' + money(unit * it.q) + '</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>'
         + '<div class="lact"><div class="stp">'
         + (it.q < 2
           ? '<button type="button" class="circ btn glass bin" data-act="del"' + at + ' aria-label="Remove from the trade" data-k="do">' + IC.bin + '</button>'
           : '<button type="button" class="circ btn glass" data-act="dec"' + at + ' aria-label="One fewer" data-k="do">' + IC.minus + '</button>')
-        + '<span>' + it.q + '</span>'
+        + '<span>' + Number(it.q) + '</span>'
         + '<button type="button" class="circ btn glass" data-act="inc"' + at + ' aria-label="One more" data-k="do">' + IC.plus + '</button></div>'
         + '<button type="button" class="btn glass mvp d' + dest + '" data-act="mv"' + at + ' data-k="do">' + (role === "A" ? IC.down : IC.up)
         + '<span class="t">To ' + esc(nmIn(dest)) + '</span></button></div></div>';
@@ -1224,10 +1224,36 @@ a{color:inherit;text-decoration:none}
 
   var TLKEY = "vir.trade.log.v1", TLCAP = 50, TLARM = 0;
 
+  // A TRADE FROM OUTSIDE (an imported file, or what is saved here) is rebuilt from checked
+  // fields: card ids and counts are whole numbers, prices and rates are numbers, percent is
+  // clamped, words are text. A line that fails is dropped; a trade with no time is not kept
+  // (M14: a shared file cannot carry markup).
+  function okN(x){ return typeof x === "number" && isFinite(x); }
+  function okT(x){ return typeof x === "string" ? x : ""; }
+  function cleanLine(x, saved){
+    if(!x || typeof x !== "object") return null;
+    if(!(okN(x.i) && x.i > 0 && Math.floor(x.i) === x.i)) return null;
+    if(typeof x.s !== "string" || !x.s) return null;
+    if(!(okN(x.q) && x.q >= 1 && Math.floor(x.q) === x.q)) return null;
+    var o = { i: x.i, s: x.s, q: x.q };
+    if(saved){ o.u = okN(x.u) ? x.u : null; o.n = okT(x.n); o.c = okT(x.c); o.sn = okT(x.sn); }
+    return o;
+  }
+  function cleanLines(a, saved){ var out = []; (Array.isArray(a) ? a : []).forEach(function(x){ var c = cleanLine(x, saved); if(c) out.push(c); }); return out; }
+  function tlClean(r){
+    if(!r || typeof r !== "object" || !okN(r.at)) return null;
+    var fx = r.fx && typeof r.fx === "object" ? r.fx : {};
+    return { v: 1, at: r.at, note: okT(r.note).slice(0, 60), cur: r.cur === "USD" ? "USD" : "CAD",
+      fx: { rate: okN(fx.rate) && fx.rate > 0 ? fx.rate : 1, date: okT(fx.date) }, pd: okT(r.pd),
+      pct: { 1: pcClamp(r.pct && r.pct[1] != null ? r.pct[1] : 100), 2: pcClamp(r.pct && r.pct[2] != null ? r.pct[2] : 100) },
+      nm: { 1: okT(r.nm && r.nm[1]), 2: okT(r.nm && r.nm[2]) },
+      s1: cleanLines(r.s1, true), s2: cleanLines(r.s2, true) };
+  }
   function tlLoad(){
     try{
-      var a = JSON.parse(localStorage.getItem(TLKEY));
-      return Array.isArray(a) ? a : [];
+      var a = JSON.parse(localStorage.getItem(TLKEY)), out = [];
+      (Array.isArray(a) ? a : []).forEach(function(r){ var c = tlClean(r); if(c) out.push(c); });
+      return out;
     }catch(e){ return []; }
   }
 
@@ -1371,7 +1397,7 @@ a{color:inherit;text-decoration:none}
     var a = rec["s" + n] || [], h = "", k, it, u, now;
     var pc = (rec.pct && rec.pct[n] != null) ? rec.pct[n] : 100;
     h += '<section class="sidep glass cg" data-s="' + n + '"><div class="thd"><span class="h2">' + esc(Nm(n, rec.nm || {})) + '</span>'
-      + '<span class="pcx">' + (pc !== 100 ? "at " + pc + "%" : "") + '</span><span class="gap"></span>'
+      + '<span class="pcx">' + (pc !== 100 ? "at " + Number(pc) + "%" : "") + '</span><span class="gap"></span>'
       + '<span class="tot">' + esc(tlMoney(tlTotal(rec, n), rec)) + '</span></div>';
     if(!a.length) h += '<div class="sempty">Nothing on this side.</div>';
     for(k = 0; k < a.length; k++){
@@ -1383,7 +1409,7 @@ a{color:inherit;text-decoration:none}
       else if(u !== null) now = "now " + now;
       h += '<div class="lrow"><span class="art">' + thumbImg(it.i) + '</span>'
         + '<span class="lmid"><span class="lnm">' + esc(it.n) + '</span>'
-        + '<span class="lsub">' + esc(it.s) + ' &middot; ' + it.q + ' &times; ' + esc(tlMoney(it.u * (pc / 100), rec))
+        + '<span class="lsub">' + esc(it.s) + ' &middot; ' + Number(it.q) + ' &times; ' + esc(tlMoney(it.u * (pc / 100), rec))
         + (now ? '<span class="now">' + esc(now) + '</span>' : "") + '</span></span>'
         + '<span class="lamt">' + esc(tlMoney(it.u * (pc / 100) * it.q, rec)) + '</span></div>';
     }
@@ -1512,10 +1538,11 @@ a{color:inherit;text-decoration:none}
     have = {};
     for(k = 0; k < a.length; k++) have[a[k].at] = 1;
     for(k = 0; k < incoming.length; k++){
-      if(!incoming[k] || incoming[k].at == null) continue;
-      if(have[incoming[k].at]) continue;
-      have[incoming[k].at] = 1;
-      a.push(incoming[k]);
+      var r = tlClean(incoming[k]);
+      if(!r) continue;
+      if(have[r.at]) continue;
+      have[r.at] = 1;
+      a.push(r);
       added++;
     }
     a.sort(function(x, y){ return y.at - x.at; });

@@ -418,7 +418,7 @@ input[type="file"]{display:none}
   // paid: price paid for one, or null, pc: the currency it was paid in, cond: condition words }.
   // THE STORE (vir.coll.v1): { v: 1, ports: [{ id, name, items: [holding] }], wish: [holding], last: id }
   var KEY = "vir.coll.v1", SKEY = "vir.coll.set.v1";
-  var P = null, BYID = {}, SETS = {}, FX = 1.4, ART = null;
+  var P = null, BYID = Object.create(null), SETS = {}, FX = 1.4, ART = null;
   // S.loose: cards in the collection but in no binder (round 5, Mako: Collection is the whole, and a card
   // added there sits in no binder)
   var S = { v: 1, ports: [], wish: [], loose: [], last: "" };
@@ -431,8 +431,45 @@ input[type="file"]{display:none}
   function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
   function today(){ return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+  // A STORE FROM OUTSIDE (a restored backup, or what is saved here) is rebuilt from checked fields:
+  // a holding keeps a whole-number product id, a finish name and a whole count of one or more, or it
+  // is dropped; every other field is the type the page expects (M14: a shared backup cannot carry markup
+  // or break the page)
+  // the checked fields in the order the source had them, so a good store comes back exactly as it was
+  function inOrder(src, v){
+    var o = {}, k;
+    Object.keys(src).forEach(function(k){ if(Object.prototype.hasOwnProperty.call(v, k) && v[k] !== undefined) o[k] = v[k]; });
+    for(k in v){ if(v[k] !== undefined && !Object.prototype.hasOwnProperty.call(o, k)) o[k] = v[k]; }
+    return o;
+  }
+  function cleanHold(h){
+    if(!h || typeof h !== "object") return null;
+    h = Object.assign({}, h);
+    if(typeof h.i === "string" && /^\d{1,12}$/.test(h.i)) h.i = Number(h.i);
+    if(typeof h.q === "string" && /^\d{1,6}$/.test(h.q)) h.q = Number(h.q);
+    if(!(typeof h.i === "number" && isFinite(h.i) && h.i > 0 && Math.floor(h.i) === h.i)) return null;
+    if(typeof h.f !== "string" || !h.f || h.f.length > 60) return null;
+    if(!(typeof h.q === "number" && isFinite(h.q) && h.q >= 1 && Math.floor(h.q) === h.q)) return null;
+    var o = { id: typeof h.id === "string" && h.id ? h.id : uid(), i: h.i, f: h.f, q: h.q,
+      d: typeof h.d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(h.d) ? h.d : today(),
+      paid: typeof h.paid === "number" && isFinite(h.paid) && h.paid > 0 ? h.paid : null,
+      pc: h.pc === "USD" || h.pc === "CAD" ? h.pc : SET.cur,
+      cond: typeof h.cond === "string" ? h.cond : "" };
+    o.grade = typeof h.grade === "string" && h.grade ? h.grade : undefined;
+    return inOrder(h, o);
+  }
+  function cleanList(a){ var out = []; (Array.isArray(a) ? a : []).forEach(function(h){ var c = cleanHold(h); if(c) out.push(c); }); return out; }
+  function cleanStore(s){
+    if(!s || typeof s !== "object" || !Array.isArray(s.ports)) return null;
+    var ports = [];
+    s.ports.forEach(function(p){
+      if(!p || typeof p !== "object") return;
+      ports.push(inOrder(p, { id: typeof p.id === "string" && p.id ? p.id : uid(), name: typeof p.name === "string" && p.name ? p.name : "Binder", items: cleanList(p.items) }));
+    });
+    return inOrder(s, { v: 1, ports: ports, wish: cleanList(s.wish), loose: cleanList(s.loose), last: typeof s.last === "string" ? s.last : "" });
+  }
   function load(){
-    try{ var s = JSON.parse(localStorage.getItem(KEY)); if(s && Array.isArray(s.ports)){ S = s; S.wish = S.wish || []; S.loose = S.loose || []; } }catch(e){}
+    try{ var s = cleanStore(JSON.parse(localStorage.getItem(KEY))); if(s){ S = s; } }catch(e){}
     var cur = null;
     try{ var t = JSON.parse(localStorage.getItem("vir.trade.v1")); if(t && (t.cur === "USD" || t.cur === "CAD")) cur = t.cur; }catch(e){}
     if(cur) SET.cur = cur;
@@ -548,7 +585,7 @@ input[type="file"]{display:none}
     for(i = 0; i < out.length && out[i] == null; i++) out[i] = first == null ? 0 : first;
     return (FILLC[k] = out);
   }
-  function priceNow(i, f){ var c = BYID[i]; var p = c && c.p[f]; if(p == null && c){ var fs = Object.keys(c.p); p = fs.length ? c.p[fs[0]] : null; } return p == null ? 0 : Math.round(p * 100); }
+  function priceNow(i, f){ var c = BYID[i]; var p = c && c.p && c.p[f]; if(p == null && c && c.p){ var fs = Object.keys(c.p); p = fs.length ? c.p[fs[0]] : null; } return p == null ? 0 : Math.round(p * 100); }
   function nowCents(h){ return priceNow(h.i, h.f); }
   // the first day of a range: the earliest day on or after today minus N days
   function startIdx(r){
@@ -697,7 +734,7 @@ input[type="file"]{display:none}
   function tileHtml(x){
     var h = x.h, c = BYID[h.i], m = moveOf(h);
     return '<div class="ctile' + (isSel(x) ? " sel" : "") + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" aria-label="' + esc(c ? c.n : "") + '" data-k="card">' + (SEL ? CHECK : '') + img(c)
-      + '<span class="lq">x' + h.q + '</span></button>'
+      + '<span class="lq">x' + Number(h.q) + '</span></button>'
       + '<div class="tcap"><span class="tnm">' + esc(c ? c.n : "Unknown product") + '</span>'
       + '<span class="tpr"><b>' + money(nowCents(h) / 100) + '</b><span>' + (m ? pctChip(pctOf(m[0], m[1])) : "") + '</span></span>'
       + (h.q > 1 ? '<span class="ttot">' + money(h.q * nowCents(h) / 100) + ' for ' + h.q + '</span>' : '') + '</div></div>';
@@ -1005,7 +1042,7 @@ input[type="file"]{display:none}
     var n = bOwned(c.i, f), here = owned(c.i, f, target());
     if(!n) return '';
     var k = c.i + "|" + f, last = here === 1;
-    return '<span class="lq">x' + n + '</span><span class="lsteps"><button type="button" class="lpm glass' + (last ? " bin" : "") + '" data-bdn="' + esc(k) + '" aria-label="' + (!here ? "Held only in binders" : (last ? "Remove" : "One fewer")) + '"' + (here ? '' : ' disabled') + ' data-k="do">' + (last ? IC.bin : IC.minus) + '</button>'
+    return '<span class="lq">x' + Number(n) + '</span><span class="lsteps"><button type="button" class="lpm glass' + (last ? " bin" : "") + '" data-bdn="' + esc(k) + '" aria-label="' + (!here ? "Held only in binders" : (last ? "Remove" : "One fewer")) + '"' + (here ? '' : ' disabled') + ' data-k="do">' + (last ? IC.bin : IC.minus) + '</button>'
       + '<button type="button" class="lpm glass" data-bup="' + esc(k) + '" aria-label="One more" data-k="do">' + IC.plus + '</button></span>';
   }
   function brTile(r){
@@ -1100,7 +1137,7 @@ input[type="file"]{display:none}
       + '<p class="hfacts">' + (c ? facts(c, h.f).map(esc).join(" &middot; ") : "") + (c && setOf(c).n ? '<br>' + esc(setOf(c).n) : '') + '</p>'
       + '<p class="hnow" id="hnow">' + money(now / 100) + '</p><div class="hchg" id="hchg"></div>'
       + '<div class="chw glass" id="hchart"></div>'
-      + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count<small>' + (h.q > 1 ? money(h.q * now / 100) + " for " + h.q : money(now / 100) + " for one") + '</small></span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + h.q + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
+      + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count<small>' + (h.q > 1 ? money(h.q * now / 100) + " for " + h.q : money(now / 100) + " for one") + '</small></span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + Number(h.q) + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
       + (fs.length > 1 ? '<div class="row"><p class="lb">Finish</p><div class="seg" role="group" aria-label="Finish" id="hfin" data-k="pick">' + fs.map(function(f){ return '<button type="button" data-f="' + esc(f) + '" aria-pressed="' + (f === h.f) + '">' + esc(f) + '</button>'; }).join("") + '</div></div>' : '')
       + (HPORT !== "wish" ? '<div class="row"><p class="lb">Price paid for one</p><div class="nf"><input id="hpaid" type="text" inputmode="decimal" placeholder="Not set" value="' + (h.paid != null ? esc(Number(h.paid).toFixed(2)) : "") + '" data-k="type"><span class="unit">' + esc(h.paid != null ? h.pc : SET.cur) + '</span></div></div>'
         + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ", the first day RAVI has prices for: " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
@@ -1199,7 +1236,7 @@ input[type="file"]{display:none}
   function applyPlan(){
     var x = PLAN, first = null;
     if(!x || x.err) return;
-    if(x.backup){ S = x.backup.data; S.wish = S.wish || []; S.loose = S.loose || []; SET.view = "all"; saveSet(); }
+    if(x.backup){ S = cleanStore(x.backup.data) || S; SET.view = "all"; saveSet(); }
     else {
       x.order.forEach(function(pn){
         var p = null; S.ports.forEach(function(q){ if(q.name === pn) p = q; });
@@ -1355,7 +1392,7 @@ input[type="file"]{display:none}
     if(t.id === "fcsv") readFile(t, function(s){ PLAN = plan(s); showPlan(); });
     if(t.id === "fbak") readFile(t, function(s){
       var j = null; try{ j = JSON.parse(s); }catch(e){}
-      PLAN = j && j.app === "RAVI" && j.kind === "collection" && j.data && Array.isArray(j.data.ports) ? { backup: j } : { err: "That file is not a RAVI collection backup." };
+      PLAN = j && j.app === "RAVI" && j.kind === "collection" && cleanStore(j.data) ? { backup: j } : { err: "That file is not a RAVI collection backup." };
       showPlan();
     });
   });
