@@ -151,7 +151,7 @@ Colour
 - See-through chrome stays clear unless it shows what it is about. Chrome is what moves you around or sets things: the bar, the strip, Go to, a page's settings menus, and the sticky plates (the calendar month card, the trade, Decks and Rules plates). A plate may wear its subject's colours (the open deck's two domains, on a 145-degree band 30 wide, at .32; the deck blocks at .44). A menu that shows a page's own content (a Rules article) is content, coloured as the page codes it. The bar's you-are-here pill wears the page colour. (Mako's yes 2026-10-24)
 - Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240; Decks 80,230,170 (Mint); Collection 220,90,30 (Rust; Mako's yes 2026-10-25). Feedback, Rules and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game, Trade, Decks and Collection keep clear glass; Collection's bars and bar pill wear Rust.
 - Rules colours by section, never by the page: Current documents jade 0,190,140, Errata garnet 200,35,70, FAQs and rulings gold 255,200,40, wherever an entry shows (the page, search results, an opened article). A new section takes its own palette colour. Always beside the words that name it. (Mako's yes 2026-10-24)
-- Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 is the Collection page (2026-10-25). A Soon block stays dim and grey (dim means disabled) until its page lands with its colour. The palette is these nine plus the players' blue and pink; a new colour use picks from it first.
+- Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 is the Collection page (2026-10-25). A new page brings its own colour. The palette is these nine plus the players' blue and pink; a new colour use picks from it first.
 - A card with no domain (colourless) uses the palette's White, 240,240,245, so White is no longer spare. (Mako's yes 2026-10-24)
 - Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
 - On a page colour, grey text inside glass is #DCDEE2, not --muted.
@@ -161,7 +161,7 @@ Colour
 Rule for every entry: a page may not set height, min-height, padding, border-radius or width on .door, .pact, .seg, .nf, .sf, .goto, .rec, .btn or .circ. [A]
 
 Page-local classes named in this file (not in app.css; each lives in the page file shown, and is not a Kit part):
-- index.html (hub): .blk .bi .bn .hubfoot .low
+- index.html (hub): .blk .blk.allp .bi .bn .hubfoot .low, the All pages tray #pall
 - calendar/index.html: .cell .dots .ev .evact .evhead .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .mk .mrow .spots .stick .tyrow
 - counter/index.html: .lgppic .lgptile .num .pass .rail .res .spot .tmv .win
 - trade/index.html: .bin .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .trow .udb .vd
@@ -254,7 +254,7 @@ Menus
 Go to (pages.js)
 - .goto: sunken track, corner 24, padding 4, gap 2, tiles .gt equal width, 60 high, icon 22, label 12. The current page is the chosen tile: a button with id="pnhere" and data-close.
 - Up to five tiles share one row. Past five they fill two even rows (6 as 3+3, 7 as 4+3, 8 as 4+4), each tile its usual size; app.css does this from the tile count, nothing for a page to do. [T] (Mako's yes 2026-10-10)
-- Fill it with RAVI_GOTO(container, hereId, rel, withHub). rel is "../" from a page folder. Pass withHub true only where the page has no Hub slot (the counter). Settings is never a tile.
+- Fill it with RAVI_GOTO(container, hereId, rel, withHub, withSettings). rel is "../" from a page folder. Pass withHub true only where the page has no Hub slot (the counter). Settings is never a tile, except in the hub's All pages tray (withSettings true), which lists every page.
     window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
     document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
 - RAVI_GOTO lists Hub (if withHub), then every RAVI_PAGES entry with a path, in order. A new page appears with no other edit.
@@ -267,7 +267,7 @@ Confirm and motion helpers
 - [hidden] always wins (display none).
 
 Icons (pages.js RAVI_ICON)
-- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, decks, collection, soon, settings), the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log, edit, add) and the info icon.
+- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, decks, collection, soon, settings, allpages), the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log, edit, add) and the info icon.
 - M13 icon pass (Mako 2026-10-26): Collection is a safe on feet (hinges on the left wall, the dial with its centre marked, the bolt running to the wall, filled or not), after Phosphor's vault on the app's line; Collection's Add is a card with a plus; Decks' page icon is its fanned cards turned so they fan up like a hand. Decks' warning mark is a solid triangle with its mark cut out (Material Symbols warning, filled), red (--over), always beside its words.
 - Each icon has an outline group (.ico) and a filled group (.icf); the filled one shows when its parent has .on. The hub drawing and the strip's two are one drawing in every state.
 - Gaps in a filled icon are real holes cut by a mask, so every mask id on a page is unique. RAVI_ICON numbers its own (rvm1, rvm2, ...). Static markup names its own: rvs-<page>-<what>, e.g. rvs-fb-set.
@@ -279,8 +279,8 @@ Icons (pages.js RAVI_ICON)
 The hub block (index.html)
 - .blk (rendered from RAVI_PAGES into nav#grid.grid): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 60 centred above the name .bn (Poppins 700 15). Link with data-k="do".
     <a class="blk glass" href="calendar/" style="--cl:255,176,32;--ci:...;" data-k="do"><span class="bi">icon</span><span class="bn">Events</span></a>
-- .blk.dead: a Soon slot, a div, dimmed (.4), inert.
-- The hub: eight blocks; a new page takes the first Soon slot; App settings stays last. Collection took the last Soon (2026-10-25): a ninth page needs a hub layout call first. On a phone narrower than 390, block names track -.02em so Collection fits whole (Mako's yes 2026-10-25). Plate .low.glass under the name .hubname (34, Poppins 800); hub footer .hubfoot (12 muted, Riot notice).
+- .blk.allp: All pages, a button in plain glass (no page colour), the nine-dot icon; it opens the All pages tray (#pall, the Go to tiles for every page, App settings last), sitting where a bar's tray would.
+- The hub: eight blocks, so the hub icon (the 3-3-2 grid) stays true. Seven are the viewer's picks (App settings, Hub blocks; RAVI_HUB_PICKS in pages.js), in page order; All pages is always the eighth and last. Default picks: Events, Game, Trade, Rules, Decks, Collection, App settings. A new page needs no hub slot: it is in All pages at once and can be picked. (Mako 2026-10-26) On a phone narrower than 390, block names track -.02em so Collection fits whole (Mako's yes 2026-10-25). Plate .low.glass under the name .hubname (34, Poppins 800); hub footer .hubfoot (12 muted, Riot notice).
 
 The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - In a browser tab every page shows only #ravigate, first in the body; html.gate hides every other child of the body. The page's own markup and scripts are untouched.
@@ -293,10 +293,10 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 
 ## 6. New page checklist (in this order)
 
-1. pages.js: edit the first Soon entry of RAVI_PAGES: id, name, path ("<id>/"), icon getter (RAVI_ICON name), rgb "r,g,b". Keep Settings last. Add the icon to the SVG table first if it is new.
+1. pages.js: add the page to RAVI_PAGES: id, name, path ("<id>/"), icon getter (RAVI_ICON name), rgb "r,g,b". Keep Settings last. Add the icon to the SVG table first if it is new.
 2. Make the folder <id>/ and index.html from the Kit: head as in section 5 (manifest link, theme-color #08090A, apple meta, fonts.css, app.css, pages.js), .wmrow, main wrapper, .lede or a glass plate, content, footer. The install screen comes with pages.js.
 3. The bar: an empty nav and its RAVI_BAR line (section 5), four slots in order, unused one dimmed. A Go to tray (#pnav) with the .goto filled by RAVI_GOTO, its script, and the double-tap guard script (copy the last script block of feedback/index.html unchanged: touchend, 320ms, 30px, buttons and links skipped, passive false).
-4. "Open the app to" (settings) and the hub read pages.js; nothing else to edit there.
+4. "Open the app to", Hub blocks (settings) and the hub's All pages read pages.js; nothing else to edit there. Add it to RAVI_HUB_DEFAULT only on Mako's say.
 5. Tests: drawn-test.js PAGES list (add [id, "<id>/"]); audit.js DRIVERS (add a run<Page> function to the DRIVERS map, or the generic fallback runs closed-only); m2-test.js page lists (T1, T8, T9, T18); m8-test.js PAGES; m96-test.js BARS (its slots and icons); a new fail-first test for the page's own logic (pattern of m6-test.js and m7-test.js: node <name>-test.js <app root>), added to the DEFAULT list in check.js.
 6. Run node check.js. Fix failures; never change a test or threshold to pass.
 7. Mako phone-checks after the green tick on GitHub's Pages build.
@@ -311,7 +311,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
 - One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides. Every bar is built by RAVI_BAR (pages.js) from the one icon table, so no page draws its own bar and a slot two pages share is the same copy. [T] (Mako's yes 2026-10-13)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
-- Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub and is never in Go to. [T]
+- Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub (a block when picked, always in All pages) and is never in Go to. [T]
 - App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
 - The Decks page is worked in, like the counter, and bends three defaults (Mako 2026-10-17): its card browser is a full-screen view, not a menu (the Collection page's too, the same bend; Mako's yes 2026-10-25); the page holds two screens, the list of decks and one deck; the add tile that ends a section in Edit wears a dashed outline.
 
@@ -351,12 +351,12 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
 - Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
-- Keys: vir.hub.open.v1 (page to open to), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
+- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
 
 Hub (index.html)
-- No bar. Name .hubname centred in .top (height max(260px, 42vh)); .low.glass plate with a curved top; nav#grid of eight blocks; the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
+- No bar. Name .hubname centred in .top (height max(260px, 42vh)); .low.glass plate with a curved top; nav#grid of up to eight blocks (the picks, then All pages); the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
 Calendar (calendar/index.html)
 - Sticky month card (.stick zero-height holder, .card, .hold spacer, arithmetic height), .mrow with month, year, the .hemi pair and the collapse chevron (#mtog).
 - Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and three round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evlink the event page), each a .circ with an aria-label and no words, all opening outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
@@ -373,7 +373,7 @@ Trade (trade/index.html)
 Feedback (feedback/index.html)
 - .lede, the form folded in one group under a Send feedback row (kind open; the Tally embed loads again when it opens), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
 App settings (settings/index.html)
-- .lede, two glass cards (.sts) holding a .shead and a .pick: Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row), then the footer credit. Reset in the bar's third slot, two taps; its fourth slot shows Soon, dimmed (Mako 2026-10-15).
+- .lede, three glass cards (.sts) holding a .shead and a .pick: Hub blocks (a pick-many list of every page, App settings included; up to seven on, an eighth refused with a note under the count line), Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row), then the footer credit. Reset in the bar's third slot, two taps, puts all three back; its fourth slot shows Soon, dimmed (Mako 2026-10-15).
 Rules (rules/index.html)
 - Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty) in a sticky .plate, then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, grouped by kind (Errata, then FAQs and rulings, each in its section's colour), names first, at most 40.
@@ -431,6 +431,7 @@ Decks (decks/index.html)
 - m13-test.js: the price history (data/hist). m13p-test.js to m13w-test.js: the Collection page and Mako's five rounds, and Owned and Missing on Decks.
 - m11zd-test.js to m11zh-test.js: the M11 consistency sweep and Mako's phone checks (Rules by section and NEW in place of Latest, clear chrome; Export in Deck settings as a cut track, round X, hub wordmark 48; Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
 - m11r-test.js to m11zc-test.js: the Decks refinement, one per round of Mako's notes (2026-10-18 to 23): the list plate, view row and section menus, printings from the price feed, Stats tiles, odds, Undo, runes at 12, badges, battlefields, counts, deck colours, the safe zone on every sticky plate, the Add cards plate, and changes painted in place.
+- m15-test.js: the hub picks: seven picks then All pages, bad saved values never break the hub, the All pages tray with every page, App settings' Hub blocks card and Reset.
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
