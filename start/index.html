@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="New to Riftbound? What the game is, how to try it, your first deck, and how events on Vancouver Island work.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>New here - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<style>
+/* New here (M15, 2026-10-27): a page for new players. Static words, no data read, so
+   nothing here can be fed from outside. Each section is a glass card: its head, a few
+   short paragraphs, then the row that goes further (another page: a deeper row with its
+   chevron; outside the app: a centred pill with the out-arrow, as Rules). Store-neutral: no store is named. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+#np{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.nsec{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
+.nsec .shead{margin:0 4px 6px}
+.ntx{margin:0 4px 10px;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
+.ntx b{font-family:var(--disp);font-weight:600}
+.nsec .doors{margin-top:12px}
+/* a lone action that leaves the app is a centred pill (STYLE: an action row needs deeper rows beside it), with Rules' out-arrow at row size */
+.nsec .pact{margin-top:12px}
+.extl{flex:0 0 auto;stroke-linecap:round;stroke-linejoin:round;fill:none} /* its size and line on a pill: app.css .pact .extl */
+.foot a{color:var(--bone)}
+</style>
+</head>
+<body>
+<div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+<main id="np">
+  <h2 class="sr">New here</h2>
+  <p class="lede">New to Riftbound? What the game is, how to try it, and how events on the island work.</p>
+
+  <section class="nsec glass" id="what">
+    <div class="shead"><h2>What Riftbound is</h2></div>
+    <p class="ntx">Riftbound is Riot Games' trading card game, set in the world of League of Legends. Most games are one against one; some events play two against two or free-for-all.</p>
+    <p class="ntx">You score points by taking battlefields (conquering) and keeping them into your next turn (holding). 8 points wins a standard game.</p>
+  </section>
+
+  <section class="nsec glass" id="try">
+    <div class="shead"><h2>Try it first</h2></div>
+    <p class="ntx">Look for a <b>Learn-to-Play</b> event. It is not a tournament and has no rounds: the store teaches the game, often with decks to borrow. Ask the store before you go.</p>
+    <div class="doors"><a class="door" href="../calendar/" data-k="deeper"><span class="t">Find events</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+  </section>
+
+  <section class="nsec glass" id="deck">
+    <div class="shead"><h2>Your first deck</h2></div>
+    <p class="ntx">A ready-to-play deck is the easy start. Ask your store what is in stock.</p>
+    <p class="ntx"><b>Champion Deck:</b> one deck, ready to play.<br><b>Showdown Deck:</b> two decks, to play a friend.<br><b>Proving Grounds:</b> four decks, for a group.</p>
+    <p class="ntx">Every deck has a Legend, a Chosen Champion, a Main deck of 40 cards (up to 3 copies of a card), 12 runes and 3 battlefields.</p>
+    <div class="doors"><a class="door" href="../decks/" data-k="deeper"><span class="t">Build or import a deck</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+  </section>
+
+  <section class="nsec glass" id="signup">
+    <div class="shead"><h2>Signing up for events</h2></div>
+    <p class="ntx">Events are listed on PlayRiftbound.com. Sign in there with a Riot account, the one Riot's games share, and register for the event.</p>
+    <p class="ntx">On the day, your pairings are there too, and you report your results on your phone. Some stores charge a small entry fee; the event shows it.</p>
+    <a class="pact btn glass" href="https://playriftbound.com/en-US/" target="_blank" rel="noopener" data-k="do">PlayRiftbound.com<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></a>
+  </section>
+
+  <section class="nsec glass" id="kinds">
+    <div class="shead"><h2>Kinds of events</h2></div>
+    <p class="ntx"><b>Learn-to-Play:</b> learn the game. No rounds, not a tournament.</p>
+    <p class="ntx"><b>Open Play:</b> casual games at the store.</p>
+    <p class="ntx"><b>Nexus Nights:</b> the weekly store night. The store picks the format, and players get a promo pack while they last.</p>
+    <p class="ntx"><b>Pre-Rift:</b> a new set a week before release. You build a deck at the event from a kit (Sealed), so no deck is needed.</p>
+    <p class="ntx"><b>Summoner Skirmish:</b> competitive. Your own deck, best of 3, Swiss rounds and sometimes a top cut. Winners earn a bye at a Regional Qualifier.</p>
+  </section>
+
+  <section class="nsec glass" id="bring">
+    <div class="shead"><h2>What to bring</h2></div>
+    <p class="ntx">Your deck, ideally in card sleeves.<br>Your phone, signed in to PlayRiftbound, for pairings and results.<br>A way to keep score: the Game page counts points and keeps the round clock.</p>
+    <div class="doors"><a class="door" href="../counter/" data-k="deeper"><span class="t">Game</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+  </section>
+
+  <section class="nsec glass" id="rules">
+    <div class="shead"><h2>The rules</h2></div>
+    <p class="ntx">Riot's Core Rules, Tournament Rules, errata and FAQs, kept up to date.</p>
+    <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+  </section>
+
+  <footer class="foot">
+    <p>Product names and event kinds as Riot and its organised play guide give them; what a store runs and stocks is up to the store. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
+    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
+  </footer>
+</main>
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"start"},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
+]);</script>
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<script>
+(function(){
+  // One menu on this page, the Go to list. While it is open the page is
+  // locked at the root (html.lock in app.css); the body is never pinned.
+  var pnav = document.getElementById("pnav"), scrim = document.getElementById("scrim"), open = false;
+  function set(on){
+    open = on;
+    if (on) { pnav.classList.add("show"); scrim.classList.add("show"); document.documentElement.classList.add("lock"); }
+    else { pnav.classList.remove("show"); scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
+    pnav.setAttribute("aria-hidden", on ? "false" : "true");
+  }
+  document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
+  window.RAVI_GOTO(document.getElementById("pnavgoto"), "start", "../");
+  var here = document.getElementById("pnhere");
+  if (here) { here.addEventListener("click", function(){ set(false); }); }
+  scrim.addEventListener("click", function(){ set(false); });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>

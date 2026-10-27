@@ -25,6 +25,9 @@ window.RAVI_ICON = (function(){
     // Collection: a safe on feet, hinges on the left wall, its dial and bolt (M13 icon pass, Mako's
     // pick 2026-10-26: after Phosphor's vault, MIT, redrawn on the app's line and centred on 12)
     collection: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><rect width="19" height="16" x="3" y="3" rx="2"/><path d="M6.5 19v2M18.5 19v2M2 7v2M2 13v2"/><circle cx="13.5" cy="11" r="3.5"/><path d="M17 11h5"/><path d="M13.5 11h.01" style="stroke-width:calc(var(--sw,2)*1.3)"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect width="19" height="16" x="3" y="3" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 19v2M18.5 19v2M2 7v2M2 13v2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13.5" cy="11" r="3.5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 11h5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 11h.01" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
+    // New here (M15, 2026-10-27): Lucide's sprout (ISC), provisional until the next icon pass;
+    // the filled twin fills both leaves.
+    start: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></g><g class="icf"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4z" fill="currentColor"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4z" fill="currentColor"/><path d="M16 9a4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M5 21h14"/></g></svg>',
     // All pages (M15, 2026-10-26): nine dots, the hub's eighth block; one drawing in every state,
     // round where the hub grid is square, so the two never read alike.
     allpages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="19.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="19.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="19.5" r="2.4" fill="currentColor" stroke="none"/></svg>',
@@ -66,6 +69,7 @@ window.RAVI_PAGES = [
   {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, rgb:"0,190,140", glass:true},
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, rgb:"80,230,170"},
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, rgb:"220,90,30"},
+  {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, rgb:"70,185,235", glass:true},
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
 ];
 
@@ -77,7 +81,9 @@ window.RAVI_PAGES = [
 // back to the default. RAVI_HUB_PICKS() returns the ids in page order, whatever order was saved.
 window.RAVI_HUB_KEY = "vir.hub.blocks.v1";
 window.RAVI_HUB_MAX = 7;
-window.RAVI_HUB_DEFAULT = ["calendar", "counter", "trade", "rules", "decks", "collection", "settings"];
+// New here took App settings' default place (2026-10-27): a newcomer sees it first; App settings
+// stays in All pages and can be picked back.
+window.RAVI_HUB_DEFAULT = ["calendar", "counter", "trade", "rules", "decks", "collection", "start"];
 window.RAVI_HUB_PICKS = function(){
   var pages = window.RAVI_PAGES || [], raw = null, list, want = {}, out = [], i;
   try { raw = localStorage.getItem(window.RAVI_HUB_KEY); } catch (e) {}
