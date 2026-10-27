@@ -15,10 +15,11 @@
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
 <style>
-/* New here (M15, 2026-10-27): a page for new players. Static words, no data read, so
-   nothing here can be fed from outside. Each section is a glass card: its head, a few
-   short paragraphs, then the row that goes further (another page: a deeper row with its
-   chevron; outside the app: a centred pill with the out-arrow, as Rules). Store-neutral: no store is named. */
+/* New here (M15, 2026-10-27): two guides, New to Riftbound and New to RAVI (Mako's notes
+   2026-10-27), on one track. Static words, no data read, so nothing here can be fed from
+   outside. Each section is a glass card: its head, a few short paragraphs, then the row
+   that goes to the page it talks about. Store-neutral: no store is named. #ravi in the
+   address opens the RAVI guide. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
@@ -29,9 +30,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ntx{margin:0 4px 10px;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
 .ntx b{font-family:var(--disp);font-weight:600}
 .nsec .doors{margin-top:12px}
-/* a lone action that leaves the app is a centred pill (STYLE: an action row needs deeper rows beside it), with Rules' out-arrow at row size */
-.nsec .pact{margin-top:12px}
-.extl{flex:0 0 auto;stroke-linecap:round;stroke-linejoin:round;fill:none} /* its size and line on a pill: app.css .pact .extl */
+/* the guide track: New to Riftbound | New to RAVI; one guide shows at a time */
+.gsel{margin:16px 0 0}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -39,8 +39,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
 <main id="np">
   <h2 class="sr">New here</h2>
-  <p class="lede">New to Riftbound? What the game is, how to try it, and how events on the island work.</p>
+  <p class="lede">New to Riftbound, or new to RAVI? Pick a guide.</p>
+  <div class="seg gsel" role="group" aria-label="Guide" id="gsel" data-k="pick"><button type="button" aria-pressed="true" data-g="rb">New to Riftbound</button><button type="button" aria-pressed="false" data-g="ravi">New to RAVI</button></div>
 
+  <div class="guide" id="grb">
   <section class="nsec glass" id="what">
     <div class="shead"><h2>What Riftbound is</h2></div>
     <p class="ntx">Riftbound is Riot Games' trading card game, set in the world of League of Legends. Most games are one against one; some events play two against two or free-for-all.</p>
@@ -63,9 +65,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   <section class="nsec glass" id="signup">
     <div class="shead"><h2>Signing up for events</h2></div>
-    <p class="ntx">Events are listed on PlayRiftbound.com. Sign in there with a Riot account, the one Riot's games share, and register for the event.</p>
-    <p class="ntx">On the day, your pairings are there too, and you report your results on your phone. Some stores charge a small entry fee; the event shows it.</p>
-    <a class="pact btn glass" href="https://playriftbound.com/en-US/" target="_blank" rel="noopener" data-k="do">PlayRiftbound.com<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></a>
+    <p class="ntx">Find the event on the Events page and tap it. Its buttons give directions, add it to your calendar, and open its event page on PlayRiftbound.com, where you register. Sign in there with a Riot account, the one Riot's games share.</p>
+    <p class="ntx">On the day, your pairings are on PlayRiftbound too, and you report your results on your phone. Some stores charge a small entry fee; the event shows it.</p>
+    <div class="doors"><a class="door" href="../calendar/" data-k="deeper"><span class="t">Find an event</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
   </section>
 
   <section class="nsec glass" id="kinds">
@@ -79,7 +81,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   <section class="nsec glass" id="bring">
     <div class="shead"><h2>What to bring</h2></div>
-    <p class="ntx">Your deck, ideally in card sleeves.<br>Your phone, signed in to PlayRiftbound, for pairings and results.<br>A way to keep score: the Game page counts points and keeps the round clock.</p>
+    <p class="ntx">Your deck, ideally in card sleeves.<br>Your phone, signed in to PlayRiftbound, for pairings and results.<br>A way to keep score.</p>
+    <p class="ntx">The Game page keeps score and the round clock, and is fine for casual play. At higher-level events, Riot's Tournament Rules ask for score kept in writing, with no phones or dice, so bring a pen and paper.</p>
     <div class="doors"><a class="door" href="../counter/" data-k="deeper"><span class="t">Game</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
   </section>
 
@@ -88,6 +91,28 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="ntx">Riot's Core Rules, Tournament Rules, errata and FAQs, kept up to date.</p>
     <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
   </section>
+  </div>
+
+  <div class="guide" id="gravi" hidden>
+  <section class="nsec glass" id="about">
+    <div class="shead"><h2>What RAVI is</h2></div>
+    <p class="ntx">A free app for the Riftbound scene on Vancouver Island. It covers every store's events, and it runs from your Home Screen.</p>
+    <p class="ntx">What you save (decks, collection, matches, settings) stays on this phone. There are no accounts.</p>
+  </section>
+
+  <section class="nsec glass" id="around">
+    <div class="shead"><h2>Getting around</h2></div>
+    <p class="ntx">The hub is where the app opens. Its blocks are your seven picks, and its last block, <b>All pages</b>, opens every page.</p>
+    <p class="ntx">Every other page has the same bar along the bottom, in the same order: Hub, Go to (any page), the page's own action, and its settings.</p>
+    <p class="ntx">App settings picks the hub's blocks and the page the app opens to.</p>
+    <div class="doors"><a class="door" href="../settings/" data-k="deeper"><span class="t">App settings</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+  </section>
+
+  <section class="nsec glass" id="pages">
+    <div class="shead"><h2>The pages</h2></div>
+    <div class="doors"><a class="door rec" href="../calendar/" data-k="deeper"><span class="t">Events</span><small>Every island event by day. Filter by area, store and kind; Follow a store to get its events in your phone's calendar.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../counter/" data-k="deeper"><span class="t">Game</span><small>Keep score for a match, with a round clock and a log. Tag a match to its event to keep a record.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../trade/" data-k="deeper"><span class="t">Trade</span><small>Add cards to both sides and see their market value, at the percentages you set. Save trades for later.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../decks/" data-k="deeper"><span class="t">Decks</span><small>Build or import a deck. Riot's deck rules are checked as you go, with stats and a sample hand.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../collection/" data-k="deeper"><span class="t">Collection</span><small>Track the cards you own, in binders and a wishlist, with their value over time. Imports from Collectr.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../rules/" data-k="deeper"><span class="t">Rules</span><small>Riot's documents, errata and FAQs. NEW marks what changed since your last visit.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../feedback/" data-k="deeper"><span class="t">Feedback</span><small>Tell us about a bug, a wrong or missing event, or an idea.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+  </section>
+  </div>
 
   <footer class="foot">
     <p>Product names and event kinds as Riot and its organised play guide give them; what a store runs and stocks is up to the store. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
@@ -101,6 +126,25 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
+<script>
+(function(){
+  // THE GUIDE TRACK. One guide shows at a time; the address keeps it (#ravi) so a link or a
+  // reload lands on the same one.
+  var sel = document.getElementById("gsel"), g = { rb: document.getElementById("grb"), ravi: document.getElementById("gravi") };
+  function show(k, keep){
+    if (!g[k]) { k = "rb"; }
+    var b = sel.querySelectorAll("button");
+    for (var i = 0; i < b.length; i++) { b[i].setAttribute("aria-pressed", b[i].getAttribute("data-g") === k ? "true" : "false"); }
+    g.rb.hidden = k !== "rb"; g.ravi.hidden = k !== "ravi";
+    if (!keep) { try { history.replaceState(null, "", k === "ravi" ? "#ravi" : location.pathname + location.search); } catch (e) {} }
+  }
+  sel.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest("button") : null;
+    if (t) { show(t.getAttribute("data-g")); window.scrollTo(0, 0); }
+  });
+  show(location.hash === "#ravi" ? "ravi" : "rb", true);
+})();
+</script>
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>

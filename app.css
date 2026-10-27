@@ -322,7 +322,6 @@ html.lock,html.lock body{overflow:hidden}
 .door.act .cvr{display:none}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .pact .cvr{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2} /* a row chevron in a pill keeps its row size */
-.pact .extl{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2} /* so does the out-arrow (Rules' .extl) on a pill that leaves the app (New here, M15) */
 .circ .chev{width:18px;height:18px;stroke-width:2.4} /* a chevron in a round button matches Back and the month arrows */
 
 /* GO TO: the page-picker tiles, built by pages.js's RAVI_GOTO from
