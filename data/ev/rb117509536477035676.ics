@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117509536477035676@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261031T180000
+DTEND;TZID=America/Vancouver:20261031T210000
+SUMMARY:Halloween Nexus night
+LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
+DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n16 of 16 spots left\
+ nFree\nSign up: https://playriftbound.com/en-US/events/117509536477035676
+URL:https://playriftbound.com/en-US/events/117509536477035676
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

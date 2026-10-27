@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-26T19:03:33.626Z",
- "generated_local": "2026-10-26T12:03:33-07:00",
+ "generated_at": "2026-10-27T06:02:36.747Z",
+ "generated_local": "2026-10-26T23:02:36-07:00",
  "window_start": "2026-10-26T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 23,
-   "added": 23
+   "returned": 25,
+   "added": 25
   },
   {
    "name": "Courtenay",
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 31,
-  "unique": 31,
-  "prev_unique": 33
+  "fetched": 33,
+  "unique": 33,
+  "prev_unique": 31
  },
  "unknown_templates": {},
  "old_feed_error": null,
@@ -67,7 +67,7 @@
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 2,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -89,7 +89,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 0,
+   "reg": 1,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -97,6 +97,50 @@
    "wins": null,
    "sid": 18437,
    "store": "North Park Framing"
+  },
+  {
+   "id": "rb117509536477035676",
+   "name": "Halloween Nexus night",
+   "type": "nexus",
+   "start": "2026-10-31T18:00:00-07:00",
+   "end": null,
+   "day": "2026-10-31",
+   "time": "6:00 PM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games"
+  },
+  {
+   "id": "rb117509539459382429",
+   "name": "Sunday morning nexus night",
+   "type": "nexus",
+   "start": "2026-11-01T12:30:00-07:00",
+   "end": null,
+   "day": "2026-11-01",
+   "time": "12:30 PM",
+   "venue": "Everything Games",
+   "city": "Victoria",
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 600,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games"
   },
   {
    "id": "rb117454295314157802",
@@ -111,7 +155,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
