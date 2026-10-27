@@ -28,6 +28,9 @@ window.RAVI_ICON = (function(){
     // New here (M15, 2026-10-27): Lucide's sprout (ISC), provisional until the next icon pass;
     // the filled twin fills both leaves.
     start: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></g><g class="icf"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4z" fill="currentColor"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4z" fill="currentColor"/><path d="M16 9a4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M5 21h14"/></g></svg>',
+    // Top cut (M15, 2026-10-27): Lucide's trophy (ISC), provisional until the next icon pass; the
+    // filled twin fills the cup.
+    cut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></g><g class="icf"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" fill="currentColor"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></g></svg>',
     // All pages (M15, 2026-10-26): nine dots, the hub's eighth block; one drawing in every state,
     // round where the hub grid is square, so the two never read alike.
     allpages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="19.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="19.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="19.5" r="2.4" fill="currentColor" stroke="none"/></svg>',
@@ -70,6 +73,7 @@ window.RAVI_PAGES = [
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, rgb:"80,230,170"},
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, rgb:"220,90,30"},
   {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, rgb:"70,185,235", glass:true},
+  {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, rgb:"170,210,60"},
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
 ];
 

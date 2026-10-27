@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Top cut calculator for Riftbound: will your record make the cut, and can you draw in?">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Top cut - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<script src="cut.js"></script>
+<style>
+/* Top cut (M15, 2026-10-27): will a record make the top cut. The maths is cut.js (shared with the
+   tests); this page holds the inputs and draws the answers. Three glass cards: the event, your
+   record, your finishes. Every number is a stepper (or the cut's track), so nothing is typed.
+   The event can be picked from the feed (the menu, or ?ev=<id> from the calendar's event card and
+   the Game page), which fills the players and the usual rounds and cut, and your record from the
+   matches the Game page tagged to it. Feed fields are rebuilt from checked values and escaped. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+#tc{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.csec{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
+.csec .shead{margin:0 4px 10px}
+.csec .doors{margin-bottom:10px}
+/* a stepper row: the name, then minus, the value, plus */
+.srows{background:var(--recess);border-radius:22px;overflow:hidden}
+.srow{display:flex;align-items:center;gap:8px;min-height:var(--sz-row);padding:4px 6px 4px 16px;box-sizing:border-box;font-family:var(--disp);font-weight:600;font-size:15px}
+.srow + .srow{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.srow .sp{flex:1}
+.sv{min-width:36px;text-align:center;font-family:var(--disp);font-weight:600;font-size:15px}
+.cseg{margin-top:10px}
+.cnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+/* the finishes: the record and how, then the worst case and the likely one */
+.fh,.fr{display:grid;grid-template-columns:1fr 92px 92px;gap:6px;align-items:center}
+.fh{margin:0 4px 6px;font-size:12px;color:var(--muted)}
+.fh span:not(:first-child){text-align:center}
+.flist{background:var(--recess);border-radius:22px;overflow:hidden}
+.fr{min-height:var(--sz-row);padding:7px 8px 7px 16px;box-sizing:border-box}
+.fr + .fr{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.fr b{display:block;font-family:var(--disp);font-weight:600;font-size:15px}
+.fr small{display:block;font-size:12px;color:var(--muted)}
+/* a verdict: its word and its mark carry it; the tint only helps */
+.vd{display:flex;align-items:center;justify-content:center;gap:4px;height:28px;border-radius:999px;font-family:var(--disp);font-weight:600;font-size:12px;color:var(--bone)}
+.vd svg{width:12px;height:12px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.vd.in{background:rgba(80,230,170,.24)}
+.vd.ties{background:rgba(255,200,40,.24)}
+.vd.out{background:rgba(255,255,255,.06);color:var(--muted)}
+.fmore{margin:10px 4px 0;font-size:12px;color:var(--muted)}
+/* the event menu's rows carry two lines */
+#evl button{flex-direction:column;align-items:flex-start;text-align:left;justify-content:center;height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px;gap:2px}
+#evl button.on{padding-right:44px}
+#evl small{display:block;white-space:normal}
+.foot a{color:var(--bone)}
+</style>
+</head>
+<body>
+<div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+<main id="tc">
+  <h2 class="sr">Top cut</h2>
+  <p class="lede">Will your record make the top cut, and can you draw in? Every finish still open to you, worst case and likely.</p>
+
+  <section class="csec glass" id="sev">
+    <div class="shead"><h2>The event</h2></div>
+    <div class="doors"><button type="button" class="door" id="evbtn" aria-haspopup="true" aria-controls="pev" data-k="deeper"><span class="t">Event</span><span class="sp"></span><small id="evname">None picked</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    <div class="srows"><div class="srow"><span class="t">Players</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="n" data-d="-1" aria-label="One fewer players" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vn" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="n" data-d="1" aria-label="One more players" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div><div class="srow"><span class="t">Swiss rounds</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="r" data-d="-1" aria-label="One fewer swiss rounds" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vr" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="r" data-d="1" aria-label="One more swiss rounds" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div></div>
+    <div class="seg cseg" role="group" aria-label="Top cut" id="kseg" data-k="pick"><button type="button" data-k2="0" aria-pressed="false">None</button><button type="button" data-k2="2" aria-pressed="false">Top 2</button><button type="button" data-k2="4" aria-pressed="false">Top 4</button><button type="button" data-k2="8" aria-pressed="false">Top 8</button><button type="button" data-k2="16" aria-pressed="false">Top 16</button></div>
+    <p class="cnote" id="evnote">Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.</p>
+  </section>
+
+  <section class="csec glass" id="srec">
+    <div class="shead"><h2>Your record</h2><span class="sp"></span><span class="cnt" id="reccnt"></span></div>
+    <div class="srows"><div class="srow"><span class="t">Wins</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="w" data-d="-1" aria-label="One fewer wins" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vw" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="w" data-d="1" aria-label="One more wins" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div><div class="srow"><span class="t">Losses</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="l" data-d="-1" aria-label="One fewer losses" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vl" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="l" data-d="1" aria-label="One more losses" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div><div class="srow"><span class="t">Draws</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="d" data-d="-1" aria-label="One fewer draws" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vd" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="d" data-d="1" aria-label="One more draws" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div></div>
+    <p class="cnote" id="recnote" hidden></p>
+  </section>
+
+  <section class="csec glass" id="sfin">
+    <div class="shead"><h2>Your finishes</h2></div>
+    <div id="fin"></div>
+    <p class="cnote">Worst case: the other tables' last two rounds go the way that puts the most players level with you or ahead. Likely: every other match is played out and the player ahead wins it. A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1. Pairings are modelled, not the store's, so take it as a guide.</p>
+  </section>
+
+  <footer class="foot">
+    <p>Players from the event's registrations on PlayRiftbound; your record from the matches you tagged to it on the Game page. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
+    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
+  </footer>
+</main>
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"cut"},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
+]);</script>
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<section class="panel frost" id="pev" aria-hidden="true" aria-label="Event">
+  <div class="phead"><h4 class="ttl">Event</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="evl" data-k="pick"></div></div>
+</section>
+<script>
+(function(){
+  var C = window.RAVI_CUT, KEY = "vir.cut.v1", HKEY = "vir.counter.history.v1";
+  var $ = function(id){ return document.getElementById(id); };
+  var scrim = $("scrim"), pnav = $("pnav"), pev = $("pev"), openP = null;
+  function esc(v){ return String(v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
+  function get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function put(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+
+  // MENUS: Go to and the event list; one open at a time, the page locked at the root while open
+  function show(p){
+    if (openP && openP !== p) { openP.classList.remove("show"); openP.setAttribute("aria-hidden", "true"); }
+    if (!p && openP) { openP.classList.remove("show"); openP.setAttribute("aria-hidden", "true"); }
+    openP = p;
+    var on = !!p;
+    if (p) { p.classList.add("show"); p.setAttribute("aria-hidden", "false"); }
+    scrim.classList.toggle("show", on);
+    document.documentElement.classList.toggle("lock", on);
+  }
+  function hide(){ show(null); }
+  $("tabnav").addEventListener("click", function(){ if (openP === pnav) { hide(); } else { show(pnav); } });
+  window.RAVI_GOTO($("pnavgoto"), "cut", "../");
+  var here = $("pnhere");
+  if (here) { here.addEventListener("click", hide); }
+  scrim.addEventListener("click", hide);
+  pev.querySelector("[data-close]").addEventListener("click", hide);
+
+  // THE STATE, kept on this phone (vir.cut.v1) and rebuilt through cut.js's clean on load.
+  // rTouched and kTouched: the rounds or cut were set by hand, so a new player count leaves them.
+  var st = { n: 8, r: 3, k: 4, w: 0, l: 0, d: 0, ev: null, rT: false, kT: false }, evs = [], evInfo = null;
+  (function(){
+    var o = null;
+    try { o = JSON.parse(get(KEY) || "null"); } catch (e) { o = null; }
+    if (!o || typeof o !== "object") { o = {}; }
+    var c = C.clean(o);
+    st.n = c.n; st.r = c.r; st.k = c.k; st.w = c.w; st.l = c.l; st.d = c.d;
+    st.rT = o.rT === true; st.kT = o.kT === true;
+    st.ev = typeof o.ev === "string" && /^(rb)?\d{1,24}$/.test(o.ev) ? o.ev : null;
+    if (!o.n) { st.r = C.roundsFor(st.n); st.k = C.cutFor(st.n); }
+  })();
+  function save(){ put(KEY, JSON.stringify({ n: st.n, r: st.r, k: st.k, w: st.w, l: st.l, d: st.d, ev: st.ev, rT: st.rT, kT: st.kT })); }
+
+  // the Game page's matches, read as cut.js reads them (its own checks)
+  function games(){ try { var a = JSON.parse(get(HKEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+
+  // an event from the feed, rebuilt from checked fields
+  function cleanEv(e){
+    if (!e || typeof e !== "object" || typeof e.id !== "string" || !/^(rb)?\d{1,24}$/.test(e.id)) { return null; }
+    if (typeof e.day !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(e.day)) { return null; }
+    function txt(v){ return typeof v === "string" ? v.slice(0, 160) : ""; }
+    function num(v){ return typeof v === "number" && isFinite(v) && v >= 0 && v <= 100000 ? Math.floor(v) : null; }
+    return { id: e.id, day: e.day, name: txt(e.name) || "Event", venue: txt(e.venue), time: txt(e.time), start: txt(e.start), reg: num(e.reg), cap: num(e.cap) };
+  }
+  function today(){
+    var o = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" })
+      .formatToParts(new Date()).forEach(function(p){ o[p.type] = p.value; });
+    return o.year + "-" + o.month + "-" + o.day;
+  }
+
+  // picking an event: on its day, the players are its registrations (the field is set); before
+  // it, its spots (registrations are still coming in). Then the usual rounds and cut, and the
+  // record from the Game page's tagged matches.
+  function pick(e, fromLink){
+    evInfo = e; st.ev = e ? e.id : null;
+    if (e) {
+      var n = e.day <= today() && e.reg !== null && e.reg >= 2 ? e.reg : (e.cap !== null && e.cap >= 2 ? e.cap : (e.reg !== null && e.reg >= 2 ? e.reg : st.n));
+      st.n = Math.min(512, Math.max(2, n));
+      st.rT = false; st.kT = false;
+      st.r = C.roundsFor(st.n); st.k = C.cutFor(st.n);
+      var rec = C.recordFrom(games(), e.id);
+      if (rec.n) {
+        st.w = rec.w; st.l = rec.l; st.d = rec.d;
+        if (st.w + st.l + st.d > st.r) { st.r = Math.min(15, st.w + st.l + st.d); st.rT = true; }
+      } else if (!fromLink) { st.w = 0; st.l = 0; st.d = 0; }
+    }
+    save(); render();
+  }
+
+  function stepTo(id, d){
+    if (id === "n") {
+      st.n = Math.min(512, Math.max(2, st.n + d));
+      if (!st.rT) { st.r = C.roundsFor(st.n); }
+      if (!st.kT) { st.k = C.cutFor(st.n); }
+    } else if (id === "r") {
+      st.r = Math.min(15, Math.max(Math.max(1, st.w + st.l + st.d), st.r + d)); st.rT = true;
+    } else if (st.hasOwnProperty(id)) {
+      var v = Math.max(0, st[id] + d);
+      if (d > 0 && st.w + st.l + st.d >= st.r) { return; }
+      st[id] = v;
+    }
+    save(); render();
+  }
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-step]") : null;
+    if (b) { stepTo(b.getAttribute("data-step"), +b.getAttribute("data-d")); }
+  });
+  $("kseg").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("button") : null;
+    if (!b) { return; }
+    st.k = +b.getAttribute("data-k2"); st.kT = true; save(); render();
+  });
+
+  // THE EVENT MENU: today's and later events from the feed, then None
+  function listEvents(){
+    var t = today(), h = "", i;
+    var list = evs.filter(function(e){ return e.day >= t; });
+    for (i = 0; i < list.length; i++) {
+      var e = list[i], on = st.ev === e.id;
+      var who = e.reg !== null ? e.reg + (e.cap ? " of " + e.cap : "") + " registered" : "";
+      h += '<button type="button" data-ev="' + esc(e.id) + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span class="t">' + esc(e.name) + '</span><small>' +
+        esc([window.RAVI_DATE(e.day, true), e.time, e.venue, who].filter(Boolean).join(" \u00b7 ")) + '</small></button>';
+    }
+    if (!list.length) { h += '<button type="button" disabled aria-pressed="false">No events from today on</button>'; }
+    h += '<button type="button" data-ev=""' + (!st.ev ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>None</button>';
+    $("evl").innerHTML = h;
+  }
+  $("evbtn").addEventListener("click", function(){ listEvents(); show(pev); });
+  $("evl").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("button[data-ev]") : null;
+    if (!b) { return; }
+    var id = b.getAttribute("data-ev"), f = null, i;
+    for (i = 0; i < evs.length; i++) { if (evs[i].id === id) { f = evs[i]; } }
+    if (id === "") { evInfo = null; st.ev = null; save(); render(); }
+    else if (f) { pick(f, false); }
+    hide();
+  });
+
+  // THE ANSWERS
+  var MARK = { in: '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7"/></svg>',
+    ties: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9h12M6 15h12"/></svg>',
+    out: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>' };
+  var WORD = { in: "In", ties: "Tiebreakers", out: "Out" };
+  function chip(v){ return '<span class="vd ' + v.verdict + '">' + MARK[v.verdict] + WORD[v.verdict] + '</span>'; }
+  function how(row, left){
+    if (!left) { return "Final"; }
+    var p = [];
+    if (row.w) { p.push("win " + row.w); }
+    if (row.d) { p.push("draw " + row.d); }
+    if (row.l) { p.push("lose " + row.l); }
+    var s = p.join(", ");
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  function render(){
+    var c = C.clean(st);
+    st.n = c.n; st.r = c.r; st.k = c.k; st.w = c.w; st.l = c.l; st.d = c.d;
+    ["n", "r", "w", "l", "d"].forEach(function(k){ $("v" + k).textContent = st[k]; });
+    var b = $("kseg").querySelectorAll("button");
+    for (var i = 0; i < b.length; i++) { b[i].setAttribute("aria-pressed", +b[i].getAttribute("data-k2") === st.k ? "true" : "false"); }
+    var played = st.w + st.l + st.d;
+    $("reccnt").textContent = "After round " + played + " of " + st.r;
+    $("evname").textContent = evInfo ? evInfo.name : (st.ev ? "Not in the feed" : "None picked");
+    var note = "Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.";
+    if (evInfo) {
+      var live = evInfo.day <= today();
+      note = (evInfo.reg !== null ? evInfo.reg + " registered" + (evInfo.cap ? " of " + evInfo.cap + " spots" : "") + " so far" + (live ? "." : "; players start at the spots until the day.") + " " : "") + note;
+    }
+    $("evnote").textContent = note;
+    var rec = st.ev ? C.recordFrom(games(), st.ev) : { n: 0 };
+    $("recnote").hidden = !rec.n;
+    $("recnote").textContent = rec.n ? "From the Game page: " + rec.n + (rec.n === 1 ? " match" : " matches") + " tagged to this event (" + rec.w + "-" + rec.l + "-" + rec.d + "). The steppers change it here only." : "";
+    var out = $("fin");
+    if (!st.k) { out.innerHTML = '<p class="cnote">No top cut: pick one above to see your finishes.</p>'; return; }
+    var s = C.scenarios(st), h = '<div class="fh"><span>Finish</span><span>Worst case</span><span>Likely</span></div><div class="flist">', shown = 0, rest = 0;
+    for (i = 0; i < s.rows.length; i++) {
+      var r = s.rows[i];
+      if (shown && r.worst.verdict === "out" && r.likely.verdict === "out" && s.rows[i - 1].worst.verdict === "out" && s.rows[i - 1].likely.verdict === "out") { rest++; continue; }
+      shown++;
+      h += '<div class="fr"><span><b>' + r.final.w + "-" + r.final.l + "-" + r.final.d + '</b><small>' + esc(how(r, s.left)) + ", " + r.pts + ' points</small></span>' + chip(r.worst) + chip(r.likely) + '</div>';
+    }
+    h += '</div>';
+    if (rest) { h += '<p class="fmore">Every finish below these is out.</p>'; }
+    out.innerHTML = h;
+  }
+
+  // ?ev=<id> from the calendar's event card or the Game page picks that event
+  var want = null;
+  try { want = new URLSearchParams(location.search).get("ev"); } catch (e) {}
+  if (want && !/^(rb)?\d{1,24}$/.test(want)) { want = null; }
+  render();
+  fetch("../data/events.json", { cache: "no-cache" }).then(function(r){ if (!r.ok) { throw new Error("http " + r.status); } return r.json(); }).then(function(j){
+    var a = j && Array.isArray(j.events) ? j.events : [], i, e;
+    evs = [];
+    for (i = 0; i < a.length; i++) { e = cleanEv(a[i]); if (e) { evs.push(e); } }
+    evs.sort(function(x, y){ return x.start < y.start ? -1 : (x.start > y.start ? 1 : 0); });
+    var id = want || st.ev, f = null;
+    for (i = 0; i < evs.length; i++) { if (evs[i].id === id) { f = evs[i]; } }
+    if (want && f) { pick(f, true); }
+    else { evInfo = f; render(); }
+    if (want) { try { history.replaceState(null, "", location.pathname); } catch (e2) {} }
+  }).catch(function(){ render(); });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>
