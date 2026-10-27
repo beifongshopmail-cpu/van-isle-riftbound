@@ -348,12 +348,10 @@ html.lock,html.lock body{overflow:hidden}
 .goto .gt svg{width:22px;height:22px}
 .goto .gt:active{background:var(--hi)}
 .goto .gt.on{background:var(--bone);color:var(--ink)}
-/* PAST FIVE TILES, TWO ROWS (M9). One row holds five; a sixth would
-   squeeze the labels past reading. From six on, the tiles fill two even
-   rows (6 as 3+3, 7 as 4+3, 8 as 4+4), each tile its usual size. */
-.goto:has(> .gt:nth-child(6)){grid-auto-flow:row;grid-template-columns:repeat(3,1fr)}
+/* never more than four across (Mako 2026-10-27): one row up to four; five and six as rows of
+   three; seven or more as rows of four, as many rows as it takes */
+.goto:has(> .gt:nth-child(5)){grid-auto-flow:row;grid-template-columns:repeat(3,1fr)}
 .goto:has(> .gt:nth-child(7)){grid-template-columns:repeat(4,1fr)}
-.goto:has(> .gt:nth-child(9)){grid-template-columns:repeat(5,1fr)}
 
 /* THE SUNKEN FIELD: one shape for every text input in a recessed track,
    with an optional single action at its right end (.fbtn, a "do", so it
