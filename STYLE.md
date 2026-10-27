@@ -181,7 +181,7 @@ Page shell (feedback/index.html, settings/index.html)
 - Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone.
     <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
 - Every page with words ends in the footer credit; a page showing what others publish (Calendar, Trade, Rules) ends it with "Something wrong or missing? Tell us." (Mako's yes 2026-10-16)
-- The support plate (.sup.glass, built by RAVI_SUPPORT in pages.js): who builds RAVI and the tip link, one copy on App settings (after Motion) and Feedback (after the store-neutral line). Head Support RAVI, a 56 round picture (img/mako.webp, size-exempt), name and a muted line, two short paragraphs in Mako's words, a centred pill out to his Ko-fi with the out-arrow (.pact .extl). (Mako 2026-10-27)
+- The support plate (.sup.glass, built by RAVI_SUPPORT in pages.js): who builds RAVI and the tip link, one copy on App settings (after Motion) and Feedback (at the bottom, under Recently shipped). Head Support RAVI, a 56 round picture (img/mako.webp, size-exempt), name and a muted line, two short paragraphs in Mako's words, a centred pill out to his Ko-fi with the out-arrow (.pact .extl). (Mako 2026-10-27)
 - A page that shows prices (Trade, Decks, Collection) starts its footer with the one price source line (RAVI_STAMP in pages.js: tcgcsv.com, the day, the rate) and says "Market price is a public benchmark, not an offer from any store." (Mako's yes 2026-10-25)
 
 Page head, section head, glass card (feedback/index.html)
@@ -255,7 +255,7 @@ Menus
 
 Go to (pages.js)
 - .goto: sunken track, corner 24, padding 4, gap 2, tiles .gt equal width, 60 high, icon 22, label 12. The current page is the chosen tile: a button with id="pnhere" and data-close.
-- Up to five tiles share one row. Past five they fill two even rows (6 as 3+3, 7 as 4+3, 8 as 4+4), each tile its usual size; app.css does this from the tile count, nothing for a page to do. [T] (Mako's yes 2026-10-10)
+- Never more than four tiles across (Mako 2026-10-27). Up to four share one row; five and six fill rows of three (3+2, 3+3); seven or more fill rows of four (7 as 4+3, 8 as 4+4, 9 as 4+4+1), each tile its usual size; app.css does this from the tile count, nothing for a page to do. [T] (Mako's yes 2026-10-10; four across 2026-10-27)
 - Fill it with RAVI_GOTO(container, hereId, rel, withHub, withSettings). rel is "../" from a page folder. Pass withHub true only where the page has no Hub slot (the counter). Settings is never a tile, except in the hub's All pages tray (withSettings true), which lists every page.
     window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
     document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
@@ -313,7 +313,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
 - One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides. Every bar is built by RAVI_BAR (pages.js) from the one icon table, so no page draws its own bar and a slot two pages share is the same copy. [T] (Mako's yes 2026-10-13)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
-- Go to lists the pages, tiles sharing the track evenly: one row up to five, two even rows past five. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub (a block when picked, always in All pages) and is never in Go to. [T]
+- Go to lists the pages, tiles sharing the track evenly, never more than four across: one row up to four, rows of three for five and six, rows of four past that. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub (a block when picked, always in All pages) and is never in Go to. [T]
 - App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
 - The Decks page is worked in, like the counter, and bends three defaults (Mako 2026-10-17): its card browser is a full-screen view, not a menu (the Collection page's too, the same bend; Mako's yes 2026-10-25); the page holds two screens, the list of decks and one deck; the add tile that ends a section in Edit wears a dashed outline.
 
