@@ -322,6 +322,19 @@ html.lock,html.lock body{overflow:hidden}
 .door.act .cvr{display:none}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .pact .cvr{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2} /* a row chevron in a pill keeps its row size */
+.pact .extl{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none} /* the out-arrow on a pill that leaves the app (the support plate) */
+/* THE SUPPORT PLATE (M15; pages.js RAVI_SUPPORT): App settings and Feedback. A glass card: head,
+   who (a 56 round picture, name, a muted line), two short paragraphs, the tip pill. */
+.sup{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
+.sup .shead{margin:0 4px 10px}
+.sup .shead h2{font-size:17px}
+.supwho{display:flex;align-items:center;gap:12px;margin:0 4px 10px}
+.supwho img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:0 0 auto} /* size-exempt: portrait image */
+.supwho span{display:flex;flex-direction:column;gap:2px}
+.supwho b{font-family:var(--disp);font-weight:700;font-size:15px}
+.supwho small{font-size:12px;color:var(--muted)}
+.suptx{margin:0 4px 10px;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
+.sup .pact{margin-top:12px}
 .circ .chev{width:18px;height:18px;stroke-width:2.4} /* a chevron in a round button matches Back and the month arrows */
 
 /* GO TO: the page-picker tiles, built by pages.js's RAVI_GOTO from

@@ -164,6 +164,21 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
   container.setAttribute("data-k", "pick");
 };
 
+// THE SUPPORT PLATE (M15, Mako 2026-10-27): who builds RAVI and a tip link, the same on App
+// settings and Feedback. Mako's words, lightly tidied; his picture (img/mako.webp, cropped to him
+// alone). The tip goes to his own Ko-fi, outside the app (Riot's policies: a link to a tip page
+// is fine). A page holds <section class="sup glass" id="support"></section> and calls
+// RAVI_SUPPORT(el, rel), rel "../" from a page folder.
+window.RAVI_SUPPORT_URL = "https://ko-fi.com/makosravi";
+window.RAVI_SUPPORT = function(el, rel){
+  if (!el) { return; }
+  el.innerHTML = '<div class="shead"><h2>Support RAVI</h2></div>' +
+    '<div class="supwho"><img src="' + rel + 'img/mako.webp" alt="Mako" width="56" height="56"><span><b>Mako</b><small>Builds RAVI on Vancouver Island</small></span></div>' +
+    '<p class="suptx">Hello, Mako here! I play Riftbound on Vancouver Island, and I build RAVI in my spare time so the local scene has one place for events, decks, trades and more.</p>' +
+    '<p class="suptx">RAVI is free, and always will be for the Island. If it helps you, a tip keeps it going. Always appreciated, never expected!</p>' +
+    '<a class="pact btn glass" href="' + window.RAVI_SUPPORT_URL + '" target="_blank" rel="noopener" data-k="do">Leave a tip on Ko-fi<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></a>';
+};
+
 // DATES AND TIMES, written one way on every page (M9.6 consistency sweep, 2026-10-16):
 // RAVI_DATE("2026-09-16") is "Sep 16, 2026"; RAVI_DATE(x, true) is the short "Sep 16".
 // RAVI_WHEN(ms) is "Oct 15, 8:01 PM", with the year after the day when it is not this year.
