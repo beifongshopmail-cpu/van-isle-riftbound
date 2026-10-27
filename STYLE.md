@@ -181,6 +181,7 @@ Page shell (feedback/index.html, settings/index.html)
 - Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone.
     <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
 - Every page with words ends in the footer credit; a page showing what others publish (Calendar, Trade, Rules) ends it with "Something wrong or missing? Tell us." (Mako's yes 2026-10-16)
+- The support plate (.sup.glass, built by RAVI_SUPPORT in pages.js): who builds RAVI and the tip link, one copy on App settings (after Motion) and Feedback (after the store-neutral line). Head Support RAVI, a 56 round picture (img/mako.webp, size-exempt), name and a muted line, two short paragraphs in Mako's words, a centred pill out to his Ko-fi with the out-arrow (.pact .extl). (Mako 2026-10-27)
 - A page that shows prices (Trade, Decks, Collection) starts its footer with the one price source line (RAVI_STAMP in pages.js: tcgcsv.com, the day, the rate) and says "Market price is a public benchmark, not an offer from any store." (Mako's yes 2026-10-25)
 
 Page head, section head, glass card (feedback/index.html)
@@ -374,7 +375,7 @@ Trade (trade/index.html)
 Feedback (feedback/index.html)
 - .lede, the form folded in one group under a Send feedback row (kind open; the Tally embed loads again when it opens), small print .fbn, "Recently shipped" list (.ship), footer. Bar action opens the form on its own page; Settings dimmed.
 App settings (settings/index.html)
-- .lede, three glass cards (.sts) holding a .shead and a .pick: Hub blocks (a pick-many list of every page, App settings included; up to seven on, an eighth refused with a note under the count line), Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row), then the footer credit. Reset in the bar's third slot, two taps, puts all three back; its fourth slot shows Soon, dimmed (Mako 2026-10-15).
+- .lede, three glass cards (.sts) holding a .shead and a .pick: Hub blocks (a pick-many list of every page, App settings included; up to seven on, an eighth refused with a note under the count line), Open the app to (rows from RAVI_PAGES plus Hub) and Motion (Opening animation, a check row), then the support plate, then the footer credit. Reset in the bar's third slot, two taps, puts all three back; its fourth slot shows Soon, dimmed (Mako 2026-10-15).
 Rules (rules/index.html)
 - Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty) in a sticky .plate, then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
 - An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, grouped by kind (Errata, then FAQs and rulings, each in its section's colour), names first, at most 40.
