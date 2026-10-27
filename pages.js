@@ -5,8 +5,8 @@
 // Remix Icon (Apache-2.0), Material Symbols (Apache-2.0) and Lucide (ISC); Trade is Material's
 // handshake as drawn (weight 600 = the 2-unit line; its .icb copy, weight 400, is the hub's).
 // Every page icon and every bar icon lives here (RAVI_BAR draws the bars from it). Most carry an
-// outline (.ico) and a filled (.icf) drawing (the hub grid, Soon, Reset and the strip's Undo and
-// Log are one drawing in every state); app.css shows the filled one while the slot is on.
+// outline (.ico) and a filled (.icf) drawing (the hub grid, All pages, Soon, Reset and the strip's
+// Undo and Log are one drawing in every state); app.css shows the filled one while the slot is on.
 // Outline lines set no width of their own, so the hub's thinner line reaches them all. A filled
 // drawing's gaps are cut by a mask ("@"), an outline overlap by a second one ("@b"); mask ids
 // must be unique on a page, so RAVI_ICON numbers each copy it hands out.
@@ -25,6 +25,9 @@ window.RAVI_ICON = (function(){
     // Collection: a safe on feet, hinges on the left wall, its dial and bolt (M13 icon pass, Mako's
     // pick 2026-10-26: after Phosphor's vault, MIT, redrawn on the app's line and centred on 12)
     collection: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><rect width="19" height="16" x="3" y="3" rx="2"/><path d="M6.5 19v2M18.5 19v2M2 7v2M2 13v2"/><circle cx="13.5" cy="11" r="3.5"/><path d="M17 11h5"/><path d="M13.5 11h.01" style="stroke-width:calc(var(--sw,2)*1.3)"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect width="19" height="16" x="3" y="3" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 19v2M18.5 19v2M2 7v2M2 13v2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13.5" cy="11" r="3.5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 11h5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.5 11h.01" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
+    // All pages (M15, 2026-10-26): nine dots, the hub's eighth block; one drawing in every state,
+    // round where the hub grid is square, so the two never read alike.
+    allpages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="4.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="12" r="2.4" fill="currentColor" stroke="none"/><circle cx="4.5" cy="19.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="12" cy="19.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="19.5" cy="19.5" r="2.4" fill="currentColor" stroke="none"/></svg>',
     soon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 9h6L12 12z" fill="currentColor" stroke="none"/><path d="M7 21.5V18.6Q12 16.4 17 18.6V21.5z" fill="currentColor" stroke="none"/><path d="M5 22h14M5 2h14"/><path d="M7 2v4.17a2 2 0 0 0 .59 1.41L12 12l4.41-4.41A2 2 0 0 0 17 6.17V2"/><path d="M17 22v-4.17a2 2 0 0 0-.59-1.41L12 12l-4.41 4.41A2 2 0 0 0 7 17.83V22"/></svg>',
     settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><mask id="@b" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><path d="M14.04 5.99a0.97 0.97 0 0 0 0 1.36l1.55 1.55a0.97 0.97 0 0 0 1.36 0l3.01 -3.01c0.31 -0.31 0.84 -0.21 0.95 0.21a5.81 5.81 0 0 1 -8 6.84l-7.67 7.67a0.97 0.97 0 0 1 -2.91 -2.91l7.67 -7.67a5.81 5.81 0 0 1 6.84 -8c0.42 0.12 0.52 0.64 0.21 0.95 z" fill="#000" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></mask><g mask="url(#@b)"><path d="M22.16 16.32A6.4 6.4 0 0 1 21.53 18.68Q17.48 17.57 18.58 21.62A6.4 6.4 0 0 1 16.23 22.25Q15.16 18.19 12.2 21.18A6.4 6.4 0 0 1 10.48 19.45Q13.46 16.5 9.4 15.43A6.4 6.4 0 0 1 10.03 13.08Q14.08 14.18 12.98 10.13A6.4 6.4 0 0 1 15.33 9.5Q16.4 13.56 19.36 10.58A6.4 6.4 0 0 1 21.08 12.3Q18.1 15.26 22.16 16.32 z"/><path d="M14.47 15.88a1.31 1.31 0 1 0 2.62 0a1.31 1.31 0 1 0 -2.62 0 z"/></g><path d="M14.04 5.99a0.97 0.97 0 0 0 0 1.36l1.55 1.55a0.97 0.97 0 0 0 1.36 0l3.01 -3.01c0.31 -0.31 0.84 -0.21 0.95 0.21a5.81 5.81 0 0 1 -8 6.84l-7.67 7.67a0.97 0.97 0 0 1 -2.91 -2.91l7.67 -7.67a5.81 5.81 0 0 1 6.84 -8c0.42 0.12 0.52 0.64 0.21 0.95 z"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M22.16 16.32A6.4 6.4 0 0 1 21.53 18.68Q17.48 17.57 18.58 21.62A6.4 6.4 0 0 1 16.23 22.25Q15.16 18.19 12.2 21.18A6.4 6.4 0 0 1 10.48 19.45Q13.46 16.5 9.4 15.43A6.4 6.4 0 0 1 10.03 13.08Q14.08 14.18 12.98 10.13A6.4 6.4 0 0 1 15.33 9.5Q16.4 13.56 19.36 10.58A6.4 6.4 0 0 1 21.08 12.3Q18.1 15.26 22.16 16.32 z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.47 15.88a1.31 1.31 0 1 0 2.62 0a1.31 1.31 0 1 0 -2.62 0 z" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.04 5.99a0.97 0.97 0 0 0 0 1.36l1.55 1.55a0.97 0.97 0 0 0 1.36 0l3.01 -3.01c0.31 -0.31 0.84 -0.21 0.95 0.21a5.81 5.81 0 0 1 -8 6.84l-7.67 7.67a0.97 0.97 0 0 1 -2.91 -2.91l7.67 -7.67a5.81 5.81 0 0 1 6.84 -8c0.42 0.12 0.52 0.64 0.21 0.95 z" fill="#000" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.04 5.99a0.97 0.97 0 0 0 0 1.36l1.55 1.55a0.97 0.97 0 0 0 1.36 0l3.01 -3.01c0.31 -0.31 0.84 -0.21 0.95 0.21a5.81 5.81 0 0 1 -8 6.84l-7.67 7.67a0.97 0.97 0 0 1 -2.91 -2.91l7.67 -7.67a5.81 5.81 0 0 1 6.84 -8c0.42 0.12 0.52 0.64 0.21 0.95 z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
     // bar slots (RAVI_BAR below): gear is the bar's Settings slot; the strip's three are the counter's
@@ -66,6 +69,34 @@ window.RAVI_PAGES = [
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
 ];
 
+// THE HUB PICKS (M15, Mako 2026-10-26). The hub holds eight blocks, so its icon stays true: seven
+// are the viewer's picks, set in App settings, and the eighth is always All pages, a tray with
+// every page. The picks live on this phone (vir.hub.blocks.v1, a list of page ids). No key: the
+// default seven. A saved value is rebuilt from checked fields on every read (M14's rule): only
+// ids of pages with a path count, once each, the first seven; anything that is not a list falls
+// back to the default. RAVI_HUB_PICKS() returns the ids in page order, whatever order was saved.
+window.RAVI_HUB_KEY = "vir.hub.blocks.v1";
+window.RAVI_HUB_MAX = 7;
+window.RAVI_HUB_DEFAULT = ["calendar", "counter", "trade", "rules", "decks", "collection", "settings"];
+window.RAVI_HUB_PICKS = function(){
+  var pages = window.RAVI_PAGES || [], raw = null, list, want = {}, out = [], i;
+  try { raw = localStorage.getItem(window.RAVI_HUB_KEY); } catch (e) {}
+  if (raw !== null) { try { list = JSON.parse(raw); } catch (e) { list = null; } }
+  if (!Array.isArray(list)) { list = window.RAVI_HUB_DEFAULT; }
+  for (i = 0; i < list.length; i++) { if (typeof list[i] === "string") { want[list[i]] = true; } }
+  for (i = 0; i < pages.length && out.length < window.RAVI_HUB_MAX; i++) {
+    if (pages[i].path && want.hasOwnProperty(pages[i].id)) { out.push(pages[i].id); }
+  }
+  return out;
+};
+// Saves a list of ids (page order), or clears the key with null.
+window.RAVI_HUB_SAVE = function(ids){
+  try {
+    if (ids === null) { localStorage.removeItem(window.RAVI_HUB_KEY); }
+    else { localStorage.setItem(window.RAVI_HUB_KEY, JSON.stringify(ids)); }
+  } catch (e) {}
+};
+
 // THE PAGE COLOUR (colour system, 2026-10-14). Every page's bar pill takes its RAVI_PAGES colour;
 // a page marked glass:true (Feedback, Rules, Settings) also tints its glass.
 // pages.js finds the page from its folder and sets --page (the rgb triple), --tint (the glass
@@ -105,7 +136,9 @@ window.RAVI_PAGES = [
 // through whichever mechanism that page already wired -- calendar and
 // feedback bind directly to #pnhere, trade delegates on [data-close].
 // Harmless on the page that does not use one of the two.
-window.RAVI_GOTO = function(container, hereId, rel, withHub){
+// App settings is never a Go to tile, except in the hub's All pages tray, which lists every
+// page (withSettings true; M15).
+window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
   if (!container) { return; }
   var HUB_ICON = window.RAVI_ICON("hub");
   var pages = window.RAVI_PAGES || [];
@@ -114,7 +147,7 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub){
   var h = withHub ? '<a class="gt' + (hereId === "hub" ? " on" : "") + '" href="' + rel + '?hub">' + HUB_ICON + '<span>Hub</span></a>' : '';
   for (var i = 0; i < pages.length; i++) {
     var p = pages[i];
-    if (!p.path || p.id === "settings") { continue; }
+    if (!p.path || (p.id === "settings" && !withSettings)) { continue; }
     if (p.id === hereId) {
       h += '<button type="button" class="gt on" id="pnhere" data-close>' + p.icon + '<span>' + p.name + '</span></button>';
     } else {

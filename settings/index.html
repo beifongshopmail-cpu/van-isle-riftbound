@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090A">
-<meta name="description" content="App settings for RAVI: where the app opens, and the opening animation.">
+<meta name="description" content="App settings for RAVI: the hub's blocks, where the app opens, and the opening animation.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RAVI">
@@ -32,6 +32,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .tab.armed{background:var(--glass-press)}
 .starm{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);text-align:center;visibility:hidden}
 .starm.show{visibility:visible}
+/* the Hub blocks note when an eighth pick is refused */
+.stwarn{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);visibility:hidden}
+.stwarn.show{visibility:visible}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -41,7 +44,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
 <main id="st">
   <h2 class="sr">App settings</h2>
-  <p class="lede">Choices for how the app opens and moves, saved on this phone.</p>
+  <p class="lede">Choices for the hub and for how the app opens and moves, saved on this phone.</p>
+  <section class="sts glass">
+    <div class="shead"><h2>Hub blocks</h2></div>
+    <div class="pick" id="sthub" data-k="pick"></div>
+    <p class="stn" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always opens every page.</p>
+    <p class="stwarn" id="sthubnote" aria-live="polite">Seven are on. Turn one off first.</p>
+  </section>
 
   <section class="sts glass">
     <div class="shead"><h2>Open the app to</h2></div>
@@ -97,14 +106,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </script>
 <script>
 (function(){
-  // THE SETTINGS. Both live on this phone only (local storage):
+  // THE SETTINGS. All live on this phone only (local storage):
+  //   vir.hub.blocks.v1 the hub's seven picks (pages.js RAVI_HUB_PICKS;
+  //                     no key: the default seven)
   //   vir.hub.open.v1   the page the app opens to (no key: the hub);
   //                     the hub's open-to check at its top reads it
   //   ravi.intro.off.v1 "1" turns the hub's launch intro off
-  // Reset (the bar's third slot) asks for a second tap, then removes both.
+  // Reset (the bar's third slot) asks for a second tap, then removes them all.
   var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1";
   var PAGES = window.RAVI_PAGES || [];
   var opento = document.getElementById("opento"), intro = document.getElementById("stintro");
+  var hubg = document.getElementById("sthub"), hubn = document.getElementById("sthubn"), hubw = document.getElementById("sthubnote"), hubT = 0;
   var reset = document.getElementById("streset"), armline = document.getElementById("starm");
   function get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
   function put(k, v){ try { if (v === null) { localStorage.removeItem(k); } else { localStorage.setItem(k, v); } } catch (e) {} }
@@ -117,6 +129,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       h += row(p.id, p.name, c === p.id);
     }
     opento.innerHTML = h;
+    // Hub blocks: one check row per page, App settings included, in page order
+    var picks = window.RAVI_HUB_PICKS(), on = {}, g = "", n;
+    for (n = 0; n < picks.length; n++) { on[picks[n]] = true; }
+    for (n = 0; n < PAGES.length; n++) {
+      if (!PAGES[n].path) { continue; }
+      g += '<button type="button" class="' + (on[PAGES[n].id] ? "on" : "") + '" aria-pressed="' + (on[PAGES[n].id] ? "true" : "false") + '" data-id="' + PAGES[n].id + '">' + PAGES[n].name + '</button>';
+    }
+    hubg.innerHTML = g;
+    hubn.textContent = picks.length + " of " + window.RAVI_HUB_MAX + " on. The hub's last block, All pages, always opens every page.";
     var on = !get(IKEY);
     intro.classList.toggle("on", on);
     intro.setAttribute("aria-pressed", on ? "true" : "false");
@@ -126,6 +147,24 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!t) { return; }
     var id = t.getAttribute("data-id");
     put(OKEY, id ? id : null);
+    render();
+  });
+  hubg.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest("button") : null;
+    if (!t) { return; }
+    var id = t.getAttribute("data-id"), picks = window.RAVI_HUB_PICKS(), at = picks.indexOf(id), out = [], m;
+    if (at === -1 && picks.length >= window.RAVI_HUB_MAX) {
+      hubw.classList.add("show"); clearTimeout(hubT);
+      hubT = setTimeout(function(){ hubw.classList.remove("show"); }, 3000);
+      return;
+    }
+    hubw.classList.remove("show");
+    // saved in page order
+    for (m = 0; m < PAGES.length; m++) {
+      if (!PAGES[m].path) { continue; }
+      if (PAGES[m].id === id ? at === -1 : picks.indexOf(PAGES[m].id) !== -1) { out.push(PAGES[m].id); }
+    }
+    window.RAVI_HUB_SAVE(out);
     render();
   });
   intro.addEventListener("click", function(){
@@ -140,7 +179,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       armT = setTimeout(disarm, 3000);
       return;
     }
-    put(OKEY, null); put(IKEY, null);
+    put(OKEY, null); put(IKEY, null); window.RAVI_HUB_SAVE(null);
     disarm();
     render();
   });
