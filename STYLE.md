@@ -149,9 +149,9 @@ Colour
 - The counter's domain runes are coloured glass (Mako 2026-10-16): Riot's rune file untouched, its white glyph over a disc of the domain colour at .90 with a lit top edge, a light rim and a soft shade at the foot. A named exception to the one-glass .30 rule.
 - Coloured glass (Mako 2026-10-15): a coloured surface carries its colour at --cg (.30) inside the glass, with the usual rim and base glow, frosted (blur 20, saturate 160%), and no solid base. One recipe (.cg, colour as --c) for hub blocks, event cards, trade side cards, Rules sections and a coloured page's glass. Fallback without blur: the same colour over --frost-solid. Plain glass inside glass is not frosted again.
 - See-through chrome stays clear unless it shows what it is about. Chrome is what moves you around or sets things: the bar, the strip, Go to, a page's settings menus, and the sticky plates (the calendar month card, the trade, Decks and Rules plates). A plate may wear its subject's colours (the open deck's two domains, on a 145-degree band 30 wide, at .32; the deck blocks at .44). A menu that shows a page's own content (a Rules article) is content, coloured as the page codes it. The bar's you-are-here pill wears the page colour. (Mako's yes 2026-10-24)
-- Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240; Decks 80,230,170 (Mint); Collection 220,90,30 (Rust; Mako's yes 2026-10-25); New here 70,185,235 (Sky; M15, 2026-10-27). Feedback, Rules, New here and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game, Trade, Decks and Collection keep clear glass; Collection's bars and bar pill wear Rust.
+- Page colours (Crown, Mako 2026-10-14): Events 255,200,40; Game 200,35,70; Trade 115,80,240; Feedback 40,95,240; Rules 0,190,140; Settings 205,220,240; Decks 80,230,170 (Mint); Collection 220,90,30 (Rust; Mako's yes 2026-10-25); New here 70,185,235 (Sky; M15, 2026-10-27); Top cut 170,210,60 (Lime; M15, 2026-10-27, provisional until the colour refinement). Feedback, Rules, New here and Settings colour their glass (glass:true in RAVI_PAGES); Events, Game, Trade, Decks and Collection keep clear glass; Collection's bars and bar pill wear Rust.
 - Rules colours by section, never by the page: Current documents jade 0,190,140, Errata garnet 200,35,70, FAQs and rulings gold 255,200,40, wherever an entry shows (the page, search results, an opened article). A new section takes its own palette colour. Always beside the words that name it. (Mako's yes 2026-10-24)
-- Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 is the Collection page (2026-10-25). A new page brings its own colour. Sky 70,185,235 is New here (2026-10-27). The palette is these ten plus the players' blue and pink; a new colour use picks from it first.
+- Reserved palette colours (Mako 2026-10-15, option B): Mint 80,230,170 is the Decks page (Mako 2026-10-17); Rust 220,90,30 is the Collection page (2026-10-25). A new page brings its own colour. Sky 70,185,235 is New here and Lime 170,210,60 is Top cut (2026-10-27). The palette is these eleven plus the players' blue and pink; a new colour use picks from it first.
 - A card with no domain (colourless) uses the palette's White, 240,240,245, so White is no longer spare. (Mako's yes 2026-10-24)
 - Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
 - On a page colour, grey text inside glass is #DCDEE2, not --muted.
@@ -167,6 +167,7 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - trade/index.html: .bin .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .trow .udb .vd
 - feedback/index.html: .fbn .fbody .fgrp .lead .ship
 - settings/index.html: .sts .starm .stwarn
+- cut/index.html: .csec .srows .srow .sv .cseg .cnote .fh .fr .flist .vd .fmore (the maths in cut/cut.js)
 - start/index.html: .nsec .ntx .gsel .guide (two guides on one track: New to Riftbound, New to RAVI; #ravi opens the second)
 - rules/index.html: .empty .extl .new .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
 - collection/index.html: .armed .art .bhead .bin1 .bopts .boot .bsr .brw .camt .cards .cchg .cempty .cend .cgrid .chip .chw .ck .cmid .cmv .cnm .cnote .cpic .crow .cseg .csub .ctile .cval .dvrow .dvseg .dvsort .fchip .first .hchg .hfacts .hgain .hnow .hpic .hrow .isum .lpm .lq .lsteps .more .mvbox .mvh .mvsep .owd .plate .psf .rot .sel .selp .stk .stp .tcap .tnm .toast .tpr .ttot
@@ -269,7 +270,7 @@ Confirm and motion helpers
 - [hidden] always wins (display none).
 
 Icons (pages.js RAVI_ICON)
-- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, decks, collection, soon, settings, allpages), the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log, edit, add) and the info icon.
+- 24 grid, 2-unit round lines, one corner size. RAVI_ICON(name) returns the svg for the page icons (hub, events, game, trade, feedback, rules, decks, collection, start, cut, soon, settings, allpages), the bar icons (gear, bell, saved, out, whatsnew, reset, undo, log, edit, add) and the info icon.
 - M13 icon pass (Mako 2026-10-26): Collection is a safe on feet (hinges on the left wall, the dial with its centre marked, the bolt running to the wall, filled or not), after Phosphor's vault on the app's line; Collection's Add is a card with a plus; Decks' page icon is its fanned cards turned so they fan up like a hand. Decks' warning mark is a solid triangle with its mark cut out (Material Symbols warning, filled), red (--over), always beside its words.
 - Each icon has an outline group (.ico) and a filled group (.icf); the filled one shows when its parent has .on. The hub drawing and the strip's two are one drawing in every state.
 - Gaps in a filled icon are real holes cut by a mask, so every mask id on a page is unique. RAVI_ICON numbers its own (rvm1, rvm2, ...). Static markup names its own: rvs-<page>-<what>, e.g. rvs-fb-set.
@@ -353,7 +354,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
 - Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
-- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), vir.start.guide.v1 (New here's last guide), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
+- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), vir.start.guide.v1 (New here's last guide), vir.cut.v1 (Top cut's numbers and event), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
 
 ## 10. Page notes
 
@@ -361,7 +362,7 @@ Hub (index.html)
 - No bar. Name .hubname centred in .top (height max(260px, 42vh)); .low.glass plate with a curved top; nav#grid of up to eight blocks (the picks, then All pages); the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
 Calendar (calendar/index.html)
 - Sticky month card (.stick zero-height holder, .card, .hold spacer, arithmetic height), .mrow with month, year, the .hemi pair and the collapse chevron (#mtog).
-- Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and three round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evlink the event page), each a .circ with an aria-label and no words, all opening outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
+- Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evcut the Top cut page for that event (../cut/?ev=<id>, in the app; every kind but Learn-to-Play and Open Play; M15), .evlink the event page), each a .circ with an aria-label and no words; all but .evcut open outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
 - Menus: tray #pnav; #panel "Calendar settings" (Area .seg, Event types .pick, Stores .pick); #psub "Follow". Bar action: Follow (#subtab, the bell, data-fills psub). The bar's Settings (#tabset) is the one way into #panel; while its type or store rows hide events, the list head's count says so ("15 events, 4 hidden"), over the same days and area the list shows.
 - Follow (#psub): an (i) in the head opens the note in place (.finfo). One sunken group (#fall), each feed row a webcal link to a file the refresh writes (ics.js: island.ics, victoria.ics, upisland.ics, store/<id>.ics): Whole Island, then Greater Victoria and Up Island as open rows (kind open, a chevron) that list their feeds under them, one area at a time: All stores, then each store A to Z, set in 16 more (.fsub). A row tapped on this phone shows a bone bell (.fmk) left of its count (vir.follow.v1); RAVI cannot see the phone's calendar, so the bell means tapped, not followed.
 - NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
@@ -396,6 +397,11 @@ Decks (decks/index.html)
 - Undo sits in the plate: on Decks at the right of the head, on Trade at the end of the Yours | Theirs row. It opens a list of changes, newest first, in short words ('+1 Gust'). A row undoes only that change. (Mako's yes 2026-10-24)
 - Stats are tiles. A tapped tile opens in place to the full row with its chart, and Open all and Close all sit above them. (Mako's yes 2026-10-24)
 - A change updates the page in place; pictures that stay are never rebuilt (paint() in decks/index.html). (Mako's yes 2026-10-24)
+
+Top cut (cut/index.html; M15, 2026-10-27)
+- The maths is cut/cut.js (shared with the tests): Swiss pairing modelled top down by points, a win 3, a draw 1, a bye a win; every finish still open, best first, each with Worst case (the other tables' last two rounds fall the worst way for you) and Likely (the player ahead wins); a tie on points reads Tiebreakers. Verdicts carry a word and a mark (In with a tick, Tiebreakers with =, Out with x); the tint only helps.
+- Three glass cards (.csec): The event (the Event row opening #pev, Players and Swiss rounds steppers, the Top cut track None to Top 16, a note), Your record (Wins, Losses, Draws steppers; After round N of R), Your finishes (head row, rows, rows below the first two outs folded into one line). Steppers are .circ buttons either side of the value; nothing is typed.
+- An event (the menu, or ?ev=<id> from the calendar card's .evcut and the Game page's Top cut row) fills the players (its registrations on its day, its spots before), the usual rounds and cut, and the record from Game matches tagged to it. Bar: Hub, Go to, the third and fourth slots dimmed.
 
 ## 11. Checks
 
@@ -433,7 +439,7 @@ Decks (decks/index.html)
 - m13-test.js: the price history (data/hist). m13p-test.js to m13w-test.js: the Collection page and Mako's five rounds, and Owned and Missing on Decks.
 - m11zd-test.js to m11zh-test.js: the M11 consistency sweep and Mako's phone checks (Rules by section and NEW in place of Latest, clear chrome; Export in Deck settings as a cut track, round X, hub wordmark 48; Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
 - m11r-test.js to m11zc-test.js: the Decks refinement, one per round of Mako's notes (2026-10-18 to 23): the list plate, view row and section menus, printings from the price feed, Stats tiles, odds, Undo, runes at 12, badges, battlefields, counts, deck colours, the safe zone on every sticky plate, the Add cards plate, and changes painted in place.
-- m15-test.js: the hub picks: seven picks then All pages, bad saved values never break the hub, the All pages tray with every page, App settings' Hub blocks card and Reset; the New here page.
+- m15-test.js: the hub picks: seven picks then All pages, bad saved values never break the hub, the All pages tray with every page, App settings' Hub blocks card and Reset; the New here page; Top cut (cut/cut.js's maths, the page, the calendar's button, the Game page's row).
 - bar-sheet.js (not in check.js): every bar in every state at 402 into one picture; --compare checks two runs pixel for pixel.
 - Candidate checks, not built:
   1. No 999px in a border-radius whose corners differ (static).
