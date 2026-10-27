@@ -48,7 +48,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <section class="sts glass">
     <div class="shead"><h2>Hub blocks</h2></div>
     <div class="pick" id="sthub" data-k="pick"></div>
-    <p class="stn" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always opens every page.</p>
+    <p class="stn" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always lists every page.</p>
     <p class="stwarn" id="sthubnote" aria-live="polite">Seven are on. Turn one off first.</p>
   </section>
 
@@ -137,7 +137,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       g += '<button type="button" class="' + (on[PAGES[n].id] ? "on" : "") + '" aria-pressed="' + (on[PAGES[n].id] ? "true" : "false") + '" data-id="' + PAGES[n].id + '">' + PAGES[n].name + '</button>';
     }
     hubg.innerHTML = g;
-    hubn.textContent = picks.length + " of " + window.RAVI_HUB_MAX + " on. The hub's last block, All pages, always opens every page.";
+    hubn.textContent = picks.length + " of " + window.RAVI_HUB_MAX + " on. The hub's last block, All pages, always lists every page.";
     var on = !get(IKEY);
     intro.classList.toggle("on", on);
     intro.setAttribute("aria-pressed", on ? "true" : "false");
