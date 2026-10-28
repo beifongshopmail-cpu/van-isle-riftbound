@@ -49,8 +49,10 @@ function same(p, row) {
 // what to say to one phone about one event, or null
 export function messageFor(live, row) {
   if (!live || !Array.isArray(live.rounds)) return null;
+  // the latest round with pairings out: running, or posted before the clock
+  // starts (organisers often post a few minutes early; seen 2026-10-28)
   let r = null;
-  for (const x of live.rounds) if (x.st === "live") r = x;
+  for (const x of live.rounds) if (x.st === "live" || (x.st === "next" && ((x.tables && x.tables.length) || (x.byes && x.byes.length)))) r = x;
   if (!r || !(r.n > (row.last || 0))) return null;
   const url = SITE + "calendar/?live=" + live.id;
   for (const t of r.tables) {

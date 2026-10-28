@@ -16,6 +16,7 @@ const PAGE = "https://playriftbound.com/en-US/events/";
 const ORIGINS = ["https://ravi.tools", "https://beifongshopmail-cpu.github.io"]; // the old address stays until M8 is checked
 export const FRESH_MS = 15000;
 const KEEP = 200; // events held in memory at most
+const LAG_TRIES = 4; // a page behind Riot's change stamp is read again this many times at most
 
 // Per-isolate memory: { at, updatedAt, body } per event id. An isolate can
 // be recycled at any time; the cost is one extra upstream read.
@@ -46,6 +47,7 @@ function pollerUrl(eid) {
 
 async function changedAt(eid, fetcher) {
   const res = await fetcher(pollerUrl(eid), {
+    cache: "no-store",
     headers: { "User-Agent": UA, "Accept": "application/json", "Content-Type": "application/json", "apollographql-client-name": "ravi", "apollographql-client-version": "1.0" }
   });
   if (!res.ok) return null;
@@ -55,7 +57,7 @@ async function changedAt(eid, fetcher) {
 }
 
 async function readPage(eid, fetcher, now) {
-  const res = await fetcher(PAGE + eid, { headers: { "User-Agent": UA, "Accept": "text/html" } });
+  const res = await fetcher(PAGE + eid, { cache: "no-store", headers: { "User-Agent": UA, "Accept": "text/html", "Cache-Control": "no-cache" } });
   if (!res.ok) throw new Error("page " + res.status);
   const live = liveFromHtml(await res.text(), new Date(now).toISOString());
   if (!live || live.id !== eid) throw new Error("no event data on the page");
@@ -77,8 +79,17 @@ export async function getLive(eid, opts) {
         hit.at = now;
         return { live: hit.live, upstream: "check" };
       }
-      const live = await readPage(eid, fetcher, now);
-      memo.set(eid, { at: now, stamp: stamp, live: live });
+      let live = await readPage(eid, fetcher, now);
+      // Riot's page can lag its own change stamp (seen 2026-10-28: one
+      // reader then held the old state for good). Never go back to an older
+      // state, and when the page is behind the stamp, do not record the
+      // stamp, so the next check reads the page again (LAG_TRIES at most).
+      const t = function (x) { const v = Date.parse(x || ""); return isFinite(v) ? v : 0; };
+      if (hit && t(live.updatedAt) < t(hit.live.updatedAt)) live = hit.live;
+      const behind = !!stamp && t(live.updatedAt) + 1000 < t(stamp);
+      const lag = behind ? ((hit && hit.lagFor === stamp ? hit.lag : 0) + 1) : 0;
+      const keep = behind && lag < LAG_TRIES ? null : stamp;
+      memo.set(eid, { at: now, stamp: keep, live: live, lag: lag, lagFor: behind ? stamp : null });
       if (memo.size > KEEP) memo.delete(memo.keys().next().value);
       return { live: live, upstream: "page" };
     } catch (e) {

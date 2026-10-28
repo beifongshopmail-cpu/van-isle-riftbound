@@ -114,7 +114,17 @@ export function liveFromTournament(t, fetchedAt) {
         const n = int(r && r.roundNumber, 1, 99);
         if (n === null) continue;
         const tables = [];
+        // Riot sends a bye as a match against a pretend player named BYE
+        // (team id "bye-opponent-..."): the player goes in byes, not tables.
+        const byeSet = new Set(arr(r.byeTeamIds).map(id).filter(Boolean));
+        const extraByes = [];
         for (const m of arr(r.matches)) {
+          const raw = arr(m && m.teams).slice(0, 2).map(function (tm) { return String((tm && tm.esportsTeamId) || ""); });
+          const real = raw.filter(function (x) { return /^\d+$/.test(x); });
+          if (raw.some(function (x) { return /^bye-/i.test(x); }) || (real.length === 1 && byeSet.has(real[0]) && raw.length < 2)) {
+            for (const x of raw) if (/^\d+$/.test(x) && !byeSet.has(x)) extraByes.push(x);
+            continue;
+          }
           const sides = arr(m && m.teams).slice(0, 2).map(function (tm) {
             const team = id(tm && tm.esportsTeamId);
             const pl = player(arr(tm && tm.players)[0]) || (team && teams[team]) || null;
@@ -145,7 +155,7 @@ export function liveFromTournament(t, fetchedAt) {
         }
         tables.sort(function (x, y) { return (x.t === null ? 1e9 : x.t) - (y.t === null ? 1e9 : y.t); });
         const byes = [];
-        for (const bt of arr(r.byeTeamIds)) { const k = id(bt); if (k && teams[k]) byes.push({ n: teams[k].n, tag: teams[k].tag }); }
+        for (const bt of arr(r.byeTeamIds).concat(extraByes)) { const k = id(bt); if (k && teams[k] && !byes.some(function (b) { return b.n === teams[k].n && b.tag === teams[k].tag; })) byes.push({ n: teams[k].n, tag: teams[k].tag }); }
         let standings = null;
         if (Array.isArray(r.endOfRoundStandings)) {
           standings = [];

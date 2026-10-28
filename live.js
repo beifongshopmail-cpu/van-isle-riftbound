@@ -99,10 +99,14 @@
   }
 
   // ---- reading the file ----
-  // the round to show first: the one running, else the newest
+  // a round whose pairings are out (tables or byes)
+  function paired(r) { return !!(r && ((r.tables && r.tables.length) || (r.byes && r.byes.length))); }
+  // the round to show first: the one running, else the newest with pairings
+  // out (posted before its clock, or the one just played), else the newest
   function current(live) {
     if (!valid(live) || !live.rounds.length) return null;
     for (var i = 0; i < live.rounds.length; i++) if (live.rounds[i].st === "live") return live.rounds[i];
+    for (var j = live.rounds.length - 1; j >= 0; j--) if (paired(live.rounds[j])) return live.rounds[j];
     return live.rounds[live.rounds.length - 1];
   }
   // time left on a running round, from Riot's start and length
@@ -166,7 +170,8 @@
       var c = clock(r, now);
       return "Round " + r.n + of + (c ? (c.over ? ", over time" : ", " + Math.ceil(c.left / 60000) + " min left") : "");
     }
-    return "Round " + r.n + of + " done, next pairings soon";
+    if (r.st === "next") return paired(r) ? "Round " + r.n + of + ": pairings are up" : "";
+    return "Round " + r.n + of + " done" + (live.roundCount && r.n >= live.roundCount ? "" : ", next pairings soon");
   }
 
   // ---- pairing alerts (the alerts-only worker, alerts-sw.js) ----
@@ -242,7 +247,7 @@
       .then(function () { cb(null); }, function () { cb(null); });
   }
 
-  var api = { BASE: BASE, ME_KEY: ME_KEY, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo };
+  var api = { BASE: BASE, ME_KEY: ME_KEY, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, paired: paired, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.RAVI_LIVE = api;
 })(typeof window !== "undefined" ? window : globalThis);

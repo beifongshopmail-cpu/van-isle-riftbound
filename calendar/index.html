@@ -1239,7 +1239,7 @@ a{color:inherit;text-decoration:none}
     [["a", t.a], ["b", t.b]].forEach(function(x){
       var ln = el("span", "ln");
       ln.appendChild(who(x[1] || {n: "Bye", tag: ""}));
-      var res = window.RAVI_LIVE.resultFor(t, x[0]);
+      var res = x[1] ? window.RAVI_LIVE.resultFor(t, x[0]) : null;
       var g = "";
       if (res && t.games && t.games.length){
         var w = 0, l = 0;
@@ -1277,7 +1277,7 @@ a{color:inherit;text-decoration:none}
     document.getElementById("plrnd").textContent = f.status === "done" ? "Final standings" : "Round " + r.n + (f.roundCount ? " of " + f.roundCount : "");
     var c = L.clock(r), left = document.getElementById("plleft");
     left.classList.toggle("over", !!(c && c.over));
-    left.textContent = c ? (c.over ? "Over time " + L.mmss(c.left) : L.mmss(c.left) + " left") : (f.status === "done" ? "" : (r.st === "done" ? "Round done" : ""));
+    left.textContent = c ? (c.over ? "Over time " + L.mmss(c.left) : L.mmss(c.left) + " left") : (f.status === "done" ? "" : (r.st === "done" ? "Round done" : (r.st === "next" && L.paired(r) ? "Pairings are up" : "")));
   }
   function liveRender(){
     var f = LIVE[LV.id], L = window.RAVI_LIVE;
@@ -1323,7 +1323,7 @@ a{color:inherit;text-decoration:none}
         t2.textContent = "Not in this round's pairings. Tap to change the name.";
       }
       var rec = L.myRecord(f, mine);
-      if (rec && mt){ t2.appendChild(document.createTextNode(" (" + rec.w + "-" + rec.l + "-" + rec.d + " so far)")); }
+      if (rec && mt){ t2.appendChild(document.createTextNode(" (" + rec.w + "-" + rec.l + "-" + rec.d + (f.status === "done" ? " final)" : " so far)"))); }
     } else {
       meBox.hidden = true; find.hidden = false;
       var inp = document.getElementById("plmein");
@@ -1331,7 +1331,7 @@ a{color:inherit;text-decoration:none}
     }
     // the round track
     var rbox = document.getElementById("plrounds");
-    var rounds = f.rounds.filter(function(r){ return LV.view === "p" ? r.tables.length : r.standings; });
+    var rounds = f.rounds.filter(function(r){ return LV.view === "p" ? L.paired(r) : r.standings; });
     if (LV.round == null || !rounds.some(function(r){ return r.n === LV.round; })){
       var pick = LV.view === "p" ? cur : (L.standings(f) || {}).round;
       LV.round = pick ? pick.n : (rounds.length ? rounds[rounds.length - 1].n : null);
@@ -1352,7 +1352,7 @@ a{color:inherit;text-decoration:none}
     f.rounds.forEach(function(r){ if (r.n === LV.round) R = r; });
     var box = el("div", "lgrp" + (LV.view === "s" ? " lst" : ""));
     if (LV.view === "p"){
-      if (!R || !R.tables.length){ list.appendChild(el("p", "lempty", "No pairings yet.")); }
+      if (!R || !L.paired(R)){ list.appendChild(el("p", "lempty", "No pairings yet.")); }
       else {
         R.tables.forEach(function(t){ box.appendChild(pairRow(t, mine)); });
         (R.byes || []).forEach(function(p){ box.appendChild(pairRow({t: null, a: p, b: null, res: "W", games: [], st: "done"}, mine)); });
