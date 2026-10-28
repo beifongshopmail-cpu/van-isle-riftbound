@@ -1,0 +1,47 @@
+name: tier capture (one-off)
+
+# M17 recon: one read of TopDeck.gg's tournaments API, names removed, saved
+# as data/tier-sample.json. Removed again once the fixture is in rb-tools.
+on:
+  push:
+    branches: [main]
+    paths:
+      - tier-capture.js
+      - .github/workflows/tier-capture.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tier-capture
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Read TopDeck once
+        env:
+          TOPDECK_API_KEY: ${{ secrets.TOPDECK_API_KEY }}
+        run: node tier-capture.js
+
+      - name: Publish the sample
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/tier-sample.json
+          if git diff --cached --quiet; then
+            echo "nothing to publish"
+            exit 0
+          fi
+          git commit -m "data: TopDeck sample for M17 (names removed)"
+          git pull --rebase origin main
+          git push
