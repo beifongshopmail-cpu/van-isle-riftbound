@@ -8,7 +8,7 @@
 (function (root) {
   "use strict";
 
-  var BASE = "https://ravi-live.ravi.workers.dev";
+  var BASE = "https://ravi-live.beifongshopmail.workers.dev";
   var ME_KEY = "vir.me.v1";
   var TIMEOUT = 8000;
 
