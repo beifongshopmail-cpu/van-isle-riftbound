@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
+<script src="../live.js"></script>
 <style>
 /* The calendar, at the site root. CARD SYSTEM, converted 2026-09-19.
    The shared layer (tokens, glass, frost, bar, panels, option tracks,
@@ -184,6 +185,52 @@ a{color:inherit;text-decoration:none}
 .evact .evbtns{display:flex;gap:8px;flex:0 0 auto}
 .evact .evbtns .circ svg{stroke:currentColor;stroke-width:2;fill:none} /* drawn icons: the icon line (2), as every drawn icon in a round button */
 .evact[hidden]{display:none}
+/* LIVE (M16): a running event's card says where it stands in words, and
+   its open row gains one action into the Live menu. Live data comes from
+   RAVI's server (live.js); without it nothing here shows. */
+.ev .lvl{display:block;font-size:12px;font-weight:700;color:var(--bone);margin:2px 0 0}
+.ev .lvl::before{content:"LIVE";display:inline-block;vertical-align:1px;margin-right:6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
+.evact .evlive{margin-top:12px}
+.evact .evlive[hidden]{display:none}
+
+/* THE LIVE MENU (#plive). Riot's pairings and standings, read only: rows
+   carry no kind and no surface, as the Collection's List; hairlines
+   between them as a group's. Results are words (Won, Lost, Draw), never
+   colour. */
+#plive .levn{font-size:13px;color:var(--muted);margin:0 2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#plive .lclk{font-family:var(--disp);font-size:17px;font-weight:700;margin:0 0 12px;padding:0 4px;display:flex;align-items:baseline;gap:10px}
+#plive .lclk .sp{flex:1}
+#plive .lclk .left{font-size:15px;font-weight:600}
+#plive .lclk .left.over{color:var(--over)}
+#plive .lme{border-radius:22px;padding:12px 16px;margin:0 0 14px}
+#plive .lme .lmt{font-family:var(--disp);font-size:15px;font-weight:600}
+#plive .lme .lms{font-size:13px;color:var(--muted);margin-top:2px}
+#plive .lme .lms b{color:var(--bone);font-weight:600}
+#plive .lfind{margin:0 0 14px}
+#plive .lgrp{margin:0}
+#plive .lrow{display:flex;align-items:center;gap:12px;min-height:44px;padding:7px 4px;box-sizing:border-box;border-top:1px solid rgba(255,255,255,.08)}
+#plive .lrow:first-child{border-top:0}
+#plive .lrow .lt{flex:0 0 28px;font-size:13px;color:var(--muted);text-align:right}
+#plive .lrow .lp{flex:1;min-width:0}
+#plive .lrow .ln{display:flex;align-items:baseline;gap:8px;font-size:15px;line-height:1.35}
+#plive .lrow .ln .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#plive .lrow .ln .nm small{font-size:12px;color:var(--muted);margin-left:1px}
+#plive .lrow .ln .rs{flex:0 0 auto;font-size:12px;color:var(--muted)}
+#plive .lrow .ln.won .nm,#plive .lrow .ln.won .rs{font-weight:700;color:var(--bone)}
+#plive .lrow.mine .lt{color:var(--bone);font-weight:700}
+#plive .lrow.mine .ln.me .nm::after{content:"  You";font-size:12px;font-weight:700;color:var(--bone)}
+#plive .lst .lrow .lt{flex-basis:24px}
+#plive .lst .lrow .sv{flex:0 0 auto;font-size:13px;text-align:right;color:var(--bone)}
+#plive .lst .lrow .sv.pts{min-width:22px;font-weight:700}
+#plive .lst .lrow .sv.wld{min-width:44px;color:var(--muted)}
+#plive .lst .lrow .sv.omw{min-width:38px;color:var(--muted)}
+#plive .lst .lhd{min-height:28px;padding-top:0;padding-bottom:4px;border-top:0}
+#plive .lst .lhd .sv,#plive .lst .lhd .lt,#plive .lst .lhd .lp{font-size:12px;color:var(--muted);font-weight:600}
+#plive .lempty{padding:20px 4px;color:var(--muted);font-size:15px}
+#plive .lsmall{margin:12px 2px 0}
+#plive .lseg{margin:0 0 14px}
+#plive .pfoot .pact + .pact{margin-top:8px}
+#plive .lalnote{margin:0 2px 8px}
 
 .empty{padding:28px 0;color:var(--muted);font-size:15px;text-align:center}
 
@@ -326,6 +373,26 @@ a{color:inherit;text-decoration:none}
     <div class="pick" id="stlist" data-k="pick"></div>
   </div>
   </div>
+</section>
+<section class="panel frost" id="plive" aria-hidden="true" aria-label="Live">
+  <div class="phead">
+    <h4 class="ttl">Live</h4>
+    <button type="button" class="circ btn glass" id="plclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="pbody" id="plbody">
+    <p class="levn" id="plname"></p>
+    <div class="lclk" id="plclk" hidden><span id="plrnd"></span><span class="sp"></span><span class="left mono" id="plleft"></span></div>
+    <div class="lme glass" id="plme" hidden><div class="lmt" id="plmt"></div><div class="lms" id="plms"></div></div>
+    <div class="lfind" id="plfind" hidden>
+      <p class="lb">Your Riot name, to find your table</p>
+      <div class="nf"><input type="text" id="plmein" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" data-k="type"><button type="button" class="fbtn" id="plmeok" data-k="do">Find me</button></div>
+    </div>
+    <div class="seg lseg" role="group" aria-label="Show" id="plview" data-k="pick"><button type="button" data-v="p" aria-pressed="true">Pairings</button><button type="button" data-v="s" aria-pressed="false">Standings</button></div>
+    <div class="seg lseg" role="group" aria-label="Round" id="plrounds" data-k="pick"></div>
+    <div id="pllist"></div>
+    <p class="pnote lsmall" id="plnote"></p>
+  </div>
+  <div class="pfoot"><p class="pnote lalnote" id="plalnote" hidden></p><button type="button" class="pact btn glass" id="plalert" data-k="do" hidden>Alert me when I'm paired</button><a class="pact btn glass" id="plout" href="#" target="_blank" rel="noopener" data-k="do">Open the event page</a></div>
 </section>
 
 <script>
@@ -749,6 +816,9 @@ a{color:inherit;text-decoration:none}
         nm.appendChild(nb);
       }
       head.appendChild(nm);
+      var lv = document.createElement("span");
+      lv.className = "lvl"; lv.hidden = true;
+      head.appendChild(lv);
 
       var l3 = document.createElement("span");
       l3.className = "l3";
@@ -802,7 +872,17 @@ a{color:inherit;text-decoration:none}
       iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT);
       info.appendChild(btns);
       act.appendChild(info);
+      var lb = document.createElement("button");
+      lb.type = "button";
+      lb.className = "pact btn glass evlive";
+      lb.setAttribute("data-k", "do");
+      lb.setAttribute("data-live", String(ev.id));
+      lb.setAttribute("data-fills", "plive");
+      lb.textContent = "Pairings and standings";
+      lb.hidden = true;
+      act.appendChild(lb);
       card.appendChild(act);
+      paintLive(card, ev.id);
 
       listEl.appendChild(card);
     }
@@ -1107,6 +1187,242 @@ a{color:inherit;text-decoration:none}
     slideMonth(1);
   };
 
+  /* ---- LIVE (M16). For today's events near their start, RAVI's server
+     (live.js) says where each stands; the card shows it in words and opens
+     the Live menu. Checked once a minute while the page shows; the open
+     Live menu every 20 seconds, its clock every second. Riot's names are
+     only ever written with textContent. ---- */
+  var LIVE = {};
+  var LIVE_KINDS = {nexus:1, skirmish:1, prerift:1, other:1};
+  function liveWanted(ev, now){
+    if (!ev || !/^rb\d+$/.test(String(ev.id)) || !LIVE_KINDS[ev.type]) return false;
+    var t = Date.parse(ev.start);
+    return isFinite(t) && now >= t - 30 * 60000 && now <= t + 10 * 3600000;
+  }
+  function paintLive(card, id){
+    var f = LIVE[String(id)], lv = card.querySelector(".lvl"), lb = card.querySelector(".evlive");
+    var on = !!(f && f.rounds.length);
+    var txt = on ? window.RAVI_LIVE.line(f) : "";
+    if (lv){ lv.textContent = txt; lv.hidden = !on || !txt || f.status === "done"; }
+    if (lb){ lb.hidden = !on; lb.textContent = f && f.status === "done" ? "Final standings" : "Pairings and standings"; }
+  }
+  function paintAllLive(){
+    var cards = listEl.querySelectorAll(".ev");
+    for (var i = 0; i < cards.length; i++) paintLive(cards[i], cards[i].getAttribute("data-id"));
+  }
+  function liveScan(){
+    if (!window.RAVI_LIVE || document.visibilityState === "hidden") return;
+    var now = Date.now();
+    EVENTS.forEach(function(ev){
+      if (!liveWanted(ev, now)) return;
+      window.RAVI_LIVE.get(ev.id, function(f){
+        if (f){ LIVE[String(ev.id)] = f; paintAllLive(); if (LV.id === String(ev.id)) liveRender(); }
+      });
+    });
+  }
+
+  var plive = document.getElementById("plive");
+  var LV = {id:null, view:"p", round:null, editing:false, poll:null, tick:null};
+  function el(tag, cls, text){ var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function who(p){
+    var s = el("span", "nm", p ? p.n : "");
+    if (p && p.tag){ var sm = el("small", null, "#" + p.tag); s.appendChild(sm); }
+    return s;
+  }
+  var RES_WORD = {W:"Won", L:"Lost", D:"Draw"};
+  function pairRow(t, mine){
+    var r = el("div", "lrow");
+    r.appendChild(el("span", "lt mono", t.t == null ? "" : String(t.t)));
+    var lp = el("span", "lp");
+    [["a", t.a], ["b", t.b]].forEach(function(x){
+      var ln = el("span", "ln");
+      ln.appendChild(who(x[1] || {n: "Bye", tag: ""}));
+      var res = window.RAVI_LIVE.resultFor(t, x[0]);
+      var g = "";
+      if (res && t.games && t.games.length){
+        var w = 0, l = 0;
+        t.games.forEach(function(gr){ var v = x[0] === "a" ? gr : (gr === "W" ? "L" : gr === "L" ? "W" : gr); if (v === "W") w++; else if (v === "L") l++; });
+        g = " " + w + "-" + l;
+      }
+      var rs = el("span", "rs", res ? RES_WORD[res] + g : (t.st === "playing" ? "Playing" : ""));
+      ln.appendChild(rs);
+      if (res === "W") ln.classList.add("won");
+      if (mine && x[1] && window.RAVI_LIVE.isMe(x[1], mine)){ ln.classList.add("me"); r.classList.add("mine"); }
+      lp.appendChild(ln);
+    });
+    r.appendChild(lp);
+    return r;
+  }
+  function pct(v){ return v == null ? "" : Math.round(v * 100) + "%"; }
+  function standRow(s, mine){
+    var r = el("div", "lrow");
+    r.appendChild(el("span", "lt mono", String(s.rank)));
+    var lp = el("span", "lp"), ln = el("span", "ln");
+    ln.appendChild(who(s));
+    lp.appendChild(ln); r.appendChild(lp);
+    r.appendChild(el("span", "sv pts mono", s.pts == null ? "" : String(s.pts)));
+    r.appendChild(el("span", "sv wld mono", [s.w, s.l, s.d].map(function(n){ return n == null ? 0 : n; }).join("-")));
+    r.appendChild(el("span", "sv omw mono", pct(s.omw)));
+    if (mine && window.RAVI_LIVE.isMe(s, mine)){ ln.classList.add("me"); r.classList.add("mine"); }
+    return r;
+  }
+  function liveClock(){
+    var f = LIVE[LV.id], L = window.RAVI_LIVE;
+    var box = document.getElementById("plclk");
+    var r = f ? L.current(f) : null;
+    if (!r){ box.hidden = true; return; }
+    box.hidden = false;
+    document.getElementById("plrnd").textContent = f.status === "done" ? "Final standings" : "Round " + r.n + (f.roundCount ? " of " + f.roundCount : "");
+    var c = L.clock(r), left = document.getElementById("plleft");
+    left.classList.toggle("over", !!(c && c.over));
+    left.textContent = c ? (c.over ? "Over time " + L.mmss(c.left) : L.mmss(c.left) + " left") : (f.status === "done" ? "" : (r.st === "done" ? "Round done" : ""));
+  }
+  function liveRender(){
+    var f = LIVE[LV.id], L = window.RAVI_LIVE;
+    var list = document.getElementById("pllist"), note = document.getElementById("plnote");
+    list.innerHTML = "";
+    var out = document.getElementById("plout");
+    out.href = "https://playriftbound.com/en-US/events/" + (L.tid(LV.id) || "");
+    if (!f){
+      document.getElementById("plname").textContent = "";
+      document.getElementById("plclk").hidden = true;
+      document.getElementById("plme").hidden = true;
+      document.getElementById("plfind").hidden = true;
+      document.getElementById("plview").hidden = true;
+      document.getElementById("plrounds").hidden = true;
+      document.getElementById("plalert").hidden = true;
+      document.getElementById("plalnote").hidden = true;
+      list.appendChild(el("p", "lempty", "Live data did not load. The event page has it."));
+      note.textContent = "";
+      return;
+    }
+    document.getElementById("plname").textContent = f.name || "";
+    liveClock();
+    liveAlertBtn(f);
+    var mine = L.me(), cur = L.current(f);
+    // me: my table this round, or the field to find me
+    var meBox = document.getElementById("plme"), find = document.getElementById("plfind");
+    var mt = mine && cur ? L.myTable(cur, mine) : null;
+    if (mine && !LV.editing){
+      meBox.hidden = false; find.hidden = true;
+      var t1 = document.getElementById("plmt"), t2 = document.getElementById("plms");
+      t2.innerHTML = "";
+      if (mt && mt.bye){ t1.textContent = "You have a bye this round"; }
+      else if (mt){
+        t1.textContent = "Your table: " + (mt.table.t == null ? "?" : mt.table.t);
+        t2.appendChild(document.createTextNode("vs "));
+        var b = el("b", null, mt.opp ? L.nameText(mt.opp) : "Bye");
+        t2.appendChild(b);
+        var res = L.resultFor(mt.table, mt.mine);
+        if (res) t2.appendChild(document.createTextNode(", " + RES_WORD[res]));
+      } else {
+        t1.textContent = L.nameText(mine);
+        t2.textContent = "Not in this round's pairings. Tap to change the name.";
+      }
+      var rec = L.myRecord(f, mine);
+      if (rec && mt){ t2.appendChild(document.createTextNode(" (" + rec.w + "-" + rec.l + "-" + rec.d + " so far)")); }
+    } else {
+      meBox.hidden = true; find.hidden = false;
+      var inp = document.getElementById("plmein");
+      if (mine && document.activeElement !== inp && !inp.value) inp.value = L.nameText(mine);
+    }
+    // the round track
+    var rbox = document.getElementById("plrounds");
+    var rounds = f.rounds.filter(function(r){ return LV.view === "p" ? r.tables.length : r.standings; });
+    if (LV.round == null || !rounds.some(function(r){ return r.n === LV.round; })){
+      var pick = LV.view === "p" ? cur : (L.standings(f) || {}).round;
+      LV.round = pick ? pick.n : (rounds.length ? rounds[rounds.length - 1].n : null);
+    }
+    rbox.innerHTML = "";
+    rounds.forEach(function(r){
+      var b = el("button", null, (LV.view === "s" && f.status === "done" && r === rounds[rounds.length - 1]) ? "Final" : "Round " + r.n);
+      b.type = "button";
+      b.setAttribute("data-n", String(r.n));
+      b.setAttribute("aria-pressed", r.n === LV.round ? "true" : "false");
+      rbox.appendChild(b);
+    });
+    rbox.hidden = rounds.length < 2;
+    document.getElementById("plview").hidden = false;
+    var vb = document.getElementById("plview").querySelectorAll("button");
+    for (var i = 0; i < vb.length; i++) vb[i].setAttribute("aria-pressed", vb[i].getAttribute("data-v") === LV.view ? "true" : "false");
+    var R = null;
+    f.rounds.forEach(function(r){ if (r.n === LV.round) R = r; });
+    var box = el("div", "lgrp" + (LV.view === "s" ? " lst" : ""));
+    if (LV.view === "p"){
+      if (!R || !R.tables.length){ list.appendChild(el("p", "lempty", "No pairings yet.")); }
+      else {
+        R.tables.forEach(function(t){ box.appendChild(pairRow(t, mine)); });
+        (R.byes || []).forEach(function(p){ box.appendChild(pairRow({t: null, a: p, b: null, res: "W", games: [], st: "done"}, mine)); });
+        list.appendChild(box);
+      }
+      note.textContent = f.players + " players" + (f.bestOf ? ", best of " + f.bestOf : "") + (f.dropped ? ", " + f.dropped + " dropped" : "") + ". From the event page; results show as players report them.";
+    } else {
+      if (!R || !R.standings){ list.appendChild(el("p", "lempty", "Standings show once round 1 is done.")); }
+      else {
+        var hd = el("div", "lrow lhd");
+        hd.appendChild(el("span", "lt", "#")); hd.appendChild(el("span", "lp", "Player"));
+        hd.appendChild(el("span", "sv pts", "Pts")); hd.appendChild(el("span", "sv wld", "W-L-D")); hd.appendChild(el("span", "sv omw", "OMW"));
+        box.appendChild(hd);
+        R.standings.forEach(function(s){ box.appendChild(standRow(s, mine)); });
+        list.appendChild(box);
+      }
+      note.textContent = "After round " + (R ? R.n : "") + ", as the event page ranks them. OMW is opponents' match-win percentage, the first tiebreaker.";
+    }
+  }
+  // PAIRING ALERTS (M16): a push when my next table is up. Needs my Riot name; the phone asks
+  // once; a second tap stops them for this event.
+  var alNote = "";
+  function liveAlertBtn(f){
+    var L = window.RAVI_LIVE, b = document.getElementById("plalert"), n = document.getElementById("plalnote");
+    var show = !!f && f.status !== "done";
+    b.hidden = !show;
+    var on = L.alertOn(LV.id), mine = L.me();
+    b.textContent = on ? "Alerts on: tap to stop" : "Alert me when I'm paired";
+    b.disabled = !on && !mine;
+    var msg = alNote || (!on && !mine ? "Save your Riot name above to get alerts." : "");
+    n.textContent = msg; n.hidden = !show || !msg;
+  }
+  document.getElementById("plalert").addEventListener("click", function(){
+    var L = window.RAVI_LIVE, b = this, id = LV.id;
+    b.disabled = true; alNote = "";
+    var done = function(err){ alNote = err || ""; b.disabled = false; if (LV.id === id) liveAlertBtn(LIVE[id]); };
+    if (L.alertOn(id)) L.alertStop(id, done);
+    else L.alertStart(id, L.me(), new URL("../alerts-sw.js", location.href).href, done);
+  });
+  function liveOpen(id){
+    LV.id = String(id); LV.round = null; LV.view = "p"; LV.editing = false; alNote = "";
+    liveRender();
+    openPanel(plive);
+    var pull = function(){ window.RAVI_LIVE.get(LV.id, function(f){ if (f){ LIVE[LV.id] = f; paintAllLive(); } if (openP === plive) liveRender(); }); };
+    pull();
+    clearInterval(LV.poll); clearInterval(LV.tick);
+    LV.poll = setInterval(function(){ if (openP !== plive){ clearInterval(LV.poll); return; } if (document.visibilityState !== "hidden") pull(); }, 20000);
+    LV.tick = setInterval(function(){ if (openP !== plive){ clearInterval(LV.tick); return; } liveClock(); }, 1000);
+  }
+  listEl.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".evlive") : null;
+    if (b) liveOpen(b.getAttribute("data-live"));
+  });
+  document.getElementById("plclose").addEventListener("click", function(){ openPanel(null); });
+  document.getElementById("plview").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    LV.view = b.getAttribute("data-v"); LV.round = null; liveRender();
+  });
+  document.getElementById("plrounds").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    LV.round = +b.getAttribute("data-n"); liveRender();
+  });
+  document.getElementById("plme").addEventListener("click", function(){ LV.editing = true; liveRender(); var i = document.getElementById("plmein"); i.value = window.RAVI_LIVE.nameText(window.RAVI_LIVE.me()); i.focus(); });
+  function saveMe(){
+    var i = document.getElementById("plmein");
+    window.RAVI_LIVE.setMe(i.value);
+    LV.editing = false; i.blur(); liveRender();
+  }
+  document.getElementById("plmeok").addEventListener("click", saveMe);
+  document.getElementById("plmein").addEventListener("keydown", function(e){ if (e.key === "Enter") saveMe(); });
+  document.getElementById("plme").setAttribute("role", "button");
+  document.getElementById("plme").setAttribute("data-k", "do");
+
   /* ---- panels rise from the bottom (app.css); one open at a time.
      The page is locked at the root while one is open (app.css,
      html.lock). Nothing is saved or restored. ---- */
@@ -1224,6 +1540,12 @@ a{color:inherit;text-decoration:none}
     else { var d = new Date(); cursor = {y:d.getFullYear(), m:d.getMonth()}; }
     renderMonth(); renderList(); renderTypes(); renderStores(); renderSub(); renderStamp();
     requestAnimationFrame(measure);
+    liveScan();
+    setInterval(liveScan, 60000);
+    document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") liveScan(); });
+    var lq = null;
+    try{ lq = new URLSearchParams(location.search).get("live"); }catch(e){}
+    if (lq && window.RAVI_LIVE.tid(lq)) liveOpen("rb" + window.RAVI_LIVE.tid(lq));
   }).catch(function(){
     var f = document.createElement("div");
     f.className = "fail glass";

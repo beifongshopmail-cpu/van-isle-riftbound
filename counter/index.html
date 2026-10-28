@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
+<script src="../live.js"></script>
 <style>
 /* The point counter. CARD SYSTEM, converted 2026-09-22. The shared layer
    (tokens, glass, frost, the bar, menus, option tracks, press feedback)
@@ -775,6 +776,14 @@
         + "\"" + (tmArm === mins[i] ? " class=\"armed\"" : "") + ">"
         + (tmArm === mins[i] ? "Sure?" : mins[i]) + "</button>";
     }
+    // LIVE (M16): the tagged event's running round, from RAVI's server
+    // (live.js). Round sets the timer to Riot's own clock for that round.
+    var lr = liveRound();
+    if (lr) {
+      sel = (t && t.live) ? "true" : "false";
+      h += "<button type=\"button\" data-live=\"1\" aria-label=\"The event's round clock\" aria-pressed=\"" + sel + "\""
+        + (tmArm === -2 ? " class=\"armed\"" : "") + ">" + (tmArm === -2 ? "Sure?" : "Round") + "</button>";
+    }
     el.innerHTML = h;
     var stopBtn = document.getElementById("tmstop");
     if (stopBtn) {
@@ -793,9 +802,42 @@
       } else {
         now.textContent = ""; now.className = "";
       }
+      if (lr && !tmHintT) {
+        now.textContent = (t && t.live) ? "Round " + lr.r.n + "'s clock, from the event page" : "Round " + lr.r.n + " is running: " + Math.max(0, Math.ceil(lr.c.left / 60000)) + " min left";
+        now.className = "";
+      }
     }
     cseCustomSync();
     syncTimerTrigger();
+  }
+  var LIVEF = null, liveFor = null;
+  function liveRound(){
+    var cur = cseGet(), L = window.RAVI_LIVE;
+    if (!L || !cur || !LIVEF || liveFor !== String(cur.id)) return null;
+    var r = L.current(LIVEF), c = L.clock(r);
+    return c ? { r: r, c: c } : null;
+  }
+  function startLive(){
+    var lr = liveRound();
+    if (!lr) return;
+    saveTimer({ end: lr.c.end, min: lr.r.min, at: Date.now(), live: true, round: lr.r.n, ev: String(cseGet().id) });
+    renderTimerRow(); render(); tmRun();
+  }
+  // checked on load, when Game settings opens, and each minute while the page shows; a timer
+  // on the round clock follows the event to its next round
+  function liveRefresh(){
+    var cur = cseGet(), L = window.RAVI_LIVE;
+    if (!L || !cur || !/^rb\d+$/.test(String(cur.id)) || document.visibilityState === "hidden") return;
+    L.get(cur.id, function(f){
+      if (!f) return;
+      LIVEF = f; liveFor = String(cur.id);
+      var t = loadTimer(), lr = liveRound();
+      if (t && t.live && t.ev === liveFor && lr && (t.round !== lr.r.n || Math.abs(t.end - lr.c.end) > 1500)) {
+        saveTimer({ end: lr.c.end, min: lr.r.min, at: Date.now(), live: true, round: lr.r.n, ev: liveFor });
+        render(); tmRun();
+      }
+      renderTimerRow();
+    });
   }
   function startTimer(min){
     saveTimer({ end: Date.now() + min*60000, min: min, at: Date.now() });
@@ -863,9 +905,11 @@
     syncLen();
     cseSyncRow();
     renderTimerRow();
+    liveRefresh();
   }
   function cseClear(){
     try{ localStorage.removeItem(EKEY); }catch(err){}
+    LIVEF = null; liveFor = null;
     cseSyncRow();
     renderTimerRow();
   }
@@ -2824,6 +2868,20 @@
   document.getElementById("tmrow").addEventListener("click", function(e){
     var b = e.target.closest("button");
     if(!b) return;
+    if(b.getAttribute("data-live")){
+      if(tmArm !== -2){
+        tmDisarm();
+        var tt = loadTimer();
+        if(tmMs() === null || (tt && tt.live)){ startLive(); return; }
+        tmArm = -2;
+        renderTimerRow();
+        tmArmT = setTimeout(tmDisarm, 3000);
+        return;
+      }
+      tmDisarm();
+      startLive();
+      return;
+    }
     var want = parseInt(b.getAttribute("data-min"), 10);
     if(!want) return;
     if(tmArm !== want){
@@ -2944,6 +3002,9 @@
   render();
   renderTimerRow();
   if(tmMs() !== null || clockOn) tmRun();
+  liveRefresh();
+  setInterval(liveRefresh, 60000);
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible") liveRefresh(); });
   cseSyncRow();
 
   // ENTRY 2: ?ev=<id> on load. The query is removed with replaceState

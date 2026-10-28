@@ -1,0 +1,18 @@
+# ravi-live: RAVI's server for live event data (M16). Deployed by
+# .github/workflows/server.yml with the repo secrets CLOUDFLARE_API_TOKEN
+# and CLOUDFLARE_ACCOUNT_ID. Free tier.
+name = "ravi-live"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# Pairing alerts (alerts.js): one Durable Object on SQLite storage, which the
+# free plan allows. The VAPID key is the Worker secret VAPID_JWK, made once
+# by the deploy workflow; it is never in the repo.
+[[durable_objects.bindings]]
+name = "ALERTS"
+class_name = "Alerts"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Alerts"]

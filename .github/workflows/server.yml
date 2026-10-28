@@ -1,0 +1,67 @@
+name: deploy server
+
+# Deploys server/live (ravi-live, the Cloudflare Worker for live event data
+# and pairing alerts) when it changes on main, or by hand. Needs the repo
+# secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID; without them it
+# deploys nothing and says so. The alerts' VAPID key is made here once, as
+# the Worker secret VAPID_JWK, and is never printed or kept in the repo.
+on:
+  push:
+    branches: [main]
+    paths: ["server/live/**", ".github/workflows/server.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-server
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server/live
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Parser and server load
+        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js')]).then(() => console.log('server code loads'))"
+      - name: Secrets in place?
+        id: sec
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "ok=1" >> "$GITHUB_OUTPUT"; else echo "No Cloudflare secrets yet; nothing deployed." >> "$GITHUB_STEP_SUMMARY"; fi
+      - name: Deploy
+        id: deploy
+        if: steps.sec.outputs.ok == '1'
+        run: |
+          npx -y wrangler@4 deploy 2>&1 | tee deploy.log
+          URL=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "Server: $URL" >> "$GITHUB_STEP_SUMMARY"
+      - name: Alerts key, once
+        if: steps.sec.outputs.ok == '1'
+        run: |
+          if npx -y wrangler@4 secret list 2>/dev/null | grep -q '"VAPID_JWK"'; then
+            echo "VAPID key already set"
+          else
+            node --input-type=module -e "import('./push.js').then(async (m) => process.stdout.write(JSON.stringify(await m.newVapidJwk())))" | npx -y wrangler@4 secret put VAPID_JWK
+            echo "VAPID key made" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Prove it reads a real event
+        if: steps.sec.outputs.ok == '1'
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          sleep 8
+          curl -fsS "$URL/health"; echo
+          curl -fsS "$URL/vapid" > /dev/null && echo "alerts key served"
+          # the finished M9 event (2026-10-10, North Park); it never changes
+          curl -fsS "$URL/event/117213852100443736" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);if(j.status!=='done'||j.rounds.length!==3)process.exit(1);console.log('reads Riot: '+j.name+', '+j.rounds.length+' rounds');})"

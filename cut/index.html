@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
+<script src="../live.js"></script>
 <script src="cut.js"></script>
 <style>
 /* Top cut (M15, 2026-10-27): will a record make the top cut. The maths is cut.js (shared with the
@@ -183,7 +184,27 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         if (st.w + st.l + st.d > st.r) { st.r = Math.min(15, st.w + st.l + st.d); st.rT = true; }
       } else if (!fromLink) { st.w = 0; st.l = 0; st.d = 0; }
     }
+    liveInfo = null;
     save(); render();
+    livePrefill(e);
+  }
+
+  // LIVE (M16): on the event's day RAVI's server (live.js) has the real field: the players still
+  // in, the store's own round count and, with your Riot name saved, your record so far. It
+  // fills what the steppers show; every stepper still changes it.
+  var liveInfo = null;
+  function livePrefill(e){
+    var L = window.RAVI_LIVE;
+    if (!L || !e || e.day !== today() || !/^rb\d+$/.test(e.id)) { return; }
+    L.get(e.id, function(f){
+      if (!f || st.ev !== e.id) { return; }
+      var info = { players: 0, rounds: 0, rec: null };
+      if (f.players >= 2 && (f.rounds.length || f.status !== "upcoming")) { st.n = Math.min(512, f.players); info.players = f.players; if (!st.kT) { st.k = C.cutFor(st.n); } }
+      if (f.roundCount >= 1) { st.r = Math.min(15, f.roundCount); st.rT = true; info.rounds = f.roundCount; }
+      var rec = L.myRecord(f, L.me());
+      if (rec) { st.w = rec.w; st.l = rec.l; st.d = rec.d; info.rec = rec; if (st.w + st.l + st.d > st.r) { st.r = Math.min(15, st.w + st.l + st.d); } }
+      if (info.players || info.rounds || info.rec) { liveInfo = info; save(); render(); }
+    });
   }
 
   function stepTo(id, d){
@@ -264,10 +285,18 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var live = evInfo.day <= today();
       note = (evInfo.reg !== null ? evInfo.reg + " registered" + (evInfo.cap ? " of " + evInfo.cap + " spots" : "") + " so far" + (live ? "." : "; players start at the spots until the day.") + " " : "") + note;
     }
+    if (evInfo && liveInfo) {
+      note = "From the event page: " + [liveInfo.players ? liveInfo.players + " players still in" : "", liveInfo.rounds ? liveInfo.rounds + " Swiss rounds" : ""].filter(Boolean).join(", ") + ". The cut is the usual one for the players; change it to the store's.";
+    }
     $("evnote").textContent = note;
     var rec = st.ev ? C.recordFrom(games(), st.ev) : { n: 0 };
+    if (liveInfo && liveInfo.rec) {
+      $("recnote").hidden = false;
+      $("recnote").textContent = "From the event page: your record " + liveInfo.rec.w + "-" + liveInfo.rec.l + "-" + liveInfo.rec.d + " after " + liveInfo.rec.rounds + (liveInfo.rec.rounds === 1 ? " round" : " rounds") + ". The steppers change it here only.";
+    } else {
     $("recnote").hidden = !rec.n;
     $("recnote").textContent = rec.n ? "From the Game page: " + rec.n + (rec.n === 1 ? " match" : " matches") + " tagged to this event (" + rec.w + "-" + rec.l + "-" + rec.d + "). The steppers change it here only." : "";
+    }
     var out = $("fin");
     if (!st.k) { out.innerHTML = '<p class="cnote">No top cut: pick one above to see your finishes.</p>'; return; }
     var s = C.scenarios(st), h = '<div class="fh"><span>Finish</span><span>Worst case</span><span>Likely</span></div><div class="flist">', shown = 0, rest = 0;
@@ -295,7 +324,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var id = want || st.ev, f = null;
     for (i = 0; i < evs.length; i++) { if (evs[i].id === id) { f = evs[i]; } }
     if (want && f) { pick(f, true); }
-    else { evInfo = f; render(); }
+    else { evInfo = f; render(); livePrefill(f); }
     if (want) { try { history.replaceState(null, "", location.pathname); } catch (e2) {} }
   }).catch(function(){ render(); });
 })();

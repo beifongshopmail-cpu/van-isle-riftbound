@@ -1,0 +1,6 @@
+{
+  "name": "ravi-live",
+  "private": true,
+  "type": "module",
+  "description": "RAVI's server for live event data. A Cloudflare Worker; no dependencies."
+}
