@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117096961730592935@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261227T113000
-DTEND;TZID=America/Vancouver:20261227T143000
+DTSTART;TZID=America/Vancouver:20261227T123000
+DTEND;TZID=America/Vancouver:20261227T153000
 SUMMARY:Radiance summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 

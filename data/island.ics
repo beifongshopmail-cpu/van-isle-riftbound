@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117482449148410932@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261029T010000Z
 DTEND:20261029T040000Z
 SUMMARY:Nexus Night at Gauntlet Games
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
-DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n20 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n19 of 24 spots left\, 
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117482449148410932
 URL:https://playriftbound.com/en-US/events/117482449148410932
 CATEGORIES:Nexus Nights
@@ -26,14 +26,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117473617815091551@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261030T010000Z
 DTEND:20261030T040000Z
 SUMMARY:Thursday Casual Nexus Nights @ North Park Picture Framing and Colle
  ctables
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
- toria\n27 of 28 spots left\, checked Oct 27\, 11:35 AM\nFree\nSign up: htt
+ toria\n25 of 28 spots left\, checked Oct 27\, 11:41 PM\nFree\nSign up: htt
  ps://playriftbound.com/en-US/events/117473617815091551
 URL:https://playriftbound.com/en-US/events/117473617815091551
 CATEGORIES:Nexus Nights
@@ -42,13 +42,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117509536477035676@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261101T010000Z
 DTEND:20261101T040000Z
 SUMMARY:Halloween Nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n15 of 16 spots left\
- , checked Oct 27\, 11:35 AM\nFree\nSign up: https://playriftbound.com/en-U
+ , checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/en-U
  S/events/117509536477035676
 URL:https://playriftbound.com/en-US/events/117509536477035676
 CATEGORIES:Nexus Nights
@@ -57,13 +57,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117509539459382429@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261101T193000Z
 DTEND:20261101T223000Z
 SUMMARY:Sunday morning nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n15 of 16 spots left\
- , checked Oct 27\, 11:35 AM\n$6.00 CAD\nSign up: https://playriftbound.com
+ , checked Oct 27\, 11:41 PM\n$6.00 CAD\nSign up: https://playriftbound.com
  /en-US/events/117509539459382429
 URL:https://playriftbound.com/en-US/events/117509539459382429
 CATEGORIES:Nexus Nights
@@ -72,13 +72,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454295314157802@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261102T010000Z
 DTEND:20261102T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n23 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454295314157802
 URL:https://playriftbound.com/en-US/events/117454295314157802
 CATEGORIES:Nexus Nights
@@ -87,13 +87,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117497230052513843@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261108T000000Z
 DTEND:20261108T030000Z
 SUMMARY:Nexus Night's at Colossal Cards & Collectables Courtenay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n48 of 
- 48 spots left\, checked Oct 27\, 11:35 AM\nFree\nSign up: https://playrift
+ 48 spots left\, checked Oct 27\, 11:41 PM\nFree\nSign up: https://playrift
  bound.com/en-US/events/117497230052513843
 URL:https://playriftbound.com/en-US/events/117497230052513843
 CATEGORIES:Nexus Nights
@@ -102,13 +102,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454297833145987@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261109T010000Z
 DTEND:20261109T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454297833145987
 URL:https://playriftbound.com/en-US/events/117454297833145987
 CATEGORIES:Nexus Nights
@@ -117,13 +117,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454327448500237@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261114T020000Z
 DTEND:20261114T050000Z
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\,
-  checked Oct 27\, 11:35 AM\nFree\nSign up: https://playriftbound.com/en-US
+  checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117454327448500237
 URL:https://playriftbound.com/en-US/events/117454327448500237
 CATEGORIES:Learn-to-Play
@@ -132,13 +132,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089941548488590@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261114T173000Z
 DTEND:20261114T203000Z
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n14 of 16 spots left
- \, checked Oct 27\, 11:35 AM\n$20.00 CAD\nSign up: https://playriftbound.c
+ \, checked Oct 27\, 11:41 PM\n$20.00 CAD\nSign up: https://playriftbound.c
  om/en-US/events/117089941548488590
 URL:https://playriftbound.com/en-US/events/117089941548488590
 CATEGORIES:Summoner Skirmish
@@ -147,13 +147,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129749064470654@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261114T180000Z
 DTEND:20261114T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 1
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 27\, 11:35 AM\nFree\nSign up: https://playriftbound.com/e
+ ft\, checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/e
  n-US/events/117129749064470654
 URL:https://playriftbound.com/en-US/events/117129749064470654
 CATEGORIES:Summoner Skirmish
@@ -162,14 +162,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089944509981053@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261114T220000Z
 DTEND:20261115T010000Z
 SUMMARY:Radiance Summoner Skirmish @ Colossal Cards & Collectables Courtena
  y
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n2
- 2 of 24 spots left\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nSign up: https
+ 2 of 24 spots left\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https
  ://playriftbound.com/en-US/events/117089944509981053
 URL:https://playriftbound.com/en-US/events/117089944509981053
 CATEGORIES:Summoner Skirmish
@@ -178,13 +178,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117497233144348710@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261115T000000Z
 DTEND:20261115T030000Z
 SUMMARY:Nexus Night's at Colossal Cards & Collectables Courtenay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n48 of 
- 48 spots left\, checked Oct 27\, 11:35 AM\nFree\nSign up: https://playrift
+ 48 spots left\, checked Oct 27\, 11:41 PM\nFree\nSign up: https://playrift
  bound.com/en-US/events/117497233144348710
 URL:https://playriftbound.com/en-US/events/117497233144348710
 CATEGORIES:Nexus Nights
@@ -193,13 +193,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117073785007006396@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261116T010000Z
 DTEND:20261116T040000Z
 SUMMARY:Radiance Skirmish #1
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nSign up: https://playriftbound
+ ft\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117073785007006396
 URL:https://playriftbound.com/en-US/events/117073785007006396
 CATEGORIES:Summoner Skirmish
@@ -208,14 +208,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125749989086783@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261121T190000Z
 DTEND:20261121T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish I
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125749989086783
 URL:https://playriftbound.com/en-US/events/117125749989086783
 CATEGORIES:Summoner Skirmish
@@ -224,13 +224,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089694282897798@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261121T220000Z
 DTEND:20261122T010000Z
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
 DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 
- left\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117089694282897798
 URL:https://playriftbound.com/en-US/events/117089694282897798
 CATEGORIES:Summoner Skirmish
@@ -239,13 +239,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117497236336804009@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261122T000000Z
 DTEND:20261122T030000Z
 SUMMARY:Nexus Night's at Colossal Cards & Collectables Courtenay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n48 of 
- 48 spots left\, checked Oct 27\, 11:35 AM\nFree\nSign up: https://playrift
+ 48 spots left\, checked Oct 27\, 11:41 PM\nFree\nSign up: https://playrift
  bound.com/en-US/events/117497236336804009
 URL:https://playriftbound.com/en-US/events/117497236336804009
 CATEGORIES:Nexus Nights
@@ -254,13 +254,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096953908084886@van-isle-riftbound
-DTSTAMP:20261027T183552Z
-DTSTART:20261122T183000Z
-DTEND:20261122T213000Z
+DTSTAMP:20261028T064120Z
+DTSTART:20261122T193000Z
+DTEND:20261122T223000Z
 SUMMARY:Radiance Summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n31 of 32 spots 
- left\, checked Oct 27\, 11:35 AM\n$20.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 27\, 11:41 PM\n$20.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117096953908084886
 URL:https://playriftbound.com/en-US/events/117096953908084886
 CATEGORIES:Summoner Skirmish
@@ -269,13 +269,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117170908777826678@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261122T220000Z
 DTEND:20261123T010000Z
 SUMMARY:Colossal Cards Victoria Radiance Skirmish 1
 LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
 DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n28
-  of 28 spots left\, checked Oct 27\, 11:35 AM\n$15.00 CAD\nSign up: https:
+  of 28 spots left\, checked Oct 27\, 11:41 PM\n$15.00 CAD\nSign up: https:
  //playriftbound.com/en-US/events/117170908777826678
 URL:https://playriftbound.com/en-US/events/117170908777826678
 CATEGORIES:Summoner Skirmish
@@ -284,13 +284,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454301417787736@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261123T010000Z
 DTEND:20261123T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454301417787736
 URL:https://playriftbound.com/en-US/events/117454301417787736
 CATEGORIES:Nexus Nights
@@ -299,13 +299,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117497239560280331@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261129T000000Z
 DTEND:20261129T030000Z
 SUMMARY:Nexus Night's at Colossal Cards & Collectables Courtenay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Nexus Nights\nColossal Cards & Collectables\, Courtenay\n48 of 
- 48 spots left\, checked Oct 27\, 11:35 AM\nFree\nSign up: https://playrift
+ 48 spots left\, checked Oct 27\, 11:41 PM\nFree\nSign up: https://playrift
  bound.com/en-US/events/117497239560280331
 URL:https://playriftbound.com/en-US/events/117497239560280331
 CATEGORIES:Nexus Nights
@@ -314,13 +314,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454304230078174@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261130T010000Z
 DTEND:20261130T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454304230078174
 URL:https://playriftbound.com/en-US/events/117454304230078174
 CATEGORIES:Nexus Nights
@@ -329,13 +329,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454314328231745@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261207T010000Z
 DTEND:20261207T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454314328231745
 URL:https://playriftbound.com/en-US/events/117454314328231745
 CATEGORIES:Nexus Nights
@@ -344,13 +344,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454331148898286@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261212T010000Z
 DTEND:20261212T040000Z
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\,
-  checked Oct 27\, 11:35 AM\nFree\nSign up: https://playriftbound.com/en-US
+  checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117454331148898286
 URL:https://playriftbound.com/en-US/events/117454331148898286
 CATEGORIES:Learn-to-Play
@@ -359,13 +359,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089949895350173@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261212T183000Z
 DTEND:20261212T213000Z
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n14 of 16 spots left
- \, checked Oct 27\, 11:35 AM\n$20.00 CAD\nSign up: https://playriftbound.c
+ \, checked Oct 27\, 11:41 PM\n$20.00 CAD\nSign up: https://playriftbound.c
  om/en-US/events/117089949895350173
 URL:https://playriftbound.com/en-US/events/117089949895350173
 CATEGORIES:Summoner Skirmish
@@ -374,14 +374,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089949356892554@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261212T230000Z
 DTEND:20261213T020000Z
 SUMMARY:Radiance Summoner Skirmish II @ Colossal Cards & Collectables Court
  enay
 LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
 DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Courtenay\n1
- 3 of 16 spots left\, checked Oct 27\, 11:35 AM\n$15.00 CAD\nSign up: https
+ 3 of 16 spots left\, checked Oct 27\, 11:41 PM\n$15.00 CAD\nSign up: https
  ://playriftbound.com/en-US/events/117089949356892554
 URL:https://playriftbound.com/en-US/events/117089949356892554
 CATEGORIES:Summoner Skirmish
@@ -390,13 +390,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454321388311216@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261214T010000Z
 DTEND:20261214T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454321388311216
 URL:https://playriftbound.com/en-US/events/117454321388311216
 CATEGORIES:Nexus Nights
@@ -405,14 +405,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125756345638695@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261219T190000Z
 DTEND:20261219T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish II
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125756345638695
 URL:https://playriftbound.com/en-US/events/117125756345638695
 CATEGORIES:Summoner Skirmish
@@ -421,13 +421,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089697560448344@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261219T220000Z
 DTEND:20261220T010000Z
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:615 11 Ave\, Campbell River\, BC V9W 4G5\, Canada
 DESCRIPTION:Summoner Skirmish\nAJ's Games\, Campbell River\n16 of 16 spots 
- left\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117089697560448344
 URL:https://playriftbound.com/en-US/events/117089697560448344
 CATEGORIES:Summoner Skirmish
@@ -436,13 +436,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117170913739919281@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261220T220000Z
 DTEND:20261221T010000Z
 SUMMARY:Colossal Cards Victoria Radiance Skirmish 2
 LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
 DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n28
-  of 28 spots left\, checked Oct 27\, 11:35 AM\n$15.00 CAD\nSign up: https:
+  of 28 spots left\, checked Oct 27\, 11:41 PM\n$15.00 CAD\nSign up: https:
  //playriftbound.com/en-US/events/117170913739919281
 URL:https://playriftbound.com/en-US/events/117170913739919281
 CATEGORIES:Summoner Skirmish
@@ -451,13 +451,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454338043678755@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20261221T010000Z
 DTEND:20261221T040000Z
 SUMMARY:Skyahven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:35 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454338043678755
 URL:https://playriftbound.com/en-US/events/117454338043678755
 CATEGORIES:Nexus Nights
@@ -466,13 +466,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096961730592935@van-isle-riftbound
-DTSTAMP:20261027T183552Z
-DTSTART:20261227T183000Z
-DTEND:20261227T213000Z
+DTSTAMP:20261028T064120Z
+DTSTART:20261227T193000Z
+DTEND:20261227T223000Z
 SUMMARY:Radiance summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 
- left\, checked Oct 27\, 11:35 AM\n$20.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 27\, 11:41 PM\n$20.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117096961730592935
 URL:https://playriftbound.com/en-US/events/117096961730592935
 CATEGORIES:Summoner Skirmish
@@ -481,13 +481,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129753104838820@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20270109T180000Z
 DTEND:20270109T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 2
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 27\, 11:35 AM\nFree\nSign up: https://playriftbound.com/e
+ ft\, checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/e
  n-US/events/117129753104838820
 URL:https://playriftbound.com/en-US/events/117129753104838820
 CATEGORIES:Summoner Skirmish
@@ -496,13 +496,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117073792152834647@van-isle-riftbound
-DTSTAMP:20261027T183552Z
+DTSTAMP:20261028T064120Z
 DTSTART:20270111T010000Z
 DTEND:20270111T040000Z
 SUMMARY:Radiance Skirmish #2
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 27\, 11:35 AM\n$10.00 CAD\nSign up: https://playriftbound
+ ft\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117073792152834647
 URL:https://playriftbound.com/en-US/events/117073792152834647
 CATEGORIES:Summoner Skirmish
