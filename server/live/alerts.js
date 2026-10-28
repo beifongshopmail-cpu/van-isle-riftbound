@@ -20,19 +20,25 @@ const PUSH_HOSTS = /^(web\.push\.apple\.com|fcm\.googleapis\.com|updates\.push\.
 const B64U = /^[A-Za-z0-9_-]{16,200}$/;
 function cleanName(v, max) { return typeof v === "string" ? v.replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, max) : ""; }
 
-// a request to be told, checked field by field; null when anything is off
-export function cleanAsk(b) {
-  if (!b || typeof b !== "object") return null;
-  const ev = typeof b.event === "string" && /^\d{6,24}$/.test(b.event) ? b.event : null;
-  const s = b.sub && typeof b.sub === "object" ? b.sub : null;
+// a phone's push address and keys, checked; null when anything is off
+export function cleanSub(s) {
+  s = s && typeof s === "object" ? s : null;
   let ep = null;
   try { const u = new URL(s && s.endpoint); if (u.protocol === "https:" && PUSH_HOSTS.test(u.hostname) && u.href.length < 1000) ep = u.href; } catch (e) { ep = null; }
   const k = s && s.keys;
   const p256dh = k && typeof k.p256dh === "string" && B64U.test(k.p256dh) ? k.p256dh : null;
   const auth = k && typeof k.auth === "string" && B64U.test(k.auth) ? k.auth : null;
+  return ep && p256dh && auth ? { endpoint: ep, p256dh: p256dh, auth: auth } : null;
+}
+
+// a request to be told, checked field by field; null when anything is off
+export function cleanAsk(b) {
+  if (!b || typeof b !== "object") return null;
+  const ev = typeof b.event === "string" && /^\d{6,24}$/.test(b.event) ? b.event : null;
+  const s = cleanSub(b.sub);
   const n = cleanName(b.me && b.me.n, 40), tag = cleanName(b.me && b.me.tag, 12);
-  if (!ev || !ep || !p256dh || !auth || !n) return null;
-  return { endpoint: ep, event: ev, p256dh: p256dh, auth: auth, n: n, tag: tag };
+  if (!ev || !s || !n) return null;
+  return { endpoint: s.endpoint, event: ev, p256dh: s.p256dh, auth: s.auth, n: n, tag: tag };
 }
 
 function same(p, row) {
@@ -89,6 +95,7 @@ export function makeAlerts(getLive) {
       this.db = state.db || sqlStore(state.storage.sql);
       this.fetcher = state.fetcher || fetch;
       this.now = state.now || (() => Date.now());
+      this.tested = new Map(); // a test alert at most once a minute per phone
     }
     async wake() {
       const a = await this.state.storage.getAlarm();
@@ -107,6 +114,19 @@ export function makeAlerts(getLive) {
         this.db.put(r);
         await this.wake();
         return Response.json({ ok: true });
+      }
+      if (u.pathname === "/test") {
+        const s = cleanSub(b && b.sub);
+        if (!s) return Response.json({ error: "bad request" }, { status: 400 });
+        const jwk = this.env.VAPID_JWK ? JSON.parse(this.env.VAPID_JWK) : null;
+        if (!jwk) return Response.json({ error: "alerts are not set up" }, { status: 503 });
+        const last = this.tested.get(s.endpoint) || 0, now = this.now();
+        if (now - last < 60000) return Response.json({ error: "once a minute" }, { status: 429 });
+        this.tested.set(s.endpoint, now);
+        if (this.tested.size > 500) this.tested.delete(this.tested.keys().next().value);
+        let st = 0;
+        try { st = await send({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, JSON.stringify({ title: "RAVI test alert", body: "Alerts reach this phone. Pairing alerts will look like this.", url: SITE + "settings/", tag: "ravi-test" }), jwk, SUBJECT, this.fetcher); } catch (e) { st = 0; }
+        return Response.json({ ok: st >= 200 && st < 300, status: st }, { status: st >= 200 && st < 300 ? 200 : 502 });
       }
       if (u.pathname === "/off") {
         let ep = null;

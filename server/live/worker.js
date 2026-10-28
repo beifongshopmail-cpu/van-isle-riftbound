@@ -109,9 +109,10 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: Object.assign({ "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "86400" }, cors(req)) });
-    if (req.method === "POST" && (url.pathname === "/alerts" || url.pathname === "/alerts/off")) {
+    const ROUTE = { "/alerts": "/add", "/alerts/off": "/off", "/alerts/test": "/test" };
+    if (req.method === "POST" && ROUTE[url.pathname]) {
       if (!env || !env.ALERTS) return json(req, 503, { error: "alerts are not set up" });
-      return toAlerts(req, env, url.pathname === "/alerts" ? "/add" : "/off");
+      return toAlerts(req, env, ROUTE[url.pathname]);
     }
     if (req.method !== "GET") return json(req, 405, { error: "GET only" });
     if (url.pathname === "/vapid") {

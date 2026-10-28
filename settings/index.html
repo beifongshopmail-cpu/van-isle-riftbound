@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090A">
-<meta name="description" content="App settings for RAVI: the hub's blocks, where the app opens, and the opening animation.">
+<meta name="description" content="App settings for RAVI: your Riot name, the hub's blocks, where the app opens, and the opening animation.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RAVI">
@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
+<script src="../live.js"></script>
 <style>
 /* App settings. The shared layer (tokens, glass, the bar, menus, the
    footer) is app.css; this block holds only this page's own rules. Each
@@ -36,6 +37,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .stwarn{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);visibility:hidden}
 .stwarn.show{visibility:visible}
 .foot a{color:var(--bone)}
+/* YOUR RIOT NAME (M16): one field, saved on this phone, used by every live part */
+#stme .nf{margin:0}
+#stme .pact{margin-top:12px}
+.stmsg{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone)}
+.stmsg:empty{display:none}
 </style>
 </head>
 <body>
@@ -44,7 +50,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
 <main id="st">
   <h2 class="sr">App settings</h2>
-  <p class="lede">Choices for the hub and for how the app opens and moves, saved on this phone.</p>
+  <p class="lede">Your Riot name, and choices for the hub and for how the app opens and moves, saved on this phone.</p>
+  <section class="sts glass" id="stme">
+    <div class="shead"><h2>Your Riot name</h2></div>
+    <div class="nf tall"><input type="text" id="stmein" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Your Riot name" data-k="type"><button type="button" class="fbtn" id="stmeok" data-k="do">Save</button></div>
+    <p class="stn">The name you play under on PlayRiftbound, with its tag. At a live event it finds your table, your record and your alerts. Saved on this phone only.</p>
+    <p class="stmsg" id="stmemsg" aria-live="polite"></p>
+    <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
+    <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
+  </section>
   <section class="sts glass">
     <div class="shead"><h2>Hub blocks</h2></div>
     <div class="pick" id="sthub" data-k="pick"></div>
@@ -186,6 +200,27 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     render();
   });
   render();
+
+  // YOUR RIOT NAME (M16) and a test alert. Not part of Reset: it is who you are, not a setting.
+  var L = window.RAVI_LIVE, mein = document.getElementById("stmein"), memsg = document.getElementById("stmemsg");
+  var have = L.me();
+  if (have) { mein.value = L.nameText(have); }
+  function saveMe(){
+    var p = L.setMe(mein.value);
+    mein.value = p ? L.nameText(p) : "";
+    memsg.textContent = p ? (p.tag ? "Saved." : "Saved. Add your #tag too, so a player with the same name is never taken for you.") : "Cleared.";
+    mein.blur();
+  }
+  document.getElementById("stmeok").addEventListener("click", saveMe);
+  mein.addEventListener("keydown", function(e){ if (e.key === "Enter") { saveMe(); } });
+  var tbtn = document.getElementById("sttest"), tmsg = document.getElementById("sttestmsg");
+  tbtn.addEventListener("click", function(){
+    tbtn.disabled = true; tmsg.textContent = "Sending...";
+    L.alertTest(new URL("../alerts-sw.js", location.href).href, function(err){
+      tbtn.disabled = false;
+      tmsg.textContent = err || "Sent. It should arrive in a few seconds.";
+    });
+  });
 })();
 </script>
 <script>

@@ -23,7 +23,42 @@
     return !!(j && typeof j === "object" && j.v === 1 && typeof j.id === "string" && Array.isArray(j.rounds));
   }
 
+  // THE TEST EVENT (?sim=1, id 1) plays a pretend event so every live part can be
+  // tried without a real one: 8 players, best of 3, round 1 done, round 2 running
+  // (its clock started 12 minutes before the first look this session), my name at
+  // table 2 when one is saved. Made here; it never reaches the server.
+  var DEMO_ID = "1";
+  function isDemo(evId) { return String(evId) === DEMO_ID; }
+  function demo() {
+    var now = Date.now(), start = now - 12 * 60000;
+    try {
+      var ss = root.sessionStorage, k = "ravi.demo.start.v1", v = +ss.getItem(k);
+      if (v && now - v < 50 * 60000) start = v; else ss.setItem(k, String(start));
+    } catch (e) {}
+    var mine = me() || { n: "You", tag: "TEST" };
+    var P = [mine, { n: "Ashwind", tag: "NA1" }, { n: "Kelpie", tag: "0420" }, { n: "Brightforge", tag: "NA1" },
+      { n: "Moss Lantern", tag: "VIC" }, { n: "Tidecaller", tag: "NA1" }, { n: "Quill", tag: "7781" }, { n: "Orchard", tag: "NA1" }];
+    function t(n, a, b, res, games, st) { return { t: n, st: st || "done", a: P[a], b: P[b], res: res, games: games }; }
+    var r1 = { stage: 1, n: 1, st: "done", start: new Date(start - 65 * 60000).toISOString(), min: 50, byes: [],
+      tables: [t(1, 1, 0, "L", ["W", "L", "L"]), t(2, 2, 3, "W", ["W", "W", null]), t(3, 4, 5, "D", ["W", "L", null]), t(4, 6, 7, "W", ["L", "W", "W"])],
+      standings: [
+        { rank: 1, n: P[2].n, tag: P[2].tag, pts: 3, w: 1, l: 0, d: 0, omw: 0, gw: 1, ogw: 0 },
+        { rank: 2, n: P[0].n, tag: P[0].tag, pts: 3, w: 1, l: 0, d: 0, omw: 0, gw: 0.667, ogw: 0.333 },
+        { rank: 3, n: P[6].n, tag: P[6].tag, pts: 3, w: 1, l: 0, d: 0, omw: 0, gw: 0.667, ogw: 0.333 },
+        { rank: 4, n: P[4].n, tag: P[4].tag, pts: 1, w: 0, l: 0, d: 1, omw: 0.333, gw: 0.5, ogw: 0.5 },
+        { rank: 5, n: P[5].n, tag: P[5].tag, pts: 1, w: 0, l: 0, d: 1, omw: 0.333, gw: 0.5, ogw: 0.5 },
+        { rank: 6, n: P[1].n, tag: P[1].tag, pts: 0, w: 0, l: 1, d: 0, omw: 1, gw: 0.333, ogw: 0.667 },
+        { rank: 7, n: P[7].n, tag: P[7].tag, pts: 0, w: 0, l: 1, d: 0, omw: 1, gw: 0.333, ogw: 0.667 },
+        { rank: 8, n: P[3].n, tag: P[3].tag, pts: 0, w: 0, l: 1, d: 0, omw: 1, gw: 0, ogw: 1 }] };
+    var r2 = { stage: 1, n: 2, st: "live", start: new Date(start).toISOString(), min: 50, byes: [],
+      tables: [t(1, 2, 6, "W", ["W", "W", null]), t(2, 0, 4, null, ["W", null, null], "playing"), t(3, 5, 1, null, [null, null, null], "playing"), t(4, 7, 3, "L", ["L", "L", null])],
+      standings: null };
+    return { v: 1, id: DEMO_ID, name: "Test event (pretend live data)", startsAt: r1.start, endsAt: null, updatedAt: new Date(now).toISOString(), fetchedAt: new Date(now).toISOString(),
+      type: "NEXUS_NIGHT", format: "CONSTRUCTED", structure: "SWISS", bestOf: 3, roundCount: 3, capacity: 8, players: 8, dropped: 0, status: "live", rounds: [r1, r2], demo: true };
+  }
+
   function get(evId, cb) {
+    if (isDemo(evId)) { setTimeout(function () { cb(demo()); }, 0); return; }
     var id = tid(evId);
     if (!id || typeof fetch !== "function") { cb(null); return; }
     var done = false;
@@ -180,6 +215,24 @@
     }).then(function () { mark(id, true); cb(null); })
       .catch(function (e) { cb(e && e.message === "denied" ? "Alerts are off for RAVI in your phone's Settings." : "Alerts did not turn on. Try again in a minute."); });
   }
+  // One test alert to this phone, any time (App settings, and the test event).
+  function alertTest(swUrl, cb) {
+    if (!alertsSupported()) { cb("Alerts need RAVI opened from your Home Screen."); return; }
+    root.Notification.requestPermission().then(function (p) {
+      if (p !== "granted") throw new Error("denied");
+      return root.navigator.serviceWorker.register(swUrl).then(function () { return root.navigator.serviceWorker.ready; });
+    }).then(function (reg) {
+      return fetch(BASE + "/vapid").then(function (r) { if (!r.ok) throw new Error("server " + r.status); return r.json(); }).then(function (v) {
+        return reg.pushManager.getSubscription().then(function (s) {
+          return s || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uBytes(v.key) });
+        });
+      });
+    }).then(function (sub) {
+      var j = sub.toJSON();
+      return post("/alerts/test", { sub: { endpoint: j.endpoint, keys: j.keys } });
+    }).then(function () { cb(null); })
+      .catch(function (e) { cb(e && e.message === "denied" ? "Alerts are off for RAVI in your phone's Settings." : "The test alert did not send. Try again in a minute."); });
+  }
   function alertStop(evId, cb) {
     var id = tid(evId);
     mark(id, false);
@@ -189,7 +242,7 @@
       .then(function () { cb(null); }, function () { cb(null); });
   }
 
-  var api = { BASE: BASE, ME_KEY: ME_KEY, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop };
+  var api = { BASE: BASE, ME_KEY: ME_KEY, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.RAVI_LIVE = api;
 })(typeof window !== "undefined" ? window : globalThis);

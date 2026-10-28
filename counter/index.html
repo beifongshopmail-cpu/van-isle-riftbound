@@ -827,7 +827,7 @@
   // on the round clock follows the event to its next round
   function liveRefresh(){
     var cur = cseGet(), L = window.RAVI_LIVE;
-    if (!L || !cur || !/^rb\d+$/.test(String(cur.id)) || document.visibilityState === "hidden") return;
+    if (!L || !cur || !(/^rb\d+$/.test(String(cur.id)) || L.isDemo(cur.id)) || document.visibilityState === "hidden") return;
     L.get(cur.id, function(f){
       if (!f) return;
       LIVEF = f; liveFor = String(cur.id);

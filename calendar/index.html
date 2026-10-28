@@ -1195,6 +1195,8 @@ a{color:inherit;text-decoration:none}
   var LIVE = {};
   var LIVE_KINDS = {nexus:1, skirmish:1, prerift:1, other:1};
   function liveWanted(ev, now){
+    // the test event (?sim=1) plays pretend live data from live.js, never the server
+    if (ev && ev.sim) return true;
     if (!ev || !/^rb\d+$/.test(String(ev.id)) || !LIVE_KINDS[ev.type]) return false;
     var t = Date.parse(ev.start);
     return isFinite(t) && now >= t - 30 * 60000 && now <= t + 10 * 3600000;
@@ -1283,6 +1285,7 @@ a{color:inherit;text-decoration:none}
     list.innerHTML = "";
     var out = document.getElementById("plout");
     out.href = "https://playriftbound.com/en-US/events/" + (L.tid(LV.id) || "");
+    out.hidden = L.isDemo(LV.id);
     if (!f){
       document.getElementById("plname").textContent = "";
       document.getElementById("plclk").hidden = true;
@@ -1377,7 +1380,7 @@ a{color:inherit;text-decoration:none}
     var show = !!f && f.status !== "done";
     b.hidden = !show;
     var on = L.alertOn(LV.id), mine = L.me();
-    b.textContent = on ? "Alerts on: tap to stop" : "Alert me when I'm paired";
+    b.textContent = L.isDemo(LV.id) ? "Send a test alert" : on ? "Alerts on: tap to stop" : "Alert me when I'm paired";
     b.disabled = !on && !mine;
     var msg = alNote || (!on && !mine ? "Save your Riot name above to get alerts." : "");
     n.textContent = msg; n.hidden = !show || !msg;
@@ -1386,8 +1389,10 @@ a{color:inherit;text-decoration:none}
     var L = window.RAVI_LIVE, b = this, id = LV.id;
     b.disabled = true; alNote = "";
     var done = function(err){ alNote = err || ""; b.disabled = false; if (LV.id === id) liveAlertBtn(LIVE[id]); };
-    if (L.alertOn(id)) L.alertStop(id, done);
-    else L.alertStart(id, L.me(), new URL("../alerts-sw.js", location.href).href, done);
+    var sw = new URL("../alerts-sw.js", location.href).href;
+    if (L.isDemo(id)) L.alertTest(sw, function(err){ done(err || "Test alert sent. It should arrive in a few seconds."); });
+    else if (L.alertOn(id)) L.alertStop(id, done);
+    else L.alertStart(id, L.me(), sw, done);
   });
   function liveOpen(id){
     LV.id = String(id); LV.round = null; LV.view = "p"; LV.editing = false; alNote = "";
