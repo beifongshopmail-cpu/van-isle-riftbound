@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Riftbound tier list: which legends are played most and which reach the top cut, from recent events.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Tier list - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<script src="../cards/legends.js"></script>
+<script src="../cut/cut.js"></script>
+<script src="tier.js"></script>
+<style>
+/* Tier list (M17, 2026-10-28): which legends are played most, and which reach the top cut more
+   often than their numbers explain. The maths is tier.js (shared with the fetcher and the tests);
+   this page reads data/tier.json (written by fetch-tier.js from TopDeck.gg: legend and placing
+   only, never a player's name), checks every field, and draws one glass card per tier. Rows are
+   read-only. Tiers are named in words; colour carries nothing. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+#tl{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.tnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.tsec{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
+.tsec .shead{margin:0 4px 10px}
+/* the column heads, then one row per legend: art, name, played, top cut, conversion */
+.th,.tr{display:grid;grid-template-columns:minmax(0,1fr) 50px 50px 50px;gap:4px;align-items:center}
+.th{margin:0 4px 6px;font-size:12px;color:var(--muted)}
+.th span:not(:first-child),.tr .tv{text-align:center}
+.tlist{background:var(--recess);border-radius:22px;overflow:hidden}
+.tr{min-height:var(--sz-row);padding:6px 6px 6px 12px;box-sizing:border-box}
+.tr + .tr{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.tlg{display:flex;align-items:center;gap:10px;min-width:0}
+.tpic{flex:0 0 auto;width:32px;height:32px;border-radius:8px;object-fit:cover;background:var(--track)} /* size-exempt: legend art */
+.tnm{min-width:0}
+.tnm b{display:block;font-family:var(--disp);font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tnm small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tv{font-size:13px}
+.tv.cv{font-family:var(--disp);font-weight:600}
+.tempty{margin-top:20px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
+.foot a{color:var(--bone)}
+</style>
+</head>
+<body>
+<div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+<main id="tl">
+  <h2 class="sr">Tier list</h2>
+  <p class="lede">Which legends are winning: how often each is played, and how often it reaches the top cut, across recent Riftbound events.</p>
+  <p class="tnote" id="tsum">Loading the results.</p>
+  <div id="tiers"></div>
+
+  <section class="tsec glass" id="thow">
+    <div class="shead"><h2>How it's counted</h2></div>
+    <p class="tnote">Played: a legend's share of every deck. Top cut: its share of every top-cut finish (the cut the event played; after Swiss only, a top 8 from 17 players and a top 4 below). Conversion: top cut over played, so 1.00x is average and higher means it reaches the cut more often than its numbers explain. Legends with few decks are pulled toward 1.00x so a lucky handful cannot top the list.</p>
+    <p class="tnote">S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. Rogue: the rest. Legends and decks only: RAVI never ranks players.</p>
+  </section>
+
+  <footer class="foot">
+    <p>Results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
+    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
+  </footer>
+</main>
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"tier"},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
+]);</script>
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<script>
+(function(){
+  var T = window.RAVI_TIER;
+  var $ = function(id){ return document.getElementById(id); };
+  var scrim = $("scrim"), pnav = $("pnav"), openP = null;
+  function esc(v){ return String(v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
+
+  // MENUS: Go to only; the page locked at the root while it is open
+  function show(p){
+    if (openP && openP !== p) { openP.classList.remove("show"); openP.setAttribute("aria-hidden", "true"); }
+    if (!p && openP) { openP.classList.remove("show"); openP.setAttribute("aria-hidden", "true"); }
+    openP = p;
+    if (p) { p.classList.add("show"); p.setAttribute("aria-hidden", "false"); }
+    scrim.classList.toggle("show", !!p);
+    document.documentElement.classList.toggle("lock", !!p);
+  }
+  function hide(){ show(null); }
+  $("tabnav").addEventListener("click", function(){ if (openP === pnav) { hide(); } else { show(pnav); } });
+  window.RAVI_GOTO($("pnavgoto"), "tier", "../");
+  var here = $("pnhere");
+  if (here) { here.addEventListener("click", hide); }
+  scrim.addEventListener("click", hide);
+
+  // THE LEGENDS RAVI KNOWS (cards/legends.js, from Riot's gallery). A name in the data that is not
+  // one of these is dropped, so the page only ever shows Riot's own names and art.
+  var KNOWN = {};
+  (window.VIR_LEGENDS || []).forEach(function(x){ if (x && typeof x.n === "string") { KNOWN[x.n] = x; } });
+  function artOf(x){
+    for (var i = 0; x && x.v && i < x.v.length; i++) {
+      if (x.v[i] && /^[0-9a-f]{40}$/.test(x.v[i].h || "")) { return "../cards/art/" + x.v[i].h + ".t.webp"; }
+    }
+    return "";
+  }
+  function whole(v, lo, hi){ return typeof v === "number" && isFinite(v) && Math.floor(v) === v && v >= lo && v <= hi; }
+
+  // data/tier.json, rebuilt from checked fields: { v, at, days, legends: [names], events: [ { d, n, k, s: [[placing, legend index]] } ] }
+  function clean(d){
+    if (!d || typeof d !== "object" || d.v !== 1 || !Array.isArray(d.legends) || !Array.isArray(d.events)) { return null; }
+    var names = d.legends.slice(0, 500).map(function(n){ return typeof n === "string" && KNOWN[n] ? n : ""; });
+    var evs = [];
+    d.events.slice(0, 5000).forEach(function(e){
+      if (!e || !whole(e.n, 2, 4096) || !Array.isArray(e.s)) { return; }
+      var s = [];
+      e.s.slice(0, 4096).forEach(function(p){
+        if (Array.isArray(p) && whole(p[0], 1, e.n) && whole(p[1], 0, names.length - 1) && names[p[1]]) { s.push({ r: p[0], l: names[p[1]] }); }
+      });
+      if (s.length) { evs.push(whole(e.k, 1, 64) ? { n: e.n, k: e.k, s: s } : { n: e.n, s: s }); }
+    });
+    var at = typeof d.at === "string" && /^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(d.at) ? new Date(d.at) : null;
+    return { events: evs, days: whole(d.days, 1, 365) ? d.days : 30, at: at && !isNaN(at) ? at : null };
+  }
+
+  var TIERS = [["S", "S tier"], ["A", "A tier"], ["B", "B tier"], ["C", "C tier"], ["R", "Rogue"]];
+  function pct(x){ var p = x * 100; return (p > 0 && p < 1 ? "<1" : String(Math.round(p))) + "%"; }
+  function nameParts(n){ var i = n.indexOf(","); return i < 0 ? [n, ""] : [n.slice(0, i), n.slice(i + 1).replace(/^\s+/, "")]; }
+  function dateText(dt){
+    try { return dt.toLocaleDateString("en-CA", { month: "short", day: "numeric" }); } catch (e) { return ""; }
+  }
+
+  function draw(c){
+    var box = $("tiers"), sum = $("tsum");
+    if (!c || !T) { sum.textContent = "The results could not be read. Try again later."; box.innerHTML = ""; return; }
+    var r = T.compute(c.events);
+    if (!r.legends.length) {
+      sum.textContent = "";
+      box.innerHTML = "<p class=\"tempty glass\">No results yet. RAVI reads the latest events once a day; check back soon.</p>";
+      return;
+    }
+    sum.textContent = r.events + (r.events === 1 ? " event, " : " events, ") + r.entries + " decks, the last " + c.days + " days." +
+      (c.at ? " Updated " + dateText(c.at) + "." : "");
+    var h = "";
+    TIERS.forEach(function(t){
+      var rows = r.legends.filter(function(x){ return x.tier === t[0]; });
+      if (!rows.length) { return; }
+      h += "<section class=\"tsec glass\" data-tier=\"" + t[0] + "\"><div class=\"shead\"><h2>" + t[1] + "</h2><span class=\"sp\"></span><span class=\"cnt\">" +
+        rows.length + (rows.length === 1 ? " legend" : " legends") + "</span></div>" +
+        "<div class=\"th\" aria-hidden=\"true\"><span>Legend</span><span>Played</span><span>Top cut</span><span>Conv.</span></div><div class=\"tlist\">";
+      rows.forEach(function(x){
+        var p = nameParts(x.l), art = artOf(KNOWN[x.l]);
+        h += "<div class=\"tr\" aria-label=\"" + esc(x.l + ": played " + pct(x.fs) + ", top cut " + pct(x.ts) + ", conversion " + x.cv.toFixed(2) + "x, " + x.f + " decks") + "\">" +
+          "<span class=\"tlg\">" + (art ? "<img class=\"tpic\" src=\"" + esc(art) + "\" alt=\"\" loading=\"lazy\">" : "<span class=\"tpic\"></span>") +
+          "<span class=\"tnm\"><b>" + esc(p[0]) + "</b><small>" + esc(x.f + (x.f === 1 ? " deck" : " decks")) + "</small></span></span>" +
+          "<span class=\"tv\">" + pct(x.fs) + "</span><span class=\"tv\">" + pct(x.ts) + "</span><span class=\"tv cv\">" + x.cv.toFixed(2) + "x</span></div>";
+      });
+      h += "</div></section>";
+    });
+    box.innerHTML = h;
+  }
+
+  fetch("../data/tier.json", { cache: "no-cache" }).then(function(res){
+    if (res.status === 404) { return { v: 1, legends: [], events: [] }; } // not written yet: no results
+    if (!res.ok) { throw new Error("http " + res.status); }
+    return res.json();
+  }).then(function(d){ draw(clean(d)); }).catch(function(){ draw(null); });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>

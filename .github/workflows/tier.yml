@@ -1,0 +1,52 @@
+name: refresh tier list
+
+# Once a day at 10:40 UTC (off the hour), and when the fetcher or this file changes on main.
+# fetch-tier.js reads TopDeck.gg's recent Riftbound Constructed events and writes data/tier.json:
+# legends and placings only, never a player's name. A failed read fails the run and the last good
+# file stays. The key is the Actions secret TOPDECK_API_KEY; without it the run says so and stops.
+on:
+  schedule:
+    - cron: "40 10 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - fetch-tier.js
+      - .github/workflows/tier.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-tier
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Read TopDeck
+        env:
+          TOPDECK_API_KEY: ${{ secrets.TOPDECK_API_KEY }}
+        run: node fetch-tier.js
+
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/tier.json
+          if git diff --cached --quiet; then
+            echo "nothing to publish"
+            exit 0
+          fi
+          git commit -m "data: tier list $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin main
+          git push
