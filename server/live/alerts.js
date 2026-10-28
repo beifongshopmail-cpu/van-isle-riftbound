@@ -9,7 +9,7 @@
 
 import { send } from "./push.js";
 
-export const SITE = "https://beifongshopmail-cpu.github.io/van-isle-riftbound/";
+export const SITE = "https://ravi.tools/";
 const SUBJECT = "https://github.com/beifongshopmail-cpu/van-isle-riftbound";
 const WAKE_MS = 30000;
 const KEEP_MS = 16 * 3600000;

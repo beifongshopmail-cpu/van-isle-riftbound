@@ -13,7 +13,7 @@ const UA = "VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-is
 const GQL = "https://playriftbound.com/api/gql";
 const POLLER = { op: "GetCompeteRbRefreshPoller", hash: "459dbd58b231ad1767b999a1bf987836123ac86a0b5110e166de15b69723ba0d" };
 const PAGE = "https://playriftbound.com/en-US/events/";
-const ORIGINS = ["https://beifongshopmail-cpu.github.io"];
+const ORIGINS = ["https://ravi.tools", "https://beifongshopmail-cpu.github.io"]; // the old address stays until M8 is checked
 export const FRESH_MS = 15000;
 const KEEP = 200; // events held in memory at most
 
