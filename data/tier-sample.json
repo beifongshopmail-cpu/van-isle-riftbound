@@ -1,0 +1,1795 @@
+{
+ "capturedAt": "2026-10-28T20:38:59.536Z",
+ "request": {
+  "game": "Riftbound",
+  "format": "Constructed",
+  "last": 30,
+  "participantMin": 16,
+  "columns": [
+   "wins",
+   "draws",
+   "losses"
+  ]
+ },
+ "status": 200,
+ "error": "",
+ "count": 18,
+ "keysSeen": {
+  "event.TID": 18,
+  "event.tournamentName": 18,
+  "event.swissNum": 18,
+  "event.startDate": 18,
+  "event.game": 18,
+  "event.format": 18,
+  "event.topCut": 18,
+  "event.standings": 18,
+  "event.eventData": 18,
+  "standing.wins": 1587,
+  "standing.draws": 1587,
+  "standing.losses": 1587,
+  "standing.leader": 1289
+ },
+ "leaders": {
+  "(none)": 298,
+  "Riven, The Exile": 133,
+  "Kai'Sa, Daughter of the Void": 77,
+  "Kennen, Heart of the Tempest": 126,
+  "Master Yi, Wuju Bladesman": 38,
+  "Akali, Rogue Assassin": 66,
+  "Rengar, Pridestalker": 67,
+  "Rek'Sai, Void Burrower": 30,
+  "LeBlanc, Deceiver": 54,
+  "Irelia, Blade Dancer": 35,
+  "Leona, Radiant Dawn": 7,
+  "K'Sante, Pride of Nazumah": 19,
+  "Evelynn, Agony's Embrace": 41,
+  "Sett, The Boss": 5,
+  "Ekko, Boy Who Shattered Time": 28,
+  "Orianna, Lady of Clockwork": 32,
+  "Jayce, Defender of Tomorrow": 31,
+  "Diana, Scorn of the Moon": 20,
+  "Mordekaiser, Iron Revenant": 33,
+  "Viktor, Herald of the Arcane": 21,
+  "Lux, Lady of Luminosity": 1,
+  "Jarvan IV, Exemplar of Demacia": 21,
+  "Ambessa, Matriarch of War": 11,
+  "Master Yi, Wuju Master": 21,
+  "Teemo, Swift Scout": 4,
+  "Ornn, Fire Below the Mountain": 18,
+  "Rumble, Mechanized Menace": 4,
+  "Azir, Emperor of the Sands": 30,
+  "Vex, Gloomist": 41,
+  "Jhin, Virtuoso": 12,
+  "Kha'Zix, Voidreaver": 15,
+  "Nasus, Curator of the Sands": 28,
+  "Lillia, Bashful Bloom": 31,
+  "Vi, Piltover Enforcer": 15,
+  "Ziggs, Hexplosives Expert": 16,
+  "Ezreal, Prodigal Explorer": 15,
+  "Seraphine, Starry-Eyed Songstress": 26,
+  "Mel, Soul's Reflection": 12,
+  "Renekton, Butcher of the Sands": 9,
+  "Ivern, Green Father": 8,
+  "Pyke, Bloodharbor Ripper": 9,
+  "Zed, Master of Shadows": 11,
+  "Shen, Eye of Twilight": 14,
+  "Poppy, Keeper of the Hammer": 6,
+  "Volibear, Relentless Storm": 4,
+  "Fiora, Grand Duelist": 12,
+  "Draven, Glorious Executioner": 5,
+  "Lucian, Purifier": 7,
+  "Jax, Grandmaster at Arms": 1,
+  "Yasuo, Unforgiven": 12,
+  "Jinx, Loose Cannon": 1,
+  "Garen, Might of Demacia": 2,
+  "Miss Fortune, Bounty Hunter": 2,
+  "Ahri, Nine-Tailed Fox": 1,
+  "Annie, Dark Child": 1
+ },
+ "events": [
+  {
+   "TID": "riftbound-weekly-128",
+   "tournamentName": "Riftbound Weekly",
+   "swissNum": 2,
+   "startDate": 1793121300,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "standings": [
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 0,
+     "draws": 1,
+     "losses": 1
+    },
+    {
+     "wins": 0,
+     "draws": 1,
+     "losses": 1
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 2
+    }
+   ],
+   "standingsCount": 16,
+   "eventData": {}
+  },
+  {
+   "TID": "riftbound-locals-1026",
+   "tournamentName": "Riftbound Locals 10/26",
+   "swissNum": 3,
+   "startDate": 1793055600,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "standings": [
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 3
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 3
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 3
+    }
+   ],
+   "standingsCount": 22,
+   "eventData": {}
+  },
+  {
+   "TID": "riftbound-replacement",
+   "tournamentName": "riftbound replacement",
+   "swissNum": 3,
+   "startDate": 1793041200,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "standings": [
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 3
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 0,
+     "draws": 0,
+     "losses": 0
+    }
+   ],
+   "standingsCount": 33,
+   "eventData": {}
+  },
+  {
+   "TID": "ldxp-sacramento-radiance-win-a-case-3",
+   "tournamentName": "LDXP Sacramento - Radiance-Win-A-Case",
+   "swissNum": 4,
+   "startDate": 1792954800,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "lat": 38.5778,
+    "lng": -121.48919,
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "headerImage": "",
+    "address": "Sacramento Convention Center, 1401 K St, Sacramento, CA 95814, USA"
+   },
+   "standings": [
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Master Yi, Wuju Bladesman"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Rengar, Pridestalker"
+    }
+   ],
+   "standingsCount": 38
+  },
+  {
+   "TID": "ldxp-sacramento-riftbound-challenge",
+   "tournamentName": "LDXP Sacramento - Riftbound Challenge",
+   "swissNum": 5,
+   "startDate": 1792947600,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "lat": 38.5778,
+    "lng": -121.48919,
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "headerImage": "",
+    "address": "Sacramento Convention Center, 1401 K St, Sacramento, CA 95814, USA"
+   },
+   "standings": [
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Diana, Scorn of the Moon"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Mordekaiser, Iron Revenant"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Viktor, Herald of the Arcane"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Lux, Lady of Luminosity"
+    }
+   ],
+   "standingsCount": 38
+  },
+  {
+   "TID": "ldxp-sacramento-radiance-win-a-case-2",
+   "tournamentName": "LDXP Sacramento - Radiance-Win-A-Case",
+   "swissNum": 4,
+   "startDate": 1792882800,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "lat": 38.5778,
+    "lng": -121.48919,
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "headerImage": "",
+    "address": "Sacramento Convention Center, 1401 K St, Sacramento, CA 95814, USA"
+   },
+   "standings": [
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 2,
+     "draws": 1,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 1,
+     "losses": 1,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 1,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Ornn, Fire Below the Mountain"
+    }
+   ],
+   "standingsCount": 25
+  },
+  {
+   "TID": "ldxp-sacramento-riftbound-showdown-25k",
+   "tournamentName": "LDXP Sacramento - Riftbound Showdown 25k",
+   "swissNum": 11,
+   "startDate": 1792857600,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 8,
+   "eventData": {
+    "lat": 38.5778,
+    "lng": -121.48919,
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/980af9ac-6665-4c07-cac8-a299df2bde00/public",
+    "address": "Sacramento Convention Center, 1401 K St, Sacramento, CA 95814, USA"
+   },
+   "standings": [
+    {
+     "wins": 11,
+     "draws": 2,
+     "losses": 0,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 10,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 9,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 10,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 8,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Viktor, Herald of the Arcane"
+    },
+    {
+     "wins": 9,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 9,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 9,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 8,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 8,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 8,
+     "draws": 0,
+     "losses": 2,
+     "leader": "LeBlanc, Deceiver"
+    },
+    {
+     "wins": 9,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kai'Sa, Daughter of the Void"
+    }
+   ],
+   "standingsCount": 755
+  },
+  {
+   "TID": "ldxp-sacramento-nexus-night-constructed",
+   "tournamentName": "LDXP Sacramento - Nexus Night Constructed",
+   "swissNum": 3,
+   "startDate": 1792803600,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "lat": 38.5778,
+    "lng": -121.48919,
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "headerImage": "",
+    "address": "Sacramento Convention Center, 1401 K St, Sacramento, CA 95814, USA"
+   },
+   "standings": [
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Viktor, Herald of the Arcane"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Ekko, Boy Who Shattered Time"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Rumble, Mechanized Menace"
+    },
+    {
+     "wins": 2,
+     "draws": 1,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Orianna, Lady of Clockwork"
+    }
+   ],
+   "standingsCount": 64
+  },
+  {
+   "TID": "ldxp-sacramento-radiance-win-a-case",
+   "tournamentName": "LDXP Sacramento - Radiance-Win-A-Case",
+   "swissNum": 4,
+   "startDate": 1792796400,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "lat": 38.5778,
+    "lng": -121.48919,
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "headerImage": "",
+    "address": "Sacramento Convention Center, 1401 K St, Sacramento, CA 95814, USA"
+   },
+   "standings": [
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Irelia, Blade Dancer"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Master Yi, Wuju Bladesman"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Mordekaiser, Iron Revenant"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Ezreal, Prodigal Explorer"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Riven, The Exile"
+    }
+   ],
+   "standingsCount": 63
+  },
+  {
+   "TID": "riftbound-riftatlas-tourna",
+   "tournamentName": "Riftbound riftatlas tourna",
+   "swissNum": 3,
+   "startDate": 1792728000,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "standings": [
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2
+    }
+   ],
+   "standingsCount": 18,
+   "eventData": {}
+  },
+  {
+   "TID": "novariftbounds-online-showdown-5",
+   "tournamentName": "NovaRiftbound's $2,000 Online Showdown 5",
+   "swissNum": 7,
+   "startDate": 1792335600,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 8,
+   "eventData": {
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/cf09d321-ad17-4913-b6be-e25297745c00/public",
+    "address": "https://discord.gg/Vfuy6NFyg"
+   },
+   "standings": [
+    {
+     "wins": 9,
+     "draws": 1,
+     "losses": 0,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 7,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 6,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Yasuo, Unforgiven"
+    },
+    {
+     "wins": 6,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 5,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Yasuo, Unforgiven"
+    },
+    {
+     "wins": 5,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Yasuo, Unforgiven"
+    },
+    {
+     "wins": 5,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Riven, The Exile"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Yasuo, Unforgiven"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Yasuo, Unforgiven"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Riven, The Exile"
+    }
+   ],
+   "standingsCount": 74
+  },
+  {
+   "TID": "haven-online-challenger-series-5-october-11th-2026",
+   "tournamentName": "Haven Online Challenger Series #5 - October 11th 2026 (Radiance Preview)",
+   "swissNum": 6,
+   "startDate": 1791734400,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/c259553b-2961-4440-1741-0b5aa0129900/public",
+    "address": "https://discord.gg/hhbkw3d2k6"
+   },
+   "standings": [
+    {
+     "wins": 6,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Ezreal, Prodigal Explorer"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Jayce, Defender of Tomorrow"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "LeBlanc, Deceiver"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Ekko, Boy Who Shattered Time"
+    }
+   ],
+   "standingsCount": 50
+  },
+  {
+   "TID": "ccs-sunday-5000-riftbound-event-6",
+   "tournamentName": "CCS Sunday $5,000 Riftbound Event #6",
+   "swissNum": 6,
+   "startDate": 1791730800,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "lat": 29.677287,
+    "lng": -95.54654,
+    "city": "Houston",
+    "state": "Texas",
+    "country": "United States",
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/c8e65394-9048-42c7-ab75-30cb35593600/public",
+    "address": "6009 Memorial Dr unit 14, Stone Mountain, GA 30083, USA"
+   },
+   "standings": [
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Rek'Sai, Void Burrower"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Viktor, Herald of the Arcane"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Master Yi, Wuju Bladesman"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 4,
+     "draws": 1,
+     "losses": 1,
+     "leader": "Kha'Zix, Voidreaver"
+    },
+    {
+     "wins": 4,
+     "draws": 1,
+     "losses": 1,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 4,
+     "draws": 1,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Ornn, Fire Below the Mountain"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Jayce, Defender of Tomorrow"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Jayce, Defender of Tomorrow"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Irelia, Blade Dancer"
+    }
+   ],
+   "standingsCount": 58
+  },
+  {
+   "TID": "wa-riftbound-cup-vendetta",
+   "tournamentName": "WA RIFTBOUND CUP (Vendetta) 11 Oct - 9am AWST",
+   "swissNum": 5,
+   "startDate": 1791680400,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 8,
+   "eventData": {
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/a2ff4028-c8ea-416c-199b-2206f0822d00/public",
+    "address": "https://discord.gg/4u9ygnqZa7"
+   },
+   "standings": [
+    {
+     "wins": 6,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Vex, Gloomist"
+    },
+    {
+     "wins": 5,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Rek'Sai, Void Burrower"
+    },
+    {
+     "wins": 4,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Irelia, Blade Dancer"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Diana, Scorn of the Moon"
+    },
+    {
+     "wins": 4,
+     "draws": 1,
+     "losses": 1,
+     "leader": "LeBlanc, Deceiver"
+    },
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kha'Zix, Voidreaver"
+    },
+    {
+     "wins": 3,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Lucian, Purifier"
+    },
+    {
+     "wins": 3,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 3,
+     "leader": "LeBlanc, Deceiver"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Mel, Soul's Reflection"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Rengar, Pridestalker"
+    }
+   ],
+   "standingsCount": 16
+  },
+  {
+   "TID": "card-cosmos-denver-riftbound-1k-tourney",
+   "tournamentName": "Card Cosmos Denver Riftbound $1K Tourney",
+   "swissNum": 4,
+   "startDate": 1791655200,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 4,
+   "eventData": {
+    "lat": 39.676002,
+    "lng": -104.91106,
+    "city": "Denver",
+    "state": "Colorado",
+    "country": "United States",
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/d5783e2d-4357-4b96-0f10-849e0207af00/public",
+    "address": "6700 E Warren Ave, Denver, CO 80224, USA"
+   },
+   "standings": [
+    {
+     "wins": 4,
+     "draws": 0,
+     "losses": 2,
+     "leader": "LeBlanc, Deceiver"
+    },
+    {
+     "wins": 3,
+     "draws": 2,
+     "losses": 1,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 3,
+     "draws": 1,
+     "losses": 1,
+     "leader": "Draven, Glorious Executioner"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Azir, Emperor of the Sands"
+    },
+    {
+     "wins": 2,
+     "draws": 2,
+     "losses": 0,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 2,
+     "draws": 1,
+     "losses": 1,
+     "leader": "Ornn, Fire Below the Mountain"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 1,
+     "losses": 2
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Master Yi, Wuju Bladesman"
+    },
+    {
+     "wins": 1,
+     "draws": 0,
+     "losses": 2,
+     "leader": "Ornn, Fire Below the Mountain"
+    }
+   ],
+   "standingsCount": 20
+  },
+  {
+   "TID": "asertys-creator-invitational",
+   "tournamentName": "Aserty's Creator Invitational",
+   "swissNum": 3,
+   "startDate": 1791648000,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "eventData": {
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/625b3444-2c1b-42ab-1e73-1221bce53200/public",
+    "address": ""
+   },
+   "standings": [
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Ekko, Boy Who Shattered Time"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Viktor, Herald of the Arcane"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Volibear, Relentless Storm"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Jinx, Loose Cannon"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Vi, Piltover Enforcer"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Evelynn, Agony's Embrace"
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0,
+     "leader": "Mordekaiser, Iron Revenant"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Ezreal, Prodigal Explorer"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1,
+     "leader": "Jayce, Defender of Tomorrow"
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    }
+   ],
+   "standingsCount": 61
+  },
+  {
+   "TID": "25000-atlanta-invitational-qualifier-6",
+   "tournamentName": "CCS $25,000 Riftbound Invitational Qualifier #6",
+   "swissNum": 8,
+   "startDate": 1791640800,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 16,
+   "eventData": {
+    "lat": 33.8021672,
+    "lng": -84.19113899999999,
+    "city": "Stone Mountain",
+    "state": "Georgia",
+    "headerImage": "https://imagedelivery.net/kN_u_RUfFF6xsGMKYWhO1g/dd10c711-6cff-4dc9-fa36-89b515027100/public",
+    "address": "6009 Memorial Dr unit 14, Stone Mountain, GA 30083, USA"
+   },
+   "standings": [
+    {
+     "wins": 10,
+     "draws": 2,
+     "losses": 0,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 9,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 8,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Viktor, Herald of the Arcane"
+    },
+    {
+     "wins": 8,
+     "draws": 0,
+     "losses": 3,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 7,
+     "draws": 2,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 7,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Rengar, Pridestalker"
+    },
+    {
+     "wins": 7,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Akali, Rogue Assassin"
+    },
+    {
+     "wins": 7,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 6,
+     "draws": 2,
+     "losses": 1,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 6,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Kai'Sa, Daughter of the Void"
+    },
+    {
+     "wins": 6,
+     "draws": 1,
+     "losses": 2,
+     "leader": "Kennen, Heart of the Tempest"
+    },
+    {
+     "wins": 6,
+     "draws": 1,
+     "losses": 2,
+     "leader": "LeBlanc, Deceiver"
+    }
+   ],
+   "standingsCount": 206
+  },
+  {
+   "TID": "riftbound-nexus-nights-3",
+   "tournamentName": "Riftbound - Nexus Nights",
+   "swissNum": 3,
+   "startDate": 1791568800,
+   "game": "Riftbound",
+   "format": "Constructed",
+   "topCut": 0,
+   "standings": [
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 3,
+     "draws": 0,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 1,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 1,
+     "losses": 0
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    },
+    {
+     "wins": 2,
+     "draws": 0,
+     "losses": 1
+    }
+   ],
+   "standingsCount": 30,
+   "eventData": {}
+  }
+ ]
+}
