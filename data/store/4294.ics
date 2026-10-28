@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117454295314157802@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261102T010000Z
 DTEND:20261102T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n23 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454295314157802
 URL:https://playriftbound.com/en-US/events/117454295314157802
 CATEGORIES:Nexus Nights
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454297833145987@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261109T010000Z
 DTEND:20261109T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454297833145987
 URL:https://playriftbound.com/en-US/events/117454297833145987
 CATEGORIES:Nexus Nights
@@ -41,13 +41,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454327448500237@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261114T020000Z
 DTEND:20261114T050000Z
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\,
-  checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/en-US
+  checked Oct 28\, 11:41 AM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117454327448500237
 URL:https://playriftbound.com/en-US/events/117454327448500237
 CATEGORIES:Learn-to-Play
@@ -56,13 +56,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117073785007006396@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261116T010000Z
 DTEND:20261116T040000Z
 SUMMARY:Radiance Skirmish #1
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https://playriftbound
+ ft\, checked Oct 28\, 11:41 AM\n$10.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117073785007006396
 URL:https://playriftbound.com/en-US/events/117073785007006396
 CATEGORIES:Summoner Skirmish
@@ -71,13 +71,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454301417787736@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261123T010000Z
 DTEND:20261123T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454301417787736
 URL:https://playriftbound.com/en-US/events/117454301417787736
 CATEGORIES:Nexus Nights
@@ -86,13 +86,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454304230078174@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261130T010000Z
 DTEND:20261130T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454304230078174
 URL:https://playriftbound.com/en-US/events/117454304230078174
 CATEGORIES:Nexus Nights
@@ -101,13 +101,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454314328231745@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261207T010000Z
 DTEND:20261207T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454314328231745
 URL:https://playriftbound.com/en-US/events/117454314328231745
 CATEGORIES:Nexus Nights
@@ -116,13 +116,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454331148898286@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261212T010000Z
 DTEND:20261212T040000Z
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\,
-  checked Oct 27\, 11:41 PM\nFree\nSign up: https://playriftbound.com/en-US
+  checked Oct 28\, 11:41 AM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117454331148898286
 URL:https://playriftbound.com/en-US/events/117454331148898286
 CATEGORIES:Learn-to-Play
@@ -131,13 +131,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454321388311216@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261214T010000Z
 DTEND:20261214T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454321388311216
 URL:https://playriftbound.com/en-US/events/117454321388311216
 CATEGORIES:Nexus Nights
@@ -146,13 +146,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454338043678755@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20261221T010000Z
 DTEND:20261221T040000Z
 SUMMARY:Skyahven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 27\, 11:41 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 28\, 11:41 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454338043678755
 URL:https://playriftbound.com/en-US/events/117454338043678755
 CATEGORIES:Nexus Nights
@@ -161,13 +161,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117073792152834647@van-isle-riftbound
-DTSTAMP:20261028T064120Z
+DTSTAMP:20261028T184154Z
 DTSTART:20270111T010000Z
 DTEND:20270111T040000Z
 SUMMARY:Radiance Skirmish #2
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 27\, 11:41 PM\n$10.00 CAD\nSign up: https://playriftbound
+ ft\, checked Oct 28\, 11:41 AM\n$10.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117073792152834647
 URL:https://playriftbound.com/en-US/events/117073792152834647
 CATEGORIES:Summoner Skirmish
