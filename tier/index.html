@@ -31,20 +31,42 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #tl{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 .tnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-/* the board: a row per tier, its letter block on the left, the cards wrapping to the right */
-#tiers{margin-top:16px;display:flex;flex-direction:column;gap:10px}
-.trow{display:flex;gap:10px;border-radius:22px;padding:10px}
-.tlet{flex:0 0 48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  border-radius:16px;background:var(--recess);min-height:89px}
+/* the search and the view, then the board */
+.tctl{margin-top:14px}
+.tctl .seg{margin-top:10px}
+/* the board: five rows, always S, A, B, C, Rogue, even empty. Shelves (the default): each row's
+   cards scroll sideways, snapping card by card, a soft fade at an edge with more beyond it, so the
+   board never grows. All: every card at once, smaller, wrapping (the zoomed-out look). */
+#tiers{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.trow{display:flex;gap:10px;border-radius:22px;padding:10px;min-width:0}
+.tlet{flex:0 0 52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  border-radius:16px;min-height:96px;padding:0;color:inherit;font:inherit}
 .tlet b{font-family:var(--disp);font-weight:800;font-size:20px;line-height:1}
-.tlet small{font-size:12px;color:var(--muted)}
-.tcards{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:10px 8px;align-content:flex-start}
-.tleg{flex:0 0 64px;width:64px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;margin:0;
+.tlet small{font-size:12px;color:var(--muted);line-height:1.2;text-align:center}
+.tlet.off{opacity:.4;pointer-events:none}
+.tstrip{flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.tstrip::-webkit-scrollbar{display:none}
+.tstrip.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent)}
+.tstrip.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px);mask-image:linear-gradient(90deg,transparent,#000 24px)}
+.tstrip.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.tleg{flex:0 0 56px;width:56px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;margin:0;scroll-snap-align:start;
   border:0;background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tleg img,.tleg .tph{display:block;width:64px;height:89px;border-radius:5px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
+.tleg img,.tleg .tph{display:block;width:56px;height:78px;border-radius:5px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
 .tleg span{display:block;width:100%;font-size:12px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tleg:active{transform:scale(.96)}
-.tempty{margin-top:16px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
+.tnone{align-self:center;font-size:13px;color:var(--muted);padding:0 4px}
+#tiers.all .tstrip{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;gap:8px 6px;align-content:flex-start}
+#tiers.all .tleg{flex-basis:40px;width:40px}
+#tiers.all .tleg img,#tiers.all .tleg .tph{width:40px;height:56px;border-radius:4px} /* size-exempt: a whole legend card, zoomed out */
+#tiers.all .tleg span{display:none}
+.trow.empty .tstrip{align-items:center;align-content:center}
+.tempty{margin-top:14px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
+/* a tier's menu: every card in it, best conversion first, the conversion under each */
+.tgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 8px}
+.tgrid .tleg{width:auto;flex:none}
+.tgrid .tleg img,.tgrid .tleg .tph{width:100%;height:auto;aspect-ratio:744/1039} /* size-exempt: a whole legend card */
+.tgrid .tleg em{font-style:normal;font-family:var(--disp);font-weight:600;font-size:12px;color:var(--muted)}
 /* the legend menu: its card and words, then its numbers in a sunken group you only read */
 .lgtop{display:flex;gap:14px;align-items:center;margin-bottom:14px}
 .lgtop img,.lgtop .tph{flex:0 0 auto;width:104px;height:145px;border-radius:7px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
@@ -68,7 +90,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
 <main id="tl">
   <h2 class="sr">Tier list</h2>
-  <p class="lede">Which legends are winning: how often each is played, and how often it reaches the top cut, across recent Riftbound events.</p>
+  <p class="lede">Which legends are winning right now: how often each is played, and how often it reaches the top cut.</p>
+  <div class="tctl">
+    <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="tq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"><button type="button" class="fbtn fx glass" id="tqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <div class="seg" id="tview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="shelf" aria-pressed="true">Shelves</button><button type="button" data-v="all" aria-pressed="false">All legends</button></div>
+  </div>
   <div id="tiers"></div>
   <p class="tnote" id="tsum">Loading the results.</p>
 
@@ -89,8 +115,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
 <section class="panel frost" id="pleg" aria-hidden="true" aria-label="Legend">
-  <div class="phead"><h4 class="ttl" id="plegt">Legend</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" id="plegback" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="plegt">Legend</h4></div><button type="button" class="circ btn glass" id="plegx" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody" id="plegb"></div>
+</section>
+<section class="panel frost" id="ptier" aria-hidden="true" aria-label="Tier">
+  <div class="phead"><h4 class="ttl" id="ptiert">Tier</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="ptierb"></div>
 </section>
 <section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's counted">
   <div class="phead"><h4 class="ttl">How it's counted</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -124,8 +154,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var here = $("pnhere");
   if (here) { here.addEventListener("click", hide); }
   scrim.addEventListener("click", hide);
-  var pleg = $("pleg"), phow = $("phow");
-  [pleg, phow].forEach(function(p){ p.querySelector("[data-close]").addEventListener("click", hide); });
+  var pleg = $("pleg"), phow = $("phow"), ptier = $("ptier");
+  [pleg, phow, ptier].forEach(function(p){ p.querySelector("[data-close]").addEventListener("click", hide); });
   $("tabhow").addEventListener("click", function(){ if (openP === phow) { hide(); } else { show(phow); } });
 
   // THE LEGENDS RAVI KNOWS (cards/legends.js, from Riot's gallery). A name in the data that is not
@@ -189,9 +219,65 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc(num(x.t) + " of " + num(R.tops) + " top-cut spots") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.ts) + "</span></div>" +
       "<div class=\"nrow\"><span><b>Conversion</b><small>Top cut over played; 1.00x is average</small></span><span class=\"sp\"></span><span class=\"v\">" + x.cv.toFixed(2) + "x</span></div>" +
       "</div><p class=\"tnote\">" + esc(R.events + (R.events === 1 ? " event" : " events") + " in the last " + R.days + " days, from TopDeck.gg.") + "</p>";
+    // from a tier's menu it is one deeper: a back arrow and no X
+    $("plegback").hidden = !FROM;
+    $("plegx").hidden = !!FROM;
     show(pleg);
   }
 
+  // THE VIEW (Shelves or All legends), kept on this phone
+  var VKEY = "vir.tier.view.v1", view = "shelf";
+  try { if (localStorage.getItem(VKEY) === "all") { view = "all"; } } catch (e) {}
+  function setView(v){
+    view = v === "all" ? "all" : "shelf";
+    $("tiers").classList.toggle("all", view === "all");
+    Array.prototype.forEach.call($("tview").querySelectorAll("button"), function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-v") === view)); });
+    try { localStorage.setItem(VKEY, view); } catch (e) {}
+    fades();
+  }
+  $("tview").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest("button[data-v]") : null;
+    if (b) { setView(b.getAttribute("data-v")); }
+  });
+
+  // a shelf fades at an edge only while more cards wait beyond it
+  function fade(st){
+    var more = st.scrollWidth - st.clientWidth > 1 && view === "shelf";
+    st.classList.toggle("fl", more && st.scrollLeft > 1);
+    st.classList.toggle("fr", more && st.scrollLeft < st.scrollWidth - st.clientWidth - 1);
+  }
+  function fades(){ Array.prototype.forEach.call(document.querySelectorAll("#tiers .tstrip"), fade); }
+  window.addEventListener("resize", fades);
+
+  // SEARCH: by any part of a legend's name, case and punctuation ignored
+  function norm(v){ return String(v).toLowerCase().replace(/[^a-z0-9]/g, ""); }
+  function filter(){
+    var q = norm($("tq").value);
+    $("tqx").disabled = !$("tq").value;
+    Array.prototype.forEach.call(document.querySelectorAll("#tiers .trow"), function(row){
+      var tiles = row.querySelectorAll(".tleg"), shown = 0, i;
+      for (i = 0; i < tiles.length; i++) {
+        var hit = !q || norm(tiles[i].getAttribute("data-l")).indexOf(q) !== -1;
+        tiles[i].hidden = !hit;
+        if (hit) { shown++; }
+      }
+      var nm = row.querySelector(".tnone.nomatch");
+      if (nm) { nm.hidden = !(tiles.length && !shown); }
+      var st = row.querySelector(".tstrip");
+      if (st) { st.scrollLeft = 0; }
+    });
+    fades();
+  }
+  $("tq").addEventListener("input", filter);
+  $("tqx").addEventListener("click", function(){ $("tq").value = ""; filter(); $("tq").focus(); });
+
+  function tileHTML(x, tierName, withCv){
+    var p = nameParts(x.l);
+    return "<button type=\"button\" class=\"tleg\" data-k=\"card\" data-l=\"" + esc(x.l) + "\" aria-label=\"" + esc(x.l + ", " + tierName) + "\" aria-haspopup=\"true\" aria-controls=\"pleg\">" +
+      card(artOf(KNOWN[x.l], false)) + "<span>" + esc(p[0]) + "</span>" + (withCv ? "<em>" + x.cv.toFixed(2) + "x</em>" : "") + "</button>";
+  }
+
+  var LIST = [], FROM = null;
   function draw(c){
     var box = $("tiers"), sum = $("tsum");
     if (!c || !T) { sum.textContent = "The results could not be read. Try again later."; box.innerHTML = ""; return; }
@@ -203,27 +289,47 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     R = { entries: r.entries, tops: r.tops, events: r.events, days: c.days };
     BY = {};
+    LIST = r.legends;
     r.legends.forEach(function(x){ BY[x.l] = x; });
     sum.textContent = r.events + (r.events === 1 ? " event, " : " events, ") + num(r.entries) + " decks, the last " + c.days + " days." +
       (c.at ? " Updated " + dateText(c.at) + "." : "");
     var h = "";
+    // every tier always shows, so an empty S still says it exists
     TIERS.forEach(function(t){
       var rows = r.legends.filter(function(x){ return x.tier === t[0]; });
-      if (!rows.length) { return; }
-      h += "<section class=\"trow glass\" data-tier=\"" + t[0] + "\" aria-label=\"" + esc(t[1]) + "\"><div class=\"tlet\" aria-hidden=\"true\"><b>" + t[0] + "</b><small>" + t[2] + "</small></div><div class=\"tcards\">";
-      rows.forEach(function(x){
-        var p = nameParts(x.l);
-        h += "<button type=\"button\" class=\"tleg\" data-k=\"card\" data-l=\"" + esc(x.l) + "\" aria-label=\"" + esc(x.l + ", " + t[1]) + "\" aria-haspopup=\"true\" aria-controls=\"pleg\">" +
-          card(artOf(KNOWN[x.l], false)) + "<span>" + esc(p[0]) + "</span></button>";
-      });
+      var cnt = rows.length + (rows.length === 1 ? " legend" : " legends");
+      h += "<section class=\"trow glass" + (rows.length ? "" : " empty") + "\" data-tier=\"" + t[0] + "\" aria-label=\"" + esc(t[1]) + "\">" +
+        "<button type=\"button\" class=\"tlet glass" + (rows.length ? "" : " off") + "\" data-t=\"" + t[0] + "\" data-k=\"do\" aria-haspopup=\"true\" aria-controls=\"ptier\" aria-label=\"" + esc(t[1] + ", " + cnt + ". Show all") + "\"" + (rows.length ? "" : " disabled") + ">" +
+        "<b>" + t[0] + "</b><small>" + rows.length + "<br>" + (rows.length === 1 ? "legend" : "legends") + "</small></button><div class=\"tstrip\">";
+      rows.forEach(function(x){ h += tileHTML(x, t[1], false); });
+      h += rows.length ? "<p class=\"tnone nomatch\" hidden>No match</p>" : "<p class=\"tnone\">No legend here right now</p>";
       h += "</div></section>";
     });
     box.innerHTML = h;
+    Array.prototype.forEach.call(box.querySelectorAll(".tstrip"), function(st){ st.addEventListener("scroll", function(){ fade(st); }, { passive: true }); });
+    setView(view);
+    filter();
+  }
+
+  function openTier(t){
+    var name = TNAME[t], rows = LIST.filter(function(x){ return x.tier === t; });
+    if (!rows.length) { return; }
+    $("ptiert").textContent = name;
+    $("ptierb").innerHTML = "<div class=\"tgrid\">" + rows.map(function(x){ return tileHTML(x, name, true); }).join("") + "</div>" +
+      "<p class=\"tnote\">Best conversion first. Tap a legend for its numbers.</p>";
+    show(ptier);
   }
   $("tiers").addEventListener("click", function(ev){
     var b = ev.target.closest ? ev.target.closest(".tleg") : null;
-    if (b) { openLegend(b.getAttribute("data-l")); }
+    if (b) { FROM = null; openLegend(b.getAttribute("data-l")); return; }
+    var l = ev.target.closest ? ev.target.closest(".tlet") : null;
+    if (l) { openTier(l.getAttribute("data-t")); }
   });
+  $("ptierb").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest(".tleg") : null;
+    if (b) { FROM = BY[b.getAttribute("data-l")] ? BY[b.getAttribute("data-l")].tier : null; openLegend(b.getAttribute("data-l")); }
+  });
+  $("plegback").addEventListener("click", function(){ if (FROM) { var t = FROM; FROM = null; openTier(t); } });
 
   fetch("../data/tier.json", { cache: "no-cache" }).then(function(res){
     if (res.status === 404) { return { v: 1, legends: [], events: [] }; } // not written yet: no results
