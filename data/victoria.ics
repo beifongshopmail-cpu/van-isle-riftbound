@@ -10,30 +10,15 @@ X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each
 REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
-UID:rb117482449148410932@van-isle-riftbound
-DTSTAMP:20261029T064824Z
-DTSTART:20261029T010000Z
-DTEND:20261029T040000Z
-SUMMARY:Nexus Night at Gauntlet Games
-LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
-DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n3 of 24 spots left\, c
- hecked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/en
- -US/events/117482449148410932
-URL:https://playriftbound.com/en-US/events/117482449148410932
-CATEGORIES:Nexus Nights
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
 UID:rb117473617815091551@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261030T010000Z
 DTEND:20261030T040000Z
 SUMMARY:Thursday Casual Nexus Nights @ North Park Picture Framing and Colle
  ctables
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
- toria\n23 of 28 spots left\, checked Oct 28\, 11:48 PM\nFree\nSign up: htt
+ toria\n23 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: htt
  ps://playriftbound.com/en-US/events/117473617815091551
 URL:https://playriftbound.com/en-US/events/117473617815091551
 CATEGORIES:Nexus Nights
@@ -42,14 +27,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:1234672@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261030T044800Z
 DTEND:20261030T074800Z
 SUMMARY:Nexus night 1v1 template
 LOCATION:1633 Hillside Avenue\, 103-1633 Hillside Avenue\, Victoria\, BC\, 
  V8T 2C3\, CA
 DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n16 of 16 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://locator.riftbound.u
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://locator.riftbound.u
  vsgames.com/events/1234672
 URL:https://locator.riftbound.uvsgames.com/events/1234672
 CATEGORIES:Nexus Nights
@@ -57,14 +42,29 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525511550990231@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261031T190000Z
+DTEND:20261031T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117525511550990231
+URL:https://playriftbound.com/en-US/events/117525511550990231
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117509536477035676@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261101T010000Z
 DTEND:20261101T040000Z
 SUMMARY:Halloween Nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n15 of 16 spots left\
- , checked Oct 28\, 11:48 PM\nFree\nSign up: https://playriftbound.com/en-U
+ , checked Oct 29\, 11:49 AM\nFree\nSign up: https://playriftbound.com/en-U
  S/events/117509536477035676
 URL:https://playriftbound.com/en-US/events/117509536477035676
 CATEGORIES:Nexus Nights
@@ -73,13 +73,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117509539459382429@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261101T193000Z
 DTEND:20261101T223000Z
 SUMMARY:Sunday morning nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n15 of 16 spots left\
- , checked Oct 28\, 11:48 PM\n$6.00 CAD\nSign up: https://playriftbound.com
+ , checked Oct 29\, 11:49 AM\n$6.00 CAD\nSign up: https://playriftbound.com
  /en-US/events/117509539459382429
 URL:https://playriftbound.com/en-US/events/117509539459382429
 CATEGORIES:Nexus Nights
@@ -88,13 +88,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454295314157802@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261102T010000Z
 DTEND:20261102T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n23 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454295314157802
 URL:https://playriftbound.com/en-US/events/117454295314157802
 CATEGORIES:Nexus Nights
@@ -102,14 +102,44 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525460412948679@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261106T010000Z
+DTEND:20261106T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525460412948679
+URL:https://playriftbound.com/en-US/events/117525460412948679
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117525519536771441@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261107T190000Z
+DTEND:20261107T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117525519536771441
+URL:https://playriftbound.com/en-US/events/117525519536771441
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117454297833145987@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261109T010000Z
 DTEND:20261109T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454297833145987
 URL:https://playriftbound.com/en-US/events/117454297833145987
 CATEGORIES:Nexus Nights
@@ -117,14 +147,29 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525463093881953@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261113T010000Z
+DTEND:20261113T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525463093881953
+URL:https://playriftbound.com/en-US/events/117525463093881953
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117454327448500237@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261114T020000Z
 DTEND:20261114T050000Z
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\,
-  checked Oct 28\, 11:48 PM\nFree\nSign up: https://playriftbound.com/en-US
+  checked Oct 29\, 11:49 AM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117454327448500237
 URL:https://playriftbound.com/en-US/events/117454327448500237
 CATEGORIES:Learn-to-Play
@@ -133,13 +178,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089941548488590@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261114T173000Z
 DTEND:20261114T203000Z
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n14 of 16 spots left
- \, checked Oct 28\, 11:48 PM\n$20.00 CAD\nSign up: https://playriftbound.c
+ \, checked Oct 29\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbound.c
  om/en-US/events/117089941548488590
 URL:https://playriftbound.com/en-US/events/117089941548488590
 CATEGORIES:Summoner Skirmish
@@ -148,13 +193,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129749064470654@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261114T180000Z
 DTEND:20261114T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 1
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 28\, 11:48 PM\nFree\nSign up: https://playriftbound.com/e
+ ft\, checked Oct 29\, 11:49 AM\nFree\nSign up: https://playriftbound.com/e
  n-US/events/117129749064470654
 URL:https://playriftbound.com/en-US/events/117129749064470654
 CATEGORIES:Summoner Skirmish
@@ -162,14 +207,29 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525525836462377@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261114T190000Z
+DTEND:20261114T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117525525836462377
+URL:https://playriftbound.com/en-US/events/117525525836462377
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117073785007006396@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261116T010000Z
 DTEND:20261116T040000Z
 SUMMARY:Radiance Skirmish #1
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 28\, 11:48 PM\n$10.00 CAD\nSign up: https://playriftbound
+ ft\, checked Oct 29\, 11:49 AM\n$10.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117073785007006396
 URL:https://playriftbound.com/en-US/events/117073785007006396
 CATEGORIES:Summoner Skirmish
@@ -177,15 +237,30 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525465882512888@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261120T010000Z
+DTEND:20261120T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525465882512888
+URL:https://playriftbound.com/en-US/events/117525465882512888
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117125749989086783@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261121T190000Z
 DTEND:20261121T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish I
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 28\, 11:48 PM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 29\, 11:49 AM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125749989086783
 URL:https://playriftbound.com/en-US/events/117125749989086783
 CATEGORIES:Summoner Skirmish
@@ -194,13 +269,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117170908777826678@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261122T190000Z
 DTEND:20261122T220000Z
 SUMMARY:Colossal Cards Victoria Radiance Skirmish 1
 LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
 DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n16
-  of 16 spots left\, checked Oct 28\, 11:48 PM\n$15.00 CAD\nSign up: https:
+  of 16 spots left\, checked Oct 29\, 11:49 AM\n$15.00 CAD\nSign up: https:
  //playriftbound.com/en-US/events/117170908777826678
 URL:https://playriftbound.com/en-US/events/117170908777826678
 CATEGORIES:Summoner Skirmish
@@ -209,13 +284,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096953908084886@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261122T193000Z
 DTEND:20261122T223000Z
 SUMMARY:Radiance Summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n31 of 32 spots 
- left\, checked Oct 28\, 11:48 PM\n$20.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 29\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117096953908084886
 URL:https://playriftbound.com/en-US/events/117096953908084886
 CATEGORIES:Summoner Skirmish
@@ -224,13 +299,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454301417787736@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261123T010000Z
 DTEND:20261123T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454301417787736
 URL:https://playriftbound.com/en-US/events/117454301417787736
 CATEGORIES:Nexus Nights
@@ -238,14 +313,44 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525468546556104@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261127T010000Z
+DTEND:20261127T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525468546556104
+URL:https://playriftbound.com/en-US/events/117525468546556104
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117525530886497800@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261128T190000Z
+DTEND:20261128T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117525530886497800
+URL:https://playriftbound.com/en-US/events/117525530886497800
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117454304230078174@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261130T010000Z
 DTEND:20261130T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454304230078174
 URL:https://playriftbound.com/en-US/events/117454304230078174
 CATEGORIES:Nexus Nights
@@ -253,14 +358,44 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525494149950795@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261204T010000Z
+DTEND:20261204T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525494149950795
+URL:https://playriftbound.com/en-US/events/117525494149950795
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117525536241111948@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261205T190000Z
+DTEND:20261205T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117525536241111948
+URL:https://playriftbound.com/en-US/events/117525536241111948
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117454314328231745@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261207T010000Z
 DTEND:20261207T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454314328231745
 URL:https://playriftbound.com/en-US/events/117454314328231745
 CATEGORIES:Nexus Nights
@@ -268,14 +403,29 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525496661669390@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261210T130000Z
+DTEND:20261210T160000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525496661669390
+URL:https://playriftbound.com/en-US/events/117525496661669390
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117454331148898286@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261212T010000Z
 DTEND:20261212T040000Z
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n16 of 16 spots left\,
-  checked Oct 28\, 11:48 PM\nFree\nSign up: https://playriftbound.com/en-US
+  checked Oct 29\, 11:49 AM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117454331148898286
 URL:https://playriftbound.com/en-US/events/117454331148898286
 CATEGORIES:Learn-to-Play
@@ -284,13 +434,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089949895350173@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261212T183000Z
 DTEND:20261212T213000Z
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n14 of 16 spots left
- \, checked Oct 28\, 11:48 PM\n$20.00 CAD\nSign up: https://playriftbound.c
+ \, checked Oct 29\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbound.c
  om/en-US/events/117089949895350173
 URL:https://playriftbound.com/en-US/events/117089949895350173
 CATEGORIES:Summoner Skirmish
@@ -298,14 +448,29 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525541553071992@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261212T190000Z
+DTEND:20261212T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
+ toria\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up
+ : https://playriftbound.com/en-US/events/117525541553071992
+URL:https://playriftbound.com/en-US/events/117525541553071992
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117454321388311216@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261214T010000Z
 DTEND:20261214T040000Z
 SUMMARY:Skyhaven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454321388311216
 URL:https://playriftbound.com/en-US/events/117454321388311216
 CATEGORIES:Nexus Nights
@@ -313,15 +478,30 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525498944171474@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20261218T010000Z
+DTEND:20261218T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525498944171474
+URL:https://playriftbound.com/en-US/events/117525498944171474
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117125756345638695@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261219T190000Z
 DTEND:20261219T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish II
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 28\, 11:48 PM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 29\, 11:49 AM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125756345638695
 URL:https://playriftbound.com/en-US/events/117125756345638695
 CATEGORIES:Summoner Skirmish
@@ -330,13 +510,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117170913739919281@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261220T220000Z
 DTEND:20261221T010000Z
 SUMMARY:Colossal Cards Victoria Radiance Skirmish 2
 LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
 DESCRIPTION:Summoner Skirmish\nColossal Cards & Collectables\, Victoria\n28
-  of 28 spots left\, checked Oct 28\, 11:48 PM\n$15.00 CAD\nSign up: https:
+  of 28 spots left\, checked Oct 29\, 11:49 AM\n$15.00 CAD\nSign up: https:
  //playriftbound.com/en-US/events/117170913739919281
 URL:https://playriftbound.com/en-US/events/117170913739919281
 CATEGORIES:Summoner Skirmish
@@ -345,13 +525,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117454338043678755@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261221T010000Z
 DTEND:20261221T040000Z
 SUMMARY:Skyahven Sunday Nexus Night
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Nexus Nights\nSkyhaven Games\, Victoria\n24 of 24 spots left\, 
- checked Oct 28\, 11:48 PM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
  n-US/events/117454338043678755
 URL:https://playriftbound.com/en-US/events/117454338043678755
 CATEGORIES:Nexus Nights
@@ -360,13 +540,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096961730592935@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20261227T193000Z
 DTEND:20261227T223000Z
 SUMMARY:Radiance summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 
- left\, checked Oct 28\, 11:48 PM\n$20.00 CAD\nSign up: https://playriftbou
+ left\, checked Oct 29\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbou
  nd.com/en-US/events/117096961730592935
 URL:https://playriftbound.com/en-US/events/117096961730592935
 CATEGORIES:Summoner Skirmish
@@ -374,14 +554,44 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:rb117525501863027294@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20270101T010000Z
+DTEND:20270101T040000Z
+SUMMARY:North Park Picture Framing and Collectables Open Play
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\nFree\nSign up: https:
+ //playriftbound.com/en-US/events/117525501863027294
+URL:https://playriftbound.com/en-US/events/117525501863027294
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117525547564623909@van-isle-riftbound
+DTSTAMP:20261029T184923Z
+DTSTART:20270102T190000Z
+DTEND:20270102T220000Z
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\, checked Oct 29\, 11:49 AM\n$5.00 CAD\nSign up: h
+ ttps://playriftbound.com/en-US/events/117525547564623909
+URL:https://playriftbound.com/en-US/events/117525547564623909
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117129753104838820@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270109T180000Z
 DTEND:20270109T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 2
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 28\, 11:48 PM\nFree\nSign up: https://playriftbound.com/e
+ ft\, checked Oct 29\, 11:49 AM\nFree\nSign up: https://playriftbound.com/e
  n-US/events/117129753104838820
 URL:https://playriftbound.com/en-US/events/117129753104838820
 CATEGORIES:Summoner Skirmish
@@ -390,13 +600,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117073792152834647@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270111T010000Z
 DTEND:20270111T040000Z
 SUMMARY:Radiance Skirmish #2
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Summoner Skirmish\nSkyhaven Games\, Victoria\n32 of 32 spots le
- ft\, checked Oct 28\, 11:48 PM\n$10.00 CAD\nSign up: https://playriftbound
+ ft\, checked Oct 29\, 11:49 AM\n$10.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117073792152834647
 URL:https://playriftbound.com/en-US/events/117073792152834647
 CATEGORIES:Summoner Skirmish
@@ -405,13 +615,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520759300703415@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270123T000000Z
 DTEND:20270123T030000Z
 SUMMARY:Legacy Pre-Rift #1
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n12 of 18 spots left\, checke
- d Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
+ d Oct 29\, 11:49 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
  events/117520759300703415
 URL:https://playriftbound.com/en-US/events/117520759300703415
 CATEGORIES:Pre-Rift
@@ -420,13 +630,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520416780087041@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270123T010000Z
 DTEND:20270123T040000Z
 SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
- a\n15 of 16 spots left\, checked Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: h
+ a\n14 of 16 spots left\, checked Oct 29\, 11:49 AM\n$45.00 CAD\nSign up: h
  ttps://playriftbound.com/en-US/events/117520416780087041
 URL:https://playriftbound.com/en-US/events/117520416780087041
 CATEGORIES:Pre-Rift
@@ -435,13 +645,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520422370120807@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270123T190000Z
 DTEND:20270123T220000Z
 SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift #2
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
- a\n31 of 32 spots left\, checked Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: h
+ a\n30 of 32 spots left\, checked Oct 29\, 11:49 AM\n$45.00 CAD\nSign up: h
  ttps://playriftbound.com/en-US/events/117520422370120807
 URL:https://playriftbound.com/en-US/events/117520422370120807
 CATEGORIES:Pre-Rift
@@ -450,13 +660,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520785658195785@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270124T173000Z
 DTEND:20270124T203000Z
 SUMMARY:Legacy Pre-Rift #2
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
-DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n13 of 18 spots left\, checke
- d Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
+DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n12 of 18 spots left\, checke
+ d Oct 29\, 11:49 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
  events/117520785658195785
 URL:https://playriftbound.com/en-US/events/117520785658195785
 CATEGORIES:Pre-Rift
@@ -465,13 +675,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520791840455365@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270124T210000Z
 DTEND:20270125T000000Z
 SUMMARY:Legacy Pre-Rift #3
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
-DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n13 of 18 spots left\, checke
- d Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
+DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n12 of 18 spots left\, checke
+ d Oct 29\, 11:49 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
  events/117520791840455365
 URL:https://playriftbound.com/en-US/events/117520791840455365
 CATEGORIES:Pre-Rift
@@ -480,13 +690,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520566570008520@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270125T000000Z
 DTEND:20270125T030000Z
 SUMMARY:Skyhaven Legacy Pre-Rift Sunday
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Pre-Rift\nSkyhaven Games\, Victoria\n32 of 32 spots left\, chec
- ked Oct 28\, 11:48 PM\n$36.00 CAD\nSign up: https://playriftbound.com/en-U
+ ked Oct 29\, 11:49 AM\n$36.00 CAD\nSign up: https://playriftbound.com/en-U
  S/events/117520566570008520
 URL:https://playriftbound.com/en-US/events/117520566570008520
 CATEGORIES:Pre-Rift
@@ -495,13 +705,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520575246477805@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270125T190000Z
 DTEND:20270125T220000Z
 SUMMARY:Skyhaven Legacy Pre-Rift Monday Afternoon
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Pre-Rift\nSkyhaven Games\, Victoria\n24 of 24 spots left\, chec
- ked Oct 28\, 11:48 PM\n$36.00 CAD\nSign up: https://playriftbound.com/en-U
+ ked Oct 29\, 11:49 AM\n$36.00 CAD\nSign up: https://playriftbound.com/en-U
  S/events/117520575246477805
 URL:https://playriftbound.com/en-US/events/117520575246477805
 CATEGORIES:Pre-Rift
@@ -510,13 +720,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520569907363874@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270126T000000Z
 DTEND:20270126T030000Z
 SUMMARY:Skyhaven Legacy Pre-Rift Monday Evening
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Pre-Rift\nSkyhaven Games\, Victoria\n32 of 32 spots left\, chec
- ked Oct 28\, 11:48 PM\n$36.00 CAD\nSign up: https://playriftbound.com/en-U
+ ked Oct 29\, 11:49 AM\n$36.00 CAD\nSign up: https://playriftbound.com/en-U
  S/events/117520569907363874
 URL:https://playriftbound.com/en-US/events/117520569907363874
 CATEGORIES:Pre-Rift
@@ -525,13 +735,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520663905990517@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270129T010000Z
 DTEND:20270129T040000Z
 SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift #3
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
- a\n23 of 24 spots left\, checked Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: h
+ a\n22 of 24 spots left\, checked Oct 29\, 11:49 AM\n$45.00 CAD\nSign up: h
  ttps://playriftbound.com/en-US/events/117520663905990517
 URL:https://playriftbound.com/en-US/events/117520663905990517
 CATEGORIES:Pre-Rift
@@ -540,13 +750,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520594838845121@van-isle-riftbound
-DTSTAMP:20261029T064824Z
+DTSTAMP:20261029T184923Z
 DTSTART:20270301T000000Z
 DTEND:20270301T030000Z
 SUMMARY:Skyhaven Legacy Nexus Cup
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Event\nSkyhaven Games\, Victoria\n32 of 32 spots left\, checked
-  Oct 28\, 11:48 PM\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/e
+  Oct 29\, 11:49 AM\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/e
  vents/117520594838845121
 URL:https://playriftbound.com/en-US/events/117520594838845121
 CATEGORIES:Event

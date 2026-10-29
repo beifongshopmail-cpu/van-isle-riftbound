@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117525547564623909@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270102T120000
+DTEND;TZID=America/Vancouver:20270102T150000
+SUMMARY:North Park Picture Framing and Collectables Nexus Nights
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor
+ ia\n28 of 28 spots left\n$5.00 CAD\nSign up: https://playriftbound.com/en-
+ US/events/117525547564623909
+URL:https://playriftbound.com/en-US/events/117525547564623909
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
