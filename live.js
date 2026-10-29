@@ -263,7 +263,8 @@
       .formatToParts(new Date(now == null ? Date.now() : now)).forEach(function (p) { o[p.type] = p.value; });
     return o.year + "-" + o.month + "-" + o.day;
   }
-  // a live file -> one event in data/events.json's shape, on today's list
+  // a live file -> one event in data/events.json's shape, on today's list; its
+  // store is the event's own name, so the Game page's list names it (Mako 2026-10-29)
   function visitEvent(live, now) {
     if (!valid(live) || !tid(live.id)) return null;
     var start = typeof live.startsAt === "string" && isFinite(Date.parse(live.startsAt)) ? live.startsAt : "";
@@ -277,7 +278,7 @@
       start: start, end: typeof live.endsAt === "string" ? live.endsAt : null, day: vanToday(now), time: time,
       venue: "Visiting (test)", city: "", address: "", region: "victoria",
       cap: cnt(live.capacity), reg: cnt(live.players), cents: 0, currency: "", updated: null,
-      round: min, wins: live.bestOf === 3 ? 2 : (live.bestOf === 1 ? 1 : null), sid: null, store: "Visiting (test)", visit: true
+      round: min, wins: live.bestOf === 3 ? 2 : (live.bestOf === 1 ? 1 : null), sid: null, store: String(live.name || "Event").slice(0, 60), visit: true
     };
   }
   // the visited event, or null; one from an earlier day is dropped
