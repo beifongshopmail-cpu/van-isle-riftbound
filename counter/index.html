@@ -2862,7 +2862,11 @@
     if (!t0 || !(t0.at >= preAt)) { stopTimer(); }
     startNew();
     var curEv = cseGet();
-    if (curEv && typeof curEv.round === "number" && curEv.round > 0 && tmMs() === null) {
+    // a running round on the event page sets the clock (Riot's start and length);
+    // otherwise the event's round length starts fresh
+    if (curEv && tmMs() === null && liveRound()) {
+      startLive();
+    } else if (curEv && typeof curEv.round === "number" && curEv.round > 0 && tmMs() === null) {
       startTimer(curEv.round);
     }
     closeSetup();
