@@ -31,12 +31,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #tl{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 .tnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-/* the search and the view, then the board */
+/* the search, then the board */
 .tctl{margin-top:14px}
-.tctl .seg{margin-top:10px}
-/* the board: five rows, always S, A, B, C, Rogue, even empty. Shelves (the default): each row's
-   cards scroll sideways, snapping card by card, a soft fade at an edge with more beyond it, so the
-   board never grows. All: every card at once, smaller, wrapping (the zoomed-out look). */
+/* the board: five rows, always S, A, B, C, Rogue, even empty. Each row is a shelf: its cards
+   scroll sideways, snapping card by card, a soft fade at an edge with more beyond it, so the board
+   never grows. The letter block opens the whole tier (Mako 2026-10-29: no second view). */
 #tiers{margin-top:14px;display:flex;flex-direction:column;gap:8px}
 .trow{display:flex;gap:10px;border-radius:22px;padding:10px;min-width:0}
 .tlet{flex:0 0 52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
@@ -56,10 +55,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .tleg span{display:block;width:100%;font-size:12px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tleg:active{transform:scale(.96)}
 .tnone{align-self:center;font-size:13px;color:var(--muted);padding:0 4px}
-#tiers.all .tstrip{flex-wrap:wrap;overflow:visible;-webkit-mask-image:none;mask-image:none;gap:8px 6px;align-content:flex-start}
-#tiers.all .tleg{flex-basis:40px;width:40px}
-#tiers.all .tleg img,#tiers.all .tleg .tph{width:40px;height:56px;border-radius:4px} /* size-exempt: a whole legend card, zoomed out */
-#tiers.all .tleg span{display:none}
 .trow.empty .tstrip{align-items:center;align-content:center}
 .tempty{margin-top:14px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
 /* a tier's menu: every card in it, best conversion first, the conversion under each */
@@ -93,7 +88,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lede">Which legends are winning right now: how often each is played, and how often it reaches the top cut.</p>
   <div class="tctl">
     <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="tq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"><button type="button" class="fbtn fx glass" id="tqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
-    <div class="seg" id="tview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="shelf" aria-pressed="true">Shelves</button><button type="button" data-v="all" aria-pressed="false">All legends</button></div>
   </div>
   <div id="tiers"></div>
   <p class="tnote" id="tsum">Loading the results.</p>
@@ -225,24 +219,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     show(pleg);
   }
 
-  // THE VIEW (Shelves or All legends), kept on this phone
-  var VKEY = "vir.tier.view.v1", view = "shelf";
-  try { if (localStorage.getItem(VKEY) === "all") { view = "all"; } } catch (e) {}
-  function setView(v){
-    view = v === "all" ? "all" : "shelf";
-    $("tiers").classList.toggle("all", view === "all");
-    Array.prototype.forEach.call($("tview").querySelectorAll("button"), function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-v") === view)); });
-    try { localStorage.setItem(VKEY, view); } catch (e) {}
-    fades();
-  }
-  $("tview").addEventListener("click", function(ev){
-    var b = ev.target.closest ? ev.target.closest("button[data-v]") : null;
-    if (b) { setView(b.getAttribute("data-v")); }
-  });
+  // the view switch was removed (Mako 2026-10-29); clear what it kept on this phone
+  try { localStorage.removeItem("vir.tier.view.v1"); } catch (e) {}
 
   // a shelf fades at an edge only while more cards wait beyond it
   function fade(st){
-    var more = st.scrollWidth - st.clientWidth > 1 && view === "shelf";
+    var more = st.scrollWidth - st.clientWidth > 1;
     st.classList.toggle("fl", more && st.scrollLeft > 1);
     st.classList.toggle("fr", more && st.scrollLeft < st.scrollWidth - st.clientWidth - 1);
   }
@@ -307,7 +289,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     });
     box.innerHTML = h;
     Array.prototype.forEach.call(box.querySelectorAll(".tstrip"), function(st){ st.addEventListener("scroll", function(){ fade(st); }, { passive: true }); });
-    setView(view);
     filter();
   }
 
