@@ -21,31 +21,46 @@
 /* Tier list (M17, 2026-10-28): which legends are played most, and which reach the top cut more
    often than their numbers explain. The maths is tier.js (shared with the fetcher and the tests);
    this page reads data/tier.json (written by fetch-tier.js from TopDeck.gg: legend and placing
-   only, never a player's name), checks every field, and draws one glass card per tier. Rows are
-   read-only. Tiers are named in words; colour carries nothing. */
+   only, never a player's name) and checks every field.
+   Round 2 (Mako 2026-10-28): the board is the main view, one glass row per tier with its letter
+   block and the legends' whole cards; a tap on a card opens that legend's numbers in a menu, and
+   How it's counted sits on the bar. Tiers are named in words; colour carries nothing. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #tl{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 .tnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-.tsec{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
-.tsec .shead{margin:0 4px 10px}
-/* the column heads, then one row per legend: art, name, played, top cut, conversion */
-.th,.tr{display:grid;grid-template-columns:minmax(0,1fr) 50px 50px 50px;gap:4px;align-items:center}
-.th{margin:0 4px 6px;font-size:12px;color:var(--muted)}
-.th span:not(:first-child),.tr .tv{text-align:center}
-.tlist{background:var(--recess);border-radius:22px;overflow:hidden}
-.tr{min-height:var(--sz-row);padding:6px 6px 6px 12px;box-sizing:border-box}
-.tr + .tr{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
-.tlg{display:flex;align-items:center;gap:10px;min-width:0}
-.tpic{flex:0 0 auto;width:32px;height:32px;border-radius:8px;object-fit:cover;background:var(--track)} /* size-exempt: legend art */
-.tnm{min-width:0}
-.tnm b{display:block;font-family:var(--disp);font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tnm small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tv{font-size:13px}
-.tv.cv{font-family:var(--disp);font-weight:600}
-.tempty{margin-top:20px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
+/* the board: a row per tier, its letter block on the left, the cards wrapping to the right */
+#tiers{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.trow{display:flex;gap:10px;border-radius:22px;padding:10px}
+.tlet{flex:0 0 48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  border-radius:16px;background:var(--recess);min-height:89px}
+.tlet b{font-family:var(--disp);font-weight:800;font-size:20px;line-height:1}
+.tlet small{font-size:12px;color:var(--muted)}
+.tcards{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:10px 8px;align-content:flex-start}
+.tleg{flex:0 0 64px;width:64px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;margin:0;
+  border:0;background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tleg img,.tleg .tph{display:block;width:64px;height:89px;border-radius:5px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
+.tleg span{display:block;width:100%;font-size:12px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tleg:active{transform:scale(.96)}
+.tempty{margin-top:16px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
+/* the legend menu: its card and words, then its numbers in a sunken group you only read */
+.lgtop{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.lgtop img,.lgtop .tph{flex:0 0 auto;width:104px;height:145px;border-radius:7px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
+.lgtx{min-width:0}
+.lgtx .full{font-size:12px;color:var(--muted);margin:0 0 6px}
+.lgtx .tier{font-family:var(--disp);font-weight:700;font-size:17px;margin:0 0 6px}
+.lgtx .say{font-size:15px;line-height:1.4;margin:0}
+.nrows{background:var(--recess);border-radius:22px;overflow:hidden}
+.nrow{display:flex;align-items:center;gap:8px;min-height:var(--sz-row);padding:7px 16px;box-sizing:border-box}
+.nrow + .nrow{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.nrow .sp{flex:1}
+.nrow b{display:block;font-family:var(--disp);font-weight:600;font-size:15px}
+.nrow small{display:block;font-size:12px;color:var(--muted)}
+.nrow .v{font-family:var(--disp);font-weight:600;font-size:15px}
+#phow .pbody p{margin:0 0 10px;font-size:15px;line-height:1.4}
+#phow .pbody p:last-child{margin-bottom:0}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -54,14 +69,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <main id="tl">
   <h2 class="sr">Tier list</h2>
   <p class="lede">Which legends are winning: how often each is played, and how often it reaches the top cut, across recent Riftbound events.</p>
-  <p class="tnote" id="tsum">Loading the results.</p>
   <div id="tiers"></div>
-
-  <section class="tsec glass" id="thow">
-    <div class="shead"><h2>How it's counted</h2></div>
-    <p class="tnote">Played: a legend's share of every deck. Top cut: its share of every top-cut finish (the cut the event played; after Swiss only, a top 8 from 17 players and a top 4 below). Conversion: top cut over played, so 1.00x is average and higher means it reaches the cut more often than its numbers explain. Legends with few decks are pulled toward 1.00x so a lucky handful cannot top the list.</p>
-    <p class="tnote">S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. Rogue: the rest. Legends and decks only: RAVI never ranks players.</p>
-  </section>
+  <p class="tnote" id="tsum">Loading the results.</p>
 
   <footer class="foot">
     <p>Results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
@@ -72,12 +81,26 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"tier"},
-  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"info", a:[["class", "tab"], ["id", "tabhow"], ["data-open", "phow"], ["aria-label", "How it's counted"], ["data-k", "slot"], ["data-fills", "phow"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<section class="panel frost" id="pleg" aria-hidden="true" aria-label="Legend">
+  <div class="phead"><h4 class="ttl" id="plegt">Legend</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="plegb"></div>
+</section>
+<section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's counted">
+  <div class="phead"><h4 class="ttl">How it's counted</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p>Every morning RAVI reads the last 30 days of Riftbound Constructed events of 16 players or more from TopDeck.gg, and keeps only each finish's legend. Player names are never kept.</p>
+    <p>Played: a legend's share of every deck. Top cut: its share of every top-cut spot (the cut the event played; an event that stopped after Swiss counts a top 8 from 17 players, a top 4 below).</p>
+    <p>Conversion: top cut divided by played. 1.00x is average; 2.00x makes the top cut twice as often as its play share predicts. A legend with few decks is pulled toward 1.00x, so a lucky handful cannot top the list.</p>
+    <p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p>
+    <p>Legends and decks only: RAVI never ranks players.</p>
+  </div>
 </section>
 <script>
 (function(){
@@ -101,14 +124,18 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var here = $("pnhere");
   if (here) { here.addEventListener("click", hide); }
   scrim.addEventListener("click", hide);
+  var pleg = $("pleg"), phow = $("phow");
+  [pleg, phow].forEach(function(p){ p.querySelector("[data-close]").addEventListener("click", hide); });
+  $("tabhow").addEventListener("click", function(){ if (openP === phow) { hide(); } else { show(phow); } });
 
   // THE LEGENDS RAVI KNOWS (cards/legends.js, from Riot's gallery). A name in the data that is not
   // one of these is dropped, so the page only ever shows Riot's own names and art.
   var KNOWN = {};
   (window.VIR_LEGENDS || []).forEach(function(x){ if (x && typeof x.n === "string") { KNOWN[x.n] = x; } });
-  function artOf(x){
+  // the legend's first printing with art: the whole card, small (.t.webp) on the board, full in the menu
+  function artOf(x, big){
     for (var i = 0; x && x.v && i < x.v.length; i++) {
-      if (x.v[i] && /^[0-9a-f]{40}$/.test(x.v[i].h || "")) { return "../cards/art/" + x.v[i].h + ".t.webp"; }
+      if (x.v[i] && /^[0-9a-f]{40}$/.test(x.v[i].h || "")) { return "../cards/art/" + x.v[i].h + (big ? ".webp" : ".t.webp"); }
     }
     return "";
   }
@@ -131,11 +158,38 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     return { events: evs, days: whole(d.days, 1, 365) ? d.days : 30, at: at && !isNaN(at) ? at : null };
   }
 
-  var TIERS = [["S", "S tier"], ["A", "A tier"], ["B", "B tier"], ["C", "C tier"], ["R", "Rogue"]];
-  function pct(x){ var p = x * 100; return (p > 0 && p < 1 ? "<1" : String(Math.round(p))) + "%"; }
+  var TIERS = [["S", "S tier", "tier"], ["A", "A tier", "tier"], ["B", "B tier", "tier"], ["C", "C tier", "tier"], ["R", "Rogue", "Rogue"]];
+  var TNAME = { S: "S tier", A: "A tier", B: "B tier", C: "C tier", R: "Rogue" };
+  function pct1(x){ var p = x * 100; return (p > 0 && p < 0.1 ? "<0.1" : p.toFixed(1)) + "%"; }
+  function num(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
   function nameParts(n){ var i = n.indexOf(","); return i < 0 ? [n, ""] : [n.slice(0, i), n.slice(i + 1).replace(/^\s+/, "")]; }
   function dateText(dt){
     try { return dt.toLocaleDateString("en-CA", { month: "short", day: "numeric" }); } catch (e) { return ""; }
+  }
+  function card(src, cls){ return src ? "<img src=\"" + esc(src) + "\" alt=\"\"" + (cls ? " class=\"" + cls + "\"" : "") + " loading=\"lazy\">" : "<span class=\"tph\"></span>"; }
+
+  // one plain sentence for the conversion
+  function say(x){
+    if (x.cv >= 1.05) { return "Makes the top cut " + x.cv.toFixed(2) + "x as often as its play share predicts."; }
+    if (x.cv > 0.95) { return "Makes the top cut about as often as its play share predicts."; }
+    return "Makes the top cut less often than its play share predicts (" + x.cv.toFixed(2) + "x).";
+  }
+
+  var R = null, BY = {};
+  function openLegend(name){
+    var x = BY[name];
+    if (!x || !R) { return; }
+    var p = nameParts(x.l);
+    $("plegt").textContent = p[0];
+    $("plegb").innerHTML =
+      "<div class=\"lgtop\">" + card(artOf(KNOWN[x.l], true)) +
+      "<div class=\"lgtx\"><p class=\"full\">" + esc(p[1]) + "</p><p class=\"tier\">" + esc(TNAME[x.tier]) + "</p><p class=\"say\">" + esc(say(x)) + "</p></div></div>" +
+      "<div class=\"nrows\">" +
+      "<div class=\"nrow\"><span><b>Played</b><small>" + esc(num(x.f) + " of " + num(R.entries) + " decks") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.fs) + "</span></div>" +
+      "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc(num(x.t) + " of " + num(R.tops) + " top-cut spots") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.ts) + "</span></div>" +
+      "<div class=\"nrow\"><span><b>Conversion</b><small>Top cut over played; 1.00x is average</small></span><span class=\"sp\"></span><span class=\"v\">" + x.cv.toFixed(2) + "x</span></div>" +
+      "</div><p class=\"tnote\">" + esc(R.events + (R.events === 1 ? " event" : " events") + " in the last " + R.days + " days, from TopDeck.gg.") + "</p>";
+    show(pleg);
   }
 
   function draw(c){
@@ -147,26 +201,29 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       box.innerHTML = "<p class=\"tempty glass\">No results yet. RAVI reads the latest events once a day; check back soon.</p>";
       return;
     }
-    sum.textContent = r.events + (r.events === 1 ? " event, " : " events, ") + r.entries + " decks, the last " + c.days + " days." +
+    R = { entries: r.entries, tops: r.tops, events: r.events, days: c.days };
+    BY = {};
+    r.legends.forEach(function(x){ BY[x.l] = x; });
+    sum.textContent = r.events + (r.events === 1 ? " event, " : " events, ") + num(r.entries) + " decks, the last " + c.days + " days." +
       (c.at ? " Updated " + dateText(c.at) + "." : "");
     var h = "";
     TIERS.forEach(function(t){
       var rows = r.legends.filter(function(x){ return x.tier === t[0]; });
       if (!rows.length) { return; }
-      h += "<section class=\"tsec glass\" data-tier=\"" + t[0] + "\"><div class=\"shead\"><h2>" + t[1] + "</h2><span class=\"sp\"></span><span class=\"cnt\">" +
-        rows.length + (rows.length === 1 ? " legend" : " legends") + "</span></div>" +
-        "<div class=\"th\" aria-hidden=\"true\"><span>Legend</span><span>Played</span><span>Top cut</span><span>Conv.</span></div><div class=\"tlist\">";
+      h += "<section class=\"trow glass\" data-tier=\"" + t[0] + "\" aria-label=\"" + esc(t[1]) + "\"><div class=\"tlet\" aria-hidden=\"true\"><b>" + t[0] + "</b><small>" + t[2] + "</small></div><div class=\"tcards\">";
       rows.forEach(function(x){
-        var p = nameParts(x.l), art = artOf(KNOWN[x.l]);
-        h += "<div class=\"tr\" aria-label=\"" + esc(x.l + ": played " + pct(x.fs) + ", top cut " + pct(x.ts) + ", conversion " + x.cv.toFixed(2) + "x, " + x.f + " decks") + "\">" +
-          "<span class=\"tlg\">" + (art ? "<img class=\"tpic\" src=\"" + esc(art) + "\" alt=\"\" loading=\"lazy\">" : "<span class=\"tpic\"></span>") +
-          "<span class=\"tnm\"><b>" + esc(p[0]) + "</b><small>" + esc(x.f + (x.f === 1 ? " deck" : " decks")) + "</small></span></span>" +
-          "<span class=\"tv\">" + pct(x.fs) + "</span><span class=\"tv\">" + pct(x.ts) + "</span><span class=\"tv cv\">" + x.cv.toFixed(2) + "x</span></div>";
+        var p = nameParts(x.l);
+        h += "<button type=\"button\" class=\"tleg\" data-k=\"card\" data-l=\"" + esc(x.l) + "\" aria-label=\"" + esc(x.l + ", " + t[1]) + "\" aria-haspopup=\"true\" aria-controls=\"pleg\">" +
+          card(artOf(KNOWN[x.l], false)) + "<span>" + esc(p[0]) + "</span></button>";
       });
       h += "</div></section>";
     });
     box.innerHTML = h;
   }
+  $("tiers").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest(".tleg") : null;
+    if (b) { openLegend(b.getAttribute("data-l")); }
+  });
 
   fetch("../data/tier.json", { cache: "no-cache" }).then(function(res){
     if (res.status === 404) { return { v: 1, legends: [], events: [] }; } // not written yet: no results
