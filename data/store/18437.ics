@@ -11,14 +11,14 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117473617815091551@van-isle-riftbound
-DTSTAMP:20261028T184154Z
+DTSTAMP:20261029T064824Z
 DTSTART:20261030T010000Z
 DTEND:20261030T040000Z
 SUMMARY:Thursday Casual Nexus Nights @ North Park Picture Framing and Colle
  ctables
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic
- toria\n25 of 28 spots left\, checked Oct 28\, 11:41 AM\nFree\nSign up: htt
+ toria\n23 of 28 spots left\, checked Oct 28\, 11:48 PM\nFree\nSign up: htt
  ps://playriftbound.com/en-US/events/117473617815091551
 URL:https://playriftbound.com/en-US/events/117473617815091551
 CATEGORIES:Nexus Nights
@@ -27,14 +27,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125749989086783@van-isle-riftbound
-DTSTAMP:20261028T184154Z
+DTSTAMP:20261029T064824Z
 DTSTART:20261121T190000Z
 DTEND:20261121T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish I
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 28\, 11:41 AM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 28\, 11:48 PM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125749989086783
 URL:https://playriftbound.com/en-US/events/117125749989086783
 CATEGORIES:Summoner Skirmish
@@ -43,17 +43,62 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117125756345638695@van-isle-riftbound
-DTSTAMP:20261028T184154Z
+DTSTAMP:20261029T064824Z
 DTSTART:20261219T190000Z
 DTEND:20261219T220000Z
 SUMMARY:North Park Picture Framing and Collectables Radiance Summoner Skirm
  ish II
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Summoner Skirmish\nNorth Park Picture Framing and Collectables\
- , Victoria\n27 of 28 spots left\, checked Oct 28\, 11:41 AM\n$10.00 CAD\nS
+ , Victoria\n27 of 28 spots left\, checked Oct 28\, 11:48 PM\n$10.00 CAD\nS
  ign up: https://playriftbound.com/en-US/events/117125756345638695
 URL:https://playriftbound.com/en-US/events/117125756345638695
 CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117520416780087041@van-isle-riftbound
+DTSTAMP:20261029T064824Z
+DTSTART:20270123T010000Z
+DTEND:20270123T040000Z
+SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
+ a\n15 of 16 spots left\, checked Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: h
+ ttps://playriftbound.com/en-US/events/117520416780087041
+URL:https://playriftbound.com/en-US/events/117520416780087041
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117520422370120807@van-isle-riftbound
+DTSTAMP:20261029T064824Z
+DTSTART:20270123T190000Z
+DTEND:20270123T220000Z
+SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift #2
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
+ a\n31 of 32 spots left\, checked Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: h
+ ttps://playriftbound.com/en-US/events/117520422370120807
+URL:https://playriftbound.com/en-US/events/117520422370120807
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:rb117520663905990517@van-isle-riftbound
+DTSTAMP:20261029T064824Z
+DTSTART:20270129T010000Z
+DTEND:20270129T040000Z
+SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift #3
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
+ a\n23 of 24 spots left\, checked Oct 28\, 11:48 PM\n$45.00 CAD\nSign up: h
+ ttps://playriftbound.com/en-US/events/117520663905990517
+URL:https://playriftbound.com/en-US/events/117520663905990517
+CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT

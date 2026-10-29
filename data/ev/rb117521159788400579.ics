@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117521159788400579@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270124T120000
+DTEND;TZID=America/Vancouver:20270124T150000
+SUMMARY:Legacy Pre-Rift At Colossal Cards & Collectables Courtenay
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Courtenay\n18 of 18 s
+ pots left\n$40.00 CAD\nSign up: https://playriftbound.com/en-US/events/117
+ 521159788400579
+URL:https://playriftbound.com/en-US/events/117521159788400579
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

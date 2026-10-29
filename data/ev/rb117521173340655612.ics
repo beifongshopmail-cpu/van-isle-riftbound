@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117521173340655612@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270206T150000
+DTEND;TZID=America/Vancouver:20270206T180000
+SUMMARY:Legacy Nexus Cup 2v2 At Colossal Cards & Collectables
+LOCATION:444 Lerwick Rd Unit 405\, Courtenay\, BC V9N 0A9\, Canada
+DESCRIPTION:Event\nColossal Cards & Collectables\, Courtenay\n32 of 32 spot
+ s left\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/events/117521
+ 173340655612
+URL:https://playriftbound.com/en-US/events/117521173340655612
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

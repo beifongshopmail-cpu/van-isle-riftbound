@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117520785658195785@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270124T103000
+DTEND;TZID=America/Vancouver:20270124T133000
+SUMMARY:Legacy Pre-Rift #2
+LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
+DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n13 of 18 spots left\n$45.00 
+ CAD\nSign up: https://playriftbound.com/en-US/events/117520785658195785
+URL:https://playriftbound.com/en-US/events/117520785658195785
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

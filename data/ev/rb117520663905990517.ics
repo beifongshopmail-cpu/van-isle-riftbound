@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117520663905990517@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270128T180000
+DTEND;TZID=America/Vancouver:20270128T210000
+SUMMARY:North Park Picture Framing and Collectables Legacy Pre-Rift #3
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Pre-Rift\nNorth Park Picture Framing and Collectables\, Victori
+ a\n23 of 24 spots left\n$45.00 CAD\nSign up: https://playriftbound.com/en-
+ US/events/117520663905990517
+URL:https://playriftbound.com/en-US/events/117520663905990517
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
