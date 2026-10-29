@@ -318,6 +318,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   render();
   fetch("../data/events.json", { cache: "no-cache" }).then(function(r){ if (!r.ok) { throw new Error("http " + r.status); } return r.json(); }).then(function(j){
     var a = j && Array.isArray(j.events) ? j.events : [], i, e;
+    // a real event visited from anywhere (?visit=<id> on the Events page; live.js)
+    if (window.RAVI_LIVE) { a = window.RAVI_LIVE.withVisit(a); }
     evs = [];
     for (i = 0; i < a.length; i++) { e = cleanEv(a[i]); if (e) { evs.push(e); } }
     evs.sort(function(x, y){ return x.start < y.start ? -1 : (x.start > y.start ? 1 : 0); });

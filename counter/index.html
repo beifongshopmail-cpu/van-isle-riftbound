@@ -600,7 +600,9 @@
   function withSim(list){
     var on = false;
     try{ on = localStorage.getItem(SIMKEY) === "1"; }catch(e){}
-    return on ? list.concat([simEvent(cseToday())]) : list;
+    list = on ? list.concat([simEvent(cseToday())]) : list;
+    // a real event visited from anywhere (?visit=<id> on the Events page; live.js)
+    return window.RAVI_LIVE ? window.RAVI_LIVE.withVisit(list) : list;
   }
 
   var GKEY = "vir.counter.game.v1";

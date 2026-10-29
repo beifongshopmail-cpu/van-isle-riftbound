@@ -330,6 +330,9 @@ window.RAVI_BAR = function(nav, slots){
   if (navigator.standalone === true || mm("(display-mode: standalone)") || mm("(display-mode: fullscreen)") || mm("(display-mode: minimal-ui)")) { return; }
   if (navigator.webdriver) { return; }
   if (/[?&]sim=/.test(location.search)) { return; }
+  // a ?visit= test link (live.js) opens this tab as the browser version, so
+  // the Game page and Top cut can be reached from it too
+  if (/[?&]visit=/.test(location.search)) { try { sessionStorage.setItem("ravi.web.v1", "1"); } catch (e) {} return; }
   try { if (sessionStorage.getItem("ravi.web.v1") === "1") { return; } } catch (e) {}
   window.RAVI_GATE = true;
   document.documentElement.classList.add("gate");

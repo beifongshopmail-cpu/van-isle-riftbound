@@ -247,7 +247,78 @@
       .then(function () { cb(null); }, function () { cb(null); });
   }
 
-  var api = { BASE: BASE, ME_KEY: ME_KEY, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, paired: paired, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo };
+  // ---- visiting a real event anywhere (the test switch ?visit=<id>) ----
+  // ?visit=<PlayRiftbound event id> on the Events page adds that one real
+  // event to today's list ON THIS PHONE ONLY (localStorage; nothing in data/,
+  // nobody else sees it), so every live part can be tried on any event in the
+  // world. ?visit=0 removes it, and it lapses by itself after its day. The
+  // Events page, the Game page and Top cut all read it through withVisit.
+  // An id the server cannot read is refused and nothing is kept.
+  var VISIT_KEY = "vir.visit.v1";
+  var VISIT_TYPES = { OPEN_PLAY: "open", LEARN_TO_PLAY: "learn", NEXUS_NIGHT: "nexus", SUMMONER_SKIRMISH: "skirmish", PRE_RIFT: "prerift" };
+  // today as the app's pages key it (the island's day)
+  function vanToday(now) {
+    var o = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" })
+      .formatToParts(new Date(now == null ? Date.now() : now)).forEach(function (p) { o[p.type] = p.value; });
+    return o.year + "-" + o.month + "-" + o.day;
+  }
+  // a live file -> one event in data/events.json's shape, on today's list
+  function visitEvent(live, now) {
+    if (!valid(live) || !tid(live.id)) return null;
+    var start = typeof live.startsAt === "string" && isFinite(Date.parse(live.startsAt)) ? live.startsAt : "";
+    var time = "";
+    if (start) { try { time = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(start)); } catch (e) {} }
+    var min = null;
+    for (var i = 0; i < live.rounds.length; i++) if (live.rounds[i].min) { min = live.rounds[i].min; break; }
+    var cnt = function (v) { return typeof v === "number" && isFinite(v) && v >= 0 ? v : null; };
+    return {
+      id: "rb" + tid(live.id), name: String(live.name || "Event").slice(0, 120), type: VISIT_TYPES[live.type] || "other",
+      start: start, end: typeof live.endsAt === "string" ? live.endsAt : null, day: vanToday(now), time: time,
+      venue: "Visiting (test)", city: "", address: "", region: "victoria",
+      cap: cnt(live.capacity), reg: cnt(live.players), cents: 0, currency: "", updated: null,
+      round: min, wins: live.bestOf === 3 ? 2 : (live.bestOf === 1 ? 1 : null), sid: null, store: "Visiting (test)", visit: true
+    };
+  }
+  // the visited event, or null; one from an earlier day is dropped
+  function visit(store, now) {
+    var st = store || root.localStorage, o = null;
+    try { o = JSON.parse(st.getItem(VISIT_KEY) || "null"); } catch (e) { o = null; }
+    if (!o) return null;
+    var ok = o && typeof o === "object" && o.ev && typeof o.ev === "object" && o.day === vanToday(now) && o.ev.day === o.day && /^rb\d{6,24}$/.test(String(o.ev.id));
+    if (!ok) { try { st.removeItem(VISIT_KEY); } catch (e) {} return null; }
+    o.ev.visit = true;
+    return o.ev;
+  }
+  function visitClear(store) { try { (store || root.localStorage).removeItem(VISIT_KEY); } catch (e) {} }
+  // a list of events plus the visited one (once; an event already listed stays as listed)
+  function withVisit(list, store, now) {
+    var v = visit(store, now);
+    list = Array.isArray(list) ? list : [];
+    if (!v) return list;
+    for (var i = 0; i < list.length; i++) if (list[i] && String(list[i].id) === v.id) return list;
+    return list.concat([v]);
+  }
+  // Reads ?visit= from a page's query. Returns false when there is none;
+  // otherwise true, and later cb("added", ev), cb("cleared") or cb("refused").
+  function visitQuery(search, cb, store) {
+    var q = null;
+    try { q = new URLSearchParams(search || "").get("visit"); } catch (e) { q = null; }
+    if (q === null) return false;
+    var st = store || root.localStorage;
+    if (q === "0") { visitClear(st); setTimeout(function () { cb("cleared"); }, 0); return true; }
+    var id = tid(String(q).trim());
+    if (!id) { setTimeout(function () { cb("refused"); }, 0); return true; }
+    get(id, function (live) {
+      var ev = live ? visitEvent(live) : null;
+      if (!ev) { cb("refused"); return; }
+      try { st.setItem(VISIT_KEY, JSON.stringify({ v: 1, day: ev.day, ev: ev })); } catch (e) { cb("refused"); return; }
+      cb("added", ev);
+    });
+    return true;
+  }
+
+  var api = { BASE: BASE, ME_KEY: ME_KEY, VISIT_KEY: VISIT_KEY, vanToday: vanToday, visitEvent: visitEvent, visit: visit, visitClear: visitClear, withVisit: withVisit, visitQuery: visitQuery, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, paired: paired, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.RAVI_LIVE = api;
 })(typeof window !== "undefined" ? window : globalThis);
