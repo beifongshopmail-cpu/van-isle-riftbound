@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: "22"
       - name: Parser and server load
-        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js')]).then(() => console.log('server code loads'))"
+        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js'), import('./finishes.js')]).then(() => console.log('server code loads'))"
       - name: Secrets in place?
         id: sec
         run: |
@@ -65,3 +65,4 @@ jobs:
           curl -fsS "$URL/vapid" > /dev/null && echo "alerts key served"
           # the finished M9 event (2026-10-10, North Park); it never changes
           curl -fsS "$URL/event/117213852100443736" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);if(j.status!=='done'||j.rounds.length!==3)process.exit(1);console.log('reads Riot: '+j.name+', '+j.rounds.length+' rounds');})"
+          curl -fsS "$URL/finishes?ids=117213852100443736" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);if(j.v!==1||typeof j.events!=='object')process.exit(1);console.log('decks store answers');})"

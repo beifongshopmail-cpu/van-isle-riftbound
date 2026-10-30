@@ -8,6 +8,7 @@
 import { liveFromHtml } from "./parse.js";
 import { makeAlerts } from "./alerts.js";
 import { vapidPublic } from "./push.js";
+import { makeFinishes } from "./finishes.js";
 
 const UA = "VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-isle-riftbound)";
 const GQL = "https://playriftbound.com/api/gql";
@@ -108,6 +109,21 @@ export function _reset() { memo.clear(); inflight.clear(); }
 // Pairing alerts: one Durable Object holds every request (alerts.js).
 export const Alerts = makeAlerts(getLive);
 
+// The decks played at finished events (finishes.js): one Durable Object.
+export const Finishes = makeFinishes(getLive);
+
+async function toFinishes(req, env, path, method) {
+  const init = { method: method, headers: { "Content-Type": "application/json", "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } };
+  if (method === "POST") {
+    const text = await req.text();
+    if (text.length > 2048) return json(req, 413, { error: "too big" });
+    init.body = text;
+  }
+  const stub = env.FINISHES.get(env.FINISHES.idFromName("all"));
+  const r = await stub.fetch(new Request("https://finishes" + path, init));
+  return json(req, r.status, await r.json().catch(function () { return {}; }));
+}
+
 async function toAlerts(req, env, path) {
   const text = await req.text();
   if (text.length > 4096) return json(req, 413, { error: "too big" });
@@ -124,6 +140,13 @@ export default {
     if (req.method === "POST" && ROUTE[url.pathname]) {
       if (!env || !env.ALERTS) return json(req, 503, { error: "alerts are not set up" });
       return toAlerts(req, env, ROUTE[url.pathname]);
+    }
+    const fm = /^\/finishes(?:\/(\d{6,24}))?$/.exec(url.pathname);
+    if (fm) {
+      if (!env || !env.FINISHES) return json(req, 503, { error: "not set up" });
+      if (fm[1] && (req.method === "GET" || req.method === "POST")) return toFinishes(req, env, "/e/" + fm[1], req.method);
+      if (!fm[1] && req.method === "GET") return toFinishes(req, env, "/list?ids=" + encodeURIComponent(String(url.searchParams.get("ids") || "").slice(0, 6000)), "GET");
+      return json(req, 405, { error: "not allowed" });
     }
     if (req.method !== "GET") return json(req, 405, { error: "GET only" });
     if (url.pathname === "/vapid") {

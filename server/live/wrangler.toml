@@ -16,3 +16,13 @@ class_name = "Alerts"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["Alerts"]
+
+# The decks played at finished events (finishes.js, M17 block 2): a second
+# Durable Object on SQLite storage, free plan.
+[[durable_objects.bindings]]
+name = "FINISHES"
+class_name = "Finishes"
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["Finishes"]
