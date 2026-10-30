@@ -168,7 +168,7 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - feedback/index.html: .fbn .fbody .fgrp .lead .ship
 - settings/index.html: .sts .starm .stwarn .stmsg (#stme, Your Riot name)
 - cut/index.html: .csec .srows .srow .sv .cseg .cnote .fh .fr .flist .vd .fmore (the maths in cut/cut.js)
-- tier/index.html: .lgtop .lgtx .nrows .nrow .tctl .tempty .tgrid .tleg .tlet .tnone .tnote .trow .tstrip .tph (the maths in tier/tier.js; the data from fetch-tier.js)
+- tier/index.html: .lgtop .lgtx .nrows .nrow .pmsg .tc .tctl .tempty .tgrid .tleg .tlet .tlist .tnone .tnote .trow .tscope .tstrip .tph; menus #padd #pev #ppick (the maths in tier/tier.js; the data from fetch-tier.js and server/live/finishes.js)
 - start/index.html: .nsec .ntx .gsel .guide (two guides on one track: New to Riftbound, New to RAVI; #ravi opens the second)
 - rules/index.html: .empty .extl .new .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
 - collection/index.html: .armed .art .bhead .bin1 .bopts .boot .bsr .brw .camt .cards .cchg .cempty .cend .cgrid .chip .chw .ck .cmid .cmv .cnm .cnote .cpic .crow .cseg .csub .ctile .cval .dvrow .dvseg .dvsort .fchip .first .hchg .hfacts .hgain .hnow .hpic .hrow .isum .lpm .lq .lsteps .more .mvbox .mvh .mvsep .owd .plate .psf .rot .sel .selp .stk .stp .tcap .tnm .toast .tpr .ttot
@@ -409,7 +409,9 @@ Top cut (cut/index.html; M15, 2026-10-27)
 
 Tier list (tier/index.html; M17, 2026-10-28)
 - The maths is tier/tier.js (shared with the fetcher and the tests); the data is data/tier.json, written daily by fetch-tier.js from TopDeck.gg: each event's date, size, cut and placings with Riot's legend names only, never a player. TopDeck is credited in the footer.
-- Five rows always, S, A, B, C, Rogue, each named in words; an empty tier keeps its row, says No legend here right now and dims its block. Each row is a shelf of whole legend cards, never cropped, scrolling sideways card by card with a fade at an edge that has more. The letter block (letter and count) opens the whole tier, best conversion first; a card opens its legend (the card, its tier, one sentence, Played, Top cut, Conversion), one deeper from a tier's menu. Search above the board. No second view. (Mako's yes 2026-10-29)
+- Five rows always, S, A, B, C, Rogue, each named in words; an empty tier keeps its row, says No legend here right now and dims its block. Each row is a shelf of whole legend cards, never cropped, scrolling sideways card by card with a fade at an edge that has more. The letter block (letter and count) opens the whole tier, best conversion first; a card opens its legend (the card, its tier, one sentence, Played, Top cut, Conversion), one deeper from a tier's menu. Search above the board. No second view of the board. (Mako's yes 2026-10-29)
+- Global | Local (Mako 2026-10-29): a track under the search, remembered. Local is the viewer's Events area; its decks are added by players on the honour system: the legend most picks name stands, a tie says Contested and is left out. Counts only (whole cards, 'n decks', most played first) until 100 decks, then the same five shelves.
+- Add decks: a full-width button under Local's line. Each menu goes one deeper: finished events from the last 14 days, an event's final standings (placing, Riot name, record, legend), a legend picker (search, whole cards, your pick ringed in bone, Take back my pick).
 - Bar: Hub, Go to, How it's counted (#phow, the info icon, data-fills), Settings dimmed.
 
 ## 11. Checks
