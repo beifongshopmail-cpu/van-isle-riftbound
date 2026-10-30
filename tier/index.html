@@ -52,6 +52,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #padd .pnote,#pev .pnote,#ppick .pnote{margin:12px 2px 0}
 /* event names and Riot names wrap rather than clip (.door.rec allows a second line) */
 #addlist .door.rec .t,#pevb .door.rec .t{white-space:normal;overflow-wrap:anywhere}
+/* a Riot name as the Live menu writes it (M17 sweep): the tag 12 muted, You 12 bone */
+#pevb .door.rec .t .tg{font-size:12px;font-weight:400;color:var(--muted);margin-left:1px;white-space:nowrap}
+#pevb .door.rec .t .tyou{font-family:var(--text);font-size:12px;font-weight:700;color:var(--bone);margin-left:8px;white-space:nowrap}
 /* the board: five rows, always S, A, B, C, Rogue, even empty. Each row is a shelf: its cards
    scroll sideways, snapping card by card, a soft fade at an edge with more beyond it, so the board
    never grows. The letter block opens the whole tier (Mako 2026-10-29: no second view). */
@@ -117,8 +120,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="tnote" id="tsum">Loading the results.</p>
 
   <footer class="foot">
-    <p>Global results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Local decks are added by players, on trust; placings come from Riot's event pages. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
-    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
+    <p>Global results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Local decks are added by players, on trust; placings come from Riot's event pages.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
   </footer>
 </main>
 <nav class="bar frost" id="tabs"></nav>
@@ -617,13 +623,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (c.state === "unfinished") { box.innerHTML = "<p class=\"pmsg\">Riot's final standings for this event are not up yet. Try again once it has finished.</p>"; return; }
     var me = LV.me ? LV.me() : null, mine = (picks()[c.id] || { p: {} }).p, filled = 0;
     var h = c.rows.map(function(s){
-      var f = c.fin[s.r], rec = [s.w, s.l, s.d].every(function(n){ return whole(n, 0, 99); }) ? s.w + "-" + s.l + (s.d ? "-" + s.d : "") : "";
+      // the record as wins-losses-draws, always all three (as the Live menu and Top cut; M17 sweep)
+      var f = c.fin[s.r], rec = [s.w, s.l, s.d].every(function(n){ return whole(n, 0, 99); }) ? s.w + "-" + s.l + "-" + s.d : "";
       var leg = f && f.l ? nameParts(f.l)[0] : (f && f.c ? "Contested: two legends are level" : "No legend yet");
       if (f && f.l) { filled++; }
       var bits = [rec, leg].filter(Boolean);
       if (mine[s.r]) { bits.push("your pick: " + nameParts(mine[s.r])[0]); }
-      var you = LV.isMe && me && LV.isMe(s, me) ? " (you)" : "";
-      return "<button type=\"button\" class=\"door rec\" data-r=\"" + s.r + "\"><span class=\"t\">" + esc(ordinal(s.r) + "  " + s.n + (s.tag ? "#" + s.tag : "") + you) + "</span><small>" + esc(bits.join(" \u00b7 ")) + "</small>" +
+      // a Riot name as the Live menu writes it: the tag small and muted, You in bone (M17 sweep)
+      var you = LV.isMe && me && LV.isMe(s, me) ? "<b class=\"tyou\">You</b>" : "";
+      return "<button type=\"button\" class=\"door rec\" data-r=\"" + s.r + "\"><span class=\"t\">" + esc(ordinal(s.r) + "  " + s.n) + (s.tag ? "<small class=\"tg\">" + esc("#" + s.tag) + "</small>" : "") + you + "</span><small>" + esc(bits.join(" \u00b7 ")) + "</small>" +
         "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg></button>";
     }).join("");
     box.innerHTML = "<p class=\"tnote\" id=\"pevsum\">" + esc(filled + " of " + c.rows.length + " placings have a legend.") + "</p><div class=\"doors\" data-k=\"deeper\">" + h + "</div>" +

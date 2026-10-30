@@ -59,6 +59,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #evl button{flex-direction:column;align-items:flex-start;text-align:left;justify-content:center;height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px;gap:2px}
 #evl button.on{padding-right:44px}
 #evl small{display:block;white-space:normal}
+#phow .pbody p{margin:0 0 10px;font-size:15px;line-height:1.4}
+#phow .pbody p:last-child{margin-bottom:0}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -70,7 +72,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   <section class="csec glass" id="sev">
     <div class="shead"><h2>The event</h2></div>
-    <div class="doors"><button type="button" class="door" id="evbtn" aria-haspopup="true" aria-controls="pev" data-k="deeper"><span class="t">Event</span><span class="sp"></span><small id="evname">None picked</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    <div class="doors"><button type="button" class="door" id="evbtn" aria-haspopup="true" aria-controls="pev" data-k="deeper"><span class="t">Event</span><span class="sp"></span><small id="evname">No event</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <div class="srows"><div class="srow"><span class="t">Players</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="n" data-d="-1" aria-label="One fewer players" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vn" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="n" data-d="1" aria-label="One more players" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div><div class="srow"><span class="t">Swiss rounds</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="r" data-d="-1" aria-label="One fewer swiss rounds" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vr" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="r" data-d="1" aria-label="One more swiss rounds" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div></div>
     <div class="seg cseg" role="group" aria-label="Top cut" id="kseg" data-k="pick"><button type="button" data-k2="0" aria-pressed="false">None</button><button type="button" data-k2="2" aria-pressed="false">Top 2</button><button type="button" data-k2="4" aria-pressed="false">Top 4</button><button type="button" data-k2="8" aria-pressed="false">Top 8</button><button type="button" data-k2="16" aria-pressed="false">Top 16</button></div>
     <p class="cnote" id="evnote">Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.</p>
@@ -85,19 +87,21 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <section class="csec glass" id="sfin">
     <div class="shead"><h2>Your finishes</h2></div>
     <div id="fin"></div>
-    <p class="cnote">Worst case: the other tables' last two rounds go the way that puts the most players level with you or ahead. Likely: every other match is played out and the player ahead wins it. A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1. Pairings are modelled, not the store's, so take it as a guide.</p>
   </section>
 
   <footer class="foot">
-    <p>Players from the event's registrations on PlayRiftbound; your record from the matches you tagged to it on the Game page. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
-    <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
+    <p>Players from the event's registrations on PlayRiftbound; your record from the matches you tagged to it on the Game page.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
   </footer>
 </main>
 <nav class="bar frost" id="tabs"></nav>
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"cut"},
-  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"info", a:[["class", "tab"], ["id", "tabhow"], ["data-open", "phow"], ["aria-label", "How it's worked out"], ["data-k", "slot"], ["data-fills", "phow"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 <div class="scrim" id="scrim"></div>
@@ -107,6 +111,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost" id="pev" aria-hidden="true" aria-label="Event">
   <div class="phead"><h4 class="ttl">Event</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="pick" id="evl" data-k="pick"></div></div>
+</section>
+<!-- How it's worked out (M17 sweep, Mako 2026-10-30): the explanation sits behind the bar's info
+     slot, as the Tier list's How it's counted, instead of a standing note under Your finishes. -->
+<section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's worked out">
+  <div class="phead"><h4 class="ttl">How it's worked out</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p>Worst case: the other tables' last two rounds go the way that puts the most players level with you or ahead.</p>
+    <p>Likely: every other match is played out and the player ahead wins it.</p>
+    <p>A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1.</p>
+    <p>Pairings are modelled, not the store's, so take it as a guide.</p>
+  </div>
 </section>
 <script>
 (function(){
@@ -134,6 +149,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   if (here) { here.addEventListener("click", hide); }
   scrim.addEventListener("click", hide);
   pev.querySelector("[data-close]").addEventListener("click", hide);
+  var phow = $("phow");
+  phow.querySelector("[data-close]").addEventListener("click", hide);
+  $("tabhow").addEventListener("click", function(){ if (openP === phow) { hide(); } else { show(phow); } });
 
   // THE STATE, kept on this phone (vir.cut.v1) and rebuilt through cut.js's clean on load.
   // rTouched and kTouched: the rounds or cut were set by hand, so a new player count leaves them.
@@ -231,7 +249,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     st.k = +b.getAttribute("data-k2"); st.kT = true; save(); render();
   });
 
-  // THE EVENT MENU: today's and later events from the feed, then None
+  // THE EVENT MENU: today's and later events from the feed, then No event (as the Game page)
   function listEvents(){
     var t = today(), h = "", i;
     var list = evs.filter(function(e){ return e.day >= t; });
@@ -242,7 +260,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         esc([window.RAVI_DATE(e.day, true), e.time, e.venue, who].filter(Boolean).join(" \u00b7 ")) + '</small></button>';
     }
     if (!list.length) { h += '<button type="button" disabled aria-pressed="false">No events from today on</button>'; }
-    h += '<button type="button" data-ev=""' + (!st.ev ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>None</button>';
+    h += '<button type="button" data-ev=""' + (!st.ev ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>No event</button>';
     $("evl").innerHTML = h;
   }
   $("evbtn").addEventListener("click", function(){ listEvents(); show(pev); });
@@ -279,7 +297,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     for (var i = 0; i < b.length; i++) { b[i].setAttribute("aria-pressed", +b[i].getAttribute("data-k2") === st.k ? "true" : "false"); }
     var played = st.w + st.l + st.d;
     $("reccnt").textContent = "After round " + played + " of " + st.r;
-    $("evname").textContent = evInfo ? evInfo.name : (st.ev ? "Not in the feed" : "None picked");
+    $("evname").textContent = evInfo ? evInfo.name : (st.ev ? "Not in the feed" : "No event");
     var note = "Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.";
     if (evInfo) {
       var live = evInfo.day <= today();
