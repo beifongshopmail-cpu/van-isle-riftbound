@@ -17,6 +17,7 @@
 <script src="../cards/legends.js"></script>
 <script src="../cut/cut.js"></script>
 <script src="tier.js"></script>
+<script src="../live.js"></script>
 <style>
 /* Tier list (M17, 2026-10-28): which legends are played most, and which reach the top cut more
    often than their numbers explain. The maths is tier.js (shared with the fetcher and the tests);
@@ -24,7 +25,11 @@
    only, never a player's name) and checks every field.
    Round 2 (Mako 2026-10-28): the board is the main view, one glass row per tier with its letter
    block and the legends' whole cards; a tap on a card opens that legend's numbers in a menu, and
-   How it's counted sits on the bar. Tiers are named in words; colour carries nothing. */
+   How it's counted sits on the bar. Tiers are named in words; colour carries nothing.
+   Block 2 (Mako 2026-10-29): a Global | Local track. Local is the viewer's Events area; its decks
+   are added by players on the honour system (Add decks: a finished event, its placings from Riot's
+   final standings, a legend per placing; server/live/finishes.js keeps the picks). Counts only
+   until LOCAL_TIERS decks are in, then the same shelves. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
@@ -33,6 +38,20 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .tnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 /* the search, then the board */
 .tctl{margin-top:14px}
+.tscope{margin-top:10px}
+#lhead{margin-top:14px}
+#lhead .tnote{margin:0 4px 10px}
+/* Local's counts (before LOCAL_TIERS decks): the legends as whole cards, most played first */
+.tgrid .tleg em.tc{font-family:var(--text);font-weight:600}
+/* the legend picker: the chosen card wears the bone ring (STYLE section 3, chosen picture) */
+#pgrid{margin-top:12px}
+#pgrid .tleg[aria-pressed="true"] img,#pgrid .tleg[aria-pressed="true"] .tph{box-shadow:0 0 0 2px var(--bone),0 0 0 4px var(--ground)}
+#pnow{margin:0 2px 12px;font-size:15px;line-height:1.4}
+#pundo{margin-top:14px}
+.pmsg{margin:10px 2px 0;font-size:15px;line-height:1.4}
+#padd .pnote,#pev .pnote,#ppick .pnote{margin:12px 2px 0}
+/* event names and Riot names wrap rather than clip (.door.rec allows a second line) */
+#addlist .door.rec .t,#pevb .door.rec .t{white-space:normal;overflow-wrap:anywhere}
 /* the board: five rows, always S, A, B, C, Rogue, even empty. Each row is a shelf: its cards
    scroll sideways, snapping card by card, a soft fade at an edge with more beyond it, so the board
    never grows. The letter block opens the whole tier (Mako 2026-10-29: no second view). */
@@ -88,12 +107,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lede">Which legends are winning right now: how often each is played, and how often it reaches the top cut.</p>
   <div class="tctl">
     <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="tq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"><button type="button" class="fbtn fx glass" id="tqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <div class="seg tscope" id="tscope" role="group" aria-label="Results from" data-k="pick"><button type="button" data-sc="global" aria-pressed="true">Global</button><button type="button" data-sc="local" aria-pressed="false">Local</button></div>
+  </div>
+  <div id="lhead" hidden>
+    <p class="tnote" id="larea"></p>
+    <button type="button" class="pact btn glass" id="ladd" data-k="do" aria-haspopup="true" aria-controls="padd">Add decks</button>
   </div>
   <div id="tiers"></div>
   <p class="tnote" id="tsum">Loading the results.</p>
 
   <footer class="foot">
-    <p>Results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
+    <p>Global results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Local decks are added by players, on trust; placings come from Riot's event pages. Something wrong or missing? <a href="../feedback/">Tell us</a>.</p>
     <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
   </footer>
 </main>
@@ -116,6 +140,25 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><h4 class="ttl" id="ptiert">Tier</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody" id="ptierb"></div>
 </section>
+<section class="panel frost" id="padd" aria-hidden="true" aria-label="Add decks">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Add decks</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div id="addlist"></div><p class="pnote" id="addnote"></p></div>
+</section>
+<section class="panel frost" id="pev" aria-hidden="true" aria-label="Event">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="pevt">Event</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pevb"></div>
+</section>
+<section class="panel frost" id="ppick" aria-hidden="true" aria-label="Pick a legend">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="ppickt">Legend</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p id="pnow"></p>
+    <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="pq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"><button type="button" class="fbtn fx glass" id="pqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <div class="tgrid" id="pgrid" data-k="pick"></div>
+    <p class="pmsg" id="pmsg" hidden></p>
+    <button type="button" class="pact btn glass" id="pundo" data-k="do" hidden>Take back my pick</button>
+    <p class="pnote">Pick the legend this player played. It counts on trust: the legend most picks name stands, and two that tie are left out until another pick settles it.</p>
+  </div>
+</section>
 <section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's counted">
   <div class="phead"><h4 class="ttl">How it's counted</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
@@ -123,34 +166,59 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p>Played: a legend's share of every deck. Top cut: its share of every top-cut spot (the cut the event played; an event that stopped after Swiss counts a top 8 from 17 players, a top 4 below).</p>
     <p>Conversion: top cut divided by played. 1.00x is average; 2.00x makes the top cut twice as often as its play share predicts. A legend with few decks is pulled toward 1.00x, so a lucky handful cannot top the list.</p>
     <p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p>
+    <p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the one most picks name, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p>
     <p>Legends and decks only: RAVI never ranks players.</p>
   </div>
 </section>
 <script>
 (function(){
-  var T = window.RAVI_TIER;
+  var T = window.RAVI_TIER, LV = window.RAVI_LIVE;
   var $ = function(id){ return document.getElementById(id); };
-  var scrim = $("scrim"), pnav = $("pnav"), openP = null;
+  var scrim = $("scrim"), pnav = $("pnav");
   function esc(v){ return String(v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
 
-  // MENUS: Go to only; the page locked at the root while it is open
-  function show(p){
-    if (openP && openP !== p) { openP.classList.remove("show"); openP.setAttribute("aria-hidden", "true"); }
-    if (!p && openP) { openP.classList.remove("show"); openP.setAttribute("aria-hidden", "true"); }
-    openP = p;
-    if (p) { p.classList.add("show"); p.setAttribute("aria-hidden", "false"); }
+  // MENUS: one on screen, a stack behind it (as Collection); a deeper menu slides in from the
+  // right with a back arrow and no X; the page locked at the root while any is open.
+  var OPENP = null, STACK = [];
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  function show(p, keep, dir){
+    if (OPENP && p && OPENP !== p && dir) { slideMenus(OPENP, p, dir); }
+    if (OPENP && OPENP !== p) { OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function(q){
+      var x = q.querySelector(".phead [data-close]"), bk = q.querySelector(".phead [data-back]");
+      if (bk) { bk.hidden = !(STACK.length > 1 && q === p); }
+      if (x && bk) { x.hidden = STACK.length > 1 && q === p; }
+    });
+    if (p) {
+      p.classList.add("show"); p.classList.remove("fromr", "froml");
+      p.setAttribute("aria-hidden", "false");
+      var b = p.querySelector(".pbody");
+      if (b && !keep) { b.scrollTop = 0; }
+    }
     scrim.classList.toggle("show", !!p);
     document.documentElement.classList.toggle("lock", !!p);
   }
-  function hide(){ show(null); }
-  $("tabnav").addEventListener("click", function(){ if (openP === pnav) { hide(); } else { show(pnav); } });
+  function openPanel(p){ STACK = p ? [p] : []; show(p); }
+  function deeper(p){ STACK.push(p); show(p, false, 1); }
+  function back(){ STACK.pop(); show(STACK.length ? STACK[STACK.length - 1] : null, true, -1); }
+  function hide(){ openPanel(null); }
+  $("tabnav").addEventListener("click", function(){ if (OPENP === pnav) { hide(); } else { openPanel(pnav); } });
   window.RAVI_GOTO($("pnavgoto"), "tier", "../");
   var here = $("pnhere");
   if (here) { here.addEventListener("click", hide); }
   scrim.addEventListener("click", hide);
-  var pleg = $("pleg"), phow = $("phow"), ptier = $("ptier");
-  [pleg, phow, ptier].forEach(function(p){ p.querySelector("[data-close]").addEventListener("click", hide); });
-  $("tabhow").addEventListener("click", function(){ if (openP === phow) { hide(); } else { show(phow); } });
+  var pleg = $("pleg"), phow = $("phow"), ptier = $("ptier"), padd = $("padd"), pev = $("pev"), ppick = $("ppick");
+  Array.prototype.forEach.call(document.querySelectorAll(".panel [data-close]"), function(b){ b.addEventListener("click", hide); });
+  Array.prototype.forEach.call(document.querySelectorAll(".panel [data-back]"), function(b){ b.addEventListener("click", back); });
+  $("tabhow").addEventListener("click", function(){ if (OPENP === phow) { hide(); } else { openPanel(phow); } });
 
   // THE LEGENDS RAVI KNOWS (cards/legends.js, from Riot's gallery). A name in the data that is not
   // one of these is dropped, so the page only ever shows Riot's own names and art.
@@ -191,6 +259,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     try { return dt.toLocaleDateString("en-CA", { month: "short", day: "numeric" }); } catch (e) { return ""; }
   }
   function card(src, cls){ return src ? "<img src=\"" + esc(src) + "\" alt=\"\"" + (cls ? " class=\"" + cls + "\"" : "") + " loading=\"lazy\">" : "<span class=\"tph\"></span>"; }
+  function plural(n, one, many){ return num(n) + " " + (n === 1 ? one : many); }
 
   // one plain sentence for the conversion
   function say(x){
@@ -199,24 +268,30 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     return "Makes the top cut less often than its play share predicts (" + x.cv.toFixed(2) + "x).";
   }
 
-  var R = null, BY = {};
-  function openLegend(name){
+  // R: the totals behind what is drawn; COUNTS: Local before it has enough decks for tiers
+  var R = null, BY = {}, COUNTS = false;
+  function openLegend(name, deep){
     var x = BY[name];
     if (!x || !R) { return; }
     var p = nameParts(x.l);
     $("plegt").textContent = p[0];
-    $("plegb").innerHTML =
-      "<div class=\"lgtop\">" + card(artOf(KNOWN[x.l], true)) +
-      "<div class=\"lgtx\"><p class=\"full\">" + esc(p[1]) + "</p><p class=\"tier\">" + esc(TNAME[x.tier]) + "</p><p class=\"say\">" + esc(say(x)) + "</p></div></div>" +
-      "<div class=\"nrows\">" +
-      "<div class=\"nrow\"><span><b>Played</b><small>" + esc(num(x.f) + " of " + num(R.entries) + " decks") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.fs) + "</span></div>" +
-      "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc(num(x.t) + " of " + num(R.tops) + " top-cut spots") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.ts) + "</span></div>" +
-      "<div class=\"nrow\"><span><b>Conversion</b><small>Top cut over played; 1.00x is average</small></span><span class=\"sp\"></span><span class=\"v\">" + x.cv.toFixed(2) + "x</span></div>" +
-      "</div><p class=\"tnote\">" + esc(R.events + (R.events === 1 ? " event" : " events") + " in the last " + R.days + " days, from TopDeck.gg.") + "</p>";
+    var top = "<div class=\"lgtop\">" + card(artOf(KNOWN[x.l], true)) + "<div class=\"lgtx\"><p class=\"full\">" + esc(p[1]) + "</p>";
+    if (COUNTS) {
+      $("plegb").innerHTML = top + "<p class=\"tier\">" + esc(R.place) + "</p><p class=\"say\">Counts only, until " + LOCAL_TIERS + " decks are in.</p></div></div>" +
+        "<div class=\"nrows\">" +
+        "<div class=\"nrow\"><span><b>Played</b><small>" + esc("of " + plural(R.entries, "deck", "decks") + " added") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + num(x.f) + "</span></div>" +
+        "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc("of " + plural(R.tops, "top-cut spot", "top-cut spots") + " filled") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + num(x.t) + "</span></div>" +
+        "</div><p class=\"tnote\">" + esc(R.foot) + "</p>";
+    } else {
+      $("plegb").innerHTML = top + "<p class=\"tier\">" + esc(TNAME[x.tier]) + "</p><p class=\"say\">" + esc(say(x)) + "</p></div></div>" +
+        "<div class=\"nrows\">" +
+        "<div class=\"nrow\"><span><b>Played</b><small>" + esc(num(x.f) + " of " + num(R.entries) + " decks") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.fs) + "</span></div>" +
+        "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc(num(x.t) + " of " + num(R.tops) + " top-cut spots") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.ts) + "</span></div>" +
+        "<div class=\"nrow\"><span><b>Conversion</b><small>Top cut over played; 1.00x is average</small></span><span class=\"sp\"></span><span class=\"v\">" + x.cv.toFixed(2) + "x</span></div>" +
+        "</div><p class=\"tnote\">" + esc(R.foot) + "</p>";
+    }
     // from a tier's menu it is one deeper: a back arrow and no X
-    $("plegback").hidden = !FROM;
-    $("plegx").hidden = !!FROM;
-    show(pleg);
+    if (deep) { deeper(pleg); } else { openPanel(pleg); }
   }
 
   // the view switch was removed (Mako 2026-10-29); clear what it kept on this phone
@@ -236,7 +311,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function filter(){
     var q = norm($("tq").value);
     $("tqx").disabled = !$("tq").value;
-    Array.prototype.forEach.call(document.querySelectorAll("#tiers .trow"), function(row){
+    Array.prototype.forEach.call(document.querySelectorAll("#tiers .trow, #tiers .tlist"), function(row){
       var tiles = row.querySelectorAll(".tleg"), shown = 0, i;
       for (i = 0; i < tiles.length; i++) {
         var hit = !q || norm(tiles[i].getAttribute("data-l")).indexOf(q) !== -1;
@@ -253,29 +328,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   $("tq").addEventListener("input", filter);
   $("tqx").addEventListener("click", function(){ $("tq").value = ""; filter(); $("tq").focus(); });
 
-  function tileHTML(x, tierName, withCv){
+  function tileHTML(x, tierName, under){
     var p = nameParts(x.l);
     return "<button type=\"button\" class=\"tleg\" data-k=\"card\" data-l=\"" + esc(x.l) + "\" aria-label=\"" + esc(x.l + ", " + tierName) + "\" aria-haspopup=\"true\" aria-controls=\"pleg\">" +
-      card(artOf(KNOWN[x.l], false)) + "<span>" + esc(p[0]) + "</span>" + (withCv ? "<em>" + x.cv.toFixed(2) + "x</em>" : "") + "</button>";
+      card(artOf(KNOWN[x.l], false)) + "<span>" + esc(p[0]) + "</span>" + (under || "") + "</button>";
   }
 
-  var LIST = [], FROM = null;
-  function draw(c){
-    var box = $("tiers"), sum = $("tsum");
-    if (!c || !T) { sum.textContent = "The results could not be read. Try again later."; box.innerHTML = ""; return; }
-    var r = T.compute(c.events);
-    if (!r.legends.length) {
-      sum.textContent = "";
-      box.innerHTML = "<p class=\"tempty glass\">No results yet. RAVI reads the latest events once a day; check back soon.</p>";
-      return;
-    }
-    R = { entries: r.entries, tops: r.tops, events: r.events, days: c.days };
-    BY = {};
-    LIST = r.legends;
-    r.legends.forEach(function(x){ BY[x.l] = x; });
-    sum.textContent = r.events + (r.events === 1 ? " event, " : " events, ") + num(r.entries) + " decks, the last " + c.days + " days." +
-      (c.at ? " Updated " + dateText(c.at) + "." : "");
-    var h = "";
+  // the five shelves from computed results
+  var LIST = [];
+  function board(r){
+    var box = $("tiers"), h = "";
     // every tier always shows, so an empty S still says it exists
     TIERS.forEach(function(t){
       var rows = r.legends.filter(function(x){ return x.tier === t[0]; });
@@ -283,40 +345,370 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       h += "<section class=\"trow glass" + (rows.length ? "" : " empty") + "\" data-tier=\"" + t[0] + "\" aria-label=\"" + esc(t[1]) + "\">" +
         "<button type=\"button\" class=\"tlet glass" + (rows.length ? "" : " off") + "\" data-t=\"" + t[0] + "\" data-k=\"do\" aria-haspopup=\"true\" aria-controls=\"ptier\" aria-label=\"" + esc(t[1] + ", " + cnt + ". Show all") + "\"" + (rows.length ? "" : " disabled") + ">" +
         "<b>" + t[0] + "</b><small>" + rows.length + "<br>" + (rows.length === 1 ? "legend" : "legends") + "</small></button><div class=\"tstrip\">";
-      rows.forEach(function(x){ h += tileHTML(x, t[1], false); });
+      rows.forEach(function(x){ h += tileHTML(x, t[1]); });
       h += rows.length ? "<p class=\"tnone nomatch\" hidden>No match</p>" : "<p class=\"tnone\">No legend here right now</p>";
       h += "</div></section>";
     });
     box.innerHTML = h;
     Array.prototype.forEach.call(box.querySelectorAll(".tstrip"), function(st){ st.addEventListener("scroll", function(){ fade(st); }, { passive: true }); });
+  }
+  function use(r, foot, place){
+    R = { entries: r.entries, tops: r.tops, events: r.events, foot: foot, place: place || "" };
+    BY = {};
+    LIST = r.legends;
+    r.legends.forEach(function(x){ BY[x.l] = x; });
+  }
+
+  // GLOBAL: TopDeck.gg's results (data/tier.json)
+  var GLOBAL = undefined; // undefined while loading; null when unreadable
+  function drawGlobal(){
+    var box = $("tiers"), sum = $("tsum"), c = GLOBAL;
+    COUNTS = false;
+    if (c === undefined) { sum.textContent = "Loading the results."; box.innerHTML = ""; return; }
+    if (!c || !T) { sum.textContent = "The results could not be read. Try again later."; box.innerHTML = ""; return; }
+    var r = T.compute(c.events);
+    if (!r.legends.length) {
+      sum.textContent = "";
+      box.innerHTML = "<p class=\"tempty glass\">No results yet. RAVI reads the latest events once a day; check back soon.</p>";
+      return;
+    }
+    use(r, r.events + (r.events === 1 ? " event" : " events") + " in the last " + c.days + " days, from TopDeck.gg.");
+    sum.textContent = r.events + (r.events === 1 ? " event, " : " events, ") + num(r.entries) + " decks, the last " + c.days + " days." +
+      (c.at ? " Updated " + dateText(c.at) + "." : "");
+    board(r);
     filter();
   }
+
+  // LOCAL (block 2): the decks players add for finished events in the viewer's Events area.
+  var LOCAL_TIERS = 100, LOCAL_DAYS = 30, OPEN_DAYS = 14, DAY = 86400000;
+  var AREA = { victoria: "Greater Victoria", island: "Vancouver Island" };
+  function area(){
+    var s = "victoria";
+    try { var o = JSON.parse(localStorage.getItem("vir.cal.filters.v1") || "null"); if (o && o.scope === "island") { s = "island"; } } catch (e) {}
+    return s;
+  }
+  function inArea(ev, a){ return a === "island" || ev.region === "victoria"; }
+  var EVS = null, EVBY = {}, COUNTED = {}, LSTATE = "idle"; // idle, loading, ready, failed
+  function evId(v){ var m = /^rb(\d{6,24})$/.exec(String(v || "")); return m ? m[1] : null; }
+  // past.json and today's started events, rebuilt from checked fields
+  function evList(past, cur, now){
+    var out = [], seen = {};
+    function add(e){
+      if (!e || typeof e !== "object") { return; }
+      var id = evId(e.id), t = Date.parse(e.start);
+      if (!id || seen[id] || !isFinite(t) || t > now || now - t > LOCAL_DAYS * DAY) { return; }
+      seen[id] = 1;
+      out.push({ id: id, t: t, name: typeof e.name === "string" ? e.name.slice(0, 120) : "Event", store: typeof e.store === "string" ? e.store.slice(0, 40) : "",
+        type: typeof e.type === "string" ? e.type : "other", region: e.region === "victoria" ? "victoria" : "island", day: typeof e.day === "string" ? e.day : "" });
+    }
+    ((past && past.events) || []).slice(0, 1000).forEach(add);
+    ((cur && cur.events) || []).slice(0, 1000).forEach(add);
+    out.sort(function(a, b){ return b.t - a.t; });
+    return out;
+  }
+  function getJson(u){ return fetch(u, { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; }); }
+  function srv(path, opt){
+    return fetch(LV.BASE + path, Object.assign({ cache: "no-store" }, opt || {})).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){ return { ok: r.ok, status: r.status, j: j }; });
+    });
+  }
+  // the server's counted placings for these events: { id: { n, k, s: [[placing, legend]] } }
+  function cleanCounted(j){
+    var out = {};
+    var e = j && j.v === 1 && j.events && typeof j.events === "object" ? j.events : {};
+    Object.keys(e).slice(0, 500).forEach(function(id){
+      var x = e[id];
+      if (!/^\d{6,24}$/.test(id) || !x || !whole(x.n, 2, 512) || !Array.isArray(x.s)) { return; }
+      var s = [];
+      x.s.slice(0, 512).forEach(function(p){ if (Array.isArray(p) && whole(p[0], 1, x.n) && typeof p[1] === "string" && KNOWN[p[1]]) { s.push({ r: p[0], l: p[1] }); } });
+      out[id] = { n: x.n, k: whole(x.k, 1, 64) && x.k < x.n ? x.k : 0, s: s };
+    });
+    return out;
+  }
+  function loadCounts(){
+    var ids = (EVS || []).map(function(e){ return e.id; });
+    if (!ids.length) { COUNTED = {}; return Promise.resolve(); }
+    return srv("/finishes?ids=" + ids.join(",")).then(function(x){ COUNTED = x.ok ? cleanCounted(x.j) : COUNTED; }).catch(function(){});
+  }
+  function loadLocal(){
+    if (LSTATE === "loading" || LSTATE === "ready") { return; }
+    LSTATE = "loading";
+    drawLocal();
+    Promise.all([getJson("../data/past.json"), getJson("../data/events.json")]).then(function(v){
+      if (!v[0] && !v[1]) { LSTATE = "failed"; drawLocal(); return; }
+      EVS = evList(v[0], v[1], Date.now());
+      EVBY = {}; EVS.forEach(function(e){ EVBY[e.id] = e; });
+      return loadCounts().then(function(){ LSTATE = "ready"; drawLocal(); });
+    }).catch(function(){ LSTATE = "failed"; drawLocal(); });
+  }
+  function drawLocal(){
+    var box = $("tiers"), sum = $("tsum"), a = area(), name = AREA[a];
+    $("larea").textContent = "Local is your Events area, " + name + ": decks players add for its recent events, on trust.";
+    COUNTS = false;
+    if (LSTATE !== "ready") {
+      sum.textContent = LSTATE === "failed" ? "The local results could not be read. Try again later." : "Loading the local results.";
+      box.innerHTML = "";
+      return;
+    }
+    var evs = [];
+    EVS.forEach(function(e){
+      var c = COUNTED[e.id];
+      if (!inArea(e, a) || !c || !c.s.length) { return; }
+      evs.push(c.k ? { n: c.n, k: c.k, s: c.s } : { n: c.n, s: c.s });
+    });
+    var r = T.compute(evs);
+    if (!r.legends.length) {
+      sum.textContent = "";
+      box.innerHTML = "<p class=\"tempty glass\">No decks added for " + esc(name) + " yet. Tap Add decks to fill in an event you played or watched.</p>";
+      return;
+    }
+    var foot = plural(r.events, "event", "events") + " in " + name + " in the last " + LOCAL_DAYS + " days, added by players.";
+    sum.textContent = plural(r.entries, "deck", "decks") + " from " + plural(r.events, "event", "events") + " in " + name + ", the last " + LOCAL_DAYS + " days.";
+    if (r.entries >= LOCAL_TIERS) {
+      use(r, foot);
+      board(r);
+      filter();
+      return;
+    }
+    // counts only: every legend as a whole card, most played first
+    COUNTS = true;
+    var by = r.legends.slice().sort(function(x, y){ return y.f - x.f || y.t - x.t || (x.l < y.l ? -1 : x.l > y.l ? 1 : 0); });
+    use({ entries: r.entries, tops: r.tops, events: r.events, legends: by }, foot, name);
+    box.innerHTML = "<div class=\"tlist\"><div class=\"tgrid\">" + by.map(function(x){
+      return tileHTML(x, plural(x.f, "deck", "decks"), "<em class=\"tc\">" + esc(plural(x.f, "deck", "decks")) + "</em>");
+    }).join("") + "</div><p class=\"tnone nomatch\" hidden>No match</p></div>";
+    filter();
+  }
+
+  // THE GLOBAL | LOCAL TRACK, remembered on this phone
+  var SC_KEY = "vir.tier.scope.v1", SCOPE = "global";
+  try { if (localStorage.getItem(SC_KEY) === "local") { SCOPE = "local"; } } catch (e) {}
+  function setScope(sc, save){
+    SCOPE = sc === "local" ? "local" : "global";
+    Array.prototype.forEach.call($("tscope").querySelectorAll("button"), function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-sc") === SCOPE ? "true" : "false"); });
+    $("lhead").hidden = SCOPE !== "local";
+    if (save) { try { localStorage.setItem(SC_KEY, SCOPE); } catch (e) {} }
+    if (SCOPE === "local") { if (LSTATE === "idle" || LSTATE === "failed") { LSTATE = "idle"; loadLocal(); } else { drawLocal(); } }
+    else { drawGlobal(); }
+  }
+  $("tscope").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest("button[data-sc]") : null;
+    if (b && b.getAttribute("data-sc") !== SCOPE) { setScope(b.getAttribute("data-sc"), true); }
+  });
 
   function openTier(t){
     var name = TNAME[t], rows = LIST.filter(function(x){ return x.tier === t; });
     if (!rows.length) { return; }
     $("ptiert").textContent = name;
-    $("ptierb").innerHTML = "<div class=\"tgrid\">" + rows.map(function(x){ return tileHTML(x, name, true); }).join("") + "</div>" +
+    $("ptierb").innerHTML = "<div class=\"tgrid\">" + rows.map(function(x){ return tileHTML(x, name, "<em>" + x.cv.toFixed(2) + "x</em>"); }).join("") + "</div>" +
       "<p class=\"tnote\">Best conversion first. Tap a legend for its numbers.</p>";
-    show(ptier);
+    openPanel(ptier);
   }
   $("tiers").addEventListener("click", function(ev){
     var b = ev.target.closest ? ev.target.closest(".tleg") : null;
-    if (b) { FROM = null; openLegend(b.getAttribute("data-l")); return; }
+    if (b) { openLegend(b.getAttribute("data-l"), false); return; }
     var l = ev.target.closest ? ev.target.closest(".tlet") : null;
     if (l) { openTier(l.getAttribute("data-t")); }
   });
   $("ptierb").addEventListener("click", function(ev){
     var b = ev.target.closest ? ev.target.closest(".tleg") : null;
-    if (b) { FROM = BY[b.getAttribute("data-l")] ? BY[b.getAttribute("data-l")].tier : null; openLegend(b.getAttribute("data-l")); }
+    if (b) { openLegend(b.getAttribute("data-l"), true); }
   });
-  $("plegback").addEventListener("click", function(){ if (FROM) { var t = FROM; FROM = null; openTier(t); } });
+
+  // ---- ADD DECKS (block 2): an event, its placings, a legend for one ----
+  // This phone's picks: one random secret per event (so it can change or take back its own pick,
+  // and nothing links its picks across events) and what it picked, kept 45 days.
+  var PK_KEY = "vir.tier.picks.v1";
+  function picks(){
+    var o = {};
+    try { o = JSON.parse(localStorage.getItem(PK_KEY) || "{}") || {}; } catch (e) { o = {}; }
+    if (!o || typeof o !== "object" || Array.isArray(o)) { o = {}; }
+    var now = Date.now();
+    Object.keys(o).forEach(function(k){
+      var x = o[k];
+      if (!/^\d{6,24}$/.test(k) || !x || typeof x.s !== "string" || !/^[0-9a-f]{32}$/.test(x.s) || !(now - (+x.at || 0) < 45 * DAY)) { delete o[k]; return; }
+      if (!x.p || typeof x.p !== "object") { x.p = {}; }
+    });
+    return o;
+  }
+  function savePicks(o){ try { localStorage.setItem(PK_KEY, JSON.stringify(o)); } catch (e) {} }
+  function mineFor(id){
+    var o = picks();
+    if (!o[id]) {
+      var b = new Uint8Array(16), s = "";
+      try { crypto.getRandomValues(b); } catch (e) { for (var i = 0; i < 16; i++) { b[i] = Math.floor(Math.random() * 256); } }
+      for (var j = 0; j < 16; j++) { s += (b[j] < 16 ? "0" : "") + b[j].toString(16); }
+      o[id] = { s: s, at: Date.now(), p: {} };
+      savePicks(o);
+    }
+    return o[id];
+  }
+  function ordinal(n){ var s = ["th", "st", "nd", "rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+  function dayText(e){ try { return new Date(e.t).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric", timeZone: "America/Vancouver" }); } catch (x) { return e.day; } }
+  function openable(e, now){
+    return now - e.t <= OPEN_DAYS * DAY && ["learn", "open", "prerift"].indexOf(e.type) < 0 && !/cancel+ed/i.test(e.name);
+  }
+
+  function drawAddList(){
+    var box = $("addlist"), a = area(), now = Date.now();
+    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + AREA[a] + ". Fill in any deck you know; every pick counts on trust.";
+    if (LSTATE !== "ready") { box.innerHTML = "<p class=\"pmsg\">" + (LSTATE === "failed" ? "The events could not be read. Try again later." : "Loading the events.") + "</p>"; return; }
+    var list = EVS.filter(function(e){ return inArea(e, a) && openable(e, now); });
+    if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(AREA[a]) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
+    var mine = picks();
+    box.innerHTML = "<div class=\"doors\" data-k=\"deeper\">" + list.map(function(e){
+      var c = COUNTED[e.id], bits = [e.store, dayText(e)].filter(Boolean);
+      if (c && c.s.length) { bits.push(c.s.length + " of " + c.n + " added"); }
+      if (mine[e.id] && Object.keys(mine[e.id].p).length) { bits.push("you added " + Object.keys(mine[e.id].p).length); }
+      return "<button type=\"button\" class=\"door rec\" data-ev=\"" + e.id + "\"><span class=\"t\">" + esc(e.name) + "</span><small>" + esc(bits.join(" \u00b7 ")) + "</small>" +
+        "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg></button>";
+    }).join("") + "</div>";
+  }
+  $("ladd").addEventListener("click", function(){
+    openPanel(padd);
+    if (LSTATE === "idle" || LSTATE === "failed") { LSTATE = "idle"; loadLocal(); }
+    drawAddList();
+  });
+  $("addlist").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest("[data-ev]") : null;
+    if (b) { openEvent(b.getAttribute("data-ev")); }
+  });
+
+  // one event: Riot's final standings (stage 1's last round, as the server counts them) and what
+  // has been picked for each placing
+  var CUR = null; // { id, ev, rows: [{ r, n, tag, w, l, d }], fin: { rows } }
+  function finalRows(live){
+    if (!live || live.status !== "done" || !Array.isArray(live.rounds)) { return null; }
+    var last = null;
+    live.rounds.forEach(function(r){ if (r && r.stage === 1 && Array.isArray(r.standings) && r.standings.length) { last = r; } });
+    if (!last) { return null; }
+    return last.standings.slice(0, 512).map(function(s){ return { r: s.rank, n: String(s.n || ""), tag: String(s.tag || ""), w: s.w, l: s.l, d: s.d }; });
+  }
+  function cleanFin(j, id){
+    var out = {};
+    if (!j || j.v !== 1 || j.id !== id || !Array.isArray(j.rows)) { return out; }
+    j.rows.slice(0, 512).forEach(function(x){
+      if (x && whole(x.r, 1, 512)) { out[x.r] = { l: typeof x.l === "string" && KNOWN[x.l] ? x.l : null, c: x.c === true, v: whole(x.v, 0, 99) ? x.v : 0 }; }
+    });
+    return out;
+  }
+  function openEvent(id){
+    var e = EVBY[id];
+    if (!e) { return; }
+    CUR = { id: id, ev: e, rows: null, fin: {}, state: "loading" };
+    $("pevt").textContent = (e.store || "Event") + ", " + dayText(e).replace(/^\w+,?\s*/, "");
+    $("pevb").innerHTML = "<p class=\"pmsg\">Reading Riot's results.</p>";
+    deeper(pev);
+    var want = CUR;
+    var gotLive = new Promise(function(res){ LV.get(id, res); });
+    var gotFin = srv("/finishes/" + id).then(function(x){ return x.ok ? x.j : null; }).catch(function(){ return null; });
+    Promise.all([gotLive, gotFin]).then(function(v){
+      if (CUR !== want) { return; }
+      CUR.rows = finalRows(v[0]);
+      CUR.fin = cleanFin(v[1], id);
+      CUR.state = v[0] ? (CUR.rows ? "ready" : "unfinished") : "failed";
+      drawEvent();
+    });
+  }
+  function drawEvent(flash){
+    var box = $("pevb"), c = CUR;
+    if (!c) { return; }
+    if (c.state === "failed") { box.innerHTML = "<p class=\"pmsg\">Riot's results for this event could not be read. Try again later.</p>"; return; }
+    if (c.state === "unfinished") { box.innerHTML = "<p class=\"pmsg\">Riot's final standings for this event are not up yet. Try again once it has finished.</p>"; return; }
+    var me = LV.me ? LV.me() : null, mine = (picks()[c.id] || { p: {} }).p, filled = 0;
+    var h = c.rows.map(function(s){
+      var f = c.fin[s.r], rec = [s.w, s.l, s.d].every(function(n){ return whole(n, 0, 99); }) ? s.w + "-" + s.l + (s.d ? "-" + s.d : "") : "";
+      var leg = f && f.l ? nameParts(f.l)[0] : (f && f.c ? "Contested: two legends are level" : "No legend yet");
+      if (f && f.l) { filled++; }
+      var bits = [rec, leg].filter(Boolean);
+      if (mine[s.r]) { bits.push("your pick: " + nameParts(mine[s.r])[0]); }
+      var you = LV.isMe && me && LV.isMe(s, me) ? " (you)" : "";
+      return "<button type=\"button\" class=\"door rec\" data-r=\"" + s.r + "\"><span class=\"t\">" + esc(ordinal(s.r) + "  " + s.n + (s.tag ? "#" + s.tag : "") + you) + "</span><small>" + esc(bits.join(" \u00b7 ")) + "</small>" +
+        "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg></button>";
+    }).join("");
+    box.innerHTML = "<p class=\"tnote\" id=\"pevsum\">" + esc(filled + " of " + c.rows.length + " placings have a legend.") + "</p><div class=\"doors\" data-k=\"deeper\">" + h + "</div>" +
+      "<p class=\"pnote\">Tap a player to set the legend they played. Placings are Riot's final standings; the legends are added by players, on trust.</p>";
+    if (flash) {
+      var n = box.querySelector("[data-r=\"" + flash + "\"]");
+      if (n) { n.classList.remove("flash-n"); void n.offsetWidth; n.classList.add("flash-n"); }
+    }
+  }
+  $("pevb").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest("[data-r]") : null;
+    if (b) { openPick(+b.getAttribute("data-r")); }
+  });
+
+  // the legend picker for one placing
+  var PICK = null, LEGS = Object.keys(KNOWN).sort(function(a, b){ return a < b ? -1 : a > b ? 1 : 0; });
+  function openPick(r){
+    var c = CUR, s = null;
+    if (!c || !c.rows) { return; }
+    c.rows.forEach(function(x){ if (x.r === r) { s = x; } });
+    if (!s) { return; }
+    PICK = { r: r, s: s, busy: false };
+    $("ppickt").textContent = s.n || ordinal(r);
+    $("pq").value = ""; $("pqx").disabled = true;
+    $("pmsg").hidden = true;
+    drawPick();
+    deeper(ppick);
+  }
+  function drawPick(){
+    var c = CUR, f = c.fin[PICK.r], mine = (picks()[c.id] || { p: {} }).p[PICK.r] || null;
+    $("pnow").textContent = ordinal(PICK.r) + " of " + c.rows.length + ". " + (f && f.l ? "Now: " + f.l + " (" + plural(f.v, "pick", "picks") + ")." :
+      f && f.c ? "Contested: two legends are level. Your pick can settle it." : "No legend yet.");
+    $("pgrid").innerHTML = LEGS.map(function(l){
+      var p = nameParts(l);
+      return "<button type=\"button\" class=\"tleg\" data-k=\"pick\" data-l=\"" + esc(l) + "\" aria-pressed=\"" + (l === mine ? "true" : "false") + "\" aria-label=\"" + esc(l) + "\">" +
+        card(artOf(KNOWN[l], false)) + "<span>" + esc(p[0]) + "</span></button>";
+    }).join("");
+    $("pundo").hidden = !mine;
+    pfilter();
+  }
+  function pfilter(){
+    var q = norm($("pq").value);
+    $("pqx").disabled = !$("pq").value;
+    Array.prototype.forEach.call($("pgrid").querySelectorAll(".tleg"), function(t){ t.hidden = !!q && norm(t.getAttribute("data-l")).indexOf(q) === -1; });
+  }
+  $("pq").addEventListener("input", pfilter);
+  $("pqx").addEventListener("click", function(){ $("pq").value = ""; pfilter(); $("pq").focus(); });
+  var ERR = { "not finished": "Riot has not finished this event yet.", "too old": "This event is past the " + OPEN_DAYS + " days for adding decks.",
+    "no such placing": "Riot's standings have no such placing.", "not constructed": "Only Constructed events count.", "event unavailable": "Riot's results for this event could not be read." };
+  function send(l){
+    if (!PICK || PICK.busy || !CUR) { return; }
+    var c = CUR, r = PICK.r, me = mineFor(c.id);
+    PICK.busy = true;
+    $("pmsg").hidden = false; $("pmsg").textContent = "Saving.";
+    srv("/finishes/" + c.id, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ r: r, l: l, who: me.s }) }).then(function(x){
+      PICK.busy = false;
+      if (!x.ok) {
+        var e = x.j && typeof x.j.error === "string" ? x.j.error : "";
+        $("pmsg").textContent = ERR[e] || (x.status === 429 && e ? e : "That did not save. Try again.");
+        return;
+      }
+      var o = picks();
+      if (!o[c.id]) { o[c.id] = me; }
+      if (l === null) { delete o[c.id].p[r]; } else { o[c.id].p[r] = l; }
+      o[c.id].at = Date.now();
+      savePicks(o);
+      if (CUR === c) { c.fin = cleanFin(x.j, c.id); }
+      $("pmsg").hidden = true;
+      back();
+      drawEvent(r);
+      loadCounts().then(function(){ if (SCOPE === "local") { drawLocal(); } if (OPENP === padd) { drawAddList(); } });
+    }).catch(function(){ PICK.busy = false; $("pmsg").textContent = "Could not reach RAVI's server. Try again."; });
+  }
+  $("pgrid").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest(".tleg") : null;
+    if (b) { send(b.getAttribute("data-l")); }
+  });
+  $("pundo").addEventListener("click", function(){ send(null); });
 
   fetch("../data/tier.json", { cache: "no-cache" }).then(function(res){
     if (res.status === 404) { return { v: 1, legends: [], events: [] }; } // not written yet: no results
     if (!res.ok) { throw new Error("http " + res.status); }
     return res.json();
-  }).then(function(d){ draw(clean(d)); }).catch(function(){ draw(null); });
+  }).then(function(d){ GLOBAL = clean(d); if (SCOPE === "global") { drawGlobal(); } }).catch(function(){ GLOBAL = null; if (SCOPE === "global") { drawGlobal(); } });
+  setScope(SCOPE, false);
 })();
 </script>
 <script>
