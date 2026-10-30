@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-30T06:51:40.153Z",
- "generated_local": "2026-10-29T23:51:40-07:00",
- "window_start": "2026-10-29T07:00:00.000Z",
+ "generated_at": "2026-10-30T18:26:56.781Z",
+ "generated_local": "2026-10-30T11:26:56-07:00",
+ "window_start": "2026-10-30T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 49,
-   "added": 49
+   "returned": 48,
+   "added": 48
   },
   {
    "name": "Courtenay",
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 60,
-  "unique": 60,
-  "prev_unique": 61
+  "fetched": 59,
+  "unique": 59,
+  "prev_unique": 60
  },
  "unknown_templates": {
   "NEXUS_CUP": {
@@ -59,28 +59,6 @@
  },
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117473617815091551",
-   "name": "Thursday Casual Nexus Nights @ North Park Picture Framing and Collectables",
-   "type": "nexus",
-   "start": "2026-10-29T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-29",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 15,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing"
-  },
   {
    "id": "rb117525511550990231",
    "name": "North Park Picture Framing and Collectables Nexus Nights",
@@ -314,7 +292,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 2,
+   "reg": 3,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,

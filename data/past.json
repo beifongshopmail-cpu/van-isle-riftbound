@@ -3,6 +3,17 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117473617815091551",
+   "name": "Thursday Casual Nexus Nights @ North Park Picture Framing and Collectables",
+   "type": "nexus",
+   "start": "2026-10-29T18:00:00-07:00",
+   "day": "2026-10-29",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
    "id": "rb117482449148410932",
    "name": "Nexus Night at Gauntlet Games",
    "type": "nexus",
