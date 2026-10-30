@@ -466,7 +466,7 @@ Tier list (tier/index.html; M17, 2026-10-28)
 
 ## 12. Changing this file
 
-- A new rule enters only with Mako's yes, as its own commit, never inside a fix.
+- A line that records a build Mako signed off on the phone goes in without a separate yes, once checked against the code as shipped and the latest decisions in the records (MAP, the milestone's handoff, LOG); its commit names the build and his sign-off. A rule beyond what was built still needs his yes. Either way it is its own commit, never inside a fix. (Mako 2026-10-29)
 - Mako's eye on the phone outranks any value here. Anything he names becomes a rule with a check.
 - If the code and this file disagree, one of them is a bug. Report it; do not pick.
 - To break a default on purpose, say so in one line in the commit message.

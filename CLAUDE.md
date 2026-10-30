@@ -14,7 +14,10 @@ Design rules: STYLE.md. These rules hold in every session.
   a new shape only when a looks change Mako approved breaks its assumption.
 - Never retype tool output as if it were pasted. Quote it, or say it is
   missing. A fabricated line is worse than a gap.
-- Never add a STYLE.md rule without Mako's explicit yes to the quoted line.
+- Never add a STYLE.md rule beyond what Mako signed off on the phone without
+  his explicit yes to the quoted line. Lines that record a build he signed
+  off go in without a separate yes, once checked against the shipped code
+  and the latest records (STYLE.md section 12; Mako 2026-10-29).
 - Never call a change done before Mako says so.
 - If a tool or command is refused, stop and say so; never route around it.
 
