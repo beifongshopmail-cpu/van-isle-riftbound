@@ -1,0 +1,290 @@
+{
+ "v": 1,
+ "days": 30,
+ "events": [
+  {
+   "id": "rb117482449148410932",
+   "name": "Nexus Night at Gauntlet Games",
+   "type": "nexus",
+   "start": "2026-10-28T18:00:00-07:00",
+   "day": "2026-10-28",
+   "venue": "Gauntlet Games",
+   "store": "Gauntlet",
+   "region": "victoria",
+   "sid": 2069
+  },
+  {
+   "id": "rb117454291705531862",
+   "name": "Skyhaven Sunday Nexus Night (CANCELLED)",
+   "type": "nexus",
+   "start": "2026-10-25T17:00:00-07:00",
+   "day": "2026-10-25",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  },
+  {
+   "id": "rb117437297319078671",
+   "name": "Sunday morning Nexus\"night\"",
+   "type": "nexus",
+   "start": "2026-10-25T11:30:00-07:00",
+   "day": "2026-10-25",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
+   "id": "rb117437289555157382",
+   "name": "Saturday evening nexus night",
+   "type": "nexus",
+   "start": "2026-10-24T18:00:00-07:00",
+   "day": "2026-10-24",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
+   "id": "rb117497226094640921",
+   "name": "Nexus Night at Colossal Cards & Collectables Courtenay",
+   "type": "nexus",
+   "start": "2026-10-24T17:00:00-07:00",
+   "day": "2026-10-24",
+   "venue": "Colossal Cards & Collectables",
+   "store": "Colossal Courtenay",
+   "region": "island",
+   "sid": 902
+  },
+  {
+   "id": "rb117473609547786875",
+   "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
+   "type": "nexus",
+   "start": "2026-10-24T12:00:00-07:00",
+   "day": "2026-10-24",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117125741673379397",
+   "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-22T18:00:00-07:00",
+   "day": "2026-10-22",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117129739220447379",
+   "name": "Gauntlet Games Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-21T18:00:00-07:00",
+   "day": "2026-10-21",
+   "venue": "Gauntlet Games",
+   "store": "Gauntlet",
+   "region": "victoria",
+   "sid": 2069
+  },
+  {
+   "id": "rb117073776522584746",
+   "name": "Radiance Pre-Rift Monday",
+   "type": "prerift",
+   "start": "2026-10-19T17:00:00-07:00",
+   "day": "2026-10-19",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  },
+  {
+   "id": "rb117073744968569504",
+   "name": "Radiance Pre-Rift Sunday",
+   "type": "prerift",
+   "start": "2026-10-18T17:00:00-07:00",
+   "day": "2026-10-18",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  },
+  {
+   "id": "rb117368564203616505",
+   "name": "Radiance Pre Rift (Colossal Cards & Collectables Courtenay)",
+   "type": "prerift",
+   "start": "2026-10-18T17:00:00-07:00",
+   "day": "2026-10-18",
+   "venue": "Colossal Cards & Collectables",
+   "store": "Colossal Courtenay",
+   "region": "island",
+   "sid": 902
+  },
+  {
+   "id": "rb117170860186945231",
+   "name": "Colossal Cards Victoria Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-18T15:30:00-07:00",
+   "day": "2026-10-18",
+   "venue": "Colossal Cards & Collectables",
+   "store": "Colossal Victoria",
+   "region": "victoria",
+   "sid": 15103
+  },
+  {
+   "id": "rb117021055583706596",
+   "name": "Radiance Pre-Rift 2",
+   "type": "prerift",
+   "start": "2026-10-18T14:00:00-07:00",
+   "day": "2026-10-18",
+   "venue": "Elite4 Games",
+   "region": "victoria",
+   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895"
+  },
+  {
+   "id": "rb117091108751475574",
+   "name": "Sunday Morning Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-18T11:30:00-07:00",
+   "day": "2026-10-18",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
+   "id": "rb117021049810644601",
+   "name": "Radiance Pre-Rift 1",
+   "type": "prerift",
+   "start": "2026-10-18T10:30:00-07:00",
+   "day": "2026-10-18",
+   "venue": "Elite4 Games",
+   "region": "victoria",
+   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895"
+  },
+  {
+   "id": "rb117089686336807689",
+   "name": "Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-17T18:00:00-07:00",
+   "day": "2026-10-17",
+   "venue": "AJ's Games",
+   "store": "AJ's",
+   "region": "island",
+   "sid": 21894
+  },
+  {
+   "id": "rb117089935987420441",
+   "name": "Radiance Pre Rift Sealed Event (Colossal Cards & Collectables Courtenay)",
+   "type": "prerift",
+   "start": "2026-10-17T17:00:00-07:00",
+   "day": "2026-10-17",
+   "venue": "Colossal Cards & Collectables",
+   "store": "Colossal Courtenay",
+   "region": "island",
+   "sid": 902
+  },
+  {
+   "id": "rb117129734731960429",
+   "name": "Gauntlet Games Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-17T17:00:00-07:00",
+   "day": "2026-10-17",
+   "venue": "Gauntlet Games",
+   "store": "Gauntlet",
+   "region": "victoria",
+   "sid": 2069
+  },
+  {
+   "id": "rb117089690871093619",
+   "name": "Riftbound Radiance Pre-rift 2",
+   "type": "prerift",
+   "start": "2026-10-17T14:00:00-07:00",
+   "day": "2026-10-17",
+   "venue": "AJ's Games",
+   "store": "AJ's",
+   "region": "island",
+   "sid": 21894
+  },
+  {
+   "id": "rb117125737703142979",
+   "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-17T12:00:00-07:00",
+   "day": "2026-10-17",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117091115753003107",
+   "name": "Friday Evening Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-16T18:00:00-07:00",
+   "day": "2026-10-16",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
+   "id": "rb117125732948244031",
+   "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
+   "type": "prerift",
+   "start": "2026-10-16T18:00:00-07:00",
+   "day": "2026-10-16",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117213860117720777",
+   "name": "Thursday Casual Nexus Nights @ North Park Picture Framing and Collectables",
+   "type": "nexus",
+   "start": "2026-10-15T18:00:00-07:00",
+   "day": "2026-10-15",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117330797499015153",
+   "name": "Skyhaven Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-10-11T17:00:00-07:00",
+   "day": "2026-10-11",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  },
+  {
+   "id": "rb117213852100443736",
+   "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
+   "type": "nexus",
+   "start": "2026-10-10T12:00:00-07:00",
+   "day": "2026-10-10",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117407214390961434",
+   "name": "Skyhaven Games Casual // L2P",
+   "type": "learn",
+   "start": "2026-10-09T18:00:00-07:00",
+   "day": "2026-10-09",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  }
+ ]
+}

@@ -34,6 +34,9 @@ const RB_STORES = {
 
 const OUT_DIR = path.join(__dirname, "data");
 const OUT_FILE = path.join(OUT_DIR, "events.json");
+const PAST_FILE = path.join(OUT_DIR, "past.json");
+const PAST_DAYS = 30;
+const PAST_MAX = 400;
 const PAGE_SIZE = 100;
 const MAX_PAGES = 20;
 
@@ -297,6 +300,42 @@ function priorUnique(file) {
   }
 }
 
+// RECENT PAST EVENTS (M17 block 2, 2026-10-29): the Tier list's Local view lets
+// players add the decks played at events that have finished. events.json keeps
+// only today onward, so each run carries every PlayRiftbound event that has
+// left the window into data/past.json, newest first, for PAST_DAYS. Only the
+// fields the Tier list needs; never a player.
+const PAST_FIELDS = ["id", "name", "type", "start", "day", "venue", "store", "region", "sid"];
+function pastShape(ev) {
+  if (!ev || typeof ev !== "object" || !/^rb\d{6,24}$/.test(String(ev.id))) return null;
+  if (typeof ev.start !== "string" || !isFinite(Date.parse(ev.start))) return null;
+  const o = {};
+  for (const k of PAST_FIELDS) if (ev[k] !== undefined && ev[k] !== null) o[k] = ev[k];
+  return o;
+}
+function readJson(file) {
+  try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch (err) { return null; }
+}
+// prevEvents: last run's events; prevPast: last run's past list; nowIds: the ids
+// still in the window; windowStartIso: the window's start; nowMs: the clock.
+function buildPast(prevEvents, prevPast, nowIds, windowStartIso, nowMs) {
+  const cut = nowMs - PAST_DAYS * 86400000;
+  const start = Date.parse(windowStartIso);
+  const byId = new Map();
+  const add = function (ev) {
+    const o = pastShape(ev);
+    if (!o || nowIds.has(o.id) || byId.has(o.id)) return;
+    const t = Date.parse(o.start);
+    if (!(t < start) || t < cut) return;
+    byId.set(o.id, o);
+  };
+  (Array.isArray(prevEvents) ? prevEvents : []).forEach(add);
+  (Array.isArray(prevPast) ? prevPast : []).forEach(add);
+  return Array.from(byId.values()).sort(function (a, b) {
+    return a.start < b.start ? 1 : a.start > b.start ? -1 : (a.id < b.id ? -1 : 1);
+  }).slice(0, PAST_MAX);
+}
+
 async function main() {
   const after = startOfLocalDay();
   const afterIso = after.toISOString();
@@ -364,6 +403,10 @@ async function main() {
   }
 
   const prevUnique = priorUnique(OUT_FILE);
+  const prevFile = readJson(OUT_FILE);
+  const prevPastFile = readJson(PAST_FILE);
+  const past = buildPast(prevFile && prevFile.events, prevPastFile && prevPastFile.events,
+    new Set(events.map(function (e) { return e.id; })), afterIso, Date.now());
 
   const payload = {
     generated_at: new Date().toISOString(),
@@ -378,6 +421,8 @@ async function main() {
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 1) + "\n", "utf8");
+  fs.writeFileSync(PAST_FILE, JSON.stringify({ v: 1, days: PAST_DAYS, events: past }, null, 1) + "\n", "utf8");
+  console.log(`wrote past.json (${past.length} finished events)`);
 
   const feeds = writeFeeds(OUT_DIR, events);
   for (const f of feeds) {
@@ -411,4 +456,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey };
+module.exports = { shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS };
