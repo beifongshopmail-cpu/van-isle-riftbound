@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-30T18:26:56.781Z",
- "generated_local": "2026-10-30T11:26:56-07:00",
+ "generated_at": "2026-10-30T20:18:22.297Z",
+ "generated_local": "2026-10-30T13:18:22-07:00",
  "window_start": "2026-10-30T07:00:00.000Z",
  "anchors": [
   {
@@ -49,7 +49,7 @@
  "totals": {
   "fetched": 59,
   "unique": 59,
-  "prev_unique": 60
+  "prev_unique": 59
  },
  "unknown_templates": {
   "NEXUS_CUP": {
@@ -79,7 +79,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117509536477035676",
@@ -101,7 +103,9 @@
    "round": null,
    "wins": null,
    "sid": 16866,
-   "store": "Everything Games"
+   "store": "Everything Games",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117509539459382429",
@@ -123,7 +127,9 @@
    "round": null,
    "wins": null,
    "sid": 16866,
-   "store": "Everything Games"
+   "store": "Everything Games",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117454295314157802",
@@ -145,7 +151,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117525460412948679",
@@ -167,7 +175,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117525519536771441",
@@ -189,7 +199,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117497230052513843",
@@ -211,7 +223,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117454297833145987",
@@ -233,7 +247,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117525463093881953",
@@ -255,7 +271,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117454327448500237",
@@ -277,7 +295,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 1,
+   "cut": false
   },
   {
    "id": "rb117089941548488590",
@@ -299,7 +319,9 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null
+   "store": null,
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117129749064470654",
@@ -321,7 +343,9 @@
    "round": null,
    "wins": null,
    "sid": 2069,
-   "store": "Gauntlet"
+   "store": "Gauntlet",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117525525836462377",
@@ -343,7 +367,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117089944509981053",
@@ -365,7 +391,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117497233144348710",
@@ -387,7 +415,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117073785007006396",
@@ -409,7 +439,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117525465882512888",
@@ -431,7 +463,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117125749989086783",
@@ -453,7 +487,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117089694282897798",
@@ -475,7 +511,9 @@
    "round": null,
    "wins": null,
    "sid": 21894,
-   "store": "AJ's"
+   "store": "AJ's",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117497236336804009",
@@ -497,7 +535,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117170908777826678",
@@ -519,7 +559,9 @@
    "round": null,
    "wins": null,
    "sid": 15103,
-   "store": "Colossal Victoria"
+   "store": "Colossal Victoria",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117096953908084886",
@@ -541,7 +583,9 @@
    "round": null,
    "wins": null,
    "sid": 16866,
-   "store": "Everything Games"
+   "store": "Everything Games",
+   "swiss": 5,
+   "cut": true
   },
   {
    "id": "rb117454301417787736",
@@ -563,7 +607,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117525468546556104",
@@ -585,7 +631,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117525530886497800",
@@ -607,7 +655,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117497239560280331",
@@ -629,7 +679,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117454304230078174",
@@ -651,7 +703,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117525494149950795",
@@ -673,7 +727,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117525536241111948",
@@ -695,7 +751,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117454314328231745",
@@ -717,7 +775,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117525496661669390",
@@ -739,7 +799,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117454331148898286",
@@ -761,7 +823,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 1,
+   "cut": false
   },
   {
    "id": "rb117089949895350173",
@@ -783,7 +847,9 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null
+   "store": null,
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117525541553071992",
@@ -805,7 +871,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117089949356892554",
@@ -827,7 +895,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117454321388311216",
@@ -849,7 +919,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117525498944171474",
@@ -871,7 +943,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117125756345638695",
@@ -893,7 +967,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117089697560448344",
@@ -915,7 +991,9 @@
    "round": null,
    "wins": null,
    "sid": 21894,
-   "store": "AJ's"
+   "store": "AJ's",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117170913739919281",
@@ -937,7 +1015,9 @@
    "round": null,
    "wins": null,
    "sid": 15103,
-   "store": "Colossal Victoria"
+   "store": "Colossal Victoria",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117454338043678755",
@@ -959,7 +1039,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117096961730592935",
@@ -981,7 +1063,9 @@
    "round": null,
    "wins": null,
    "sid": 16866,
-   "store": "Everything Games"
+   "store": "Everything Games",
+   "swiss": 5,
+   "cut": true
   },
   {
    "id": "rb117525501863027294",
@@ -1003,7 +1087,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117525547564623909",
@@ -1025,7 +1111,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117129753104838820",
@@ -1047,7 +1135,9 @@
    "round": null,
    "wins": null,
    "sid": 2069,
-   "store": "Gauntlet"
+   "store": "Gauntlet",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117073792152834647",
@@ -1069,7 +1159,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117520759300703415",
@@ -1091,7 +1183,9 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null
+   "store": null,
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117520416780087041",
@@ -1113,7 +1207,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117520422370120807",
@@ -1135,7 +1231,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117521153341296541",
@@ -1157,7 +1255,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117520785658195785",
@@ -1179,7 +1279,9 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null
+   "store": null,
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117521159788400579",
@@ -1201,7 +1303,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117520791840455365",
@@ -1223,7 +1327,9 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null
+   "store": null,
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117520566570008520",
@@ -1245,7 +1351,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117520575246477805",
@@ -1267,7 +1375,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117520569907363874",
@@ -1289,7 +1399,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117520663905990517",
@@ -1311,7 +1423,9 @@
    "round": null,
    "wins": null,
    "sid": 18437,
-   "store": "North Park Framing"
+   "store": "North Park Framing",
+   "swiss": 3,
+   "cut": false
   },
   {
    "id": "rb117521173340655612",
@@ -1333,7 +1447,9 @@
    "round": null,
    "wins": null,
    "sid": 902,
-   "store": "Colossal Courtenay"
+   "store": "Colossal Courtenay",
+   "swiss": 5,
+   "cut": false
   },
   {
    "id": "rb117520594838845121",
@@ -1355,7 +1471,9 @@
    "round": null,
    "wins": null,
    "sid": 4294,
-   "store": "Skyhaven"
+   "store": "Skyhaven",
+   "swiss": 5,
+   "cut": false
   }
  ]
 }
