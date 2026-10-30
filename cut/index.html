@@ -59,6 +59,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #evl button{flex-direction:column;align-items:flex-start;text-align:left;justify-content:center;height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px;gap:2px}
 #evl button.on{padding-right:44px}
 #evl small{display:block;white-space:normal}
+/* the Event row (M17 block 4 phone check): the label stays whole, the value takes the rest and
+   is trimmed only when even the short name is too long; the chevron always shows */
+#evbtn .t,#evbtn .cvr{flex-shrink:0}
+#evname{min-width:0;overflow:hidden;text-overflow:ellipsis}
 #phow .pbody p{margin:0 0 10px;font-size:15px;line-height:1.4}
 #phow .pbody p:last-child{margin-bottom:0}
 .foot a{color:var(--bone)}
@@ -157,18 +161,23 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // rTouched and kTouched: the rounds or cut no longer follow the player count (set by hand, or
   // from the event). rE and kE (M17 block 4): they came from the event's page; a hand change
   // clears them. kE with a cut keeps kT off, so the cut's size still follows the players.
-  var st = { n: 8, r: 3, k: 4, w: 0, l: 0, d: 0, ev: null, rT: false, kT: false, rE: false, kE: false }, evs = [], evInfo = null;
+  // kS: a Summoner Skirmish, whose cut is the program's Top 8 (from 9 players), whatever Riot's
+  // page says: stores list Skirmishes there as Swiss and add the cut on the day (Riot's kit has
+  // 8 top-cut promos; Mako's phone check 2026-10-30).
+  var st = { n: 8, r: 3, k: 4, w: 0, l: 0, d: 0, ev: null, rT: false, kT: false, rE: false, kE: false, kS: false }, evs = [], evInfo = null;
+  function skCut(n){ return n >= 9 ? 8 : 0; }
+  function autoCut(n){ return st.kS ? skCut(n) : C.cutFor(n); }
   (function(){
     var o = null;
     try { o = JSON.parse(get(KEY) || "null"); } catch (e) { o = null; }
     if (!o || typeof o !== "object") { o = {}; }
     var c = C.clean(o);
     st.n = c.n; st.r = c.r; st.k = c.k; st.w = c.w; st.l = c.l; st.d = c.d;
-    st.rT = o.rT === true; st.kT = o.kT === true; st.rE = o.rE === true; st.kE = o.kE === true;
+    st.rT = o.rT === true; st.kT = o.kT === true; st.rE = o.rE === true; st.kE = o.kE === true; st.kS = o.kS === true;
     st.ev = typeof o.ev === "string" && /^(rb)?\d{1,24}$/.test(o.ev) ? o.ev : null;
     if (!o.n) { st.r = C.roundsFor(st.n); st.k = C.cutFor(st.n); }
   })();
-  function save(){ put(KEY, JSON.stringify({ n: st.n, r: st.r, k: st.k, w: st.w, l: st.l, d: st.d, ev: st.ev, rT: st.rT, kT: st.kT, rE: st.rE, kE: st.kE })); }
+  function save(){ put(KEY, JSON.stringify({ n: st.n, r: st.r, k: st.k, w: st.w, l: st.l, d: st.d, ev: st.ev, rT: st.rT, kT: st.kT, rE: st.rE, kE: st.kE, kS: st.kS })); }
 
   // the Game page's matches, read as cut.js reads them (its own checks)
   function games(){ try { var a = JSON.parse(get(HKEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
@@ -179,9 +188,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (typeof e.day !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(e.day)) { return null; }
     function txt(v){ return typeof v === "string" ? v.slice(0, 160) : ""; }
     function num(v){ return typeof v === "number" && isFinite(v) && v >= 0 && v <= 100000 ? Math.floor(v) : null; }
-    return { id: e.id, day: e.day, name: txt(e.name) || "Event", venue: txt(e.venue), time: txt(e.time), start: txt(e.start), reg: num(e.reg), cap: num(e.cap),
+    return { id: e.id, day: e.day, name: txt(e.name) || "Event", type: typeof e.type === "string" && /^[a-z]{1,12}$/.test(e.type) ? e.type : "other", store: txt(e.store), venue: txt(e.venue), time: txt(e.time), start: txt(e.start), reg: num(e.reg), cap: num(e.cap),
       swiss: typeof e.swiss === "number" && e.swiss >= 1 && e.swiss <= 15 && Math.floor(e.swiss) === e.swiss ? e.swiss : null, cut: typeof e.cut === "boolean" ? e.cut : null };
   }
+  // the Event row names an event as the Game page does: its kind and the store's short name
+  var KIND = { nexus: "Nexus Nights", skirmish: "Summoner Skirmish", learn: "Learn-to-Play", open: "Open Play", prerift: "Pre-Rift", other: "Event" };
+  function evLabel(e){ var k = KIND[e.type], w = e.store || e.venue; return k && w ? k + " \u00b7 " + w : e.name; }
   function today(){
     var o = {};
     new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" })
@@ -199,10 +211,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (e) {
       var n = e.day <= today() && e.reg !== null && e.reg >= 2 ? e.reg : (e.cap !== null && e.cap >= 2 ? e.cap : (e.reg !== null && e.reg >= 2 ? e.reg : st.n));
       st.n = Math.min(512, Math.max(2, n));
-      st.rT = false; st.kT = false; st.rE = false; st.kE = false;
-      st.r = C.roundsFor(st.n); st.k = C.cutFor(st.n);
+      st.rT = false; st.kT = false; st.rE = false; st.kE = false; st.kS = e.type === "skirmish";
+      st.r = C.roundsFor(st.n); st.k = autoCut(st.n);
       if (e.swiss !== null) { st.r = e.swiss; st.rT = true; st.rE = true; }
-      if (e.cut === false) { st.k = 0; st.kT = true; st.kE = true; }
+      if (st.kS) { /* the program's cut, not the page's */ }
+      else if (e.cut === false) { st.k = 0; st.kT = true; st.kE = true; }
       else if (e.cut === true) { st.kE = true; if (!st.k && st.n > 2) { st.k = 2; } }
       var rec = C.recordFrom(games(), e.id);
       if (rec.n) {
@@ -225,10 +238,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     L.get(e.id, function(f){
       if (!f || st.ev !== e.id) { return; }
       var info = { players: 0, rounds: 0, rec: null, cut: null };
-      if (f.players >= 2 && (f.rounds.length || f.status !== "upcoming")) { st.n = Math.min(512, f.players); info.players = f.players; if (!st.kT) { st.k = C.cutFor(st.n); } }
+      if (f.type === "SUMMONER_SKIRMISH" && !(st.kT && !st.kE)) { st.kS = true; st.kE = false; st.kT = false; }
+      if (f.players >= 2 && (f.rounds.length || f.status !== "upcoming")) { st.n = Math.min(512, f.players); info.players = f.players; if (!st.kT) { st.k = autoCut(st.n); } }
       if (f.roundCount >= 1) { st.r = Math.min(15, f.roundCount); st.rT = true; st.rE = true; info.rounds = f.roundCount; }
       // Swiss only or a cut, as the feed's copy (a visited event has no feed copy); a cut set by hand stays
-      if (!(st.kT && !st.kE) && (f.structure === "SWISS" || f.structure === "SWISS_PLUS_SINGLE_ELIM")) {
+      if (!st.kS && !(st.kT && !st.kE) && (f.structure === "SWISS" || f.structure === "SWISS_PLUS_SINGLE_ELIM")) {
         info.cut = f.structure === "SWISS_PLUS_SINGLE_ELIM"; st.kE = true; st.kT = !info.cut;
         st.k = info.cut ? (C.cutFor(st.n) || 2) : 0;
       }
@@ -242,7 +256,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (id === "n") {
       st.n = Math.min(512, Math.max(2, st.n + d));
       if (!st.rT) { st.r = C.roundsFor(st.n); }
-      if (!st.kT) { st.k = C.cutFor(st.n); }
+      if (!st.kT) { st.k = autoCut(st.n); }
     } else if (id === "r") {
       st.r = Math.min(15, Math.max(Math.max(1, st.w + st.l + st.d), st.r + d)); st.rT = true; st.rE = false;
     } else if (st.hasOwnProperty(id)) {
@@ -259,7 +273,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   $("kseg").addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("button") : null;
     if (!b) { return; }
-    st.k = +b.getAttribute("data-k2"); st.kT = true; st.kE = false; save(); render();
+    st.k = +b.getAttribute("data-k2"); st.kT = true; st.kE = false; st.kS = false; save(); render();
   });
 
   // THE EVENT MENU: today's and later events from the feed, then No event (as the Game page)
@@ -310,21 +324,22 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     for (var i = 0; i < b.length; i++) { b[i].setAttribute("aria-pressed", +b[i].getAttribute("data-k2") === st.k ? "true" : "false"); }
     var played = st.w + st.l + st.d;
     $("reccnt").textContent = "After round " + played + " of " + st.r;
-    $("evname").textContent = evInfo ? evInfo.name : (st.ev ? "Not in the feed" : "No event");
+    $("evname").textContent = evInfo ? evLabel(evInfo) : (st.ev ? "Not in the feed" : "No event");
     var note = "Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.";
     if (evInfo) {
       var live = evInfo.day <= today();
       // what the event's page gave (M17 block 4), while not changed by hand
       var from = [st.rE ? st.r + " Swiss rounds" : "", st.kE ? (st.k ? "a top cut" : "no top cut") : ""].filter(Boolean);
+      var sk = st.kS && !st.kT ? " Summoner Skirmishes cut to the top 8 from 9 players; change it if the store doesn't." : "";
       if (from.length) {
-        note = "From the event page: " + from.join(" and ") + "." + (st.kE && st.k ? " Riot gives the cut's size on the day, so this is the usual one for the players." : "") +
-          (from.length < 2 ? " The rest follow the usual numbers for the players; change them to match." : " Change them if the store does.");
-      }
+        note = "From the event page: " + from.join(" and ") + "." + (st.kE && st.k ? " Riot gives the cut's size on the day, so this is the usual one for the players." : "") + sk +
+          (sk ? "" : (from.length < 2 ? " The rest follow the usual numbers for the players; change them to match." : " Change them if the store does."));
+      } else if (sk) { note = sk.slice(1); }
       note = (evInfo.reg !== null ? evInfo.reg + " registered" + (evInfo.cap ? " of " + evInfo.cap + " spots" : "") + " so far" + (live ? "." : "; players start at the spots until the day.") + " " : "") + note;
     }
     if (evInfo && liveInfo) {
       note = "From the event page: " + [liveInfo.players ? liveInfo.players + " players still in" : "", liveInfo.rounds ? liveInfo.rounds + " Swiss rounds" : ""].filter(Boolean).join(", ") + "." +
-        (liveInfo.cut === false && st.kE ? " No top cut." : (liveInfo.cut === true && st.kE ? " A top cut; its size is the usual one for the players until it is paired." : " The cut is the usual one for the players; change it to the store's."));
+        (st.kS && !st.kT ? " Summoner Skirmishes cut to the top 8 from 9 players; change it if the store doesn't." : liveInfo.cut === false && st.kE ? " No top cut." : (liveInfo.cut === true && st.kE ? " A top cut; its size is the usual one for the players until it is paired." : " The cut is the usual one for the players; change it to the store's."));
     }
     $("evnote").textContent = note;
     var rec = st.ev ? C.recordFrom(games(), st.ev) : { n: 0 };
