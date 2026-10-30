@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-29T18:49:23.014Z",
- "generated_local": "2026-10-29T11:49:23-07:00",
+ "generated_at": "2026-10-30T06:51:40.153Z",
+ "generated_local": "2026-10-29T23:51:40-07:00",
  "window_start": "2026-10-29T07:00:00.000Z",
  "anchors": [
   {
@@ -28,8 +28,8 @@
    "name": "Victoria",
    "region": "victoria",
    "source": "uvs",
-   "returned": 1,
-   "added": 1
+   "returned": 0,
+   "added": 0
   },
   {
    "name": "Courtenay",
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 61,
-  "unique": 61,
-  "prev_unique": 47
+  "fetched": 60,
+  "unique": 60,
+  "prev_unique": 61
  },
  "unknown_templates": {
   "NEXUS_CUP": {
@@ -72,7 +72,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 5,
+   "reg": 15,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -80,28 +80,6 @@
    "wins": null,
    "sid": 18437,
    "store": "North Park Framing"
-  },
-  {
-   "id": 1234672,
-   "name": "Nexus night 1v1 template",
-   "type": "nexus",
-   "start": "2026-10-29T21:48:00-07:00",
-   "end": "2026-10-30T00:48:00-07:00",
-   "day": "2026-10-29",
-   "time": "9:48 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Avenue, 103-1633 Hillside Avenue, Victoria, BC, V8T 2C3, CA",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": "2026-10-29T04:48:25+00:00",
-   "round": 60,
-   "wins": 2,
-   "sid": 2069,
-   "store": "Gauntlet"
   },
   {
    "id": "rb117525511550990231",
@@ -138,7 +116,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -160,7 +138,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 600,
    "currency": "CAD",
    "updated": null,
@@ -182,7 +160,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -314,7 +292,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -1128,7 +1106,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 6,
+   "reg": 7,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1216,7 +1194,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 6,
+   "reg": 7,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1260,7 +1238,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 6,
+   "reg": 7,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
