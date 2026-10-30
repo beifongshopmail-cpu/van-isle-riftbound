@@ -90,7 +90,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   </section>
 
   <footer class="foot">
-    <p>Players from the event's registrations on PlayRiftbound; your record from the matches you tagged to it on the Game page.</p>
+    <p>Players, Swiss rounds and whether there is a top cut from the event on PlayRiftbound; your record from the matches you tagged to it on the Game page.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -154,19 +154,21 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   $("tabhow").addEventListener("click", function(){ if (openP === phow) { hide(); } else { show(phow); } });
 
   // THE STATE, kept on this phone (vir.cut.v1) and rebuilt through cut.js's clean on load.
-  // rTouched and kTouched: the rounds or cut were set by hand, so a new player count leaves them.
-  var st = { n: 8, r: 3, k: 4, w: 0, l: 0, d: 0, ev: null, rT: false, kT: false }, evs = [], evInfo = null;
+  // rTouched and kTouched: the rounds or cut no longer follow the player count (set by hand, or
+  // from the event). rE and kE (M17 block 4): they came from the event's page; a hand change
+  // clears them. kE with a cut keeps kT off, so the cut's size still follows the players.
+  var st = { n: 8, r: 3, k: 4, w: 0, l: 0, d: 0, ev: null, rT: false, kT: false, rE: false, kE: false }, evs = [], evInfo = null;
   (function(){
     var o = null;
     try { o = JSON.parse(get(KEY) || "null"); } catch (e) { o = null; }
     if (!o || typeof o !== "object") { o = {}; }
     var c = C.clean(o);
     st.n = c.n; st.r = c.r; st.k = c.k; st.w = c.w; st.l = c.l; st.d = c.d;
-    st.rT = o.rT === true; st.kT = o.kT === true;
+    st.rT = o.rT === true; st.kT = o.kT === true; st.rE = o.rE === true; st.kE = o.kE === true;
     st.ev = typeof o.ev === "string" && /^(rb)?\d{1,24}$/.test(o.ev) ? o.ev : null;
     if (!o.n) { st.r = C.roundsFor(st.n); st.k = C.cutFor(st.n); }
   })();
-  function save(){ put(KEY, JSON.stringify({ n: st.n, r: st.r, k: st.k, w: st.w, l: st.l, d: st.d, ev: st.ev, rT: st.rT, kT: st.kT })); }
+  function save(){ put(KEY, JSON.stringify({ n: st.n, r: st.r, k: st.k, w: st.w, l: st.l, d: st.d, ev: st.ev, rT: st.rT, kT: st.kT, rE: st.rE, kE: st.kE })); }
 
   // the Game page's matches, read as cut.js reads them (its own checks)
   function games(){ try { var a = JSON.parse(get(HKEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
@@ -177,7 +179,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (typeof e.day !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(e.day)) { return null; }
     function txt(v){ return typeof v === "string" ? v.slice(0, 160) : ""; }
     function num(v){ return typeof v === "number" && isFinite(v) && v >= 0 && v <= 100000 ? Math.floor(v) : null; }
-    return { id: e.id, day: e.day, name: txt(e.name) || "Event", venue: txt(e.venue), time: txt(e.time), start: txt(e.start), reg: num(e.reg), cap: num(e.cap) };
+    return { id: e.id, day: e.day, name: txt(e.name) || "Event", venue: txt(e.venue), time: txt(e.time), start: txt(e.start), reg: num(e.reg), cap: num(e.cap),
+      swiss: typeof e.swiss === "number" && e.swiss >= 1 && e.swiss <= 15 && Math.floor(e.swiss) === e.swiss ? e.swiss : null, cut: typeof e.cut === "boolean" ? e.cut : null };
   }
   function today(){
     var o = {};
@@ -187,19 +190,24 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
 
   // picking an event: on its day, the players are its registrations (the field is set); before
-  // it, its spots (registrations are still coming in). Then the usual rounds and cut, and the
-  // record from the Game page's tagged matches.
+  // it, its spots (registrations are still coming in). Then the rounds and cut: the event's own
+  // where its page gave them (Swiss only: no cut; a cut: the usual size for the players, as
+  // Riot gives the size only on the day), else the usual ones; and the record from the Game
+  // page's tagged matches.
   function pick(e, fromLink){
     evInfo = e; st.ev = e ? e.id : null;
     if (e) {
       var n = e.day <= today() && e.reg !== null && e.reg >= 2 ? e.reg : (e.cap !== null && e.cap >= 2 ? e.cap : (e.reg !== null && e.reg >= 2 ? e.reg : st.n));
       st.n = Math.min(512, Math.max(2, n));
-      st.rT = false; st.kT = false;
+      st.rT = false; st.kT = false; st.rE = false; st.kE = false;
       st.r = C.roundsFor(st.n); st.k = C.cutFor(st.n);
+      if (e.swiss !== null) { st.r = e.swiss; st.rT = true; st.rE = true; }
+      if (e.cut === false) { st.k = 0; st.kT = true; st.kE = true; }
+      else if (e.cut === true) { st.kE = true; if (!st.k && st.n > 2) { st.k = 2; } }
       var rec = C.recordFrom(games(), e.id);
       if (rec.n) {
         st.w = rec.w; st.l = rec.l; st.d = rec.d;
-        if (st.w + st.l + st.d > st.r) { st.r = Math.min(15, st.w + st.l + st.d); st.rT = true; }
+        if (st.w + st.l + st.d > st.r) { st.r = Math.min(15, st.w + st.l + st.d); st.rT = true; st.rE = false; }
       } else if (!fromLink) { st.w = 0; st.l = 0; st.d = 0; }
     }
     liveInfo = null;
@@ -216,9 +224,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!L || !e || e.day !== today() || !/^rb\d+$/.test(e.id)) { return; }
     L.get(e.id, function(f){
       if (!f || st.ev !== e.id) { return; }
-      var info = { players: 0, rounds: 0, rec: null };
+      var info = { players: 0, rounds: 0, rec: null, cut: null };
       if (f.players >= 2 && (f.rounds.length || f.status !== "upcoming")) { st.n = Math.min(512, f.players); info.players = f.players; if (!st.kT) { st.k = C.cutFor(st.n); } }
-      if (f.roundCount >= 1) { st.r = Math.min(15, f.roundCount); st.rT = true; info.rounds = f.roundCount; }
+      if (f.roundCount >= 1) { st.r = Math.min(15, f.roundCount); st.rT = true; st.rE = true; info.rounds = f.roundCount; }
+      // Swiss only or a cut, as the feed's copy (a visited event has no feed copy); a cut set by hand stays
+      if (!(st.kT && !st.kE) && (f.structure === "SWISS" || f.structure === "SWISS_PLUS_SINGLE_ELIM")) {
+        info.cut = f.structure === "SWISS_PLUS_SINGLE_ELIM"; st.kE = true; st.kT = !info.cut;
+        st.k = info.cut ? (C.cutFor(st.n) || 2) : 0;
+      }
       var rec = L.myRecord(f, L.me());
       if (rec) { st.w = rec.w; st.l = rec.l; st.d = rec.d; info.rec = rec; if (st.w + st.l + st.d > st.r) { st.r = Math.min(15, st.w + st.l + st.d); } }
       if (info.players || info.rounds || info.rec) { liveInfo = info; save(); render(); }
@@ -231,7 +244,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (!st.rT) { st.r = C.roundsFor(st.n); }
       if (!st.kT) { st.k = C.cutFor(st.n); }
     } else if (id === "r") {
-      st.r = Math.min(15, Math.max(Math.max(1, st.w + st.l + st.d), st.r + d)); st.rT = true;
+      st.r = Math.min(15, Math.max(Math.max(1, st.w + st.l + st.d), st.r + d)); st.rT = true; st.rE = false;
     } else if (st.hasOwnProperty(id)) {
       var v = Math.max(0, st[id] + d);
       if (d > 0 && st.w + st.l + st.d >= st.r) { return; }
@@ -246,7 +259,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   $("kseg").addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("button") : null;
     if (!b) { return; }
-    st.k = +b.getAttribute("data-k2"); st.kT = true; save(); render();
+    st.k = +b.getAttribute("data-k2"); st.kT = true; st.kE = false; save(); render();
   });
 
   // THE EVENT MENU: today's and later events from the feed, then No event (as the Game page)
@@ -301,10 +314,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var note = "Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.";
     if (evInfo) {
       var live = evInfo.day <= today();
+      // what the event's page gave (M17 block 4), while not changed by hand
+      var from = [st.rE ? st.r + " Swiss rounds" : "", st.kE ? (st.k ? "a top cut" : "no top cut") : ""].filter(Boolean);
+      if (from.length) {
+        note = "From the event page: " + from.join(" and ") + "." + (st.kE && st.k ? " Riot gives the cut's size on the day, so this is the usual one for the players." : "") +
+          (from.length < 2 ? " The rest follow the usual numbers for the players; change them to match." : " Change them if the store does.");
+      }
       note = (evInfo.reg !== null ? evInfo.reg + " registered" + (evInfo.cap ? " of " + evInfo.cap + " spots" : "") + " so far" + (live ? "." : "; players start at the spots until the day.") + " " : "") + note;
     }
     if (evInfo && liveInfo) {
-      note = "From the event page: " + [liveInfo.players ? liveInfo.players + " players still in" : "", liveInfo.rounds ? liveInfo.rounds + " Swiss rounds" : ""].filter(Boolean).join(", ") + ". The cut is the usual one for the players; change it to the store's.";
+      note = "From the event page: " + [liveInfo.players ? liveInfo.players + " players still in" : "", liveInfo.rounds ? liveInfo.rounds + " Swiss rounds" : ""].filter(Boolean).join(", ") + "." +
+        (liveInfo.cut === false && st.kE ? " No top cut." : (liveInfo.cut === true && st.kE ? " A top cut; its size is the usual one for the players until it is paired." : " The cut is the usual one for the players; change it to the store's."));
     }
     $("evnote").textContent = note;
     var rec = st.ev ? C.recordFrom(games(), st.ev) : { n: 0 };

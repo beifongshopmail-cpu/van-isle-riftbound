@@ -195,6 +195,96 @@ async function fetchRbAnchor(anchor, afterIso) {
   throw new Error(`PlayRiftbound ${anchor.name}: exceeded ${MAX_PAGES} pages, refusing to continue`);
 }
 
+// ---- the event's own config (M17 block 4, 2026-10-30) ----
+// Riot's event page says before the event whether it is Swiss only (SWISS) or Swiss then a
+// single-elimination cut (SWISS_PLUS_SINGLE_ELIM), and the store's Swiss rounds (roundCount);
+// never the cut's size. The search above carries neither, so each new PlayRiftbound event's page
+// is read once and its two values kept: swiss (the store's Swiss rounds, or null) and cut (false
+// for Swiss only, true for a cut, null while unknown). The page streams its data as
+// self.__next_f.push([1,"..."]) chunks, read as server/live/parse.js reads them; everything is
+// rebuilt from checked values.
+const PAGE_BASE = "https://playriftbound.com/en-US/events/";
+const READ_MAX = 80;        // event pages read per run at most; the rest wait for the next run
+const STRUCTURES = { SWISS: false, SWISS_PLUS_SINGLE_ELIM: true };
+
+function streamOf(html) {
+  if (typeof html !== "string") return "";
+  const out = [];
+  const re = /self\.__next_f\.push\(\[\d+,\s*"((?:[^"\\]|\\.)*)"\]\)/g;
+  let m;
+  while ((m = re.exec(html))) {
+    try { out.push(JSON.parse('"' + m[1] + '"')); } catch (err) { /* skip a broken chunk */ }
+  }
+  return out.join("");
+}
+
+function braceEnd(s, i) {
+  let depth = 0, inStr = false;
+  for (let j = i; j < s.length; j++) {
+    const c = s[j];
+    if (inStr) {
+      if (c === "\\") { j++; continue; }
+      if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') inStr = true;
+    else if (c === "{") depth++;
+    else if (c === "}") { depth--; if (depth === 0) return j; }
+  }
+  return -1;
+}
+
+// An event page -> { swiss, cut }, or null when the page carries no config Riot's way.
+function configOf(html) {
+  const text = streamOf(html);
+  const at = text.indexOf('{"__typename":"RiftboundTournamentConfig"');
+  if (at < 0) return null;
+  const end = braceEnd(text, at);
+  if (end < 0) return null;
+  let c;
+  try { c = JSON.parse(text.slice(at, end + 1)); } catch (err) { return null; }
+  const cut = Object.prototype.hasOwnProperty.call(STRUCTURES, c.structure) ? STRUCTURES[c.structure] : null;
+  const swiss = Number.isInteger(c.roundCount) && c.roundCount >= 1 && c.roundCount <= 15 ? c.roundCount : null;
+  if (cut === null && swiss === null) return null;
+  return { swiss: swiss, cut: cut };
+}
+
+async function readConfig(id) {
+  const res = await fetch(PAGE_BASE + String(id).replace(/^rb/, ""), {
+    headers: { "Accept": "text/html", "User-Agent": RB.ua }
+  });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return configOf(await res.text());
+}
+
+// Gives every event swiss and cut: carried from last run's file when already known, else read
+// from its page (PlayRiftbound events only, at most max a run). A failed read leaves the event
+// unknown, so the next run tries again; it never fails the run.
+async function withConfig(events, prevEvents, read, max) {
+  const known = new Map();
+  for (const p of (Array.isArray(prevEvents) ? prevEvents : [])) {
+    if (p && typeof p.id === "string" && typeof p.cut === "boolean") {
+      known.set(p.id, { swiss: Number.isInteger(p.swiss) && p.swiss >= 1 && p.swiss <= 15 ? p.swiss : null, cut: p.cut });
+    }
+  }
+  const stat = { kept: 0, read: 0, failed: 0, waiting: 0 };
+  for (const ev of events) {
+    ev.swiss = null; ev.cut = null;
+    const k = known.get(ev.id);
+    if (k) { ev.swiss = k.swiss; ev.cut = k.cut; stat.kept++; continue; }
+    if (!/^rb\d{1,24}$/.test(String(ev.id))) continue;
+    if (stat.read >= max) { stat.waiting++; continue; }
+    stat.read++;
+    try {
+      const c = await read(ev.id);
+      if (c) { ev.swiss = c.swiss; ev.cut = c.cut; } else stat.failed++;
+    } catch (err) {
+      stat.failed++;
+    }
+  }
+  return stat;
+}
+
 // ---- shaping ----
 
 function shape(raw, region) {
@@ -404,6 +494,8 @@ async function main() {
 
   const prevUnique = priorUnique(OUT_FILE);
   const prevFile = readJson(OUT_FILE);
+  const cfg = await withConfig(events, prevFile && prevFile.events, readConfig, READ_MAX);
+  console.log(`event config: ${cfg.kept} known, ${cfg.read} read, ${cfg.failed} not read, ${cfg.waiting} waiting for the next run`);
   const prevPastFile = readJson(PAST_FILE);
   const past = buildPast(prevFile && prevFile.events, prevPastFile && prevPastFile.events,
     new Set(events.map(function (e) { return e.id; })), afterIso, Date.now());
@@ -456,4 +548,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS };
+module.exports = { shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig };
