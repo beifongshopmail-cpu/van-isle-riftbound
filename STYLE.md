@@ -175,7 +175,7 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 - decks/index.html: .add .addt .art .aside .avg .bad .ban .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .bstack .cbox .cg2 .cgrid .chart .chcol .chlab .cmid .cname .cnm .cols .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dcend .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dgrip .dnone .dnote .dprice .dsec .dsub .dv .dvrow .dvseg .dvsort .dwrap .ed .epill .esf .fchip .gcell .ghost .gpic .gq .gsh .gstar .gstp .hacts .hc .hdrawn .hhd .hmark .hnone .hnote .hold .hrow .hsort .ires .kw .land .lcard .lcell .lift .low .lpm .lq .lrhd .lrow .lsteps .mban .mbox .menu .mpic .n .none .ochip .ochips .odds .okc .okmk .omull .open .otile .otiles .owh .pbar .pchk .pdrow .pfin .pfins .phd .plate .plist .pnone .pr .prb .pre .prow .pti .ptl .pv .pvrow .qrow .qrows .res .resw .rgl .rot .sall .sbtns .shut .sm .spot .spotpic .srow .star .stb .sth .stick .stile .stiles .stools .stp .toast .tokrow .trio .two .vbadge .vw .wmk .xbox .z
 
 Page shell (feedback/index.html, settings/index.html)
-- Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, the page's own style block (in that order).
+- Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, account.js (every page with the wordmark row, and the hub), the page's own style block (in that order).
 - Page style block starts: html{background:var(--ground)}, a{color:inherit;text-decoration:none}, body{-webkit-font-smoothing:antialiased;touch-action:manipulation}.
 - Wordmark row (.wmrow, .wm, .logo1, .logo2): chrome, one thin row, scrolls away. Padding safe-area top + 30 / 18 / 16 / 18. Wordmark 22, Poppins 800, RA --p1, VI --p2. Plain RAVI everywhere else.
     <div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
@@ -219,6 +219,11 @@ Buttons (calendar/index.html, app.css)
 - .btn.glass: round glass pill, shade --glass-press on press. .circ: 36 round, icon 18. Use .circ.btn.glass for round icon buttons (close X, back, gear, chevron toggle).
     <button type="button" class="circ btn glass" aria-label="Close" data-k="do"><svg ...></svg></button>
 - .hemi (calendar-local, with .hl and .hr): two halves of one pill, 36 square each, outer curve half of 36, 5 at the join, 4 overlap. Copy from calendar/index.html if a page needs a pair.
+
+The account picture and its menus (account.js, app.css; plan 2 M1, Mako 2026-10-30)
+- Every page with the wordmark row, and the hub, carries your picture (.acpic, glass, 36 round) in the row's top right corner, 18 in, level with the wordmark; it scrolls away with the row. None on the Game page. It shows a legend's art or your photo filling the circle; signed in with neither, a filled person; signed out, a person in outline (18, line 2).
+- Its menus (.panel.acct) are built by account.js, never by a page; their heads keep 68 on the right for the picture. The root shows your name and @username; Profile shows the picture at 88. Saving keeps you in the menu you saved from (Mako 2026-10-30).
+- Picture offers Upload a photo, then each legend's art and its overnumbered printing, never a signature printing, four across; a pick shows in the corner at once and is kept by Use this picture.
 
 The bar (every page except the hub)
 - .bar.frost: fixed pill, 56 high, 12 from the sides, max-width 456, bottom max(4px, safe-area bottom minus 12px), padding 5, four columns, gap 4, z-index 20. Round slots (.tab), 24 icon.
@@ -312,6 +317,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Going deeper replaces the menu: back arrow, no X. A deeper menu's title is the label of the row that opened it.
 - A menu the bar or the strip opens is titled after the slot that opens it; a Settings slot's menu is "<Page> settings". (Mako's yes 2026-10-16)
 - A menu opens from the control that opened it: from the bar it rises from the bottom and sits 8 above the bar.
+- The account menu and its deeper menus open from your picture in the top right: the menu grows out of it (from a tenth, .34 in, .2 out), and the picture grows from 36 to 56 into the menu's top right corner, 16 in, where a tap closes it; they have no X. Every other menu sits above the bar. (Mako's yes 2026-10-30)
 - The menu's height cap counts the bar. Menus and the counter's victory banner sit above the bar.
 - One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides. Every bar is built by RAVI_BAR (pages.js) from the one icon table, so no page draws its own bar and a slot two pages share is the same copy. [T] (Mako's yes 2026-10-13)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
