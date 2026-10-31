@@ -36,12 +36,27 @@
 <style>
 /* The hub. No bottom bar: this page IS the bar's Hub slot's destination. */
 html{background:var(--ground)}
-body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;
-  /* THE HUB'S TEXTURE (Mako 2026-10-31): the six domain runes pressed into the
-     black, their lit edges in each domain's colour, tilted as Mako laid them out.
+/* the hub fits every phone, so it never rubber-bands past its edges (Mako 2026-10-31) */
+html,body{overscroll-behavior:none}
+body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;position:relative;
+  /* THE HUB'S TEXTURE (Mako 2026-10-31): the six domain glyphs pressed into the
+     page's own black (no discs, so the black between them is the ground exactly),
+     their lit edges in each domain's colour, tilted as Mako laid them out.
      One still image for the whole page; the plate frosts the lower part.
      Made by rb-tools design/hub-texture/ from Riot's rune files. */
   background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
+/* THE LIGHT SWEEP (Mako 2026-10-31): a faint band of light crosses the glyphs'
+   lit edges, slowly, then rests. The band shows only through the edges mask
+   (same size and place as the texture) and moves by transform alone. Off for
+   reduced motion. */
+.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;
+  -webkit-mask:url(img/hub-runes-edges.webp) center top/cover no-repeat;
+  mask:url(img/hub-runes-edges.webp) center top/cover no-repeat}
+.sheen i{position:absolute;top:-25%;left:0;width:70vw;height:150%;will-change:transform;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.12) 50%,rgba(255,255,255,0));
+  transform:translateX(-150vw) rotate(24deg);animation:hubsweep 20s ease-in-out infinite}
+@keyframes hubsweep{0%{transform:translateX(-150vw) rotate(24deg)}55%,100%{transform:translateX(150vw) rotate(24deg)}}
+@media (prefers-reduced-motion:reduce){.sheen{display:none}}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
   /* the name centres between the top clear line plus 36 and the middle
@@ -121,6 +136,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;
 </style>
 </head>
 <body>
+<div class="sheen" aria-hidden="true"><i></i></div>
 
 <div class="top">
   <h1 class="hubname"><span class="logo1">RA</span><span class="logo2">VI</span></h1>
