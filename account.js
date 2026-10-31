@@ -112,7 +112,7 @@
       return r.json().catch(function () { return {}; }).then(function (j) {
         if (r.status === 401 && s) { forget(); finish("You were signed out on RAVI's server, so this phone has a new account. Sign in to get yours back.", j, 401); makeGuest(null, true); return; }
         if (!r.ok) return finish(words(j && j.error) || "RAVI's server could not do that. Try again later.", j, r.status);
-        if (j && j.account && !j.token) setView(j.account);
+        if (j && j.account && j.account.v === 1 && !j.token) setView(j.account); // an account as the server describes it (v 1), never the data file's own account part
         finish(null, j, r.status);
       });
     }).catch(function () { finish("No connection. Try again with signal.", null, 0); });
@@ -511,7 +511,7 @@
         : "For an account you saved on another phone.";
       $("acsign").disabled = !A.supported();
     } else if (id === "accode") { codeInfo(); }
-    else if (id === "acdata") { say("acdatamsg", ""); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
+    else if (id === "acdata") { say("acdatamsg", ""); prefetchData(); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
     else if (id === "acrec") { $("acrecin").value = ""; say("acrecmsg", ""); }
   }
 
@@ -565,18 +565,37 @@
   }
 
   // ---- Your data: a file of everything RAVI's server keeps for this account ----
+  // On a phone the file goes to the share sheet (Save to Files, AirDrop, Mail), where iOS
+  // otherwise opens a bare preview (Mako 2026-10-31); elsewhere it downloads. The data is
+  // fetched when Your data opens, so the tap shares at once (a share must follow a tap).
+  var dataJ = null;
+  function prefetchData() { dataJ = null; A.exportData(function (err, j) { if (!err && j) dataJ = j; }); }
+  function saveBlob(name, text) {
+    try {
+      var url = root.URL.createObjectURL(new root.Blob([text], { type: "application/json" })), link = doc.createElement("a");
+      link.href = url; link.download = name;
+      doc.body.appendChild(link); link.click(); link.remove();
+      setTimeout(function () { root.URL.revokeObjectURL(url); }, 60000);
+      say("acdatamsg", "Downloaded.");
+    } catch (e) { say("acdatamsg", "This phone could not save the file. Try again."); }
+  }
   function download() {
-    say("acdatamsg", "Getting your data...");
-    A.exportData(function (err, j) {
-      if (err) return say("acdatamsg", err);
-      try {
-        var blob = new root.Blob([JSON.stringify(j, null, 2)], { type: "application/json" }), url = root.URL.createObjectURL(blob);
-        var link = doc.createElement("a");
-        link.href = url; link.download = "ravi-account-" + new Date().toISOString().slice(0, 10) + ".json";
-        doc.body.appendChild(link); link.click(); link.remove();
-        setTimeout(function () { root.URL.revokeObjectURL(url); }, 60000);
-        say("acdatamsg", "Downloaded.");
-      } catch (e) { say("acdatamsg", "This phone could not save the file. Try again."); }
+    if (!dataJ) {
+      say("acdatamsg", "Getting your data...");
+      return A.exportData(function (err, j) { if (err) return say("acdatamsg", err); dataJ = j; give(true); });
+    }
+    give(false);
+  }
+  function give(late) {
+    var name = "ravi-account-" + new Date().toISOString().slice(0, 10) + ".json", text = JSON.stringify(dataJ, null, 2), nav = root.navigator, file = null;
+    try { file = new root.File([text], name, { type: "application/json" }); } catch (e) { file = null; }
+    var share = file && nav && typeof nav.share === "function" && typeof nav.canShare === "function" && nav.canShare({ files: [file] });
+    if (!share) return saveBlob(name, text);
+    nav.share({ files: [file], title: "Your RAVI data" }).then(function () { say("acdatamsg", "Done."); }, function (e) {
+      if (e && e.name === "AbortError") return say("acdatamsg", "");
+      // the tap's moment passed while the data came: one more tap shares it
+      if (late && e && e.name === "NotAllowedError") return say("acdatamsg", "Ready. Tap Download your data again to save it.");
+      saveBlob(name, text);
     });
   }
 
