@@ -39,21 +39,22 @@ html{background:var(--ground)}
 /* the hub fits every phone, so it never rubber-bands past its edges (Mako 2026-10-31) */
 html,body{overscroll-behavior:none}
 body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;position:relative;
-  /* THE HUB'S TEXTURE (Mako 2026-10-31): the six domain glyphs pressed into the
-     page's own black (no discs, so the black between them is the ground exactly),
-     their lit edges in each domain's colour, tilted as Mako laid them out.
+  /* THE HUB'S TEXTURE (Mako 2026-10-31): the domain runes on Mako's own layout
+     and tilt, each a black coin with a bevelled rim, its glyph pressed in, the lit
+     edges in the domain's colour. Only the coins are drawn: the image is
+     transparent around them, so the black between is this ground exactly.
      One still image for the whole page; the plate frosts the lower part.
      Made by rb-tools design/hub-texture/ from Riot's rune files. */
   background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
-/* THE LIGHT SWEEP (Mako 2026-10-31): a faint band of light crosses the glyphs'
-   lit edges, slowly, then rests. The band shows only through the edges mask
+/* THE LIGHT SWEEP (Mako 2026-10-31): a faint band of light crosses the coins'
+   lit rims and glyph edges, slowly, then rests. The band shows only through the edges mask
    (same size and place as the texture) and moves by transform alone. Off for
    reduced motion. */
 .sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;
   -webkit-mask:url(img/hub-runes-edges.webp) center top/cover no-repeat;
   mask:url(img/hub-runes-edges.webp) center top/cover no-repeat}
 .sheen i{position:absolute;top:-25%;left:0;width:70vw;height:150%;will-change:transform;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.12) 50%,rgba(255,255,255,0));
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.2) 50%,rgba(255,255,255,0));
   transform:translateX(-150vw) rotate(24deg);animation:hubsweep 20s ease-in-out infinite}
 @keyframes hubsweep{0%{transform:translateX(-150vw) rotate(24deg)}55%,100%{transform:translateX(150vw) rotate(24deg)}}
 @media (prefers-reduced-motion:reduce){.sheen{display:none}}
@@ -82,14 +83,16 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;posit
   border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px;
   flex:1 0 auto;display:flex;flex-direction:column;
   /* THE PLATE'S FROST (Mako 2026-10-31): a light frost, so the texture reads as
-     shapes under glass but no rune can be made out. The frost is a layer behind
+     shapes under glass but no rune can be made out, in the calendar card's dark
+     plate colour (STYLE.md, Plate frost), so the plate is the same black as the
+     other pages' plates, not a grey. The frost is a layer behind
      the blocks, not the plate itself: a plate that blurred would hide the page
      from the blocks' own frost. z-index 0 keeps that layer inside the plate. */
   background:none;z-index:0}
 .low::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;
   background:rgba(10,11,13,.94)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .low::after{background:linear-gradient(var(--glass),var(--glass)),rgba(8,9,10,.15);
+  .low::after{background:rgba(10,11,13,.3);
     -webkit-backdrop-filter:blur(3px) saturate(150%);backdrop-filter:blur(3px) saturate(150%)}
 }
 
