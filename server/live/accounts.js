@@ -27,6 +27,15 @@
 // fill the other account's gaps) and removes the guest. A guest never saved
 // and unused for GUEST_DAYS is deleted, which frees its Riot ID and username.
 //
+// SYNC (Mako 2026-10-31): the phone's stores (SYNC_KEYS), each split into
+// items by the phone (account.js, SYNC), kept here as text the server never
+// reads: per item its store, id, edit time and a running number for "what
+// changed since". The newest edit of an item wins; a deleted item is kept as
+// a mark for SYNC.keepGone days so the delete reaches every phone. Kept in
+// this same object, so delete and the guest's move take its items at once
+// (one object per account was the first plan; one object needs no calls
+// between objects on the free plan, and can be split later).
+//
 // DISPUTES: a player whose Riot ID another account holds can say it is
 // theirs. Mako (an account listed in the Worker variable ADMIN) sees each
 // dispute in his account menu and gives the ID to the player who asked, or
@@ -47,7 +56,10 @@ export const ORIGINS = ["https://ravi.tools"];
 export const CHALLENGE_MS = 5 * 60000;
 export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200 }; // per connection per day (guest: a store's wifi)
+export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1"];
+// an item's text at most, an account's whole text, its items, items per call, items per answer, calls a day, days a delete is kept
+export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page: 300, day: 5000, keepGone: 120 };
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, sync: SYNC.day }; // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -342,6 +354,8 @@ function sqlStore(sql) {
   try { sql.exec("ALTER TABLE acct ADD COLUMN guest INTEGER"); } catch (e) { /* already there */ }
   try { sql.exec("ALTER TABLE cred ADD COLUMN name TEXT"); } catch (e) { /* already there */ }
   try { sql.exec("ALTER TABLE sess ADD COLUMN dev TEXT"); } catch (e) { /* already there */ }
+  sql.exec("CREATE TABLE IF NOT EXISTS item (acct TEXT, k TEXT, id TEXT, t INTEGER, d TEXT, s INTEGER, PRIMARY KEY (acct, k, id))");
+  sql.exec("CREATE INDEX IF NOT EXISTS item_s ON item (acct, s)");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code, guest FROM acct WHERE id = ?", id),
@@ -356,6 +370,13 @@ function sqlStore(sql) {
     sessions: (acct) => sql.exec("SELECT tok, made, last, dev FROM sess WHERE acct = ? ORDER BY made", acct).toArray(),
     putSess: (s) => sql.exec("INSERT OR REPLACE INTO sess (tok, acct, made, last, dev) VALUES (?, ?, ?, ?, ?)", s.tok, s.acct, s.made, s.last, s.dev || null),
     delSess: (tok) => sql.exec("DELETE FROM sess WHERE tok = ?", tok),
+    item: (acct, k, id) => one("SELECT k, id, t, d, s FROM item WHERE acct = ? AND k = ? AND id = ?", acct, k, id),
+    items: (acct, since, max) => sql.exec("SELECT k, id, t, d, s FROM item WHERE acct = ? AND s > ? ORDER BY s LIMIT ?", acct, since, max).toArray(),
+    allItems: (acct) => sql.exec("SELECT k, id, t, d FROM item WHERE acct = ? AND d IS NOT NULL ORDER BY k, id", acct).toArray(),
+    putItem: (x) => sql.exec("INSERT OR REPLACE INTO item (acct, k, id, t, d, s) VALUES (?, ?, ?, ?, ?, ?)", x.acct, x.k, x.id, x.t, x.d, x.s),
+    itemSize: (acct) => { const x = one("SELECT COUNT(*) AS n, COALESCE(SUM(LENGTH(d)), 0) AS b FROM item WHERE acct = ?", acct); return { n: x.n, b: x.b }; },
+    maxSeq: () => one("SELECT COALESCE(MAX(s), 0) AS s FROM item").s,
+    purgeGone: (cut) => sql.exec("DELETE FROM item WHERE d IS NULL AND t < ?", cut),
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
@@ -374,6 +395,7 @@ function sqlStore(sql) {
     putPhoto: (acct, img) => sql.exec("INSERT OR REPLACE INTO photo VALUES (?, ?)", acct, img.buffer.slice(img.byteOffset, img.byteOffset + img.byteLength)),
     delPhoto: (acct) => sql.exec("DELETE FROM photo WHERE acct = ?", acct),
     delAcct: (id) => {
+      sql.exec("DELETE FROM item WHERE acct = ?", id);
       sql.exec("DELETE FROM riot WHERE acct = ?", id);
       sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM prof WHERE acct = ?", id);
@@ -393,7 +415,8 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map() };
+  const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
   return {
     tables: T, // the tests read every row from here
@@ -409,6 +432,13 @@ export function memStore() {
     sessions: (acct) => Array.from(T.sess.values()).filter((s) => s.acct === acct).sort((a, b) => a.made - b.made).map((s) => copy({ tok: s.tok, made: s.made, last: s.last, dev: s.dev || null })),
     putSess: (s) => T.sess.set(s.tok, copy(s)),
     delSess: (tok) => T.sess.delete(tok),
+    item: (acct, k, id) => { const x = T.item.get(ik(acct, k, id)); return x ? copy({ k: x.k, id: x.id, t: x.t, d: x.d, s: x.s }) : null; },
+    items: (acct, since, max) => Array.from(T.item.values()).filter((x) => x.acct === acct && x.s > since).sort((a, b) => a.s - b.s).slice(0, max).map((x) => copy({ k: x.k, id: x.id, t: x.t, d: x.d, s: x.s })),
+    allItems: (acct) => Array.from(T.item.values()).filter((x) => x.acct === acct && x.d !== null).map((x) => copy({ k: x.k, id: x.id, t: x.t, d: x.d })),
+    putItem: (x) => T.item.set(ik(x.acct, x.k, x.id), copy(x)),
+    itemSize: (acct) => { let n = 0, b = 0; T.item.forEach((x) => { if (x.acct === acct) { n++; b += x.d ? x.d.length : 0; } }); return { n: n, b: b }; },
+    maxSeq: () => { let m = 0; T.item.forEach((x) => { if (x.s > m) m = x.s; }); return m; },
+    purgeGone: (cut) => T.item.forEach((x, key) => { if (x.d === null && x.t < cut) T.item.delete(key); }),
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
@@ -436,6 +466,7 @@ export function memStore() {
     putPhoto: (acct, img) => T.photo.set(acct, new Uint8Array(img)),
     delPhoto: (acct) => T.photo.delete(acct),
     delAcct: (id) => {
+      T.item.forEach((x, key) => { if (x.acct === id) T.item.delete(key); });
       T.prof.delete(id); T.photo.delete(id);
       T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
       T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
@@ -548,7 +579,34 @@ export function makeAccounts() {
         profile: { name: v.name, username: v.user, about: v.about, homeArea: v.area, picture: v.pic },
         photo: ph ? "data:image/jpeg;base64," + btoa(Array.from(ph, (x) => String.fromCharCode(x)).join("")) : null,
         riotId: r ? { name: r.n, tag: r.tag, claimed: dayOf(r.at) } : null,
-        disputes: v.asked };
+        disputes: v.asked,
+        synced: this.db.allItems(a.id).reduce((o, x) => { let d; try { d = JSON.parse(x.d); } catch (e) { d = x.d; } (o[x.k] = o[x.k] || {})[x.id] = d; return o; }, {}) };
+    }
+    // the next running number for an item's change
+    next() { if (this.seq === undefined) this.seq = this.db.maxSeq(); return ++this.seq; }
+    // one sync: the phone's changes in, then what changed since its cursor out
+    syncWith(acct, body) {
+      const now = this.now();
+      const since = Number.isSafeInteger(body.since) && body.since >= 0 ? body.since : 0;
+      const put = Array.isArray(body.put) ? body.put.slice(0, SYNC.put) : [];
+      let size = this.db.itemSize(acct), full = false;
+      const back = [];
+      put.forEach((x) => {
+        if (!x || typeof x !== "object" || SYNC_KEYS.indexOf(x.k) < 0 || typeof x.id !== "string" || !/^[A-Za-z0-9_:.-]{1,64}$/.test(x.id)) return;
+        const t = Math.min(Math.floor(+x.t), now + 60000); // a phone's clock running ahead never wins for good
+        if (!isFinite(t) || t < 0) return;
+        const d = x.x === 1 ? null : typeof x.d === "string" && x.d.length <= SYNC.item ? x.d : undefined;
+        if (d === undefined) return;
+        const e = this.db.item(acct, x.k, x.id);
+        if (e && e.t >= t) { back.push(e); return; } // the account's copy is as new or newer: sent back
+        const b = size.b - (e && e.d ? e.d.length : 0) + (d ? d.length : 0), n = size.n + (e ? 0 : 1);
+        if ((d && b > SYNC.total) || n > SYNC.items) { full = true; return; }
+        this.db.putItem({ acct: acct, k: x.k, id: x.id, t: t, d: d, s: this.next() });
+        size = { n: n, b: b };
+      });
+      const rows = this.db.items(acct, since, SYNC.page);
+      const out = (r) => r.d === null ? { k: r.k, id: r.id, t: r.t, x: 1 } : { k: r.k, id: r.id, t: r.t, d: r.d };
+      return { v: 1, cur: rows.length ? rows[rows.length - 1].s : since, more: rows.length === SYNC.page, items: rows.map(out), back: back.map(out), full: full };
     }
     async fetch(req) {
       const u = new URL(req.url), ip = req.headers.get("X-Ravi-Ip") || "", now = this.now();
@@ -557,6 +615,7 @@ export function makeAccounts() {
         // once a day: guests never saved and unused for GUEST_DAYS are deleted (1000 a day at most: about 8000 rows written)
         this.db.use("prune:guest", dayOf(now), 1);
         this.db.oldGuests(now - GUEST_DAYS * DAY, 1000).forEach((id) => this.db.delAcct(id));
+        this.db.purgeGone(now - SYNC.keepGone * DAY); // deletes old enough to have reached every phone
       }
       const me = await this.who(req);
       if (req.method === "GET" && u.pathname === "/admin/disputes") {
@@ -761,6 +820,10 @@ export function makeAccounts() {
         }
         this.db.disps().forEach((x) => { if (x.k === d.k && (body.give === true || x.id === d.id)) this.db.delDisp(x.id); });
         return reply({ ok: true, left: this.db.disps().length });
+      }
+      if (p === "/sync") {
+        if (!(await this.spend("sync", "acct:" + me.acct.id))) return reply({ error: "too many syncs today; your things stay on this phone and go up tomorrow" }, 429);
+        return reply(this.syncWith(me.acct.id, body));
       }
       if (p === "/key/name" || p === "/key/off") {
         const c = typeof body.id === "string" && body.id.length < 1400 ? this.db.cred(body.id) : null;

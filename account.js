@@ -233,6 +233,7 @@
   function deviceOut(id, cb) { call("POST", "/devices/out", { id: id }, cb); }
   function othersOut(cb) { call("POST", "/devices/others", {}, cb); }
   function exportData(cb) { call("GET", "/export", null, cb); }
+  function syncCall(body, cb) { call("POST", "/sync", body, cb); }
   function signOut(cb) {
     // forgotten on the phone whatever the server says; the phone then gets a new guest
     call("POST", "/out", {}, function () { forget(); changed(); makeGuest(function () { if (cb) cb(null); }, true); });
@@ -247,7 +248,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
-    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData,
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, syncCall: syncCall,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -343,7 +344,7 @@
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
-      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone that opens RAVI gets an account, so your things can follow you once you save it. RAVI keeps for it: your profile, picture, Riot ID and home area; each signed-in device (iPhone, Android or Computer) and the days it was used; once saved, your passkeys\' public keys and a scrambled copy of your recovery code. Never a password or an email. An account never saved and unused for 90 days is deleted.</p>' +
+      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone that opens RAVI gets an account, so your things can follow you once you save it. RAVI keeps for it: your decks, collection, games, saved trades, Follow marks and hub picks, so they follow you to every phone signed in to it; your profile, picture, Riot ID and home area; each signed-in device (iPhone, Android or Computer) and the days it was used; once saved, your passkeys\' public keys and a scrambled copy of your recovery code. Never a password or an email. An account never saved and unused for 90 days is deleted.</p>' +
         '<p class="pnote" id="acnum"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
         '<button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
@@ -1019,4 +1020,235 @@
     root.addEventListener("online", function () { if (!A.signedIn()) A.makeGuest(null, true); });
   }
   if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", boot); else boot();
+})(window);
+// SYNC (plan 2 M1, Mako 2026-10-31). Your decks, collection, games, saved
+// trades, Follow marks and hub picks follow your account to every phone it
+// is signed in on. LOCAL FIRST: the phone's own copy is what every page
+// reads and writes, as before; this layer watches the writes, and on open
+// and a moment after a save (when there is signal) sends what changed and
+// takes what the account has that this phone lacks. Each store is split
+// into items (a deck, a binder, a game, a saved trade, a Follow mark, or the
+// whole value for a setting); the newest edit of an item wins; a deleted
+// item is kept as a mark for a while so the delete reaches every phone; a
+// whole store is never overwritten. Not synced: a game in progress, the
+// timer, test switches, seen marks and filters (only the stores below).
+// The export and import files stay. A page already open when another
+// phone's change arrives reloads once, if nothing was touched yet; if it
+// was, its stale copy is never written back over the newer one.
+// ON THIS PHONE: vir.sync.v1 { a: account id, c: the server's cursor,
+// k: { store: { item id: [hash, edit time, 1 while unsent] } } }.
+(function (root) {
+  "use strict";
+  var A = root.RAVI_ACCT, LS = null;
+  try { LS = root.localStorage; } catch (e) { LS = null; }
+  if (!A || !LS || !root.Storage) return;
+  var MKEY = "vir.sync.v1", WAIT = 2500, AGAIN = 30000, MAXPUT = 150, MAXBODY = 900000;
+  var proto = root.Storage.prototype, rawSet = proto.setItem, rawDel = proto.removeItem, rawGet = proto.getItem;
+  function get(k) { try { return rawGet.call(LS, k); } catch (e) { return null; } }
+  function set(k, v) { try { rawSet.call(LS, k, v); return true; } catch (e) { return false; } }
+  function del(k) { try { rawDel.call(LS, k); } catch (e) {} }
+  function J(s) { try { return JSON.parse(s); } catch (e) { return null; } }
+  function S(v) { return JSON.stringify(v); }
+  // FNV-1a over the item's text: enough to see that it changed
+  function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36) + "." + s.length; }
+
+  // ---- each store, as items: split(text) -> { id: item text }; join(items, the store as it is) -> text or null ----
+  function byList(field, idOf, timeOf, order) {
+    return {
+      split: function (raw) {
+        var v = J(raw), out = {}, a = field ? v && v[field] : v;
+        (Array.isArray(a) ? a : []).forEach(function (x) { var id = x && idOf(x); if (id) out[id] = S(x); });
+        return out;
+      },
+      join: function (items, raw) {
+        var v = J(raw), a = field ? (v && Array.isArray(v[field]) ? v[field] : []) : (Array.isArray(v) ? v : []), seen = {}, out = [];
+        a.forEach(function (x) { var id = x && idOf(x); if (id && items[id] != null && !seen[id]) { seen[id] = 1; out.push(J(items[id])); } });
+        Object.keys(items).forEach(function (id) { if (!seen[id] && items[id] != null) out.push(J(items[id])); });
+        if (order) out.sort(order);
+        if (!field) return out.length ? S(out) : null;
+        var o = v && typeof v === "object" && !Array.isArray(v) ? v : {};
+        o[field] = out;
+        return S(o);
+      },
+      t0: timeOf
+    };
+  }
+  var whole = { split: function (raw) { return raw == null ? {} : { all: raw }; }, join: function (items) { return items.all == null ? null : items.all; }, t0: function () { return 1; } };
+  var newest = function (a, b) { return (+b.at || 0) - (+a.at || 0); };
+  var STORES = {
+    "vir.decks.v1": byList("decks", function (d) { return typeof d.id === "string" && d.id.length <= 60 ? "d:" + d.id : ""; }, function (s) { var d = J(s); return d && +d.t > 0 ? +d.t : 1; }),
+    "vir.coll.v1": {
+      split: function (raw) {
+        var v = J(raw), out = {};
+        if (!v || typeof v !== "object") return out;
+        (Array.isArray(v.ports) ? v.ports : []).forEach(function (p) { if (p && typeof p.id === "string" && p.id.length <= 60) out["p:" + p.id] = S(p); });
+        if (Array.isArray(v.wish) && v.wish.length) out.wish = S(v.wish);
+        if (Array.isArray(v.loose) && v.loose.length) out.loose = S(v.loose);
+        return out;
+      },
+      join: function (items, raw) {
+        var v = J(raw), o = v && typeof v === "object" && !Array.isArray(v) ? v : { v: 1, ports: [], wish: [], loose: [], last: "" }, seen = {}, ports = [];
+        (Array.isArray(o.ports) ? o.ports : []).forEach(function (p) { var id = p && "p:" + p.id; if (id && items[id] != null && !seen[id]) { seen[id] = 1; ports.push(J(items[id])); } });
+        Object.keys(items).forEach(function (id) { if (/^p:/.test(id) && !seen[id] && items[id] != null) ports.push(J(items[id])); });
+        o.ports = ports; o.wish = items.wish != null ? J(items.wish) : []; o.loose = items.loose != null ? J(items.loose) : [];
+        return S(o);
+      },
+      t0: function () { return 1; }
+    },
+    "vir.counter.history.v1": byList(null, function (m) { return +m.at > 0 ? "m:" + (+m.at) : ""; }, function (s) { var m = J(s); return m && +m.at > 0 ? +m.at : 1; }, newest),
+    "vir.trade.v1": whole,
+    "vir.trade.log.v1": byList(null, function (r) { return +r.at > 0 ? "t:" + (+r.at) : ""; }, function (s) { var r = J(s); return r && +r.at > 0 ? +r.at : 1; }, newest),
+    "vir.follow.v1": {
+      split: function (raw) { var v = J(raw), out = {}; if (v && typeof v === "object" && !Array.isArray(v)) Object.keys(v).forEach(function (f) { if (f.length <= 60 && v[f]) out["f:" + f] = S(v[f]); }); return out; },
+      join: function (items) { var o = {}; Object.keys(items).forEach(function (id) { if (items[id] != null) o[id.slice(2)] = J(items[id]); }); return Object.keys(o).length ? S(o) : null; },
+      t0: function () { return 1; }
+    },
+    "vir.hub.blocks.v1": whole,
+    "vir.hub.open.v1": whole
+  };
+  var KEYS = Object.keys(STORES);
+
+  // ---- the record of what was synced ----
+  var M = null;
+  function meta() {
+    if (M) return M;
+    var m = J(get(MKEY));
+    M = m && typeof m === "object" && m.k && typeof m.k === "object" ? m : { a: null, c: 0, k: {} };
+    return M;
+  }
+  function keepMeta() { set(MKEY, S(meta())); }
+  function itemsOf(key) { var r = get(key); try { return r == null ? {} : STORES[key].split(r); } catch (e) { return {}; } }
+
+  // what another phone's change left behind on a page that had already read its store:
+  // stale[key][id] = { h: the item's hash before (or "" when it was absent), d: the newer item or null }
+  var stale = {}, wrote = false, touched = false, loadedAt = Date.now();
+
+  // compare a store with the record: changed items get this moment as their edit time
+  function stamp(key, now) {
+    var m = meta(), first = !m.k[key], km = m.k[key] || (m.k[key] = {}), items = itemsOf(key), fix = null, dirty = false;
+    Object.keys(items).forEach(function (id) {
+      var h = hash(items[id]), e = km[id], st = stale[key] && stale[key][id];
+      if (e && e[0] === h) return;
+      if (st && st.h === h) { (fix = fix || {})[id] = st.d; return; } // the page wrote back its old copy
+      if (st) delete stale[key][id];
+      km[id] = [h, first ? STORES[key].t0(items[id]) : now, 1]; dirty = true; // what was here before sync keeps its own time
+    });
+    Object.keys(km).forEach(function (id) {
+      if (items[id] != null || km[id][0] === "") return;
+      var st = stale[key] && stale[key][id];
+      if (st && st.h === "") { (fix = fix || {})[id] = st.d; return; } // a page that never saw it left it out
+      if (st) delete stale[key][id];
+      km[id] = ["", now, 1]; dirty = true;
+    });
+    if (fix) {
+      Object.keys(fix).forEach(function (id) { if (fix[id] == null) delete items[id]; else items[id] = fix[id]; });
+      var out = STORES[key].join(items, get(key));
+      if (out == null) del(key); else set(key, out);
+    }
+    return dirty;
+  }
+
+  // the pages' writes, watched (the page's own call is untouched)
+  var timer = 0;
+  function soon() { clearTimeout(timer); timer = setTimeout(run, WAIT); }
+  function watched(key, write) {
+    if (this !== LS || KEYS.indexOf(key) < 0) return write();
+    var r = write();
+    wrote = true;
+    if (A.signedIn() && stamp(key, Date.now())) { keepMeta(); soon(); } else keepMeta();
+    return r;
+  }
+  proto.setItem = function (k, v) { var self = this, args = arguments; return watched.call(this, String(k), function () { return rawSet.apply(self, args); }); };
+  proto.removeItem = function (k) { var self = this, args = arguments; return watched.call(this, String(k), function () { return rawDel.apply(self, args); }); };
+  // a page that reads a store again has the newer copy: its writes are its own from then on
+  proto.getItem = function (k) { if (this === LS && stale[k]) delete stale[k]; return rawGet.apply(this, arguments); };
+
+  // ---- one round with the server ----
+  var busy = false, again = false, lastRun = 0, status = "";
+  function run() {
+    clearTimeout(timer);
+    var s = A.saved();
+    if (!s || !s.id) return;
+    if (busy) { again = true; return; }
+    var m = meta(), now = Date.now();
+    if (m.a !== s.id) {
+      // a new account on this phone (saved, signed in to another, or a new guest): it gets everything here
+      M = m = { a: s.id, c: 0, k: {} };
+      KEYS.forEach(function (key) { stamp(key, now); });
+      KEYS.forEach(function (key) { var km = m.k[key]; Object.keys(km).forEach(function (id) { km[id][2] = 1; }); });
+    } else KEYS.forEach(function (key) { stamp(key, now); });
+    var put = [], sent = {}, size = 0;
+    KEYS.forEach(function (key) {
+      var km = m.k[key], items = null;
+      Object.keys(km).forEach(function (id) {
+        var e = km[id];
+        if (!e[2] || put.length >= MAXPUT) return;
+        items = items || itemsOf(key);
+        var x = { k: key, id: id, t: e[1] };
+        if (e[0] === "" || items[id] == null) x.x = 1; else x.d = items[id];
+        var n = (x.d ? x.d.length : 0) + 120;
+        if (size + n > MAXBODY && put.length) return;
+        size += n; put.push(x); sent[key + "\n" + id] = e[1];
+      });
+    });
+    keepMeta();
+    busy = true; lastRun = now;
+    A.syncCall({ since: m.c || 0, put: put }, function (err, j) {
+      busy = false;
+      if (err || !j || !Array.isArray(j.items)) { status = err || "No answer from RAVI's server."; return finish(false); }
+      var mm = meta();
+      if (mm.a !== s.id) return finish(false); // the account changed while this was on its way
+      // what was sent and kept, or answered with a newer copy, is no longer unsent
+      Object.keys(sent).forEach(function (kk) { var p = kk.split("\n"), e = mm.k[p[0]] && mm.k[p[0]][p[1]]; if (e && e[1] === sent[kk] && !j.full) e[2] = 0; });
+      var changed = {};
+      j.items.concat(Array.isArray(j.back) ? j.back : []).forEach(function (r) {
+        if (!r || KEYS.indexOf(r.k) < 0 || typeof r.id !== "string") return;
+        var km = mm.k[r.k] || (mm.k[r.k] = {}), e = km[r.id], d = r.x ? null : (typeof r.d === "string" ? r.d : null), h = d == null ? "" : hash(d);
+        if (e && e[0] === h) { if (e[1] < r.t) e[1] = r.t; if (sent[r.k + "\n" + r.id] !== undefined) e[2] = 0; return; }
+        if (e && e[2] && e[1] > r.t) return; // this phone's edit is newer; it goes up next
+        (changed[r.k] = changed[r.k] || {})[r.id] = d;
+        km[r.id] = [h, +r.t || 0, 0];
+      });
+      Object.keys(changed).forEach(function (key) {
+        var items = itemsOf(key), ch = changed[key];
+        stale[key] = stale[key] || {};
+        Object.keys(ch).forEach(function (id) {
+          stale[key][id] = { h: items[id] == null ? "" : hash(items[id]), d: ch[id] };
+          if (ch[id] == null) delete items[id]; else items[id] = ch[id];
+        });
+        var out = STORES[key].join(items, get(key));
+        if (out == null) del(key); else set(key, out);
+        // the join can tidy an item (order, defaults); the record follows what is now stored
+        var now2 = itemsOf(key), km = mm.k[key];
+        Object.keys(ch).forEach(function (id) { if (km[id]) km[id][0] = now2[id] == null ? "" : hash(now2[id]); });
+      });
+      if (+j.cur >= 0) mm.c = +j.cur;
+      keepMeta();
+      status = j.full ? "full" : "";
+      var any = Object.keys(changed).length > 0;
+      if (any) fresh(Object.keys(changed));
+      finish(j.more || again);
+    });
+    function finish(more) { again = false; if (more) setTimeout(run, 50); }
+  }
+  // a page that has read a store another phone just changed: shown again once, if it was not touched yet
+  var PAGES = { decks: ["vir.decks.v1", "vir.coll.v1", "vir.trade.v1"], collection: ["vir.coll.v1", "vir.decks.v1", "vir.trade.v1"], trade: ["vir.trade.v1", "vir.trade.log.v1"],
+    calendar: ["vir.follow.v1"], settings: ["vir.hub.blocks.v1", "vir.hub.open.v1"], cut: ["vir.counter.history.v1"], "": ["vir.hub.blocks.v1"] };
+  function fresh(keys) {
+    var m = /\/([a-z]+)\/(index\.html)?$/.exec(root.location.pathname), page = m ? m[1] : "", reads = PAGES[page] || [];
+    if (!keys.some(function (k) { return reads.indexOf(k) >= 0; })) return;
+    if (wrote || touched || Date.now() - loadedAt > 15000) return;
+    try { if (+root.sessionStorage.getItem("ravi.sync.reload") > Date.now() - 30000) return; root.sessionStorage.setItem("ravi.sync.reload", String(Date.now())); } catch (e) { return; }
+    root.location.reload();
+  }
+
+  function kick() { if (A.signedIn() && Date.now() - lastRun > AGAIN) run(); }
+  root.RAVI_SYNC = { run: run, status: function () { return status; }, KEYS: KEYS, STORES: STORES, hash: hash };
+  root.addEventListener("pointerdown", function () { touched = true; }, true);
+  root.addEventListener("keydown", function () { touched = true; }, true);
+  A.onChange(function () { if (A.signedIn()) setTimeout(run, 0); });
+  function start() { if (A.signedIn()) run(); }
+  if (root.document.readyState === "loading") root.document.addEventListener("DOMContentLoaded", function () { setTimeout(start, 0); }); else setTimeout(start, 0);
+  root.document.addEventListener("visibilitychange", function () { if (!root.document.hidden) kick(); });
+  root.addEventListener("online", function () { if (A.signedIn()) run(); });
 })(window);

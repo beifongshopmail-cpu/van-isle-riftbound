@@ -136,7 +136,7 @@ async function toAccounts(req, env, path) {
   if (auth) init.headers.Authorization = auth.slice(0, 200);
   if (req.method === "POST") {
     const text = await req.text();
-    if (text.length > (path === "/photo" ? 220000 : 16384)) return json(req, 413, { error: "too big" });
+    if (text.length > (path === "/photo" ? 220000 : path === "/sync" ? 1100000 : 16384)) return json(req, 413, { error: "too big" });
     init.body = text;
   }
   const stub = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
