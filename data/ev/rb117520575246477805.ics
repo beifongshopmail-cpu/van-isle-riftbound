@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117520575246477805@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20270125T120000
-DTEND;TZID=America/Vancouver:20270125T150000
+DTSTART;TZID=America/Vancouver:20270125T130000
+DTEND;TZID=America/Vancouver:20270125T160000
 SUMMARY:Skyhaven Legacy Pre-Rift Monday Afternoon
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Pre-Rift\nSkyhaven Games\, Victoria\n24 of 24 spots left\n$36.0
