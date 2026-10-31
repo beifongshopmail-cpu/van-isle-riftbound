@@ -15,8 +15,17 @@
 // line about them, a home area, a picture: a legend's art by its hash, or a
 // photo the phone shrank to 256 square JPEG); the Riot ID the player
 // claimed (one account per Riot ID, first claim holds: Mako 2026-10-30) and
-// any dispute they raised over one. Synced data arrives in a later block.
+// any dispute they raised over one; per passkey a name the player gives it,
+// per signed-in phone a coarse device name (iPhone, Android, Computer).
 // Delete removes every row of the account at once.
+//
+// GUEST ACCOUNTS (Mako 2026-10-31): every phone gets an account on its first
+// open, with no passkey and no prompt (POST /guest). Save your account adds
+// a passkey and a recovery code; until then the account is a guest, which
+// only that phone's token reaches. Signing in to another account from a
+// guest moves the guest into it (its name, picture, username and Riot ID
+// fill the other account's gaps) and removes the guest. A guest never saved
+// and unused for GUEST_DAYS is deleted, which frees its Riot ID and username.
 //
 // DISPUTES: a player whose Riot ID another account holds can say it is
 // theirs. Mako (an account listed in the Worker variable ADMIN) sees each
@@ -38,7 +47,9 @@ export const ORIGINS = ["https://ravi.tools"];
 export const CHALLENGE_MS = 5 * 60000;
 export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5 }; // per connection per day
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200 }; // per connection per day (guest: a store's wifi)
+export const GUEST_DAYS = 90;
+export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
 export const AREAS = ["victoria", "island", "away"]; // Greater Victoria, Up Island, Somewhere else
 const RESERVED = ["ravi", "admin", "administrator", "support", "help", "mod", "moderator", "staff", "official", "riot", "riotgames", "system", "root", "null", "undefined", "me", "you", "account", "settings"];
@@ -268,6 +279,8 @@ function cleanText(v, max) {
   if (typeof v !== "string") return "";
   return v.replace(/[\u0000-\u001f\u007f\u2028\u2029\u202a-\u202e\u2066-\u2069<>]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
 }
+// a device name the phone gives: one of DEVS, or Computer
+export function cleanDev(v) { return DEVS.indexOf(v) >= 0 ? v : "Computer"; }
 export function cleanUser(v) {
   const u = typeof v === "string" ? v.trim().replace(/^@/, "").toLowerCase() : "";
   if (!/^[a-z0-9_]{3,20}$/.test(u)) return { error: "a username is 3 to 20 letters, numbers or _" };
@@ -326,17 +339,24 @@ function sqlStore(sql) {
   try { sql.exec("ALTER TABLE prof ADD COLUMN pcrop TEXT"); } catch (e) { /* already there */ }
   sql.exec("CREATE TABLE IF NOT EXISTS riot (k TEXT PRIMARY KEY, acct TEXT UNIQUE, n TEXT, tag TEXT, at INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS disp (id TEXT PRIMARY KEY, k TEXT, acct TEXT, n TEXT, tag TEXT, at INTEGER, UNIQUE (k, acct))");
+  try { sql.exec("ALTER TABLE acct ADD COLUMN guest INTEGER"); } catch (e) { /* already there */ }
+  try { sql.exec("ALTER TABLE cred ADD COLUMN name TEXT"); } catch (e) { /* already there */ }
+  try { sql.exec("ALTER TABLE sess ADD COLUMN dev TEXT"); } catch (e) { /* already there */ }
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
-    acct: (id) => one("SELECT id, uh, made, code FROM acct WHERE id = ?", id),
-    acctByCode: (code) => one("SELECT id, uh, made, code FROM acct WHERE code = ?", code),
-    putAcct: (a) => sql.exec("INSERT OR REPLACE INTO acct VALUES (?, ?, ?, ?)", a.id, a.uh, a.made, a.code),
-    cred: (id) => { const c = one("SELECT id, acct, alg, jwk, count, made, last FROM cred WHERE id = ?", id); if (c) c.jwk = JSON.parse(c.jwk); return c; },
-    creds: (acct) => sql.exec("SELECT id, made, last FROM cred WHERE acct = ? ORDER BY made", acct).toArray(),
-    putCred: (c) => sql.exec("INSERT OR REPLACE INTO cred VALUES (?, ?, ?, ?, ?, ?, ?)", c.id, c.acct, c.alg, JSON.stringify(c.jwk), c.count, c.made, c.last),
-    sess: (tok) => one("SELECT tok, acct, made, last FROM sess WHERE tok = ?", tok),
-    putSess: (s) => sql.exec("INSERT OR REPLACE INTO sess VALUES (?, ?, ?, ?)", s.tok, s.acct, s.made, s.last),
+    acct: (id) => one("SELECT id, uh, made, code, guest FROM acct WHERE id = ?", id),
+    acctByCode: (code) => one("SELECT id, uh, made, code, guest FROM acct WHERE code = ?", code),
+    putAcct: (a) => sql.exec("INSERT OR REPLACE INTO acct (id, uh, made, code, guest) VALUES (?, ?, ?, ?, ?)", a.id, a.uh, a.made, a.code || null, a.guest ? 1 : 0),
+    cred: (id) => { const c = one("SELECT id, acct, alg, jwk, count, made, last, name FROM cred WHERE id = ?", id); if (c) c.jwk = JSON.parse(c.jwk); return c; },
+    creds: (acct) => sql.exec("SELECT id, name, made, last FROM cred WHERE acct = ? ORDER BY made", acct).toArray(),
+    credsFull: (acct) => sql.exec("SELECT id, alg, jwk, name, made, last FROM cred WHERE acct = ? ORDER BY made", acct).toArray().map((c) => Object.assign(c, { jwk: JSON.parse(c.jwk) })),
+    putCred: (c) => sql.exec("INSERT OR REPLACE INTO cred (id, acct, alg, jwk, count, made, last, name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", c.id, c.acct, c.alg, JSON.stringify(c.jwk), c.count, c.made, c.last, c.name || null),
+    delCred: (id) => sql.exec("DELETE FROM cred WHERE id = ?", id),
+    sess: (tok) => one("SELECT tok, acct, made, last, dev FROM sess WHERE tok = ?", tok),
+    sessions: (acct) => sql.exec("SELECT tok, made, last, dev FROM sess WHERE acct = ? ORDER BY made", acct).toArray(),
+    putSess: (s) => sql.exec("INSERT OR REPLACE INTO sess (tok, acct, made, last, dev) VALUES (?, ?, ?, ?, ?)", s.tok, s.acct, s.made, s.last, s.dev || null),
     delSess: (tok) => sql.exec("DELETE FROM sess WHERE tok = ?", tok),
+    oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
     prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area, pcrop FROM prof WHERE acct = ?", acct),
@@ -381,11 +401,16 @@ export function memStore() {
     acctByCode: (code) => { let f = null; T.acct.forEach((a) => { if (a.code === code) f = a; }); return copy(f); },
     putAcct: (a) => T.acct.set(a.id, copy(a)),
     cred: (id) => copy(T.cred.get(id)),
-    creds: (acct) => Array.from(T.cred.values()).filter((c) => c.acct === acct).sort((a, b) => a.made - b.made).map((c) => ({ id: c.id, made: c.made, last: c.last })),
+    creds: (acct) => Array.from(T.cred.values()).filter((c) => c.acct === acct).sort((a, b) => a.made - b.made).map((c) => ({ id: c.id, name: c.name || null, made: c.made, last: c.last })),
+    credsFull: (acct) => Array.from(T.cred.values()).filter((c) => c.acct === acct).sort((a, b) => a.made - b.made).map((c) => copy({ id: c.id, alg: c.alg, jwk: c.jwk, name: c.name || null, made: c.made, last: c.last })),
     putCred: (c) => T.cred.set(c.id, copy(c)),
+    delCred: (id) => T.cred.delete(id),
     sess: (tok) => copy(T.sess.get(tok)),
+    sessions: (acct) => Array.from(T.sess.values()).filter((s) => s.acct === acct).sort((a, b) => a.made - b.made).map((s) => copy({ tok: s.tok, made: s.made, last: s.last, dev: s.dev || null })),
     putSess: (s) => T.sess.set(s.tok, copy(s)),
     delSess: (tok) => T.sess.delete(tok),
+    oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
+      !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
     putChal: (x) => T.chal.set(x.c, copy(x)),
     prof: (acct) => copy(T.prof.get(acct)),
@@ -468,23 +493,71 @@ export function makeAccounts() {
       const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv } : null;
       const r = this.db.riotOf(a.id);
       const mine = this.db.disps().filter((d) => d.acct === a.id).map((d) => ({ n: d.n, tag: d.tag, at: dayOf(d.at) }));
-      const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ made: dayOf(c.made), last: dayOf(c.last) })),
+      const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ id: c.id, name: c.name || "", made: dayOf(c.made), last: dayOf(c.last) })),
         name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", area: p && p.area || "", pic: pic,
         riot: r ? { n: r.n, tag: r.tag } : null, asked: mine };
+      if (a.guest) out.guest = true;
       if (this.isAdmin(a.id)) { out.admin = true; out.disputes = this.db.disps().length; }
       return out;
     }
     isAdmin(id) { return String(this.env.ADMIN || "").split(/[\s,]+/).indexOf(id) >= 0; }
     profOf(id) { return this.db.prof(id) || { acct: id, name: "", user: null, about: "", pk: null, ph: null, pv: 0, area: null }; }
     who2(acct) { const p = this.db.prof(acct); return { user: p && p.user || "", name: p && p.name || "" }; }
-    async session(acctId) {
+    async session(acctId, dev) {
       const t = b64u(rand(32)), now = this.now();
-      this.db.putSess({ tok: await sha(t), acct: acctId, made: now, last: now });
+      this.db.putSess({ tok: await sha(t), acct: acctId, made: now, last: now, dev: cleanDev(dev) });
       return t;
+    }
+    // a guest moves into the account it signs in to: the other account's
+    // profile, picture, username and Riot ID win where both have one; the
+    // guest's fill its gaps; then the guest is removed (Mako 2026-10-31)
+    merge(gid, tid) {
+      const G = this.db.prof(gid), gr = this.db.riotOf(gid), gph = this.db.photo(gid);
+      const gd = this.db.disps().filter((d) => d.acct === gid);
+      this.db.delAcct(gid); // frees the guest's username and Riot ID first
+      const T = this.profOf(tid);
+      if (G) {
+        let changed = false;
+        ["name", "about", "area"].forEach((f) => { if (!T[f] && G[f]) { T[f] = G[f]; changed = true; } });
+        if (!T.user && G.user && !this.db.profByUser(G.user)) { T.user = G.user; changed = true; }
+        if (!T.pk && G.pk) {
+          T.pk = G.pk; T.ph = G.ph; T.pv = G.pv; T.pcrop = G.pcrop; changed = true;
+          if (G.pk === "p" && gph) this.db.putPhoto(tid, gph);
+        }
+        if (changed) this.db.putProf(T);
+      }
+      if (gr && !this.db.riotOf(tid) && !this.db.riotByKey(gr.k)) this.db.putRiot({ k: gr.k, acct: tid, n: gr.n, tag: gr.tag, at: gr.at });
+      const mine = this.db.riotOf(tid);
+      gd.forEach((d) => {
+        if (mine && mine.k === d.k) return;
+        if (this.db.disps().some((x) => x.acct === tid && x.k === d.k)) return;
+        this.db.putDisp({ id: d.id, k: d.k, acct: tid, n: d.n, tag: d.tag, at: d.at });
+      });
+    }
+    // signing in from a guest moves the guest in; from anything else, nothing moves
+    into(me, a) { if (me && me.acct.guest && me.acct.id !== a.id) this.merge(me.acct.id, a.id); }
+    // everything the server keeps for an account, for Download your data
+    exportOf(a) {
+      const p = this.db.prof(a.id), r = this.db.riotOf(a.id), ph = p && p.pk === "p" ? this.db.photo(a.id) : null;
+      const v = this.view(a);
+      return { v: 1, what: "Everything RAVI's server keeps for this account", on: dayOf(this.now()),
+        account: { id: a.id, made: dayOf(a.made), saved: !a.guest },
+        recoveryCode: a.code ? "set: RAVI keeps only a scrambled copy (SHA-256) and can't show it" : "none yet",
+        passkeys: this.db.credsFull(a.id).map((c) => ({ name: c.name || "", made: dayOf(c.made), lastUsed: dayOf(c.last), kind: c.alg === -7 ? "ES256" : "RS256", publicKey: c.jwk })),
+        devices: this.db.sessions(a.id).map((x) => ({ device: x.dev || "Computer", signedIn: dayOf(x.made), lastUsed: dayOf(x.last) })),
+        profile: { name: v.name, username: v.user, about: v.about, homeArea: v.area, picture: v.pic },
+        photo: ph ? "data:image/jpeg;base64," + btoa(Array.from(ph, (x) => String.fromCharCode(x)).join("")) : null,
+        riotId: r ? { name: r.n, tag: r.tag, claimed: dayOf(r.at) } : null,
+        disputes: v.asked };
     }
     async fetch(req) {
       const u = new URL(req.url), ip = req.headers.get("X-Ravi-Ip") || "", now = this.now();
       this.db.prune(now, now - SESSION_DAYS * DAY, dayOf(now));
+      if (this.db.used("prune:guest", dayOf(now)) === 0) {
+        // once a day: guests never saved and unused for GUEST_DAYS are deleted (1000 a day at most: about 8000 rows written)
+        this.db.use("prune:guest", dayOf(now), 1);
+        this.db.oldGuests(now - GUEST_DAYS * DAY, 1000).forEach((id) => this.db.delAcct(id));
+      }
       const me = await this.who(req);
       if (req.method === "GET" && u.pathname === "/admin/disputes") {
         if (!me || !this.isAdmin(me.acct.id)) return reply({ error: "not allowed" }, 403);
@@ -503,6 +576,11 @@ export function makeAccounts() {
           return new Response(img, { headers: { "Content-Type": "image/jpeg" } });
         }
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
+        if (u.pathname === "/devices") {
+          if (!me) return reply({ error: "signed out" }, 401);
+          return reply({ v: 1, devices: this.db.sessions(me.acct.id).map((x) => ({ id: x.tok.slice(0, 12), dev: x.dev || "Computer", made: dayOf(x.made), last: dayOf(x.last), here: x.tok === me.tok })) });
+        }
+        if (u.pathname === "/export") return me ? reply(this.exportOf(me.acct)) : reply({ error: "signed out" }, 401);
         return reply({ error: "not found" }, 404);
       }
       if (req.method !== "POST") return reply({ error: "not allowed" }, 405);
@@ -510,6 +588,21 @@ export function makeAccounts() {
       try { body = JSON.parse((await req.text()) || "{}") || {}; } catch (e) { return reply({ error: "bad request" }, 400); }
       if (typeof body !== "object") return reply({ error: "bad request" }, 400);
       const p = u.pathname;
+
+      if (p === "/guest") {
+        // this phone's account, made on its first open with no prompt
+        if (me) return reply({ error: "this phone already has an account" }, 409);
+        if (!(await this.spend("guest", ip))) return reply({ error: "too many new accounts from this connection today; try again tomorrow" }, 429);
+        const a = { id: hex(rand(12)), uh: b64u(rand(16)), made: now, code: null, guest: 1 };
+        this.db.putAcct(a);
+        const token = await this.session(a.id, body.dev);
+        // the Riot name this phone already had becomes the guest's Riot ID, when nobody holds it
+        const rr = body.riot && typeof body.riot === "object" ? cleanRiot(body.riot.n, body.riot.tag) : null;
+        if (rr && !rr.error && !this.db.riotByKey(rr.k)) {
+          try { this.db.putRiot({ k: rr.k, acct: a.id, n: rr.n, tag: rr.tag, at: now }); } catch (e) { /* claimed a moment ago */ }
+        }
+        return reply({ token: token, account: this.view(a) });
+      }
 
       if (p === "/reg/options" || p === "/auth/options") {
         if (!(await this.spend("opt", ip))) return reply({ error: "too many tries today; try again tomorrow" }, 429);
@@ -540,7 +633,8 @@ export function makeAccounts() {
           if (!a) return reply({ error: "RAVI does not know this passkey; its account may have been deleted" }, 404);
           stored.count = r.count; stored.last = now;
           this.db.putCred(stored);
-          return reply({ token: await this.session(a.id), account: this.view(a) });
+          this.into(me, a);
+          return reply({ token: await this.session(a.id, body.dev), account: this.view(a) });
         }
         const r = await verifyRegistration(body.cred, ch.c, this.rp);
         if (r.error) return reply({ error: r.error }, 400);
@@ -548,15 +642,23 @@ export function makeAccounts() {
         if (ch.acct) {
           const a = this.db.acct(ch.acct);
           if (!a || !me || me.acct.id !== a.id) return reply({ error: "signed out" }, 401);
-          this.db.putCred({ id: r.id, acct: a.id, alg: r.alg, jwk: r.jwk, count: r.count, made: now, last: now });
+          this.db.putCred({ id: r.id, acct: a.id, alg: r.alg, jwk: r.jwk, count: r.count, made: now, last: now, name: cleanText(body.name, 32) });
+          if (a.guest) {
+            // Save your account: the first passkey makes the guest a saved account, with its recovery code
+            const code = newCode();
+            a.guest = 0; a.code = await sha(cleanCode(code));
+            this.db.putAcct(a);
+            return reply({ account: this.view(a), recovery: code });
+          }
           return reply({ account: this.view(a) });
         }
         if (!(await this.spend("made", ip))) return reply({ error: "too many new accounts from this connection today; try again tomorrow" }, 429);
         const code = newCode();
         const a = { id: hex(rand(12)), uh: ch.uh, made: now, code: await sha(cleanCode(code)) };
         this.db.putAcct(a);
-        this.db.putCred({ id: r.id, acct: a.id, alg: r.alg, jwk: r.jwk, count: r.count, made: now, last: now });
-        return reply({ token: await this.session(a.id), recovery: code, account: this.view(a) });
+        this.db.putCred({ id: r.id, acct: a.id, alg: r.alg, jwk: r.jwk, count: r.count, made: now, last: now, name: cleanText(body.name, 32) });
+        this.into(me, a);
+        return reply({ token: await this.session(a.id, body.dev), recovery: code, account: this.view(a) });
       }
 
       if (p === "/recover") {
@@ -567,11 +669,13 @@ export function makeAccounts() {
         const code = newCode(); // a used code is spent; the new one replaces it
         a.code = await sha(cleanCode(code));
         this.db.putAcct(a);
-        return reply({ token: await this.session(a.id), recovery: code, account: this.view(a) });
+        this.into(me, a);
+        return reply({ token: await this.session(a.id, body.dev), recovery: code, account: this.view(a) });
       }
 
       if (!me) return reply({ error: "signed out" }, 401);
       if (p === "/code") {
+        if (me.acct.guest) return reply({ error: "save your account first: it adds a passkey and a recovery code" }, 409);
         const code = newCode();
         me.acct.code = await sha(cleanCode(code));
         this.db.putAcct(me.acct);
@@ -657,6 +761,26 @@ export function makeAccounts() {
         }
         this.db.disps().forEach((x) => { if (x.k === d.k && (body.give === true || x.id === d.id)) this.db.delDisp(x.id); });
         return reply({ ok: true, left: this.db.disps().length });
+      }
+      if (p === "/key/name" || p === "/key/off") {
+        const c = typeof body.id === "string" && body.id.length < 1400 ? this.db.cred(body.id) : null;
+        if (!c || c.acct !== me.acct.id) return reply({ error: "that passkey is not on this account" }, 404);
+        if (p === "/key/name") { c.name = cleanText(body.name, 32); this.db.putCred(c); return reply({ account: this.view(me.acct) }); }
+        if (this.db.creds(me.acct.id).length <= 1) return reply({ error: "this is your only passkey; add another before removing it" }, 409);
+        this.db.delCred(c.id);
+        return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/devices/out") {
+        const id = typeof body.id === "string" && /^[0-9a-f]{12}$/.test(body.id) ? body.id : "";
+        const s = id ? this.db.sessions(me.acct.id).filter((x) => x.tok.slice(0, 12) === id)[0] : null;
+        if (!s) return reply({ error: "that device is already signed out" }, 404);
+        this.db.delSess(s.tok);
+        return reply({ ok: true, here: s.tok === me.tok });
+      }
+      if (p === "/devices/others") {
+        let n = 0;
+        this.db.sessions(me.acct.id).forEach((x) => { if (x.tok !== me.tok) { this.db.delSess(x.tok); n++; } });
+        return reply({ ok: true, out: n });
       }
       if (p === "/out") { this.db.delSess(me.tok); return reply({ ok: true }); }
       if (p === "/delete") { this.db.delAcct(me.acct.id); return reply({ ok: true }); }

@@ -211,12 +211,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var L = window.RAVI_LIVE, mein = document.getElementById("stmein"), metag = document.getElementById("stmetag"), memsg = document.getElementById("stmemsg");
   var have = L.me();
   if (have) { mein.value = have.n; metag.value = have.tag || ""; }
-  // Signed in, your Riot ID lives on your profile (claimed there, one account
-  // per Riot ID) and follows you to any phone; here the card keeps the test alert.
+  // With an account (every phone gets one, plan 2 M1), your Riot ID lives on your
+  // profile (claimed there, one account per Riot ID) and follows you to any phone;
+  // here the card keeps the test alert. Before the phone's account is made (no
+  // signal on the first open), the two fields work as before.
   if (window.RAVI_ACCT && window.RAVI_ACCT.signedIn()) {
     document.getElementById("stmerid").hidden = true; document.getElementById("stmeok").hidden = true;
     var acv = window.RAVI_ACCT.view();
-    document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "Signed in, your Riot ID is set on your profile. ") + "Tap your picture, top right, then Profile.";
+    document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "Your Riot ID is set on your profile. ") + "Tap your picture, top right, then Profile.";
   }
   function saveMe(){
     var t = metag.value.trim().replace(/^#/, ""), n = mein.value.trim();

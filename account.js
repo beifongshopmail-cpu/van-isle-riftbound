@@ -1,8 +1,14 @@
 // account.js -- RAVI's own accounts on the phone (plan 2 M1, 2026-10-30).
 // window.RAVI_ACCT. Sign-in is a passkey (Face ID, a fingerprint or the
 // phone's lock); the server is ravi-live (server/live/accounts.js), the
-// same server live.js reads. Accounts are optional: every page works the
-// same signed out.
+// same server live.js reads. Every page works the same with no signal.
+//
+// EVERY PHONE HAS AN ACCOUNT (Mako 2026-10-31): on its first open (the app,
+// not the install screen, and never a test tool) the phone asks for a guest
+// account with no prompt: one quiet call, tried again later with no signal.
+// Save your account adds a passkey and a recovery code. Sign in to another
+// account moves this phone's guest into that one. There is no signed-out
+// state: signing out or deleting the account leaves the phone on a new guest.
 //
 // ON THIS PHONE: vir.acct.v1 { t: the sign-in token, id, made, a: the
 // account as the server last described it (profile and passkey days, so
@@ -20,6 +26,8 @@
   var BASE = "https://ravi-live.beifongshopmail.workers.dev";
   var KEY = "vir.acct.v1";
   var TIMEOUT = 10000;
+  var RETRY = 60000; // a failed guest call is tried again at most once a minute
+  var guestAt = 0, guestBusy = false, onChange = [];
 
   function b64u(buf) {
     var b = new Uint8Array(buf), s = "";
@@ -58,6 +66,33 @@
   function view() { var s = saved(); return s && s.a && typeof s.a === "object" ? s.a : null; }
   function forget() { try { root.localStorage.removeItem(KEY); } catch (e) {} }
   function signedIn() { return !!saved(); }
+  function isGuest() { var a = view(); return !!(a && a.guest); }
+  function changed() { onChange.forEach(function (f) { try { f(); } catch (e) {} }); }
+  // the phone's coarse name for Signed-in devices (the server keeps only these)
+  function devName() {
+    var ua = root.navigator && root.navigator.userAgent || "", nav = root.navigator || {};
+    if (/iPad/.test(ua) || (nav.platform === "MacIntel" && nav.maxTouchPoints > 1)) return "iPad";
+    if (/iPhone|iPod/.test(ua)) return "iPhone";
+    if (/Android/.test(ua)) return "Android";
+    if (/Macintosh|Mac OS X/.test(ua)) return "Mac";
+    if (/Windows/.test(ua)) return "Windows";
+    return "Computer";
+  }
+  // a guest account for a phone with none: quiet, once, and again later when it failed
+  function makeGuest(cb, force) {
+    cb = cb || function () {};
+    if (signedIn()) return cb(null);
+    if (guestBusy || (!force && Date.now() - guestAt < RETRY)) return cb("busy");
+    if (root.RAVI_GATE || (root.navigator && root.navigator.webdriver)) return cb("off"); // the install screen and test tools make no accounts
+    guestBusy = true; guestAt = Date.now();
+    var here = null;
+    try { here = JSON.parse(root.localStorage.getItem("vir.me.v1") || "null"); } catch (e) {}
+    call("POST", "/guest", { dev: devName(), riot: here && here.n ? { n: here.n, tag: here.tag || "" } : null }, function (err, j) {
+      guestBusy = false;
+      if (!err && j && j.token) { keep(j.token, j.account); changed(); }
+      cb(err);
+    });
+  }
 
   function supported() {
     return !!(root.PublicKeyCredential && root.navigator && root.navigator.credentials && typeof root.navigator.credentials.create === "function");
@@ -75,7 +110,7 @@
     if (method === "POST") init.body = JSON.stringify(body || {});
     root.fetch(BASE + "/acct" + path, init).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
-        if (r.status === 401 && s) { forget(); return finish("You were signed out on RAVI's server. Sign in again.", j, 401); }
+        if (r.status === 401 && s) { forget(); finish("You were signed out on RAVI's server, so this phone has a new account. Sign in to get yours back.", j, 401); makeGuest(null, true); return; }
         if (!r.ok) return finish(words(j && j.error) || "RAVI's server could not do that. Try again later.", j, r.status);
         if (j && j.account && !j.token) setView(j.account);
         finish(null, j, r.status);
@@ -114,11 +149,12 @@
     };
   }
   function regBody(o, c) {
-    return { challenge: o.challenge, cred: { id: c.id, type: c.type,
+    return { challenge: o.challenge, name: devName(), dev: devName(), cred: { id: c.id, type: c.type,
       response: { clientDataJSON: b64u(c.response.clientDataJSON), attestationObject: b64u(c.response.attestationObject) } } };
   }
 
-  // make a new passkey: a new account when signed out, another passkey on this account when signed in
+  // make a new passkey: Save your account for a guest, another passkey on a saved one
+  // (and a new account when the phone has none yet)
   function newKey(cb) {
     if (!supported()) return cb("This phone can't make passkeys. Update iOS, or use another device.");
     var adding = signedIn();
@@ -134,7 +170,7 @@
     });
   }
   function create(cb) { if (signedIn()) return cb("Already signed in."); newKey(cb); }
-  function addKey(cb) { if (!signedIn()) return cb("Sign in first."); newKey(cb); }
+  function addKey(cb) { if (!signedIn()) return cb("RAVI sets up your account the first time this phone has a connection. Try again with signal."); newKey(cb); }
 
   function signIn(cb) {
     if (!supported()) return cb("This phone can't use passkeys. Update iOS, or use a recovery code.");
@@ -142,11 +178,12 @@
       if (err) return cb(err);
       root.navigator.credentials.get({ publicKey: { challenge: unb64u(o.challenge), rpId: o.rpId, userVerification: "preferred", timeout: o.timeout || 60000 } }).then(function (c) {
         var r = c.response;
-        call("POST", "/auth/verify", { challenge: o.challenge, cred: { id: c.id, type: c.type, response: {
+        // a guest token rides along, so the server moves this phone's guest into the account
+        call("POST", "/auth/verify", { challenge: o.challenge, dev: devName(), cred: { id: c.id, type: c.type, response: {
           clientDataJSON: b64u(r.clientDataJSON), authenticatorData: b64u(r.authenticatorData), signature: b64u(r.signature),
           userHandle: r.userHandle ? b64u(r.userHandle) : null } } }, function (err2, j) {
           if (err2) return cb(err2);
-          keep(j.token, j.account);
+          keep(j.token, j.account); changed();
           cb(null, j);
         });
       }).catch(function (e) { cb(refusal(e)); });
@@ -154,9 +191,9 @@
   }
 
   function recover(code, cb) {
-    call("POST", "/recover", { code: String(code || "").slice(0, 64) }, function (err, j) {
+    call("POST", "/recover", { code: String(code || "").slice(0, 64), dev: devName() }, function (err, j) {
       if (err) return cb(err);
-      keep(j.token, j.account);
+      keep(j.token, j.account); changed();
       cb(null, j);
     });
   }
@@ -188,19 +225,29 @@
     return "";
   }
   function newCode(cb) { call("POST", "/code", {}, cb); }
+  // passkeys: a name for each, and remove one (never the last)
+  function keyName(id, name, cb) { call("POST", "/key/name", { id: id, name: String(name || "").slice(0, 32) }, cb); }
+  function keyOff(id, cb) { call("POST", "/key/off", { id: id }, cb); }
+  // signed-in devices: each phone's session, sign one out, or every other
+  function devices(cb) { call("GET", "/devices", null, cb); }
+  function deviceOut(id, cb) { call("POST", "/devices/out", { id: id }, cb); }
+  function othersOut(cb) { call("POST", "/devices/others", {}, cb); }
+  function exportData(cb) { call("GET", "/export", null, cb); }
   function signOut(cb) {
-    // forgotten on the phone whatever the server says
-    call("POST", "/out", {}, function () { forget(); if (cb) cb(null); });
+    // forgotten on the phone whatever the server says; the phone then gets a new guest
+    call("POST", "/out", {}, function () { forget(); changed(); makeGuest(function () { if (cb) cb(null); }, true); });
   }
   function remove(cb) {
     call("POST", "/delete", {}, function (err) {
       if (err) return cb(err);
-      forget();
-      cb(null);
+      forget(); changed();
+      makeGuest(function () { cb(null); }, true);
     });
   }
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
+    isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -208,11 +255,11 @@
 
 // THE PICTURE AND ITS MENUS (plan 2 M1 block 2; Mako 2026-10-30). Every page
 // with the wordmark row, and the hub, gets your picture in its top right
-// corner (a person in glass when signed out). Tapped, the account menu
+// corner (a filled person until a picture is picked). Tapped, the account menu
 // grows out of it and the picture itself grows from 36 to 56 into the
 // menu's top right corner, where a tap closes it. Deeper menus (Profile,
-// Picture, Passkeys, Recovery code, Your data; Use a recovery code when
-// signed out) slide in place under the picture. Styles: app.css, THE
+// Picture, Passkeys, Signed-in devices, Recovery code, Your data, Sign in)
+// slide in place under the picture. Styles: app.css, THE
 // ACCOUNT PICTURE AND ITS MENUS. The Game page has no wordmark row, so no
 // picture: its play field keeps the whole screen.
 (function (root) {
@@ -221,7 +268,6 @@
   if (!doc || !root.RAVI_ACCT) return;
   var A = root.RAVI_ACCT;
   var REL = /\/[a-z]+\/(index\.html)?$/.test(root.location.pathname) ? "../" : "";
-  var SVG_P = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4.5"/><path d="M4 21c0-4.4 3.6-7.5 8-7.5s8 3.1 8 7.5"/></svg>';
   var SVG_ME = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M3.5 21.5c0-5 3.8-8.5 8.5-8.5s8.5 3.5 8.5 8.5z"/></svg>';
   var CV = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
   var BACK = '<button type="button" class="circ btn glass back" data-acback aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>';
@@ -234,22 +280,22 @@
     try { return new Date(d + "T12:00:00Z").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }); } catch (e) { return d; }
   }
 
-  // draw a picture into a circle: art, the photo, or a person (filled when signed in)
+  // draw a picture into a circle: art, the photo, or a filled person (every phone has an account)
   function paint(node, a, over) {
     var url = over ? over.url : A.picUrl(a, REL), fit = over ? over.fit : A.picFit(a);
     node.style.backgroundImage = url ? "url(\"" + url.replace(/["\\]/g, "") + "\")" : "";
     node.style.backgroundSize = url && fit ? fit.size : "";
     node.style.backgroundPosition = url && fit ? fit.pos : "";
     node.classList.toggle("art", !!url);
-    node.classList.toggle("me", !url && A.signedIn());
-    node.innerHTML = url ? "" : (A.signedIn() ? SVG_ME : SVG_P);
+    node.classList.toggle("me", !url);
+    node.innerHTML = url ? "" : SVG_ME;
   }
   function paintAll() {
     var a = A.view();
     paint(pic, a, preview);
     var big = $("acbig");
     if (big) paint(big, a, preview);
-    pic.setAttribute("aria-label", A.signedIn() ? "Your account" : "Sign in or create an account");
+    pic.setAttribute("aria-label", "Your account");
   }
 
   function headTitle(t) { return '<div class="phead"><div class="ht">' + BACK + '<h4 class="ttl">' + t + '</h4></div></div>'; }
@@ -280,20 +326,33 @@
         '<div class="doors acrow" id="acpicrows"></div>' +
         '<p class="lb">Or pick a legend</p><div class="aclg" id="aclg" data-k="pick"></div><p class="acmsg" id="acpicmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acuse" data-k="do" disabled>Use this picture</button></div>',
-      ackeys: headTitle("Passkeys") + '<div class="pbody"><div id="ackeylist"></div><p class="pnote">A passkey is Face ID, a fingerprint or a phone\'s lock, kept by your phone or your password manager. Add one on each phone you use, or keep them synced in iCloud Keychain.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
+      ackeys: headTitle("Passkeys") + '<div class="pbody"><div class="doors" id="ackeylist" data-k="deeper"></div><p class="pnote">A passkey is Face ID, a fingerprint or a phone\'s lock, kept by your phone or your password manager. Add one on each phone you use, or keep them synced in iCloud Keychain.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acaddkey" data-k="do">Add a passkey</button></div>',
+      ackey: headTitle("Passkey") + '<div class="pbody"><p class="lb">Name</p><div class="nf"><input type="text" id="ackeyname" maxlength="32" autocomplete="off" enterkeyhint="done" aria-label="Passkey name" data-k="type"></div>' +
+        '<p class="pnote" id="ackeydays"></p>' +
+        '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="ackeyoff"><span class="t">Remove this passkey</span></button></div>' +
+        '<p class="acmsg" id="ackeyonemsg" aria-live="polite"></p></div>' +
+        '<div class="pfoot"><button type="button" class="pact btn glass" id="ackeysave" data-k="do">Save</button></div>',
+      acdev: headTitle("Signed-in devices") + '<div class="pbody"><p class="pnote" id="acdevhere"></p><div class="doors acgap" id="acdevlist" data-k="do"></div>' +
+        '<div class="doors" id="acdevallw" data-k="do"><button type="button" class="door act" id="acdevall"><span class="t">Sign out every other device</span></button></div>' +
+        '<p class="acmsg" id="acdevmsg" aria-live="polite"></p></div>',
+      acin: headTitle("Sign in") + '<div class="pbody"><div class="doors">' +
+        '<button type="button" class="door act" id="acsign" data-k="do"><span class="t">Use a passkey</span></button>' +
+        '<button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Use a recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
+        '<p class="pnote" id="acinnote"></p><p class="acmsg" id="acinmsg" aria-live="polite"></p></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
-      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">What RAVI keeps for your account: your passkeys\' public keys and the days they were added and used, your profile, picture, Riot ID and home area, the days you signed in, and a scrambled copy of your recovery code. Never a password or an email.</p>' +
+      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone that opens RAVI gets an account, so your things can follow you once you save it. RAVI keeps for it: your profile, picture, Riot ID and home area; each signed-in device (iPhone, Android or Computer) and the days it was used; once saved, your passkeys\' public keys and a scrambled copy of your recovery code. Never a password or an email. An account never saved and unused for 90 days is deleted.</p>' +
         '<p class="pnote" id="acnum"></p>' +
-        '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
+        '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
+        '<button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
         '<p class="acmsg" id="acdatamsg" aria-live="polite"></p></div>',
       acrec: headTitle("Use a recovery code") + '<div class="pbody"><div class="nf tall"><input type="text" id="acrecin" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Recovery code" data-k="type"></div>' +
-        '<p class="pnote">The code RAVI showed you when you made your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
+        '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", acarea: "Home area", acdispm: "Disputes" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", acarea: "Home area", acdispm: "Disputes" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -303,36 +362,43 @@
     if (root.RAVI_WATCH) root.RAVI_WATCH(Object.keys(P).map(function (k) { return P[k]; }));
   }
 
-  // ---- the root menu ----
+  // ---- the root menu: a saved account, a guest (never saved), or a phone still waiting for its account ----
+  function headOf(h, a, fallback) {
+    var name = a && a.name ? a.name : "Your account", bits = [];
+    if (a && a.user) bits.push("@" + a.user);
+    if (a && a.riot) bits.push(a.riot.n + "#" + a.riot.tag);
+    h.innerHTML = '<div class="acn"><b></b><span></span></div>';
+    h.querySelector("b").textContent = name;
+    h.querySelector("span").textContent = bits.length ? bits.join(" \u00b7 ") : fallback;
+  }
   function renderRoot(msg) {
     var a = A.view(), h = $("achead"), b = $("acmbody");
-    if (A.signedIn()) {
-      var name = a && a.name ? a.name : "Your account";
-      var bits = [];
-      if (a && a.user) bits.push("@" + a.user);
-      if (a && a.riot) bits.push(a.riot.n + "#" + a.riot.tag);
-      var sub = bits.length ? bits.join(" \u00b7 ") : "Add your name and picture";
-      h.innerHTML = '<div class="acn"><b></b><span></span></div>';
-      h.querySelector("b").textContent = name;
-      h.querySelector("span").textContent = sub;
+    var signIn = '<div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acin"><span class="t">Sign in to another account</span><span class="sp"></span>' + CV + '</button></div>';
+    if (!A.signedIn()) {
+      headOf(h, null, "Not set up yet");
+      b.innerHTML = '<p class="pnote acfirst">RAVI sets up your account the first time this phone has a connection. Everything works without it.</p>' + signIn +
+        '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
+    } else if (A.isGuest()) {
+      headOf(h, a, "Add your name and picture");
+      var can = A.supported();
+      b.innerHTML = '<div class="doors" data-k="do"><button type="button" class="door act" id="acsaveacct"' + (can ? '' : ' disabled') + '><span class="t">Save your account</span></button></div>' +
+        '<p class="pnote acsavenote">' + (can ? "Not saved yet: only this phone can reach it. Saving adds a passkey (Face ID or your phone's lock), so it is yours on any phone."
+          : "Not saved yet: only this phone can reach it. This phone can't make passkeys, so it can't save it. Update iOS, or sign in to an account saved on another phone.") + '</p>' +
+        '<div class="doors" data-k="deeper">' +
+        '<button type="button" class="door" data-acgo="acprof"><span class="t">Profile</span><span class="sp"></span>' + CV + '</button>' +
+        '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button></div>' +
+        signIn + '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
+    } else {
+      headOf(h, a, "Add your name and picture");
       var n = a && a.keys ? a.keys.length : 0;
       b.innerHTML = '<div class="doors" data-k="deeper">' +
         '<button type="button" class="door" data-acgo="acprof"><span class="t">Profile</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="ackeys"><span class="t">Passkeys</span><span class="sp"></span>' + (n ? '<small>' + n + '</small>' : '') + CV + '</button>' +
+        '<button type="button" class="door" data-acgo="acdev"><span class="t">Signed-in devices</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="accode"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button>' +
         (a && a.admin ? '<button type="button" class="door" data-acgo="acdispm"><span class="t">Disputes</span><span class="sp"></span>' + (a.disputes ? '<small>' + a.disputes + '</small>' : '') + CV + '</button>' : '') + '</div>' +
         '<div class="doors" data-k="do"><button type="button" class="door act" id="acout"><span class="t">Sign out</span></button></div>' +
-        '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
-    } else {
-      h.innerHTML = '<h4 class="ttl">Account</h4>';
-      var can = A.supported();
-      b.innerHTML = '<div class="doors">' +
-        '<button type="button" class="door act" id="acnew" data-k="do"' + (can ? '' : ' disabled') + '><span class="t">Create an account</span></button>' +
-        '<button type="button" class="door act" id="acsign" data-k="do"' + (can ? '' : ' disabled') + '><span class="t">Sign in</span></button>' +
-        '<button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Use a recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
-        '<p class="pnote">' + (can ? "Optional: RAVI works the same without one. You sign in with a passkey, so Face ID or your phone's lock, with no password and no email. Next, your decks, collection and games follow your account to any phone you sign in on."
-          : "This phone can't use passkeys, so it can't make an account. Update iOS, or sign in with a recovery code from an account you made elsewhere.") + '</p>' +
         '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
     }
     if (msg) $("acmsg").textContent = msg;
@@ -387,7 +453,7 @@
     cls(P.acm, "show");
     scrim.classList.add("show");
     doc.documentElement.classList.add("lock");
-    if (A.signedIn()) refresh(true);
+    if (A.signedIn()) refresh(true); else A.makeGuest(null, true);
   }
   function closeAll() {
     var t = stack[stack.length - 1];
@@ -435,18 +501,82 @@
     else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
     else if (id === "acdispm") { renderDisputes(); }
     else if (id === "acpicm") { work = null; renderPics(); say("acpicmsg", ""); }
-    else if (id === "ackeys") {
-      var list = $("ackeylist"), keys = a && a.keys || [];
-      list.innerHTML = "";
-      keys.forEach(function (k, i) {
-        var p = el("p", "pnote"); p.textContent = "Passkey " + (i + 1) + ": added " + day(k.made) + ", last used " + day(k.last) + ".";
-        list.appendChild(p);
-      });
-      if (!keys.length) { var q = el("p", "pnote"); q.textContent = "Your passkeys show here."; list.appendChild(q); }
-      say("ackeymsg", "");
+    else if (id === "ackeys") { renderKeys(); say("ackeymsg", ""); }
+    else if (id === "ackey") { keyInfo(); }
+    else if (id === "acdev") { renderDevices(); }
+    else if (id === "acin") {
+      say("acinmsg", "");
+      $("acinnote").textContent = A.isGuest() ? "Everything this phone has on RAVI moves into that account: its name, picture and Riot ID fill any gaps there, and this phone's unsaved account is removed."
+        : "For an account you saved on another phone.";
+      $("acsign").disabled = !A.supported();
     } else if (id === "accode") { codeInfo(); }
     else if (id === "acdata") { say("acdatamsg", ""); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
     else if (id === "acrec") { $("acrecin").value = ""; say("acrecmsg", ""); }
+  }
+
+  // ---- Passkeys: each one named, renamed or removed (never the last) ----
+  var keyId = "";
+  function keyLabel(k, i) { return k.name || "Passkey " + (i + 1); }
+  function renderKeys() {
+    var a = A.view(), list = $("ackeylist"), keys = a && a.keys || [];
+    list.innerHTML = "";
+    keys.forEach(function (k, i) {
+      var b = el("button", "door", '<span class="t"></span><span class="sp"></span><small></small>' + CV);
+      b.type = "button"; b.setAttribute("data-key", k.id || "");
+      b.querySelector(".t").textContent = keyLabel(k, i);
+      b.querySelector("small").textContent = day(k.last);
+      list.appendChild(b);
+    });
+    list.hidden = !keys.length;
+  }
+  function keyOf(id) { var a = A.view(), keys = a && a.keys || []; for (var i = 0; i < keys.length; i++) if (keys[i].id === id) return { k: keys[i], i: i, n: keys.length }; return null; }
+  function keyInfo() {
+    var x = keyOf(keyId);
+    if (!x) return;
+    $("ackeyname").value = x.k.name || "";
+    $("ackeyname").placeholder = "Passkey " + (x.i + 1);
+    $("ackeydays").textContent = "Added " + day(x.k.made) + ". Last used " + day(x.k.last) + "." + (x.n < 2 ? " It is your only passkey, so it can't be removed: add another first." : "");
+    $("ackeyoff").disabled = x.n < 2;
+    say("ackeyonemsg", "");
+  }
+  // ---- Signed-in devices: this phone, then each other one, signed out one at a time or all at once ----
+  function renderDevices() {
+    var list = $("acdevlist"), here = $("acdevhere"), all = $("acdevallw");
+    list.innerHTML = ""; here.textContent = "Loading..."; all.hidden = true; say("acdevmsg", "");
+    A.devices(function (err, j) {
+      if (err) { here.textContent = ""; return say("acdevmsg", err); }
+      var ds = j && j.devices || [], others = ds.filter(function (d) { return !d.here; }), mine = ds.filter(function (d) { return d.here; })[0];
+      here.textContent = (mine ? "This phone: " + mine.dev + ", signed in " + day(mine.made) + ". " : "") +
+        (others.length ? "Tap another to sign it out." : "No other device is signed in.");
+      others.forEach(function (d) {
+        var b = el("button", "door act", '<span class="t"></span><span class="sp"></span><small></small>');
+        b.type = "button";
+        b.querySelector(".t").textContent = d.dev;
+        b.querySelector("small").textContent = "used " + day(d.last);
+        armed(b, "acdevmsg", "Signs out that " + d.dev + ". It gets a new account until it signs in again.", function () {
+          A.deviceOut(d.id, function (err2) { if (err2) return say("acdevmsg", err2); renderDevices(); setTimeout(function () { say("acdevmsg", "Signed out."); }, 0); });
+        });
+        list.appendChild(b);
+      });
+      list.hidden = !others.length;
+      all.hidden = others.length < 2;
+    });
+  }
+
+  // ---- Your data: a file of everything RAVI's server keeps for this account ----
+  function download() {
+    say("acdatamsg", "Getting your data...");
+    A.exportData(function (err, j) {
+      if (err) return say("acdatamsg", err);
+      try {
+        var blob = new root.Blob([JSON.stringify(j, null, 2)], { type: "application/json" }), url = root.URL.createObjectURL(blob);
+        var link = doc.createElement("a");
+        link.href = url; link.download = "ravi-account-" + new Date().toISOString().slice(0, 10) + ".json";
+        doc.body.appendChild(link); link.click(); link.remove();
+        setTimeout(function () { root.URL.revokeObjectURL(url); }, 60000);
+        say("acdatamsg", "Downloaded.");
+      } catch (e) { say("acdatamsg", "This phone could not save the file. Try again."); }
+    });
   }
 
   // ---- Recovery code: what it is, or a new one shown once ----
@@ -483,7 +613,7 @@
     });
   }
 
-  // ---- Riot ID: claim, release, or say it is yours (two fields: the name and the #tag) ----
+  // ---- Riot ID: claim, remove, or say it is yours (two fields: the name and the #tag) ----
   function riotText(a) { return a && a.riot ? a.riot.n + "#" + a.riot.tag : ""; }
   function riotFill(a) {
     var here = null;
@@ -491,11 +621,11 @@
     var r = a && a.riot ? a.riot : (here && here.n ? { n: here.n, tag: here.tag || "" } : { n: "", tag: "" });
     $("acriotn").value = r.n; $("acriott").value = r.tag;
   }
-  // Claim, or Release when the fields show the Riot ID this account holds
+  // Claim, or Remove Riot ID when the fields show the Riot ID this account holds
   function claimState() {
     var b = $("acclaim"), a = A.view(), r = a && a.riot;
     var same = !!r && $("acriotn").value.trim().toLowerCase() === r.n.toLowerCase() && $("acriott").value.trim().replace(/^#/, "").toLowerCase() === r.tag.toLowerCase();
-    if (!b.classList.contains("armed") && !b.classList.contains("done")) b.textContent = same ? "Release" : "Claim";
+    if (!b.classList.contains("armed") && !b.classList.contains("done")) b.textContent = same ? "Remove Riot ID" : "Claim"; // not 'Release' (Mako 2026-10-31)
     b.setAttribute("data-mode", same ? "off" : "on");
   }
   var relArm = false, relT = 0;
@@ -503,14 +633,14 @@
     var b = $("acclaim"), n = $("acriotn").value, tag = $("acriott").value;
     $("acdispw").hidden = true;
     if (b.getAttribute("data-mode") === "off") {
-      // releasing asks for a second tap (STYLE.md, Confirm)
+      // removing asks for a second tap (STYLE.md, Confirm)
       if (!relArm) {
         relArm = true; b.classList.add("armed"); b.textContent = "Sure? Tap again"; say("acriotmsg", "Another account could then claim it.");
         relT = setTimeout(function () { relArm = false; b.classList.remove("armed"); claimState(); say("acriotmsg", ""); }, 3000);
         return;
       }
       relArm = false; clearTimeout(relT); b.classList.remove("armed");
-      return A.releaseRiot(function (err) { if (err) return say("acriotmsg", err); $("acriotn").value = ""; $("acriott").value = ""; claimState(); say("acriotmsg", "Released."); });
+      return A.releaseRiot(function (err) { if (err) return say("acriotmsg", err); $("acriotn").value = ""; $("acriott").value = ""; claimState(); say("acriotmsg", "Removed. Another account can claim it now."); });
     }
     if (!n.trim() || !tag.trim()) return say("acriotmsg", "Type your Riot name and its tag, as Riot shows them.");
     say("acriotmsg", "Claiming...");
@@ -787,23 +917,37 @@
     scrim.addEventListener("click", closeAll);
     doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && stack.length) closeAll(); });
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],#acnew,#acsign,#acout,#acsave,#acuse,#acaddkey,#acrecgo,.aclg button,#acclaim,#acdisp,#acareas button,#acprint button") : null;
+      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],[data-key],#acsign,#acsaveacct,#acout,#acsave,#acuse,#acaddkey,#ackeysave,#acrecgo,#acdl,.aclg button,#acclaim,#acdisp,#acareas button,#acprint button") : null;
       if (!t || !stack.length) return;
       if (t.hasAttribute("data-acgo")) return deeper(t.getAttribute("data-acgo"));
       if (t.hasAttribute("data-acback")) return back();
-      if (t.id === "acnew") {
+      if (t.hasAttribute("data-key")) { keyId = t.getAttribute("data-key"); return deeper("ackey"); }
+      if (t.id === "acsaveacct") {
+        // Save your account: a passkey, then the recovery code shown once
         say("acmsg", "Making your passkey...");
-        return A.create(function (err, j) {
+        return A.addKey(function (err, j) {
           if (err) return say("acmsg", err);
           paintAll(); renderRoot();
-          deeper("accode"); showCode(j.recovery, "");
+          deeper("accode"); showCode(j.recovery, "Your account is saved.");
         });
       }
-      if (t.id === "acsign") {
-        say("acmsg", "");
-        return A.signIn(function (err) { if (err) return say("acmsg", err); paintAll(); renderRoot("Signed in."); });
+      if (t.id === "ackeysave") {
+        say("ackeyonemsg", "Saving...");
+        return A.keyName(keyId, $("ackeyname").value, function (err) {
+          if (err) return say("ackeyonemsg", err);
+          keyInfo(); renderKeys(); say("ackeyonemsg", "Saved."); done($("ackeysave"), "Saved");
+        });
       }
-      if (t.id === "acout") return A.signOut(function () { paintAll(); renderRoot("Signed out. Everything on this phone stays."); });
+      if (t.id === "acdl") return download();
+      if (t.id === "acsign") {
+        var was = A.isGuest();
+        say("acinmsg", "");
+        return A.signIn(function (err) {
+          if (err) return say("acinmsg", err);
+          paintAll(); nextMsg = was ? "Signed in. This phone's things are in this account now." : "Signed in."; back();
+        });
+      }
+      if (t.id === "acout") return A.signOut(function () { paintAll(); renderRoot("Signed out. Everything on this phone stays, on a new account until you sign in again."); });
       if (t.id === "acsave") {
         say("acprofmsg", "Saving...");
         return A.saveProfile({ name: $("acname").value, user: $("acuser").value, about: $("acabout").value }, function (err) {
@@ -830,13 +974,20 @@
     $("acriotn").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acriott").focus(); });
     $("acriott").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("acriott").blur(); claimTap(); } });
     adjustable();
+    $("ackeyname").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("ackeyname").blur(); $("ackeysave").click(); } });
+    armed($("ackeyoff"), "ackeyonemsg", "This passkey stops signing in to RAVI. Delete it from your phone's Passwords too.", function () {
+      A.keyOff(keyId, function (err) { if (err) return say("ackeyonemsg", err); renderKeys(); back(); say("ackeymsg", "Passkey removed."); });
+    });
+    armed($("acdevall"), "acdevmsg", "Every other device gets a new account until it signs in again.", function () {
+      A.othersOut(function (err) { if (err) return say("acdevmsg", err); renderDevices(); setTimeout(function () { say("acdevmsg", "Every other device is signed out."); }, 0); });
+    });
     armed($("acdel"), "acdatamsg", "Deletes your account on RAVI's server for good. This phone keeps everything it has.", function () {
       A.remove(function (err) {
         if (err) return say("acdatamsg", err);
-        paintAll(); stack = [P.acm, P.acdata]; back(); renderRoot("Account deleted.");
+        paintAll(); stack = [P.acm, P.acdata]; back(); renderRoot("Account deleted. Everything on this phone stays, on a new account.");
       });
     });
-    doc.addEventListener("visibilitychange", function () { if (!doc.hidden) refresh(false); });
+    doc.addEventListener("visibilitychange", function () { if (doc.hidden) return; if (A.signedIn()) refresh(false); else A.makeGuest(); });
   }
   function recover() {
     var v = $("acrecin").value;
@@ -847,6 +998,8 @@
       $("acrecin").blur();
       paintAll(); renderRoot();
       nextMsg = "Signed in with your recovery code. Add a passkey in Passkeys so next time it's Face ID.";
+      // from Sign in, Back after the code returns to the account menu itself
+      if (stack[stack.length - 2] === P.acin) { cls(P.acin, ""); stack.splice(stack.length - 2, 1); }
       swapTo("accode"); showCode(j.recovery, "That code is used up. This is your new one.");
     });
   }
@@ -861,7 +1014,9 @@
     build();
     paintAll();
     wire();
-    refresh(false);
+    A.onChange(function () { paintAll(); if (stack[stack.length - 1] === P.acm) renderRoot(); });
+    if (A.signedIn()) refresh(false); else A.makeGuest();
+    root.addEventListener("online", function () { if (!A.signedIn()) A.makeGuest(null, true); });
   }
   if (doc.readyState === "loading") doc.addEventListener("DOMContentLoaded", boot); else boot();
 })(window);
