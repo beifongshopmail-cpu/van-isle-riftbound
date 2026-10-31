@@ -55,7 +55,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <section class="sts glass" id="stme">
     <div class="shead"><h2>Your Riot name</h2></div>
     <div class="nf"><input type="text" id="stmein" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Your Riot name" data-k="type"><button type="button" class="fbtn glass" id="stmeok" data-k="do">Save</button></div>
-    <p class="stn">The name you play under on PlayRiftbound, with its tag. At a live event it finds your table, your record and your alerts. Saved on this phone only.</p>
+    <p class="stn" id="stmenote">The name you play under on PlayRiftbound, with its tag. At a live event it finds your table, your record and your alerts. Saved on this phone only.</p>
     <p class="stmsg" id="stmemsg" aria-live="polite"></p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
@@ -206,6 +206,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var L = window.RAVI_LIVE, mein = document.getElementById("stmein"), memsg = document.getElementById("stmemsg");
   var have = L.me();
   if (have) { mein.value = L.nameText(have); }
+  // A Riot ID claimed on your RAVI account is this phone's Riot name; it is
+  // changed in Profile (your picture, top right), so here it only shows.
+  var acv = window.RAVI_ACCT && window.RAVI_ACCT.signedIn() ? window.RAVI_ACCT.view() : null;
+  if (acv && acv.riot) {
+    mein.value = acv.riot.n + "#" + acv.riot.tag;
+    mein.disabled = true; document.getElementById("stmeok").disabled = true;
+    document.getElementById("stmenote").textContent = "Claimed on your RAVI account, so it follows you to any phone you sign in on. Change it in Profile: tap your picture, top right.";
+  }
   function saveMe(){
     var p = L.setMe(mein.value);
     mein.value = p ? L.nameText(p) : "";

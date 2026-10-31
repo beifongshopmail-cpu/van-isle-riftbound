@@ -41,12 +41,19 @@
   }
   function keep(token, account) {
     try { root.localStorage.setItem(KEY, JSON.stringify({ t: token, id: account && account.id || null, made: account && account.made || null, a: account || null, at: Date.now() })); } catch (e) {}
+    meFrom(account);
   }
   // the account as last described, kept with the token
   function setView(account) {
     var s = saved();
     if (!s || !account || typeof account !== "object") return;
     keep(s.t, account);
+    meFrom(account);
+  }
+  // a claimed Riot ID is this phone's Riot name too (live.js reads vir.me.v1 for tables and alerts)
+  function meFrom(a) {
+    if (!a || !a.riot || typeof a.riot.n !== "string") return;
+    try { root.localStorage.setItem("vir.me.v1", JSON.stringify({ n: a.riot.n, tag: a.riot.tag || "" })); } catch (e) {}
   }
   function view() { var s = saved(); return s && s.a && typeof s.a === "object" ? s.a : null; }
   function forget() { try { root.localStorage.removeItem(KEY); } catch (e) {} }
@@ -157,6 +164,17 @@
   function saveProfile(o, cb) { call("POST", "/profile", { name: o.name, user: o.user, about: o.about }, cb); }
   function setPic(o, cb) { call("POST", "/pic", o, cb); }
   function uploadPhoto(jpgB64, cb) { call("POST", "/photo", { jpg: jpgB64 }, cb); }
+  // "Name#TAG" -> { n, tag } (the tag is everything after the last #)
+  function splitRiot(text) {
+    var s = String(text || "").trim(), i = s.lastIndexOf("#");
+    return { n: (i >= 0 ? s.slice(0, i) : s).trim(), tag: i >= 0 ? s.slice(i + 1).trim() : "" };
+  }
+  function claimRiot(text, cb) { var r = splitRiot(text); call("POST", "/riot", { n: r.n, tag: r.tag }, cb); }
+  function releaseRiot(cb) { call("POST", "/riot", { off: true }, cb); }
+  function disputeRiot(text, cb) { var r = splitRiot(text); call("POST", "/riot/dispute", { n: r.n, tag: r.tag }, cb); }
+  function setArea(area, cb) { call("POST", "/area", { area: area }, cb); }
+  function disputes(cb) { call("GET", "/admin/disputes", null, cb); }
+  function decide(id, give, cb) { call("POST", "/admin/decide", { id: id, give: !!give }, cb); }
   // where a picture is drawn from: a legend's art (rel: "" on the hub, "../" in a page folder) or a photo
   function picUrl(a, rel) {
     if (!a || !a.pic) return "";
@@ -179,7 +197,8 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
-    saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl };
+    saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl,
+    claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
 })(window);
 
 // THE PICTURE AND ITS MENUS (plan 2 M1 block 2; Mako 2026-10-30). Every page
@@ -237,6 +256,11 @@
         '<p class="lb">Display name</p><div class="nf"><input type="text" id="acname" maxlength="32" autocomplete="nickname" enterkeyhint="next" aria-label="Display name" data-k="type"></div>' +
         '<p class="lb">Username</p><div class="nf"><span class="acat">@</span><input type="text" id="acuser" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Username" data-k="type"></div>' +
         '<p class="pnote">Yours alone on RAVI: 3 to 20 letters, numbers or _.</p>' +
+        '<p class="lb">Riot ID</p><div class="nf"><input type="text" id="acriot" maxlength="24" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Riot ID" data-k="type"><button type="button" class="fbtn glass" id="acclaim" data-k="do">Claim</button></div>' +
+        '<p class="pnote">One RAVI account per Riot ID. It finds your table and your alerts at live events.</p>' +
+        '<p class="acmsg" id="acriotmsg" aria-live="polite"></p>' +
+        '<div class="doors acgap" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
+        '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
         '<p class="pnote">Only you see your profile for now. The trade board will show it to the players you trade with.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
@@ -247,14 +271,17 @@
       ackeys: headTitle("Passkeys") + '<div class="pbody"><div id="ackeylist"></div><p class="pnote">A passkey is Face ID, a fingerprint or a phone\'s lock, kept by your phone or your password manager. Add one on each phone you use, or keep them synced in iCloud Keychain.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acaddkey" data-k="do">Add a passkey</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
-      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">What RAVI keeps for your account: your passkeys\' public keys and the days they were added and used, your profile and picture, the days you signed in, and a scrambled copy of your recovery code. Never a password or an email.</p>' +
+      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
+      acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
+      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">What RAVI keeps for your account: your passkeys\' public keys and the days they were added and used, your profile, picture, Riot ID and home area, the days you signed in, and a scrambled copy of your recovery code. Never a password or an email.</p>' +
+        '<p class="pnote" id="acnum"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
         '<p class="acmsg" id="acdatamsg" aria-live="polite"></p></div>',
       acrec: headTitle("Use a recovery code") + '<div class="pbody"><div class="nf tall"><input type="text" id="acrecin" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Recovery code" data-k="type"></div>' +
         '<p class="pnote">The code RAVI showed you when you made your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", acarea: "Home area", acdispm: "Disputes" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -269,7 +296,10 @@
     var a = A.view(), h = $("achead"), b = $("acmbody");
     if (A.signedIn()) {
       var name = a && a.name ? a.name : "Your account";
-      var sub = a && a.user ? "@" + a.user : "Add your name and picture";
+      var bits = [];
+      if (a && a.user) bits.push("@" + a.user);
+      if (a && a.riot) bits.push(a.riot.n + "#" + a.riot.tag);
+      var sub = bits.length ? bits.join(" \u00b7 ") : "Add your name and picture";
       h.innerHTML = '<div class="acn"><b></b><span></span></div>';
       h.querySelector("b").textContent = name;
       h.querySelector("span").textContent = sub;
@@ -278,7 +308,8 @@
         '<button type="button" class="door" data-acgo="acprof"><span class="t">Profile</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="ackeys"><span class="t">Passkeys</span><span class="sp"></span>' + (n ? '<small>' + n + '</small>' : '') + CV + '</button>' +
         '<button type="button" class="door" data-acgo="accode"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button>' +
-        '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button></div>' +
+        '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button>' +
+        (a && a.admin ? '<button type="button" class="door" data-acgo="acdispm"><span class="t">Disputes</span><span class="sp"></span>' + (a.disputes ? '<small>' + a.disputes + '</small>' : '') + CV + '</button>' : '') + '</div>' +
         '<div class="doors" data-k="do"><button type="button" class="door act" id="acout"><span class="t">Sign out</span></button></div>' +
         '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
     } else {
@@ -385,8 +416,14 @@
     var a = A.view();
     if (id === "acprof") {
       $("acname").value = a && a.name || ""; $("acuser").value = a && a.user || ""; $("acabout").value = a && a.about || "";
-      say("acprofmsg", ""); paintAll();
-    } else if (id === "acpicm") { choice = null; renderPics(); say("acpicmsg", ""); }
+      var here = null;
+      try { here = JSON.parse(root.localStorage.getItem("vir.me.v1") || "null"); } catch (e) {}
+      $("acriot").value = a && a.riot ? a.riot.n + "#" + a.riot.tag : (here && here.n ? here.n + (here.tag ? "#" + here.tag : "") : "");
+      say("acprofmsg", ""); say("acriotmsg", ""); $("acdispw").hidden = true;
+      claimState(); areaText(); paintAll();
+    }
+    else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
+    else if (id === "acdispm") { renderDisputes(); } else if (id === "acpicm") { choice = null; renderPics(); say("acpicmsg", ""); }
     else if (id === "ackeys") {
       var list = $("ackeylist"), keys = a && a.keys || [];
       list.innerHTML = "";
@@ -397,7 +434,7 @@
       if (!keys.length) { var q = el("p", "pnote"); q.textContent = "Your passkeys show here."; list.appendChild(q); }
       say("ackeymsg", "");
     } else if (id === "accode") { codeInfo(); }
-    else if (id === "acdata") { say("acdatamsg", ""); }
+    else if (id === "acdata") { say("acdatamsg", ""); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
     else if (id === "acrec") { $("acrecin").value = ""; say("acrecmsg", ""); }
   }
 
@@ -435,6 +472,104 @@
     });
   }
 
+  // ---- Riot ID: claim, release, or say it is yours ----
+  function riotText(a) { return a && a.riot ? a.riot.n + "#" + a.riot.tag : ""; }
+  // Claim, or Release when the field shows the Riot ID this account holds
+  function claimState() {
+    var b = $("acclaim"), a = A.view(), held = riotText(a);
+    var same = held && $("acriot").value.trim().toLowerCase() === held.toLowerCase();
+    if (!b.classList.contains("armed")) b.textContent = same ? "Release" : "Claim";
+    b.setAttribute("data-mode", same ? "off" : "on");
+  }
+  var relArm = false, relT = 0;
+  function claimTap() {
+    var b = $("acclaim"), v = $("acriot").value;
+    $("acdispw").hidden = true;
+    if (b.getAttribute("data-mode") === "off") {
+      // releasing asks for a second tap (STYLE.md, Confirm: Sure? where the words do not fit)
+      if (!relArm) {
+        relArm = true; b.classList.add("armed"); b.textContent = "Sure?"; say("acriotmsg", "Another account could then claim it.");
+        relT = setTimeout(function () { relArm = false; b.classList.remove("armed"); claimState(); say("acriotmsg", ""); }, 3000);
+        return;
+      }
+      relArm = false; clearTimeout(relT); b.classList.remove("armed");
+      return A.releaseRiot(function (err) { if (err) return say("acriotmsg", err); $("acriot").value = ""; claimState(); say("acriotmsg", "Released."); });
+    }
+    if (!v.trim()) return say("acriotmsg", "Type your Riot ID first, with its #tag.");
+    say("acriotmsg", "Claiming...");
+    A.claimRiot(v, function (err, j, st) {
+      if (err) {
+        say("acriotmsg", err + (st === 409 ? " If it is yours, tell RAVI." : ""));
+        $("acdispw").hidden = st !== 409;
+        return;
+      }
+      var a = A.view();
+      $("acriot").value = riotText(a); claimState(); say("acriotmsg", "Claimed. It is yours on RAVI.");
+    });
+  }
+  function disputeTap() {
+    say("acriotmsg", "Sending...");
+    A.disputeRiot($("acriot").value, function (err) {
+      if (err) return say("acriotmsg", err);
+      $("acdispw").hidden = true;
+      say("acriotmsg", "Sent to RAVI to check. Send a screenshot of your Riot account page through Feedback, with your @username, and RAVI will settle it.");
+    });
+  }
+
+  // ---- Home area ----
+  var AREAS = [["", "Not set"], ["victoria", "Greater Victoria"], ["island", "Up Island"], ["away", "Somewhere else"]];
+  function areaName(code) { for (var i = 0; i < AREAS.length; i++) if (AREAS[i][0] === (code || "")) return AREAS[i][1]; return "Not set"; }
+  function areaText() { var a = A.view(); $("acareat").textContent = areaName(a && a.area); }
+  function renderAreas() {
+    var a = A.view(), cur = a && a.area || "", g = $("acareas");
+    g.innerHTML = "";
+    AREAS.forEach(function (x) {
+      var b = el("button", x[0] === cur ? "on" : "");
+      b.type = "button"; b.textContent = x[1]; b.setAttribute("data-area", x[0]);
+      g.appendChild(b);
+    });
+  }
+  function pickArea(code) {
+    say("acareamsg", "Saving...");
+    A.setArea(code || null, function (err) {
+      if (err) return say("acareamsg", err);
+      renderAreas(); areaText(); say("acareamsg", "Saved.");
+    });
+  }
+
+  // ---- Disputes (Mako's account only) ----
+  function renderDisputes() {
+    var list = $("acdisplist");
+    list.innerHTML = '<p class="pnote">Loading...</p>';
+    say("acdispmsg", "");
+    A.disputes(function (err, j) {
+      if (err) { list.innerHTML = ""; return say("acdispmsg", err); }
+      list.innerHTML = "";
+      var ds = j && j.disputes || [];
+      if (!ds.length) { var e = el("p", "pnote"); e.textContent = "No disputes. A player who finds their Riot ID claimed by another account can send one."; list.appendChild(e); }
+      ds.forEach(function (d) {
+        function who(x) { return x && x.user ? "@" + x.user : (x && x.name ? x.name : "an account with no username"); }
+        var head = el("p", "lb"); head.textContent = d.riot;
+        var note = el("p", "pnote");
+        note.textContent = (d.holder ? "Held by " + who(d.holder) + " since " + day(d.holder.since) + ". " : "Nobody holds it now. ") + who(d.asker) + " says it is theirs (" + day(d.at) + "). Check their screenshot in Feedback first.";
+        var rows = el("div", "doors acgap");
+        rows.setAttribute("data-k", "do");
+        rows.innerHTML = '<button type="button" class="door act" data-give="1"><span class="t"></span></button><button type="button" class="door act" data-give="0"><span class="t"></span></button>';
+        rows.children[0].querySelector(".t").textContent = "Give it to " + who(d.asker);
+        rows.children[1].querySelector(".t").textContent = d.holder ? "Keep it with " + who(d.holder) : "Dismiss";
+        [0, 1].forEach(function (i) {
+          armed(rows.children[i], "acdispmsg", i === 0 ? "Moves " + d.riot + " to " + who(d.asker) + "." : "Closes the dispute; nothing moves.", function () {
+            A.decide(d.id, i === 0, function (err2) {
+              if (err2) return say("acdispmsg", err2);
+              A.me(function () { renderDisputes(); say("acdispmsg", i === 0 ? "Given." : "Kept."); });
+            });
+          });
+        });
+        list.appendChild(head); list.appendChild(note); list.appendChild(rows);
+      });
+    });
+  }
+
   // ---- Picture: upload a photo, or pick a legend ----
   function loadLegends(cb) {
     if (root.VIR_LEGENDS) return cb(root.VIR_LEGENDS);
@@ -444,6 +579,23 @@
     s.onload = function () { legends = root.VIR_LEGENDS || []; cb(legends); };
     s.onerror = function () { cb([]); };
     doc.head.appendChild(s);
+  }
+  // the pictures on offer: each legend's own art, then its overnumbered printing (numbered
+  // past the set, such as OGN 299/298); never a signature printing (a star in its number),
+  // whose signature would not show in a circle (Mako 2026-10-30)
+  function artOf(L) {
+    var out = [];
+    L.forEach(function (lg) {
+      var base = [], over = [];
+      (lg && lg.v || []).forEach(function (v) {
+        var m = /-(\d+)(\*?)\/(\d+)$/.exec(v && v.c || "");
+        if (!m || m[2] || !/^[0-9a-f]{40}$/.test(v.h || "")) return;
+        (+m[1] > +m[3] ? over : base).push(v.h);
+      });
+      if (base.length) out.push({ h: base[0], label: lg.n });
+      over.forEach(function (h) { out.push({ h: h, label: lg.n + ", overnumbered" }); });
+    });
+    return out;
   }
   function renderPics() {
     var a = A.view(), rows = $("acpicrows");
@@ -457,11 +609,9 @@
     loadLegends(function (L) {
       var g = $("aclg"), cur = choice && choice.k === "l" ? choice.h : (!choice && a && a.pic && a.pic.k === "l" ? a.pic.h : "");
       g.innerHTML = "";
-      L.forEach(function (lg) {
-        var h = lg && lg.v && lg.v[0] && lg.v[0].h;
-        if (!h || !/^[0-9a-f]{40}$/.test(h)) return;
-        var b = el("button", h === cur ? "on" : "", '<span class="acav art" style="background-image:url(' + REL + 'cards/art/' + h + '.t.webp)"></span>');
-        b.type = "button"; b.setAttribute("aria-label", lg.n); b.setAttribute("data-h", h);
+      artOf(L).forEach(function (x) {
+        var b = el("button", x.h === cur ? "on" : "", '<span class="acav art" style="background-image:url(' + REL + 'cards/art/' + x.h + '.t.webp)"></span>');
+        b.type = "button"; b.setAttribute("aria-label", x.label); b.setAttribute("data-h", x.h);
         g.appendChild(b);
       });
     });
@@ -503,7 +653,7 @@
     btn.disabled = true;
     function done(err) {
       if (err) { btn.disabled = false; return say("acpicmsg", err); }
-      preview = null; choice = null; paintAll(); back();
+      preview = null; choice = null; paintAll(); renderPics(); say("acpicmsg", "Picture saved."); // stays in Picture
     }
     if (choice.k === "l") A.setPic({ k: "l", h: choice.h }, done);
     else { say("acpicmsg", "Saving..."); A.uploadPhoto(choice.jpg, done); }
@@ -527,7 +677,7 @@
     scrim.addEventListener("click", closeAll);
     doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && stack.length) closeAll(); });
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],#acnew,#acsign,#acout,#acsave,#acuse,#acaddkey,#acrecgo,.aclg button") : null;
+      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],#acnew,#acsign,#acout,#acsave,#acuse,#acaddkey,#acrecgo,.aclg button,#acclaim,#acdisp,#acareas button") : null;
       if (!t || !stack.length) return;
       if (t.hasAttribute("data-acgo")) return deeper(t.getAttribute("data-acgo"));
       if (t.hasAttribute("data-acback")) return back();
@@ -548,7 +698,9 @@
         say("acprofmsg", "Saving...");
         return A.saveProfile({ name: $("acname").value, user: $("acuser").value, about: $("acabout").value }, function (err) {
           if (err) return say("acprofmsg", err);
-          paintAll(); back(); say("acmsg", "Profile saved.");
+          var a = A.view();
+          $("acuser").value = a && a.user || "";
+          paintAll(); say("acprofmsg", "Saved."); // stays in Profile (Mako 2026-10-30)
         });
       }
       if (t.id === "acuse") return usePic();
@@ -558,8 +710,13 @@
         return A.addKey(function (err) { if (err) return say("ackeymsg", err); enter("ackeys"); say("ackeymsg", "Passkey added."); });
       }
       if (t.id === "acrecgo") return recover();
+      if (t.id === "acclaim") return claimTap();
+      if (t.id === "acdisp") return disputeTap();
+      if (t.parentNode && t.parentNode.id === "acareas") return pickArea(t.getAttribute("data-area"));
     });
     $("acrecin").addEventListener("keydown", function (e) { if (e.key === "Enter") recover(); });
+    $("acriot").addEventListener("input", function () { $("acdispw").hidden = true; claimState(); });
+    $("acriot").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("acriot").blur(); claimTap(); } });
     armed($("acdel"), "acdatamsg", "Deletes your account on RAVI's server for good. This phone keeps everything it has.", function () {
       A.remove(function (err) {
         if (err) return say("acdatamsg", err);

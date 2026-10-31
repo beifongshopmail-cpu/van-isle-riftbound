@@ -12,9 +12,17 @@
 // per passkey its id, public key, signature count and the days it was made
 // and last used; per signed-in phone a stamp of its token and those two
 // days; the profile the player fills in (display name, @username, one
-// line about them, a picture: a legend's art by its hash, or a photo the
-// phone shrank to 256 square JPEG). Riot names and synced data arrive in
-// later blocks. Delete removes every row of the account at once. Addresses are kept only as one-way
+// line about them, a home area, a picture: a legend's art by its hash, or a
+// photo the phone shrank to 256 square JPEG); the Riot ID the player
+// claimed (one account per Riot ID, first claim holds: Mako 2026-10-30) and
+// any dispute they raised over one. Synced data arrives in a later block.
+// Delete removes every row of the account at once.
+//
+// DISPUTES: a player whose Riot ID another account holds can say it is
+// theirs. Mako (an account listed in the Worker variable ADMIN) sees each
+// dispute in his account menu and gives the ID to the player who asked, or
+// keeps it where it is. RAVI cannot check a Riot ID itself until Riot grants
+// it Riot Sign-On (NEXT -- register RAVI with Riot). Addresses are kept only as one-way
 // stamps with the day in them, for the day's limits.
 //
 // The passkey checks follow the WebAuthn Level 2 steps (w3.org/TR/webauthn-2,
@@ -30,8 +38,9 @@ export const ORIGINS = ["https://ravi.tools"];
 export const CHALLENGE_MS = 5 * 60000;
 export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30 }; // per connection per day
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5 }; // per connection per day
 export const PHOTO_MAX = 150000; // bytes of JPEG
+export const AREAS = ["victoria", "island", "away"]; // Greater Victoria, Up Island, Somewhere else
 const RESERVED = ["ravi", "admin", "administrator", "support", "help", "mod", "moderator", "staff", "official", "riot", "riotgames", "system", "root", "null", "undefined", "me", "you", "account", "settings"];
 const DAY = 86400000;
 const ALGS = [-7, -257]; // ES256, RS256
@@ -265,6 +274,15 @@ export function cleanUser(v) {
   if (RESERVED.indexOf(u) >= 0) return { error: "@" + u + " is kept for RAVI; pick another" };
   return { u: u };
 }
+// a Riot ID as Riot writes it: a name of 3 to 16 letters, digits or spaces and a
+// tag of 3 to 5 letters or digits; the key that makes it one (Riot IDs ignore case)
+export function cleanRiot(n, tag) {
+  const name = typeof n === "string" ? n.normalize("NFC").replace(/[\u0000-\u001f\u007f<>#]/g, "").replace(/\s+/g, " ").trim() : "";
+  const t = typeof tag === "string" ? tag.trim().replace(/^#/, "") : "";
+  if (name.length < 3 || name.length > 16 || !/^[\p{L}\p{N} ._]+$/u.test(name)) return { error: "a Riot name is 3 to 16 letters, numbers or spaces" };
+  if (!/^[\p{L}\p{N}]{3,5}$/u.test(t)) return { error: "a Riot tag is the 3 to 5 letters or numbers after the #" };
+  return { n: name, tag: t, k: name.toLowerCase().replace(/ /g, "") + "#" + t.toLowerCase() };
+}
 // a JPEG the phone made: its first and last markers, and a frame no bigger than 1024 square
 export function checkJpeg(b) {
   if (!(b instanceof Uint8Array) || b.length < 200 || b.length > PHOTO_MAX) return false;
@@ -295,6 +313,9 @@ function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS lim (key TEXT PRIMARY KEY, day TEXT, c INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS prof (acct TEXT PRIMARY KEY, name TEXT, user TEXT UNIQUE, about TEXT, pk TEXT, ph TEXT, pv INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS photo (acct TEXT PRIMARY KEY, img BLOB)");
+  try { sql.exec("ALTER TABLE prof ADD COLUMN area TEXT"); } catch (e) { /* already there */ }
+  sql.exec("CREATE TABLE IF NOT EXISTS riot (k TEXT PRIMARY KEY, acct TEXT UNIQUE, n TEXT, tag TEXT, at INTEGER)");
+  sql.exec("CREATE TABLE IF NOT EXISTS disp (id TEXT PRIMARY KEY, k TEXT, acct TEXT, n TEXT, tag TEXT, at INTEGER, UNIQUE (k, acct))");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code FROM acct WHERE id = ?", id),
@@ -308,13 +329,23 @@ function sqlStore(sql) {
     delSess: (tok) => sql.exec("DELETE FROM sess WHERE tok = ?", tok),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
-    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv FROM prof WHERE acct = ?", acct),
+    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area FROM prof WHERE acct = ?", acct),
     profByUser: (u) => one("SELECT acct FROM prof WHERE user = ?", u),
-    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof VALUES (?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv),
+    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null),
+    riotOf: (acct) => one("SELECT k, acct, n, tag, at FROM riot WHERE acct = ?", acct),
+    riotByKey: (k) => one("SELECT k, acct, n, tag, at FROM riot WHERE k = ?", k),
+    putRiot: (x) => { sql.exec("DELETE FROM riot WHERE acct = ?", x.acct); sql.exec("INSERT INTO riot VALUES (?, ?, ?, ?, ?)", x.k, x.acct, x.n, x.tag, x.at); },
+    delRiot: (acct) => sql.exec("DELETE FROM riot WHERE acct = ?", acct),
+    disps: () => sql.exec("SELECT id, k, acct, n, tag, at FROM disp ORDER BY at").toArray(),
+    disp: (id) => one("SELECT id, k, acct, n, tag, at FROM disp WHERE id = ?", id),
+    putDisp: (x) => sql.exec("INSERT OR REPLACE INTO disp VALUES (?, ?, ?, ?, ?, ?)", x.id, x.k, x.acct, x.n, x.tag, x.at),
+    delDisp: (id) => sql.exec("DELETE FROM disp WHERE id = ?", id),
     photo: (acct) => { const x = one("SELECT img FROM photo WHERE acct = ?", acct); return x ? new Uint8Array(x.img) : null; },
     putPhoto: (acct, img) => sql.exec("INSERT OR REPLACE INTO photo VALUES (?, ?)", acct, img.buffer.slice(img.byteOffset, img.byteOffset + img.byteLength)),
     delPhoto: (acct) => sql.exec("DELETE FROM photo WHERE acct = ?", acct),
     delAcct: (id) => {
+      sql.exec("DELETE FROM riot WHERE acct = ?", id);
+      sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM prof WHERE acct = ?", id);
       sql.exec("DELETE FROM photo WHERE acct = ?", id);
       sql.exec("DELETE FROM cred WHERE acct = ?", id);
@@ -332,7 +363,7 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map() };
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
   return {
     tables: T, // the tests read every row from here
@@ -354,11 +385,25 @@ export function memStore() {
       if (clash) throw new Error("UNIQUE constraint failed: prof.user");
       T.prof.set(x.acct, copy(x));
     },
+    riotOf: (acct) => { let f = null; T.riot.forEach((x) => { if (x.acct === acct) f = x; }); return copy(f); },
+    riotByKey: (k) => copy(T.riot.get(k)),
+    putRiot: (x) => {
+      T.riot.forEach((y, k) => { if (y.acct === x.acct) T.riot.delete(k); });
+      if (T.riot.has(x.k)) throw new Error("UNIQUE constraint failed: riot.k");
+      T.riot.set(x.k, copy(x));
+    },
+    delRiot: (acct) => T.riot.forEach((y, k) => { if (y.acct === acct) T.riot.delete(k); }),
+    disps: () => Array.from(T.disp.values()).sort((a, b) => a.at - b.at).map(copy),
+    disp: (id) => copy(T.disp.get(id)),
+    putDisp: (x) => { T.disp.forEach((y, k) => { if (y.k === x.k && y.acct === x.acct) T.disp.delete(k); }); T.disp.set(x.id, copy(x)); },
+    delDisp: (id) => T.disp.delete(id),
     photo: (acct) => T.photo.has(acct) ? new Uint8Array(T.photo.get(acct)) : null,
     putPhoto: (acct, img) => T.photo.set(acct, new Uint8Array(img)),
     delPhoto: (acct) => T.photo.delete(acct),
     delAcct: (id) => {
       T.prof.delete(id); T.photo.delete(id);
+      T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
+      T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
       ["cred", "sess"].forEach((t) => T[t].forEach((v, k) => { if (v.acct === id) T[t].delete(k); }));
       T.chal.forEach((v, k) => { if (v.acct === id) T.chal.delete(k); });
       T.acct.delete(id);
@@ -409,10 +454,17 @@ export function makeAccounts() {
     view(a) {
       const p = this.db.prof(a.id);
       const pic = p && p.pk === "l" && p.ph ? { k: "l", h: p.ph } : p && p.pk === "p" ? { k: "p", v: p.pv } : null;
-      return { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ made: dayOf(c.made), last: dayOf(c.last) })),
-        name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", pic: pic };
+      const r = this.db.riotOf(a.id);
+      const mine = this.db.disps().filter((d) => d.acct === a.id).map((d) => ({ n: d.n, tag: d.tag, at: dayOf(d.at) }));
+      const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ made: dayOf(c.made), last: dayOf(c.last) })),
+        name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", area: p && p.area || "", pic: pic,
+        riot: r ? { n: r.n, tag: r.tag } : null, asked: mine };
+      if (this.isAdmin(a.id)) { out.admin = true; out.disputes = this.db.disps().length; }
+      return out;
     }
-    profOf(id) { return this.db.prof(id) || { acct: id, name: "", user: null, about: "", pk: null, ph: null, pv: 0 }; }
+    isAdmin(id) { return String(this.env.ADMIN || "").split(/[\s,]+/).indexOf(id) >= 0; }
+    profOf(id) { return this.db.prof(id) || { acct: id, name: "", user: null, about: "", pk: null, ph: null, pv: 0, area: null }; }
+    who2(acct) { const p = this.db.prof(acct); return { user: p && p.user || "", name: p && p.name || "" }; }
     async session(acctId) {
       const t = b64u(rand(32)), now = this.now();
       this.db.putSess({ tok: await sha(t), acct: acctId, made: now, last: now });
@@ -422,6 +474,15 @@ export function makeAccounts() {
       const u = new URL(req.url), ip = req.headers.get("X-Ravi-Ip") || "", now = this.now();
       this.db.prune(now, now - SESSION_DAYS * DAY, dayOf(now));
       const me = await this.who(req);
+      if (req.method === "GET" && u.pathname === "/admin/disputes") {
+        if (!me || !this.isAdmin(me.acct.id)) return reply({ error: "not allowed" }, 403);
+        return reply({ v: 1, disputes: this.db.disps().map((d) => {
+          const held = this.db.riotByKey(d.k);
+          // the Riot ID as its holder wrote it (Riot IDs ignore case); the asker's own spelling is kept if it is given to them
+          return { id: d.id, riot: held ? held.n + "#" + held.tag : d.n + "#" + d.tag, at: dayOf(d.at), asker: this.who2(d.acct),
+            holder: held ? Object.assign(this.who2(held.acct), { since: dayOf(held.at) }) : null };
+        }) });
+      }
       if (req.method === "GET") {
         const pm = /^\/pic\/([0-9a-f]{24})$/.exec(u.pathname);
         if (pm) {
@@ -540,6 +601,49 @@ export function makeAccounts() {
         x.pk = "p"; x.ph = null; x.pv = now;
         this.db.putProf(x);
         return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/area") {
+        if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+        if (body.area !== null && AREAS.indexOf(body.area) < 0) return reply({ error: "not an area RAVI knows" }, 400);
+        const x = this.profOf(me.acct.id);
+        x.area = body.area;
+        this.db.putProf(x);
+        return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/riot") {
+        if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+        if (body.off === true) { this.db.delRiot(me.acct.id); return reply({ account: this.view(me.acct) }); }
+        const c = cleanRiot(body.n, body.tag);
+        if (c.error) return reply({ error: c.error }, 400);
+        const held = this.db.riotByKey(c.k);
+        if (held && held.acct !== me.acct.id) return reply({ error: c.n + "#" + c.tag + " is claimed by another RAVI account", taken: true }, 409);
+        try { this.db.putRiot({ k: c.k, acct: me.acct.id, n: c.n, tag: c.tag, at: held ? held.at : now }); }
+        catch (e) { return reply({ error: c.n + "#" + c.tag + " was just claimed by another RAVI account", taken: true }, 409); }
+        // a dispute this account raised over the same Riot ID is settled by the claim
+        this.db.disps().forEach((d) => { if (d.acct === me.acct.id && d.k === c.k) this.db.delDisp(d.id); });
+        return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/riot/dispute") {
+        const c = cleanRiot(body.n, body.tag);
+        if (c.error) return reply({ error: c.error }, 400);
+        const held = this.db.riotByKey(c.k);
+        if (!held || held.acct === me.acct.id) return reply({ error: "nobody else holds " + c.n + "#" + c.tag + "; claim it" }, 409);
+        if (!(await this.spend("disp", ip))) return reply({ error: "too many disputes today; try again tomorrow" }, 429);
+        this.db.putDisp({ id: hex(rand(8)), k: c.k, acct: me.acct.id, n: c.n, tag: c.tag, at: now });
+        return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/admin/decide") {
+        if (!this.isAdmin(me.acct.id)) return reply({ error: "not allowed" }, 403);
+        const d = typeof body.id === "string" ? this.db.disp(body.id) : null;
+        if (!d) return reply({ error: "that dispute is already settled" }, 404);
+        if (body.give === true) {
+          this.db.delRiot(d.acct);
+          const held = this.db.riotByKey(d.k);
+          if (held) this.db.delRiot(held.acct);
+          this.db.putRiot({ k: d.k, acct: d.acct, n: d.n, tag: d.tag, at: now });
+        }
+        this.db.disps().forEach((x) => { if (x.k === d.k && (body.give === true || x.id === d.id)) this.db.delDisp(x.id); });
+        return reply({ ok: true, left: this.db.disps().length });
       }
       if (p === "/out") { this.db.delSess(me.tok); return reply({ ok: true }); }
       if (p === "/delete") { this.db.delAcct(me.acct.id); return reply({ ok: true }); }

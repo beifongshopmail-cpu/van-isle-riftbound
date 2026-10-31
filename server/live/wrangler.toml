@@ -6,6 +6,11 @@ main = "worker.js"
 compatibility_date = "2026-10-01"
 workers_dev = true
 
+# Accounts allowed to settle Riot ID disputes (accounts.js): RAVI account
+# numbers, comma separated. Mako's number goes here (Your data shows it).
+[vars]
+ADMIN = ""
+
 # Pairing alerts (alerts.js): one Durable Object on SQLite storage, which the
 # free plan allows. The VAPID key is the Worker secret VAPID_JWK, made once
 # by the deploy workflow; it is never in the repo.
