@@ -58,8 +58,12 @@ export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
 export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1"];
 // an item's text at most, an account's whole text, its items, items per call, items per answer, calls a day, days a delete is kept
-export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page: 300, day: 5000, keepGone: 120 };
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, sync: SYNC.day }; // per connection per day (guest: a store's wifi)
+export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page: 300, day: 5000, keepGone: 120,
+  guestTotal: 2000000 }; // an account never saved holds less (the security check, Mako's yes 2026-10-31: many throwaway guests must not fill the free plan)
+// per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
+// sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
+// can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000 }; // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -506,6 +510,13 @@ export function makeAccounts() {
       this.db.use(key, day, c + 1);
       return true;
     }
+    // up to n of a day's allowance per connection; how many were granted
+    async spendUpTo(what, ip, n) {
+      const day = dayOf(this.now()), key = what + ":" + (await sha(String(ip || "") + "|" + day));
+      const c = this.db.used(key, day), got = Math.max(0, Math.min(n, LIMITS[what] - c));
+      if (got) this.db.use(key, day, c + got);
+      return got;
+    }
     // the signed-in account from "Authorization: Bearer <token>", or null
     async who(req) {
       const m = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(req.headers.get("Authorization") || "");
@@ -585,8 +596,9 @@ export function makeAccounts() {
     // the next running number for an item's change
     next() { if (this.seq === undefined) this.seq = this.db.maxSeq(); return ++this.seq; }
     // one sync: the phone's changes in, then what changed since its cursor out
-    syncWith(acct, body) {
-      const now = this.now();
+    syncWith(acct, body, room, guest) {
+      const now = this.now(), total = guest ? SYNC.guestTotal : SYNC.total;
+      let wait = false;
       const since = Number.isSafeInteger(body.since) && body.since >= 0 ? body.since : 0;
       const put = Array.isArray(body.put) ? body.put.slice(0, SYNC.put) : [];
       let size = this.db.itemSize(acct), full = false;
@@ -600,13 +612,15 @@ export function makeAccounts() {
         const e = this.db.item(acct, x.k, x.id);
         if (e && e.t >= t) { back.push(e); return; } // the account's copy is as new or newer: sent back
         const b = size.b - (e && e.d ? e.d.length : 0) + (d ? d.length : 0), n = size.n + (e ? 0 : 1);
-        if ((d && b > SYNC.total) || n > SYNC.items) { full = true; return; }
+        if ((d && b > total) || n > SYNC.items) { full = true; return; }
+        if (room <= 0) { wait = true; return; } // this connection's writes for today are spent: the phone keeps it and tries later
+        room--;
         this.db.putItem({ acct: acct, k: x.k, id: x.id, t: t, d: d, s: this.next() });
         size = { n: n, b: b };
       });
       const rows = this.db.items(acct, since, SYNC.page);
       const out = (r) => r.d === null ? { k: r.k, id: r.id, t: r.t, x: 1 } : { k: r.k, id: r.id, t: r.t, d: r.d };
-      return { v: 1, cur: rows.length ? rows[rows.length - 1].s : since, more: rows.length === SYNC.page, items: rows.map(out), back: back.map(out), full: full };
+      return { v: 1, cur: rows.length ? rows[rows.length - 1].s : since, more: rows.length === SYNC.page, items: rows.map(out), back: back.map(out), full: full, wait: wait };
     }
     async fetch(req) {
       const u = new URL(req.url), ip = req.headers.get("X-Ravi-Ip") || "", now = this.now();
@@ -657,7 +671,7 @@ export function makeAccounts() {
         const token = await this.session(a.id, body.dev);
         // the Riot name this phone already had becomes the guest's Riot ID, when nobody holds it
         const rr = body.riot && typeof body.riot === "object" ? cleanRiot(body.riot.n, body.riot.tag) : null;
-        if (rr && !rr.error && !this.db.riotByKey(rr.k)) {
+        if (rr && !rr.error && !this.db.riotByKey(rr.k) && (await this.spend("riot", ip))) {
           try { this.db.putRiot({ k: rr.k, acct: a.id, n: rr.n, tag: rr.tag, at: now }); } catch (e) { /* claimed a moment ago */ }
         }
         return reply({ token: token, account: this.view(a) });
@@ -787,8 +801,11 @@ export function makeAccounts() {
         return reply({ account: this.view(me.acct) });
       }
       if (p === "/riot") {
-        if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
-        if (body.off === true) { this.db.delRiot(me.acct.id); return reply({ account: this.view(me.acct) }); }
+        if (body.off === true) {
+          if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+          this.db.delRiot(me.acct.id); return reply({ account: this.view(me.acct) });
+        }
+        if (!(await this.spend("riot", ip))) return reply({ error: "too many Riot ID claims from this connection today; try again tomorrow" }, 429);
         const c = cleanRiot(body.n, body.tag);
         if (c.error) return reply({ error: c.error }, 400);
         const held = this.db.riotByKey(c.k);
@@ -822,8 +839,10 @@ export function makeAccounts() {
         return reply({ ok: true, left: this.db.disps().length });
       }
       if (p === "/sync") {
-        if (!(await this.spend("sync", "acct:" + me.acct.id))) return reply({ error: "too many syncs today; your things stay on this phone and go up tomorrow" }, 429);
-        return reply(this.syncWith(me.acct.id, body));
+        if (!(await this.spend("sync", "acct:" + me.acct.id)) || !(await this.spend("synccall", ip))) return reply({ error: "too many syncs today; your things stay on this phone and go up tomorrow" }, 429);
+        const want = Array.isArray(body.put) ? Math.min(body.put.length, SYNC.put) : 0;
+        const room = want ? await this.spendUpTo("syncw", ip, want) : 0;
+        return reply(this.syncWith(me.acct.id, body, room, !!me.acct.guest));
       }
       if (p === "/key/name" || p === "/key/off") {
         const c = typeof body.id === "string" && body.id.length < 1400 ? this.db.cred(body.id) : null;

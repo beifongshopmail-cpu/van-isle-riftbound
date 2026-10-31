@@ -1218,7 +1218,7 @@
       var mm = meta();
       if (mm.a !== s.id) return finish(false); // the account changed while this was on its way
       // what was sent and kept, or answered with a newer copy, is no longer unsent
-      Object.keys(sent).forEach(function (kk) { var p = kk.split("\n"), e = mm.k[p[0]] && mm.k[p[0]][p[1]]; if (e && e[1] === sent[kk] && !j.full) e[2] = 0; });
+      Object.keys(sent).forEach(function (kk) { var p = kk.split("\n"), e = mm.k[p[0]] && mm.k[p[0]][p[1]]; if (e && e[1] === sent[kk] && !j.full && !j.wait) e[2] = 0; });
       var changed = {};
       j.items.concat(Array.isArray(j.back) ? j.back : []).forEach(function (r) {
         if (!r || KEYS.indexOf(r.k) < 0 || typeof r.id !== "string") return;
@@ -1243,7 +1243,7 @@
       });
       if (+j.cur >= 0) mm.c = +j.cur;
       keepMeta();
-      status = j.full ? "full" : "";
+      status = j.full ? "full" : j.wait ? "wait" : "";
       var any = Object.keys(changed).length > 0;
       if (any) fresh(Object.keys(changed));
       finish(j.more || again);
