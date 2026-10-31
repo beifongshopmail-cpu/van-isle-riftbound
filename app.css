@@ -538,3 +538,14 @@ html.gate body > :not(#ravigate){display:none!important}
 .acmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .acmsg:empty{display:none}
 .panel.acct .door.armed{background-color:var(--glass-press)}
+/* the Picture menu's circle you drag and pinch to place the picture (Mako 2026-10-31) */
+.acadj{width:176px;height:176px;margin:2px auto 0;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}
+.acadj svg{width:44px;height:44px} /* size-exempt: the person drawn inside the picture you place, a picture not a control */
+.panel.acct .acadjn{text-align:center;margin-top:8px}
+.panel.acct .acrow{margin-top:12px}
+/* a Riot ID in its two parts, as Riot shows them: the name, and the #tag; its button is a full-width action under them (Mako 2026-10-31) */
+.rid+.pact{margin-top:6px}
+.rid{display:flex;gap:6px}
+.ridn{flex:1 1 auto;min-width:0}
+.ridt{flex:0 0 136px;min-width:0} /* a 5-letter tag at 16 with room to spare: its input stays wider than 88 */
+.rid .nf input{min-width:0;width:0} /* grows to fill its field (flex:1); an input never claims its default width here */

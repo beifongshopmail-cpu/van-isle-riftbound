@@ -9,7 +9,7 @@ workers_dev = true
 # Accounts allowed to settle Riot ID disputes (accounts.js): RAVI account
 # numbers, comma separated. Mako's number goes here (Your data shows it).
 [vars]
-ADMIN = ""
+ADMIN = "00eba1d7eaba3dcf7ca6dc50"
 
 # Pairing alerts (alerts.js): one Durable Object on SQLite storage, which the
 # free plan allows. The VAPID key is the Worker secret VAPID_JWK, made once

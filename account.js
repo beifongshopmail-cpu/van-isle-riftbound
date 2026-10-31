@@ -164,17 +164,22 @@
   function saveProfile(o, cb) { call("POST", "/profile", { name: o.name, user: o.user, about: o.about }, cb); }
   function setPic(o, cb) { call("POST", "/pic", o, cb); }
   function uploadPhoto(jpgB64, cb) { call("POST", "/photo", { jpg: jpgB64 }, cb); }
-  // "Name#TAG" -> { n, tag } (the tag is everything after the last #)
-  function splitRiot(text) {
-    var s = String(text || "").trim(), i = s.lastIndexOf("#");
-    return { n: (i >= 0 ? s.slice(0, i) : s).trim(), tag: i >= 0 ? s.slice(i + 1).trim() : "" };
-  }
-  function claimRiot(text, cb) { var r = splitRiot(text); call("POST", "/riot", { n: r.n, tag: r.tag }, cb); }
+  // a Riot ID in its two parts, as Riot shows them: the name, and the tag after the #
+  function claimRiot(n, tag, cb) { call("POST", "/riot", { n: String(n || "").trim(), tag: String(tag || "").trim().replace(/^#/, "") }, cb); }
   function releaseRiot(cb) { call("POST", "/riot", { off: true }, cb); }
-  function disputeRiot(text, cb) { var r = splitRiot(text); call("POST", "/riot/dispute", { n: r.n, tag: r.tag }, cb); }
+  function disputeRiot(n, tag, cb) { call("POST", "/riot/dispute", { n: String(n || "").trim(), tag: String(tag || "").trim().replace(/^#/, "") }, cb); }
   function setArea(area, cb) { call("POST", "/area", { area: area }, cb); }
   function disputes(cb) { call("GET", "/admin/disputes", null, cb); }
   function decide(id, give, cb) { call("POST", "/admin/decide", { id: id, give: !!give }, cb); }
+  // how a picture sits in its circle: x, y as CSS background-position, z circle-widths wide
+  // (a legend's card art is portrait, so its width sets the size); a photo is already square
+  var CROP = { x: 50, y: 20, z: 1.9 };
+  function picFit(a) {
+    var p = a && a.pic;
+    if (!p || p.k !== "l") return { size: "cover", pos: "50% 50%" };
+    var x = isFinite(p.x) ? +p.x : CROP.x, y = isFinite(p.y) ? +p.y : CROP.y, z = isFinite(p.z) ? +p.z : CROP.z;
+    return { size: Math.round(z * 1000) / 10 + "% auto", pos: x + "% " + y + "%" };
+  }
   // where a picture is drawn from: a legend's art (rel: "" on the hub, "../" in a page folder) or a photo
   function picUrl(a, rel) {
     if (!a || !a.pic) return "";
@@ -197,7 +202,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
-    saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl,
+    saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
 })(window);
 
@@ -221,7 +226,7 @@
   var CV = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
   var BACK = '<button type="button" class="circ btn glass back" data-acback aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>';
   var REFRESH = 3600000; // the account is reread at most once an hour per phone
-  var pic, scrim, P = {}, stack = [], lifted = false, legends = null, choice = null, preview = null, nextMsg = "";
+  var pic, scrim, P = {}, stack = [], lifted = false, legends = null, preview = null, work = null, nextMsg = "";
 
   function el(tag, cls, html) { var e = doc.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; }
   function $(id) { return doc.getElementById(id); }
@@ -231,8 +236,10 @@
 
   // draw a picture into a circle: art, the photo, or a person (filled when signed in)
   function paint(node, a, over) {
-    var url = over ? over.url : A.picUrl(a, REL);
+    var url = over ? over.url : A.picUrl(a, REL), fit = over ? over.fit : A.picFit(a);
     node.style.backgroundImage = url ? "url(\"" + url.replace(/["\\]/g, "") + "\")" : "";
+    node.style.backgroundSize = url && fit ? fit.size : "";
+    node.style.backgroundPosition = url && fit ? fit.pos : "";
     node.classList.toggle("art", !!url);
     node.classList.toggle("me", !url && A.signedIn());
     node.innerHTML = url ? "" : (A.signedIn() ? SVG_ME : SVG_P);
@@ -256,16 +263,21 @@
         '<p class="lb">Display name</p><div class="nf"><input type="text" id="acname" maxlength="32" autocomplete="nickname" enterkeyhint="next" aria-label="Display name" data-k="type"></div>' +
         '<p class="lb">Username</p><div class="nf"><span class="acat">@</span><input type="text" id="acuser" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Username" data-k="type"></div>' +
         '<p class="pnote">Yours alone on RAVI: 3 to 20 letters, numbers or _.</p>' +
-        '<p class="lb">Riot ID</p><div class="nf"><input type="text" id="acriot" maxlength="24" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Riot ID" data-k="type"><button type="button" class="fbtn glass" id="acclaim" data-k="do">Claim</button></div>' +
+        '<p class="lb">Riot ID</p><div class="rid"><div class="ridn"><div class="nf"><input type="text" id="acriotn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
+        '<div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="acriott" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
+        '<button type="button" class="pact btn glass" id="acclaim" data-k="do">Claim</button>' +
         '<p class="pnote">One RAVI account per Riot ID. It finds your table and your alerts at live events.</p>' +
         '<p class="acmsg" id="acriotmsg" aria-live="polite"></p>' +
-        '<div class="doors acgap" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
+        '<div class="doors acrow" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
         '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
         '<p class="pnote">Only you see your profile for now. The trade board will show it to the players you trade with.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
-      acpicm: headTitle("Picture") + '<div class="pbody"><div class="doors" id="acpicrows"></div>' +
+      acpicm: headTitle("Picture") + '<div class="pbody"><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span>' +
+        '<p class="pnote acadjn" id="acadjn">Drag to move it, pinch to zoom.</p>' +
+        '<div class="seg acrow" id="acprint" role="group" aria-label="Printing" data-k="pick" hidden></div>' +
+        '<div class="doors acrow" id="acpicrows"></div>' +
         '<p class="lb">Or pick a legend</p><div class="aclg" id="aclg" data-k="pick"></div><p class="acmsg" id="acpicmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acuse" data-k="do" disabled>Use this picture</button></div>',
       ackeys: headTitle("Passkeys") + '<div class="pbody"><div id="ackeylist"></div><p class="pnote">A passkey is Face ID, a fingerprint or a phone\'s lock, kept by your phone or your password manager. Add one on each phone you use, or keep them synced in iCloud Keychain.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
@@ -383,7 +395,7 @@
     if (t) cls(t, "");
     scrim.classList.remove("show");
     doc.documentElement.classList.remove("lock");
-    if (preview) { preview = null; choice = null; paintAll(); }
+    if (preview || work) { preview = null; work = null; paintAll(); }
     lift(false);
   }
   function deeper(id) {
@@ -398,7 +410,7 @@
   function back() {
     if (stack.length < 2) return closeAll();
     var from = stack.pop(), to = stack[stack.length - 1];
-    if (from === P.acpicm && preview) { preview = null; choice = null; paintAll(); }
+    if (from === P.acpicm && (preview || work)) { preview = null; work = null; paintAll(); }
     if (to === P.acm) { renderRoot(nextMsg); nextMsg = ""; }
     cls(from, "tor"); cls(to, "froml");
     void to.offsetWidth;
@@ -416,14 +428,13 @@
     var a = A.view();
     if (id === "acprof") {
       $("acname").value = a && a.name || ""; $("acuser").value = a && a.user || ""; $("acabout").value = a && a.about || "";
-      var here = null;
-      try { here = JSON.parse(root.localStorage.getItem("vir.me.v1") || "null"); } catch (e) {}
-      $("acriot").value = a && a.riot ? a.riot.n + "#" + a.riot.tag : (here && here.n ? here.n + (here.tag ? "#" + here.tag : "") : "");
+      riotFill(a);
       say("acprofmsg", ""); say("acriotmsg", ""); $("acdispw").hidden = true;
       claimState(); areaText(); paintAll();
     }
     else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
-    else if (id === "acdispm") { renderDisputes(); } else if (id === "acpicm") { choice = null; renderPics(); say("acpicmsg", ""); }
+    else if (id === "acdispm") { renderDisputes(); }
+    else if (id === "acpicm") { work = null; renderPics(); say("acpicmsg", ""); }
     else if (id === "ackeys") {
       var list = $("ackeylist"), keys = a && a.keys || [];
       list.innerHTML = "";
@@ -472,48 +483,61 @@
     });
   }
 
-  // ---- Riot ID: claim, release, or say it is yours ----
+  // ---- Riot ID: claim, release, or say it is yours (two fields: the name and the #tag) ----
   function riotText(a) { return a && a.riot ? a.riot.n + "#" + a.riot.tag : ""; }
-  // Claim, or Release when the field shows the Riot ID this account holds
+  function riotFill(a) {
+    var here = null;
+    try { here = JSON.parse(root.localStorage.getItem("vir.me.v1") || "null"); } catch (e) {}
+    var r = a && a.riot ? a.riot : (here && here.n ? { n: here.n, tag: here.tag || "" } : { n: "", tag: "" });
+    $("acriotn").value = r.n; $("acriott").value = r.tag;
+  }
+  // Claim, or Release when the fields show the Riot ID this account holds
   function claimState() {
-    var b = $("acclaim"), a = A.view(), held = riotText(a);
-    var same = held && $("acriot").value.trim().toLowerCase() === held.toLowerCase();
-    if (!b.classList.contains("armed")) b.textContent = same ? "Release" : "Claim";
+    var b = $("acclaim"), a = A.view(), r = a && a.riot;
+    var same = !!r && $("acriotn").value.trim().toLowerCase() === r.n.toLowerCase() && $("acriott").value.trim().replace(/^#/, "").toLowerCase() === r.tag.toLowerCase();
+    if (!b.classList.contains("armed") && !b.classList.contains("done")) b.textContent = same ? "Release" : "Claim";
     b.setAttribute("data-mode", same ? "off" : "on");
   }
   var relArm = false, relT = 0;
   function claimTap() {
-    var b = $("acclaim"), v = $("acriot").value;
+    var b = $("acclaim"), n = $("acriotn").value, tag = $("acriott").value;
     $("acdispw").hidden = true;
     if (b.getAttribute("data-mode") === "off") {
-      // releasing asks for a second tap (STYLE.md, Confirm: Sure? where the words do not fit)
+      // releasing asks for a second tap (STYLE.md, Confirm)
       if (!relArm) {
-        relArm = true; b.classList.add("armed"); b.textContent = "Sure?"; say("acriotmsg", "Another account could then claim it.");
+        relArm = true; b.classList.add("armed"); b.textContent = "Sure? Tap again"; say("acriotmsg", "Another account could then claim it.");
         relT = setTimeout(function () { relArm = false; b.classList.remove("armed"); claimState(); say("acriotmsg", ""); }, 3000);
         return;
       }
       relArm = false; clearTimeout(relT); b.classList.remove("armed");
-      return A.releaseRiot(function (err) { if (err) return say("acriotmsg", err); $("acriot").value = ""; claimState(); say("acriotmsg", "Released."); });
+      return A.releaseRiot(function (err) { if (err) return say("acriotmsg", err); $("acriotn").value = ""; $("acriott").value = ""; claimState(); say("acriotmsg", "Released."); });
     }
-    if (!v.trim()) return say("acriotmsg", "Type your Riot ID first, with its #tag.");
+    if (!n.trim() || !tag.trim()) return say("acriotmsg", "Type your Riot name and its tag, as Riot shows them.");
     say("acriotmsg", "Claiming...");
-    A.claimRiot(v, function (err, j, st) {
+    A.claimRiot(n, tag, function (err, j, st) {
       if (err) {
         say("acriotmsg", err + (st === 409 ? " If it is yours, tell RAVI." : ""));
         $("acdispw").hidden = st !== 409;
         return;
       }
-      var a = A.view();
-      $("acriot").value = riotText(a); claimState(); say("acriotmsg", "Claimed. It is yours on RAVI.");
+      riotFill(A.view()); done(b, "Claimed", claimState); say("acriotmsg", "Claimed. It is yours on RAVI.");
     });
   }
   function disputeTap() {
     say("acriotmsg", "Sending...");
-    A.disputeRiot($("acriot").value, function (err) {
+    A.disputeRiot($("acriotn").value, $("acriott").value, function (err) {
       if (err) return say("acriotmsg", err);
       $("acdispw").hidden = true;
       say("acriotmsg", "Sent to RAVI to check. Send a screenshot of your Riot account page through Feedback, with your @username, and RAVI will settle it.");
     });
+  }
+  // a button says it worked, in place, for a moment (Mako 2026-10-31: saving shows it saved)
+  function done(btn, words, after) {
+    var was = btn.getAttribute("data-words") || btn.textContent;
+    btn.setAttribute("data-words", was);
+    btn.classList.add("done"); btn.textContent = words;
+    clearTimeout(btn._doneT);
+    btn._doneT = setTimeout(function () { btn.classList.remove("done"); btn.textContent = btn.getAttribute("data-words"); btn.removeAttribute("data-words"); if (after) after(); }, 1800);
   }
 
   // ---- Home area ----
@@ -580,22 +604,62 @@
     s.onerror = function () { cb([]); };
     doc.head.appendChild(s);
   }
-  // the pictures on offer: each legend's own art, then its overnumbered printing (numbered
-  // past the set, such as OGN 299/298); never a signature printing (a star in its number),
+  // a legend's printings on offer: its own art first, then each overnumbered printing
+  // (numbered past the set, such as OGN 299/298); never a signature (a star in its number),
   // whose signature would not show in a circle (Mako 2026-10-30)
-  function artOf(L) {
-    var out = [];
-    L.forEach(function (lg) {
-      var base = [], over = [];
-      (lg && lg.v || []).forEach(function (v) {
-        var m = /-(\d+)(\*?)\/(\d+)$/.exec(v && v.c || "");
-        if (!m || m[2] || !/^[0-9a-f]{40}$/.test(v.h || "")) return;
-        (+m[1] > +m[3] ? over : base).push(v.h);
-      });
-      if (base.length) out.push({ h: base[0], label: lg.n });
-      over.forEach(function (h) { out.push({ h: h, label: lg.n + ", overnumbered" }); });
+  function printsOf(lg) {
+    var base = [], over = [];
+    (lg && lg.v || []).forEach(function (v) {
+      var m = /-(\d+)(\*?)\/(\d+)$/.exec(v && v.c || "");
+      if (!m || m[2] || !/^[0-9a-f]{40}$/.test(v.h || "")) return;
+      (+m[1] > +m[3] ? over : base).push({ h: v.h, l: v.l || v.c });
     });
-    return out;
+    return base.slice(0, 1).concat(over);
+  }
+  function legendOf(h) {
+    var L = legends || root.VIR_LEGENDS || [];
+    for (var i = 0; i < L.length; i++) { var p = printsOf(L[i]); for (var j = 0; j < p.length; j++) if (p[j].h === h) return { lg: L[i], prints: p }; }
+    return null;
+  }
+  var CARD = 744 / 1039; // a card's width over its height
+  // work: the picture being placed, { k, h or src, url, aspect, x, y, z, saved }
+  function workFromSaved() {
+    var a = A.view(), p = a && a.pic;
+    if (p && p.k === "l") return { k: "l", h: p.h, url: REL + "cards/art/" + p.h + ".t.webp", aspect: CARD, x: isFinite(p.x) ? +p.x : A.CROP.x, y: isFinite(p.y) ? +p.y : A.CROP.y, z: isFinite(p.z) ? +p.z : A.CROP.z, saved: true };
+    if (p && p.k === "p") return { k: "p", url: A.picUrl(a, REL), aspect: 1, x: 50, y: 50, z: 1, saved: true };
+    return null;
+  }
+  // a portrait image's width fills the circle at z 1, a landscape one's height
+  function fitOf(w) {
+    var base = w.aspect >= 1 ? w.aspect * 100 : 100;
+    return { size: Math.round(base * w.z * 10) / 10 + "% auto", pos: Math.round(w.x * 10) / 10 + "% " + Math.round(w.y * 10) / 10 + "%" };
+  }
+  function showWork() {
+    var adj = $("acadj");
+    preview = work && !work.saved ? { url: work.url, fit: fitOf(work) } : null;
+    if (work) {
+      adj.style.backgroundImage = "url(\"" + String(work.url).replace(/["\\]/g, "") + "\")";
+      var f = fitOf(work); adj.style.backgroundSize = f.size; adj.style.backgroundPosition = f.pos;
+      adj.classList.add("art"); adj.innerHTML = "";
+    } else { paint(adj, A.view(), null); }
+    $("acadjn").style.visibility = work ? "visible" : "hidden";
+    $("acuse").disabled = !(work && !work.saved);
+    // the Printing track: the chosen legend's own art and its overnumbered printing(s)
+    var tr = $("acprint"), info = work && work.k === "l" ? legendOf(work.h) : null;
+    tr.hidden = !info;
+    if (info) {
+      tr.innerHTML = "";
+      info.prints.forEach(function (p) {
+        var b = el("button", "");
+        b.type = "button"; b.textContent = p.l; b.setAttribute("data-ph", p.h);
+        b.setAttribute("aria-pressed", p.h === work.h ? "true" : "false");
+        b.disabled = info.prints.length < 2;
+        tr.appendChild(b);
+      });
+    }
+    var tiles = $("aclg").querySelectorAll("button"), lgName = info ? info.lg.n : "";
+    for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle("on", tiles[i].getAttribute("data-n") === lgName);
+    paintAll();
   }
   function renderPics() {
     var a = A.view(), rows = $("acpicrows");
@@ -603,60 +667,106 @@
       (a && a.pic ? '<button type="button" class="door act" id="acnopic" data-k="do"><span class="t">Remove picture</span></button>' : '');
     $("acfile").addEventListener("change", function () { if (this.files && this.files[0]) photo(this.files[0]); this.value = ""; });
     if ($("acnopic")) $("acnopic").addEventListener("click", function () {
-      A.setPic({ k: null }, function (err) { if (err) return say("acpicmsg", err); preview = null; choice = null; paintAll(); renderPics(); say("acpicmsg", "Picture removed."); });
+      A.setPic({ k: null }, function (err) { if (err) return say("acpicmsg", err); work = null; preview = null; renderPics(); say("acpicmsg", "Picture removed."); });
     });
-    $("acuse").disabled = !choice;
     loadLegends(function (L) {
-      var g = $("aclg"), cur = choice && choice.k === "l" ? choice.h : (!choice && a && a.pic && a.pic.k === "l" ? a.pic.h : "");
+      var g = $("aclg");
       g.innerHTML = "";
-      artOf(L).forEach(function (x) {
-        var b = el("button", x.h === cur ? "on" : "", '<span class="acav art" style="background-image:url(' + REL + 'cards/art/' + x.h + '.t.webp)"></span>');
-        b.type = "button"; b.setAttribute("aria-label", x.label); b.setAttribute("data-h", x.h);
+      // one circle per legend, its own art; its overnumbered printing is on the Printing track (as the Game page's legend picker)
+      L.forEach(function (lg) {
+        var p = printsOf(lg);
+        if (!p.length) return;
+        var b = el("button", "", '<span class="acav art" style="background-image:url(' + REL + 'cards/art/' + p[0].h + '.t.webp)"></span>');
+        b.type = "button"; b.setAttribute("aria-label", lg.n); b.setAttribute("data-h", p[0].h); b.setAttribute("data-n", lg.n);
         g.appendChild(b);
       });
+      if (!work || work.saved) work = workFromSaved();
+      showWork();
     });
   }
   function pickLegend(h) {
-    choice = { k: "l", h: h };
-    preview = { url: REL + "cards/art/" + h + ".t.webp" };
-    var b = $("aclg").querySelectorAll("button");
-    for (var i = 0; i < b.length; i++) b[i].classList.toggle("on", b[i].getAttribute("data-h") === h);
-    $("acuse").disabled = false;
-    paintAll();
+    work = { k: "l", h: h, url: REL + "cards/art/" + h + ".t.webp", aspect: CARD, x: A.CROP.x, y: A.CROP.y, z: A.CROP.z, saved: false };
+    say("acpicmsg", ""); showWork();
   }
-  // a photo, shrunk on the phone to 256 square (the middle of it) as a JPEG
+  function pickPrinting(h) {
+    if (!work || work.k !== "l" || work.h === h) return;
+    work = { k: "l", h: h, url: REL + "cards/art/" + h + ".t.webp", aspect: CARD, x: work.x, y: work.y, z: work.z, saved: false };
+    showWork();
+  }
+  // a photo: shown whole in the circle to place, then cut to a 256 square JPEG on the phone
   function photo(file) {
     say("acpicmsg", "Getting your photo ready...");
     var url = root.URL.createObjectURL(file), img = new root.Image();
     img.onload = function () {
       try {
-        var s = Math.min(img.naturalWidth, img.naturalHeight), c = doc.createElement("canvas");
-        c.width = 256; c.height = 256;
-        c.getContext("2d").drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, 256, 256);
-        var data = c.toDataURL("image/jpeg", 0.85);
+        // kept at 1024 at most on its long side, so the phone never holds a huge one
+        var k = Math.min(1, 1024 / Math.max(img.naturalWidth, img.naturalHeight)), c = doc.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
         root.URL.revokeObjectURL(url);
-        choice = { k: "p", jpg: data.split(",")[1].replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") };
-        preview = { url: data };
-        var on = $("aclg").querySelectorAll("button.on");
-        for (var i = 0; i < on.length; i++) on[i].classList.remove("on");
-        $("acuse").disabled = false;
-        paintAll();
-        say("acpicmsg", "Tap Use this picture to keep it.");
+        work = { k: "p", src: c, url: c.toDataURL("image/jpeg", 0.9), aspect: c.width / c.height, x: 50, y: 50, z: 1, saved: false };
+        showWork();
+        say("acpicmsg", "Place it, then tap Use this picture.");
       } catch (e) { say("acpicmsg", "That photo could not be used. Try another."); }
     };
     img.onerror = function () { root.URL.revokeObjectURL(url); say("acpicmsg", "That photo could not be read. Try another."); };
     img.src = url;
   }
+  // the photo as placed in the circle, drawn into 256 square
+  function cutPhoto(w) {
+    var c = doc.createElement("canvas"), S = 256;
+    c.width = S; c.height = S;
+    var base = w.aspect >= 1 ? w.aspect : 1, iw = S * base * w.z, ih = iw / w.aspect;
+    var ctx = c.getContext("2d");
+    ctx.fillStyle = "#08090A"; ctx.fillRect(0, 0, S, S);
+    ctx.drawImage(w.src, (S - iw) * w.x / 100, (S - ih) * w.y / 100, iw, ih);
+    return c.toDataURL("image/jpeg", 0.85).split(",")[1].replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
   function usePic() {
-    if (!choice) return;
+    if (!work || work.saved) return;
     var btn = $("acuse");
     btn.disabled = true;
-    function done(err) {
+    function fin(err) {
       if (err) { btn.disabled = false; return say("acpicmsg", err); }
-      preview = null; choice = null; paintAll(); renderPics(); say("acpicmsg", "Picture saved."); // stays in Picture
+      work = null; preview = null; renderPics(); say("acpicmsg", "Picture saved.");
+      btn.disabled = false; done(btn, "Saved", function () { btn.disabled = !(work && !work.saved); });
     }
-    if (choice.k === "l") A.setPic({ k: "l", h: choice.h }, done);
-    else { say("acpicmsg", "Saving..."); A.uploadPhoto(choice.jpg, done); }
+    if (work.k === "l") A.setPic({ k: "l", h: work.h, x: work.x, y: work.y, z: work.z }, fin);
+    else { say("acpicmsg", "Saving..."); A.uploadPhoto(cutPhoto(work), fin); }
+  }
+  // dragging moves the picture in the circle; two fingers (or a mouse wheel) zoom it
+  function adjustable() {
+    var adj = $("acadj"), pts = {}, start = null;
+    function size() { return adj.getBoundingClientRect().width || 1; }
+    function begin() {
+      if (!work) return;
+      if (work.saved) {
+        if (work.k === "p") { say("acpicmsg", "To move a photo, upload it again and place it before Use this picture."); return; }
+        work = Object.assign({}, work, { saved: false });
+      }
+      var ids = Object.keys(pts), a = pts[ids[0]], b = pts[ids[1]];
+      start = { x: work.x, y: work.y, z: work.z, px: a.x, py: a.y, d: b ? Math.hypot(a.x - b.x, a.y - b.y) : 0 };
+    }
+    function move() {
+      if (!work || !start || work.saved) return;
+      var ids = Object.keys(pts), a = pts[ids[0]], b = pts[ids[1]], S = size();
+      if (b && start.d) work.z = Math.max(1, Math.min(4, start.z * Math.hypot(a.x - b.x, a.y - b.y) / start.d));
+      var base = work.aspect >= 1 ? work.aspect : 1, iw = S * base * work.z, ih = iw / work.aspect;
+      if (iw - S > 0.5) work.x = Math.max(0, Math.min(100, start.x - (a.x - start.px) / (iw - S) * 100));
+      if (ih - S > 0.5) work.y = Math.max(0, Math.min(100, start.y - (a.y - start.py) / (ih - S) * 100));
+      showWork();
+    }
+    adj.addEventListener("pointerdown", function (e) { pts[e.pointerId] = { x: e.clientX, y: e.clientY }; try { adj.setPointerCapture(e.pointerId); } catch (x) {} begin(); e.preventDefault(); });
+    adj.addEventListener("pointermove", function (e) { if (!pts[e.pointerId]) return; pts[e.pointerId] = { x: e.clientX, y: e.clientY }; move(); e.preventDefault(); });
+    function up(e) { delete pts[e.pointerId]; if (Object.keys(pts).length) begin(); else start = null; }
+    adj.addEventListener("pointerup", up); adj.addEventListener("pointercancel", up);
+    adj.addEventListener("wheel", function (e) {
+      if (!work) return;
+      e.preventDefault();
+      if (work.saved) { if (work.k === "p") return; work = Object.assign({}, work, { saved: false }); }
+      work.z = Math.max(1, Math.min(4, work.z * (e.deltaY < 0 ? 1.08 : 1 / 1.08)));
+      showWork();
+    }, { passive: false });
   }
 
   // ---- reread the account now and then, quietly ----
@@ -677,7 +787,7 @@
     scrim.addEventListener("click", closeAll);
     doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && stack.length) closeAll(); });
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],#acnew,#acsign,#acout,#acsave,#acuse,#acaddkey,#acrecgo,.aclg button,#acclaim,#acdisp,#acareas button") : null;
+      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],#acnew,#acsign,#acout,#acsave,#acuse,#acaddkey,#acrecgo,.aclg button,#acclaim,#acdisp,#acareas button,#acprint button") : null;
       if (!t || !stack.length) return;
       if (t.hasAttribute("data-acgo")) return deeper(t.getAttribute("data-acgo"));
       if (t.hasAttribute("data-acback")) return back();
@@ -700,11 +810,12 @@
           if (err) return say("acprofmsg", err);
           var a = A.view();
           $("acuser").value = a && a.user || "";
-          paintAll(); say("acprofmsg", "Saved."); // stays in Profile (Mako 2026-10-30)
+          paintAll(); say("acprofmsg", "Saved."); done($("acsave"), "Saved"); // stays in Profile (Mako 2026-10-30), and the button says so (2026-10-31)
         });
       }
       if (t.id === "acuse") return usePic();
       if (t.parentNode && t.parentNode.id === "aclg") return pickLegend(t.getAttribute("data-h"));
+      if (t.parentNode && t.parentNode.id === "acprint") return pickPrinting(t.getAttribute("data-ph"));
       if (t.id === "acaddkey") {
         say("ackeymsg", "Making your passkey...");
         return A.addKey(function (err) { if (err) return say("ackeymsg", err); enter("ackeys"); say("ackeymsg", "Passkey added."); });
@@ -715,8 +826,10 @@
       if (t.parentNode && t.parentNode.id === "acareas") return pickArea(t.getAttribute("data-area"));
     });
     $("acrecin").addEventListener("keydown", function (e) { if (e.key === "Enter") recover(); });
-    $("acriot").addEventListener("input", function () { $("acdispw").hidden = true; claimState(); });
-    $("acriot").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("acriot").blur(); claimTap(); } });
+    ["acriotn", "acriott"].forEach(function (id) { $(id).addEventListener("input", function () { $("acdispw").hidden = true; claimState(); }); });
+    $("acriotn").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acriott").focus(); });
+    $("acriott").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("acriott").blur(); claimTap(); } });
+    adjustable();
     armed($("acdel"), "acdatamsg", "Deletes your account on RAVI's server for good. This phone keeps everything it has.", function () {
       A.remove(function (err) {
         if (err) return say("acdatamsg", err);

@@ -40,7 +40,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .foot a{color:var(--bone)}
 /* YOUR RIOT NAME (M16): one field, saved on this phone, used by every live part */
 #stme .nf{margin:0}
+#stme .rid[hidden]{display:none}
 #stme .pact{margin-top:12px}
+#stme #stmeok{margin-top:6px}
 .stmsg{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
 </style>
@@ -54,8 +56,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lede">Your Riot name, and choices for the hub and for how the app opens and moves, saved on this phone.</p>
   <section class="sts glass" id="stme">
     <div class="shead"><h2>Your Riot name</h2></div>
-    <div class="nf"><input type="text" id="stmein" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Your Riot name" data-k="type"><button type="button" class="fbtn glass" id="stmeok" data-k="do">Save</button></div>
-    <p class="stn" id="stmenote">The name you play under on PlayRiftbound, with its tag. At a live event it finds your table, your record and your alerts. Saved on this phone only.</p>
+    <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
+      <div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
+    <button type="button" class="pact btn glass" id="stmeok" data-k="do">Save</button>
+    <p class="stn" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them. At a live event it finds your table, your record and your alerts. Saved on this phone only.</p>
     <p class="stmsg" id="stmemsg" aria-live="polite"></p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
@@ -203,25 +207,28 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   render();
 
   // YOUR RIOT NAME (M16) and a test alert. Not part of Reset: it is who you are, not a setting.
-  var L = window.RAVI_LIVE, mein = document.getElementById("stmein"), memsg = document.getElementById("stmemsg");
+  // In two parts, as Riot shows them: the name, and the tag after the # (Mako 2026-10-31).
+  var L = window.RAVI_LIVE, mein = document.getElementById("stmein"), metag = document.getElementById("stmetag"), memsg = document.getElementById("stmemsg");
   var have = L.me();
-  if (have) { mein.value = L.nameText(have); }
-  // A Riot ID claimed on your RAVI account is this phone's Riot name; it is
-  // changed in Profile (your picture, top right), so here it only shows.
-  var acv = window.RAVI_ACCT && window.RAVI_ACCT.signedIn() ? window.RAVI_ACCT.view() : null;
-  if (acv && acv.riot) {
-    mein.value = acv.riot.n + "#" + acv.riot.tag;
-    mein.disabled = true; document.getElementById("stmeok").disabled = true;
-    document.getElementById("stmenote").textContent = "Claimed on your RAVI account, so it follows you to any phone you sign in on. Change it in Profile: tap your picture, top right.";
+  if (have) { mein.value = have.n; metag.value = have.tag || ""; }
+  // Signed in, your Riot ID lives on your profile (claimed there, one account
+  // per Riot ID) and follows you to any phone; here the card keeps the test alert.
+  if (window.RAVI_ACCT && window.RAVI_ACCT.signedIn()) {
+    document.getElementById("stmerid").hidden = true; document.getElementById("stmeok").hidden = true;
+    var acv = window.RAVI_ACCT.view();
+    document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "Signed in, your Riot ID is set on your profile. ") + "Tap your picture, top right, then Profile.";
   }
   function saveMe(){
-    var p = L.setMe(mein.value);
-    mein.value = p ? L.nameText(p) : "";
+    var t = metag.value.trim().replace(/^#/, ""), n = mein.value.trim();
+    // the whole Name#TAG typed into the name field, out of habit, still saves
+    var p = L.setMe(!t && n.indexOf("#") >= 0 ? n : n + (t ? "#" + t : ""));
+    mein.value = p ? p.n : ""; metag.value = p ? p.tag : "";
     memsg.textContent = p ? (p.tag ? "Saved." : "Saved. Add your #tag too, so a player with the same name is never taken for you.") : "Cleared.";
-    mein.blur();
+    mein.blur(); metag.blur();
   }
   document.getElementById("stmeok").addEventListener("click", saveMe);
-  mein.addEventListener("keydown", function(e){ if (e.key === "Enter") { saveMe(); } });
+  mein.addEventListener("keydown", function(e){ if (e.key === "Enter") { metag.focus(); } });
+  metag.addEventListener("keydown", function(e){ if (e.key === "Enter") { saveMe(); } });
   var tbtn = document.getElementById("sttest"), tmsg = document.getElementById("sttestmsg");
   tbtn.addEventListener("click", function(){
     tbtn.disabled = true; tmsg.textContent = "Sending...";

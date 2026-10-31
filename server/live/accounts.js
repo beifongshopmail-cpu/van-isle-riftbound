@@ -283,6 +283,15 @@ export function cleanRiot(n, tag) {
   if (!/^[\p{L}\p{N}]{3,5}$/u.test(t)) return { error: "a Riot tag is the 3 to 5 letters or numbers after the #" };
   return { n: name, tag: t, k: name.toLowerCase().replace(/ /g, "") + "#" + t.toLowerCase() };
 }
+// how a legend's art sits in the circle: x and y place it (0 to 100, as CSS
+// background-position), z is how many circle-widths wide the card is drawn
+// (1 to 4). Player-set by dragging and pinching (Mako 2026-10-31).
+export function cleanCrop(c) {
+  if (!c || typeof c !== "object") return null;
+  const x = +c.x, y = +c.y, z = +c.z;
+  if (![x, y, z].every(isFinite) || x < 0 || x > 100 || y < 0 || y > 100 || z < 1 || z > 4) return null;
+  return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10, z: Math.round(z * 100) / 100 };
+}
 // a JPEG the phone made: its first and last markers, and a frame no bigger than 1024 square
 export function checkJpeg(b) {
   if (!(b instanceof Uint8Array) || b.length < 200 || b.length > PHOTO_MAX) return false;
@@ -314,6 +323,7 @@ function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS prof (acct TEXT PRIMARY KEY, name TEXT, user TEXT UNIQUE, about TEXT, pk TEXT, ph TEXT, pv INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS photo (acct TEXT PRIMARY KEY, img BLOB)");
   try { sql.exec("ALTER TABLE prof ADD COLUMN area TEXT"); } catch (e) { /* already there */ }
+  try { sql.exec("ALTER TABLE prof ADD COLUMN pcrop TEXT"); } catch (e) { /* already there */ }
   sql.exec("CREATE TABLE IF NOT EXISTS riot (k TEXT PRIMARY KEY, acct TEXT UNIQUE, n TEXT, tag TEXT, at INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS disp (id TEXT PRIMARY KEY, k TEXT, acct TEXT, n TEXT, tag TEXT, at INTEGER, UNIQUE (k, acct))");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
@@ -329,9 +339,9 @@ function sqlStore(sql) {
     delSess: (tok) => sql.exec("DELETE FROM sess WHERE tok = ?", tok),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
-    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area FROM prof WHERE acct = ?", acct),
+    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area, pcrop FROM prof WHERE acct = ?", acct),
     profByUser: (u) => one("SELECT acct FROM prof WHERE user = ?", u),
-    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null),
+    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area, pcrop) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null, x.pcrop || null),
     riotOf: (acct) => one("SELECT k, acct, n, tag, at FROM riot WHERE acct = ?", acct),
     riotByKey: (k) => one("SELECT k, acct, n, tag, at FROM riot WHERE k = ?", k),
     putRiot: (x) => { sql.exec("DELETE FROM riot WHERE acct = ?", x.acct); sql.exec("INSERT INTO riot VALUES (?, ?, ?, ?, ?)", x.k, x.acct, x.n, x.tag, x.at); },
@@ -453,7 +463,9 @@ export function makeAccounts() {
     }
     view(a) {
       const p = this.db.prof(a.id);
-      const pic = p && p.pk === "l" && p.ph ? { k: "l", h: p.ph } : p && p.pk === "p" ? { k: "p", v: p.pv } : null;
+      let crop = null;
+      try { crop = p && p.pcrop ? cleanCrop(JSON.parse(p.pcrop)) : null; } catch (e) { crop = null; }
+      const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv } : null;
       const r = this.db.riotOf(a.id);
       const mine = this.db.disps().filter((d) => d.acct === a.id).map((d) => ({ n: d.n, tag: d.tag, at: dayOf(d.at) }));
       const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ made: dayOf(c.made), last: dayOf(c.last) })),
@@ -586,8 +598,9 @@ export function makeAccounts() {
         const x = this.profOf(me.acct.id);
         if (body.k === "l") {
           if (typeof body.h !== "string" || !/^[0-9a-f]{40}$/.test(body.h)) return reply({ error: "not a legend picture" }, 400);
-          x.pk = "l"; x.ph = body.h; this.db.delPhoto(me.acct.id);
-        } else if (body.k === null) { x.pk = null; x.ph = null; this.db.delPhoto(me.acct.id); }
+          const crop = cleanCrop(body);
+          x.pk = "l"; x.ph = body.h; x.pcrop = crop ? JSON.stringify(crop) : null; this.db.delPhoto(me.acct.id);
+        } else if (body.k === null) { x.pk = null; x.ph = null; x.pcrop = null; this.db.delPhoto(me.acct.id); }
         else return reply({ error: "bad request" }, 400);
         this.db.putProf(x);
         return reply({ account: this.view(me.acct) });
@@ -598,7 +611,7 @@ export function makeAccounts() {
         if (!img || !checkJpeg(img)) return reply({ error: "that picture could not be used; try another" }, 400);
         const x = this.profOf(me.acct.id);
         this.db.putPhoto(me.acct.id, img);
-        x.pk = "p"; x.ph = null; x.pv = now;
+        x.pk = "p"; x.ph = null; x.pv = now; x.pcrop = null;
         this.db.putProf(x);
         return reply({ account: this.view(me.acct) });
       }
