@@ -297,17 +297,23 @@ window.RAVI_BAR = function(nav, slots){
       for (j = 0; j < slots.length; j++) { slots[j].classList.toggle("on", activeId !== null && slots[j].getAttribute("data-fills") === activeId); }
     }
     var mo = new MutationObserver(sync);
-    for (i = 0; i < panels.length; i++) {
-      mo.observe(panels[i], { attributes: true, attributeFilter: ["class"] });
-      (function(p){
-        var b = p.querySelector(".pbody");
-        if (!b) { return; }
-        var later = function(){ window.requestAnimationFrame(function(){ edges(p); }); };
-        b.addEventListener("scroll", function(){ edges(p); }, { passive: true });
-        b.addEventListener("transitionend", later);
-        new MutationObserver(later).observe(b, { subtree: true, childList: true, attributes: true });
-      })(panels[i]);
+    function watch(p){
+      mo.observe(p, { attributes: true, attributeFilter: ["class"] });
+      var b = p.querySelector(".pbody");
+      if (!b) { return; }
+      var later = function(){ window.requestAnimationFrame(function(){ edges(p); }); };
+      b.addEventListener("scroll", function(){ edges(p); }, { passive: true });
+      b.addEventListener("transitionend", later);
+      new MutationObserver(later).observe(b, { subtree: true, childList: true, attributes: true });
     }
+    for (i = 0; i < panels.length; i++) { watch(panels[i]); }
+    // A menu added after the page has loaded (the account menus, account.js)
+    // joins in here: its body edges, and the control that opens it.
+    window.RAVI_WATCH = function(list){
+      for (var k = 0; k < list.length; k++) { watch(list[k]); }
+      slots = document.querySelectorAll("[data-fills]");
+      sync();
+    };
     window.addEventListener("resize", function(){ var s = document.querySelector(".panel.show"); if (s) { edges(s); } });
     sync();
   }

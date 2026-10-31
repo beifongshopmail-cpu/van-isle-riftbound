@@ -136,11 +136,16 @@ async function toAccounts(req, env, path) {
   if (auth) init.headers.Authorization = auth.slice(0, 200);
   if (req.method === "POST") {
     const text = await req.text();
-    if (text.length > 16384) return json(req, 413, { error: "too big" });
+    if (text.length > (path === "/photo" ? 220000 : 16384)) return json(req, 413, { error: "too big" });
     init.body = text;
   }
   const stub = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
   const r = await stub.fetch(new Request("https://accounts" + path, init));
+  if (/^\/pic\//.test(path) && r.ok) {
+    // a player's photo: only ever a JPEG the server checked, never sniffed as anything else
+    return new Response(r.body, { status: 200, headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable",
+      "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "default-src 'none'", "Cross-Origin-Resource-Policy": "cross-origin" } });
+  }
   return json(req, r.status, await r.json().catch(function () { return {}; }));
 }
 
@@ -161,7 +166,7 @@ export default {
       if (!env || !env.ALERTS) return json(req, 503, { error: "alerts are not set up" });
       return toAlerts(req, env, ROUTE[url.pathname]);
     }
-    const am = /^\/acct(\/[a-z]+(?:\/[a-z]+)?)$/.exec(url.pathname);
+    const am = /^\/acct(\/[a-z]+(?:\/[a-z]+)?|\/pic\/[0-9a-f]{24})$/.exec(url.pathname);
     if (am) {
       if (!env || !env.ACCOUNTS) return json(req, 503, { error: "accounts are not set up" });
       if (req.method !== "GET" && req.method !== "POST") return json(req, 405, { error: "not allowed" });

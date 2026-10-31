@@ -11,8 +11,10 @@
 // handle for the passkeys, the day it was made, the recovery code's stamp;
 // per passkey its id, public key, signature count and the days it was made
 // and last used; per signed-in phone a stamp of its token and those two
-// days. Riot names and synced data arrive in later blocks. Delete removes
-// every row of the account at once. Addresses are kept only as one-way
+// days; the profile the player fills in (display name, @username, one
+// line about them, a picture: a legend's art by its hash, or a photo the
+// phone shrank to 256 square JPEG). Riot names and synced data arrive in
+// later blocks. Delete removes every row of the account at once. Addresses are kept only as one-way
 // stamps with the day in them, for the day's limits.
 //
 // The passkey checks follow the WebAuthn Level 2 steps (w3.org/TR/webauthn-2,
@@ -28,7 +30,9 @@ export const ORIGINS = ["https://ravi.tools"];
 export const CHALLENGE_MS = 5 * 60000;
 export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
-export const LIMITS = { opt: 300, made: 30, code: 20 }; // per connection per day
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30 }; // per connection per day
+export const PHOTO_MAX = 150000; // bytes of JPEG
+const RESERVED = ["ravi", "admin", "administrator", "support", "help", "mod", "moderator", "staff", "official", "riot", "riotgames", "system", "root", "null", "undefined", "me", "you", "account", "settings"];
 const DAY = 86400000;
 const ALGS = [-7, -257]; // ES256, RS256
 const CODE_ABC = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"; // no 0 O 1 I L
@@ -250,6 +254,35 @@ export function cleanCode(v) {
   return /^[2-9A-HJKMNP-Z]{20}$/.test(s) ? s : null;
 }
 
+// ---- the profile ----
+function cleanText(v, max) {
+  if (typeof v !== "string") return "";
+  return v.replace(/[\u0000-\u001f\u007f\u2028\u2029\u202a-\u202e\u2066-\u2069<>]/g, "").replace(/\s+/g, " ").trim().slice(0, max);
+}
+export function cleanUser(v) {
+  const u = typeof v === "string" ? v.trim().replace(/^@/, "").toLowerCase() : "";
+  if (!/^[a-z0-9_]{3,20}$/.test(u)) return { error: "a username is 3 to 20 letters, numbers or _" };
+  if (RESERVED.indexOf(u) >= 0) return { error: "@" + u + " is kept for RAVI; pick another" };
+  return { u: u };
+}
+// a JPEG the phone made: its first and last markers, and a frame no bigger than 1024 square
+export function checkJpeg(b) {
+  if (!(b instanceof Uint8Array) || b.length < 200 || b.length > PHOTO_MAX) return false;
+  if (b[0] !== 0xff || b[1] !== 0xd8 || b[2] !== 0xff || b[b.length - 2] !== 0xff || b[b.length - 1] !== 0xd9) return false;
+  let p = 2;
+  while (p + 9 < b.length) {
+    if (b[p] !== 0xff) return false;
+    const m = b[p + 1], len = (b[p + 2] << 8) | b[p + 3];
+    if (m >= 0xc0 && m <= 0xc3) {
+      const h = (b[p + 5] << 8) | b[p + 6], w = (b[p + 7] << 8) | b[p + 8];
+      return h > 0 && w > 0 && h <= 1024 && w <= 1024;
+    }
+    if (m === 0xda) return false; // pixels before any frame size
+    p += 2 + len;
+  }
+  return false;
+}
+
 // ---- storage: SQLite in the Durable Object, plain lists in the tests ----
 function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS acct (id TEXT PRIMARY KEY, uh TEXT, made INTEGER, code TEXT)");
@@ -260,6 +293,8 @@ function sqlStore(sql) {
   sql.exec("CREATE INDEX IF NOT EXISTS sess_acct ON sess (acct)");
   sql.exec("CREATE TABLE IF NOT EXISTS chal (c TEXT PRIMARY KEY, kind TEXT, acct TEXT, uh TEXT, exp INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS lim (key TEXT PRIMARY KEY, day TEXT, c INTEGER)");
+  sql.exec("CREATE TABLE IF NOT EXISTS prof (acct TEXT PRIMARY KEY, name TEXT, user TEXT UNIQUE, about TEXT, pk TEXT, ph TEXT, pv INTEGER)");
+  sql.exec("CREATE TABLE IF NOT EXISTS photo (acct TEXT PRIMARY KEY, img BLOB)");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code FROM acct WHERE id = ?", id),
@@ -273,7 +308,15 @@ function sqlStore(sql) {
     delSess: (tok) => sql.exec("DELETE FROM sess WHERE tok = ?", tok),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
+    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv FROM prof WHERE acct = ?", acct),
+    profByUser: (u) => one("SELECT acct FROM prof WHERE user = ?", u),
+    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof VALUES (?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv),
+    photo: (acct) => { const x = one("SELECT img FROM photo WHERE acct = ?", acct); return x ? new Uint8Array(x.img) : null; },
+    putPhoto: (acct, img) => sql.exec("INSERT OR REPLACE INTO photo VALUES (?, ?)", acct, img.buffer.slice(img.byteOffset, img.byteOffset + img.byteLength)),
+    delPhoto: (acct) => sql.exec("DELETE FROM photo WHERE acct = ?", acct),
     delAcct: (id) => {
+      sql.exec("DELETE FROM prof WHERE acct = ?", id);
+      sql.exec("DELETE FROM photo WHERE acct = ?", id);
       sql.exec("DELETE FROM cred WHERE acct = ?", id);
       sql.exec("DELETE FROM sess WHERE acct = ?", id);
       sql.exec("DELETE FROM chal WHERE acct = ?", id);
@@ -289,7 +332,7 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map() };
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
   return {
     tables: T, // the tests read every row from here
@@ -304,7 +347,18 @@ export function memStore() {
     delSess: (tok) => T.sess.delete(tok),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
     putChal: (x) => T.chal.set(x.c, copy(x)),
+    prof: (acct) => copy(T.prof.get(acct)),
+    profByUser: (u) => { let f = null; T.prof.forEach((x) => { if (x.user === u) f = { acct: x.acct }; }); return f; },
+    putProf: (x) => {
+      let clash = false; T.prof.forEach((y) => { if (x.user && y.user === x.user && y.acct !== x.acct) clash = true; });
+      if (clash) throw new Error("UNIQUE constraint failed: prof.user");
+      T.prof.set(x.acct, copy(x));
+    },
+    photo: (acct) => T.photo.has(acct) ? new Uint8Array(T.photo.get(acct)) : null,
+    putPhoto: (acct, img) => T.photo.set(acct, new Uint8Array(img)),
+    delPhoto: (acct) => T.photo.delete(acct),
     delAcct: (id) => {
+      T.prof.delete(id); T.photo.delete(id);
       ["cred", "sess"].forEach((t) => T[t].forEach((v, k) => { if (v.acct === id) T[t].delete(k); }));
       T.chal.forEach((v, k) => { if (v.acct === id) T.chal.delete(k); });
       T.acct.delete(id);
@@ -353,8 +407,12 @@ export function makeAccounts() {
       return { acct: a, tok: s.tok };
     }
     view(a) {
-      return { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ made: dayOf(c.made), last: dayOf(c.last) })) };
+      const p = this.db.prof(a.id);
+      const pic = p && p.pk === "l" && p.ph ? { k: "l", h: p.ph } : p && p.pk === "p" ? { k: "p", v: p.pv } : null;
+      return { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ made: dayOf(c.made), last: dayOf(c.last) })),
+        name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", pic: pic };
     }
+    profOf(id) { return this.db.prof(id) || { acct: id, name: "", user: null, about: "", pk: null, ph: null, pv: 0 }; }
     async session(acctId) {
       const t = b64u(rand(32)), now = this.now();
       this.db.putSess({ tok: await sha(t), acct: acctId, made: now, last: now });
@@ -365,6 +423,12 @@ export function makeAccounts() {
       this.db.prune(now, now - SESSION_DAYS * DAY, dayOf(now));
       const me = await this.who(req);
       if (req.method === "GET") {
+        const pm = /^\/pic\/([0-9a-f]{24})$/.exec(u.pathname);
+        if (pm) {
+          const img = this.db.photo(pm[1]);
+          if (!img) return reply({ error: "no picture" }, 404);
+          return new Response(img, { headers: { "Content-Type": "image/jpeg" } });
+        }
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
         return reply({ error: "not found" }, 404);
       }
@@ -439,6 +503,43 @@ export function makeAccounts() {
         me.acct.code = await sha(cleanCode(code));
         this.db.putAcct(me.acct);
         return reply({ recovery: code, account: this.view(me.acct) });
+      }
+      if (p === "/profile") {
+        if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+        const x = this.profOf(me.acct.id);
+        x.name = cleanText(body.name, 32);
+        x.about = cleanText(body.about, 80);
+        if (body.user === "" || body.user === null) x.user = null;
+        else {
+          const c = cleanUser(body.user);
+          if (c.error) return reply({ error: c.error }, 400);
+          const owner = this.db.profByUser(c.u);
+          if (owner && owner.acct !== me.acct.id) return reply({ error: "@" + c.u + " is taken; pick another" }, 409);
+          x.user = c.u;
+        }
+        try { this.db.putProf(x); } catch (e) { return reply({ error: "that username was just taken; pick another" }, 409); }
+        return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/pic") {
+        if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+        const x = this.profOf(me.acct.id);
+        if (body.k === "l") {
+          if (typeof body.h !== "string" || !/^[0-9a-f]{40}$/.test(body.h)) return reply({ error: "not a legend picture" }, 400);
+          x.pk = "l"; x.ph = body.h; this.db.delPhoto(me.acct.id);
+        } else if (body.k === null) { x.pk = null; x.ph = null; this.db.delPhoto(me.acct.id); }
+        else return reply({ error: "bad request" }, 400);
+        this.db.putProf(x);
+        return reply({ account: this.view(me.acct) });
+      }
+      if (p === "/photo") {
+        if (!(await this.spend("photo", ip))) return reply({ error: "too many pictures today; try again tomorrow" }, 429);
+        const img = typeof body.jpg === "string" && body.jpg.length < PHOTO_MAX * 1.4 ? unb64u(body.jpg) : null;
+        if (!img || !checkJpeg(img)) return reply({ error: "that picture could not be used; try another" }, 400);
+        const x = this.profOf(me.acct.id);
+        this.db.putPhoto(me.acct.id, img);
+        x.pk = "p"; x.ph = null; x.pv = now;
+        this.db.putProf(x);
+        return reply({ account: this.view(me.acct) });
       }
       if (p === "/out") { this.db.delSess(me.tok); return reply({ ok: true }); }
       if (p === "/delete") { this.db.delAcct(me.acct.id); return reply({ ok: true }); }

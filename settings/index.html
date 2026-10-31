@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090A">
-<meta name="description" content="App settings for RAVI: your Riot name, your account, the hub's blocks, where the app opens, and the opening animation.">
+<meta name="description" content="App settings for RAVI: your Riot name, the hub's blocks, where the app opens, and the opening animation.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RAVI">
@@ -14,8 +14,8 @@
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
-<script src="../live.js"></script>
 <script src="../account.js"></script>
+<script src="../live.js"></script>
 <style>
 /* App settings. The shared layer (tokens, glass, the bar, menus, the
    footer) is app.css; this block holds only this page's own rules. Each
@@ -43,17 +43,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #stme .pact{margin-top:12px}
 .stmsg{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
-/* ACCOUNT (plan 2 M1): a glass group of action rows; the two that cannot
-   be undone ask for a second tap (.armed, as the bar's reset) */
-#stacct .doors{margin:0}
-.doors > .door.armed{background-color:var(--glass-press)}
-/* the recovery code: display text on two lines, selectable, never a field (23 letters do not fit beside a button) */
-.pcode{margin:2px 0 0;text-align:center;font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.4;letter-spacing:.04em;-webkit-user-select:text;user-select:text}
-.pcode span{display:block}
-#pcodecopy{margin-top:12px}
-#prec .pnote,#pcode .pnote{margin-top:10px}
-.pmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
-.pmsg:empty{display:none}
 </style>
 </head>
 <body>
@@ -62,7 +51,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
 <main id="st">
   <h2 class="sr">App settings</h2>
-  <p class="lede">Your Riot name, your account, and choices for the hub and for how the app opens and moves, saved on this phone.</p>
+  <p class="lede">Your Riot name, and choices for the hub and for how the app opens and moves, saved on this phone.</p>
   <section class="sts glass" id="stme">
     <div class="shead"><h2>Your Riot name</h2></div>
     <div class="nf"><input type="text" id="stmein" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Your Riot name" data-k="type"><button type="button" class="fbtn glass" id="stmeok" data-k="do">Save</button></div>
@@ -70,27 +59,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="stmsg" id="stmemsg" aria-live="polite"></p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
-  </section>
-  <section class="sts glass" id="stacct">
-    <div class="shead"><h2>Account</h2></div>
-    <div id="stacout">
-      <div class="doors">
-        <button type="button" class="door act" id="stacnew" data-k="do"><span class="t">Create an account</span></button>
-        <button type="button" class="door act" id="stacsign" data-k="do"><span class="t">Sign in</span></button>
-        <button type="button" class="door" id="stacrec" data-k="deeper" data-fills="prec"><span class="t">Use a recovery code</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
-      </div>
-      <p class="stn" id="stacwhy">Optional: RAVI works the same without one. You sign in with a passkey, so Face ID or your phone's lock, with no password and no email. Next, your decks, collection and games follow your account to any phone you sign in on.</p>
-    </div>
-    <div id="stacin" hidden>
-      <div class="doors" data-k="do">
-        <button type="button" class="door act" id="stacadd"><span class="t">Add a passkey</span></button>
-        <button type="button" class="door act" id="staccode"><span class="t">New recovery code</span></button>
-        <button type="button" class="door act" id="stacoff"><span class="t">Sign out</span></button>
-        <button type="button" class="door act" id="stacdel"><span class="t">Delete account</span></button>
-      </div>
-      <p class="stn" id="stacfacts">Signed in.</p>
-    </div>
-    <p class="stmsg" id="stacmsg" aria-live="polite"></p>
   </section>
   <section class="sts glass">
     <div class="shead"><h2>Hub blocks</h2></div>
@@ -132,24 +100,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
-</section>
-<section class="panel frost" id="prec" aria-hidden="true" aria-label="Use a recovery code">
-  <div class="phead"><h4 class="ttl">Use a recovery code</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <div class="nf tall"><input type="text" id="precin" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Recovery code" data-k="type"></div>
-    <p class="pnote">The code RAVI showed you when you made your account. It signs you in once; you get a new one straight after.</p>
-    <p class="pmsg" id="precmsg" aria-live="polite"></p>
-  </div>
-  <div class="pfoot"><button type="button" class="pact btn glass" id="precgo" data-k="do">Sign in</button></div>
-</section>
-<section class="panel frost" id="pcode" aria-hidden="true" aria-label="Your recovery code">
-  <div class="phead"><h4 class="ttl">Your recovery code</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <p class="pcode" id="pcodein" aria-label="Your recovery code"></p>
-    <button type="button" class="pact btn glass" id="pcodecopy" data-k="do">Copy code</button>
-    <p class="pnote" id="pcodenote">Keep it in Passwords or Notes. If you ever lose your passkey, this code is the only way back in. RAVI can't show it again.</p>
-  </div>
-  <div class="pfoot"><button type="button" class="pact btn glass" data-close data-k="do">Done</button></div>
 </section>
 
 <script>
@@ -272,149 +222,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       tmsg.textContent = err || "Sent. It should arrive in a few seconds.";
     });
   });
-})();
-</script>
-<script>
-(function(){
-  // ACCOUNT (plan 2 M1). Optional; signed out, every page works the same.
-  // Sign-in is a passkey (account.js, server/live/accounts.js). The two
-  // rows that cannot be undone ask for a second tap, as the bar's reset.
-  var A = window.RAVI_ACCT;
-  function $(id){ return document.getElementById(id); }
-  var out = $("stacout"), inn = $("stacin"), msg = $("stacmsg"), facts = $("stacfacts");
-  var bNew = $("stacnew"), bSign = $("stacsign"), bRec = $("stacrec"), bAdd = $("stacadd");
-  var scrim = $("scrim"), prec = $("prec"), pcode = $("pcode"), recin = $("precin"), recmsg = $("precmsg");
-  var codein = $("pcodein"), copy = $("pcodecopy"), codenote = $("pcodenote"), NOTE = codenote.textContent, CODE = "";
-  var open = null, busy = false, last = null;
-  function say(t){ msg.textContent = t || ""; }
-  function show(p){
-    if (open && open !== p) { open.classList.remove("show"); open.setAttribute("aria-hidden", "true"); }
-    open = p; p.classList.add("show"); scrim.classList.add("show");
-    document.documentElement.classList.add("lock"); p.setAttribute("aria-hidden", "false");
-  }
-  function hide(){
-    if (!open) { return; }
-    open.classList.remove("show"); open.setAttribute("aria-hidden", "true"); open = null;
-    scrim.classList.remove("show"); document.documentElement.classList.remove("lock");
-  }
-  [prec, pcode].forEach(function(p){
-    var c = p.querySelectorAll("[data-close]");
-    for (var i = 0; i < c.length; i++) { c[i].addEventListener("click", hide); }
-  });
-  scrim.addEventListener("click", hide);
-  function day(d){
-    try { return new Date(d + "T12:00:00Z").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }); } catch (e) { return d; }
-  }
-  function render(acct){
-    var on = A.signedIn();
-    if (acct) { last = acct; }
-    if (!on) { last = null; }
-    acct = acct || last;
-    out.hidden = on; inn.hidden = !on;
-    if (on && acct && acct.keys) {
-      var n = acct.keys.length;
-      facts.textContent = "Signed in. Made " + day(acct.made) + ", with " + n + (n === 1 ? " passkey." : " passkeys.");
-    } else if (on) { facts.textContent = "Signed in."; }
-    var can = A.supported();
-    bNew.disabled = !can || busy; bSign.disabled = !can || busy; bAdd.disabled = !can || busy;
-    if (!can) { $("stacwhy").textContent = "This phone can't use passkeys, so it can't make an account. Update iOS, or sign in with a recovery code from an account you made elsewhere."; }
-  }
-  function showCode(code, note){
-    CODE = String(code || "");
-    var g = CODE.split("-");
-    codein.innerHTML = "";
-    [g.slice(0, 2).join("-"), g.slice(2).join("-")].forEach(function(t){ var sp = document.createElement("span"); sp.textContent = t; codein.appendChild(sp); });
-    codein.setAttribute("data-code", CODE);
-    copy.textContent = "Copy code";
-    codenote.textContent = note ? note + " " + NOTE : NOTE;
-    show(pcode);
-  }
-  function work(on){ busy = on; render(null); }
-  function refresh(){
-    render(null);
-    if (A.signedIn()) { A.me(function(err, j){ if (err) { if (!A.signedIn()) { say(err); } render(null); } else { render(j); } }); }
-  }
-  bNew.addEventListener("click", function(){
-    if (busy) { return; }
-    work(true); say("Making your passkey...");
-    A.create(function(err, j){
-      work(false);
-      if (err) { say(err); return; }
-      say(""); render(j.account);
-      showCode(j.recovery, "");
-    });
-  });
-  bSign.addEventListener("click", function(){
-    if (busy) { return; }
-    work(true); say("");
-    A.signIn(function(err, j){
-      work(false);
-      if (err) { say(err); return; }
-      render(j.account); say("Signed in.");
-    });
-  });
-  bRec.addEventListener("click", function(){ recmsg.textContent = ""; show(prec); });
-  function recover(){
-    if (busy) { return; }
-    var v = recin.value;
-    if (!v.trim()) { recmsg.textContent = "Type your recovery code first."; return; }
-    work(true); recmsg.textContent = "Checking...";
-    A.recover(v, function(err, j){
-      work(false);
-      if (err) { recmsg.textContent = err; return; }
-      recin.value = ""; recin.blur();
-      render(j.account);
-      say("Signed in with your recovery code. Add a passkey so next time it's Face ID.");
-      showCode(j.recovery, "That code is used up. This is your new one.");
-    });
-  }
-  $("precgo").addEventListener("click", recover);
-  recin.addEventListener("keydown", function(e){ if (e.key === "Enter") { recover(); } });
-  copy.addEventListener("click", function(){
-    function done(){ copy.textContent = "Copied"; }
-    function pick(){ try { var r = document.createRange(); r.selectNodeContents(codein); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } catch (e) {} }
-    try { navigator.clipboard.writeText(CODE).then(done, pick); } catch (e) { pick(); }
-  });
-  bAdd.addEventListener("click", function(){
-    if (busy) { return; }
-    work(true); say("Making your passkey...");
-    A.addKey(function(err, j){
-      work(false);
-      if (err) { say(err); return; }
-      render(j.account); say("Passkey added.");
-    });
-  });
-  $("stacoff").addEventListener("click", function(){
-    A.signOut(function(){ render(null); say("Signed out. Everything on this phone stays."); });
-  });
-  // a second tap within 3 seconds acts; the line under says what it does
-  function armed(btn, line, act){
-    var lab = btn.querySelector(".t"), words = lab.textContent, on = false, t = 0;
-    function off(){ on = false; clearTimeout(t); btn.classList.remove("armed"); lab.textContent = words; if (msg.textContent === line) { say(""); } }
-    btn.addEventListener("click", function(){
-      if (busy) { return; }
-      if (!on) { on = true; btn.classList.add("armed"); lab.textContent = "Sure? Tap again"; say(line); t = setTimeout(off, 3000); return; }
-      off(); act();
-    });
-  }
-  armed($("staccode"), "Your old recovery code stops working.", function(){
-    work(true);
-    A.newCode(function(err, j){
-      work(false);
-      if (err) { say(err); return; }
-      render(j.account); showCode(j.recovery, "Your old code no longer works.");
-    });
-  });
-  armed($("stacdel"), "Deletes your account on RAVI's server for good. This phone keeps everything it has.", function(){
-    work(true);
-    A.remove(function(err){
-      work(false);
-      if (err) { say(err); return; }
-      render(null); say("Account deleted.");
-    });
-  });
-  document.addEventListener("visibilitychange", function(){ if (!document.hidden) { refresh(); } });
-  refresh();
 })();
 </script>
 <script>
