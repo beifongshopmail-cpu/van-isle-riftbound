@@ -26,3 +26,13 @@ class_name = "Finishes"
 [[migrations]]
 tag = "v2"
 new_sqlite_classes = ["Finishes"]
+
+# RAVI's own accounts (accounts.js, plan 2 M1): a third Durable Object on
+# SQLite storage, free plan. Passkeys only; no secret of any kind is held.
+[[durable_objects.bindings]]
+name = "ACCOUNTS"
+class_name = "Accounts"
+
+[[migrations]]
+tag = "v3"
+new_sqlite_classes = ["Accounts"]

@@ -9,6 +9,7 @@ import { liveFromHtml } from "./parse.js";
 import { makeAlerts } from "./alerts.js";
 import { vapidPublic } from "./push.js";
 import { makeFinishes } from "./finishes.js";
+import { makeAccounts } from "./accounts.js";
 
 const UA = "VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-isle-riftbound)";
 const GQL = "https://playriftbound.com/api/gql";
@@ -124,6 +125,25 @@ async function toFinishes(req, env, path, method) {
   return json(req, r.status, await r.json().catch(function () { return {}; }));
 }
 
+// RAVI's own accounts (accounts.js, plan 2 M1): one Durable Object. The
+// phone's token rides in the Authorization header (Safari keeps no cookie
+// for this server from ravi.tools: a cross-site cookie is blocked).
+export const Accounts = makeAccounts();
+
+async function toAccounts(req, env, path) {
+  const init = { method: req.method, headers: { "Content-Type": "application/json", "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } };
+  const auth = req.headers.get("Authorization");
+  if (auth) init.headers.Authorization = auth.slice(0, 200);
+  if (req.method === "POST") {
+    const text = await req.text();
+    if (text.length > 16384) return json(req, 413, { error: "too big" });
+    init.body = text;
+  }
+  const stub = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
+  const r = await stub.fetch(new Request("https://accounts" + path, init));
+  return json(req, r.status, await r.json().catch(function () { return {}; }));
+}
+
 async function toAlerts(req, env, path) {
   const text = await req.text();
   if (text.length > 4096) return json(req, 413, { error: "too big" });
@@ -135,11 +155,17 @@ async function toAlerts(req, env, path) {
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
-    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: Object.assign({ "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "86400" }, cors(req)) });
+    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: Object.assign({ "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": /^\/acct\//.test(url.pathname) ? "Content-Type, Authorization" : "Content-Type", "Access-Control-Max-Age": "86400" }, cors(req)) });
     const ROUTE = { "/alerts": "/add", "/alerts/off": "/off", "/alerts/test": "/test" };
     if (req.method === "POST" && ROUTE[url.pathname]) {
       if (!env || !env.ALERTS) return json(req, 503, { error: "alerts are not set up" });
       return toAlerts(req, env, ROUTE[url.pathname]);
+    }
+    const am = /^\/acct(\/[a-z]+(?:\/[a-z]+)?)$/.exec(url.pathname);
+    if (am) {
+      if (!env || !env.ACCOUNTS) return json(req, 503, { error: "accounts are not set up" });
+      if (req.method !== "GET" && req.method !== "POST") return json(req, 405, { error: "not allowed" });
+      return toAccounts(req, env, am[1]);
     }
     const fm = /^\/finishes(?:\/(\d{6,24}))?$/.exec(url.pathname);
     if (fm) {
