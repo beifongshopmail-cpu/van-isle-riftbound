@@ -223,7 +223,9 @@ Buttons (calendar/index.html, app.css)
 The account picture and its menus (account.js, app.css; plan 2 M1, Mako 2026-10-30)
 - Every page with the wordmark row, and the hub, carries your picture (.acpic, glass, 36 round) in the row's top right corner, 18 in, level with the wordmark; it scrolls away with the row. None on the Game page. It shows a legend's art or your photo filling the circle; signed in with neither, a filled person; signed out, a person in outline (18, line 2).
 - Its menus (.panel.acct) are built by account.js, never by a page; their heads keep 68 on the right for the picture. The root shows your name and @username; Profile shows the picture at 88. Saving keeps you in the menu you saved from (Mako 2026-10-30).
-- Picture offers Upload a photo, then each legend's art and its overnumbered printing, never a signature printing, four across; a pick shows in the corner at once and is kept by Use this picture.
+- Picture opens on a 176 circle you drag to move the picture and pinch to zoom (a legend keeps its placing; a photo is placed, then cut to 256 square); under it a Printing track for the chosen legend (its own art, then its overnumbered printing, never a signature); then Upload a photo, and one circle per legend, four across. A pick shows in the corner at once and is kept by Use this picture. (Mako's yes 2026-10-31)
+- A button that saves says so in its own words for a moment: Saved, Claimed. (Mako 2026-10-31)
+- Profile holds the Riot ID, one account per Riot ID, in two fields as Riot shows it, the name and the #tag (.rid), with Claim or Release as a full-width action under them; the root menu's second line reads @username and the Riot ID. An account in ADMIN also has Disputes. (Mako's yes 2026-10-31)
 
 The bar (every page except the hub)
 - .bar.frost: fixed pill, 56 high, 12 from the sides, max-width 456, bottom max(4px, safe-area bottom minus 12px), padding 5, four columns, gap 4, z-index 20. Round slots (.tab), 24 icon.
@@ -322,7 +324,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - One shared bar (.bar, .tab, .frost) unchanged on every page. Fully round, 12 in from the sides. Every bar is built by RAVI_BAR (pages.js) from the one icon table, so no page draws its own bar and a slot two pages share is the same copy. [T] (Mako's yes 2026-10-13)
 - Four slots, always in order: Hub, Go to, the page's one action, Settings. An unused one dims in place. [D]
 - Go to lists the pages, tiles sharing the track evenly, never more than four across: one row up to four, rows of three for five and six, rows of four past that. A page whose bar carries Hub leaves Hub out of Go to. App settings is reached from the hub (a block when picked, always in All pages) and is never in Go to. [T]
-- App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed.
+- App settings is a page: each section a glass card holding a sunken group. Its bar's third slot resets every setting with a two-tap confirm; its Settings slot is dimmed. Your Riot name takes the name and the #tag in two fields with Save under them; signed in, it points to Profile instead and keeps Send a test alert. (Mako's yes 2026-10-31)
 - The Decks page is worked in, like the counter, and bends three defaults (Mako 2026-10-17): its card browser is a full-screen view, not a menu (the Collection page's too, the same bend; Mako's yes 2026-10-25); the page holds two screens, the list of decks and one deck; the add tile that ends a section in Edit wears a dashed outline.
 
 ## 8. Motion
