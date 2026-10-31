@@ -36,15 +36,20 @@
 <style>
 /* The hub. No bottom bar: this page IS the bar's Hub slot's destination. */
 html{background:var(--ground)}
-body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;
+  /* THE HUB'S TEXTURE (Mako 2026-10-31): the six domain runes pressed into the
+     black, their lit edges in each domain's colour, tilted as Mako laid them out.
+     One still image for the whole page; the plate frosts the lower part.
+     Made by rb-tools design/hub-texture/ from Riot's rune files. */
+  background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
   /* the name centres between the top clear line plus 36 and the middle
      block's top */
   justify-content:center;padding-top:calc(var(--top-clear) + 36px);padding-bottom:78px;
   position:relative;flex:0 0 auto;
-  /* ONE LINE: replace with an image or texture */
-  background:var(--ground)}
+  /* clear: the page's texture shows through above the plate */
+  background:none}
 .hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:48px;letter-spacing:.01em;color:var(--bone)} /* rung-exempt: the wordmark, the size the intro's full name starts at (Mako 2026-10-24) */
 /* THE LAUNCH INTRO (STYLE.md, Motion). While it plays the name is four
    capitals that travel, and .introfull is the full name laid over them.
@@ -60,7 +65,18 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 
 .low{position:relative;margin-top:-40px;
   border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px;
-  flex:1 0 auto;display:flex;flex-direction:column}
+  flex:1 0 auto;display:flex;flex-direction:column;
+  /* THE PLATE'S FROST (Mako 2026-10-31): a light frost, so the texture reads as
+     shapes under glass but no rune can be made out. The frost is a layer behind
+     the blocks, not the plate itself: a plate that blurred would hide the page
+     from the blocks' own frost. z-index 0 keeps that layer inside the plate. */
+  background:none;z-index:0}
+.low::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;
+  background:rgba(10,11,13,.94)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .low::after{background:linear-gradient(var(--glass),var(--glass)),rgba(8,9,10,.15);
+    -webkit-backdrop-filter:blur(3px) saturate(150%);backdrop-filter:blur(3px) saturate(150%)}
+}
 
 .grid{margin-top:-24px;display:flex;flex-wrap:wrap;justify-content:center;
   row-gap:18px;column-gap:12px;padding:0 8px;max-width:420px;margin-left:auto;margin-right:auto}
@@ -94,7 +110,11 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 /* ALL PAGES (M15): the eighth block, always last. Plain glass, no page colour, since it is
    every page; a button that opens the All pages tray. The tray sits where a bar's tray
    would, since the hub has no bar. */
-.blk.allp{border:0;font:inherit;cursor:pointer;background:var(--glass)}
+.blk.allp{border:0;font:inherit;cursor:pointer;background:var(--frost-solid)}
+/* frosted like the coloured blocks (app.css .cg), so every block is one glass (Mako 2026-10-31) */
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .blk.allp{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+}
 #pall{bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + 8px)}
 .hubfoot{margin-top:auto;padding:28px 12px calc(env(safe-area-inset-bottom,0px) + 16px)}
 .hubfoot p{margin:0;text-align:center;font-family:var(--text);font-size:12px;line-height:1.4;color:var(--muted)}
