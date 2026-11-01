@@ -217,6 +217,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // signal on the first open), the two fields work as before.
   if (window.RAVI_ACCT && window.RAVI_ACCT.signedIn()) {
     document.getElementById("stmerid").hidden = true; document.getElementById("stmeok").hidden = true;
+    // the card keeps only the test alert, so it is named for that, and the page's line drops the Riot name (sweep, Mako's yes 2026-10-31)
+    document.querySelector("#stme .shead h2").textContent = "Live alerts";
+    var lede = document.querySelector(".lede"); if (lede) lede.textContent = "Choices for the hub and for how the app opens and moves, saved on this phone.";
     var acv = window.RAVI_ACCT.view();
     document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "Your Riot ID is set on your profile. ") + "Tap your picture, top right, then Profile.";
   }

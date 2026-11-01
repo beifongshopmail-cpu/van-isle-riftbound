@@ -535,7 +535,7 @@ export function makeAccounts() {
       const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv } : null;
       const r = this.db.riotOf(a.id);
       const mine = this.db.disps().filter((d) => d.acct === a.id).map((d) => ({ n: d.n, tag: d.tag, at: dayOf(d.at) }));
-      const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ id: c.id, name: c.name || "", made: dayOf(c.made), last: dayOf(c.last) })),
+      const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ id: c.id, name: c.name || "", made: dayOf(c.made), last: dayOf(c.last), mt: c.made, lt: c.last })), // the times too: the phone writes the day in its own time zone (sweep, 2026-10-31)
         name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", area: p && p.area || "", pic: pic,
         riot: r ? { n: r.n, tag: r.tag } : null, asked: mine };
       if (a.guest) out.guest = true;
@@ -637,8 +637,8 @@ export function makeAccounts() {
         return reply({ v: 1, disputes: this.db.disps().map((d) => {
           const held = this.db.riotByKey(d.k);
           // the Riot ID as its holder wrote it (Riot IDs ignore case); the asker's own spelling is kept if it is given to them
-          return { id: d.id, riot: held ? held.n + "#" + held.tag : d.n + "#" + d.tag, at: dayOf(d.at), asker: this.who2(d.acct),
-            holder: held ? Object.assign(this.who2(held.acct), { since: dayOf(held.at) }) : null };
+          return { id: d.id, riot: held ? held.n + "#" + held.tag : d.n + "#" + d.tag, at: dayOf(d.at), atT: d.at, asker: this.who2(d.acct),
+            holder: held ? Object.assign(this.who2(held.acct), { since: dayOf(held.at), sinceT: held.at }) : null };
         }) });
       }
       if (req.method === "GET") {
@@ -651,7 +651,7 @@ export function makeAccounts() {
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
         if (u.pathname === "/devices") {
           if (!me) return reply({ error: "signed out" }, 401);
-          return reply({ v: 1, devices: this.db.sessions(me.acct.id).map((x) => ({ id: x.tok.slice(0, 12), dev: x.dev || "Computer", made: dayOf(x.made), last: dayOf(x.last), here: x.tok === me.tok })) });
+          return reply({ v: 1, devices: this.db.sessions(me.acct.id).map((x) => ({ id: x.tok.slice(0, 12), dev: x.dev || "Computer", made: dayOf(x.made), last: dayOf(x.last), mt: x.made, lt: x.last, here: x.tok === me.tok })) });
         }
         if (u.pathname === "/export") return me ? reply(this.exportOf(me.acct)) : reply({ error: "signed out" }, 401);
         return reply({ error: "not found" }, 404);

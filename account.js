@@ -277,8 +277,13 @@
 
   function el(tag, cls, html) { var e = doc.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; }
   function $(id) { return doc.getElementById(id); }
-  function day(d) {
-    try { return new Date(d + "T12:00:00Z").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }); } catch (e) { return d; }
+  // a day as this phone's calendar has it: from the time when the server sends one (its days are
+  // UTC, a day ahead on a Pacific evening: the sweep, Mako's yes 2026-10-31), else from the day
+  function day(d, t) {
+    try {
+      if (isFinite(t) && +t > 0) return new Date(+t).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" });
+      return new Date(d + "T12:00:00Z").toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+    } catch (e) { return d; }
   }
 
   // draw a picture into a circle: art, the photo, or a filled person (every phone has an account)
@@ -344,7 +349,7 @@
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
-      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone that opens RAVI gets an account, so your things can follow you once you save it. RAVI keeps for it: your decks, collection, games, saved trades, Follow marks and hub picks, so they follow you to every phone signed in to it; your profile, picture, Riot ID and home area; each signed-in device (iPhone, Android or Computer) and the days it was used; once saved, your passkeys\' public keys and a scrambled copy of your recovery code. Never a password or an email. An account never saved and unused for 90 days is deleted.</p>' +
+      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, Follow and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
         '<p class="pnote" id="acnum"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
         '<button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
@@ -525,7 +530,7 @@
       var b = el("button", "door", '<span class="t"></span><span class="sp"></span><small></small>' + CV);
       b.type = "button"; b.setAttribute("data-key", k.id || "");
       b.querySelector(".t").textContent = keyLabel(k, i);
-      b.querySelector("small").textContent = day(k.last);
+      b.querySelector("small").textContent = day(k.last, k.lt);
       list.appendChild(b);
     });
     list.hidden = !keys.length;
@@ -536,7 +541,7 @@
     if (!x) return;
     $("ackeyname").value = x.k.name || "";
     $("ackeyname").placeholder = "Passkey " + (x.i + 1);
-    $("ackeydays").textContent = "Added " + day(x.k.made) + ". Last used " + day(x.k.last) + "." + (x.n < 2 ? " It is your only passkey, so it can't be removed: add another first." : "");
+    $("ackeydays").textContent = "Added " + day(x.k.made, x.k.mt) + ". Last used " + day(x.k.last, x.k.lt) + "." + (x.n < 2 ? " It is your only passkey, so it can't be removed: add another first." : "");
     $("ackeyoff").disabled = x.n < 2;
     say("ackeyonemsg", "");
   }
@@ -547,13 +552,13 @@
     A.devices(function (err, j) {
       if (err) { here.textContent = ""; return say("acdevmsg", err); }
       var ds = j && j.devices || [], others = ds.filter(function (d) { return !d.here; }), mine = ds.filter(function (d) { return d.here; })[0];
-      here.textContent = (mine ? "This phone: " + mine.dev + ", signed in " + day(mine.made) + ". " : "") +
+      here.textContent = (mine ? "This phone: " + mine.dev + ", signed in " + day(mine.made, mine.mt) + ". " : "") +
         (others.length ? "Tap another to sign it out." : "No other device is signed in.");
       others.forEach(function (d) {
         var b = el("button", "door act", '<span class="t"></span><span class="sp"></span><small></small>');
         b.type = "button";
         b.querySelector(".t").textContent = d.dev;
-        b.querySelector("small").textContent = "used " + day(d.last);
+        b.querySelector("small").textContent = "used " + day(d.last, d.lt);
         armed(b, "acdevmsg", "Signs out that " + d.dev + ". It gets a new account until it signs in again.", function () {
           A.deviceOut(d.id, function (err2) { if (err2) return say("acdevmsg", err2); renderDevices(); setTimeout(function () { say("acdevmsg", "Signed out."); }, 0); });
         });
@@ -725,12 +730,12 @@
         function who(x) { return x && x.user ? "@" + x.user : (x && x.name ? x.name : "an account with no username"); }
         var head = el("p", "lb"); head.textContent = d.riot;
         var note = el("p", "pnote");
-        note.textContent = (d.holder ? "Held by " + who(d.holder) + " since " + day(d.holder.since) + ". " : "Nobody holds it now. ") + who(d.asker) + " says it is theirs (" + day(d.at) + "). Check their screenshot in Feedback first.";
+        note.textContent = (d.holder ? "Held by " + who(d.holder) + " since " + day(d.holder.since, d.holder.sinceT) + ". " : "Nobody holds it now. ") + who(d.asker) + " says it is theirs (" + day(d.at, d.atT) + "). Check their screenshot in Feedback first.";
         var rows = el("div", "doors acgap");
         rows.setAttribute("data-k", "do");
         rows.innerHTML = '<button type="button" class="door act" data-give="1"><span class="t"></span></button><button type="button" class="door act" data-give="0"><span class="t"></span></button>';
         rows.children[0].querySelector(".t").textContent = "Give it to " + who(d.asker);
-        rows.children[1].querySelector(".t").textContent = d.holder ? "Keep it with " + who(d.holder) : "Dismiss";
+        rows.children[1].querySelector(".t").textContent = d.holder ? "Keep it where it is" : "Dismiss"; // the line above names the holder (sweep, Mako's yes 2026-10-31)
         [0, 1].forEach(function (i) {
           armed(rows.children[i], "acdispmsg", i === 0 ? "Moves " + d.riot + " to " + who(d.asker) + "." : "Closes the dispute; nothing moves.", function () {
             A.decide(d.id, i === 0, function (err2) {
