@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-01T07:11:58.407Z",
- "generated_local": "2026-11-01T00:11:58-07:00",
+ "generated_at": "2026-11-01T18:17:26.505Z",
+ "generated_local": "2026-11-01T11:17:26-07:00",
  "window_start": "2026-11-01T07:00:00.000Z",
  "anchors": [
   {
@@ -49,7 +49,7 @@
  "totals": {
   "fetched": 60,
   "unique": 60,
-  "prev_unique": 62
+  "prev_unique": 60
  },
  "unknown_templates": {
   "NEXUS_CUP": {
@@ -72,7 +72,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 5,
+   "reg": 11,
    "cents": 600,
    "currency": "CAD",
    "updated": null,
@@ -96,7 +96,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 3,
+   "reg": 4,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
