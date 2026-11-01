@@ -113,7 +113,7 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; the wordmark, 22 at the page top (.wm) and 48 on the hub (.hubname), the size the launch intro's full name starts at; 40 on the install screen (.gwname); 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25). Go to tile labels are 12 with letter-spacing -.08em.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25). Go to tile labels are 12 with letter-spacing -.08em. The wordmark is a drawing (the badge, section 5), not type, so no rung binds it.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
@@ -177,8 +177,9 @@ Page-local classes named in this file (not in app.css; each lives in the page fi
 Page shell (feedback/index.html, settings/index.html)
 - Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, account.js (every page with the wordmark row, and the hub), the page's own style block (in that order).
 - Page style block starts: html{background:var(--ground)}, a{color:inherit;text-decoration:none}, body{-webkit-font-smoothing:antialiased;touch-action:manipulation}.
-- Wordmark row (.wmrow, .wm, .logo1, .logo2): chrome, one thin row, scrolls away. Padding safe-area top + 30 / 18 / 16 / 18. Wordmark 22, Poppins 800, RA --p1, VI --p2. Plain RAVI everywhere else.
-    <div class="wmrow"><h1 class="wm"><span class="logo1">RA</span><span class="logo2">VI</span></h1></div>
+- The badge (.rb; app.css THE BADGE; Mako's pick J, 2026-10-31): the RAVI wordmark. RAVI in Righteous outlines (OFL; p, n and a softened in the intro), RA --p1, VI --p2, tracking .02 em, at .8 of the pill's inner box; a pill of clear frosted glass (.rbg: white .025, blur 3, saturate 160%, the app's rim light, the glass base and drop shadow); a blue-to-pink rim inside it (inset 9% top and bottom, 4% left and right, 2.5 px, the 135deg gradient #5DA5EE to .35 at the middle to #EE5F9C). 2.4783 wide per tall; height --rbh: 36 on the wordmark row, 88 on the hub, 72 on the install screen. One inline SVG holds the rim and the letters; the name is .sr text for screen readers. Written into every page by rb-tools design/wordmark/badge.py, never by hand. No font file. Plain RAVI everywhere else.
+- Wordmark row (.wmrow, .wm): chrome, one thin row, scrolls away. Padding safe-area top + 25 / 18 / 16 / 18, so the 36 badge's middle is level with your picture's. Its markup comes from badge.py:
+    <div class="wmrow"><h1 class="wm"><span class="rb">...</span><span class="sr">RAVI</span></h1></div>
 - Main wrapper (page-local id, e.g. #fb): max-width 480, margin 0 auto, padding 0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px). The calendar's wrapper is .body (calendar/index.html) and the trade page's is #trd with .tail (trade/index.html), with the same idea; scrollbar-gutter stable and body min-height 100vh come from app.css.
 - Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone.
     <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
@@ -221,7 +222,7 @@ Buttons (calendar/index.html, app.css)
 - .hemi (calendar-local, with .hl and .hr): two halves of one pill, 36 square each, outer curve half of 36, 5 at the join, 4 overlap. Copy from calendar/index.html if a page needs a pair.
 
 The account picture and its menus (account.js, app.css; plan 2 M1, Mako 2026-10-30)
-- Every page with the wordmark row, and the hub, carries your picture (.acpic, glass, 36 round) in the row's top right corner, 18 in, level with the wordmark; it scrolls away with the row. None on the Game page. It shows a legend's art or your photo filling the circle; signed in with neither, a filled person; signed out, a person in outline (18, line 2).
+- Every page with the wordmark row, and the hub, carries your picture (.acpic, glass, 36 round) in the row's top right corner, 18 in, level with the badge; it scrolls away with the row. None on the Game page. It shows a legend's art or your photo filling the circle (class acart, never art: the card pages style .art as card art; Mako 2026-11-01); signed in with neither, a filled person; signed out, a person in outline (18, line 2).
 - Its menus (.panel.acct) are built by account.js, never by a page; their heads keep 68 on the right for the picture. The root shows your name and @username; Profile shows the picture at 88. Saving keeps you in the menu you saved from (Mako 2026-10-30).
 - Picture opens on a 176 circle you drag to move the picture and pinch to zoom (a legend keeps its placing; a photo is placed, then cut to 256 square); under it a Printing track for the chosen legend (its own art, then its overnumbered printing, never a signature); then Upload a photo, and one circle per legend, four across. A pick shows in the corner at once and is kept by Use this picture. (Mako's yes 2026-10-31)
 - A button that saves says so in its own words for a moment: Saved, Claimed. (Mako 2026-10-31)
@@ -296,11 +297,11 @@ The hub block (index.html)
 The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - In a browser tab every page shows only #ravigate, first in the body; html.gate hides every other child of the body. The page's own markup and scripts are untouched.
 - It stays out: installed (navigator.standalone, or display-mode standalone, fullscreen or minimal-ui); after Continue in the browser in this tab (session key ravi.web.v1); on a ?sim= link; under a test tool (navigator.webdriver). window.RAVI_GATE is true while it shows; the hub's launch intro waits for it.
-- Layout: one block centred in the screen (min-height 100svh; top --top-clear + 8, bottom safe area + 84 so the Continue line clears Safari's floating bar): .gwtop (the name .gwname at 40 with RA --p1 and VI --p2, one line .gwline 17 muted), one glass card .gwcard (corner 22, .shead 20), then on a phone a 13 muted note (.gwnote) and the footer (13) with the Continue link.
+- Layout: one block centred in the screen (min-height 100svh; top --top-clear + 8, bottom safe area + 84 so the Continue line clears Safari's floating bar): .gwtop (the badge, 72, in .gwname; one line .gwline 17 muted), one glass card .gwcard (corner 22, .shead 20), then on a phone a 13 muted note (.gwnote) and the footer (13) with the Continue link.
 - iPhone (#gwios): Add RAVI to your Home Screen, six numbered steps as Safari shows them (.gwstep: number .gwn 15 muted, icon 24, words .gwt 17, optional second line .gwsub 15 muted; at least 44 high, may wrap, hairline inset 16): the menu button (No menu button? Tap Share and go to step 3), Share, Scroll down or tap View More, Add to Home Screen, keep Open as Web App on then Add, Open RAVI (the app icon). Another browser on iOS starts at Share (five steps).
 - Android (#gwand): Install RAVI. The .pact button (#gwinst) shows only once the browser offers its prompt; otherwise one line says to use the browser menu.
 - A computer (#gwpc): RAVI is a phone app, one line, and Continue in the browser as a .pact.
-- The app icon appears once, small, in the last iPhone step. It is the wordmark itself, so never above the name.
+- The app icon appears once, small, in the last iPhone step. It is the wordmark itself, so never above the name. The icon (rb-tools render-icons.js from design/wordmark/icon.py; Mako 2026-11-01) is the glass badge filling the whole icon: RAVI .74 of the width, the blue-to-pink rim just inside the icon's rounded edge, a dark glass ground lit from the top.
 
 ## 6. New page checklist (in this order)
 
@@ -329,8 +330,8 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 
 ## 8. Motion
 
-- Motion confirms; it never decorates. Two exceptions, both on the hub: the launch intro, and the glow (section 10; Mako 2026-10-31).
-- Nothing animates on first paint, apart from the launch intro.
+- Motion confirms; it never decorates. Three exceptions, all on the hub: the launch intro, the glow (section 10; Mako 2026-10-31), and the badge's flowing rim (section 10; Mako 2026-11-01).
+- Nothing animates on first paint, apart from the hub's three exceptions.
 - Press: scale .96 and the shade change (button:active). A row inside a group takes the shade only. Large surfaces (hub blocks, the event head) scale .97 with brightness 1.2.
 - Tap flashes .42s: .flash-n neutral, .flash-p player colour. A control that already confirms itself twice gets no third.
 - A chevron turns in .28s.
@@ -344,7 +345,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - A point lands: the numeral settles from 1.06 and the newest rail line draws in (--mo-rise .32s).
 - Pass turn: the button flashes the incoming player's colour, its turn line rolls up, and a glow fades in across the button into their half, .56s.
 - The victory banner rises where a menu does, when a game ends in front of you; never on first paint.
-- The launch intro: once per launch, the first time the hub shows (session flag ravi.intro.v1; off with ravi.intro.off.v1). 'Rift App' in blue over 'Van Isle' in pink turns into RAVI in about 1.9s; the hub's blocks rise in while the name is read. Any tap finishes it. No other page has one.
+- The launch intro: once per launch, the first time the hub shows (session flag ravi.intro.v1; off with ravi.intro.off.v1). 'Rift App' in blue over 'Van Isle' in pink, in the badge's own letters at their size, comes in and is read; the small letters fade while the four capitals travel into the badge; the glass opens out from behind them, the rim draws round from the left end both ways, meeting at the right, and the glass catches the light once. About 2.6s (Mako 2026-10-31). The letters live inside the badge, so they move with it if the top area settles; at the end the badge is rebuilt from its markup. The hub's blocks rise in while the name is read. Any tap finishes it. No other page has one.
 - The counter updates its sides in place, so the next render never cuts a motion off. [T]
 - Reduced motion turns every transition and animation off.
 - Never animate layout from script while the page scrolls. Never tween or scroll-correct a height above the screen.
@@ -357,7 +358,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Every button declares its background, even none (app.css sets background none on button).
 - Links that act as tiles show no long-press preview (-webkit-touch-callout none, user-select none).
 - Every page is at least one screen tall (body min-height 100vh). The scrollbar stays put (scrollbar-gutter stable, overflow-y scroll). [C]
-- The wordmark row starts at safe-area top + 30, where the counter's stage starts. The hub's name is centred in its top area from --top-clear + 36.
+- The wordmark row starts at safe-area top + 25, so its 36 badge is level with your picture (centre at safe-area top + 43). The hub's badge is centred in its top area from --top-clear + 36.
 - A sticky plate parks 10 above --top-clear, so its words start on it. The gap above it is never a scroller's padding (a sticky's top counts from inside that padding). A menu at its tallest stops at the same place. [C] (Mako's yes 2026-10-24)
 - No member of a new class or function family is a prefix of another.
 - An index written into markup comes from the source array, never the loop counter.
@@ -368,7 +369,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 ## 10. Page notes
 
 Hub (index.html)
-- No bar. Name .hubname centred in .top (height max(260px, 42vh)); .low.glass plate with a curved top; nav#grid of up to eight blocks (the picks, then All pages); the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
+- No bar. The badge (88) in .hubname, centred in .top (height max(260px, 42vh)). At rest its rim flows (.rb.flow::after, hub only, Mako 2026-11-01): a ring in the drawn rim's band coloured by a conic gradient, bright blue and bright pink opposite each other, each fading to .35 between, turning once every 8 s (@property --rf), fading in over the drawn rim at rest and after the intro; none with reduced motion. Then .low.glass plate with a curved top; nav#grid of up to eight blocks (the picks, then All pages); the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
 - Texture (Mako 2026-10-31): the body's background is img/hub-runes.webp at cover, top: the domain runes on Mako's own layout and tilt (16 degrees), black coins with a bevelled rim and the glyph pressed in, lit edges in the domain colour, only ever lighter than the ground, transparent between the coins so the black there is --ground exactly. .top is clear. Made by rb-tools design/hub-texture (texture.js, texture.py). Hub only.
 - The plate: .low::after behind the blocks (.low has z-index 0 and no blur of its own, so the blocks' frost still sees the page): rgba(10,11,13,.3), blur 3 saturate 150%, the dark plate colour so it reads as the same black; fallback rgba(10,11,13,.94). Every block is frosted, All pages too (blur 20 saturate 160%, as .cg). html and body never rubber-band (overscroll-behavior none).
 - The glow (Mako 2026-10-31): .sheen, first in the body, adds img/hub-runes-glow.png (each symbol lit in its domain colour, black elsewhere) with plus-lighter at .17 through a mask on .sheen::before in cq units of .sheen, so the black between the coins is never lit. Modes on html[data-glow]: rings (wide band, three centres, 30 s) on the first hub of a session; later hubs pick rings 40%, waves 40% (a wave with a fainter echo from seven centres, 84 s) or twinkle 20% (ten lights over five coins each, 5 to 9 symbols lit at once). A centre or coin changes only while its light is 0. Off for reduced motion. CSS from rb-tools design/hub-texture/glow.py. [T]
@@ -454,13 +455,15 @@ Tier list (tier/index.html; M17, 2026-10-28)
 - m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
 - m96s-test.js: the motion sweep: the form, a month change and a day tap ease in; pick-one tracks slide their fill; numbers a tap changes settle; the trade's Undo turns on in place and Yours/Theirs eases in; the counter's Focus and Split.
 - m96w-test.js: the consistency sweep: Calendar settings has one way in and hidden events show in words; one confirm wording; every search clears with Clear; menu small print is one style; dates and times are written one way; no pencil, no head count and no foot chevron in Trade's saved trades; Log is titled Log; the footers.
-- hubglow-test.js: the hub's glow: rings on a session's first hub, the session key, later hubs 40/40/20, refused storage, reduced motion, no light between the coins in any mode.
+- hubglow-test.js: the hub's glow: rings on a session's first hub, the session key, later hubs 40/40/20, refused storage, reduced motion, no light between the coins in any mode (outside the badge's frosted glass).
+- wm-test.js: the badge on every row, the hub and the install screen, its sizes, your picture level and clear; the launch intro's letters, landing, glass and rim, a tap to finish, the off switches, the letters moving with the badge, the hub's flowing rim.
+- acpic-test.js: your picture with a legend picture is a 36 round circle in every row and on the hub, and round in the Picture menu.
 - colour-test.js: the colour system: each page's glass takes its colour at .30, a glass group carries the tint once, the counter's side buttons keep no page colour, grey text on tinted glass is lifted, the bar's pill wears the page colour.
 - icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - m11d-test.js: the deck logic (Piltover Archive's golden codes, six formats in, three out, Riot's deck rules in words, the ban list, stats, the hand).
 - m11p-test.js: the Decks page's flow in a browser.
 - m13-test.js: the price history (data/hist). m13p-test.js to m13w-test.js: the Collection page and Mako's five rounds, and Owned and Missing on Decks.
-- m11zd-test.js to m11zh-test.js: the M11 consistency sweep and Mako's phone checks (Rules by section and NEW in place of Latest, clear chrome; Export in Deck settings as a cut track, round X, hub wordmark 48; Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
+- m11zd-test.js to m11zh-test.js: the M11 consistency sweep and Mako's phone checks (Rules by section and NEW in place of Latest, clear chrome; Export in Deck settings as a cut track, round X, the hub's name at the size the intro starts from (the 88 badge since 2026-10-31); Trade's undo as Decks', the bin at one copy, one Export, bare counts, search words, Rules' sticky search, Printing).
 - m11r-test.js to m11zc-test.js: the Decks refinement, one per round of Mako's notes (2026-10-18 to 23): the list plate, view row and section menus, printings from the price feed, Stats tiles, odds, Undo, runes at 12, badges, battlefields, counts, deck colours, the safe zone on every sticky plate, the Add cards plate, and changes painted in place.
 - m15-test.js: the hub picks: seven picks then All pages, bad saved values never break the hub, the All pages tray with every page, App settings' Hub blocks card and Reset; the New here page; Top cut (cut/cut.js's maths, the page, the calendar's button, the Game page's row).
 - m16-test.js: the live event server (server/live): the parser on Riot's pages from a live and a finished event, hostile input rebuilt, one upstream read per event per 15 seconds, the request surface. m16b-test.js: live.js and live data on the Events page (the card line, the Live menu). m16c-test.js: the Game page's Round timer and Top cut's prefill. m16d-test.js: pairing alerts (the push code, the alerts store, the routes, the alerts-only worker, the button).
