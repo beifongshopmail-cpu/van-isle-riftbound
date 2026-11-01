@@ -292,7 +292,7 @@
     node.style.backgroundImage = url ? "url(\"" + url.replace(/["\\]/g, "") + "\")" : "";
     node.style.backgroundSize = url && fit ? fit.size : "";
     node.style.backgroundPosition = url && fit ? fit.pos : "";
-    node.classList.toggle("art", !!url);
+    node.classList.toggle("acart", !!url); // acart, never art: the card pages style .art as card art (Mako 2026-11-01)
     node.classList.toggle("me", !url);
     node.innerHTML = url ? "" : SVG_ME;
   }
@@ -795,7 +795,7 @@
     if (work) {
       adj.style.backgroundImage = "url(\"" + String(work.url).replace(/["\\]/g, "") + "\")";
       var f = fitOf(work); adj.style.backgroundSize = f.size; adj.style.backgroundPosition = f.pos;
-      adj.classList.add("art"); adj.innerHTML = "";
+      adj.classList.add("acart"); adj.innerHTML = "";
     } else { paint(adj, A.view(), null); }
     $("acadjn").style.visibility = work ? "visible" : "hidden";
     $("acuse").disabled = !(work && !work.saved);
@@ -831,7 +831,7 @@
       L.forEach(function (lg) {
         var p = printsOf(lg);
         if (!p.length) return;
-        var b = el("button", "", '<span class="acav art" style="background-image:url(' + REL + 'cards/art/' + p[0].h + '.t.webp)"></span>');
+        var b = el("button", "", '<span class="acav acart" style="background-image:url(' + REL + 'cards/art/' + p[0].h + '.t.webp)"></span>');
         b.type = "button"; b.setAttribute("aria-label", lg.n); b.setAttribute("data-h", p[0].h); b.setAttribute("data-n", lg.n);
         g.appendChild(b);
       });
