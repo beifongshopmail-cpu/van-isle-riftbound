@@ -329,7 +329,7 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 
 ## 8. Motion
 
-- Motion confirms; it never decorates. One exception: the hub's launch intro.
+- Motion confirms; it never decorates. Two exceptions, both on the hub: the launch intro, and the glow (section 10; Mako 2026-10-31).
 - Nothing animates on first paint, apart from the launch intro.
 - Press: scale .96 and the shade change (button:active). A row inside a group takes the shade only. Large surfaces (hub blocks, the event head) scale .97 with brightness 1.2.
 - Tap flashes .42s: .flash-n neutral, .flash-p player colour. A control that already confirms itself twice gets no third.
@@ -363,12 +363,15 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
 - Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
-- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), vir.start.guide.v1 (New here's last guide), vir.cut.v1 (Top cut's numbers and event), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings), vir.me.v1 (my Riot name, M16), vir.alerts.v1 (events with alerts on, M16); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser).
+- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), vir.start.guide.v1 (New here's last guide), vir.cut.v1 (Top cut's numbers and event), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings), vir.me.v1 (my Riot name, M16), vir.alerts.v1 (events with alerts on, M16); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser), ravi.glow.v1 (the hub has been seen; later hubs pick their glow).
 
 ## 10. Page notes
 
 Hub (index.html)
 - No bar. Name .hubname centred in .top (height max(260px, 42vh)); .low.glass plate with a curved top; nav#grid of up to eight blocks (the picks, then All pages); the middle blocks sit 14 up (nth-child 2 and 5). Open-to check at the top of the file reads vir.hub.open.v1; ?hub forces the hub.
+- Texture (Mako 2026-10-31): the body's background is img/hub-runes.webp at cover, top: the domain runes on Mako's own layout and tilt (16 degrees), black coins with a bevelled rim and the glyph pressed in, lit edges in the domain colour, only ever lighter than the ground, transparent between the coins so the black there is --ground exactly. .top is clear. Made by rb-tools design/hub-texture (texture.js, texture.py). Hub only.
+- The plate: .low::after behind the blocks (.low has z-index 0 and no blur of its own, so the blocks' frost still sees the page): rgba(10,11,13,.3), blur 3 saturate 150%, the dark plate colour so it reads as the same black; fallback rgba(10,11,13,.94). Every block is frosted, All pages too (blur 20 saturate 160%, as .cg). html and body never rubber-band (overscroll-behavior none).
+- The glow (Mako 2026-10-31): .sheen, first in the body, adds img/hub-runes-glow.png (each symbol lit in its domain colour, black elsewhere) with plus-lighter at .17 through a mask on .sheen::before in cq units of .sheen, so the black between the coins is never lit. Modes on html[data-glow]: rings (wide band, three centres, 30 s) on the first hub of a session; later hubs pick rings 40%, waves 40% (a wave with a fainter echo from seven centres, 84 s) or twinkle 20% (ten lights over five coins each, 5 to 9 symbols lit at once). A centre or coin changes only while its light is 0. Off for reduced motion. CSS from rb-tools design/hub-texture/glow.py. [T]
 Calendar (calendar/index.html)
 - Sticky month card (.stick zero-height holder, .card, .hold spacer, arithmetic height), .mrow with month, year, the .hemi pair and the collapse chevron (#mtog).
 - Day cells .cell (circles, data-k grid), dots under them; agenda of .ev cards with .evhead and .evact: under the in-card line, the street address (.evaddr 13 bone, .evend 12 muted when the feed has an end) left and round icon buttons right (.evbtns: .evdir Directions to the phone's maps, .evadd one event's file data/ev/<id>.ics, .evcut the Top cut page for that event (../cut/?ev=<id>, in the app; every kind but Learn-to-Play and Open Play; M15), .evlink the event page), each a .circ with an aria-label and no words; all but .evcut open outside the page. No Play here; the counter's ?ev= link stays a hidden entry.
@@ -451,6 +454,7 @@ Tier list (tier/index.html; M17, 2026-10-28)
 - m96-test.js: the bar system: no page draws its own bar, RAVI_BAR fills it, the icon table holds every bar icon, every page keeps its four slots in order, every slot is an exact copy of its table entry, mask ids unique.
 - m96s-test.js: the motion sweep: the form, a month change and a day tap ease in; pick-one tracks slide their fill; numbers a tap changes settle; the trade's Undo turns on in place and Yours/Theirs eases in; the counter's Focus and Split.
 - m96w-test.js: the consistency sweep: Calendar settings has one way in and hidden events show in words; one confirm wording; every search clears with Clear; menu small print is one style; dates and times are written one way; no pencil, no head count and no foot chevron in Trade's saved trades; Log is titled Log; the footers.
+- hubglow-test.js: the hub's glow: rings on a session's first hub, the session key, later hubs 40/40/20, refused storage, reduced motion, no light between the coins in any mode.
 - colour-test.js: the colour system: each page's glass takes its colour at .30, a glass group carries the tint once, the counter's side buttons keep no page colour, grey text on tinted glass is lifted, the bar's pill wears the page colour.
 - icons-test.js: the icon table read as data: every name an svg, no placeholder left, ids unique within a copy and across copies, every url() inside its copy, outline lines inherit the svg's line.
 - m11d-test.js: the deck logic (Piltover Archive's golden codes, six formats in, three out, Riot's deck rules in words, the ban list, stats, the hand).
