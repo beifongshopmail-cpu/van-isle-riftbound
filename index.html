@@ -47,40 +47,329 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;posit
      One still image for the whole page; the plate frosts the lower part.
      Made by rb-tools design/hub-texture/ from Riot's rune files. */
   background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
-/* THE GLOW (Mako 2026-10-31): every 10 s a soft ring of light ripples out
-   across the page, each time from a different place (behind the name, the top
-   left, the lower right; a 30 s cycle), and each symbol the ring crosses glows
-   from inside in its domain's colour, as if lit from under the coin. The glow
-   image (black wherever nothing glows) is added to the page (plus-lighter), so
-   black adds nothing and the black between the coins is never lit. The ring is
-   a radial mask whose centre and radius are animated custom properties; between
-   ripples its radius is 0, so the jump to the next centre shows nothing (no
-   flash at the loop). Off for reduced motion. */
+/* THE GLOW (Mako 2026-10-31): the symbols glow from inside, in their domain's
+   colour, as if lit from under the coin, in one of three ways: rings (rings of
+   light grow from three places in turn; the first hub of a session always
+   plays this), waves (a wave with a fainter echo, from somewhere new each time)
+   or twinkle (about eight symbols at a time light up and fade). Later hubs in
+   the session pick one: rings 40%, waves 40%, twinkle 20% (the script at the
+   top of the body sets html[data-glow]). The glow image (black wherever
+   nothing glows) is .sheen::before, masked by the mode, and .sheen adds it to
+   the page (plus-lighter): black adds nothing, so the black between the coins
+   is never lit. .sheen is a size container, so the masks line up with the
+   body's cover-sized texture on any phone. Off for reduced motion. */
+.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;container-type:size;
+  mix-blend-mode:plus-lighter;opacity:.17}
+.sheen::before{content:"";position:absolute;inset:0;background:url(img/hub-runes-glow.png) center top/cover no-repeat;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-image:linear-gradient(transparent,transparent);mask-image:linear-gradient(transparent,transparent)}
+/* GLOW MODES (rb-tools design/hub-texture/glow.py; rings 30 s, waves 84 s) */
 @property --gx{syntax:"<length>";inherits:false;initial-value:0px}
 @property --gy{syntax:"<length>";inherits:false;initial-value:0px}
 @property --gr{syntax:"<length>";inherits:false;initial-value:0px}
-.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;
-  mix-blend-mode:plus-lighter;opacity:.17;
-  background:url(img/hub-runes-glow.png) center top/cover no-repeat;
-  -webkit-mask-image:radial-gradient(closest-side,transparent 72%,#000 86%,transparent 100%);
-  mask-image:radial-gradient(closest-side,transparent 72%,#000 86%,transparent 100%);
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+@property --t0x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t0y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t0a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t1x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t1y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t1a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t2x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t2y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t2a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t3x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t3y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t3a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t4x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t4y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t4a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t5x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t5y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t5a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t6x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t6y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t6a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t7x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t7y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t7a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t8x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t8y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t8a{syntax:"<number>";inherits:false;initial-value:0}
+@property --t9x{syntax:"<number>";inherits:false;initial-value:0}
+@property --t9y{syntax:"<number>";inherits:false;initial-value:0}
+@property --t9a{syntax:"<number>";inherits:false;initial-value:0}
+html[data-glow="rings"] .sheen::before{
+  -webkit-mask-image:radial-gradient(closest-side,transparent 52%,#000 78%,transparent 100%);
+  mask-image:radial-gradient(closest-side,transparent 52%,#000 78%,transparent 100%);
   -webkit-mask-size:calc(var(--gr) * 2) calc(var(--gr) * 2);mask-size:calc(var(--gr) * 2) calc(var(--gr) * 2);
-  -webkit-mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr));
-  mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr));
-  animation:hubripple 30s linear infinite}
-/* each ripple: 6 s out at a steady pace until it has left the screen, then 4 s
-   of rest at radius 0. step-end at the end of a ripple makes the radius jump
-   straight to 0 at the next centre instead of shrinking back across the
-   screen in the gap between two keyframes (that shrink was the flash). */
-@keyframes hubripple{
-  0%{--gx:50vw;--gy:22vh;--gr:0vh}
-  20%{--gx:50vw;--gy:22vh;--gr:118vh;animation-timing-function:step-end}
-  20.01%,33.33%{--gx:10vw;--gy:6vh;--gr:0vh}
-  53.33%{--gx:10vw;--gy:6vh;--gr:148vh;animation-timing-function:step-end}
-  53.34%,66.66%{--gx:90vw;--gy:72vh;--gr:0vh}
-  86.66%{--gx:90vw;--gy:72vh;--gr:118vh;animation-timing-function:step-end}
-  86.67%,100%{--gx:50vw;--gy:22vh;--gr:0vh}}
+  -webkit-mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr));mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr));
+  animation:hubrings 30s linear infinite}
+html[data-glow="waves"] .sheen::before{
+  -webkit-mask-image:radial-gradient(closest-side,transparent 72%,#000 86%,transparent 100%),radial-gradient(closest-side,transparent 74%,rgba(0,0,0,.5) 87%,transparent 100%);
+  mask-image:radial-gradient(closest-side,transparent 72%,#000 86%,transparent 100%),radial-gradient(closest-side,transparent 74%,rgba(0,0,0,.5) 87%,transparent 100%);
+  -webkit-mask-size:calc(var(--gr) * 2) calc(var(--gr) * 2),calc(var(--gr) * 1.64) calc(var(--gr) * 1.64);
+  mask-size:calc(var(--gr) * 2) calc(var(--gr) * 2),calc(var(--gr) * 1.64) calc(var(--gr) * 1.64);
+  -webkit-mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr)),calc(var(--gx) - var(--gr) * .82) calc(var(--gy) - var(--gr) * .82);
+  mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr)),calc(var(--gx) - var(--gr) * .82) calc(var(--gy) - var(--gr) * .82);
+  animation:hubwaves 84s linear infinite}
+html[data-glow="twinkle"] .sheen::before{
+  --ts:max(100cqw / 1290, 100cqh / 2796);
+  -webkit-mask-image:radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t0x) - 645) * var(--ts)) calc(var(--t0y) * var(--ts)),rgba(0,0,0,var(--t0a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t1x) - 645) * var(--ts)) calc(var(--t1y) * var(--ts)),rgba(0,0,0,var(--t1a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t2x) - 645) * var(--ts)) calc(var(--t2y) * var(--ts)),rgba(0,0,0,var(--t2a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t3x) - 645) * var(--ts)) calc(var(--t3y) * var(--ts)),rgba(0,0,0,var(--t3a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t4x) - 645) * var(--ts)) calc(var(--t4y) * var(--ts)),rgba(0,0,0,var(--t4a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t5x) - 645) * var(--ts)) calc(var(--t5y) * var(--ts)),rgba(0,0,0,var(--t5a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t6x) - 645) * var(--ts)) calc(var(--t6y) * var(--ts)),rgba(0,0,0,var(--t6a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t7x) - 645) * var(--ts)) calc(var(--t7y) * var(--ts)),rgba(0,0,0,var(--t7a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t8x) - 645) * var(--ts)) calc(var(--t8y) * var(--ts)),rgba(0,0,0,var(--t8a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t9x) - 645) * var(--ts)) calc(var(--t9y) * var(--ts)),rgba(0,0,0,var(--t9a)) 70%,transparent 100%);
+  mask-image:radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t0x) - 645) * var(--ts)) calc(var(--t0y) * var(--ts)),rgba(0,0,0,var(--t0a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t1x) - 645) * var(--ts)) calc(var(--t1y) * var(--ts)),rgba(0,0,0,var(--t1a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t2x) - 645) * var(--ts)) calc(var(--t2y) * var(--ts)),rgba(0,0,0,var(--t2a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t3x) - 645) * var(--ts)) calc(var(--t3y) * var(--ts)),rgba(0,0,0,var(--t3a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t4x) - 645) * var(--ts)) calc(var(--t4y) * var(--ts)),rgba(0,0,0,var(--t4a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t5x) - 645) * var(--ts)) calc(var(--t5y) * var(--ts)),rgba(0,0,0,var(--t5a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t6x) - 645) * var(--ts)) calc(var(--t6y) * var(--ts)),rgba(0,0,0,var(--t6a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t7x) - 645) * var(--ts)) calc(var(--t7y) * var(--ts)),rgba(0,0,0,var(--t7a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t8x) - 645) * var(--ts)) calc(var(--t8y) * var(--ts)),rgba(0,0,0,var(--t8a)) 70%,transparent 100%),radial-gradient(circle calc(95.6 * var(--ts)) at calc(50% + (var(--t9x) - 645) * var(--ts)) calc(var(--t9y) * var(--ts)),rgba(0,0,0,var(--t9a)) 70%,transparent 100%);
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  animation:hubtw0 10s linear -8.62s infinite,hubtw1 12s linear -8.89s infinite,hubtw2 14s linear -3.48s infinite,hubtw3 11s linear -7.02s infinite,hubtw4 13s linear -5.22s infinite,hubtw5 10s linear -5.53s infinite,hubtw6 12s linear -1.05s infinite,hubtw7 14s linear -7.98s infinite,hubtw8 11s linear -5.94s infinite,hubtw9 13s linear -12.52s infinite}
+@keyframes hubrings{
+  0%{--gx:50cqw;--gy:22cqh;--gr:0cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  18.333%{--gx:50cqw;--gy:22cqh;--gr:165cqh;animation-timing-function:step-end}
+  18.35%{--gx:10cqw;--gy:6cqh;--gr:0cqh;animation-timing-function:step-end}
+  33.333%{--gx:10cqw;--gy:6cqh;--gr:0cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  53.333%{--gx:10cqw;--gy:6cqh;--gr:213cqh;animation-timing-function:step-end}
+  53.35%{--gx:90cqw;--gy:72cqh;--gr:0cqh;animation-timing-function:step-end}
+  66.667%{--gx:90cqw;--gy:72cqh;--gr:0cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  86.444%{--gx:90cqw;--gy:72cqh;--gr:178cqh;animation-timing-function:step-end}
+  86.461%{--gx:50cqw;--gy:22cqh;--gr:0cqh;animation-timing-function:step-end}
+  100%{--gx:50cqw;--gy:22cqh;--gr:0cqh}}
+@keyframes hubwaves{
+  0%{--gx:50cqw;--gy:250cqh;--gr:148cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  8.333%{--gx:50cqw;--gy:250cqh;--gr:419cqh;animation-timing-function:step-end}
+  8.339%{--gx:-40cqw;--gy:-60cqh;--gr:0cqh;animation-timing-function:step-end}
+  13.095%{--gx:-40cqw;--gy:-60cqh;--gr:60cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  21.327%{--gx:-40cqw;--gy:-60cqh;--gr:302cqh;animation-timing-function:step-end}
+  21.332%{--gx:50cqw;--gy:45cqh;--gr:0cqh;animation-timing-function:step-end}
+  28.571%{--gx:50cqw;--gy:45cqh;--gr:0cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  32.245%{--gx:50cqw;--gy:45cqh;--gr:108cqh;animation-timing-function:step-end}
+  32.251%{--gx:-50cqw;--gy:210cqh;--gr:0cqh;animation-timing-function:step-end}
+  40.476%{--gx:-50cqw;--gy:210cqh;--gr:109cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  48.81%{--gx:-50cqw;--gy:210cqh;--gr:381cqh;animation-timing-function:step-end}
+  48.815%{--gx:190cqw;--gy:50cqh;--gr:0cqh;animation-timing-function:step-end}
+  57.143%{--gx:190cqw;--gy:50cqh;--gr:35cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  63.095%{--gx:190cqw;--gy:50cqh;--gr:210cqh;animation-timing-function:step-end}
+  63.101%{--gx:140cqw;--gy:-70cqh;--gr:0cqh;animation-timing-function:step-end}
+  71.429%{--gx:140cqw;--gy:-70cqh;--gr:69cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  79.762%{--gx:140cqw;--gy:-70cqh;--gr:317cqh;animation-timing-function:step-end}
+  79.768%{--gx:150cqw;--gy:220cqh;--gr:0cqh;animation-timing-function:step-end}
+  84.524%{--gx:150cqw;--gy:220cqh;--gr:119cqh;animation-timing-function:cubic-bezier(.3,.15,.5,1)}
+  92.857%{--gx:150cqw;--gy:220cqh;--gr:396cqh;animation-timing-function:step-end}
+  92.863%{--gx:50cqw;--gy:250cqh;--gr:0cqh;animation-timing-function:step-end}
+  100%{--gx:50cqw;--gy:250cqh;--gr:0cqh}}
+@keyframes hubtw0{
+  0%{--t0x:191;--t0y:1213;--t0a:0;animation-timing-function:ease-in-out}
+  6%{--t0x:191;--t0y:1213;--t0a:1;animation-timing-function:linear}
+  10%{--t0x:191;--t0y:1213;--t0a:1;animation-timing-function:ease-in-out}
+  16%{--t0x:191;--t0y:1213;--t0a:0;animation-timing-function:step-end}
+  20%{--t0x:585;--t0y:1101;--t0a:0;animation-timing-function:ease-in-out}
+  26%{--t0x:585;--t0y:1101;--t0a:1;animation-timing-function:linear}
+  30%{--t0x:585;--t0y:1101;--t0a:1;animation-timing-function:ease-in-out}
+  36%{--t0x:585;--t0y:1101;--t0a:0;animation-timing-function:step-end}
+  40%{--t0x:434;--t0y:950;--t0a:0;animation-timing-function:ease-in-out}
+  46%{--t0x:434;--t0y:950;--t0a:1;animation-timing-function:linear}
+  50%{--t0x:434;--t0y:950;--t0a:1;animation-timing-function:ease-in-out}
+  56%{--t0x:434;--t0y:950;--t0a:0;animation-timing-function:step-end}
+  60%{--t0x:794;--t0y:1820;--t0a:0;animation-timing-function:ease-in-out}
+  66%{--t0x:794;--t0y:1820;--t0a:1;animation-timing-function:linear}
+  70%{--t0x:794;--t0y:1820;--t0a:1;animation-timing-function:ease-in-out}
+  76%{--t0x:794;--t0y:1820;--t0a:0;animation-timing-function:step-end}
+  80%{--t0x:631;--t0y:894;--t0a:0;animation-timing-function:ease-in-out}
+  86%{--t0x:631;--t0y:894;--t0a:1;animation-timing-function:linear}
+  90%{--t0x:631;--t0y:894;--t0a:1;animation-timing-function:ease-in-out}
+  96%{--t0x:631;--t0y:894;--t0a:0;animation-timing-function:step-end}
+  100%{--t0x:191;--t0y:1213;--t0a:0}}
+@keyframes hubtw1{
+  0%{--t1x:828;--t1y:838;--t1a:0;animation-timing-function:ease-in-out}
+  6%{--t1x:828;--t1y:838;--t1a:1;animation-timing-function:linear}
+  10%{--t1x:828;--t1y:838;--t1a:1;animation-timing-function:ease-in-out}
+  16%{--t1x:828;--t1y:838;--t1a:0;animation-timing-function:step-end}
+  20%{--t1x:689;--t1y:1461;--t1a:0;animation-timing-function:ease-in-out}
+  26%{--t1x:689;--t1y:1461;--t1a:1;animation-timing-function:linear}
+  30%{--t1x:689;--t1y:1461;--t1a:1;animation-timing-function:ease-in-out}
+  36%{--t1x:689;--t1y:1461;--t1a:0;animation-timing-function:step-end}
+  40%{--t1x:157;--t1y:2195;--t1a:0;animation-timing-function:ease-in-out}
+  46%{--t1x:157;--t1y:2195;--t1a:1;animation-timing-function:linear}
+  50%{--t1x:157;--t1y:2195;--t1a:1;animation-timing-function:ease-in-out}
+  56%{--t1x:157;--t1y:2195;--t1a:0;animation-timing-function:step-end}
+  60%{--t1x:98;--t1y:1628;--t1a:0;animation-timing-function:ease-in-out}
+  66%{--t1x:98;--t1y:1628;--t1a:1;animation-timing-function:linear}
+  70%{--t1x:98;--t1y:1628;--t1a:1;animation-timing-function:ease-in-out}
+  76%{--t1x:98;--t1y:1628;--t1a:0;animation-timing-function:step-end}
+  80%{--t1x:991;--t1y:1764;--t1a:0;animation-timing-function:ease-in-out}
+  86%{--t1x:991;--t1y:1764;--t1a:1;animation-timing-function:linear}
+  90%{--t1x:991;--t1y:1764;--t1a:1;animation-timing-function:ease-in-out}
+  96%{--t1x:991;--t1y:1764;--t1a:0;animation-timing-function:step-end}
+  100%{--t1x:828;--t1y:838;--t1a:0}}
+@keyframes hubtw2{
+  0%{--t2x:933;--t2y:1198;--t2a:0;animation-timing-function:ease-in-out}
+  6%{--t2x:933;--t2y:1198;--t2a:1;animation-timing-function:linear}
+  10%{--t2x:933;--t2y:1198;--t2a:1;animation-timing-function:ease-in-out}
+  16%{--t2x:933;--t2y:1198;--t2a:0;animation-timing-function:step-end}
+  20%{--t2x:74;--t2y:79;--t2a:0;animation-timing-function:ease-in-out}
+  26%{--t2x:74;--t2y:79;--t2a:1;animation-timing-function:linear}
+  30%{--t2x:74;--t2y:79;--t2a:1;animation-timing-function:ease-in-out}
+  36%{--t2x:74;--t2y:79;--t2a:0;animation-timing-function:step-end}
+  40%{--t2x:1142;--t2y:1916;--t2a:0;animation-timing-function:ease-in-out}
+  46%{--t2x:1142;--t2y:1916;--t2a:1;animation-timing-function:linear}
+  50%{--t2x:1142;--t2y:1916;--t2a:1;animation-timing-function:ease-in-out}
+  56%{--t2x:1142;--t2y:1916;--t2a:0;animation-timing-function:step-end}
+  60%{--t2x:354;--t2y:2139;--t2a:0;animation-timing-function:ease-in-out}
+  66%{--t2x:354;--t2y:2139;--t2a:1;animation-timing-function:linear}
+  70%{--t2x:354;--t2y:2139;--t2a:1;animation-timing-function:ease-in-out}
+  76%{--t2x:354;--t2y:2139;--t2a:0;animation-timing-function:step-end}
+  80%{--t2x:619;--t2y:120;--t2a:0;animation-timing-function:ease-in-out}
+  86%{--t2x:619;--t2y:120;--t2a:1;animation-timing-function:linear}
+  90%{--t2x:619;--t2y:120;--t2a:1;animation-timing-function:ease-in-out}
+  96%{--t2x:619;--t2y:120;--t2a:0;animation-timing-function:step-end}
+  100%{--t2x:933;--t2y:1198;--t2a:0}}
+@keyframes hubtw3{
+  0%{--t3x:283;--t3y:798;--t3a:0;animation-timing-function:ease-in-out}
+  6%{--t3x:283;--t3y:798;--t3a:1;animation-timing-function:linear}
+  10%{--t3x:283;--t3y:798;--t3a:1;animation-timing-function:ease-in-out}
+  16%{--t3x:283;--t3y:798;--t3a:0;animation-timing-function:step-end}
+  20%{--t3x:966;--t3y:216;--t3a:0;animation-timing-function:ease-in-out}
+  26%{--t3x:966;--t3y:216;--t3a:1;animation-timing-function:linear}
+  30%{--t3x:966;--t3y:216;--t3a:1;animation-timing-function:ease-in-out}
+  36%{--t3x:966;--t3y:216;--t3a:0;animation-timing-function:step-end}
+  40%{--t3x:539;--t3y:1309;--t3a:0;animation-timing-function:ease-in-out}
+  46%{--t3x:539;--t3y:1309;--t3a:1;animation-timing-function:linear}
+  50%{--t3x:539;--t3y:1309;--t3a:1;animation-timing-function:ease-in-out}
+  56%{--t3x:539;--t3y:1309;--t3a:0;animation-timing-function:step-end}
+  60%{--t3x:899;--t3y:2180;--t3a:0;animation-timing-function:ease-in-out}
+  66%{--t3x:899;--t3y:2180;--t3a:1;animation-timing-function:linear}
+  70%{--t3x:899;--t3y:2180;--t3a:1;animation-timing-function:ease-in-out}
+  76%{--t3x:899;--t3y:2180;--t3a:0;animation-timing-function:step-end}
+  80%{--t3x:342;--t3y:1365;--t3a:0;animation-timing-function:ease-in-out}
+  86%{--t3x:342;--t3y:1365;--t3a:1;animation-timing-function:linear}
+  90%{--t3x:342;--t3y:1365;--t3a:1;animation-timing-function:ease-in-out}
+  96%{--t3x:342;--t3y:1365;--t3a:0;animation-timing-function:step-end}
+  100%{--t3x:283;--t3y:798;--t3a:0}}
+@keyframes hubtw4{
+  0%{--t4x:86;--t4y:854;--t4a:0;animation-timing-function:ease-in-out}
+  6%{--t4x:86;--t4y:854;--t4a:1;animation-timing-function:linear}
+  10%{--t4x:86;--t4y:854;--t4a:1;animation-timing-function:ease-in-out}
+  16%{--t4x:86;--t4y:854;--t4a:0;animation-timing-function:step-end}
+  20%{--t4x:492;--t4y:1517;--t4a:0;animation-timing-function:ease-in-out}
+  26%{--t4x:492;--t4y:1517;--t4a:1;animation-timing-function:linear}
+  30%{--t4x:492;--t4y:1517;--t4a:1;animation-timing-function:ease-in-out}
+  36%{--t4x:492;--t4y:1517;--t4a:0;animation-timing-function:step-end}
+  40%{--t4x:249;--t4y:1780;--t4a:0;animation-timing-function:ease-in-out}
+  46%{--t4x:249;--t4y:1780;--t4a:1;animation-timing-function:linear}
+  50%{--t4x:249;--t4y:1780;--t4a:1;animation-timing-function:ease-in-out}
+  56%{--t4x:249;--t4y:1780;--t4a:0;animation-timing-function:step-end}
+  60%{--t4x:422;--t4y:175;--t4a:0;animation-timing-function:ease-in-out}
+  66%{--t4x:422;--t4y:175;--t4a:1;animation-timing-function:linear}
+  70%{--t4x:422;--t4y:175;--t4a:1;animation-timing-function:ease-in-out}
+  76%{--t4x:422;--t4y:175;--t4a:0;animation-timing-function:step-end}
+  80%{--t4x:145;--t4y:1420;--t4a:0;animation-timing-function:ease-in-out}
+  86%{--t4x:145;--t4y:1420;--t4a:1;animation-timing-function:linear}
+  90%{--t4x:145;--t4y:1420;--t4a:1;animation-timing-function:ease-in-out}
+  96%{--t4x:145;--t4y:1420;--t4a:0;animation-timing-function:step-end}
+  100%{--t4x:86;--t4y:854;--t4a:0}}
+@keyframes hubtw5{
+  0%{--t5x:551;--t5y:2083;--t5a:0;animation-timing-function:ease-in-out}
+  6%{--t5x:551;--t5y:2083;--t5a:1;animation-timing-function:linear}
+  10%{--t5x:551;--t5y:2083;--t5a:1;animation-timing-function:ease-in-out}
+  16%{--t5x:551;--t5y:2083;--t5a:0;animation-timing-function:step-end}
+  20%{--t5x:446;--t5y:1724;--t5a:0;animation-timing-function:ease-in-out}
+  26%{--t5x:446;--t5y:1724;--t5a:1;animation-timing-function:linear}
+  30%{--t5x:446;--t5y:1724;--t5a:1;animation-timing-function:ease-in-out}
+  36%{--t5x:446;--t5y:1724;--t5a:0;animation-timing-function:step-end}
+  40%{--t5x:179;--t5y:439;--t5a:0;animation-timing-function:ease-in-out}
+  46%{--t5x:179;--t5y:439;--t5a:1;animation-timing-function:linear}
+  50%{--t5x:179;--t5y:439;--t5a:1;animation-timing-function:ease-in-out}
+  56%{--t5x:179;--t5y:439;--t5a:0;animation-timing-function:step-end}
+  60%{--t5x:874;--t5y:631;--t5a:0;animation-timing-function:ease-in-out}
+  66%{--t5x:874;--t5y:631;--t5a:1;animation-timing-function:linear}
+  70%{--t5x:874;--t5y:631;--t5a:1;animation-timing-function:ease-in-out}
+  76%{--t5x:874;--t5y:631;--t5a:0;animation-timing-function:step-end}
+  80%{--t5x:480;--t5y:742;--t5a:0;animation-timing-function:ease-in-out}
+  86%{--t5x:480;--t5y:742;--t5a:1;animation-timing-function:linear}
+  90%{--t5x:480;--t5y:742;--t5a:1;animation-timing-function:ease-in-out}
+  96%{--t5x:480;--t5y:742;--t5a:0;animation-timing-function:step-end}
+  100%{--t5x:551;--t5y:2083;--t5a:0}}
+@keyframes hubtw6{
+  0%{--t6x:329;--t6y:590;--t6a:0;animation-timing-function:ease-in-out}
+  6%{--t6x:329;--t6y:590;--t6a:1;animation-timing-function:linear}
+  10%{--t6x:329;--t6y:590;--t6a:1;animation-timing-function:ease-in-out}
+  16%{--t6x:329;--t6y:590;--t6a:0;animation-timing-function:step-end}
+  20%{--t6x:748;--t6y:2028;--t6a:0;animation-timing-function:ease-in-out}
+  26%{--t6x:748;--t6y:2028;--t6a:1;animation-timing-function:linear}
+  30%{--t6x:748;--t6y:2028;--t6a:1;animation-timing-function:ease-in-out}
+  36%{--t6x:748;--t6y:2028;--t6a:0;animation-timing-function:step-end}
+  40%{--t6x:237;--t6y:1005;--t6a:0;animation-timing-function:ease-in-out}
+  46%{--t6x:237;--t6y:1005;--t6a:1;animation-timing-function:linear}
+  50%{--t6x:237;--t6y:1005;--t6a:1;animation-timing-function:ease-in-out}
+  56%{--t6x:237;--t6y:1005;--t6a:0;animation-timing-function:step-end}
+  60%{--t6x:375;--t6y:383;--t6a:0;animation-timing-function:ease-in-out}
+  66%{--t6x:375;--t6y:383;--t6a:1;animation-timing-function:linear}
+  70%{--t6x:375;--t6y:383;--t6a:1;animation-timing-function:ease-in-out}
+  76%{--t6x:375;--t6y:383;--t6a:0;animation-timing-function:step-end}
+  80%{--t6x:400;--t6y:1932;--t6a:0;animation-timing-function:ease-in-out}
+  86%{--t6x:400;--t6y:1932;--t6a:1;animation-timing-function:linear}
+  90%{--t6x:400;--t6y:1932;--t6a:1;animation-timing-function:ease-in-out}
+  96%{--t6x:400;--t6y:1932;--t6a:0;animation-timing-function:step-end}
+  100%{--t6x:329;--t6y:590;--t6a:0}}
+@keyframes hubtw7{
+  0%{--t7x:526;--t7y:535;--t7a:0;animation-timing-function:ease-in-out}
+  6%{--t7x:526;--t7y:535;--t7a:1;animation-timing-function:linear}
+  10%{--t7x:526;--t7y:535;--t7a:1;animation-timing-function:ease-in-out}
+  16%{--t7x:526;--t7y:535;--t7a:0;animation-timing-function:step-end}
+  20%{--t7x:920;--t7y:423;--t7a:0;animation-timing-function:ease-in-out}
+  26%{--t7x:920;--t7y:423;--t7a:1;animation-timing-function:linear}
+  30%{--t7x:920;--t7y:423;--t7a:1;animation-timing-function:ease-in-out}
+  36%{--t7x:920;--t7y:423;--t7a:0;animation-timing-function:step-end}
+  40%{--t7x:1117;--t7y:367;--t7a:0;animation-timing-function:ease-in-out}
+  46%{--t7x:1117;--t7y:367;--t7a:1;animation-timing-function:linear}
+  50%{--t7x:1117;--t7y:367;--t7a:1;animation-timing-function:ease-in-out}
+  56%{--t7x:1117;--t7y:367;--t7a:0;animation-timing-function:step-end}
+  60%{--t7x:979;--t7y:990;--t7a:0;animation-timing-function:ease-in-out}
+  66%{--t7x:979;--t7y:990;--t7a:1;animation-timing-function:linear}
+  70%{--t7x:979;--t7y:990;--t7a:1;animation-timing-function:ease-in-out}
+  76%{--t7x:979;--t7y:990;--t7a:0;animation-timing-function:step-end}
+  80%{--t7x:1129;--t7y:1142;--t7a:0;animation-timing-function:ease-in-out}
+  86%{--t7x:1129;--t7y:1142;--t7a:1;animation-timing-function:linear}
+  90%{--t7x:1129;--t7y:1142;--t7a:1;animation-timing-function:ease-in-out}
+  96%{--t7x:1129;--t7y:1142;--t7a:0;animation-timing-function:step-end}
+  100%{--t7x:526;--t7y:535;--t7a:0}}
+@keyframes hubtw8{
+  0%{--t8x:782;--t8y:1046;--t8a:0;animation-timing-function:ease-in-out}
+  6%{--t8x:782;--t8y:1046;--t8a:1;animation-timing-function:linear}
+  10%{--t8x:782;--t8y:1046;--t8a:1;animation-timing-function:ease-in-out}
+  16%{--t8x:782;--t8y:1046;--t8a:0;animation-timing-function:step-end}
+  20%{--t8x:769;--t8y:271;--t8a:0;animation-timing-function:ease-in-out}
+  26%{--t8x:769;--t8y:271;--t8a:1;animation-timing-function:linear}
+  30%{--t8x:769;--t8y:271;--t8a:1;animation-timing-function:ease-in-out}
+  36%{--t8x:769;--t8y:271;--t8a:0;animation-timing-function:step-end}
+  40%{--t8x:1071;--t8y:575;--t8a:0;animation-timing-function:ease-in-out}
+  46%{--t8x:1071;--t8y:575;--t8a:1;animation-timing-function:linear}
+  50%{--t8x:1071;--t8y:575;--t8a:1;animation-timing-function:ease-in-out}
+  56%{--t8x:1071;--t8y:575;--t8a:0;animation-timing-function:step-end}
+  60%{--t8x:1096;--t8y:2124;--t8a:0;animation-timing-function:ease-in-out}
+  66%{--t8x:1096;--t8y:2124;--t8a:1;animation-timing-function:linear}
+  70%{--t8x:1096;--t8y:2124;--t8a:1;animation-timing-function:ease-in-out}
+  76%{--t8x:1096;--t8y:2124;--t8a:0;animation-timing-function:step-end}
+  80%{--t8x:643;--t8y:1668;--t8a:0;animation-timing-function:ease-in-out}
+  86%{--t8x:643;--t8y:1668;--t8a:1;animation-timing-function:linear}
+  90%{--t8x:643;--t8y:1668;--t8a:1;animation-timing-function:ease-in-out}
+  96%{--t8x:643;--t8y:1668;--t8a:0;animation-timing-function:step-end}
+  100%{--t8x:782;--t8y:1046;--t8a:0}}
+@keyframes hubtw9{
+  0%{--t9x:572;--t9y:327;--t9a:0;animation-timing-function:ease-in-out}
+  6%{--t9x:572;--t9y:327;--t9a:1;animation-timing-function:linear}
+  10%{--t9x:572;--t9y:327;--t9a:1;animation-timing-function:ease-in-out}
+  16%{--t9x:572;--t9y:327;--t9a:0;animation-timing-function:step-end}
+  20%{--t9x:597;--t9y:1876;--t9a:0;animation-timing-function:ease-in-out}
+  26%{--t9x:597;--t9y:1876;--t9a:1;animation-timing-function:linear}
+  30%{--t9x:597;--t9y:1876;--t9a:1;animation-timing-function:ease-in-out}
+  36%{--t9x:597;--t9y:1876;--t9a:0;animation-timing-function:step-end}
+  40%{--t9x:225;--t9y:231;--t9a:0;animation-timing-function:ease-in-out}
+  46%{--t9x:225;--t9y:231;--t9a:1;animation-timing-function:linear}
+  50%{--t9x:225;--t9y:231;--t9a:1;animation-timing-function:ease-in-out}
+  56%{--t9x:225;--t9y:231;--t9a:0;animation-timing-function:step-end}
+  60%{--t9x:677;--t9y:686;--t9a:0;animation-timing-function:ease-in-out}
+  66%{--t9x:677;--t9y:686;--t9a:1;animation-timing-function:linear}
+  70%{--t9x:677;--t9y:686;--t9a:1;animation-timing-function:ease-in-out}
+  76%{--t9x:677;--t9y:686;--t9a:0;animation-timing-function:step-end}
+  80%{--t9x:723;--t9y:479;--t9a:0;animation-timing-function:ease-in-out}
+  86%{--t9x:723;--t9y:479;--t9a:1;animation-timing-function:linear}
+  90%{--t9x:723;--t9y:479;--t9a:1;animation-timing-function:ease-in-out}
+  96%{--t9x:723;--t9y:479;--t9a:0;animation-timing-function:step-end}
+  100%{--t9x:572;--t9y:327;--t9a:0}}
 @media (prefers-reduced-motion:reduce){.sheen{display:none}}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
@@ -163,6 +452,18 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;posit
 </style>
 </head>
 <body>
+<script>
+/* THE GLOW'S MODE (Mako 2026-10-31): rings on the first hub of a session, then
+   rings 40%, waves 40% or twinkle 20% each time the hub opens (see THE GLOW) */
+(function () {
+  var m = "rings";
+  try {
+    if (sessionStorage.getItem("ravi.glow.v1")) { var r = Math.random(); m = r < .4 ? "rings" : r < .8 ? "waves" : "twinkle"; }
+    else { sessionStorage.setItem("ravi.glow.v1", "1"); }
+  } catch (e) {}
+  document.documentElement.setAttribute("data-glow", m);
+})();
+</script>
 <div class="sheen" aria-hidden="true"></div>
 
 <div class="top">
