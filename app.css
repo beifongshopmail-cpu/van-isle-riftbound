@@ -76,6 +76,16 @@ html{scrollbar-gutter:stable;overflow-y:scroll}
    status bar), and the floating bar rides up by the difference. Found on
    the counter, 2026-09-22. 100vh is the full screen there. */
 body{min-height:100vh}
+/* THE INSTALLED APP'S FULL SCREEN (Mako's phone, 2026-11-01: the hub sometimes opened about 61pt
+   low, drawn below where it really was, taps landing where it should be, until he left and came
+   back). iOS 26 gives an installed web app a window short of the screen by the status bar while
+   the page is shorter than the screen (WebKit bug 301108); the hub is exactly one screen tall. So
+   the page is at least the window plus the status bar's room, never more than the full screen
+   (100lvh), which is what frappe-ui and others ship for it. A page already a screen tall is
+   unchanged. Installed app only. */
+@media (display-mode:standalone){
+  html{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}
+}
 body{background:var(--ground);color:var(--bone);font-family:var(--text);font-size:15px;line-height:1.4;
   font-variant-numeric:tabular-nums;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
 .ttl{font-family:var(--disp);font-weight:700;margin:0;letter-spacing:-.005em}   /* titles are SENTENCE CASE */

@@ -723,64 +723,6 @@ html[data-glow="twinkle"] .sheen::before{
 })();
 </script>
 <script>
-// TEMPORARY: THE LAYOUT READOUT (2026-11-01). Mako's phone sometimes opens
-// the hub about 61pt low (badge, picture, blocks and footer all moved, the
-// footer cut off) until he leaves and comes back. To find out why before
-// fixing it, the hub notes how the page is laid out at load, 0.15s, 1s, 3s
-// and on any resize; holding the badge for half a second shows the notes,
-// a tap closes them. If 1s after load the installed app's window is still
-// shorter than the screen (the suspected low state), the notes show by
-// themselves. Remove once the cause is fixed.
-(function(){
-  var rows = [], t0 = performance.now(), probe = document.createElement("div");
-  probe.style.cssText = "position:absolute;left:0;top:0;width:1px;height:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px)";
-  document.body.appendChild(probe);
-  function top(sel){ var e = document.querySelector(sel); return e ? Math.round(e.getBoundingClientRect().top) : "-"; }
-  function note(why){
-    var v = window.visualViewport, d = document.documentElement;
-    rows.push([why, Math.round(performance.now() - t0), window.innerWidth + "x" + window.innerHeight, screen.width + "x" + screen.height,
-      d.clientHeight, d.scrollHeight, Math.round(window.scrollY), v ? Math.round(v.height) + "/" + Math.round(v.offsetTop) + "/" + Math.round(v.pageTop) : "-",
-      parseFloat(getComputedStyle(probe).paddingTop), top("body"), top(".top"), top("#acpic"), top(".hubname .rb"),
-      (navigator.standalone ? "sa" : "") + (window.matchMedia && matchMedia("(display-mode: standalone)").matches ? "+dm" : ""),
-      window.RAVI_INTRO ? "intro" : ""].join(" "));
-    if (rows.length > 14) { rows.splice(1, 1); }
-  }
-  note("load");
-  setTimeout(function(){ note("0.15s"); }, 150);
-  setTimeout(function(){
-    note("1s");
-    // the suspected low state: installed, upright, and the window still short of the screen
-    var sa = navigator.standalone || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
-    if (sa && window.innerWidth < window.innerHeight && screen.height - window.innerHeight > 20 && !box) { show("by itself: the window is short of the screen"); }
-  }, 1000);
-  setTimeout(function(){ note("3s"); }, 3000);
-  window.addEventListener("resize", function(){ note("resize"); });
-  window.addEventListener("pageshow", function(e){ note(e.persisted ? "pageshow-bf" : "pageshow"); });
-  var held = null, box = null;
-  function show(why){
-    note(why ? "auto" : "held");
-    box = document.createElement("pre");
-    box.id = "ravidiag";
-    box.style.cssText = "position:fixed;left:8px;right:8px;top:50%;transform:translateY(-50%);z-index:99;margin:0;padding:10px;border-radius:12px;" +
-      "background:rgba(8,9,10,.96);color:#EDEAE3;font:12px/1.35 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)";
-    box.textContent = (why ? "Shown " + why + ". A screenshot of this helps; tap to close.\n" : "") + "why ms innerWxH screenWxH clientH scrollH scrollY vv:h/offTop/pageTop safeTop body .top pic badge mode\n" + rows.join("\n");
-    document.body.appendChild(box);
-  }
-  // touch and mouse both, since iOS may cancel a pointer it hands to text selection
-  var lastTouch = 0;
-  function down(e){
-    if (e.type === "touchstart") { lastTouch = Date.now(); } else if (Date.now() - lastTouch < 1000) { return; }
-    if (box) { box.remove(); box = null; return; }
-    if (e.target.closest && e.target.closest(".hubname")) { clearTimeout(held); held = setTimeout(function(){ show(); }, 500); }
-  }
-  function up(){ clearTimeout(held); }
-  document.addEventListener("touchstart", down, { capture: true, passive: true });
-  document.addEventListener("mousedown", down, true);
-  document.addEventListener("touchend", up, true); document.addEventListener("touchcancel", up, true); document.addEventListener("mouseup", up, true);
-  window.RAVI_DIAG = rows;
-})();
-</script>
-<script>
 (function(){
   // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
   // text blocks, and no CSS property suppresses it -- touch-action,
