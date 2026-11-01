@@ -47,19 +47,40 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;posit
      One still image for the whole page; the plate frosts the lower part.
      Made by rb-tools design/hub-texture/ from Riot's rune files. */
   background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
-/* THE GLOW (Mako 2026-10-31): every few seconds a soft band passes over the
-   page and each symbol it crosses glows from inside, in its domain's colour, as
-   if lit from under the coin. The glow image (black wherever nothing glows) is
-   added to the page (plus-lighter), so black adds nothing and the black between
-   the coins is never lit. A black shutter with a clear band slides over the glow
-   image, moved by transform alone. Off for reduced motion. */
-.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;isolation:isolate;
-  mix-blend-mode:plus-lighter;opacity:.22}
-.sheen::before{content:"";position:absolute;inset:0;background:url(img/hub-runes-glow.png) center top/cover no-repeat}
-.sheen i{position:absolute;top:-100%;left:-350vw;width:800vw;height:300%;will-change:transform;
-  background:linear-gradient(90deg,#000 47.5%,rgba(0,0,0,0) 50%,#000 52.5%);
-  transform:translateX(-140vw) rotate(24deg);animation:hubsweep 10s ease-in-out infinite}
-@keyframes hubsweep{0%{transform:translateX(-140vw) rotate(24deg)}60%,100%{transform:translateX(140vw) rotate(24deg)}}
+/* THE GLOW (Mako 2026-10-31): every 10 s a soft ring of light ripples out
+   across the page, each time from a different place (behind the name, the top
+   left, the lower right; a 30 s cycle), and each symbol the ring crosses glows
+   from inside in its domain's colour, as if lit from under the coin. The glow
+   image (black wherever nothing glows) is added to the page (plus-lighter), so
+   black adds nothing and the black between the coins is never lit. The ring is
+   a radial mask whose centre and radius are animated custom properties; between
+   ripples its radius is 0, so the jump to the next centre shows nothing (no
+   flash at the loop). Off for reduced motion. */
+@property --gx{syntax:"<length>";inherits:false;initial-value:0px}
+@property --gy{syntax:"<length>";inherits:false;initial-value:0px}
+@property --gr{syntax:"<length>";inherits:false;initial-value:0px}
+.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;
+  mix-blend-mode:plus-lighter;opacity:.17;
+  background:url(img/hub-runes-glow.png) center top/cover no-repeat;
+  -webkit-mask-image:radial-gradient(closest-side,transparent 72%,#000 86%,transparent 100%);
+  mask-image:radial-gradient(closest-side,transparent 72%,#000 86%,transparent 100%);
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-size:calc(var(--gr) * 2) calc(var(--gr) * 2);mask-size:calc(var(--gr) * 2) calc(var(--gr) * 2);
+  -webkit-mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr));
+  mask-position:calc(var(--gx) - var(--gr)) calc(var(--gy) - var(--gr));
+  animation:hubripple 30s linear infinite}
+/* each ripple: 6 s out at a steady pace until it has left the screen, then 4 s
+   of rest at radius 0. step-end at the end of a ripple makes the radius jump
+   straight to 0 at the next centre instead of shrinking back across the
+   screen in the gap between two keyframes (that shrink was the flash). */
+@keyframes hubripple{
+  0%{--gx:50vw;--gy:22vh;--gr:0vh}
+  20%{--gx:50vw;--gy:22vh;--gr:118vh;animation-timing-function:step-end}
+  20.01%,33.33%{--gx:10vw;--gy:6vh;--gr:0vh}
+  53.33%{--gx:10vw;--gy:6vh;--gr:148vh;animation-timing-function:step-end}
+  53.34%,66.66%{--gx:90vw;--gy:72vh;--gr:0vh}
+  86.66%{--gx:90vw;--gy:72vh;--gr:118vh;animation-timing-function:step-end}
+  86.67%,100%{--gx:50vw;--gy:22vh;--gr:0vh}}
 @media (prefers-reduced-motion:reduce){.sheen{display:none}}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
@@ -142,7 +163,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;posit
 </style>
 </head>
 <body>
-<div class="sheen" aria-hidden="true"><i></i></div>
+<div class="sheen" aria-hidden="true"></div>
 
 <div class="top">
   <h1 class="hubname"><span class="logo1">RA</span><span class="logo2">VI</span></h1>
