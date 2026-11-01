@@ -245,17 +245,35 @@ html.lock,html.lock body{overflow:hidden}
    Not in the reference page. Moved here from index.html so no page
    reinvents them slightly differently. */
 
+/* THE BADGE: the RAVI wordmark (Mako's pick J, 2026-10-31), a pill of the
+   app's clear frosted glass holding RA in --p1 and VI in --p2, with a
+   blue-to-pink rim inside it. The letters and the rim are one inline SVG,
+   so no font file; the letters are outlines adapted from Righteous,
+   copyright (c) 2011 Brian J. Bonislawsky DBA Astigmatic, SIL Open Font
+   License 1.1 (scripts.sil.org/OFL), the intro's p, n and a with their
+   spurs softened. The glass is .rbg. The markup
+   is written into every page by rb-tools design/wordmark/badge.py, never by
+   hand. Its height is --rbh; it is 2.4783 wide per tall. Only the hub, the
+   page-top row and the install screen carry it; everywhere else the name is
+   plain RAVI. */
+.rb{position:relative;display:block;margin:0 auto;border-radius:999px;height:var(--rbh,36px);width:calc(var(--rbh,36px) * 2.4783)}
+.rbg{position:absolute;inset:0;border-radius:inherit;background:var(--frost-solid);
+  box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .rbg{background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%)}
+}
+.rbg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.rbs{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible;z-index:1}
+.rbl .c1{fill:var(--p1)}
+.rbl .c2{fill:var(--p2)}
+
 /* THE WORDMARK ROW. App chrome, not a title block: one thin row carrying
-   the coloured RAVI wordmark and nothing else, scrolling away with the
-   page. Centred, and its first line starts where the counter's stage does
-   (safe top plus 30px), below the top clear line. */
-.wmrow{padding:calc(env(safe-area-inset-top,0px) + 30px) 18px 16px 18px;text-align:center}
-.wm{margin:0;font-family:var(--disp);font-size:22px;font-weight:800;letter-spacing:.01em;line-height:1.2} /* rung-exempt: the wordmark */
-/* THE COLOURED WORDMARK, as on the app icon: RA blue, VI pink, Poppins 800.
-   Only the hub's name and the page-top row carry it; everywhere else the
-   name is plain RAVI. */
-.wm .logo1,.hubname .logo1{color:var(--p1)}
-.wm .logo2,.hubname .logo2{color:var(--p2)}
+   the badge and nothing else, scrolling away with the page. The badge (36)
+   is centred, its middle level with the account picture's (safe top plus
+   43), below the top clear line. */
+.wmrow{padding:calc(env(safe-area-inset-top,0px) + 25px) 18px 16px 18px;text-align:center}
+.wm{margin:0;--rbh:36px}
 
 /* A SECTION HEAD: title left at 17, meta right at 12. */
 .shead{display:flex;align-items:center;gap:10px;margin:0 0 10px 0;padding:0 4px;min-height:32px}
@@ -461,9 +479,7 @@ html.gate body > :not(#ravigate){display:none!important}
    line clear of Safari's floating bar (Mako's phone check 2026-10-09). */
 #ravigate{width:100%;max-width:480px;min-height:100vh;min-height:100svh;margin:0 auto;padding:calc(var(--top-clear) + 8px) 12px calc(env(safe-area-inset-bottom,0px) + 84px);display:flex;flex-direction:column;justify-content:center}
 .gwtop{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 0 26px}
-.gwname{margin:0;font-family:var(--disp);font-weight:800;font-size:40px;letter-spacing:.01em;line-height:1.1} /* rung-exempt: the wordmark */
-.gwname .logo1{color:var(--p1)}
-.gwname .logo2{color:var(--p2)}
+.gwname{margin:0;--rbh:72px}
 .gwline{margin:8px 24px 0;max-width:320px;font-size:17px;line-height:1.4;color:var(--muted)}
 .gwcard{border-radius:22px;padding:16px 14px 10px}
 .gwcard .shead{margin:0 4px 6px}

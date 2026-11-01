@@ -379,18 +379,16 @@ html[data-glow="twinkle"] .sheen::before{
   position:relative;flex:0 0 auto;
   /* clear: the page's texture shows through above the plate */
   background:none}
-.hubname{margin:0;text-align:center;font-family:var(--disp);font-weight:800;font-size:48px;letter-spacing:.01em;color:var(--bone)} /* rung-exempt: the wordmark, the size the intro's full name starts at (Mako 2026-10-24) */
-/* THE LAUNCH INTRO (STYLE.md, Motion). While it plays the name is four
-   capitals that travel, and .introfull is the full name laid over them.
-   The script builds both only while it plays; at rest the name is the
-   plain wordmark above. Reduced motion never gets here. */
-.hubname.intro{position:relative}
-.hubname.intro span{display:inline-block}
-.introfull{position:absolute;left:50%;top:50%;width:max-content;text-align:center;white-space:nowrap;pointer-events:none;
-  font-family:var(--disp);font-weight:800;font-size:48px;letter-spacing:.01em;line-height:1.15;color:var(--bone);
-  transform-origin:50% 50%} /* rung-exempt: the wordmark */
-.hubname.intro .introfull .il{display:block}
-.introfull span span{display:inline-block}
+.hubname{margin:0;--rbh:88px} /* the badge (app.css THE BADGE), 88 tall on the hub (Mako 2026-10-31) */
+/* THE LAUNCH INTRO (STYLE.md, Motion). While it plays, every letter of the
+   full name is its own shape (.ilet) laid over the top area, and the
+   badge's own letters are hidden; a glint (.rbglint) crosses the glass as
+   it lands. The script builds all of it only while it plays and puts the
+   badge back as it was at the end. Reduced motion never gets here. */
+.ilet{position:absolute;overflow:visible;pointer-events:none;z-index:2}
+.rbglint{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none}
+.rbglint i{position:absolute;top:-20%;bottom:-20%;left:0;width:40%;opacity:0;
+  background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.22) 50%,rgba(255,255,255,0))}
 
 .low{position:relative;margin-top:-40px;
   border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px;
@@ -467,7 +465,7 @@ html[data-glow="twinkle"] .sheen::before{
 <div class="sheen" aria-hidden="true"></div>
 
 <div class="top">
-  <h1 class="hubname"><span class="logo1">RA</span><span class="logo2">VI</span></h1>
+  <h1 class="hubname"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr88" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M266.5 1175.9A930.8 930.8 0 0 1 1197.4 245.1H4631.1A930.8 930.8 0 0 1 5561.9 1175.9" fill="none" stroke="url(#rbr88)" stroke-width="66.8" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M266.5 1175.9A930.8 930.8 0 0 0 1197.4 2106.7H4631.1A930.8 930.8 0 0 0 5561.9 1175.9" fill="none" stroke="url(#rbr88)" stroke-width="66.8" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1>
 </div>
 
 <div class="low glass">
@@ -484,16 +482,20 @@ html[data-glow="twinkle"] .sheen::before{
 
 
 <script>
-// THE LAUNCH INTRO (STYLE.md, Motion). The first time the hub shows in a
-// launch, 'Rift App' (blue) over 'Van Isle' (pink) turns into RAVI: the two
-// lines come in a size larger and are read, then in one continuous move
-// the small letters fade while the capitals close up, up, down and in,
-// shrinking into the wordmark. About 1.9s; nothing waits on it, and any
-// tap finishes it. The flag is in session storage, which the installed
-// app keeps until it is fully closed. A launch that opens straight to
-// another page (App settings, Open the app to) leaves it for the first time
-// the hub does show. Reduced motion, no storage or no Web Animations skips
-// it. window.RAVI_INTRO is the list the hub's blocks add their rise to.
+// THE LAUNCH INTRO (STYLE.md, Motion; Mako 2026-10-31). The first time the
+// hub shows in a launch, 'Rift App' (blue) over 'Van Isle' (pink) turns into
+// the badge: the two lines come in at the badge letters' own size and are
+// read, then the small letters fade while the four capitals travel into the
+// badge; the clear glass opens out from behind them, the blue-to-pink rim
+// draws round from the left end both ways, meeting at the right, and the
+// glass catches the light once. About 2.6s; nothing waits on it, and any
+// tap finishes it. Every letter is a Righteous outline (RG below), so
+// nothing waits for a font. At the end the badge is put back exactly as it
+// was. The flag is in session storage, which the installed app keeps until
+// it is fully closed. A launch that opens straight to another page (App
+// settings, Open the app to) leaves it for the first time the hub does
+// show. Reduced motion, no storage or no Web Animations skips it.
+// window.RAVI_INTRO is the list the hub's blocks add their rise to.
 (function(){
   var h = document.querySelector(".hubname"), top = h ? h.parentNode : null;
   // Not behind the install screen either (pages.js): it plays once the
@@ -501,25 +503,26 @@ html[data-glow="twinkle"] .sheen::before{
   if (!h || window.RAVI_AWAY || window.RAVI_GATE) { return; }
   try {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
-    if (!h.animate || !document.fonts || !document.fonts.load) { return; }
+    if (!h.animate || !h.querySelector(".rbl")) { return; }
     if (localStorage.getItem("ravi.intro.off.v1")) { return; }
     if (sessionStorage.getItem("ravi.intro.v1")) { return; }
     sessionStorage.setItem("ravi.intro.v1", "1");
   } catch (e) { return; }
+  // The letters of the full name: [advance, outline] in font units, cap top
+  // at 0 (Righteous, OFL; p, n and a with their spurs softened).
+  // RIGHTEOUS:begin (rb-tools design/wordmark/badge.py writes the next line)
+  var RG = {"cap":1434,"asc":2017,"desc":526,"tr":40.96,"g":{" ":[573,""],"A":[1380,"M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"],"I":[553,"M420 1434H133V0H420Z"],"R":[1335,"M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"],"V":[1233,"M1229 0 758 1434H471L2 0H328L614 957L901 0Z"],"a":[1245,"M1141 1434H1075L929 1321Q908 1337 886 1352Q843 1383 795 1406Q747 1428 696 1441Q646 1454 594 1454Q481 1454 382 1416Q282 1378 208 1306Q133 1233 90 1128Q47 1023 47 889Q47 764 90 660Q133 555 208 480Q282 405 382 364Q481 322 594 322Q646 322 697 335Q748 348 796 371Q844 394 888 425Q931 456 969 492L1022 428H1141ZM866 889Q866 833 844 780Q823 728 786 688Q749 647 700 622Q650 598 594 598Q538 598 488 617Q439 636 402 673Q366 710 345 764Q324 819 324 889Q324 959 345 1014Q366 1068 402 1105Q439 1142 488 1161Q538 1180 594 1180Q650 1180 700 1156Q749 1131 786 1090Q823 1050 844 998Q866 945 866 889Z"],"e":[1075,"M530 1172Q546 1177 562 1178Q578 1180 594 1180Q634 1180 671 1169Q708 1158 740 1138Q773 1117 798 1088Q824 1058 840 1022L1040 1223Q1002 1277 952 1320Q903 1363 846 1393Q788 1423 724 1438Q661 1454 594 1454Q481 1454 382 1412Q282 1370 208 1295Q133 1220 90 1116Q47 1013 47 889Q47 762 90 657Q133 552 208 478Q282 404 382 363Q481 322 594 322Q661 322 725 338Q789 354 846 384Q904 414 954 458Q1004 501 1042 555ZM670 609Q651 602 632 600Q614 598 594 598Q538 598 488 618Q439 639 402 677Q366 715 345 768Q324 822 324 889Q324 904 326 923Q327 942 330 962Q334 981 339 999Q344 1017 352 1031Z"],"f":[811,"M451 1434H178V635H45V363H178V312Q178 213 216 126Q253 39 318 -26Q384 -90 471 -128Q558 -165 657 -165H862V107H657Q613 107 576 122Q538 138 510 166Q483 193 467 230Q451 268 451 312V363H786V635H451Z"],"i":[483,"M426 72Q426 110 412 143Q397 176 372 200Q347 225 314 240Q280 254 242 254Q204 254 170 240Q137 225 112 200Q88 176 74 143Q59 110 59 72Q59 35 74 2Q88 -32 112 -56Q137 -81 170 -96Q204 -110 242 -110Q280 -110 314 -96Q347 -81 372 -56Q397 -32 412 2Q426 35 426 72ZM379 1434H104V363H379Z"],"l":[483,"M379 1434H104V-63H379Z"],"n":[1151,"M377 1434H104V415H215L260 467Q326 407 410 374Q493 342 584 342Q682 342 769 380Q856 417 921 482Q986 548 1024 636Q1061 723 1061 822V1434H788V822Q788 780 772 742Q756 705 728 677Q700 649 663 633Q626 617 584 617Q541 617 503 633Q465 649 437 677Q409 705 393 742Q377 780 377 822Z"],"p":[1247,"M379 1842H104V428H225L279 492Q316 457 360 426Q404 395 452 372Q499 350 550 337Q601 324 653 324Q766 324 866 364Q965 405 1040 479Q1114 553 1157 658Q1200 762 1200 889Q1200 1021 1157 1126Q1114 1232 1040 1306Q965 1379 866 1418Q766 1457 653 1457Q617 1457 582 1449Q546 1441 512 1428Q477 1414 444 1397Q410 1380 379 1362ZM926 889Q926 821 904 767Q883 713 846 676Q809 638 759 618Q709 598 653 598Q597 598 548 618Q498 638 461 676Q424 713 402 767Q381 821 381 889Q381 954 402 1008Q424 1062 461 1100Q498 1138 548 1159Q597 1180 653 1180Q709 1180 759 1159Q809 1138 846 1100Q883 1062 904 1008Q926 954 926 889Z"],"s":[1073,"M692 1434H68V1162H692Q720 1162 740 1142Q760 1122 760 1094Q760 1065 740 1056Q720 1047 692 1047H408Q337 1047 275 1020Q213 993 167 946Q121 900 94 838Q68 776 68 705Q68 634 94 572Q121 510 167 464Q213 418 275 392Q337 365 408 365H961V637H408Q380 637 360 657Q340 677 340 705Q340 734 360 754Q380 775 408 775H692Q762 775 824 798Q886 822 932 864Q978 906 1005 965Q1032 1024 1032 1094Q1032 1165 1005 1226Q978 1288 932 1334Q886 1381 824 1408Q762 1434 692 1434Z"],"t":[897,"M641 1434Q542 1434 455 1396Q368 1359 302 1294Q237 1228 200 1141Q162 1054 162 955V637H29V365H162V-63H434V365H848V637H434V955Q434 998 450 1036Q466 1073 494 1101Q522 1129 560 1146Q598 1162 641 1162H848V1434Z"]}};
+  // RIGHTEOUS:end
   var ALL = window.RAVI_INTRO = [], MINE = [];
-  var rest = h.innerHTML, ov = null, done = false;
-  var E = "cubic-bezier(.22,.72,.2,1)";
-  // The capitals are measured in the wordmark's own font, so the name
-  // waits for it, hidden. If it is slow, RAVI shows plainly instead.
+  var rest = h.innerHTML, over = [], done = false;
+  var E = "cubic-bezier(.22,.72,.2,1)", NS = "http://www.w3.org/2000/svg";
+  // Hidden until it starts, so no frame shows the badge whole first. If it
+  // cannot start soon, the badge shows plainly instead.
   h.style.visibility = "hidden";
-  // Nothing in the intro may widen the page while it plays.
-  top.style.overflow = "hidden";
-  var late = setTimeout(end, 800);
+  var late = setTimeout(end, 1000);
   document.addEventListener("pointerdown", skip, true);
-  // Once the font is in, wait two frames so the launch layout has
-  // settled before anything is measured.
-  function soon(){ requestAnimationFrame(function(){ requestAnimationFrame(go); }); }
-  document.fonts.load("800 34px Poppins").then(soon, soon);
+  // Two frames, so the launch layout has settled before anything is measured.
+  requestAnimationFrame(function(){ requestAnimationFrame(go); });
 
   function skip(){
     for (var i = 0; i < ALL.length; i++) { try { ALL[i].finish(); } catch (e) {} }
@@ -529,7 +532,11 @@ html[data-glow="twinkle"] .sheen::before{
     done = true;
     clearTimeout(late);
     document.removeEventListener("pointerdown", skip, true);
-    if (ov && ov.parentNode) { ov.parentNode.removeChild(ov); }
+    for (var i = 0; i < MINE.length; i++) { try { MINE[i].cancel(); } catch (e) {} }
+    for (i = 0; i < over.length; i++) { if (over[i].parentNode) { over[i].parentNode.removeChild(over[i]); } }
+    over = [];
+    // the badge rebuilt from its markup at rest, so nothing the intro set
+    // lingers in it (Mako 2026-10-31: the preview's letters looked cut at the end)
     h.innerHTML = rest;
     h.className = "hubname";
     h.removeAttribute("style");
@@ -550,71 +557,84 @@ html[data-glow="twinkle"] .sheen::before{
     var a = el.animate(k, { duration: T, fill: "both" });
     MINE.push(a); ALL.push(a);
   }
+  // One letter as its own shape, k px per font unit, its origin (the cap
+  // top at the left of its advance) at x, y in the top area.
+  function letter(c, col, k, x, y, cap){
+    var g = RG.g[c], el = document.createElementNS(NS, "svg");
+    el.setAttribute("class", "ilet" + (cap ? " icap" : ""));
+    el.setAttribute("aria-hidden", "true");
+    el.setAttribute("data-c", c);
+    el.setAttribute("viewBox", "0 " + (-RG.asc + RG.cap) + " " + g[0] + " " + (RG.asc + RG.desc));
+    el.style.width = (g[0] * k) + "px";
+    el.style.height = ((RG.asc + RG.desc) * k) + "px";
+    el.style.left = x + "px";
+    el.style.top = (y + (RG.cap - RG.asc) * k) + "px";
+    el.style.transformOrigin = "0 0";
+    el.innerHTML = "<path style=\"fill:var(" + col + ")\" d=\"" + g[1] + "\"/>";
+    top.appendChild(el); over.push(el);
+    return el;
+  }
   function go(){
     if (done) { return; }
     clearTimeout(late);
     var i, j, q;
-    var LINES = [[["R", "ift"], ["A", "pp"]], [["V", "an"], ["I", "sle"]]];
-    var COL = ["logo1", "logo1", "logo2", "logo2"];
-    // the wordmark as four capitals, each at its place at rest. Every
-    // piece starts at opacity 0 in its own style, so no frame can show the
-    // pieces in place before their moves begin.
+    var rb = h.querySelector(".rb"), g = h.querySelector(".rbg"), lg = h.querySelector(".rbl");
+    var rims = h.querySelectorAll(".rbt, .rbb"), mine = lg.querySelectorAll("path");
     h.className = "hubname intro";
-    h.innerHTML = "<span class=\"logo1\" style=\"opacity:0\">R</span><span class=\"logo1\" style=\"opacity:0\">A</span>" +
-      "<span class=\"logo2\" style=\"opacity:0\">V</span><span class=\"logo2\" style=\"opacity:0\">I</span>";
-    // the full name over it, inside the name itself, so the two move
-    // together if the page settles while the intro plays
-    var s = "", c = 0;
-    for (i = 0; i < LINES.length; i++) {
-      s += "<span class=\"il " + COL[i * 2] + "\">";
+    // Nothing in the intro may widen the page while it plays.
+    top.style.overflow = "hidden";
+    var tr = top.getBoundingClientRect(), br = rb.getBoundingClientRect(), lr = lg.getBoundingClientRect();
+    // where each capital rests: its own place in the badge, and the badge
+    // letters' size, k px per font unit
+    var REST = [], k = 1;
+    for (i = 0; i < 4; i++) {
+      var m = mine[i].getScreenCTM();
+      REST.push([m.e - tr.left, m.f - tr.top]);
+      k = m.a;
+    }
+    // the full name at that size, shrunk only if it would pass the 16px
+    // gutters, its two lines centred on the badge
+    var LINES = [["R", "ift", " ", "A", "pp"], ["V", "an", " ", "I", "sle"]];
+    var COL = ["--p1", "--p2"], wide = [0, 0];
+    for (i = 0; i < 2; i++) { for (j = 0; j < LINES[i].length; j++) { for (q = 0; q < LINES[i][j].length; q++) { wide[i] += RG.g[LINES[i][j].charAt(q)][0]; } } }
+    var f = Math.min(1, (tr.width - 32) / (Math.max(wide[0], wide[1]) * k)), kf = k * f;
+    var cy = br.top - tr.top + br.height / 2, gap = RG.cap * 1.62 * kf, ci = 0, T = 2600;
+    for (i = 0; i < 2; i++) {
+      var x = tr.width / 2 - wide[i] * kf / 2, y = cy - RG.cap * kf / 2 + (i ? gap / 2 : -gap / 2), dy = i ? 10 : -10;
       for (j = 0; j < LINES[i].length; j++) {
-        if (j) { s += "<span class=\"lc\" style=\"opacity:0\">&#160;</span>"; }
-        s += "<span class=\"ic " + COL[c++] + "\">" + LINES[i][j][0] + "</span>";
-        var t = LINES[i][j][1];
-        for (q = 0; q < t.length; q++) { s += "<span class=\"lc\" style=\"opacity:0\">" + t.charAt(q) + "</span>"; }
+        for (q = 0; q < LINES[i][j].length; q++) {
+          var c = LINES[i][j].charAt(q), cap = (j === 0 || j === 3) && q === 0;
+          if (cap) {
+            // a capital is drawn at its place at rest and moved from the line
+            var r = REST[ci++], el = letter(c, COL[i], k, r[0], r[1], true);
+            var M = "translate(" + (x - r[0]) + "px," + (y - r[1] + (RG.cap - RG.asc) * (kf - k)) + "px) scale(" + f + ")";
+            run(el, [[0, { transform: M + " translateY(" + dy + "px)", opacity: 0 }, E], [400, { transform: M, opacity: 1 }],
+              [1000, { transform: M, opacity: 1 }, E], [1700, { transform: "none", opacity: 1 }], [T, { transform: "none", opacity: 1 }]], T);
+          } else if (c !== " ") {
+            run(letter(c, COL[i], kf, x, y, false), [[0, { transform: "translateY(" + dy + "px)", opacity: 0 }, E], [400, { transform: "none", opacity: 1 }],
+              [1000, { transform: "none", opacity: 1 }, "ease-in"], [1400, { transform: "none", opacity: 0 }], [T, { transform: "none", opacity: 0 }]], T);
+          }
+          x += RG.g[c][0] * kf;
+        }
       }
-      s += "</span>";
     }
-    ov = document.createElement("span");
-    ov.className = "introfull";
-    ov.setAttribute("aria-hidden", "true");
-    ov.innerHTML = s;
-    h.appendChild(ov);
-    // the full name starts at the wordmark's own size (Mako 2026-10-24: RAVI rests at the size the
-    // name starts at), shrunk only if it would pass the 16px gutters, centred on the screen
-    var wide = 0, ls = ov.querySelectorAll(".il");
-    for (i = 0; i < ls.length; i++) {
-      var a0 = ls[i].firstChild.getBoundingClientRect(), a1 = ls[i].lastChild.getBoundingClientRect();
-      wide = Math.max(wide, a1.right - a0.left);
+    lg.style.visibility = "hidden";
+    // the glass opens out from behind the letters (its edges move, so the
+    // round ends stay round and the frost is never clipped), its shadow with it
+    var ix = Math.max(0, lr.left - br.left - 6) + "px", iy = Math.max(0, lr.top - br.top - 4) + "px";
+    run(g, [[0, { left: ix, right: ix, top: iy, bottom: iy, opacity: 0 }], [1450, { left: ix, right: ix, top: iy, bottom: iy, opacity: 0 }, E],
+      [2050, { left: "0px", right: "0px", top: "0px", bottom: "0px", opacity: 1 }], [T, { left: "0px", right: "0px", top: "0px", bottom: "0px", opacity: 1 }]], T);
+    // the rim draws round both ways from the left end, meeting at the right
+    for (i = 0; i < rims.length; i++) {
+      run(rims[i], [[0, { strokeDashoffset: 1 }], [1750, { strokeDashoffset: 1 }, "cubic-bezier(.45,0,.2,1)"], [2350, { strokeDashoffset: 0 }], [T, { strokeDashoffset: 0 }]], T);
     }
-    var fit = Math.min(1, (top.clientWidth - 32) / Math.max(1, wide));
-    ov.style.transform = "translate(-50%,-50%) scale(" + fit + ")";
-    // where each capital starts, as a move from its place at rest
-    var cap = h.querySelectorAll(".hubname > .logo1, .hubname > .logo2"), ic = ov.querySelectorAll(".ic"), M = [];
-    for (i = 0; i < 4; i++) {
-      var r0 = ic[i].getBoundingClientRect(), r1 = cap[i].getBoundingClientRect();
-      M.push("translate(" + (r0.left + r0.width / 2 - (r1.left + r1.width / 2)) + "px," +
-        (r0.top + r0.height / 2 - (r1.top + r1.height / 2)) + "px) scale(" + (r0.width / Math.max(1, r1.width)) + ")");
-      ic[i].style.visibility = "hidden";
-    }
+    // and the glass catches the light once as it lands
+    var gl = document.createElement("span");
+    gl.className = "rbglint"; gl.innerHTML = "<i></i>";
+    g.parentNode.insertBefore(gl, g.nextSibling);
+    run(gl.firstChild, [[0, { transform: "translateX(-110%)", opacity: 0 }], [2050, { transform: "translateX(-110%)", opacity: 0 }, "ease-in-out"],
+      [2200, { opacity: 1 }], [T, { transform: "translateX(" + Math.round(br.width * 1.1) + "px)", opacity: 0 }]], T);
     h.style.visibility = "";
-    // in by .4s and read until 1s; then one continuous move: the small
-    // letters fade out by 1.4s while the capitals, starting with them,
-    // close up and shrink into the wordmark by 1.9s
-    var T = 1900;
-    for (i = 0; i < 4; i++) {
-      var sh = " translateY(" + (i < 2 ? -10 : 10) + "px)";
-      run(cap[i], [[0, { transform: M[i] + sh, opacity: 0 }, E], [400, { transform: M[i], opacity: 1 }],
-        [1000, { transform: M[i], opacity: 1 }, E], [T, { transform: "none", opacity: 1 }]], T);
-    }
-    for (i = 0; i < ls.length; i++) {
-      var lcs = ls[i].querySelectorAll(".lc"), dl = i ? 10 : -10;
-      for (j = 0; j < lcs.length; j++) {
-        run(lcs[j], [[0, { transform: "translateY(" + dl + "px)", opacity: 0 }, E], [400, { transform: "none", opacity: 1 }],
-          [1000, { transform: "none", opacity: 1 }, "ease-in"], [1400, { transform: "none", opacity: 0 }],
-          [T, { transform: "none", opacity: 0 }]], T);
-      }
-    }
     Promise.all(MINE.map(function(a){ return a.finished; })).then(end, end);
   }
 })();
