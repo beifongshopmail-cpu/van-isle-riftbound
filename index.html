@@ -389,6 +389,21 @@ html[data-glow="twinkle"] .sheen::before{
 .rbglint{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none}
 .rbglint i{position:absolute;top:-20%;bottom:-20%;left:0;width:40%;opacity:0;
   background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.22) 50%,rgba(255,255,255,0))}
+/* THE FLOWING RIM (Mako 2026-11-01: the coloured ring 'flows' around). On the hub at rest the
+   badge's rim is a ring of its own, .rb.flow::after, in the band the drawn rim takes (9% top and
+   bottom, 4% left and right, 2.5 px), coloured by a conic gradient that turns once every 8 s:
+   bright blue and bright pink opposite each other, each fading to .35 between. It starts where
+   the drawn rim's colours sit (blue top left, pink bottom right) and fades in over it after the
+   intro, the drawn rim fading out. Off for reduced motion (no .flow). */
+@property --rf{syntax:"<angle>";inherits:false;initial-value:0deg}
+.rb.flow::after{content:"";position:absolute;inset:9% 4%;border-radius:999px;padding:2.5px;z-index:1;pointer-events:none;
+  background:conic-gradient(from calc(var(--rf) + 315deg),#5DA5EE 0deg,rgba(93,165,238,.35) 90deg,rgba(238,95,156,.35) 90deg,#EE5F9C 180deg,rgba(238,95,156,.35) 270deg,rgba(93,165,238,.35) 270deg,#5DA5EE 360deg);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  animation:rbflow 8s linear infinite,rbin .4s ease-out both}
+.rb.flow .rbt,.rb.flow .rbb{animation:rbout .4s ease-out both}
+@keyframes rbflow{to{--rf:360deg}}
+@keyframes rbin{from{opacity:0}}
+@keyframes rbout{to{opacity:0}}
 
 .low{position:relative;margin-top:-40px;
   border-radius:50% 50% 0 0 / 40px 40px 0 0;padding:0 12px;
@@ -498,23 +513,31 @@ html[data-glow="twinkle"] .sheen::before{
 // window.RAVI_INTRO is the list the hub's blocks add their rise to.
 (function(){
   var h = document.querySelector(".hubname"), top = h ? h.parentNode : null;
+  var still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // THE FLOWING RIM (css above): the badge at rest on the hub, whenever the
+  // intro is not playing or once it ends; never with reduced motion.
+  function flow(){
+    var b = h && h.querySelector(".rb");
+    if (b && !still) { b.classList.add("flow"); }
+  }
   // Not behind the install screen either (pages.js): it plays once the
   // visitor continues, or in the installed app.
-  if (!h || window.RAVI_AWAY || window.RAVI_GATE) { return; }
+  if (!h || window.RAVI_AWAY) { return; }
+  if (window.RAVI_GATE) { flow(); return; }
   try {
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
-    if (!h.animate || !h.querySelector(".rbl")) { return; }
-    if (localStorage.getItem("ravi.intro.off.v1")) { return; }
-    if (sessionStorage.getItem("ravi.intro.v1")) { return; }
+    if (still) { return; }
+    if (!h.animate || !h.querySelector(".rbl")) { flow(); return; }
+    if (localStorage.getItem("ravi.intro.off.v1")) { flow(); return; }
+    if (sessionStorage.getItem("ravi.intro.v1")) { flow(); return; }
     sessionStorage.setItem("ravi.intro.v1", "1");
-  } catch (e) { return; }
+  } catch (e) { flow(); return; }
   // The letters of the full name: [advance, outline] in font units, cap top
   // at 0 (Righteous, OFL; p, n and a with their spurs softened).
   // RIGHTEOUS:begin (rb-tools design/wordmark/badge.py writes the next line)
   var RG = {"cap":1434,"asc":2017,"desc":526,"tr":40.96,"g":{" ":[573,""],"A":[1380,"M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"],"I":[553,"M420 1434H133V0H420Z"],"R":[1335,"M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"],"V":[1233,"M1229 0 758 1434H471L2 0H328L614 957L901 0Z"],"a":[1245,"M1141 1434H1075L929 1321Q908 1337 886 1352Q843 1383 795 1406Q747 1428 696 1441Q646 1454 594 1454Q481 1454 382 1416Q282 1378 208 1306Q133 1233 90 1128Q47 1023 47 889Q47 764 90 660Q133 555 208 480Q282 405 382 364Q481 322 594 322Q646 322 697 335Q748 348 796 371Q844 394 888 425Q931 456 969 492L1022 428H1141ZM866 889Q866 833 844 780Q823 728 786 688Q749 647 700 622Q650 598 594 598Q538 598 488 617Q439 636 402 673Q366 710 345 764Q324 819 324 889Q324 959 345 1014Q366 1068 402 1105Q439 1142 488 1161Q538 1180 594 1180Q650 1180 700 1156Q749 1131 786 1090Q823 1050 844 998Q866 945 866 889Z"],"e":[1075,"M530 1172Q546 1177 562 1178Q578 1180 594 1180Q634 1180 671 1169Q708 1158 740 1138Q773 1117 798 1088Q824 1058 840 1022L1040 1223Q1002 1277 952 1320Q903 1363 846 1393Q788 1423 724 1438Q661 1454 594 1454Q481 1454 382 1412Q282 1370 208 1295Q133 1220 90 1116Q47 1013 47 889Q47 762 90 657Q133 552 208 478Q282 404 382 363Q481 322 594 322Q661 322 725 338Q789 354 846 384Q904 414 954 458Q1004 501 1042 555ZM670 609Q651 602 632 600Q614 598 594 598Q538 598 488 618Q439 639 402 677Q366 715 345 768Q324 822 324 889Q324 904 326 923Q327 942 330 962Q334 981 339 999Q344 1017 352 1031Z"],"f":[811,"M451 1434H178V635H45V363H178V312Q178 213 216 126Q253 39 318 -26Q384 -90 471 -128Q558 -165 657 -165H862V107H657Q613 107 576 122Q538 138 510 166Q483 193 467 230Q451 268 451 312V363H786V635H451Z"],"i":[483,"M426 72Q426 110 412 143Q397 176 372 200Q347 225 314 240Q280 254 242 254Q204 254 170 240Q137 225 112 200Q88 176 74 143Q59 110 59 72Q59 35 74 2Q88 -32 112 -56Q137 -81 170 -96Q204 -110 242 -110Q280 -110 314 -96Q347 -81 372 -56Q397 -32 412 2Q426 35 426 72ZM379 1434H104V363H379Z"],"l":[483,"M379 1434H104V-63H379Z"],"n":[1151,"M377 1434H104V415H215L260 467Q326 407 410 374Q493 342 584 342Q682 342 769 380Q856 417 921 482Q986 548 1024 636Q1061 723 1061 822V1434H788V822Q788 780 772 742Q756 705 728 677Q700 649 663 633Q626 617 584 617Q541 617 503 633Q465 649 437 677Q409 705 393 742Q377 780 377 822Z"],"p":[1247,"M379 1842H104V428H225L279 492Q316 457 360 426Q404 395 452 372Q499 350 550 337Q601 324 653 324Q766 324 866 364Q965 405 1040 479Q1114 553 1157 658Q1200 762 1200 889Q1200 1021 1157 1126Q1114 1232 1040 1306Q965 1379 866 1418Q766 1457 653 1457Q617 1457 582 1449Q546 1441 512 1428Q477 1414 444 1397Q410 1380 379 1362ZM926 889Q926 821 904 767Q883 713 846 676Q809 638 759 618Q709 598 653 598Q597 598 548 618Q498 638 461 676Q424 713 402 767Q381 821 381 889Q381 954 402 1008Q424 1062 461 1100Q498 1138 548 1159Q597 1180 653 1180Q709 1180 759 1159Q809 1138 846 1100Q883 1062 904 1008Q926 954 926 889Z"],"s":[1073,"M692 1434H68V1162H692Q720 1162 740 1142Q760 1122 760 1094Q760 1065 740 1056Q720 1047 692 1047H408Q337 1047 275 1020Q213 993 167 946Q121 900 94 838Q68 776 68 705Q68 634 94 572Q121 510 167 464Q213 418 275 392Q337 365 408 365H961V637H408Q380 637 360 657Q340 677 340 705Q340 734 360 754Q380 775 408 775H692Q762 775 824 798Q886 822 932 864Q978 906 1005 965Q1032 1024 1032 1094Q1032 1165 1005 1226Q978 1288 932 1334Q886 1381 824 1408Q762 1434 692 1434Z"],"t":[897,"M641 1434Q542 1434 455 1396Q368 1359 302 1294Q237 1228 200 1141Q162 1054 162 955V637H29V365H162V-63H434V365H848V637H434V955Q434 998 450 1036Q466 1073 494 1101Q522 1129 560 1146Q598 1162 641 1162H848V1434Z"]}};
   // RIGHTEOUS:end
   var ALL = window.RAVI_INTRO = [], MINE = [];
-  var rest = h.innerHTML, over = [], done = false;
+  var rest = h.innerHTML, over = [], done = false, box = null;
   var E = "cubic-bezier(.22,.72,.2,1)", NS = "http://www.w3.org/2000/svg";
   // Hidden until it starts, so no frame shows the badge whole first. If it
   // cannot start soon, the badge shows plainly instead.
@@ -542,6 +565,7 @@ html[data-glow="twinkle"] .sheen::before{
     h.removeAttribute("style");
     top.style.overflow = "";
     if (window.scrollX) { window.scrollTo(0, window.scrollY); }
+    flow();
   }
   // One element's moves on the intro's clock: [time in ms, style, easing
   // to the next step], from 0 to the end time T.
@@ -558,7 +582,9 @@ html[data-glow="twinkle"] .sheen::before{
     MINE.push(a); ALL.push(a);
   }
   // One letter as its own shape, k px per font unit, its origin (the cap
-  // top at the left of its advance) at x, y in the top area.
+  // top at the left of its advance) at x, y from the badge's top left. The
+  // letters live inside the badge, so if the top area settles (changes
+  // height) while the intro plays they move with it (Mako 2026-11-01).
   function letter(c, col, k, x, y, cap){
     var g = RG.g[c], el = document.createElementNS(NS, "svg");
     el.setAttribute("class", "ilet" + (cap ? " icap" : ""));
@@ -571,14 +597,14 @@ html[data-glow="twinkle"] .sheen::before{
     el.style.top = (y + (RG.cap - RG.asc) * k) + "px";
     el.style.transformOrigin = "0 0";
     el.innerHTML = "<path style=\"fill:var(" + col + ")\" d=\"" + g[1] + "\"/>";
-    top.appendChild(el); over.push(el);
+    box.appendChild(el); over.push(el);
     return el;
   }
   function go(){
     if (done) { return; }
     clearTimeout(late);
     var i, j, q;
-    var rb = h.querySelector(".rb"), g = h.querySelector(".rbg"), lg = h.querySelector(".rbl");
+    var rb = box = h.querySelector(".rb"), g = h.querySelector(".rbg"), lg = h.querySelector(".rbl");
     var rims = h.querySelectorAll(".rbt, .rbb"), mine = lg.querySelectorAll("path");
     h.className = "hubname intro";
     // Nothing in the intro may widen the page while it plays.
@@ -589,7 +615,7 @@ html[data-glow="twinkle"] .sheen::before{
     var REST = [], k = 1;
     for (i = 0; i < 4; i++) {
       var m = mine[i].getScreenCTM();
-      REST.push([m.e - tr.left, m.f - tr.top]);
+      REST.push([m.e - br.left, m.f - br.top]);
       k = m.a;
     }
     // the full name at that size, shrunk only if it would pass the 16px
@@ -598,9 +624,9 @@ html[data-glow="twinkle"] .sheen::before{
     var COL = ["--p1", "--p2"], wide = [0, 0];
     for (i = 0; i < 2; i++) { for (j = 0; j < LINES[i].length; j++) { for (q = 0; q < LINES[i][j].length; q++) { wide[i] += RG.g[LINES[i][j].charAt(q)][0]; } } }
     var f = Math.min(1, (tr.width - 32) / (Math.max(wide[0], wide[1]) * k)), kf = k * f;
-    var cy = br.top - tr.top + br.height / 2, gap = RG.cap * 1.62 * kf, ci = 0, T = 2600;
+    var cy = br.height / 2, gap = RG.cap * 1.62 * kf, ci = 0, T = 2600;
     for (i = 0; i < 2; i++) {
-      var x = tr.width / 2 - wide[i] * kf / 2, y = cy - RG.cap * kf / 2 + (i ? gap / 2 : -gap / 2), dy = i ? 10 : -10;
+      var x = tr.left + tr.width / 2 - br.left - wide[i] * kf / 2, y = cy - RG.cap * kf / 2 + (i ? gap / 2 : -gap / 2), dy = i ? 10 : -10;
       for (j = 0; j < LINES[i].length; j++) {
         for (q = 0; q < LINES[i][j].length; q++) {
           var c = LINES[i][j].charAt(q), cap = (j === 0 || j === 3) && q === 0;

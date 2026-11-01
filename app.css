@@ -260,7 +260,9 @@ html.lock,html.lock body{overflow:hidden}
 .rbg{position:absolute;inset:0;border-radius:inherit;background:var(--frost-solid);
   box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .rbg{background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%)}
+  /* a light frost, the hub plate's (blur 3), so the coins show softly through and it reads as
+     glass (Mako 2026-11-01: 'a bit hard to tell it's glass'); a touch less white than --glass */
+  .rbg{background:rgba(255,255,255,.025);-webkit-backdrop-filter:blur(3px) saturate(160%);backdrop-filter:blur(3px) saturate(160%)}
 }
 .rbg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
