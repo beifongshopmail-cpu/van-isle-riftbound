@@ -59,7 +59,7 @@ body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;posit
    is never lit. .sheen is a size container, so the masks line up with the
    body's cover-sized texture on any phone. Off for reduced motion. */
 .sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;container-type:size;
-  mix-blend-mode:plus-lighter;opacity:.17}
+  mix-blend-mode:plus-lighter;opacity:.25}
 .sheen::before{content:"";position:absolute;inset:0;background:url(img/hub-runes-glow.png) center top/cover no-repeat;
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-image:linear-gradient(transparent,transparent);mask-image:linear-gradient(transparent,transparent)}
 /* GLOW MODES (rb-tools design/hub-texture/glow.py; rings 30 s, waves 84 s) */
