@@ -30,10 +30,14 @@ Design rules: STYLE.md. These rules hold in every session.
 ## Checks (rb-tools, private, branch master)
 - A logic change gets a test that fails on the unedited app and passes
   after; both counts go in the commit message.
-- While working, run only the affected file: node check.js <file>
-- Before every push: node check.js (all suites, about 9 minutes). A failing
-  suite means no push, except a check on the rule's SANDBOX-ONLY list that
-  the change does not touch.
+- Before a push: the change's own test, and the suites of the pages and
+  parts the change touches: node check.js <file> <file> ... They pass.
+- The full sweep, node check.js (all suites, about 25 minutes, run in the
+  background), runs once at the end of each milestone, before its
+  close-out, and before anything goes to testers; not after every change
+  (Mako 2026-11-01). A failing suite there is fixed before the milestone
+  closes, except a check on the rule's SANDBOX-ONLY list that the
+  milestone's changes do not touch.
 - drawn-test.js measures what the phone draws (corners, type by height,
   overflow) with every menu open. It runs its own server and shuts it down.
 - m4-test T29/T30 may fail once on a run that crosses midnight: rerun,
@@ -53,7 +57,7 @@ Mako's call: on RAVI the session pushes. A bad push is undone with git revert.
 
 ## Wrap up
 A cloud session loses anything not pushed when it expires. When Mako says
-'wrap up', or before the chat ends: if the suites pass, push as above; if
+'wrap up', or before the chat ends: if the affected suites pass, push as above; if
 not, commit to the branch wip and push wip, never main. Then update the
 milestone's handoff record in mako-records ravi/next/ and MAP, and push
 mako-records. The next chat starts from wip, finishes on main, then
