@@ -36,8 +36,15 @@
 <style>
 /* The hub. No bottom bar: this page IS the bar's Hub slot's destination. */
 html{background:var(--ground)}
-/* the hub fits every phone, so it never rubber-bands past its edges (Mako 2026-10-31) */
-html,body{overscroll-behavior:none}
+/* the hub fits every phone, so it never rubber-bands past its edges (Mako 2026-10-31), and it
+   does not scroll at all, the counter's way (Mako 2026-11-01): iOS opens an installed app one
+   status bar short and stretches it to the full screen, and about half the time a page that could
+   scroll was left drawn about 61pt low, taps landing where it really was; a page that cannot
+   scroll cannot be left scrolled. A phone too short for the hub gets scrolling back (html.scrolls,
+   set by the script below once the page has settled). */
+html,body{overscroll-behavior:none;overflow:hidden}
+html.scrolls{overflow-y:scroll}
+html.scrolls body{overflow:visible}
 body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;position:relative;
   /* THE HUB'S TEXTURE (Mako 2026-10-31): the domain runes on Mako's own layout
      and tilt, each a black coin with a bevelled rim, its glyph pressed in, the lit
@@ -465,6 +472,19 @@ html[data-glow="twinkle"] .sheen::before{
 </style>
 </head>
 <body>
+<script>
+/* THE HUB'S SCROLL LOCK (css above): checked once the launch has settled
+   (iOS stretches the window in its first 0.1s) and on any later resize; only
+   a phone too short for the hub scrolls. */
+(function () {
+  function fit() {
+    var d = document.documentElement, b = document.body;
+    if (!b) { return; }
+    d.classList.toggle("scrolls", b.scrollHeight > window.innerHeight + 1);
+  }
+  setTimeout(function () { fit(); window.addEventListener("resize", fit); }, 600);
+})();
+</script>
 <script>
 /* THE GLOW'S MODE (Mako 2026-10-31): rings on the first hub of a session, then
    rings 40%, waves 40% or twinkle 20% each time the hub opens (see THE GLOW) */
