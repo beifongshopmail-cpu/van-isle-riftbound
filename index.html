@@ -41,22 +41,25 @@ html,body{overscroll-behavior:none}
 body{-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;position:relative;
   /* THE HUB'S TEXTURE (Mako 2026-10-31): the domain runes on Mako's own layout
      and tilt, each a black coin with a bevelled rim, its glyph pressed in, the lit
-     edges in the domain's colour. Only the coins are drawn: the image is
-     transparent around them, so the black between is this ground exactly.
+     edges in the domain's colour, lit only lighter, never darker than the
+     ground. Only the coins are drawn: the image is transparent around them,
+     so the black between is this ground exactly.
      One still image for the whole page; the plate frosts the lower part.
      Made by rb-tools design/hub-texture/ from Riot's rune files. */
   background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
-/* THE LIGHT SWEEP (Mako 2026-10-31): a faint band of light crosses the coins'
-   lit rims and glyph edges, slowly, then rests. The band shows only through the edges mask
-   (same size and place as the texture) and moves by transform alone. Off for
-   reduced motion. */
-.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;
-  -webkit-mask:url(img/hub-runes-edges.webp) center top/cover no-repeat;
-  mask:url(img/hub-runes-edges.webp) center top/cover no-repeat}
-.sheen i{position:absolute;top:-25%;left:0;width:70vw;height:150%;will-change:transform;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.2) 50%,rgba(255,255,255,0));
-  transform:translateX(-150vw) rotate(24deg);animation:hubsweep 20s ease-in-out infinite}
-@keyframes hubsweep{0%{transform:translateX(-150vw) rotate(24deg)}55%,100%{transform:translateX(150vw) rotate(24deg)}}
+/* THE GLOW (Mako 2026-10-31): every few seconds a soft band passes over the
+   page and each symbol it crosses glows from inside, in its domain's colour, as
+   if lit from under the coin. The glow image (black wherever nothing glows) is
+   added to the page (plus-lighter), so black adds nothing and the black between
+   the coins is never lit. A black shutter with a clear band slides over the glow
+   image, moved by transform alone. Off for reduced motion. */
+.sheen{position:absolute;inset:0;pointer-events:none;overflow:hidden;isolation:isolate;
+  mix-blend-mode:plus-lighter;opacity:.22}
+.sheen::before{content:"";position:absolute;inset:0;background:url(img/hub-runes-glow.png) center top/cover no-repeat}
+.sheen i{position:absolute;top:-100%;left:-350vw;width:800vw;height:300%;will-change:transform;
+  background:linear-gradient(90deg,#000 47.5%,rgba(0,0,0,0) 50%,#000 52.5%);
+  transform:translateX(-140vw) rotate(24deg);animation:hubsweep 10s ease-in-out infinite}
+@keyframes hubsweep{0%{transform:translateX(-140vw) rotate(24deg)}60%,100%{transform:translateX(140vw) rotate(24deg)}}
 @media (prefers-reduced-motion:reduce){.sheen{display:none}}
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
