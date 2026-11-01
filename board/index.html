@@ -29,16 +29,30 @@
    Block 1b (Mako 2026-11-01): the search and the view track ride a sticky plate (as Rules); the
    track is Matches | Players | All cards. Players is a block per player sharing cards, with a
    preview of their four most sought-after; All cards is every card. Everything is ordered by
-   demand (demand.js: value, how many players want it, special printings, a rising price). */
+   demand (demand.js: value, how many players want it, special printings, a rising price).
+   After block 1b (Mako 2026-11-01): Sort on the plate (most sought-after, highest price or name;
+   players near you first or not; kept on this phone in vir.board.sort.v1, never synced); See yours
+   as others do in Trade board settings (your Players block and player menu, from this phone's
+   Collection); the plate is class plate glass, as the other pages'. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #bd{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 /* the plate: search, then the view track, sticky 10 above --top-clear so its words start on it; plate frost, clear */
-.bctl{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent;border-radius:24px;padding:10px;
-  background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.bctl{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.bctl{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
+/* the plate, as Rules': the Kit's glass (its lit rim) under the plate frost */
+.plate{border-radius:24px;padding:10px;
+  background:rgba(10,11,13,.94);
+  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+/* the search row: the search, then Sort (as Collection's Sort: a chip that opens the Sort menu) */
+.bsr{display:flex;align-items:center;gap:8px}
+.bsr .sf{flex:1;min-width:0}
+.dvsort{flex:0 0 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
+  font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--bone)}
+.dvsort svg{flex:0 0 auto;width:14px;height:14px}
+.dvsort:active{transform:scale(.96)}
 .bview{margin-top:8px}
 .bnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 #blist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
@@ -128,8 +142,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #pwho .pnote,#pcard .pnote,#pset .pnote{margin:10px 2px 0}
 .bmsg{margin:10px 2px 0;font-size:15px;line-height:1.4}
 /* a player in a list of rows: their picture, small, before the name */
-.bpic.sm{flex:0 0 28px;width:28px;height:28px;margin-right:10px} /* size-exempt: a player's picture in a row */
+.bpic.sm{flex:0 0 28px;width:28px;height:28px} /* size-exempt: a player's picture in a row */
 .bpic.sm svg{width:16px;height:16px}
+/* a player's row: the Kit's record row (two lines), with their picture before the words */
+.door.rec.bwr{flex-direction:row;align-items:center;gap:10px}
+.door.rec.bwr .sp{display:none}
+.door.rec.bwr .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.door.rec.bwr .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .door.rec .t small{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 #shpick small{white-space:nowrap}
 .foot a{color:var(--bone)}
@@ -140,8 +159,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <main id="bd">
   <h2 class="sr">Trade board</h2>
   <p class="lede">Who has the cards you want, and who wants yours.</p>
-  <div class="bctl">
-    <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="bq" placeholder="Search cards or players" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search cards or players" data-k="type"><button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="bctl plate glass">
+    <div class="bsr"><div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="bq" placeholder="Search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search cards or players" data-k="type"><button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div><button type="button" class="dvsort glass" id="bsort" data-fills="psort" aria-label="Sort" data-k="do"><span id="bsortt">Sought-after</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button></div>
     <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="players" aria-pressed="false">Players</button><button type="button" data-v="cards" aria-pressed="false">All cards</button></div>
   </div>
   <p class="bnote" id="bme"></p>
@@ -176,6 +195,20 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="pcardt">Card</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody" id="pcardb"></div>
 </section>
+<section class="panel frost" id="psort" aria-hidden="true" aria-label="Sort">
+  <div class="phead"><div class="ht"><h4 class="ttl">Sort</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p class="lb">Cards and players by</p>
+    <div class="pick" id="sortpick" data-k="pick"></div>
+    <p class="lb" style="margin-top:16px">Where they play</p>
+    <div class="pick" id="nearpick" data-k="pick"></div>
+    <p class="pnote" id="sortnote"></p>
+  </div>
+</section>
+<section class="panel frost" id="pself" aria-hidden="true" aria-label="Yours as others see it">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">As others see you</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pselfb"></div>
+</section>
 <section class="panel frost" id="pset" aria-hidden="true" aria-label="Trade board settings">
   <div class="phead"><div class="ht"><h4 class="ttl">Trade board settings</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
@@ -183,6 +216,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="pick" id="shpick" data-k="pick"></div>
     <p class="pnote">Others see each card, its printing and how many, with your name, @username, home area and picture. Never what you paid, a card's condition or your Riot ID. A binder can also be marked For trade in its menu on Collection.</p>
     <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
+    <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">See yours as others do</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
   </div>
 </section>
 <script>
@@ -190,7 +224,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   "use strict";
   var A = window.RAVI_ACCT;
   var $ = function(id){ return document.getElementById(id); };
-  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset");
+  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset"), psort = $("psort"), pself = $("pself");
   function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
 
   // MENUS: one on screen, a stack behind it (as the Tier list); a deeper menu slides in from the
@@ -235,6 +269,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   Array.prototype.forEach.call(document.querySelectorAll(".panel [data-close]"), function(b){ b.addEventListener("click", hide); });
   Array.prototype.forEach.call(document.querySelectorAll(".panel [data-back]"), function(b){ b.addEventListener("click", back); });
   $("tabset").addEventListener("click", function(){ if (OPENP === pset) { hide(); } else { drawShare(); openPanel(pset); } });
+  $("bsort").addEventListener("click", function(){ drawSort(); openPanel(psort); });
+  $("bself").addEventListener("click", function(){ drawSelf(); deeper(pself); });
 
   // ---- THE CARDS RAVI KNOWS: names, pictures and market prices (data/prices.json, cards/art.json) ----
   var BYID = Object.create(null), ART = null, FX = 1.4, CUR = "CAD", P = null;
@@ -303,6 +339,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // ---- A PLAYER: picture, name, where ----
   var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0z" fill="currentColor"/></svg>';
   function picStyle(f){
+    if (f.self) { var su = A && A.picUrl(A.view(), "../"); if (!su) { return ""; } var sf = A.picFit(A.view()); return "background-image:url('" + su + "');background-size:" + sf.size + ";background-position:" + sf.pos; }
     if (!f.pic) { return ""; }
     if (f.pic.k === "l") {
       var z = isFinite(f.pic.z) ? f.pic.z : 1.9, x = isFinite(f.pic.x) ? f.pic.x : 50, y = isFinite(f.pic.y) ? f.pic.y : 20;
@@ -331,9 +368,29 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     function add(x){ var k = x.i + "|" + x.f; if (!seen[k]) { seen[k] = 1; items.push({ i: x.i, f: x.f }); } }
     DATA.browse.forEach(add);
     DATA.traders.forEach(function(t){ t.has.forEach(add); t.wants.forEach(add); });
+    var me = myShare(); me.have.forEach(add); me.want.forEach(add);
     DEM = window.RAVI_DEMAND ? window.RAVI_DEMAND.scores(items, card, function(i, f){ return DATA.wanted[i + "|" + f] || 0; }, FX) : new Map();
   }
   function dem(x){ return DEM.get(x.i + "|" + x.f) || 0; }
+  // SORT (Mako 2026-11-01, 'let players sort the cards or players as they see fit, to a degree'):
+  // most sought-after (demand.js), highest price or name; players near you first, or not. Kept on
+  // this phone only (vir.board.sort.v1, never synced: a way of looking, not something you share).
+  var SORT = { o: "demand", near: true };
+  var SORTS = { demand: ["Most sought-after", "Sought-after"], price: ["Highest price", "Price"], name: ["Name, A to Z", "Name"] };
+  try { var so = JSON.parse(localStorage.getItem("vir.board.sort.v1")); if (so && SORTS[so.o]) { SORT.o = so.o; } if (so && so.near === false) { SORT.near = false; } } catch (e) {}
+  function saveSort(){ try { localStorage.setItem("vir.board.sort.v1", JSON.stringify(SORT)); } catch (e) {} }
+  function pr(x){ return usd(x.i, x.f) || 0; }
+  function nameCmp(a, b){ var x = cname(a.i), y = cname(b.i); return x < y ? -1 : x > y ? 1 : (a.f < b.f ? -1 : a.f > b.f ? 1 : 0); }
+  function byDemand(a, b){ return dem(b) - dem(a) || pr(b) - pr(a) || a.alt - b.alt; }
+  function byPrice(a, b){ return pr(b) - pr(a) || dem(b) - dem(a) || a.alt - b.alt; }
+  // the order of cards in a list: as the Sort menu says
+  function byValue(a, b){ return SORT.o === "price" ? byPrice(a, b) : SORT.o === "name" ? nameCmp(a, b) || a.alt - b.alt : byDemand(a, b); }
+  // a Players preview shows their best four: by price when sorting by price, else most sought-after
+  function byPreview(a, b){ return SORT.o === "price" ? byPrice(a, b) : byDemand(a, b); }
+  function near(f){ return SORT.near && DATA.me.area && f && f.area === DATA.me.area ? 1 : 0; }
+  function whoCmp(fa, fb){ var x = nameOf(fa).toLowerCase(), y = nameOf(fb).toLowerCase(); return x < y ? -1 : x > y ? 1 : (fa.h < fb.h ? -1 : 1); }
+  // two players' cards compared by the sort: the sum of demand or of price, or their names
+  function cardsScore(list){ return list.reduce(function(n, x){ return n + (SORT.o === "price" ? pr(x) * x.q : dem(x)); }, 0); }
   function plural(n, one, many){ return n.toLocaleString("en-US") + " " + (n === 1 ? one : many); }
   function hit(text){ return !Q || String(text).toLowerCase().indexOf(Q) >= 0; }
   function traderHits(t){
@@ -349,8 +406,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       + '<span class="bimg' + (sealed(c) ? " sq" : "") + '">' + img(c) + (x.alt ? '<span class="balt">Other printing</span>' : '') + (x.q > 1 ? '<span class="bq">' + x.q + '</span>' : '') + '</span>'
       + '<span class="bcn">' + esc(cname(x.i)) + '</span><span class="bpr">' + money(usd(x.i, x.f)) + '</span></button>';
   }
-  // most sought-after first (demand.js), then the dearer, an exact printing before another
-  function byValue(a, b){ return dem(b) - dem(a) || (usd(b.i, b.f) || 0) - (usd(a.i, a.f) || 0) || a.alt - b.alt; }
   function shelf(list, h, side, words){
     if (!list.length) { return ""; }
     list = list.slice().sort(byValue);
@@ -359,7 +414,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function cardsN(list){ return list.reduce(function(n, x){ return n + x.q; }, 0); }
 
   function drawMatches(){
-    var list = DATA.traders.filter(traderHits);
+    var list = DATA.traders.filter(traderHits).map(function(t, n){ return { t: t, n: n, s: cardsScore(t.has.concat(t.wants)) }; });
+    list.sort(function(a, b){ return b.t.two - a.t.two || near(b.t) - near(a.t) || (SORT.o === "name" ? whoCmp(a.t, b.t) : b.s - a.s) || a.n - b.n; });
+    list = list.map(function(x){ return x.t; });
     if (!DATA.me.have && !DATA.me.want) {
       $("blist").innerHTML = '<div class="bempty glass"><p>Put cards on your Wishlist and mark a binder For trade, and the board finds the players who have what you want and want what you have.</p>'
         + '<a class="pact btn glass" href="../collection/" data-k="do">Open Collection</a></div>';
@@ -391,7 +448,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var f = DATA.people[r.h];
       if (DATA.me.area && f && f.area === DATA.me.area) { g.near++; }
     });
-    order.sort(function(a, b){ return (b.near ? 1 : 0) - (a.near ? 1 : 0) || dem(b) - dem(a) || b.who.length - a.who.length || (cname(a.i) < cname(b.i) ? -1 : cname(a.i) > cname(b.i) ? 1 : 0); });
+    order.forEach(function(g){ g.alt = 0; });
+    order.sort(function(a, b){ return (SORT.near ? (b.near ? 1 : 0) - (a.near ? 1 : 0) : 0) || (SORT.o === "demand" ? dem(b) - dem(a) || b.who.length - a.who.length : 0) || byValue(a, b) || b.who.length - a.who.length; });
     return order;
   }
   function tile(g){
@@ -405,7 +463,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!all.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
     if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No card or player matches your search.</p></div>'; return ""; }
     $("blist").innerHTML = '<div class="cgrid">' + list.map(tile).join("") + '</div>';
-    return plural(list.length, "card", "cards") + " for trade, " + (DATA.me.area ? "players near you first, then " : "") + "most sought-after first.";
+    return plural(list.length, "card", "cards") + " for trade, " + (near({ area: DATA.me.area }) ? "players near you first, then " : "") + orderWords() + ".";
   }
 
   // Players: a block per player sharing cards, near you first, with their four most sought-after
@@ -413,26 +471,27 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var by = {};
     DATA.browse.forEach(function(r){ (by[r.h] = by[r.h] || []).push({ i: r.i, f: r.f, q: r.q, alt: 0 }); });
     var list = Object.keys(by).map(function(h){
-      var cards = by[h].slice().sort(byValue), f = DATA.people[h];
-      return { f: f, cards: cards, top: cards.slice(0, 4).reduce(function(n, x){ return n + dem(x); }, 0), n: cardsN(cards) };
+      var cards = by[h].slice().sort(byPreview), f = DATA.people[h];
+      return { f: f, cards: cards, top: cardsScore(cards.slice(0, 4).map(function(x){ return { i: x.i, f: x.f, q: 1 }; })), n: cardsN(cards) };
     }).filter(function(p){ return p.f && (!Q || hit(p.f.name) || hit(p.f.user) || p.cards.some(function(x){ return hit(cname(x.i)); })); });
     list.sort(function(a, b){
-      var na = DATA.me.area && a.f.area === DATA.me.area ? 1 : 0, nb = DATA.me.area && b.f.area === DATA.me.area ? 1 : 0;
-      return nb - na || b.top - a.top || b.n - a.n || (a.f.h < b.f.h ? -1 : 1);
+      return near(b.f) - near(a.f) || (SORT.o === "name" ? whoCmp(a.f, b.f) : b.top - a.top || b.n - a.n) || (a.f.h < b.f.h ? -1 : 1);
     });
     if (!Object.keys(by).length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
     if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No player or card matches your search.</p></div>'; return ""; }
-    $("blist").innerHTML = list.map(function(p){
-      var f = p.f, two = (tradeOf(f.h) || {}).two;
-      return '<article class="bt glass">'
-        + '<button type="button" class="bwho" data-who="' + esc(f.h) + '" aria-label="' + esc(nameOf(f)) + ', see everything they have for trade" data-k="deeper">' + pic(f)
-        + '<span class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span>' + (two ? BOTH : '<span class="bcnt">' + esc(plural(p.n, "card", "cards")) + '</span>') + CVR + '</button>'
-        + '<div class="bsec"><div class="bprev">' + p.cards.slice(0, 4).map(function(x){ return shelfCard(x, f.h, "rest"); }).join("") + '</div></div>'
-        + '</article>';
-    }).join("");
-    return plural(list.length, "player shares", "players share") + " cards for trade, " + (DATA.me.area ? "near you first, " : "") + "each showing their most sought-after.";
+    $("blist").innerHTML = list.map(function(p){ return playerBlock(p.f, p.cards, p.n, (tradeOf(p.f.h) || {}).two); }).join("");
+    return plural(list.length, "player shares", "players share") + " cards for trade, " + (near({ area: DATA.me.area }) ? "near you first, " : "") + (SORT.o === "name" ? "by name, " : "") + "each showing their " + (SORT.o === "price" ? "dearest." : "most sought-after.");
   }
 
+  // a Players block: the player (opens their menu), then four of their cards
+  function playerBlock(f, cards, n, two){
+    return '<article class="bt glass">'
+      + '<button type="button" class="bwho" data-who="' + esc(f.h) + '" aria-label="' + esc(nameOf(f)) + ', see everything they have for trade" data-k="deeper">' + pic(f)
+      + '<span class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span>' + (two ? BOTH : '<span class="bcnt">' + esc(plural(n, "card", "cards")) + '</span>') + CVR + '</button>'
+      + '<div class="bsec"><div class="bprev">' + cards.slice(0, 4).map(function(x){ return shelfCard(x, f.h, "rest"); }).join("") + '</div></div>'
+      + '</article>';
+  }
+  function orderWords(){ return SORT.o === "price" ? "highest price first" : SORT.o === "name" ? "by name" : "most sought-after first"; }
   function meLine(){
     if (!LOADED) { return ""; }
     var bits = [];
@@ -447,6 +506,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function draw(){
     var segs = $("bview").querySelectorAll("button");
     Array.prototype.forEach.call(segs, function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-v") === VIEW ? "true" : "false"); });
+    $("bsortt").textContent = SORTS[SORT.o][1];
+    $("bsort").setAttribute("aria-label", "Sort: " + SORTS[SORT.o][0]);
     if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board."; $("bme").textContent = ""; return; }
     $("bme").textContent = meLine();
     $("bme").hidden = !$("bme").textContent;
@@ -472,9 +533,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
   function total(list){ var s = 0, any = false; list.forEach(function(x){ var u = usd(x.i, x.f); if (u != null) { s += u * x.q; any = true; } }); return any ? s : null; }
   function tradeOf(h){ for (var i = 0; i < DATA.traders.length; i++) { if (DATA.traders[i].h === h) { return DATA.traders[i]; } } return null; }
+  function face(h){ return h === "self" ? selfFace() : DATA.people[h]; }
   function drawWho(){
-    var f = DATA.people[WHO];
+    var f = face(WHO);
     if (!f) { return; }
+    if (WHO === "self") { drawSelfWho(f); return; }
     var t = tradeOf(WHO) || { has: [], wants: [], two: 0 };
     var rest = DATA.browse.filter(function(r){ return r.h === WHO && !t.has.some(function(x){ return x.i === r.i && x.f === r.f; }); });
     $("pwhot").textContent = nameOf(f);
@@ -517,6 +580,66 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     location.href = "../trade/";
   }
 
+  // ---- YOURS AS OTHERS SEE IT (Mako 2026-11-01): your Players block and your player menu, built
+  // from this phone's Collection and profile, so it shows what sync is about to share ----
+  function selfFace(){
+    var a = (A && A.view()) || {};
+    return { h: "self", self: 1, name: typeof a.name === "string" ? a.name.slice(0, 32) : "", user: typeof a.user === "string" ? a.user : "", area: AREAS[a.area] ? a.area : "" };
+  }
+  function merged(lists){
+    var o = {}, out = [];
+    lists.forEach(function(list){ (Array.isArray(list) ? list : []).forEach(function(h){
+      if (!h || !Number.isSafeInteger(+h.i) || !(+h.q >= 1) || typeof h.f !== "string" || !h.f) { return; }
+      var k = (+h.i) + "|" + h.f;
+      if (!o[k]) { o[k] = { i: +h.i, f: h.f, q: 0, alt: 0 }; out.push(o[k]); }
+      o[k].q = Math.min(9999, o[k].q + (+h.q));
+    }); });
+    return out;
+  }
+  function myShare(){
+    var s = coll();
+    return { have: merged((s ? s.ports : []).filter(function(p){ return p && p.trade === true; }).map(function(p){ return p.items; })), want: shareWish() ? merged([s && s.wish]) : [] };
+  }
+  function selfSaved(){ if (LOADED) { return DATA.saved; } var v = A && A.view && A.view(); return !!(v && !v.guest); }
+  function drawSelf(){
+    var me = myShare(), f = selfFace(), h = "";
+    if (!selfSaved()) { h += '<p class="bmsg">No one sees this yet: others see your cards once you save your account. Tap your picture, top right.</p>'; }
+    if (!me.have.length && !me.want.length) {
+      h += '<p class="bmsg">You share nothing yet. Mark a binder For trade, or turn on Your Wishlist, in Trade board settings.</p>';
+      $("pselfb").innerHTML = h; return;
+    }
+    if (me.have.length) {
+      h += '<p class="bh3">On Players</p>' + playerBlock(f, me.have.slice().sort(byPreview), cardsN(me.have), 0);
+    }
+    h += '<div class="doors" data-k="deeper" style="margin-top:14px">' + whoRow(f, 0, "Your player menu") + '</div>';
+    h += '<p class="pnote">A player who matches you sees the cards that fit their own lists first, as Has cards you want and Wants cards you have. Never what you paid, a card\'s condition or your Riot ID.</p>';
+    $("pselfb").innerHTML = h;
+  }
+  pself.__redraw = drawSelf;
+  function drawSelfWho(f){
+    var me = myShare();
+    $("pwhot").textContent = nameOf(f);
+    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
+    if (me.have.length) { h += '<p class="bh3">For trade</p>' + grid(me.have, "self", "rest"); }
+    if (me.want.length) { h += '<p class="bh3"' + (me.have.length ? ' style="margin-top:18px"' : '') + '>Wants</p>' + grid(me.want, "self", "wants"); }
+    h += '<p class="pnote">This is you as others see you. ' + (me.want.length ? "Your Wishlist shows to the players who have its cards." : "Your Wishlist stays private: Share your Wishlist is off.") + '</p>';
+    $("pwhob").innerHTML = h;
+  }
+
+  // ---- THE SORT MENU ----
+  function drawSort(){
+    $("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ var on = SORT.o === k; return '<button type="button" data-s="' + k + '" aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + '>' + esc(SORTS[k][0]) + '</button>'; }).join("");
+    var has = !!DATA.me.area;
+    $("nearpick").innerHTML = '<button type="button" data-near="1" aria-pressed="' + (SORT.near && has) + '"' + (SORT.near && has ? ' class="on"' : '') + (has ? '' : ' disabled') + '>Players near you first</button>';
+    $("sortnote").textContent = has ? "Matches always puts players you can trade with both ways first." : "Set your home area on your profile to see players near you first: tap your picture, top right.";
+  }
+  psort.addEventListener("click", function(ev){
+    var b = ev.target.closest("#sortpick > button,#nearpick > button");
+    if (!b || b.disabled) { return; }
+    if (b.hasAttribute("data-s")) { SORT.o = b.getAttribute("data-s"); } else { SORT.near = !SORT.near; }
+    saveSort(); drawSort(); draw();
+  });
+
   // ---- THE CARD MENU: the card, and who has it for trade ----
   var CARD = null;
   function drawCard(){
@@ -526,17 +649,18 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       + (mine ? '<p class="m">' + esc(mine) + '</p>' : '') + '</div></div>';
     var who = DATA.browse.filter(function(r){ return r.i === i && r.f === f; });
     if (CARD.h && !who.some(function(r){ return r.h === CARD.h; })) { who.unshift({ h: CARD.h, q: CARD.q }); }
+    if (CARD.h === "self") { who = [{ h: "self", q: CARD.q }]; }
     var wh = CARD.side === "wants" ? [] : who;
     if (CARD.side === "wants") {
-      var tf = DATA.people[CARD.h];
+      var tf = face(CARD.h);
       if (tf) { h += '<p class="bh3">Wants it</p><div class="doors" data-k="deeper">' + whoRow(tf, CARD.q) + '</div>'; }
     }
-    if (wh.length) { h += '<p class="bh3">For trade by</p><div class="doors" data-k="deeper">' + wh.map(function(r){ var p = DATA.people[r.h]; return p ? whoRow(p, r.q) : ""; }).join("") + '</div>'; }
+    if (wh.length) { h += '<p class="bh3">For trade by</p><div class="doors" data-k="deeper">' + wh.map(function(r){ var p = face(r.h); return p ? whoRow(p, r.q) : ""; }).join("") + '</div>'; }
     $("pcardb").innerHTML = h;
   }
   pcard.__redraw = drawCard;
-  function whoRow(p, q){
-    return '<button type="button" class="door rec btn glass" data-who="' + esc(p.h) + '">' + pic(p, 1) + '<span class="t">' + esc(nameOf(p)) + '<small>' + esc((q > 1 ? q + " copies" : "1 copy") + (subOf(p) ? " \u00b7 " + subOf(p) : "")) + '</small></span><span class="sp"></span>' + CVR + '</button>';
+  function whoRow(p, q, line){
+    return '<button type="button" class="door rec bwr btn glass" data-who="' + esc(p.h) + '">' + pic(p, 1) + '<span class="t">' + esc(line || nameOf(p)) + '<small>' + esc(line ? nameOf(p) + (subOf(p) ? " \u00b7 " + subOf(p) : "") : (q > 1 ? q + " copies" : "1 copy") + (subOf(p) ? " \u00b7 " + subOf(p) : "")) + '</small></span><span class="sp"></span>' + CVR + '</button>';
   }
 
   // ---- WHAT YOU SHARE: your binders For trade and your Wishlist, from this phone's Collection ----
@@ -597,12 +721,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       draw(); return;
     }
     if (t.id === "bprice") { priceIt(t); return; }
-    if (t.classList.contains("bwho")) { openWho(t.getAttribute("data-who"), false); return; }
+    if (t.classList.contains("bwho")) { openWho(t.getAttribute("data-who"), !!OPENP); return; }
     if (t.classList.contains("door")) { openWho(t.getAttribute("data-who"), !!OPENP); return; }
     if (t.hasAttribute("data-c")) {
       var k = t.getAttribute("data-c"), at = k.indexOf("|"), i = Number(k.slice(0, at)), f = k.slice(at + 1), h = t.getAttribute("data-who") || "";
       var side = t.getAttribute("data-side") || "", q = 1;
-      var tt = h ? tradeOf(h) : null, list = tt ? (side === "wants" ? tt.wants : tt.has) : [];
+      var tt = h && h !== "self" ? tradeOf(h) : null, list = tt ? (side === "wants" ? tt.wants : tt.has) : h === "self" ? (side === "wants" ? myShare().want : myShare().have) : [];
       list.forEach(function(x){ if (x.i === i && x.f === f) { q = x.q; } });
       CARD = { i: i, f: f, h: h, side: side, q: q };
       drawCard();
