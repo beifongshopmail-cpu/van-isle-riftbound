@@ -112,6 +112,8 @@ export async function boardFor(db, me, face) {
     me: { area: myArea, have: Object.keys(myHave).length, want: Object.keys(myWant).length },
     traders: keep.filter((x) => x.n > 0).slice(0, BOARD.traders).map((x) => ({ h: x.h, name: x.name, user: x.user, area: x.area, pic: x.pic, two: x.two, near: x.near, has: x.has, wants: x.wants })),
     people: keep.map((x) => ({ h: x.h, name: x.name, user: x.user, area: x.area, pic: x.pic })),
-    browse: browse.filter((r) => hOf.has(r.acct)).map((r) => ({ h: hOf.get(r.acct), i: r.i, f: r.f, q: r.q }))
+    browse: browse.filter((r) => hOf.has(r.acct)).map((r) => ({ h: hOf.get(r.acct), i: r.i, f: r.f, q: r.q })),
+    // how many other players want each card (a shared Wishlist): demand that is RAVI's own (board/demand.js)
+    wanted: db.boardWanted(me, BOARD.browse).map((r) => ({ i: r.i, f: r.f, n: r.n }))
   };
 }

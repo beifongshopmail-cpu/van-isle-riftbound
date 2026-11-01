@@ -15,23 +15,31 @@
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
 <script src="../account.js"></script>
+<script src="demand.js"></script>
 <style>
 /* Trade board (plan 2 M2 block 1, Mako 2026-11-01): who has the cards you want, and who wants
    yours. You share a binder by marking it For trade (here in Trade board settings, or in the
    binder's menu on Collection) and your Wishlist with Share your Wishlist; sync carries both to
    RAVI's server, which matches them (server/live/board.js). Matches lists the players, both-ways
    matches first, then those in your home area; each shows the cards on shelves, as the Tier list.
-   Browse is every card players have for trade, in the Collection's grid. Others see a card, its
+   All cards is every card players have for trade, in the Collection's grid. Others see a card, its
    printing and its count, with the player's name, @username, home area and picture: never a price
    paid, condition, Riot ID, rank or record. Everything from the server is rebuilt from checked
-   fields and escaped. */
+   fields and escaped.
+   Block 1b (Mako 2026-11-01): the search and the view track ride a sticky plate (as Rules); the
+   track is Matches | Players | All cards. Players is a block per player sharing cards, with a
+   preview of their four most sought-after; All cards is every card. Everything is ordered by
+   demand (demand.js: value, how many players want it, special printings, a rising price). */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #bd{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
-.bctl{margin-top:14px}
-.bview{margin-top:10px}
+/* the plate: search, then the view track, sticky 10 above --top-clear so its words start on it; plate frost, clear */
+.bctl{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent;border-radius:24px;padding:10px;
+  background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.bctl{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.bview{margin-top:8px}
 .bnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 #blist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
 .bempty{border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
@@ -64,13 +72,19 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bimg img{display:block;width:100%;height:100%;object-fit:cover}
 .bimg.sq img{object-fit:contain}
 .bimg.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
-.bcard > span:last-child{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bcn{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bpr{display:block;margin-top:-2px;font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap}
+/* Players: a player's four most sought-after cards, four across */
+.bprev{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bprev .bcard{flex:none;width:auto}
+.bprev .bimg{width:100%;height:auto;aspect-ratio:744/1039}
+.bcnt{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 /* on a card: how many (bottom), Other printing (top); words, never colour alone */
 .bq{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);min-width:28px;height:20px;padding:0 6px;border-radius:10px;display:grid;place-items:center;
   background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:12px;font-weight:700;pointer-events:none}
 .balt{position:absolute;left:4px;right:4px;top:4px;padding:3px 4px;border-radius:8px;text-align:center;line-height:1.15;
   background:rgba(10,11,13,.78);color:var(--bone);font-family:var(--disp);font-size:12px;font-weight:600;pointer-events:none}
-/* Browse: the Collection's grid */
+/* All cards: the Collection's grid */
 .cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
 .cgrid.g4{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 8px}
 .ctile{position:relative;min-width:0}
@@ -128,7 +142,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lede">Who has the cards you want, and who wants yours.</p>
   <div class="bctl">
     <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="bq" placeholder="Search cards or players" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search cards or players" data-k="type"><button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
-    <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="browse" aria-pressed="false">Browse</button></div>
+    <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="players" aria-pressed="false">Players</button><button type="button" data-v="cards" aria-pressed="false">All cards</button></div>
   </div>
   <p class="bnote" id="bme"></p>
   <div id="blist"></div>
@@ -264,7 +278,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       area: AREAS[x.area] ? x.area : "", pic: pic };
   }
   function clean(j){
-    var out = { me: { area: "", have: 0, want: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [] };
+    var out = { me: { area: "", have: 0, want: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [], wanted: {} };
     if (!j || j.v !== 1) { return out; }
     if (j.me && typeof j.me === "object") {
       out.me.area = AREAS[j.me.area] ? j.me.area : "";
@@ -280,6 +294,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (f.has.length || f.wants.length) { out.traders.push(f); }
     });
     (Array.isArray(j.browse) ? j.browse : []).forEach(function(x){ var c = okLine(x); if (c && x && okH(x.h) && out.people[x.h]) { c.h = x.h; out.browse.push(c); } });
+    (Array.isArray(j.wanted) ? j.wanted : []).forEach(function(x){
+      if (x && Number.isSafeInteger(x.i) && x.i > 0 && typeof x.f === "string" && x.f.length <= 60 && Number.isSafeInteger(x.n) && x.n > 0) { out.wanted[x.i + "|" + x.f] = x.n; }
+    });
     return out;
   }
 
@@ -306,7 +323,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   // ---- STATE ----
   var DATA = clean(null), VIEW = "match", Q = "", LOADED = false, ERR = "";
-  try { var sv = sessionStorage.getItem("ravi.board.view"); if (sv === "browse") { VIEW = "browse"; } } catch (e) {}
+  try { var sv = sessionStorage.getItem("ravi.board.view"); if (sv === "players" || sv === "cards") { VIEW = sv; } } catch (e) {}
+  // DEMAND: one score per card and printing on the board (demand.js), worked out once per load
+  var DEM = new Map();
+  function demandAll(){
+    var items = [], seen = {};
+    function add(x){ var k = x.i + "|" + x.f; if (!seen[k]) { seen[k] = 1; items.push({ i: x.i, f: x.f }); } }
+    DATA.browse.forEach(add);
+    DATA.traders.forEach(function(t){ t.has.forEach(add); t.wants.forEach(add); });
+    DEM = window.RAVI_DEMAND ? window.RAVI_DEMAND.scores(items, card, function(i, f){ return DATA.wanted[i + "|" + f] || 0; }, FX) : new Map();
+  }
+  function dem(x){ return DEM.get(x.i + "|" + x.f) || 0; }
   function plural(n, one, many){ return n.toLocaleString("en-US") + " " + (n === 1 ? one : many); }
   function hit(text){ return !Q || String(text).toLowerCase().indexOf(Q) >= 0; }
   function traderHits(t){
@@ -320,9 +347,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var c = card(x.i), label = cname(x.i) + ", " + x.f + (x.q > 1 ? ", " + x.q + " copies" : "") + (x.alt ? ", another printing" : "");
     return '<button type="button" class="bcard" data-c="' + x.i + "|" + esc(x.f) + '" data-who="' + esc(h) + '" data-side="' + side + '" aria-label="' + esc(label) + '" data-k="card">'
       + '<span class="bimg' + (sealed(c) ? " sq" : "") + '">' + img(c) + (x.alt ? '<span class="balt">Other printing</span>' : '') + (x.q > 1 ? '<span class="bq">' + x.q + '</span>' : '') + '</span>'
-      + '<span>' + esc(cname(x.i)) + '</span></button>';
+      + '<span class="bcn">' + esc(cname(x.i)) + '</span><span class="bpr">' + money(usd(x.i, x.f)) + '</span></button>';
   }
-  function byValue(a, b){ return (usd(b.i, b.f) || 0) - (usd(a.i, a.f) || 0) || a.alt - b.alt; }
+  // most sought-after first (demand.js), then the dearer, an exact printing before another
+  function byValue(a, b){ return dem(b) - dem(a) || (usd(b.i, b.f) || 0) - (usd(a.i, a.f) || 0) || a.alt - b.alt; }
   function shelf(list, h, side, words){
     if (!list.length) { return ""; }
     list = list.slice().sort(byValue);
@@ -338,7 +366,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       return "";
     }
     if (!list.length) {
-      $("blist").innerHTML = '<div class="bempty glass"><p>' + (Q ? "No player or card matches your search." : "No matches yet. Browse shows every card players have for trade.") + '</p></div>';
+      $("blist").innerHTML = '<div class="bempty glass"><p>' + (Q ? "No player or card matches your search." : "No matches yet. Players shows everyone sharing cards for trade.") + '</p></div>';
       return "";
     }
     $("blist").innerHTML = list.map(function(t){
@@ -353,7 +381,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     return plural(list.length, "player matches", "players match") + " your lists" + (DATA.traders.some(function(t){ return t.two; }) ? ". Both ways means each of you has something the other wants." : ".");
   }
 
-  // Browse: every card players share for trade, one tile per card and printing
+  // All cards: every card players share for trade, one tile per card and printing
   function groups(){
     var G = {}, order = [];
     DATA.browse.forEach(function(r){
@@ -363,7 +391,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var f = DATA.people[r.h];
       if (DATA.me.area && f && f.area === DATA.me.area) { g.near++; }
     });
-    order.sort(function(a, b){ return b.near - a.near || b.who.length - a.who.length || (cname(a.i) < cname(b.i) ? -1 : cname(a.i) > cname(b.i) ? 1 : 0); });
+    order.sort(function(a, b){ return (b.near ? 1 : 0) - (a.near ? 1 : 0) || dem(b) - dem(a) || b.who.length - a.who.length || (cname(a.i) < cname(b.i) ? -1 : cname(a.i) > cname(b.i) ? 1 : 0); });
     return order;
   }
   function tile(g){
@@ -377,7 +405,32 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!all.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
     if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No card or player matches your search.</p></div>'; return ""; }
     $("blist").innerHTML = '<div class="cgrid">' + list.map(tile).join("") + '</div>';
-    return plural(list.length, "card", "cards") + " for trade" + (DATA.me.area ? ", players near you first." : ".");
+    return plural(list.length, "card", "cards") + " for trade, " + (DATA.me.area ? "players near you first, then " : "") + "most sought-after first.";
+  }
+
+  // Players: a block per player sharing cards, near you first, with their four most sought-after
+  function drawPlayers(){
+    var by = {};
+    DATA.browse.forEach(function(r){ (by[r.h] = by[r.h] || []).push({ i: r.i, f: r.f, q: r.q, alt: 0 }); });
+    var list = Object.keys(by).map(function(h){
+      var cards = by[h].slice().sort(byValue), f = DATA.people[h];
+      return { f: f, cards: cards, top: cards.slice(0, 4).reduce(function(n, x){ return n + dem(x); }, 0), n: cardsN(cards) };
+    }).filter(function(p){ return p.f && (!Q || hit(p.f.name) || hit(p.f.user) || p.cards.some(function(x){ return hit(cname(x.i)); })); });
+    list.sort(function(a, b){
+      var na = DATA.me.area && a.f.area === DATA.me.area ? 1 : 0, nb = DATA.me.area && b.f.area === DATA.me.area ? 1 : 0;
+      return nb - na || b.top - a.top || b.n - a.n || (a.f.h < b.f.h ? -1 : 1);
+    });
+    if (!Object.keys(by).length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
+    if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No player or card matches your search.</p></div>'; return ""; }
+    $("blist").innerHTML = list.map(function(p){
+      var f = p.f, two = (tradeOf(f.h) || {}).two;
+      return '<article class="bt glass">'
+        + '<button type="button" class="bwho" data-who="' + esc(f.h) + '" aria-label="' + esc(nameOf(f)) + ', see everything they have for trade" data-k="deeper">' + pic(f)
+        + '<span class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span>' + (two ? BOTH : '<span class="bcnt">' + esc(plural(p.n, "card", "cards")) + '</span>') + CVR + '</button>'
+        + '<div class="bsec"><div class="bprev">' + p.cards.slice(0, 4).map(function(x){ return shelfCard(x, f.h, "rest"); }).join("") + '</div></div>'
+        + '</article>';
+    }).join("");
+    return plural(list.length, "player shares", "players share") + " cards for trade, " + (DATA.me.area ? "near you first, " : "") + "each showing their most sought-after.";
   }
 
   function meLine(){
@@ -397,7 +450,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board."; $("bme").textContent = ""; return; }
     $("bme").textContent = meLine();
     $("bme").hidden = !$("bme").textContent;
-    $("bsum").textContent = VIEW === "browse" ? drawBrowse() : drawMatches();
+    $("bsum").textContent = VIEW === "cards" ? drawBrowse() : VIEW === "players" ? drawPlayers() : drawMatches();
     $("bsum").hidden = !$("bsum").textContent;
   }
   // a shelf fades at an edge with more beyond it
@@ -434,7 +487,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         + '<div class="nrow"><div><b>Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div></div>';
       h += '<button type="button" class="pact btn glass" id="bprice" data-k="do">Price this trade</button><p class="bmsg" id="bpricemsg" hidden></p>';
     }
-    if (rest.length) { h += '<p class="bh3" style="margin-top:18px">Also for trade</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
+    if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
     h += '<p class="pnote">Offers, and picking the event where you meet to trade, come next. Prices are market price, a starting point to agree on.</p>';
     $("pwhob").innerHTML = h;
   }
@@ -539,7 +592,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!t) { return; }
     if (t.id === "bqx") { $("bq").value = ""; Q = ""; t.disabled = true; draw(); return; }
     if (t.parentNode && t.parentNode.id === "bview") {
-      VIEW = t.getAttribute("data-v") === "browse" ? "browse" : "match";
+      var vv = t.getAttribute("data-v"); VIEW = vv === "players" || vv === "cards" ? vv : "match";
       try { sessionStorage.setItem("ravi.board.view", VIEW); } catch (e) {}
       draw(); return;
     }
@@ -568,7 +621,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       A.board(function(err, j){
         LOADING = false;
         if (err) { ERR = err; LOADED = false; draw(); return; }
-        DATA = clean(j); LOADED = true; ERR = ""; mineIndex(); draw();
+        DATA = clean(j); LOADED = true; ERR = ""; mineIndex(); demandAll(); draw();
       });
     }
     if (window.RAVI_SYNC) { window.RAVI_SYNC.run(ask); } else { ask(); }
@@ -579,7 +632,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     P = d; FX = (d.fx && d.fx.rate) || FX;
     $("stamp").innerHTML = window.RAVI_STAMP(d) || "&nbsp;";
     (Array.isArray(d.cards) ? d.cards : []).forEach(function(c){ if (c && Number.isSafeInteger(c.i)) { BYID[c.i] = c; } });
-    if (LOADED) { draw(); }
+    if (LOADED) { demandAll(); draw(); }
   }).catch(function(){});
   draw();
   load();

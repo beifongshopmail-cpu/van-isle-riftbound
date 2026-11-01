@@ -392,6 +392,7 @@ function sqlStore(sql) {
     boardRows: (acct) => sql.exec("SELECT s, i, f, q, pub FROM board WHERE acct = ?", acct).toArray(),
     boardMatch: (theirs, mine, me) => sql.exec("SELECT o.acct AS acct, o.i AS i, o.f AS f, o.q AS q FROM board o WHERE o.s = ? AND o.pub = 1 AND o.acct <> ? AND EXISTS (SELECT 1 FROM board m WHERE m.acct = ? AND m.s = ? AND m.i = o.i) LIMIT 6000", theirs, me, me, mine).toArray(),
     boardShared: (me, max) => sql.exec("SELECT acct, i, f, q FROM board WHERE s = 'h' AND pub = 1 AND acct <> ? ORDER BY acct LIMIT ?", me, max).toArray(),
+    boardWanted: (me, max) => sql.exec("SELECT i, f, COUNT(*) AS n FROM board WHERE s = 'w' AND pub = 1 AND acct <> ? GROUP BY i, f ORDER BY n DESC LIMIT ?", me, max).toArray(),
     putHandle: (h, acct) => sql.exec("INSERT OR REPLACE INTO bh VALUES (?, ?)", h, acct),
     byHandle: (h) => { const x = one("SELECT acct FROM bh WHERE h = ?", h); return x ? x.acct : null; },
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
@@ -465,6 +466,8 @@ export function memStore() {
       T.board.forEach((rows, acct) => { if (acct !== me) rows.forEach((r) => { if (r.s === theirs && r.pub === 1 && ids.has(r.i)) out.push({ acct: acct, i: r.i, f: r.f, q: r.q }); }); });
       return out.slice(0, 6000); },
     boardShared: (me, max) => { const out = []; Array.from(T.board.keys()).sort().forEach((acct) => { if (acct !== me) T.board.get(acct).forEach((r) => { if (r.s === "h" && r.pub === 1) out.push({ acct: acct, i: r.i, f: r.f, q: r.q }); }); }); return out.slice(0, max); },
+    boardWanted: (me, max) => { const m = new Map(); T.board.forEach((rows, acct) => { if (acct !== me) rows.forEach((r) => { if (r.s === "w" && r.pub === 1) { const k = r.i + "|" + r.f; m.set(k, (m.get(k) || 0) + 1); } }); });
+      return Array.from(m.entries()).map(([k, n]) => ({ i: Number(k.split("|")[0]), f: k.slice(k.indexOf("|") + 1), n: n })).sort((a, b) => b.n - a.n).slice(0, max); },
     putHandle: (h, acct) => T.bh.set(h, acct),
     byHandle: (h) => T.bh.has(h) ? T.bh.get(h) : null,
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
