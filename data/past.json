@@ -3,6 +3,28 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117509536477035676",
+   "name": "Halloween Nexus night",
+   "type": "nexus",
+   "start": "2026-10-31T18:00:00-07:00",
+   "day": "2026-10-31",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
+   "id": "rb117525511550990231",
+   "name": "North Park Picture Framing and Collectables Nexus Nights",
+   "type": "nexus",
+   "start": "2026-10-31T12:00:00-07:00",
+   "day": "2026-10-31",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
    "id": "rb117473617815091551",
    "name": "Thursday Casual Nexus Nights @ North Park Picture Framing and Collectables",
    "type": "nexus",

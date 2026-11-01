@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-10-31T17:31:53.696Z",
- "generated_local": "2026-10-31T10:31:53-07:00",
- "window_start": "2026-10-31T07:00:00.000Z",
+ "generated_at": "2026-11-01T07:11:58.407Z",
+ "generated_local": "2026-11-01T00:11:58-07:00",
+ "window_start": "2026-11-01T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 51,
-   "added": 51
+   "returned": 49,
+   "added": 49
   },
   {
    "name": "Courtenay",
@@ -47,8 +47,8 @@
   }
  ],
  "totals": {
-  "fetched": 62,
-  "unique": 62,
+  "fetched": 60,
+  "unique": 60,
   "prev_unique": 62
  },
  "unknown_templates": {
@@ -59,54 +59,6 @@
  },
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117525511550990231",
-   "name": "North Park Picture Framing and Collectables Nexus Nights",
-   "type": "nexus",
-   "start": "2026-10-31T12:00:00-07:00",
-   "end": null,
-   "day": "2026-10-31",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 2,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing",
-   "swiss": 4,
-   "cut": false
-  },
-  {
-   "id": "rb117509536477035676",
-   "name": "Halloween Nexus night",
-   "type": "nexus",
-   "start": "2026-10-31T18:00:00-07:00",
-   "end": null,
-   "day": "2026-10-31",
-   "time": "6:00 PM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 4,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 16866,
-   "store": "Everything Games",
-   "swiss": 4,
-   "cut": false
-  },
   {
    "id": "rb117509539459382429",
    "name": "Sunday morning nexus night",
@@ -120,7 +72,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 2,
+   "reg": 5,
    "cents": 600,
    "currency": "CAD",
    "updated": null,
@@ -144,7 +96,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 2,
+   "reg": 3,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -312,7 +264,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 3,
+   "reg": 4,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
