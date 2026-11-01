@@ -51,19 +51,21 @@
 // trusted; RAVI does not care which maker built the passkey.
 // No dependencies: CBOR and the key handling are written here.
 
+import { BOARD_KEYS, rowsFrom, boardFor, handleOf } from "./board.js";
+
 export const RP_ID = "ravi.tools";
 export const ORIGINS = ["https://ravi.tools"];
 export const CHALLENGE_MS = 5 * 60000;
 export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
-export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1"];
+export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1", "vir.board.v1"]; // vir.board.v1: what you share on the Trade board (plan 2 M2)
 // an item's text at most, an account's whole text, its items, items per call, items per answer, calls a day, days a delete is kept
 export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page: 300, day: 5000, keepGone: 120,
   guestTotal: 2000000 }; // an account never saved holds less (the security check, Mako's yes 2026-10-31: many throwaway guests must not fill the free plan)
 // per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
 // sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
 // can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000 }; // per connection per day (guest: a store's wifi)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500 }; // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -360,6 +362,10 @@ function sqlStore(sql) {
   try { sql.exec("ALTER TABLE sess ADD COLUMN dev TEXT"); } catch (e) { /* already there */ }
   sql.exec("CREATE TABLE IF NOT EXISTS item (acct TEXT, k TEXT, id TEXT, t INTEGER, d TEXT, s INTEGER, PRIMARY KEY (acct, k, id))");
   sql.exec("CREATE INDEX IF NOT EXISTS item_s ON item (acct, s)");
+  // the Trade board (board.js, plan 2 M2): an account's have (h) and want (w) rows, pub 1 when others may see them
+  sql.exec("CREATE TABLE IF NOT EXISTS board (acct TEXT, s TEXT, i INTEGER, f TEXT, q INTEGER, pub INTEGER, PRIMARY KEY (acct, s, i, f))");
+  sql.exec("CREATE INDEX IF NOT EXISTS board_si ON board (s, i)");
+  sql.exec("CREATE TABLE IF NOT EXISTS bh (h TEXT PRIMARY KEY, acct TEXT UNIQUE)");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code, guest FROM acct WHERE id = ?", id),
@@ -381,6 +387,13 @@ function sqlStore(sql) {
     itemSize: (acct) => { const x = one("SELECT COUNT(*) AS n, COALESCE(SUM(LENGTH(d)), 0) AS b FROM item WHERE acct = ?", acct); return { n: x.n, b: x.b }; },
     maxSeq: () => one("SELECT COALESCE(MAX(s), 0) AS s FROM item").s,
     purgeGone: (cut) => sql.exec("DELETE FROM item WHERE d IS NULL AND t < ?", cut),
+    boardItems: (acct) => sql.exec("SELECT k, id, d FROM item WHERE acct = ? AND d IS NOT NULL AND k IN ('vir.coll.v1', 'vir.board.v1')", acct).toArray(),
+    putBoard: (acct, rows) => { sql.exec("DELETE FROM board WHERE acct = ?", acct); rows.forEach((r) => sql.exec("INSERT OR REPLACE INTO board VALUES (?, ?, ?, ?, ?, ?)", acct, r.s, r.i, r.f, r.q, r.pub)); },
+    boardRows: (acct) => sql.exec("SELECT s, i, f, q, pub FROM board WHERE acct = ?", acct).toArray(),
+    boardMatch: (theirs, mine, me) => sql.exec("SELECT o.acct AS acct, o.i AS i, o.f AS f, o.q AS q FROM board o WHERE o.s = ? AND o.pub = 1 AND o.acct <> ? AND EXISTS (SELECT 1 FROM board m WHERE m.acct = ? AND m.s = ? AND m.i = o.i) LIMIT 6000", theirs, me, me, mine).toArray(),
+    boardShared: (me, max) => sql.exec("SELECT acct, i, f, q FROM board WHERE s = 'h' AND pub = 1 AND acct <> ? ORDER BY acct LIMIT ?", me, max).toArray(),
+    putHandle: (h, acct) => sql.exec("INSERT OR REPLACE INTO bh VALUES (?, ?)", h, acct),
+    byHandle: (h) => { const x = one("SELECT acct FROM bh WHERE h = ?", h); return x ? x.acct : null; },
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
@@ -400,6 +413,8 @@ function sqlStore(sql) {
     delPhoto: (acct) => sql.exec("DELETE FROM photo WHERE acct = ?", acct),
     delAcct: (id) => {
       sql.exec("DELETE FROM item WHERE acct = ?", id);
+      sql.exec("DELETE FROM board WHERE acct = ?", id);
+      sql.exec("DELETE FROM bh WHERE acct = ?", id);
       sql.exec("DELETE FROM riot WHERE acct = ?", id);
       sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM prof WHERE acct = ?", id);
@@ -419,7 +434,7 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map() };
   const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
   return {
@@ -443,6 +458,15 @@ export function memStore() {
     itemSize: (acct) => { let n = 0, b = 0; T.item.forEach((x) => { if (x.acct === acct) { n++; b += x.d ? x.d.length : 0; } }); return { n: n, b: b }; },
     maxSeq: () => { let m = 0; T.item.forEach((x) => { if (x.s > m) m = x.s; }); return m; },
     purgeGone: (cut) => T.item.forEach((x, key) => { if (x.d === null && x.t < cut) T.item.delete(key); }),
+    boardItems: (acct) => Array.from(T.item.values()).filter((x) => x.acct === acct && x.d !== null && (x.k === "vir.coll.v1" || x.k === "vir.board.v1")).map((x) => copy({ k: x.k, id: x.id, d: x.d })),
+    putBoard: (acct, rows) => { T.board.set(acct, rows.map(copy)); },
+    boardRows: (acct) => (T.board.get(acct) || []).map((r) => ({ s: r.s, i: r.i, f: r.f, q: r.q, pub: r.pub })),
+    boardMatch: (theirs, mine, me) => { const ids = new Set((T.board.get(me) || []).filter((r) => r.s === mine).map((r) => r.i)), out = [];
+      T.board.forEach((rows, acct) => { if (acct !== me) rows.forEach((r) => { if (r.s === theirs && r.pub === 1 && ids.has(r.i)) out.push({ acct: acct, i: r.i, f: r.f, q: r.q }); }); });
+      return out.slice(0, 6000); },
+    boardShared: (me, max) => { const out = []; Array.from(T.board.keys()).sort().forEach((acct) => { if (acct !== me) T.board.get(acct).forEach((r) => { if (r.s === "h" && r.pub === 1) out.push({ acct: acct, i: r.i, f: r.f, q: r.q }); }); }); return out.slice(0, max); },
+    putHandle: (h, acct) => T.bh.set(h, acct),
+    byHandle: (h) => T.bh.has(h) ? T.bh.get(h) : null,
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
@@ -471,6 +495,7 @@ export function memStore() {
     delPhoto: (acct) => T.photo.delete(acct),
     delAcct: (id) => {
       T.item.forEach((x, key) => { if (x.acct === id) T.item.delete(key); });
+      T.board.delete(id); T.bh.forEach((a, h) => { if (a === id) T.bh.delete(h); });
       T.prof.delete(id); T.photo.delete(id);
       T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
       T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
@@ -578,6 +603,21 @@ export function makeAccounts() {
     }
     // signing in from a guest moves the guest in; from anything else, nothing moves
     into(me, a) { if (me && me.acct.guest && me.acct.id !== a.id) this.merge(me.acct.id, a.id); }
+    // THE TRADE BOARD (board.js): an account's rows from its synced collection, shown to others once it is saved
+    async rebuild(acctId) {
+      const a = this.db.acct(acctId);
+      if (!a) return;
+      this.db.putBoard(acctId, rowsFrom(this.db.boardItems(acctId), !a.guest));
+      this.db.putHandle(await handleOf(acctId), acctId);
+    }
+    // what others see of a trader: name, @username, home area, picture (never the account id or Riot ID)
+    face(acctId) {
+      const p = this.db.prof(acctId);
+      let crop = null;
+      try { crop = p && p.pcrop ? cleanCrop(JSON.parse(p.pcrop)) : null; } catch (e) { crop = null; }
+      const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
+      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic };
+    }
     // everything the server keeps for an account, for Download your data
     exportOf(a) {
       const p = this.db.prof(a.id), r = this.db.riotOf(a.id), ph = p && p.pk === "p" ? this.db.photo(a.id) : null;
@@ -591,6 +631,9 @@ export function makeAccounts() {
         photo: ph ? "data:image/jpeg;base64," + btoa(Array.from(ph, (x) => String.fromCharCode(x)).join("")) : null,
         riotId: r ? { name: r.n, tag: r.tag, claimed: dayOf(r.at) } : null,
         disputes: v.asked,
+        tradeBoard: { what: "what others see on the Trade board: card (TCGplayer product id), printing and count", shown: !a.guest,
+          have: this.db.boardRows(a.id).filter((r) => r.s === "h" && r.pub === 1).map((r) => ({ card: r.i, printing: r.f, count: r.q })),
+          want: this.db.boardRows(a.id).filter((r) => r.s === "w" && r.pub === 1).map((r) => ({ card: r.i, printing: r.f, count: r.q })) },
         synced: this.db.allItems(a.id).reduce((o, x) => { let d; try { d = JSON.parse(x.d); } catch (e) { d = x.d; } (o[x.k] = o[x.k] || {})[x.id] = d; return o; }, {}) };
     }
     // the next running number for an item's change
@@ -647,6 +690,18 @@ export function makeAccounts() {
           const img = this.db.photo(pm[1]);
           if (!img) return reply({ error: "no picture" }, 404);
           return new Response(img, { headers: { "Content-Type": "image/jpeg" } });
+        }
+        const bm = /^\/bpic\/([0-9a-f]{24})$/.exec(u.pathname);
+        if (bm) {
+          // a trader's photo on the Trade board, by their board handle; only while they share something
+          const id = this.db.byHandle(bm[1]), p = id ? this.db.prof(id) : null, img = p && p.pk === "p" && this.db.boardRows(id).some((r) => r.pub === 1) ? this.db.photo(id) : null;
+          if (!img) return reply({ error: "no picture" }, 404);
+          return new Response(img, { headers: { "Content-Type": "image/jpeg" } });
+        }
+        if (u.pathname === "/board") {
+          if (!me) return reply({ error: "signed out" }, 401);
+          if (!(await this.spend("board", ip))) return reply({ error: "the board has been opened too often from this connection today; try again tomorrow" }, 429);
+          return reply(Object.assign(await boardFor(this.db, me.acct.id, (id) => this.face(id)), { saved: !me.acct.guest }));
         }
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
         if (u.pathname === "/devices") {
@@ -721,6 +776,7 @@ export function makeAccounts() {
             const code = newCode();
             a.guest = 0; a.code = await sha(cleanCode(code));
             this.db.putAcct(a);
+            await this.rebuild(a.id); // what it marked For trade now shows on the board
             return reply({ account: this.view(a), recovery: code });
           }
           return reply({ account: this.view(a) });
@@ -842,7 +898,9 @@ export function makeAccounts() {
         if (!(await this.spend("sync", "acct:" + me.acct.id)) || !(await this.spend("synccall", ip))) return reply({ error: "too many syncs today; your things stay on this phone and go up tomorrow" }, 429);
         const want = Array.isArray(body.put) ? Math.min(body.put.length, SYNC.put) : 0;
         const room = want ? await this.spendUpTo("syncw", ip, want) : 0;
-        return reply(this.syncWith(me.acct.id, body, room, !!me.acct.guest));
+        const done = this.syncWith(me.acct.id, body, room, !!me.acct.guest);
+        if ((Array.isArray(body.put) ? body.put : []).some((x) => x && BOARD_KEYS.indexOf(x.k) >= 0)) await this.rebuild(me.acct.id);
+        return reply(done);
       }
       if (p === "/key/name" || p === "/key/off") {
         const c = typeof body.id === "string" && body.id.length < 1400 ? this.db.cred(body.id) : null;

@@ -255,7 +255,7 @@ input[type="file"]{display:none}
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
-    <p>Your collection is kept on this phone only. Card data and pictures by Riot Games. Market price is a public benchmark, not an offer from any store.</p>
+    <p>Your collection follows your account; a binder you mark For trade shows on the Trade board. Card data and pictures by Riot Games. Market price is a public benchmark, not an offer from any store.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -333,6 +333,8 @@ input[type="file"]{display:none}
   <div class="pbody">
     <p class="lb">Name</p>
     <div class="nf tall"><input id="onename" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
+    <div class="row" style="margin-top:14px"><p class="lb">Trade board</p><div class="pick" id="onetrade" data-k="pick"><button type="button" aria-pressed="false">For trade</button></div>
+      <p class="pnote" id="onetradenote" style="margin-top:8px"></p></div>
     <p class="pnote" id="onenote"></p>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" id="onedel" data-act="delport" data-k="do">Delete binder</button></div>
@@ -417,7 +419,9 @@ input[type="file"]{display:none}
   // P: data/prices.json. BYID: a product by its TCGplayer id. A HOLDING is one printing and finish
   // in one portfolio: { id, i: product id, f: finish, q: count, d: "YYYY-MM-DD" added,
   // paid: price paid for one, or null, pc: the currency it was paid in, cond: condition words }.
-  // THE STORE (vir.coll.v1): { v: 1, ports: [{ id, name, items: [holding] }], wish: [holding], last: id }
+  // THE STORE (vir.coll.v1): { v: 1, ports: [{ id, name, items: [holding], trade: true when For trade }], wish: [holding], last: id }
+  // FOR TRADE (plan 2 M2, Mako 2026-11-01): a binder marked For trade is your have list on the Trade
+  // board (board/), once your account is saved; others see its cards, printings and counts only.
   var KEY = "vir.coll.v1", SKEY = "vir.coll.set.v1";
   var P = null, BYID = Object.create(null), SETS = {}, FX = 1.4, ART = null;
   // S.loose: cards in the collection but in no binder (round 5, Mako: Collection is the whole, and a card
@@ -465,7 +469,7 @@ input[type="file"]{display:none}
     var ports = [];
     s.ports.forEach(function(p){
       if(!p || typeof p !== "object") return;
-      ports.push(inOrder(p, { id: typeof p.id === "string" && p.id ? p.id : uid(), name: typeof p.name === "string" && p.name ? p.name : "Binder", items: cleanList(p.items) }));
+      ports.push(inOrder(p, { id: typeof p.id === "string" && p.id ? p.id : uid(), name: typeof p.name === "string" && p.name ? p.name : "Binder", items: cleanList(p.items), trade: p.trade === true ? true : undefined }));
     });
     return inOrder(s, { v: 1, ports: ports, wish: cleanList(s.wish), loose: cleanList(s.loose), last: typeof s.last === "string" ? s.last : "" });
   }
@@ -929,7 +933,8 @@ input[type="file"]{display:none}
   }
   function fillManage(){
     el("mnglist").innerHTML = S.ports.length ? S.ports.map(function(p){
-      return '<button type="button" class="door btn glass" data-act="one" data-id="' + esc(p.id) + '"><span class="t">' + esc(p.name) + '</span><span class="sp"></span><small>' + count(viewItems(p.id)).toLocaleString("en-US") + '</small>' + CVR + '</button>';
+      var n = count(viewItems(p.id)).toLocaleString("en-US");
+      return '<button type="button" class="door btn glass" data-act="one" data-id="' + esc(p.id) + '"><span class="t">' + esc(p.name) + '</span><span class="sp"></span><small>' + (p.trade ? "For trade, " + n : n) + '</small>' + CVR + '</button>';
     }).join("") : '<p class="cempty" style="padding:12px 16px">No binders yet. Adding a card makes the first one.</p>';
   }
   var ONE = null;
@@ -939,7 +944,17 @@ input[type="file"]{display:none}
     el("onettl").textContent = ONE.name;
     el("onename").value = ONE.name;
     var n = count(viewItems(ONE.id));
+    tradeRow();
     el("onenote").textContent = n ? "Deleting it removes its " + n.toLocaleString("en-US") + (n === 1 ? " card" : " cards") + " from this page." : "It holds no cards yet.";
+  }
+  // the binder's For trade row: on, its cards are your have list on the Trade board
+  function tradeRow(){
+    if(!ONE) return;
+    var b = el("onetrade").firstChild, on = ONE.trade === true, A = window.RAVI_ACCT, v = A && A.view && A.view();
+    b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+    el("onetradenote").textContent = (on ? "Shown on the Trade board: other players see each card, its printing and how many. Never what you paid or its condition."
+      : "On, players on the Trade board can see this binder's cards, printings and counts.")
+      + (v && v.guest ? " Save your account first: tap your picture, top right." : "");
   }
   // where a new card goes: the binder or Wishlist on show; under Collection, into no binder (round 5)
   function target(){
@@ -1287,7 +1302,7 @@ input[type="file"]{display:none}
 
   // ---- TAPS ----
   document.addEventListener("click", function(ev){
-    var t = ev.target.closest("[data-act],[data-close],[data-badd],[data-bup],[data-bdn],[data-bs],[data-hv],.crow,.cpic[data-h],#portpick > button,#sortpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#cur > button,#mode > button,#showmv > button,#mvtog");
+    var t = ev.target.closest("[data-act],[data-close],[data-badd],[data-bup],[data-bdn],[data-bs],[data-hv],.crow,.cpic[data-h],#portpick > button,#sortpick > button,#hport > button,#hfin > button,#hcond > button,#range > button,#cur > button,#mode > button,#showmv > button,#onetrade > button,#mvtog");
     if(!t) return;
     if(t.hasAttribute("data-close")){ openPanel(null); return; }
     if(t.id === "mvtog"){ MVOPEN = !MVOPEN; render(); if(MVOPEN){ var mb = el("mvbody"); mb.classList.remove("reveal"); void mb.offsetWidth; mb.classList.add("reveal"); } return; }
@@ -1312,6 +1327,7 @@ input[type="file"]{display:none}
     if(par === "cur"){ SET.cur = t.getAttribute("data-c"); saveSet(); render(); return; }
     if(par === "mode"){ SET.mode = t.getAttribute("data-m"); saveSet(); render(); return; }
     if(par === "showmv"){ SET.movers = !SET.movers; saveSet(); render(); return; }
+    if(par === "onetrade" && ONE){ if(ONE.trade) delete ONE.trade; else ONE.trade = true; changed(); fillManage(); tradeRow(); return; }
     if(par === "hport"){
       var np = t.getAttribute("data-v"); if(np === HPORT) return;
       var from = listOf(HPORT); from.splice(from.indexOf(HOLD), 1);

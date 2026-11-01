@@ -233,6 +233,7 @@
   function deviceOut(id, cb) { call("POST", "/devices/out", { id: id }, cb); }
   function othersOut(cb) { call("POST", "/devices/others", {}, cb); }
   function exportData(cb) { call("GET", "/export", null, cb); }
+  function board(cb) { call("GET", "/board", null, cb); } // the Trade board as this account sees it (plan 2 M2)
   function syncCall(body, cb) { call("POST", "/sync", body, cb); }
   function signOut(cb) {
     // forgotten on the phone whatever the server says; the phone then gets a new guest
@@ -248,7 +249,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
-    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, syncCall: syncCall,
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, syncCall: syncCall,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -323,7 +324,7 @@
         '<div class="doors acrow" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
         '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
-        '<p class="pnote">Only you see your profile for now. The trade board will show it to the players you trade with.</p>' +
+        '<p class="pnote">While you share a binder or your Wishlist, players on the Trade board see your name, @username, home area and picture. Your Riot ID and the line about you stay private.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
       acpicm: headTitle("Picture") + '<div class="pbody"><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span>' +
@@ -347,7 +348,7 @@
         '<button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Use a recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="pnote" id="acinnote"></p><p class="acmsg" id="acinmsg" aria-live="polite"></p></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
-      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
+      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Trade board shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
       acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, Follow and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
         '<p class="pnote" id="acnum"></p>' +
@@ -1128,7 +1129,8 @@
       t0: function () { return 1; }
     },
     "vir.hub.blocks.v1": whole,
-    "vir.hub.open.v1": whole
+    "vir.hub.open.v1": whole,
+    "vir.board.v1": whole // what you share on the Trade board: { wish: true } (plan 2 M2)
   };
   var KEYS = Object.keys(STORES);
 
@@ -1189,10 +1191,15 @@
 
   // ---- one round with the server ----
   var busy = false, again = false, lastRun = 0, status = "";
-  function run() {
+  // run(after): after, if given, is called once this round of sync ends, sent or not (the Trade
+  // board waits for it, so what was just marked For trade is on the server before it asks)
+  var afters = [];
+  function ended() { var a = afters; afters = []; a.forEach(function (f) { try { f(status); } catch (e) {} }); }
+  function run(after) {
+    if (typeof after === "function") afters.push(after);
     clearTimeout(timer);
     var s = A.saved();
-    if (!s || !s.id) return;
+    if (!s || !s.id) return ended();
     if (busy) { again = true; return; }
     var m = meta(), now = Date.now();
     if (m.a !== s.id) {
@@ -1253,10 +1260,10 @@
       if (any) fresh(Object.keys(changed));
       finish(j.more || again);
     });
-    function finish(more) { again = false; if (more) setTimeout(run, 50); }
+    function finish(more) { again = false; if (more) setTimeout(run, 50); else ended(); }
   }
   // a page that has read a store another phone just changed: shown again once, if it was not touched yet
-  var PAGES = { decks: ["vir.decks.v1", "vir.coll.v1", "vir.trade.v1"], collection: ["vir.coll.v1", "vir.decks.v1", "vir.trade.v1"], trade: ["vir.trade.v1", "vir.trade.log.v1"],
+  var PAGES = { decks: ["vir.decks.v1", "vir.coll.v1", "vir.trade.v1"], collection: ["vir.coll.v1", "vir.decks.v1", "vir.trade.v1"], trade: ["vir.trade.v1", "vir.trade.log.v1"], board: ["vir.board.v1", "vir.coll.v1"],
     calendar: ["vir.follow.v1"], settings: ["vir.hub.blocks.v1", "vir.hub.open.v1"], cut: ["vir.counter.history.v1"], "": ["vir.hub.blocks.v1"] };
   function fresh(keys) {
     var m = /\/([a-z]+)\/(index\.html)?$/.exec(root.location.pathname), page = m ? m[1] : "", reads = PAGES[page] || [];

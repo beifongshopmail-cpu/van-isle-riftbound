@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Riftbound trade board: who has the cards you want, and who wants yours.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Trade board - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<script src="../account.js"></script>
+<style>
+/* Trade board (plan 2 M2 block 1, Mako 2026-11-01): who has the cards you want, and who wants
+   yours. You share a binder by marking it For trade (here in Trade board settings, or in the
+   binder's menu on Collection) and your Wishlist with Share your Wishlist; sync carries both to
+   RAVI's server, which matches them (server/live/board.js). Matches lists the players, both-ways
+   matches first, then those in your home area; each shows the cards on shelves, as the Tier list.
+   Browse is every card players have for trade, in the Collection's grid. Others see a card, its
+   printing and its count, with the player's name, @username, home area and picture: never a price
+   paid, condition, Riot ID, rank or record. Everything from the server is rebuilt from checked
+   fields and escaped. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+#bd{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+.bctl{margin-top:14px}
+.bview{margin-top:10px}
+.bnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+#blist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.bempty{border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
+.bempty p{margin:0}
+.bempty .pact{margin-top:14px}
+/* a player's card: their picture and name (opens the trade), then a shelf per direction */
+.bt{border-radius:22px;padding:4px 0 12px;min-width:0}
+.bwho{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--sz-row);padding:6px 14px;margin:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bwho:active{background:var(--glass-press)}
+.bt .bwho{border-radius:22px 22px 0 0}
+.bpic{flex:0 0 36px;width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--track) no-repeat;display:grid;place-items:center;color:var(--muted)} /* size-exempt: a player's picture */
+.bpic svg{width:20px;height:20px}
+.bnm{flex:1;min-width:0}
+.bnm b{display:block;font-family:var(--disp);font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bnm small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bboth{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 9px 0 7px;border-radius:12px;background:var(--bone);color:var(--ink);font-family:var(--disp);font-weight:600;font-size:12px}
+.bboth svg{width:14px;height:14px}
+.bwho .cvr{flex:0 0 16px}
+.bsec{padding:0 14px;margin-top:8px}
+.blab{margin:0 2px 6px;font-size:12px;font-weight:600;color:var(--muted)}
+/* a shelf: cards scroll sideways, snapping card by card, a soft fade at an edge with more beyond */
+.bstrip{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.bstrip::-webkit-scrollbar{display:none}
+.bstrip.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent)}
+.bstrip.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px);mask-image:linear-gradient(90deg,transparent,#000 24px)}
+.bstrip.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.bcard{flex:0 0 72px;width:72px;display:flex;flex-direction:column;gap:4px;padding:0;margin:0;scroll-snap-align:start;border:0;background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:left}
+.bcard:active{transform:scale(.96)}
+.bimg{position:relative;display:block;width:72px;height:100px;border-radius:6px;overflow:hidden;background:var(--recess)} /* size-exempt: card art */
+.bimg img{display:block;width:100%;height:100%;object-fit:cover}
+.bimg.sq img{object-fit:contain}
+.bimg.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
+.bcard > span:last-child{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* on a card: how many (bottom), Other printing (top); words, never colour alone */
+.bq{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);min-width:28px;height:20px;padding:0 6px;border-radius:10px;display:grid;place-items:center;
+  background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:12px;font-weight:700;pointer-events:none}
+.balt{position:absolute;left:4px;right:4px;top:4px;padding:3px 4px;border-radius:8px;text-align:center;line-height:1.15;
+  background:rgba(10,11,13,.78);color:var(--bone);font-family:var(--disp);font-size:12px;font-weight:600;pointer-events:none}
+/* Browse: the Collection's grid */
+.cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
+.cgrid.g4{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 8px}
+.ctile{position:relative;min-width:0}
+.cpic{position:relative;display:block;width:100%;aspect-ratio:744/1039;padding:0;border:0;border-radius:8px;overflow:hidden;background:var(--recess);cursor:pointer}
+.cpic img{display:block;width:100%;height:100%;object-fit:cover}
+.cpic.sq img{object-fit:contain}
+.cpic.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
+.cpic:active{transform:scale(.97)}
+.tcap{margin:6px 2px 0;min-width:0}
+.tnm{display:block;font-family:var(--disp);font-size:13px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpr{display:flex;align-items:baseline;gap:6px;margin-top:2px;white-space:nowrap;overflow:hidden}
+.tpr b{font-family:var(--disp);font-size:13px;font-weight:700}
+.tpr span,.ttot{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.ttot{display:block;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cpic,.bcard{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* the player menu and the card menu */
+.btop{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.btop .bpic{flex:0 0 56px;width:56px;height:56px} /* size-exempt: a player's picture */
+.btop .bpic svg{width:30px;height:30px}
+.btop .bnm b{font-size:17px;font-weight:700}
+.btop .bnm small{font-size:13px;margin-top:2px}
+.btop .bboth{margin-top:6px;display:inline-flex}
+.bcbig{flex:0 0 auto;width:104px;height:145px;border-radius:7px;overflow:hidden;background:var(--recess);position:relative} /* size-exempt: card art */
+.bcbig img{display:block;width:100%;height:100%;object-fit:cover}
+.bcbig.sq img{object-fit:contain}
+.bcbig.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
+.bctx{min-width:0}
+.bctx b{display:block;font-family:var(--disp);font-weight:700;font-size:17px;margin:0 0 4px}
+.bctx p{margin:0 0 4px;font-size:15px;line-height:1.4}
+.bctx p.m{font-size:13px;color:var(--muted)}
+.bh3{margin:14px 2px 8px;font-family:var(--disp);font-weight:700;font-size:15px}
+.bh3:first-child{margin-top:0}
+.nrows{background:var(--recess);border-radius:22px;overflow:hidden;margin-top:14px}
+.nrow{display:flex;align-items:center;gap:8px;min-height:var(--sz-row);padding:7px 16px;box-sizing:border-box}
+.nrow + .nrow{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.nrow .sp{flex:1}
+.nrow b{display:block;font-family:var(--disp);font-weight:600;font-size:15px}
+.nrow small{display:block;font-size:12px;color:var(--muted)}
+.nrow .v{font-family:var(--disp);font-weight:800;font-size:15px}
+#pwho .pact,#pcard .pact{margin-top:14px}
+#pwho .pnote,#pcard .pnote,#pset .pnote{margin:10px 2px 0}
+.bmsg{margin:10px 2px 0;font-size:15px;line-height:1.4}
+/* a player in a list of rows: their picture, small, before the name */
+.bpic.sm{flex:0 0 28px;width:28px;height:28px;margin-right:10px} /* size-exempt: a player's picture in a row */
+.bpic.sm svg{width:16px;height:16px}
+.door.rec .t small{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+#shpick small{white-space:nowrap}
+.foot a{color:var(--bone)}
+</style>
+</head>
+<body>
+<div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
+<main id="bd">
+  <h2 class="sr">Trade board</h2>
+  <p class="lede">Who has the cards you want, and who wants yours.</p>
+  <div class="bctl">
+    <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="bq" placeholder="Search cards or players" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search cards or players" data-k="type"><button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+    <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="browse" aria-pressed="false">Browse</button></div>
+  </div>
+  <p class="bnote" id="bme"></p>
+  <div id="blist"></div>
+  <p class="bnote" id="bsum">Loading the board.</p>
+
+  <footer class="foot">
+    <p id="stamp">&nbsp;</p>
+    <p>Players share their own cards here; RAVI only matches them. Card data and pictures by Riot Games. Market price is a public benchmark, not an offer from any store.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
+  </footer>
+</main>
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"board"},
+  {tag:"button", icon:"offers", a:[["class", "tab"], ["id", "taboff"], ["disabled", null], ["aria-label", "Offers come next"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["id", "tabset"], ["data-open", "pset"], ["aria-label", "Settings"], ["data-k", "slot"], ["data-fills", "pset"]]}
+]);</script>
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+<section class="panel frost" id="pwho" aria-hidden="true" aria-label="Player">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="pwhot">Player</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pwhob"></div>
+</section>
+<section class="panel frost" id="pcard" aria-hidden="true" aria-label="Card">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="pcardt">Card</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pcardb"></div>
+</section>
+<section class="panel frost" id="pset" aria-hidden="true" aria-label="Trade board settings">
+  <div class="phead"><div class="ht"><h4 class="ttl">Trade board settings</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <p class="lb">What you share</p>
+    <div class="pick" id="shpick" data-k="pick"></div>
+    <p class="pnote">Others see each card, its printing and how many, with your name, @username, home area and picture. Never what you paid, a card's condition or your Riot ID. A binder can also be marked For trade in its menu on Collection.</p>
+    <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
+  </div>
+</section>
+<script>
+(function(){
+  "use strict";
+  var A = window.RAVI_ACCT;
+  var $ = function(id){ return document.getElementById(id); };
+  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset");
+  function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
+
+  // MENUS: one on screen, a stack behind it (as the Tier list); a deeper menu slides in from the
+  // right with a back arrow and no X; the page locked at the root while any is open.
+  var OPENP = null, STACK = [], CHANGED = false;
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  function show(p, keep, dir){
+    if (OPENP && p && OPENP !== p && dir) { slideMenus(OPENP, p, dir); }
+    if (OPENP && OPENP !== p) { OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function(q){
+      var x = q.querySelector(".phead [data-close]"), bk = q.querySelector(".phead [data-back]");
+      if (bk) { bk.hidden = !(STACK.length > 1 && q === p); }
+      if (x && bk) { x.hidden = STACK.length > 1 && q === p; }
+    });
+    if (p) {
+      p.classList.add("show"); p.classList.remove("fromr", "froml");
+      p.setAttribute("aria-hidden", "false");
+      var b = p.querySelector(".pbody");
+      if (b && !keep) { b.scrollTop = 0; }
+    }
+    scrim.classList.toggle("show", !!p);
+    document.documentElement.classList.toggle("lock", !!p);
+  }
+  function openPanel(p){ STACK = p ? [p] : []; show(p); }
+  function deeper(p){ STACK.push(p); show(p, false, 1); }
+  function back(){ STACK.pop(); var top = STACK.length ? STACK[STACK.length - 1] : null; if (top && top.__redraw) { top.__redraw(); } show(top, true, -1); }
+  // closing settings after a change asks the board again, once sync has carried the change
+  function hide(){ var was = OPENP === pset && CHANGED; openPanel(null); if (was) { CHANGED = false; load(); } }
+  $("tabnav").addEventListener("click", function(){ if (OPENP === pnav) { hide(); } else { openPanel(pnav); } });
+  window.RAVI_GOTO($("pnavgoto"), "board", "../");
+  var here = $("pnhere");
+  if (here) { here.addEventListener("click", hide); }
+  scrim.addEventListener("click", hide);
+  Array.prototype.forEach.call(document.querySelectorAll(".panel [data-close]"), function(b){ b.addEventListener("click", hide); });
+  Array.prototype.forEach.call(document.querySelectorAll(".panel [data-back]"), function(b){ b.addEventListener("click", back); });
+  $("tabset").addEventListener("click", function(){ if (OPENP === pset) { hide(); } else { drawShare(); openPanel(pset); } });
+
+  // ---- THE CARDS RAVI KNOWS: names, pictures and market prices (data/prices.json, cards/art.json) ----
+  var BYID = Object.create(null), ART = null, FX = 1.4, CUR = "CAD", P = null;
+  try { var tr = JSON.parse(localStorage.getItem("vir.trade.v1")); if (tr && (tr.cur === "USD" || tr.cur === "CAD")) { CUR = tr.cur; } } catch (e) {}
+  var TCGIMG = "https://tcgplayer-cdn.tcgplayer.com/product/";
+  function sealed(c){ return c && c.k === 0; }
+  function picSrc(c, big){
+    var a = ART && ART[c.i];
+    if (a && a.h && !sealed(c)) { return "../cards/art/" + a.h + (big ? ".webp" : ".t.webp"); }
+    return TCGIMG + c.i + (big ? "_in_1000x1000.jpg" : "_200w.jpg");
+  }
+  // a battlefield's picture is landscape: once it loads, its slot turns it (Riot's pictures only)
+  window.__bRot = function(im){
+    if (!(im.naturalWidth > im.naturalHeight) || im.src.indexOf("/cards/art/") < 0) { return; }
+    if (im.parentNode) { im.parentNode.classList.add("rot"); }
+  };
+  function img(c, big){ return c ? '<img src="' + esc(picSrc(c, big)) + '" alt="" loading="lazy" decoding="async" onload="window.__bRot(this)" onerror="this.remove()">' : ''; }
+  function card(i){ return BYID[i] || null; }
+  function cname(i){ var c = card(i); return c ? c.n : "A card RAVI doesn't know yet"; }
+  function usd(i, f){ var c = card(i); var v = c && c.p && c.p[f]; return typeof v === "number" && isFinite(v) ? v : null; }
+  function money(u){ if (u == null) { return "No price"; } var v = CUR === "CAD" ? u * FX : u; return "$" + v.toFixed(2); }
+
+  // ---- WHAT THE SERVER SAYS, rebuilt from checked fields ----
+  var AREAS = { victoria: "Greater Victoria", island: "Up Island", away: "Somewhere else" };
+  function okH(v){ return typeof v === "string" && /^[0-9a-f]{24}$/.test(v); }
+  function okLine(x){
+    if (!x || typeof x !== "object") { return null; }
+    if (!(Number.isSafeInteger(x.i) && x.i > 0) || !(Number.isSafeInteger(x.q) && x.q >= 1 && x.q <= 9999)) { return null; }
+    if (typeof x.f !== "string" || !x.f || x.f.length > 60) { return null; }
+    return { i: x.i, f: x.f, q: x.q, alt: x.alt === 1 ? 1 : 0 };
+  }
+  function okLines(a){ var out = []; (Array.isArray(a) ? a : []).forEach(function(x){ var c = okLine(x); if (c) { out.push(c); } }); return out; }
+  function okFace(x){
+    if (!x || typeof x !== "object" || !okH(x.h)) { return null; }
+    var pic = null, p = x.pic;
+    if (p && p.k === "l" && typeof p.h === "string" && /^[0-9a-f]{40}$/.test(p.h)) {
+      pic = { k: "l", h: p.h };
+      ["x", "y", "z"].forEach(function(k){ if (typeof p[k] === "number" && isFinite(p[k])) { pic[k] = p[k]; } });
+    } else if (p && p.k === "p" && Number.isSafeInteger(p.v)) { pic = { k: "p", v: p.v }; }
+    return { h: x.h, name: typeof x.name === "string" ? x.name.slice(0, 32) : "", user: typeof x.user === "string" && /^[a-z0-9_]{3,20}$/.test(x.user) ? x.user : "",
+      area: AREAS[x.area] ? x.area : "", pic: pic };
+  }
+  function clean(j){
+    var out = { me: { area: "", have: 0, want: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [] };
+    if (!j || j.v !== 1) { return out; }
+    if (j.me && typeof j.me === "object") {
+      out.me.area = AREAS[j.me.area] ? j.me.area : "";
+      out.me.have = Number.isSafeInteger(j.me.have) ? j.me.have : 0;
+      out.me.want = Number.isSafeInteger(j.me.want) ? j.me.want : 0;
+    }
+    (Array.isArray(j.people) ? j.people : []).forEach(function(x){ var f = okFace(x); if (f) { out.people[f.h] = f; } });
+    (Array.isArray(j.traders) ? j.traders : []).forEach(function(x){
+      var f = okFace(x);
+      if (!f) { return; }
+      out.people[f.h] = out.people[f.h] || f;
+      f.has = okLines(x.has); f.wants = okLines(x.wants); f.two = x.two === 1 ? 1 : 0; f.near = x.near === 1 ? 1 : 0;
+      if (f.has.length || f.wants.length) { out.traders.push(f); }
+    });
+    (Array.isArray(j.browse) ? j.browse : []).forEach(function(x){ var c = okLine(x); if (c && x && okH(x.h) && out.people[x.h]) { c.h = x.h; out.browse.push(c); } });
+    return out;
+  }
+
+  // ---- A PLAYER: picture, name, where ----
+  var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0z" fill="currentColor"/></svg>';
+  function picStyle(f){
+    if (!f.pic) { return ""; }
+    if (f.pic.k === "l") {
+      var z = isFinite(f.pic.z) ? f.pic.z : 1.9, x = isFinite(f.pic.x) ? f.pic.x : 50, y = isFinite(f.pic.y) ? f.pic.y : 20;
+      return "background-image:url('../cards/art/" + f.pic.h + ".t.webp');background-size:" + Math.round(z * 1000) / 10 + "% auto;background-position:" + x + "% " + y + "%";
+    }
+    return "background-image:url('" + A.BASE + "/acct/bpic/" + f.h + "?v=" + f.pic.v + "');background-size:cover;background-position:50% 50%";
+  }
+  function pic(f, sm){ var st = picStyle(f); return '<span class="bpic' + (sm ? " sm" : "") + '"' + (st ? ' style="' + esc(st) + '"' : '') + '>' + (st ? '' : PERSON) + '</span>'; }
+  function nameOf(f){ return f.name || (f.user ? "@" + f.user : "A RAVI player"); }
+  function subOf(f){
+    var bits = [];
+    if (f.user && f.name) { bits.push("@" + f.user); }
+    if (f.area) { bits.push(AREAS[f.area]); }
+    return bits.join(" \u00b7 ");
+  }
+  var BOTH = '<span class="bboth">' + window.RAVI_ICON("board") + 'Both ways</span>';
+  var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
+
+  // ---- STATE ----
+  var DATA = clean(null), VIEW = "match", Q = "", LOADED = false, ERR = "";
+  try { var sv = sessionStorage.getItem("ravi.board.view"); if (sv === "browse") { VIEW = "browse"; } } catch (e) {}
+  function plural(n, one, many){ return n.toLocaleString("en-US") + " " + (n === 1 ? one : many); }
+  function hit(text){ return !Q || String(text).toLowerCase().indexOf(Q) >= 0; }
+  function traderHits(t){
+    if (!Q) { return true; }
+    if (hit(t.name) || hit(t.user)) { return true; }
+    return t.has.concat(t.wants).some(function(x){ return hit(cname(x.i)); });
+  }
+
+  // one card on a shelf: its picture, how many, Other printing when it is not the printing you named
+  function shelfCard(x, h, side){
+    var c = card(x.i), label = cname(x.i) + ", " + x.f + (x.q > 1 ? ", " + x.q + " copies" : "") + (x.alt ? ", another printing" : "");
+    return '<button type="button" class="bcard" data-c="' + x.i + "|" + esc(x.f) + '" data-who="' + esc(h) + '" data-side="' + side + '" aria-label="' + esc(label) + '" data-k="card">'
+      + '<span class="bimg' + (sealed(c) ? " sq" : "") + '">' + img(c) + (x.alt ? '<span class="balt">Other printing</span>' : '') + (x.q > 1 ? '<span class="bq">' + x.q + '</span>' : '') + '</span>'
+      + '<span>' + esc(cname(x.i)) + '</span></button>';
+  }
+  function byValue(a, b){ return (usd(b.i, b.f) || 0) - (usd(a.i, a.f) || 0) || a.alt - b.alt; }
+  function shelf(list, h, side, words){
+    if (!list.length) { return ""; }
+    list = list.slice().sort(byValue);
+    return '<div class="bsec"><p class="blab">' + words + '</p><div class="bstrip">' + list.map(function(x){ return shelfCard(x, h, side); }).join("") + '</div></div>';
+  }
+  function cardsN(list){ return list.reduce(function(n, x){ return n + x.q; }, 0); }
+
+  function drawMatches(){
+    var list = DATA.traders.filter(traderHits);
+    if (!DATA.me.have && !DATA.me.want) {
+      $("blist").innerHTML = '<div class="bempty glass"><p>Put cards on your Wishlist and mark a binder For trade, and the board finds the players who have what you want and want what you have.</p>'
+        + '<a class="pact btn glass" href="../collection/" data-k="do">Open Collection</a></div>';
+      return "";
+    }
+    if (!list.length) {
+      $("blist").innerHTML = '<div class="bempty glass"><p>' + (Q ? "No player or card matches your search." : "No matches yet. Browse shows every card players have for trade.") + '</p></div>';
+      return "";
+    }
+    $("blist").innerHTML = list.map(function(t){
+      return '<article class="bt glass">'
+        + '<button type="button" class="bwho" data-who="' + esc(t.h) + '" aria-label="' + esc(nameOf(t)) + ', see the trade" data-k="deeper">' + pic(t)
+        + '<span class="bnm"><b>' + esc(nameOf(t)) + '</b>' + (subOf(t) ? '<small>' + esc(subOf(t)) + '</small>' : '') + '</span>' + (t.two ? BOTH : '') + CVR + '</button>'
+        + shelf(t.has, t.h, "has", "Has " + plural(cardsN(t.has), "card", "cards") + " you want")
+        + shelf(t.wants, t.h, "wants", "Wants " + plural(cardsN(t.wants), "card", "cards") + " you have")
+        + '</article>';
+    }).join("");
+    fades();
+    return plural(list.length, "player matches", "players match") + " your lists" + (DATA.traders.some(function(t){ return t.two; }) ? ". Both ways means each of you has something the other wants." : ".");
+  }
+
+  // Browse: every card players share for trade, one tile per card and printing
+  function groups(){
+    var G = {}, order = [];
+    DATA.browse.forEach(function(r){
+      var k = r.i + "|" + r.f, g = G[k];
+      if (!g) { g = G[k] = { i: r.i, f: r.f, who: [], near: 0 }; order.push(g); }
+      g.who.push({ h: r.h, q: r.q });
+      var f = DATA.people[r.h];
+      if (DATA.me.area && f && f.area === DATA.me.area) { g.near++; }
+    });
+    order.sort(function(a, b){ return b.near - a.near || b.who.length - a.who.length || (cname(a.i) < cname(b.i) ? -1 : cname(a.i) > cname(b.i) ? 1 : 0); });
+    return order;
+  }
+  function tile(g){
+    var c = card(g.i), u = usd(g.i, g.f);
+    var who = g.near ? plural(g.near, "player", "players") + " near you" : plural(g.who.length, "player", "players");
+    return '<div class="ctile"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-c="' + g.i + "|" + esc(g.f) + '" aria-label="' + esc(cname(g.i) + ", " + g.f + ", " + who) + '" data-k="card">' + img(c) + '</button>'
+      + '<div class="tcap"><span class="tnm">' + esc(cname(g.i)) + '</span><div class="tpr"><b>' + money(u) + '</b><span>' + esc(g.f) + '</span></div><span class="ttot">' + esc(who) + '</span></div></div>';
+  }
+  function drawBrowse(){
+    var all = groups(), list = all.filter(function(g){ return hit(cname(g.i)) || g.who.some(function(w){ var f = DATA.people[w.h]; return f && (hit(f.name) || hit(f.user)); }); });
+    if (!all.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
+    if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No card or player matches your search.</p></div>'; return ""; }
+    $("blist").innerHTML = '<div class="cgrid">' + list.map(tile).join("") + '</div>';
+    return plural(list.length, "card", "cards") + " for trade" + (DATA.me.area ? ", players near you first." : ".");
+  }
+
+  function meLine(){
+    if (!LOADED) { return ""; }
+    var bits = [];
+    var shared = shareState();
+    if (DATA.me.want) { bits.push("Matching your Wishlist (" + plural(DATA.me.want, "card", "cards") + ")"); }
+    if (shared.binders) { bits.push((bits.length ? "and " : "Matching ") + plural(shared.binders, "For trade binder", "For trade binders")); }
+    var s = bits.length ? bits.join(" ") + "." : "";
+    if (!DATA.saved) { s += (s ? " " : "") + "Others can't see your cards until you save your account: tap your picture, top right."; }
+    else if (!DATA.me.area) { s += (s ? " " : "") + "Set your home area on your profile to see players near you first."; }
+    return s;
+  }
+  function draw(){
+    var segs = $("bview").querySelectorAll("button");
+    Array.prototype.forEach.call(segs, function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-v") === VIEW ? "true" : "false"); });
+    if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board."; $("bme").textContent = ""; return; }
+    $("bme").textContent = meLine();
+    $("bme").hidden = !$("bme").textContent;
+    $("bsum").textContent = VIEW === "browse" ? drawBrowse() : drawMatches();
+    $("bsum").hidden = !$("bsum").textContent;
+  }
+  // a shelf fades at an edge with more beyond it
+  function fade(s){
+    var max = s.scrollWidth - s.clientWidth;
+    s.classList.toggle("fl", s.scrollLeft > 2);
+    s.classList.toggle("fr", max > 2 && s.scrollLeft < max - 2);
+  }
+  function fades(){ Array.prototype.forEach.call(document.querySelectorAll(".bstrip"), function(s){ fade(s); s.addEventListener("scroll", function(){ fade(s); }, { passive: true }); }); }
+
+  // ---- THE PLAYER MENU: everything matched both ways, priced, and Price this trade ----
+  var WHO = null;
+  function grid(list, h, side){
+    return '<div class="cgrid g4">' + list.slice().sort(byValue).map(function(x){
+      var c = card(x.i);
+      return '<div class="ctile"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-c="' + x.i + "|" + esc(x.f) + '" data-who="' + esc(h) + '" data-side="' + side + '" aria-label="' + esc(cname(x.i) + ", " + x.f) + '" data-k="card">' + img(c) + '</button>'
+        + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(usd(x.i, x.f)) + '</b></div><span class="ttot">' + esc((x.q > 1 ? x.q + "x " : "") + (x.alt ? "Other printing" : x.f)) + '</span></div></div>';
+    }).join("") + '</div>';
+  }
+  function total(list){ var s = 0, any = false; list.forEach(function(x){ var u = usd(x.i, x.f); if (u != null) { s += u * x.q; any = true; } }); return any ? s : null; }
+  function tradeOf(h){ for (var i = 0; i < DATA.traders.length; i++) { if (DATA.traders[i].h === h) { return DATA.traders[i]; } } return null; }
+  function drawWho(){
+    var f = DATA.people[WHO];
+    if (!f) { return; }
+    var t = tradeOf(WHO) || { has: [], wants: [], two: 0 };
+    var rest = DATA.browse.filter(function(r){ return r.h === WHO && !t.has.some(function(x){ return x.i === r.i && x.f === r.f; }); });
+    $("pwhot").textContent = nameOf(f);
+    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + (t.two ? BOTH : '') + '</div></div>';
+    if (t.has.length) { h += '<p class="bh3">Has ' + plural(cardsN(t.has), "card", "cards") + ' you want</p>' + grid(t.has, WHO, "has"); }
+    if (t.wants.length) { h += '<p class="bh3">Wants ' + plural(cardsN(t.wants), "card", "cards") + ' you have</p>' + grid(t.wants, WHO, "wants"); }
+    if (t.has.length || t.wants.length) {
+      var th = total(t.has), yo = total(t.wants);
+      h += '<div class="nrows"><div class="nrow"><div><b>Theirs</b><small>' + plural(cardsN(t.has), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(th) + '</span></div>'
+        + '<div class="nrow"><div><b>Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div></div>';
+      h += '<button type="button" class="pact btn glass" id="bprice" data-k="do">Price this trade</button><p class="bmsg" id="bpricemsg" hidden></p>';
+    }
+    if (rest.length) { h += '<p class="bh3" style="margin-top:18px">Also for trade</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
+    h += '<p class="pnote">Offers, and picking the event where you meet to trade, come next. Prices are market price, a starting point to agree on.</p>';
+    $("pwhob").innerHTML = h;
+  }
+  pwho.__redraw = drawWho;
+  function openWho(h, deep){ WHO = h; drawWho(); if (deep) { deeper(pwho); } else { openPanel(pwho); } }
+
+  // Price this trade: their cards as Theirs, yours as Yours, on the Trade page. A trade in progress
+  // with cards in it asks a second tap first.
+  var ARMED = 0;
+  function priceIt(b){
+    var t = tradeOf(WHO), f = DATA.people[WHO];
+    if (!t || !f) { return; }
+    var cur = null;
+    try { cur = JSON.parse(localStorage.getItem("vir.trade.v1")); } catch (e) { cur = null; }
+    var busy = cur && ((Array.isArray(cur.s1) && cur.s1.length) || (Array.isArray(cur.s2) && cur.s2.length));
+    if (busy && !(ARMED && Date.now() - ARMED < 3000)) {
+      ARMED = Date.now(); b.classList.add("armed"); b.textContent = "Sure? Tap again";
+      $("bpricemsg").hidden = false; $("bpricemsg").textContent = "This replaces the trade in progress on the Trade page.";
+      setTimeout(function(){ if (Date.now() - ARMED >= 3000) { b.classList.remove("armed"); b.textContent = "Price this trade"; $("bpricemsg").hidden = true; } }, 3100);
+      return;
+    }
+    var o = cur && typeof cur === "object" ? cur : {};
+    function lines(list){ return list.map(function(x){ return { i: x.i, s: x.f, q: x.q }; }); }
+    o.s1 = lines(t.wants); o.s2 = lines(t.has); o.n1 = ""; o.n2 = nameOf(f).replace(/^@/, "").slice(0, 16); o.side = 2; o.p1 = 100; o.p2 = 100;
+    if (o.cur !== "USD" && o.cur !== "CAD") { o.cur = CUR; }
+    try { localStorage.setItem("vir.trade.v1", JSON.stringify(o)); } catch (e) {}
+    location.href = "../trade/";
+  }
+
+  // ---- THE CARD MENU: the card, and who has it for trade ----
+  var CARD = null;
+  function drawCard(){
+    var i = CARD.i, f = CARD.f, c = card(i), mine = MINE[i + "|" + f];
+    $("pcardt").textContent = cname(i);
+    var h = '<div class="btop"><span class="bcbig' + (sealed(c) ? " sq" : "") + '">' + img(c, true) + '</span><div class="bctx"><b>' + esc(cname(i)) + '</b><p>' + esc(f) + ', ' + money(usd(i, f)) + '</p>'
+      + (mine ? '<p class="m">' + esc(mine) + '</p>' : '') + '</div></div>';
+    var who = DATA.browse.filter(function(r){ return r.i === i && r.f === f; });
+    if (CARD.h && !who.some(function(r){ return r.h === CARD.h; })) { who.unshift({ h: CARD.h, q: CARD.q }); }
+    var wh = CARD.side === "wants" ? [] : who;
+    if (CARD.side === "wants") {
+      var tf = DATA.people[CARD.h];
+      if (tf) { h += '<p class="bh3">Wants it</p><div class="doors" data-k="deeper">' + whoRow(tf, CARD.q) + '</div>'; }
+    }
+    if (wh.length) { h += '<p class="bh3">For trade by</p><div class="doors" data-k="deeper">' + wh.map(function(r){ var p = DATA.people[r.h]; return p ? whoRow(p, r.q) : ""; }).join("") + '</div>'; }
+    $("pcardb").innerHTML = h;
+  }
+  pcard.__redraw = drawCard;
+  function whoRow(p, q){
+    return '<button type="button" class="door rec btn glass" data-who="' + esc(p.h) + '">' + pic(p, 1) + '<span class="t">' + esc(nameOf(p)) + '<small>' + esc((q > 1 ? q + " copies" : "1 copy") + (subOf(p) ? " \u00b7 " + subOf(p) : "")) + '</small></span><span class="sp"></span>' + CVR + '</button>';
+  }
+
+  // ---- WHAT YOU SHARE: your binders For trade and your Wishlist, from this phone's Collection ----
+  var MINE = {};
+  function coll(){ try { var s = JSON.parse(localStorage.getItem("vir.coll.v1")); return s && Array.isArray(s.ports) ? s : null; } catch (e) { return null; } }
+  function shareWish(){ try { var v = JSON.parse(localStorage.getItem("vir.board.v1")); return !!(v && v.wish === true); } catch (e) { return false; } }
+  function shareState(){
+    var s = coll(), n = 0;
+    (s ? s.ports : []).forEach(function(p){ if (p && p.trade === true) { n++; } });
+    return { binders: n, wish: shareWish() };
+  }
+  function mineIndex(){
+    MINE = {};
+    var s = coll();
+    if (!s) { return; }
+    (Array.isArray(s.wish) ? s.wish : []).forEach(function(h){ if (h && h.i) { MINE[h.i + "|" + h.f] = "On your Wishlist"; } });
+    s.ports.forEach(function(p){ (p && Array.isArray(p.items) ? p.items : []).forEach(function(h){ if (h && h.i && !MINE[h.i + "|" + h.f]) { MINE[h.i + "|" + h.f] = "In your binder " + (typeof p.name === "string" ? p.name : "") + (p.trade === true ? ", For trade" : ""); } }); });
+  }
+  function count(list){ return (Array.isArray(list) ? list : []).reduce(function(n, h){ return n + (h && h.q > 0 ? h.q : 0); }, 0); }
+  function drawShare(){
+    var s = coll(), rows = [];
+    (s ? s.ports : []).forEach(function(p){
+      if (!p || typeof p.id !== "string") { return; }
+      var on = p.trade === true;
+      rows.push('<button type="button" data-bind="' + esc(p.id) + '" aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + '><span class="t">' + esc(p.name || "Binder") + '</span><span class="sp"></span><small>' + plural(count(p.items), "card", "cards") + '</small></button>');
+    });
+    var w = shareWish(), wn = count(s && s.wish);
+    rows.push('<button type="button" data-wish="1" aria-pressed="' + w + '"' + (w ? ' class="on"' : '') + '><span class="t">Your Wishlist</span><span class="sp"></span><small>' + plural(wn, "card", "cards") + '</small></button>');
+    $("shpick").innerHTML = rows.join("");
+    var v = A && A.view && A.view();
+    $("shguest").hidden = LOADED ? DATA.saved : !(v && v.guest);
+  }
+  $("shpick").addEventListener("click", function(ev){
+    var b = ev.target.closest("button");
+    if (!b) { return; }
+    if (b.hasAttribute("data-wish")) {
+      var on = !shareWish();
+      try { localStorage.setItem("vir.board.v1", JSON.stringify({ wish: on })); } catch (e) {}
+    } else {
+      var s = coll(), id = b.getAttribute("data-bind");
+      if (!s) { return; }
+      s.ports.forEach(function(p){ if (p && p.id === id) { if (p.trade === true) { delete p.trade; } else { p.trade = true; } } });
+      try { localStorage.setItem("vir.coll.v1", JSON.stringify(s)); } catch (e) {}
+    }
+    drawShare();
+    $("bme").textContent = meLine();
+    CHANGED = true;
+  });
+
+  // ---- TAPS ----
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("#bview > button,.bwho,[data-c],.door[data-who],#bprice,#bqx");
+    if (!t) { return; }
+    if (t.id === "bqx") { $("bq").value = ""; Q = ""; t.disabled = true; draw(); return; }
+    if (t.parentNode && t.parentNode.id === "bview") {
+      VIEW = t.getAttribute("data-v") === "browse" ? "browse" : "match";
+      try { sessionStorage.setItem("ravi.board.view", VIEW); } catch (e) {}
+      draw(); return;
+    }
+    if (t.id === "bprice") { priceIt(t); return; }
+    if (t.classList.contains("bwho")) { openWho(t.getAttribute("data-who"), false); return; }
+    if (t.classList.contains("door")) { openWho(t.getAttribute("data-who"), !!OPENP); return; }
+    if (t.hasAttribute("data-c")) {
+      var k = t.getAttribute("data-c"), at = k.indexOf("|"), i = Number(k.slice(0, at)), f = k.slice(at + 1), h = t.getAttribute("data-who") || "";
+      var side = t.getAttribute("data-side") || "", q = 1;
+      var tt = h ? tradeOf(h) : null, list = tt ? (side === "wants" ? tt.wants : tt.has) : [];
+      list.forEach(function(x){ if (x.i === i && x.f === f) { q = x.q; } });
+      CARD = { i: i, f: f, h: h, side: side, q: q };
+      drawCard();
+      if (OPENP) { deeper(pcard); } else { openPanel(pcard); }
+    }
+  });
+  $("bq").addEventListener("input", function(){ Q = this.value.trim().toLowerCase(); $("bqx").disabled = !Q; draw(); });
+
+  // ---- LOAD: the cards, then the board (after sync has carried this phone's latest) ----
+  var LOADING = false;
+  function load(){
+    if (!A || LOADING) { return; }
+    if (!A.signedIn()) { ERR = "Setting up this phone's account."; LOADED = false; draw(); return; }
+    LOADING = true;
+    function ask(){
+      A.board(function(err, j){
+        LOADING = false;
+        if (err) { ERR = err; LOADED = false; draw(); return; }
+        DATA = clean(j); LOADED = true; ERR = ""; mineIndex(); draw();
+      });
+    }
+    if (window.RAVI_SYNC) { window.RAVI_SYNC.run(ask); } else { ask(); }
+  }
+  if (A) { A.onChange(function(){ if (!LOADED && A.signedIn()) { load(); } }); }
+  fetch("../cards/art.json").then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ if (j && j.art) { ART = j.art; if (LOADED) { draw(); } } }).catch(function(){});
+  fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
+    P = d; FX = (d.fx && d.fx.rate) || FX;
+    $("stamp").innerHTML = window.RAVI_STAMP(d) || "&nbsp;";
+    (Array.isArray(d.cards) ? d.cards : []).forEach(function(c){ if (c && Number.isSafeInteger(c.i)) { BYID[c.i] = c; } });
+    if (LOADED) { draw(); }
+  }).catch(function(){});
+  draw();
+  load();
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap resets the timer so a control tap never arms the guard for
+  // whatever is tapped next.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early, so pinch-to-zoom still
+  // works. Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = 0;
+      return;
+    }
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>
