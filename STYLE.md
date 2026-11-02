@@ -22,6 +22,7 @@ MARKS: [D] drawn-test.js checks it. [A] audit.js checks it. [C] a check could ca
 - A browser tab shows only the install screen (section 5), on every page. Nothing else changes for it.
 - Frosted surfaces declare a solid fallback inside @supports (backdrop-filter): blur on, the same colour at about .94 alpha off.
 - Text inputs are a real 16px. No scale or zoom tricks to make them look smaller.
+- A list that scrolls inside a plate or a menu clips 10px or more below the control above it. The gap is a margin outside the scroller, never padding inside it, so a card or row never touches the buttons as it scrolls under them (Decks' Edit search, Trade's results; a menu's .phead gives its 10). (Mako 2026-11-02)
 - Hold to highlight is off app-wide (app.css, html). It is on only for typed fields and .sel text: an address, a Riot ID, a deck's export text, a recovery code, rules text. No tap-to-zoom anywhere: every page carries the double-tap guard. rb-tools p2m3b sweeps every page for both. (Mako's phone yes 2026-11-02)
 - 12px is the type floor. An element that needs smaller is redesigned, not shrunk.
 - A new hue anywhere needs Mako's yes.
