@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117525460412948679@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261105T180000
-DTEND;TZID=America/Vancouver:20261105T210000
+DTSTART;TZID=America/Vancouver:20261105T190000
+DTEND;TZID=America/Vancouver:20261105T220000
 SUMMARY:North Park Picture Framing and Collectables Open Play
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Open Play\nNorth Park Picture Framing and Collectables\, Victor

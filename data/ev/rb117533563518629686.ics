@@ -6,13 +6,13 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117533563518629686@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20270124T123000
-DTEND;TZID=America/Vancouver:20270124T153000
+DTSTART;TZID=America/Vancouver:20270124T113000
+DTEND;TZID=America/Vancouver:20270124T143000
 SUMMARY:Legacy Pre rift
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
-DESCRIPTION:Pre-Rift\nEverything Games\, Victoria\n32 of 32 spots left\n$45
- .00 USD\nSign up: https://playriftbound.com/en-US/events/11753356351862968
- 6
+DESCRIPTION:Pre-Rift\nEverything Games\, Victoria\nStarts at the store's us
+ ual time\; PlayRiftbound shows 12:30 PM\n32 of 32 spots left\n$45.00 USD\n
+ Sign up: https://playriftbound.com/en-US/events/117533563518629686
 URL:https://playriftbound.com/en-US/events/117533563518629686
 CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
