@@ -152,7 +152,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .door.rec.bwr .sp{display:none}
 .door.rec.bwr .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .door.rec.bwr .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.door.rec.bwr .bunb{flex:none;width:auto;white-space:nowrap}
+.bunb{flex:none;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .door.rec .t small{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 #shpick small{white-space:nowrap}
 .foot a{color:var(--bone)}
@@ -250,12 +250,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="pick" id="shpick" data-k="pick"></div>
     <p class="pnote">Players see each card, its printing and how many, with your name, @username, home area and picture. No one sees what you paid or a card's condition, and your Riot ID only after you agree a trade. You can also mark a binder For trade in its menu on Collection.</p>
     <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
-    <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">How others see you</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">How others see you</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button><button type="button" class="door btn glass" id="bblk"><span class="t">Blocked players</span><span class="sp"></span><small id="bblkn"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <p class="lb" style="margin-top:14px">Open to</p>
     <div class="pick" id="opick" data-k="pick"><button type="button" data-o="trade">Trades<span class="sp"></span><small>Cards for cards</small></button><button type="button" data-o="sale">Sales<span class="sp"></span><small>Your cards for cash</small></button><button type="button" data-o="both">Both</button></div>
     <p class="lb" style="margin-top:14px">My price</p>
     <div class="nrows bpct"><div class="nrow"><div><b id="pctv">At market</b><small>Shown on your cards, and used to price a trade</small></div><span class="sp"></span><button type="button" class="circ btn glass" id="pctdn" aria-label="Lower my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><button type="button" class="circ btn glass" id="pctup" aria-label="Raise my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
-    <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bblk"><span class="t">Blocked players</span><span class="sp"></span><small id="bblkn"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
   </div>
 </section>
 <section class="panel frost" id="poff" aria-hidden="true" aria-label="Offers">
@@ -1300,7 +1299,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     else if (!BLK.length) { h = '<p class="bmsg">Nobody blocked. Block a player from their menu: Report or block.</p>'; }
     else {
       h = '<div class="doors" data-k="do">' + BLK.map(function(f){
-        return '<button type="button" class="door rec bwr btn glass" data-unb="' + esc(f.h) + '">' + pic(f, 1) + '<span class="t">' + esc(nameOf(f)) + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span><span class="sp"></span><small class="bunb">Unblock</small></button>';
+        return '<button type="button" class="door rec bwr btn glass" data-unb="' + esc(f.h) + '">' + pic(f, 1) + '<span class="t">' + esc(nameOf(f)) + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span><span class="sp"></span><span class="bunb">Unblock</span></button>';
       }).join("") + '</div><p class="bmsg" id="blkmsg" hidden></p>';
       h += '<p class="pnote">A blocked player doesn\'t see you on the board, and no offer goes either way. Unblock puts you both back.</p>';
     }
