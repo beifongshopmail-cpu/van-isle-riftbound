@@ -595,7 +595,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var out = {};
     if (!j || j.v !== 1 || j.id !== id || !Array.isArray(j.rows)) { return out; }
     j.rows.slice(0, 512).forEach(function(x){
-      if (x && whole(x.r, 1, 512)) { out[x.r] = { l: typeof x.l === "string" && KNOWN[x.l] ? x.l : null, c: x.c === true, v: whole(x.v, 0, 99) ? x.v : 0 }; }
+      if (x && whole(x.r, 1, 512)) { out[x.r] = { l: typeof x.l === "string" && KNOWN[x.l] ? x.l : null, c: x.c === true, v: whole(x.v, 0, 99) ? x.v : 0, o: x.o === true }; }
     });
     return out;
   }
@@ -663,7 +663,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
   function drawPick(){
     var c = CUR, f = c.fin[PICK.r], mine = (picks()[c.id] || { p: {} }).p[PICK.r] || null;
-    $("pnow").textContent = ordinal(PICK.r) + " of " + c.rows.length + ". " + (f && f.l ? "Now: " + f.l + " (" + plural(f.v, "pick", "picks") + ")." :
+    // the player's own pick decides their placing (plan 2 M3 block 3)
+    $("pnow").textContent = ordinal(PICK.r) + " of " + c.rows.length + ". " + (f && f.l && f.o ? "Now: " + f.l + " (the player's own pick)." : f && f.l ? "Now: " + f.l + " (" + plural(f.v, "pick", "picks") + ")." :
       f && f.c ? "Contested: two legends are level. Your pick can settle it." : "No legend yet.");
     $("pgrid").innerHTML = LEGS.map(function(l){
       var p = nameParts(l);
@@ -687,7 +688,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var c = CUR, r = PICK.r, me = mineFor(c.id);
     PICK.busy = true;
     $("pmsg").hidden = false; $("pmsg").textContent = "Saving.";
-    srv("/finishes/" + c.id, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ r: r, l: l, who: me.s }) }).then(function(x){
+    // signed in, the pick carries the account: the server checks whether it is the player's own placing
+    var hd = { "Content-Type": "application/json" };
+    try { var ac = window.RAVI_ACCT && RAVI_ACCT.saved(); if (ac && ac.t) { hd.Authorization = "Bearer " + ac.t; } } catch (e) {}
+    srv("/finishes/" + c.id, { method: "POST", headers: hd, body: JSON.stringify({ r: r, l: l, who: me.s }) }).then(function(x){
       PICK.busy = false;
       if (!x.ok) {
         var e = x.j && typeof x.j.error === "string" ? x.j.error : "";

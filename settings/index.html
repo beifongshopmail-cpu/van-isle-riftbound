@@ -78,6 +78,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   </section>
 
   <section class="sts glass">
+    <div class="shead"><h2>Local decks</h2></div>
+    <div class="pick" id="stlocal" data-k="pick"><button type="button" id="stauto" aria-pressed="true" class="on">Fill in my deck</button></div>
+    <p class="stn">After an event you played, the legend you set on the Game page goes on the Tier list's Local view for your placing, once Riot's final standings are up. It needs your Riot name.</p>
+  </section>
+
+  <section class="sts glass">
     <div class="shead"><h2>Motion</h2></div>
     <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button></div>
     <p class="stn">The RAVI name forming when the app opens.</p>
@@ -133,10 +139,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   //   vir.hub.open.v1   the page the app opens to (no key: the hub);
   //                     the hub's open-to check at its top reads it
   //   ravi.intro.off.v1 "1" turns the hub's launch intro off
+  //   vir.tier.auto.off.v1 "1" turns off filling in your Local deck (live.js autoFill)
   // Reset (the bar's third slot) asks for a second tap, then removes them all.
-  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1";
+  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1", AKEY = "vir.tier.auto.off.v1";
   var PAGES = window.RAVI_PAGES || [];
-  var opento = document.getElementById("opento"), intro = document.getElementById("stintro");
+  var opento = document.getElementById("opento"), intro = document.getElementById("stintro"), auto = document.getElementById("stauto");
   var hubg = document.getElementById("sthub"), hubn = document.getElementById("sthubn"), hubw = document.getElementById("sthubnote"), hubT = 0;
   var reset = document.getElementById("streset"), armline = document.getElementById("starm");
   function get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -162,6 +169,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var on = !get(IKEY);
     intro.classList.toggle("on", on);
     intro.setAttribute("aria-pressed", on ? "true" : "false");
+    var af = !get(AKEY);
+    auto.classList.toggle("on", af);
+    auto.setAttribute("aria-pressed", af ? "true" : "false");
   }
   opento.addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest("button") : null;
@@ -192,6 +202,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     put(IKEY, get(IKEY) ? null : "1");
     render();
   });
+  auto.addEventListener("click", function(){
+    put(AKEY, get(AKEY) ? null : "1");
+    render();
+  });
   var armed = false, armT = 0;
   function disarm(){ armed = false; clearTimeout(armT); reset.classList.remove("armed"); armline.classList.remove("show"); }
   reset.addEventListener("click", function(){
@@ -200,7 +214,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       armT = setTimeout(disarm, 3000);
       return;
     }
-    put(OKEY, null); put(IKEY, null); window.RAVI_HUB_SAVE(null);
+    put(OKEY, null); put(IKEY, null); put(AKEY, null); window.RAVI_HUB_SAVE(null);
     disarm();
     render();
   });

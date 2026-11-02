@@ -119,6 +119,18 @@ async function toFinishes(req, env, path, method) {
     const text = await req.text();
     if (text.length > 2048) return json(req, 413, { error: "too big" });
     init.body = text;
+    // a signed-in pick carries the Riot ID its account claimed (plan 2 M3
+    // block 3: the player's own pick decides their placing); only the worker
+    // sets this header, from the account's token, never from the phone
+    const auth = req.headers.get("Authorization");
+    if (auth && env.ACCOUNTS) {
+      try {
+        const st = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
+        const r = await st.fetch(new Request("https://accounts/me", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": auth.slice(0, 200), "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } }));
+        const j = r.ok ? await r.json().catch(function () { return null; }) : null;
+        if (j && j.riot && typeof j.riot.n === "string" && typeof j.riot.tag === "string" && j.riot.tag) init.headers["X-Ravi-Riot"] = (j.riot.n + "#" + j.riot.tag).slice(0, 80);
+      } catch (e) {}
+    }
   }
   const stub = env.FINISHES.get(env.FINISHES.idFromName("all"));
   const r = await stub.fetch(new Request("https://finishes" + path, init));
@@ -162,7 +174,7 @@ async function toAlerts(req, env, path) {
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
-    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: Object.assign({ "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": /^\/acct\//.test(url.pathname) ? "Content-Type, Authorization" : "Content-Type", "Access-Control-Max-Age": "86400" }, cors(req)) });
+    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: Object.assign({ "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": /^\/(acct|finishes)\//.test(url.pathname) ? "Content-Type, Authorization" : "Content-Type", "Access-Control-Max-Age": "86400" }, cors(req)) });
     const ROUTE = { "/alerts": "/add", "/alerts/off": "/off", "/alerts/test": "/test" };
     if (req.method === "POST" && ROUTE[url.pathname]) {
       if (!env || !env.ALERTS) return json(req, 503, { error: "alerts are not set up" });

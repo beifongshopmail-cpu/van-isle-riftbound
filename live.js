@@ -319,7 +319,111 @@
     return true;
   }
 
-  var api = { BASE: BASE, ME_KEY: ME_KEY, VISIT_KEY: VISIT_KEY, vanToday: vanToday, visitEvent: visitEvent, visit: visit, visitClear: visitClear, withVisit: withVisit, visitQuery: visitQuery, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, paired: paired, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo };
+  // ---- AUTO-FILL LOCAL DECKS (plan 2 M3 block 3, Mako's yes 2026-11-02) ----
+  // After an event you played finishes, the legend you set on the Game page
+  // (the near side, a match's 'me') goes on the Tier list's Local view as your
+  // pick for your placing in Riot's final standings, found by your Riot name.
+  // It runs a few seconds after a page that loads this file opens, at most
+  // AUTO_MAX events a run, each tried again AUTO_GAP later while Riot's final
+  // standings are not up, and never over a pick you made yourself.
+  // ON THIS PHONE: vir.tier.auto.off.v1 "1" turns it off (App settings);
+  // vir.tier.auto.v1 { event: { t: last try, s: 1 once settled } };
+  // vir.tier.picks.v1, the Tier list's own picks (a secret per event, the
+  // picks by placing), gains a: the placing auto-fill picked.
+  var AUTO_OFF = "vir.tier.auto.off.v1", AUTO_KEY = "vir.tier.auto.v1", PICKS_KEY = "vir.tier.picks.v1", HIST_KEY = "vir.counter.history.v1";
+  var AUTO_DAYS = 14, AUTO_MAX = 3, AUTO_GAP = 30 * 60000, DAYMS = 86400000;
+  function jget(st, k, d) { try { var v = JSON.parse(st.getItem(k) || "null"); return v && typeof v === "object" ? v : d; } catch (e) { return d; } }
+  function jput(st, k, v) { try { st.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  // the legend you played at each event, from the Game page's tagged matches:
+  // the one most of your games name, the latest match breaking a tie
+  function playedAt(hist, now) {
+    var by = {};
+    (Array.isArray(hist) ? hist : []).forEach(function (m) {
+      if (!m || !m.tag || !(now - (+m.at || 0) < AUTO_DAYS * DAYMS)) return;
+      var id = tid(m.tag.id), side = m.me === 2 ? 2 : 1;
+      if (!id || !Array.isArray(m.games)) return;
+      var e = by[id] || (by[id] = { n: {}, at: {} });
+      m.games.forEach(function (g) {
+        var l = g && g.p && g.p[side] && typeof g.p[side].legend === "string" ? g.p[side].legend.trim() : "";
+        if (l.length < 2) return;
+        e.n[l] = (e.n[l] || 0) + 1;
+        e.at[l] = Math.max(e.at[l] || 0, +m.at || 0);
+      });
+    });
+    var out = {};
+    Object.keys(by).forEach(function (id) {
+      var best = null;
+      Object.keys(by[id].n).forEach(function (l) {
+        if (!best || by[id].n[l] > by[id].n[best] || (by[id].n[l] === by[id].n[best] && by[id].at[l] > by[id].at[best])) best = l;
+      });
+      if (best) out[id] = best;
+    });
+    return out;
+  }
+  function finalStand(live) {
+    if (!valid(live) || live.status !== "done") return null;
+    var last = null;
+    live.rounds.forEach(function (r) { if (r && r.stage === 1 && Array.isArray(r.standings) && r.standings.length) last = r; });
+    return last ? last.standings : null;
+  }
+  function secret() {
+    var b = new Uint8Array(16), s = "";
+    try { root.crypto.getRandomValues(b); } catch (e) { for (var i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256); }
+    for (var j = 0; j < 16; j++) s += (b[j] < 16 ? "0" : "") + b[j].toString(16);
+    return s;
+  }
+  // opt: { store, now, done(list of { id, r, l, ok }) }
+  function autoFill(opt) {
+    opt = opt || {};
+    var st = opt.store || root.localStorage, now = opt.now || Date.now(), done = opt.done || function () {};
+    if (!st || typeof fetch !== "function") { done([]); return; }
+    try { if (st.getItem(AUTO_OFF)) { done([]); return; } } catch (e) { done([]); return; }
+    var mine = me(st);
+    if (!mine) { done([]); return; }
+    var hist = []; try { hist = JSON.parse(st.getItem(HIST_KEY) || "[]"); } catch (e) { hist = []; }
+    var played = playedAt(hist, now), tries = jget(st, AUTO_KEY, {});
+    Object.keys(tries).forEach(function (k) { if (!tries[k] || !(now - (+tries[k].t || 0) < (AUTO_DAYS + 1) * DAYMS)) delete tries[k]; });
+    var want = Object.keys(played).filter(function (id) { var x = tries[id]; return !(x && (x.s || now - (+x.t || 0) < AUTO_GAP)); }).slice(0, AUTO_MAX);
+    var out = [], left = want.length;
+    function finish() { if (--left === 0) { jput(st, AUTO_KEY, tries); done(out); } }
+    if (!left) { jput(st, AUTO_KEY, tries); done(out); return; }
+    want.forEach(function (id) {
+      tries[id] = { t: now };
+      get(id, function (live) {
+        var rows = finalStand(live);
+        if (!rows) { finish(); return; } // not finished, or unreadable: tried again later
+        var row = null;
+        rows.forEach(function (s) { if (!row && isMe(s, mine)) row = s; });
+        var picks = jget(st, PICKS_KEY, {}), p = picks[id];
+        if (!row || !(row.rank >= 1 && row.rank <= 512) || (p && p.p && p.p[row.rank])) { tries[id].s = 1; finish(); return; }
+        if (!p || typeof p.s !== "string" || !/^[0-9a-f]{32}$/.test(p.s)) p = { s: secret(), at: now, p: {} };
+        if (!p.p || typeof p.p !== "object") p.p = {};
+        var h = { "Content-Type": "application/json" };
+        try { var acct = root.RAVI_ACCT && root.RAVI_ACCT.saved(); if (acct && acct.t) h.Authorization = "Bearer " + acct.t; } catch (e) {}
+        fetch(BASE + "/finishes/" + id, { method: "POST", cache: "no-store", headers: h, body: JSON.stringify({ r: row.rank, l: played[id], who: p.s }) })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+          .then(function (x) {
+            if (x.ok) {
+              var all = jget(st, PICKS_KEY, {});
+              p.p[row.rank] = played[id]; p.a = row.rank; p.at = now;
+              all[id] = p; jput(st, PICKS_KEY, all);
+              tries[id].s = 1;
+              out.push({ id: id, r: row.rank, l: played[id], ok: true });
+            } else if (x.status === 409 || x.status === 400) {
+              tries[id].s = 1; // Riot's word: too old, not Constructed, no such placing
+            }
+            finish();
+          })
+          .catch(function () { finish(); });
+      });
+    });
+  }
+  // a page that loads this file fills in your Local deck a few seconds after it opens
+  if (root.document && root.addEventListener && !(typeof module === "object" && module.exports)) {
+    root.addEventListener("load", function () { setTimeout(function () { autoFill(); }, 2500); });
+  }
+
+  var api = { BASE: BASE, ME_KEY: ME_KEY, VISIT_KEY: VISIT_KEY, vanToday: vanToday, visitEvent: visitEvent, visit: visit, visitClear: visitClear, withVisit: withVisit, visitQuery: visitQuery, tid: tid, valid: valid, get: get, parseName: parseName, nameText: nameText, me: me, setMe: setMe, isMe: isMe, current: current, paired: paired, clock: clock, mmss: mmss, myTable: myTable, resultFor: resultFor, myRecord: myRecord, standings: standings, line: line, alertsSupported: alertsSupported, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop, alertTest: alertTest, isDemo: isDemo, demo: demo, autoFill: autoFill, playedAt: playedAt, AUTO_OFF: AUTO_OFF };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.RAVI_LIVE = api;
 })(typeof window !== "undefined" ? window : globalThis);
