@@ -436,6 +436,10 @@ Trade board (board/index.html; plan 2 M2, 2026-11-01)
 - The verdict in an offer is the Trade page's made small: Yours (left, the Trade page's blue) and Theirs (right, its pink) with their values and counts, the difference between, an arrow at the side worth more or Even.
 - Meet at (#pmeet): Not decided, then the stores with events in the next three weeks A to Z, each a two-line row (its count and next date) opening in place to its events, set in 16 more; every row a name with a line under it.
 - A player's card on the board presses as a whole (scale .98), as Decks' deck cards.
+- Report or block (plan 2 M2 block 3; Mako signed off on the phone 2026-11-01): a player's menu and an offer end with a Report or block row opening #prep: What's wrong? as five action rows (Their picture, Their name or username, Unwanted offers, A trade went wrong, Something else; dim for an unsaved account, a sent one shows Sent), then Block <name>, two-tap. No free text. Only RAVI sees reports; a block is silent and takes both players off each other's board.
+- Blocked players sits in Trade board settings with How others see you, its count as the row's value; #pblk lists each as a player row with Unblock in place of the chevron.
+- A player taken off the board reads why in the line under the plate (and where to ask: Feedback); a hidden picture is said there too.
+- Mako's Reports (account menu, beside Disputes, with a count): each reported player once, picture, name and @username, then a note (off the board, picture hidden, the reasons counted, who sent them), then their actions as two-tap rows: Remove picture, Clear name and username, Take off the board, Dismiss; Put back on the board once off.
 
 ## 11. Checks
 
