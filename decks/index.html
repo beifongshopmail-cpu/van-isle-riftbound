@@ -233,8 +233,8 @@ body{-webkit-font-smoothing:antialiased;
 /* BATTLEFIELDS IN GRID, the size of every other card (round 8, Mako 2026-10-22): the
    landscape picture turned a quarter on its side in a portrait slot, three across; a tap
    shows it upright and full size */
-.gpic.rot,.mpic.rot,.art.rot{position:relative;overflow:hidden}
-.gpic.rot img,.mpic.rot img,.art.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
+.gpic.rot,.mpic.rot,.art.rot,.cpic.rot{position:relative;overflow:hidden}
+.gpic.rot img,.mpic.rot img,.art.rot img,.cpic.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
 
 .gq{position:absolute;right:5px;bottom:5px;min-width:30px;height:24px;padding:0 7px;border-radius:12px;display:grid;place-items:center;pointer-events:none;
   background:var(--bone);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:700}
@@ -1451,8 +1451,8 @@ body{-webkit-font-smoothing:antialiased;
   // Edit's search has the browser's filters and sort (round 2, Mako 2026-10-19)
   var EF = { f: { dom: [], type: [], energy: [], set: [] }, sort: "name" };
   function eMatch(x){
-    var f = EF.f;
-    if(f.dom.length){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
+    var f = EF.f, sx = X.sectionOf(x);
+    if(f.dom.length && sx !== "legend" && sx !== "bf"){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
     if(f.type.length && f.type.indexOf(x.t) < 0) return false;
     if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
     if(f.set.length && f.set.indexOf(x.s) < 0) return false;
@@ -1462,6 +1462,10 @@ body{-webkit-font-smoothing:antialiased;
     var box = el("eres"), w = el("eresw"), q = EQ.trim().toLowerCase(), h = "";
     el("eqx").disabled = !EQ;
     if(!q){ box.innerHTML = ""; el("echips").innerHTML = ""; w.classList.remove("open"); w.style.height = "0px"; return; }
+    // the legend's domains and Colorless to start, as Add cards (Mako 2026-11-02); legends and
+    // battlefields are not held to it; set again when the deck or its legend changes
+    var dk = deck(), DL = C(dk.legend), ek = CURID + "|" + (dk.legend || "");
+    if(EF.deck !== ek){ EF.deck = ek; EF.f.dom = DL ? doms(DL).concat(["colorless"]) : []; }
     el("echips").innerHTML = chipsHTML(EF, "main");
     var keep = BR.sort; BR.sort = EF.sort;
     var hits = I.list.filter(function(x){
@@ -1474,9 +1478,9 @@ body{-webkit-font-smoothing:antialiased;
     BR.sort = keep;
     ELEN = hits.length;
     hits.slice(0, EN).forEach(function(x){
-      var c = X.codeOf(x.c), n = eCount(x), s = X.sectionOf(x), land = x.o === "landscape" || s === "bf";
+      var c = X.codeOf(x.c), n = eCount(x), s = X.sectionOf(x), land = x.o === "landscape" && s !== "bf"; // a battlefield stands upright, as in the Battlefields block (Mako 2026-11-02)
       var mark = n ? (s === "main" ? qty("main", c, n, true) : '<span class="gq">' + (s === "runes" ? "x" + n : "In deck") + '</span>') : "";
-      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", n && s === "main" ? "" : "low") + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
+      h += '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + (s === "bf" ? " rot" : "") + '" data-act="epick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", n && s === "main" ? "" : "low") + mark + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
     });
     paint(box, hits.length ? '<div class="bgrid">' + h + '</div>' : '<p class="bnone">No cards match. Try another word.</p>');
     w.classList.add("open");
