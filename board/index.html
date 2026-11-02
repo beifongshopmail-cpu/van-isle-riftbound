@@ -152,6 +152,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .door.rec.bwr .sp{display:none}
 .door.rec.bwr .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .door.rec.bwr .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.door.rec.bwr .bunb{flex:none;width:auto;white-space:nowrap}
 .door.rec .t small{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 #shpick small{white-space:nowrap}
 .foot a{color:var(--bone)}
@@ -254,6 +255,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="pick" id="opick" data-k="pick"><button type="button" data-o="trade">Trades<span class="sp"></span><small>Cards for cards</small></button><button type="button" data-o="sale">Sales<span class="sp"></span><small>Your cards for cash</small></button><button type="button" data-o="both">Both</button></div>
     <p class="lb" style="margin-top:14px">My price</p>
     <div class="nrows bpct"><div class="nrow"><div><b id="pctv">At market</b><small>Shown on your cards, and used to price a trade</small></div><span class="sp"></span><button type="button" class="circ btn glass" id="pctdn" aria-label="Lower my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><button type="button" class="circ btn glass" id="pctup" aria-label="Raise my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
+    <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bblk"><span class="t">Blocked players</span><span class="sp"></span><small id="bblkn"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
   </div>
 </section>
 <section class="panel frost" id="poff" aria-hidden="true" aria-label="Offers">
@@ -273,17 +275,25 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Meet at</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="pick" id="meetpick" data-k="pick"></div><p class="pnote">Stores with events on the calendar in the next three weeks. Open one and pick the event you plan to be at; the other player sees it.</p></div>
 </section>
+<section class="panel frost" id="prep" aria-hidden="true" aria-label="Report or block">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Report or block</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="prepb"></div>
+</section>
+<section class="panel frost" id="pblk" aria-hidden="true" aria-label="Blocked players">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Blocked players</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pblkb"></div>
+</section>
 <script>
 (function(){
   "use strict";
   var A = window.RAVI_ACCT;
   var $ = function(id){ return document.getElementById(id); };
-  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset"), psort = $("psort"), pself = $("pself"), poff = $("poff"), poffer = $("poffer"), pmake = $("pmake"), pmeet = $("pmeet");
+  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset"), psort = $("psort"), pself = $("pself"), poff = $("poff"), poffer = $("poffer"), pmake = $("pmake"), pmeet = $("pmeet"), prep = $("prep"), pblk = $("pblk");
   function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
 
   // MENUS: one on screen, a stack behind it (as the Tier list); a deeper menu slides in from the
   // right with a back arrow and no X; the page locked at the root while any is open.
-  var OPENP = null, STACK = [], CHANGED = false;
+  var OPENP = null, STACK = [], CHANGED = false, RELOAD = false;
   function slideMenus(from, to, dir){
     from.classList.remove("fromr", "froml", "tol", "tor");
     from.classList.add(dir > 0 ? "tol" : "tor");
@@ -314,7 +324,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function deeper(p){ STACK.push(p); show(p, false, 1); }
   function back(){ STACK.pop(); var top = STACK.length ? STACK[STACK.length - 1] : null; if (top && top.__redraw) { top.__redraw(); } show(top, true, -1); }
   // closing settings after a change asks the board again, once sync has carried the change
-  function hide(){ var was = OPENP === pset && CHANGED; openPanel(null); if (was) { CHANGED = false; load(); } }
+  function hide(){ var was = (OPENP === pset && CHANGED) || RELOAD; openPanel(null); if (was) { CHANGED = false; RELOAD = false; load(); } }
   $("tabnav").addEventListener("click", function(){ if (OPENP === pnav) { hide(); } else { openPanel(pnav); } });
   window.RAVI_GOTO($("pnavgoto"), "board", "../");
   var here = $("pnhere");
@@ -368,12 +378,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       area: AREAS[x.area] ? x.area : "", pic: pic };
   }
   function clean(j){
-    var out = { me: { area: "", have: 0, want: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [], wanted: {} };
+    var out = { me: { area: "", have: 0, want: 0, off: false, pich: false, blocked: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [], wanted: {} };
     if (!j || j.v !== 1) { return out; }
     if (j.me && typeof j.me === "object") {
       out.me.area = AREAS[j.me.area] ? j.me.area : "";
       out.me.have = Number.isSafeInteger(j.me.have) ? j.me.have : 0;
       out.me.want = Number.isSafeInteger(j.me.want) ? j.me.want : 0;
+      out.me.off = j.me.off === true; out.me.pich = j.me.pich === true;
+      out.me.blocked = Number.isSafeInteger(j.me.blocked) && j.me.blocked > 0 ? j.me.blocked : 0;
     }
     function more(f, x){ f.open = OPENW[x.open] ? x.open : "trade"; f.pct = Number.isSafeInteger(x.pct) && x.pct >= 50 && x.pct <= 150 ? x.pct : 100; return f; }
     (Array.isArray(j.people) ? j.people : []).forEach(function(x){ var f = okFace(x); if (f) { out.people[f.h] = more(f, x); } });
@@ -552,6 +564,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
   function meLine(){
     if (!LOADED) { return ""; }
+    if (DATA.me.off) { return "Your account is off the Trade board: others don't see what you share, and you can't send offers. Ask about it in Feedback."; }
     var bits = [];
     var shared = shareState();
     if (DATA.me.want) { bits.push("Matched against your Wishlist (" + plural(DATA.me.want, "card", "cards") + ")"); }
@@ -559,6 +572,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var s = bits.length ? bits.join(" ") + "." : "";
     if (!DATA.saved) { s += (s ? " " : "") + "Others can't see your cards until you save your account: tap your picture, top right."; }
     else if (!DATA.me.area) { s += (s ? " " : "") + "Set your home area on your profile to see players near you first."; }
+    if (DATA.me.pich) { s = "Your picture is hidden from other players for now, after reports." + (s ? " " + s : ""); }
     return s;
   }
   var HEADN = "";
@@ -621,6 +635,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
     h += '<p class="pnote">Prices are each player\'s own percent of market, a starting point to agree on.</p>';
+    h += repDoor("brep");
     $("pwhob").innerHTML = h;
   }
   pwho.__redraw = drawWho;
@@ -948,6 +963,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     h += '<p class="bmsg" id="omsg" hidden></p>';
     if (o.st === "accepted") { h += '<p class="pnote">Trade done moves the cards in your Collection: what you give leaves your For trade binders, what you get lands in No binder and comes off your Wishlist.</p>'; }
+    h += repDoor("orep");
     $("pofferb").innerHTML = h;
   }
   poffer.__redraw = drawOffer;
@@ -959,10 +975,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     });
   }
   poffer.addEventListener("click", function(ev){
-    var b = ev.target.closest("[data-oa],#omeet");
+    var b = ev.target.closest("[data-oa],#omeet,#orep");
     if (!b) { return; }
     var o = offerById(OFFID);
     if (!o) { return; }
+    if (b.id === "orep") { openRep(o.who); return; }
     if (b.id === "omeet") { MOPEN = o.meet.me && EV[o.meet.me] ? (EV[o.meet.me].where || "Other events") : ""; drawMeet(); deeper(pmeet); return; }
     var a = b.getAttribute("data-oa");
     if (a === "accept") { act("answer", { id: o.id, act: "accept" }); return; }
@@ -1229,6 +1246,88 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   });
   $("bq").addEventListener("input", function(){ Q = this.value.trim().toLowerCase(); $("bqx").disabled = !Q; draw(); });
 
+  // ---- REPORT OR BLOCK (plan 2 M2 block 3): a player's menu and an offer end with it ----
+  // No free text, as offers. Only RAVI sees a report; a block is silent both ways.
+  var REASONS = [["pic", "Their picture"], ["name", "Their name or username"], ["offers", "Unwanted offers"], ["trade", "A trade went wrong"], ["other", "Something else"]];
+  var REPF = null, REPSENT = "", RARM = { k: "", t: 0 };
+  function repDoor(id){ return '<div class="doors" data-k="deeper" style="margin-top:18px"><button type="button" class="door btn glass" id="' + id + '"><span class="t">Report or block</span><span class="sp"></span>' + CVR + '</button></div>'; }
+  function openRep(f){ if (!f || !okH(f.h)) { return; } REPF = f; REPSENT = ""; RARM.k = ""; drawRep(); deeper(prep); }
+  function rpmsg(t){ var m = $("rpmsg"); if (m) { m.hidden = !t; m.textContent = t || ""; } }
+  function drawRep(){
+    var f = REPF;
+    if (!f) { return; }
+    var saved = selfSaved();
+    var h = '<p class="bh3">What\'s wrong?</p><div class="doors" data-k="do">' + REASONS.map(function(r){
+      return '<button type="button" class="door act btn glass" data-rp="' + r[0] + '"' + (saved ? '' : ' disabled') + '><span class="t">' + esc(r[1]) + '</span><span class="sp"></span>' + (REPSENT === r[0] ? '<small>Sent</small>' : '') + '</button>';
+    }).join("") + '</div>';
+    if (!saved) { h += '<p class="pnote">Save your account to report: tap your picture, top right.</p>'; }
+    h += '<p class="bmsg" id="rpmsg" hidden></p>';
+    h += '<p class="bh3" style="margin-top:18px">Block</p><div class="doors" data-k="do"><button type="button" class="door act btn glass" id="rpblock"><span class="t">Block ' + esc(nameOf(f)) + '</span></button></div>';
+    h += '<p class="pnote">Only RAVI sees reports. Nobody else is told, and a report never counts against anyone on the board. Blocking takes you both off each other\'s board and ends any offer between you; they aren\'t told. Unblock in Trade board settings.</p>';
+    $("prepb").innerHTML = h;
+  }
+  prep.__redraw = drawRep;
+  prep.addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-rp],#rpblock");
+    if (!b || b.disabled || !REPF || !A) { return; }
+    if (b.id === "rpblock") {
+      if (!(RARM.k === "block" && Date.now() - RARM.t < 3000)) {
+        RARM.k = "block"; RARM.t = Date.now();
+        b.classList.add("armed"); b.querySelector(".t").textContent = "Sure? Tap again";
+        rpmsg("You leave each other's board; offers between you end.");
+        setTimeout(function(){ if (RARM.k === "block" && Date.now() - RARM.t >= 3000) { RARM.k = ""; if (OPENP === prep) { drawRep(); } } }, 3100);
+        return;
+      }
+      RARM.k = "";
+      A.block(REPF.h, false, function(err){
+        if (err) { drawRep(); rpmsg(err); return; }
+        RELOAD = false; hide(); load();
+      });
+      return;
+    }
+    var why = b.getAttribute("data-rp");
+    A.report(REPF.h, why, function(err){
+      if (err) { rpmsg(err); return; }
+      REPSENT = why; drawRep(); rpmsg("Sent. Thank you: only RAVI sees it.");
+    });
+  });
+  // Blocked players, in Trade board settings
+  var BLK = [], BLKERR = "", BLKLOADED = false;
+  function blkCount(){ var n = LOADED ? DATA.me.blocked : 0, e = $("bblkn"); if (e) { e.textContent = n ? String(n) : ""; } }
+  function drawBlk(){
+    var h = "";
+    if (!BLKLOADED) { h = '<p class="bmsg">' + esc(BLKERR || "Loading.") + '</p>'; }
+    else if (!BLK.length) { h = '<p class="bmsg">Nobody blocked. Block a player from their menu: Report or block.</p>'; }
+    else {
+      h = '<div class="doors" data-k="do">' + BLK.map(function(f){
+        return '<button type="button" class="door rec bwr btn glass" data-unb="' + esc(f.h) + '">' + pic(f, 1) + '<span class="t">' + esc(nameOf(f)) + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span><span class="sp"></span><small class="bunb">Unblock</small></button>';
+      }).join("") + '</div><p class="bmsg" id="blkmsg" hidden></p>';
+      h += '<p class="pnote">A blocked player doesn\'t see you on the board, and no offer goes either way. Unblock puts you both back.</p>';
+    }
+    $("pblkb").innerHTML = h;
+  }
+  pblk.__redraw = drawBlk;
+  function loadBlk(){
+    BLKLOADED = false; BLKERR = ""; drawBlk();
+    A.blocks(function(err, j){
+      BLKERR = err || ""; BLK = [];
+      if (!err) { BLKLOADED = true; (j && j.v === 1 && Array.isArray(j.blocks) ? j.blocks : []).forEach(function(x){ var f = okFace(x); if (f) { BLK.push(f); } }); }
+      if (OPENP === pblk) { drawBlk(); }
+    });
+  }
+  $("bblk").addEventListener("click", function(){ if (!A) { return; } loadBlk(); deeper(pblk); });
+  pblk.addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-unb]");
+    if (!b || !A) { return; }
+    A.block(b.getAttribute("data-unb"), true, function(err){
+      if (err) { var m = $("blkmsg"); if (m) { m.hidden = false; m.textContent = err; } return; }
+      RELOAD = true;
+      if (LOADED && DATA.me.blocked) { DATA.me.blocked--; blkCount(); }
+      loadBlk();
+    });
+  });
+  pwho.addEventListener("click", function(ev){ if (ev.target.closest("#brep")) { var f = face(WHO); if (f) { openRep(f); } } });
+
   // ---- LOAD: the cards, then the board (after sync has carried this phone's latest) ----
   var LOADING = false;
   function load(){
@@ -1239,7 +1338,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       A.board(function(err, j){
         LOADING = false;
         if (err) { ERR = err; LOADED = false; draw(); return; }
-        DATA = clean(j); LOADED = true; ERR = ""; mineIndex(); demandAll(); draw();
+        DATA = clean(j); LOADED = true; ERR = ""; mineIndex(); demandAll(); draw(); blkCount();
         loadOffers(function(){ if (OPENP === poff) { drawOffers(); } else if (OPENP === pwho) { drawWho(); } });
       });
     }

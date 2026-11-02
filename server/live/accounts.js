@@ -53,6 +53,7 @@
 
 import { BOARD_KEYS, rowsFrom, boardFor, handleOf } from "./board.js";
 import { OFFER, settingsFrom, cleanLines, holds, cleanCash, shapeOf, fits, settle, live, newOffer, cleanEvent, viewOf } from "./offers.js";
+import { REPORT, BLOCK, cleanWhy, closeFor, queueOf } from "./reports.js";
 
 export const RP_ID = "ravi.tools";
 export const ORIGINS = ["https://ravi.tools"];
@@ -66,7 +67,7 @@ export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page:
 // per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
 // sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
 // can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60 }; // offersend: per account (Trade board offers, plan 2 M2 block 2) // per connection per day (guest: a store's wifi)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3) // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -372,6 +373,12 @@ function sqlStore(sql) {
   sql.exec("CREATE INDEX IF NOT EXISTS offer_a ON offer (a)");
   sql.exec("CREATE INDEX IF NOT EXISTS offer_b ON offer (b)");
   sql.exec("CREATE TABLE IF NOT EXISTS bset (acct TEXT PRIMARY KEY, open TEXT, pct INTEGER)");
+  // report and block (reports.js, block 3): one report per reporter per player; who blocked whom; Mako's calls on a player
+  sql.exec("CREATE TABLE IF NOT EXISTS rep (by TEXT, who TEXT, why TEXT, at INTEGER, PRIMARY KEY (by, who))");
+  sql.exec("CREATE INDEX IF NOT EXISTS rep_who ON rep (who)");
+  sql.exec("CREATE TABLE IF NOT EXISTS blk (by TEXT, who TEXT, at INTEGER, PRIMARY KEY (by, who))");
+  sql.exec("CREATE INDEX IF NOT EXISTS blk_who ON blk (who)");
+  sql.exec("CREATE TABLE IF NOT EXISTS modr (acct TEXT PRIMARY KEY, off INTEGER, pich INTEGER, at INTEGER)");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code, guest FROM acct WHERE id = ?", id),
@@ -407,6 +414,19 @@ function sqlStore(sql) {
     offersOf: (acct) => sql.exec("SELECT * FROM offer WHERE a = ? OR b = ? ORDER BY upd DESC LIMIT 400", acct, acct).toArray(),
     putOffer: (o) => sql.exec("INSERT OR REPLACE INTO offer (id, a, b, st, d, made, upd, exp, re, ma, mb, da, dbb) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", o.id, o.a, o.b, o.st, o.d, o.made, o.upd, o.exp, o.re, o.ma, o.mb, o.da, o.dbb),
     pruneOffers: (cut) => sql.exec("DELETE FROM offer WHERE st NOT IN ('open', 'accepted') AND upd < ?", cut),
+    reps: () => sql.exec("SELECT by, who, why, at FROM rep ORDER BY at").toArray(),
+    repsOf: (who) => sql.exec("SELECT by, who, why, at FROM rep WHERE who = ?", who).toArray(),
+    repsBy: (by) => sql.exec("SELECT by, who, why, at FROM rep WHERE by = ? ORDER BY at", by).toArray(),
+    putRep: (x) => sql.exec("INSERT OR REPLACE INTO rep VALUES (?, ?, ?, ?)", x.by, x.who, x.why, x.at),
+    delReps: (who, why) => why ? sql.exec("DELETE FROM rep WHERE who = ? AND why = ?", who, why) : sql.exec("DELETE FROM rep WHERE who = ?", who),
+    pruneReps: (cut) => sql.exec("DELETE FROM rep WHERE at < ?", cut),
+    blocks: (by) => sql.exec("SELECT by, who, at FROM blk WHERE by = ? ORDER BY at DESC", by).toArray(),
+    blockers: (who) => sql.exec("SELECT by FROM blk WHERE who = ?", who).toArray().map((x) => x.by),
+    putBlk: (x) => sql.exec("INSERT OR REPLACE INTO blk VALUES (?, ?, ?)", x.by, x.who, x.at),
+    delBlk: (by, who) => sql.exec("DELETE FROM blk WHERE by = ? AND who = ?", by, who),
+    mod: (acct) => one("SELECT off, pich, at FROM modr WHERE acct = ?", acct),
+    putMod: (acct, x) => (x.off || x.pich) ? sql.exec("INSERT OR REPLACE INTO modr VALUES (?, ?, ?, ?)", acct, x.off ? 1 : 0, x.pich ? 1 : 0, x.at || 0) : sql.exec("DELETE FROM modr WHERE acct = ?", acct),
+    offAccts: () => sql.exec("SELECT acct, at FROM modr WHERE off = 1 ORDER BY at DESC").toArray(),
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
@@ -430,6 +450,9 @@ function sqlStore(sql) {
       sql.exec("DELETE FROM bh WHERE acct = ?", id);
       sql.exec("DELETE FROM offer WHERE a = ? OR b = ?", id, id);
       sql.exec("DELETE FROM bset WHERE acct = ?", id);
+      sql.exec("DELETE FROM rep WHERE by = ? OR who = ?", id, id);
+      sql.exec("DELETE FROM blk WHERE by = ? OR who = ?", id, id);
+      sql.exec("DELETE FROM modr WHERE acct = ?", id);
       sql.exec("DELETE FROM riot WHERE acct = ?", id);
       sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM prof WHERE acct = ?", id);
@@ -449,7 +472,8 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map() };
+  const rk = (by, who) => by + "\n" + who;
   const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
   return {
@@ -490,6 +514,19 @@ export function memStore() {
     offersOf: (acct) => Array.from(T.offer.values()).filter((o) => o.a === acct || o.b === acct).sort((x, y) => y.upd - x.upd).slice(0, 400).map(copy),
     putOffer: (o) => T.offer.set(o.id, copy(o)),
     pruneOffers: (cut) => T.offer.forEach((o, k) => { if (o.st !== "open" && o.st !== "accepted" && o.upd < cut) T.offer.delete(k); }),
+    reps: () => Array.from(T.rep.values()).sort((a, b) => a.at - b.at).map(copy),
+    repsOf: (who) => Array.from(T.rep.values()).filter((x) => x.who === who).map(copy),
+    repsBy: (by) => Array.from(T.rep.values()).filter((x) => x.by === by).sort((a, b) => a.at - b.at).map(copy),
+    putRep: (x) => T.rep.set(rk(x.by, x.who), copy(x)),
+    delReps: (who, why) => T.rep.forEach((x, k) => { if (x.who === who && (!why || x.why === why)) T.rep.delete(k); }),
+    pruneReps: (cut) => T.rep.forEach((x, k) => { if (x.at < cut) T.rep.delete(k); }),
+    blocks: (by) => Array.from(T.blk.values()).filter((x) => x.by === by).sort((a, b) => b.at - a.at).map(copy),
+    blockers: (who) => Array.from(T.blk.values()).filter((x) => x.who === who).map((x) => x.by),
+    putBlk: (x) => T.blk.set(rk(x.by, x.who), copy(x)),
+    delBlk: (by, who) => T.blk.delete(rk(by, who)),
+    mod: (acct) => copy(T.modr.get(acct)),
+    putMod: (acct, x) => (x.off || x.pich) ? T.modr.set(acct, { off: x.off ? 1 : 0, pich: x.pich ? 1 : 0, at: x.at || 0 }) : T.modr.delete(acct),
+    offAccts: () => Array.from(T.modr.entries()).filter(([, x]) => x.off).sort((a, b) => b[1].at - a[1].at).map(([acct, x]) => ({ acct: acct, at: x.at })),
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
@@ -520,6 +557,7 @@ export function memStore() {
       T.item.forEach((x, key) => { if (x.acct === id) T.item.delete(key); });
       T.board.delete(id); T.bh.forEach((a, h) => { if (a === id) T.bh.delete(h); });
       T.offer.forEach((o, k) => { if (o.a === id || o.b === id) T.offer.delete(k); }); T.bset.delete(id);
+      ["rep", "blk"].forEach((t) => T[t].forEach((x, k) => { if (x.by === id || x.who === id) T[t].delete(k); })); T.modr.delete(id);
       T.prof.delete(id); T.photo.delete(id);
       T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
       T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
@@ -588,7 +626,7 @@ export function makeAccounts() {
         name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", area: p && p.area || "", pic: pic,
         riot: r ? { n: r.n, tag: r.tag } : null, asked: mine };
       if (a.guest) out.guest = true;
-      if (this.isAdmin(a.id)) { out.admin = true; out.disputes = this.db.disps().length; }
+      if (this.isAdmin(a.id)) { out.admin = true; out.disputes = this.db.disps().length; out.reports = queueOf(this.db.reps()).length; }
       return out;
     }
     isAdmin(id) { return String(this.env.ADMIN || "").split(/[\s,]+/).indexOf(id) >= 0; }
@@ -604,7 +642,7 @@ export function makeAccounts() {
     // guest's fill its gaps; then the guest is removed (Mako 2026-10-31)
     merge(gid, tid) {
       const G = this.db.prof(gid), gr = this.db.riotOf(gid), gph = this.db.photo(gid);
-      const gd = this.db.disps().filter((d) => d.acct === gid);
+      const gd = this.db.disps().filter((d) => d.acct === gid), gb = this.db.blocks(gid);
       this.db.delAcct(gid); // frees the guest's username and Riot ID first
       const T = this.profOf(tid);
       if (G) {
@@ -624,6 +662,7 @@ export function makeAccounts() {
         if (this.db.disps().some((x) => x.acct === tid && x.k === d.k)) return;
         this.db.putDisp({ id: d.id, k: d.k, acct: tid, n: d.n, tag: d.tag, at: d.at });
       });
+      gb.forEach((x) => { if (x.who !== tid && this.db.acct(x.who)) this.db.putBlk({ by: tid, who: x.who, at: x.at }); }); // the guest's blocks hold in the account it moved into
     }
     // signing in from a guest moves the guest in; from anything else, nothing moves
     into(me, a) { if (me && me.acct.guest && me.acct.id !== a.id) this.merge(me.acct.id, a.id); }
@@ -632,17 +671,33 @@ export function makeAccounts() {
       const a = this.db.acct(acctId);
       if (!a) return;
       const items = this.db.boardItems(acctId);
-      this.db.putBoard(acctId, rowsFrom(items, !a.guest));
+      this.db.putBoard(acctId, rowsFrom(items, !a.guest && !this.isOff(acctId))); // taken off the board (reports.js): nothing shown
       const sx = items.filter((x) => x.k === "vir.board.v1" && x.id === "all")[0];
       this.db.putBset(acctId, settingsFrom(sx ? sx.d : "{}"));
       this.db.putHandle(await handleOf(acctId), acctId);
+    }
+    // REPORT AND BLOCK (reports.js)
+    isOff(acctId) { const m = this.db.mod(acctId); return !!(m && m.off); }
+    picHidden(acctId) { const m = this.db.mod(acctId); return !!(m && m.pich); }
+    // everyone this account never sees on the board, nor they it: whom it blocked and who blocked it
+    apart(acctId) { return new Set(this.db.blocks(acctId).map((x) => x.who).concat(this.db.blockers(acctId))); }
+    blocked(x, y) { return this.apart(x).has(y); }
+    // every live offer of one account ends, as if it walked away (with: only those with this player)
+    closeOffers(acctId, with_) {
+      const now = this.now();
+      this.db.offersOf(acctId).map((o) => settle(o, now)).forEach((o) => {
+        if (with_ && o.a !== with_ && o.b !== with_) return;
+        const x = closeFor(o, acctId, now);
+        if (x) this.db.putOffer(x);
+      });
     }
     // what others see of a trader: name, @username, home area, picture (never the account id or Riot ID)
     face(acctId) {
       const p = this.db.prof(acctId);
       let crop = null;
       try { crop = p && p.pcrop ? cleanCrop(JSON.parse(p.pcrop)) : null; } catch (e) { crop = null; }
-      const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
+      let pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
+      if (this.picHidden(acctId)) pic = null; // reported by REPORT.hide players: hidden until Mako decides
       const bs = this.db.bset(acctId) || settingsFrom("{}");
       return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic, open: bs.open, pct: bs.pct };
     }
@@ -673,7 +728,8 @@ export function makeAccounts() {
         to = typeof body.to === "string" && /^[0-9a-f]{24}$/.test(body.to) ? this.db.byHandle(body.to) : null;
       }
       const ta = to ? this.db.acct(to) : null;
-      if (!ta || ta.guest || to === mine) return [404, { error: "that player is not on the board" }];
+      if (!ta || ta.guest || to === mine || this.isOff(to) || this.blocked(mine, to)) return [404, { error: "that player is not on the board" }];
+      if (this.isOff(mine)) return [409, { error: "your account is off the Trade board, so it can't send offers; ask in Feedback" }];
       const ga = cleanLines(body.give), gb = cleanLines(body.get), cash = cleanCash(body.cash);
       if (!ga || !gb || cash === undefined) return [400, { error: "bad offer" }];
       if (!ga.length && !gb.length) return [400, { error: "an offer needs at least one card" }];
@@ -704,6 +760,7 @@ export function makeAccounts() {
         if (act === "accept" || act === "decline") {
           if (isA || o.st !== "open") return [409, gone];
           if (act === "accept") {
+            if (this.isOff(o.a) || this.isOff(o.b) || this.blocked(o.a, o.b)) return [409, gone];
             const d = JSON.parse(o.d);
             if (!holds(this.db.boardRows(o.a), d.ga, false) || !holds(this.db.boardRows(o.b), d.gb, false)) return [409, { error: "some of these cards are no longer for trade; counter with what is left" }];
           }
@@ -736,6 +793,84 @@ export function makeAccounts() {
       }
       return [404, { error: "not found" }];
     }
+    // a report from me about another player: one per player, reporting again changes the reason
+    async reportSend(me, body) {
+      if (me.acct.guest) return [409, { error: "save your account first: only saved accounts can report" }];
+      const why = cleanWhy(body.why);
+      if (!why) return [400, { error: "bad request" }];
+      const who = typeof body.h === "string" && /^[0-9a-f]{24}$/.test(body.h) ? this.db.byHandle(body.h) : null;
+      if (!who || who === me.acct.id || !this.db.acct(who)) return [404, { error: "that player is not on the board" }];
+      if (!(await this.spend("report", "acct:" + me.acct.id))) return [429, { error: "that is plenty of reports for today; try again tomorrow" }];
+      const now = this.now();
+      this.db.putRep({ by: me.acct.id, who: who, why: why, at: now });
+      if (why === "pic" && this.db.repsOf(who).filter((r) => r.why === "pic").length >= REPORT.hide) {
+        const m = this.db.mod(who) || { off: 0, at: now };
+        this.db.putMod(who, { off: m.off, pich: 1, at: m.at });
+      }
+      return [200, { ok: true }];
+    }
+    // block another player, or unblock them ({ h, off: true })
+    async blockSet(me, body) {
+      const mine = me.acct.id;
+      const who = typeof body.h === "string" && /^[0-9a-f]{24}$/.test(body.h) ? this.db.byHandle(body.h) : null;
+      if (body.off === true) { if (who) this.db.delBlk(mine, who); return [200, { ok: true }]; }
+      if (!who || who === mine || !this.db.acct(who)) return [404, { error: "that player is not on the board" }];
+      const mineB = this.db.blocks(mine);
+      if (mineB.some((x) => x.who === who)) return [200, { ok: true }];
+      if (mineB.length >= BLOCK.max) return [409, { error: "you have blocked " + BLOCK.max + " players; unblock some first" }];
+      if (!(await this.spend("block", "acct:" + mine))) return [429, { error: "too many blocks today; try again tomorrow" }];
+      this.db.putBlk({ by: mine, who: who, at: this.now() });
+      this.closeOffers(mine, who);
+      return [200, { ok: true }];
+    }
+    async blocksOf(acctId) {
+      const out = [];
+      for (const x of this.db.blocks(acctId)) {
+        const f = this.face(x.who);
+        out.push({ h: await handleOf(x.who), name: f.name, user: f.user, area: f.area, pic: f.pic, at: dayOf(x.at), atT: x.at });
+      }
+      return { v: 1, blocks: out };
+    }
+    // MAKO'S QUEUE: each reported player once, then those taken off the board with nothing waiting
+    async adminReports() {
+      const q = queueOf(this.db.reps()), done = new Set(q.map((x) => x.who)), rows = [];
+      const one = async (who, x) => {
+        const p = this.db.prof(who);
+        let crop = null;
+        try { crop = p && p.pcrop ? cleanCrop(JSON.parse(p.pcrop)) : null; } catch (e) { crop = null; }
+        const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
+        const m = this.db.mod(who) || {};
+        rows.push({ h: await handleOf(who), id: who, name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic,
+          why: x ? x.why : {}, from: x ? x.from.map((b) => this.who2(b)) : [], at: x ? dayOf(x.at) : dayOf(m.at || 0), atT: x ? x.at : (m.at || 0),
+          off: !!m.off, pich: !!m.pich });
+      };
+      for (const x of q) { if (this.db.acct(x.who)) await one(x.who, x); }
+      for (const o of this.db.offAccts()) { if (!done.has(o.acct) && this.db.acct(o.acct)) await one(o.acct, null); }
+      return { v: 1, players: rows };
+    }
+    // Mako's call on a player: pic (remove picture), name (clear name and username), off (take off the board), on (put back), dismiss
+    async adminAct(body) {
+      const who = typeof body.h === "string" && /^[0-9a-f]{24}$/.test(body.h) ? this.db.byHandle(body.h) : null;
+      if (!who || !this.db.acct(who)) return [404, { error: "that player is gone" }];
+      const now = this.now(), m = this.db.mod(who) || { off: 0, pich: 0, at: 0 }, act = body.act;
+      if (act === "pic") {
+        const x = this.profOf(who); x.pk = null; x.ph = null; x.pcrop = null; this.db.putProf(x); this.db.delPhoto(who);
+        m.pich = 0; this.db.delReps(who, "pic");
+      } else if (act === "name") {
+        const x = this.profOf(who); x.name = ""; x.user = null; this.db.putProf(x);
+        this.db.delReps(who, "name");
+      } else if (act === "off") {
+        m.off = 1; m.at = now; this.db.putMod(who, m);
+        this.closeOffers(who); this.db.delReps(who);
+      } else if (act === "on") {
+        m.off = 0; m.at = now;
+      } else if (act === "dismiss") {
+        m.pich = 0; this.db.delReps(who);
+      } else return [400, { error: "bad request" }];
+      this.db.putMod(who, m);
+      if (act === "off" || act === "on") await this.rebuild(who);
+      return [200, { ok: true, left: queueOf(this.db.reps()).length }];
+    }
     // everything the server keeps for an account, for Download your data
     exportOf(a) {
       const p = this.db.prof(a.id), r = this.db.riotOf(a.id), ph = p && p.pk === "p" ? this.db.photo(a.id) : null;
@@ -755,6 +890,10 @@ export function makeAccounts() {
         offers: this.db.offersOf(a.id).map((o) => { const d = JSON.parse(o.d), mine = o.a === a.id; return { sent: mine, status: o.st, made: dayOf(o.made), changed: dayOf(o.upd),
           youGive: mine ? d.ga : d.gb, youGet: mine ? d.gb : d.ga, cash: d.c ? { dollars: Math.abs(d.c), currency: d.cur, paidBy: (d.c > 0) === mine ? "you" : "them" } : null, youMeetAt: (mine ? o.ma : o.mb) || null }; }),
         tradeBoardSettings: this.db.bset(a.id) || null,
+        blocked: this.db.blocks(a.id).map((x) => ({ player: this.who2(x.who), since: dayOf(x.at) })),
+        reportsYouSent: this.db.repsBy(a.id).map((x) => ({ player: this.who2(x.who), reason: x.why, on: dayOf(x.at) })),
+        reportsAboutYou: this.db.repsOf(a.id).map((x) => ({ reason: x.why, on: dayOf(x.at) })), // who sent them stays with RAVI
+        offTradeBoard: this.isOff(a.id), pictureHidden: this.picHidden(a.id),
         synced: this.db.allItems(a.id).reduce((o, x) => { let d; try { d = JSON.parse(x.d); } catch (e) { d = x.d; } (o[x.k] = o[x.k] || {})[x.id] = d; return o; }, {}) };
     }
     // the next running number for an item's change
@@ -795,8 +934,13 @@ export function makeAccounts() {
         this.db.oldGuests(now - GUEST_DAYS * DAY, 1000).forEach((id) => this.db.delAcct(id));
         this.db.purgeGone(now - SYNC.keepGone * DAY); // deletes old enough to have reached every phone
         this.db.pruneOffers(now - OFFER.keepDays * DAY); // finished offers are kept OFFER.keepDays, then gone
+        this.db.pruneReps(now - REPORT.keepDays * DAY); // reports Mako has not decided are gone after REPORT.keepDays
       }
       const me = await this.who(req);
+      if (req.method === "GET" && u.pathname === "/admin/reports") {
+        if (!me || !this.isAdmin(me.acct.id)) return reply({ error: "not allowed" }, 403);
+        return reply(await this.adminReports());
+      }
       if (req.method === "GET" && u.pathname === "/admin/disputes") {
         if (!me || !this.isAdmin(me.acct.id)) return reply({ error: "not allowed" }, 403);
         return reply({ v: 1, disputes: this.db.disps().map((d) => {
@@ -816,20 +960,23 @@ export function makeAccounts() {
         const bm = /^\/bpic\/([0-9a-f]{24})$/.exec(u.pathname);
         if (bm) {
           // a trader's photo on the Trade board, by their board handle; only while they share something
-          const id = this.db.byHandle(bm[1]), p = id ? this.db.prof(id) : null, img = p && p.pk === "p" && this.db.boardRows(id).some((r) => r.pub === 1) ? this.db.photo(id) : null;
+          const id = this.db.byHandle(bm[1]), p = id ? this.db.prof(id) : null, img = p && p.pk === "p" && !this.picHidden(id) && this.db.boardRows(id).some((r) => r.pub === 1) ? this.db.photo(id) : null;
           if (!img) return reply({ error: "no picture" }, 404);
           return new Response(img, { headers: { "Content-Type": "image/jpeg" } });
         }
         if (u.pathname === "/board") {
           if (!me) return reply({ error: "signed out" }, 401);
           if (!(await this.spend("board", ip))) return reply({ error: "the board has been opened too often from this connection today; try again tomorrow" }, 429);
-          return reply(Object.assign(await boardFor(this.db, me.acct.id, (id) => this.face(id)), { saved: !me.acct.guest }));
+          const bd = await boardFor(this.db, me.acct.id, (id) => this.face(id), this.apart(me.acct.id));
+          Object.assign(bd.me, { off: this.isOff(me.acct.id), pich: this.picHidden(me.acct.id), blocked: this.db.blocks(me.acct.id).length });
+          return reply(Object.assign(bd, { saved: !me.acct.guest }));
         }
         if (u.pathname === "/offers") {
           if (!me) return reply({ error: "signed out" }, 401);
           if (!(await this.spend("offers", ip))) return reply({ error: "offers have been opened too often from this connection today; try again tomorrow" }, 429);
           return reply(await this.offersFor(me.acct.id));
         }
+        if (u.pathname === "/blocks") return me ? reply(await this.blocksOf(me.acct.id)) : reply({ error: "signed out" }, 401);
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
         if (u.pathname === "/devices") {
           if (!me) return reply({ error: "signed out" }, 401);
@@ -1032,6 +1179,16 @@ export function makeAccounts() {
       if (p === "/offer/send" || p === "/offer/answer" || p === "/offer/meet" || p === "/offer/done") {
         if (!(await this.spend("offer", ip))) return reply({ error: "too many changes to offers today; try again tomorrow" }, 429);
         const r = p === "/offer/send" ? await this.offerSend(me, body) : this.offerAct(me, p, body);
+        return reply(r[1], r[0]);
+      }
+      if (p === "/report" || p === "/block") {
+        if (!(await this.spend("offer", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+        const r = p === "/report" ? await this.reportSend(me, body) : await this.blockSet(me, body);
+        return reply(r[1], r[0]);
+      }
+      if (p === "/admin/act") {
+        if (!this.isAdmin(me.acct.id)) return reply({ error: "not allowed" }, 403);
+        const r = await this.adminAct(body);
         return reply(r[1], r[0]);
       }
       if (p === "/key/name" || p === "/key/off") {

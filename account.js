@@ -239,6 +239,12 @@
   function offers(cb) { call("GET", "/offers", null, cb); }
   function offerSend(body, cb) { call("POST", "/offer/send", body, cb); }
   function offerAct(what, body, cb) { if (["answer", "meet", "done"].indexOf(what) < 0) return cb("bad request"); call("POST", "/offer/" + what, body, cb); }
+  // report and block (plan 2 M2 block 3); Mako's Reports queue
+  function report(h, why, cb) { call("POST", "/report", { h: h, why: why }, cb); }
+  function block(h, off, cb) { call("POST", "/block", off ? { h: h, off: true } : { h: h }, cb); }
+  function blocks(cb) { call("GET", "/blocks", null, cb); }
+  function adminReports(cb) { call("GET", "/admin/reports", null, cb); }
+  function adminAct(h, act, cb) { call("POST", "/admin/act", { h: h, act: act }, cb); }
   function signOut(cb) {
     // forgotten on the phone whatever the server says; the phone then gets a new guest
     call("POST", "/out", {}, function () { forget(); changed(); makeGuest(function () { if (cb) cb(null); }, true); });
@@ -253,7 +259,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
-    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, syncCall: syncCall,
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -354,6 +360,7 @@
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Trade board shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
+      acrepm: headTitle("Reports") + '<div class="pbody"><div id="acreplist"></div><p class="acmsg" id="acrepmsg" aria-live="polite"></p></div>',
       acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, Follow and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
         '<p class="pnote" id="acnum"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
@@ -363,7 +370,7 @@
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", acarea: "Home area", acdispm: "Disputes" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -408,7 +415,8 @@
         '<button type="button" class="door" data-acgo="acdev"><span class="t">Signed-in devices</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="accode"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button>' +
-        (a && a.admin ? '<button type="button" class="door" data-acgo="acdispm"><span class="t">Disputes</span><span class="sp"></span>' + (a.disputes ? '<small>' + a.disputes + '</small>' : '') + CV + '</button>' : '') + '</div>' +
+        (a && a.admin ? '<button type="button" class="door" data-acgo="acdispm"><span class="t">Disputes</span><span class="sp"></span>' + (a.disputes ? '<small>' + a.disputes + '</small>' : '') + CV + '</button>' : '') +
+        (a && a.admin ? '<button type="button" class="door" data-acgo="acrepm"><span class="t">Reports</span><span class="sp"></span>' + (a.reports ? '<small>' + a.reports + '</small>' : '') + CV + '</button>' : '') + '</div>' +
         '<div class="doors" data-k="do"><button type="button" class="door act" id="acout"><span class="t">Sign out</span></button></div>' +
         '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
     }
@@ -511,6 +519,7 @@
     }
     else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
     else if (id === "acdispm") { renderDisputes(); }
+    else if (id === "acrepm") { renderReports(); }
     else if (id === "acpicm") { work = null; renderPics(); say("acpicmsg", ""); }
     else if (id === "ackeys") { renderKeys(); say("ackeymsg", ""); }
     else if (id === "ackey") { keyInfo(); }
@@ -748,6 +757,55 @@
               A.me(function () { renderDisputes(); say("acdispmsg", i === 0 ? "Given." : "Kept."); });
             });
           });
+        });
+        list.appendChild(head); list.appendChild(note); list.appendChild(rows);
+      });
+    });
+  }
+
+  // ---- Reports (Mako's account only; plan 2 M2 block 3): each reported player once, and his calls ----
+  var WHY = { pic: "Their picture", name: "Their name or username", offers: "Unwanted offers", trade: "A trade went wrong", other: "Something else" };
+  var RACT = { pic: ["Remove picture", "Removes their picture; they can pick another."], name: ["Clear name and username", "Empties their name and @username."],
+    off: ["Take off the board", "Hides what they share, ends their offers and stops new ones."], on: ["Put back on the board", "Shows what they share again."],
+    dismiss: ["Dismiss", "Closes these reports; nothing changes."] };
+  function renderReports() {
+    var list = $("acreplist");
+    list.innerHTML = '<p class="pnote">Loading...</p>';
+    say("acrepmsg", "");
+    A.adminReports(function (err, j) {
+      if (err) { list.innerHTML = ""; return say("acrepmsg", err); }
+      list.innerHTML = "";
+      var ps = (j && Array.isArray(j.players) ? j.players : []).filter(function (x) { return x && /^[0-9a-f]{24}$/.test(x.h); });
+      if (!ps.length) { var e = el("p", "pnote"); e.textContent = "No reports. Players report each other from the Trade board: Report or block."; list.appendChild(e); }
+      ps.forEach(function (x) {
+        function who(y) { return y && y.user ? "@" + y.user : (y && y.name ? y.name : "an account with no username"); }
+        var head = el("div", "acrp"), av = el("span", "acav"), n = el("div", "acn");
+        paint(av, { id: x.id, pic: x.pic });
+        n.innerHTML = "<b></b><span></span>";
+        n.querySelector("b").textContent = x.name || (x.user ? "@" + x.user : "No name");
+        n.querySelector("span").textContent = x.name && x.user ? "@" + x.user : "No username";
+        head.appendChild(av); head.appendChild(n);
+        var why = Object.keys(WHY).filter(function (k) { return x.why && x.why[k] > 0; }).map(function (k) { return WHY[k] + ": " + x.why[k]; });
+        var bits = [];
+        if (x.off) bits.push("Off the board since " + day(x.at, x.atT) + ".");
+        if (x.pich) bits.push("Their picture is hidden from others until you decide.");
+        if (why.length) bits.push(why.join(" \u00b7 ") + ".");
+        if (x.from && x.from.length) bits.push("From " + x.from.map(who).join(", ") + ", the latest " + day(x.at, x.atT) + ".");
+        var note = el("p", "pnote"); note.textContent = bits.join(" ");
+        var acts = x.off ? ["on"].concat(why.length ? ["dismiss"] : []) : [].concat(x.pic ? ["pic"] : [], x.name || x.user ? ["name"] : [], ["off", "dismiss"]);
+        var rows = el("div", "doors acgap");
+        rows.setAttribute("data-k", "do");
+        acts.forEach(function (k) {
+          var b = el("button", "door act", '<span class="t"></span>');
+          b.type = "button"; b.setAttribute("data-ra", k);
+          b.querySelector(".t").textContent = RACT[k][0];
+          armed(b, "acrepmsg", RACT[k][1], function () {
+            A.adminAct(x.h, k, function (err2) {
+              if (err2) return say("acrepmsg", err2);
+              A.me(function () { renderReports(); say("acrepmsg", "Done."); });
+            });
+          });
+          rows.appendChild(b);
         });
         list.appendChild(head); list.appendChild(note); list.appendChild(rows);
       });

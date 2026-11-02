@@ -79,7 +79,9 @@ export async function handleOf(acctId) {
 
 // What one viewer sees. db: the accounts store; me: the viewer's account id.
 // pub(acct): the public face of a trader { name, user, area, pic } (accounts.js builds it).
-export async function boardFor(db, me, face) {
+// skip: accounts this viewer never sees, both ways (a block, reports.js).
+export async function boardFor(db, me, face, skip) {
+  const out = (r) => !(skip && skip.has(r.acct));
   const mine = db.boardRows(me);
   const myHave = {}, myWant = {};
   mine.forEach((r) => { (r.s === "h" ? myHave : myWant)[r.i + "|" + r.f] = r.q; });
@@ -88,11 +90,11 @@ export async function boardFor(db, me, face) {
   const T = new Map(); // acct -> { has: [], wants: [] }
   function t(acct) { let x = T.get(acct); if (!x) { x = { has: [], wants: [] }; T.set(acct, x); } return x; }
   // they have what you want: exact printing, or the same card in another printing
-  db.boardMatch("h", "w", me).forEach((r) => { t(r.acct).has.push({ i: r.i, f: r.f, q: r.q, alt: myWant[r.i + "|" + r.f] ? 0 : 1 }); });
+  db.boardMatch("h", "w", me).filter(out).forEach((r) => { t(r.acct).has.push({ i: r.i, f: r.f, q: r.q, alt: myWant[r.i + "|" + r.f] ? 0 : 1 }); });
   // they want what you have
-  db.boardMatch("w", "h", me).forEach((r) => { t(r.acct).wants.push({ i: r.i, f: r.f, q: r.q, alt: myHave[r.i + "|" + r.f] ? 0 : 1 }); });
+  db.boardMatch("w", "h", me).filter(out).forEach((r) => { t(r.acct).wants.push({ i: r.i, f: r.f, q: r.q, alt: myHave[r.i + "|" + r.f] ? 0 : 1 }); });
   // Browse: everything others share for trade, a capped page
-  const browse = db.boardShared(me, BOARD.browse);
+  const browse = db.boardShared(me, BOARD.browse).filter(out);
   browse.forEach((r) => { if (!T.has(r.acct)) T.set(r.acct, { has: [], wants: [], browseOnly: true }); });
 
   const myArea = face(me).area || "";

@@ -544,6 +544,10 @@ html.gate body > :not(#ravigate){display:none!important}
 .acbig svg{width:44px;height:44px} /* size-exempt: the person drawn inside the 88 profile picture, a picture not a control */
 .panel.acct .doors+.doors,.panel.acct .pnote+.doors{margin-top:14px}
 .panel.acct .acgap{margin-top:12px}
+.acrp{display:flex;align-items:center;gap:12px;margin:18px 2px 0}
+.acrp:first-child{margin-top:4px}
+.acrp .acav{width:48px;height:48px;flex:none}
+.acrp .acav svg{width:24px;height:24px} /* size-exempt: the person drawn inside a 48 picture, a picture not a control */
 .panel.acct .lb{margin:14px 2px 6px}
 .panel.acct .pnote{margin-top:10px}
 .acat{flex:0 0 auto;color:var(--muted);font-family:var(--text);font-size:16px;margin-right:2px}
