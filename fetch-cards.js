@@ -559,6 +559,51 @@ function buildPicks(list) {
   return out.length;
 }
 
+// MENDING RIOT'S RADIANCE DATA (2026-11-02, Mako's shot: Bushwhack Trap, a Chaos gear, shown in a
+// Fury and Order deck). Riot sends some Radiance cards with another card's domain and type: 23 have
+// a type their own description contradicts ('Riftbound Gear: Bushwhack Trap', sent as a unit), 30
+// sit outside their set's domain block. Each set from Spiritforged numbers its single-domain cards
+// in blocks of BLOCKS[set], in the order of DOMAIN_ORDER (checked 2026-11-02: Spiritforged,
+// Unleashed and Vendetta have no exception at all), so the block is the card's domain. mend():
+//  1. the type the card's own description names wins over Riot's type field;
+//  2. a base printing inside the blocks takes its block's domain;
+//  3. the set's other printings of that card (alternate art, showcase) take the base's domain.
+// Every change is logged. A set not in BLOCKS is left as Riot sends it. Energy and power cannot
+// be checked this way and stay as Riot sends them.
+var BLOCKS = { SFD: 30, UNL: 30, VEN: 23, RAD: 23 };
+var DOMAIN_ORDER = ['fury', 'calm', 'mind', 'body', 'chaos', 'order'];
+var DESC_TYPES = ['unit', 'spell', 'gear', 'legend', 'battlefield', 'rune'];
+function mend(list) {
+  var log = [], i, o, m, k;
+  for (i = 0; i < list.length; i++) {
+    o = list[i];
+    m = /^Riftbound (\w+):/.exec(String(o.x || ''));
+    var dt = m ? m[1].toLowerCase() : '';
+    if (DESC_TYPES.indexOf(dt) > -1 && o.t !== dt && o.t !== 'token') { log.push(o.c + ' type ' + (o.t || 'none') + ' -> ' + dt); o.t = dt; }
+  }
+  var base = {};
+  for (i = 0; i < list.length; i++) {
+    o = list[i];
+    m = /^([A-Z]+)-(\d{3})\/\d+$/.exec(o.c);
+    if (!m || !BLOCKS[m[1]] || ['legend', 'rune', 'battlefield', 'token', ''].indexOf(o.t) > -1) { continue; }
+    var n = Number(m[2]), b = BLOCKS[m[1]];
+    if (n < 1 || n > 6 * b) { continue; }
+    var want = DOMAIN_ORDER[Math.floor((n - 1) / b)];
+    if (!(o.d && o.d.length === 1 && o.d[0] === want)) { log.push(o.c + ' domain ' + ((o.d || []).join('+') || 'none') + ' -> ' + want); o.d = [want]; }
+    base[m[1] + '|' + o.n + '|' + (o.b || '')] = o;
+  }
+  for (i = 0; i < list.length; i++) {
+    o = list[i];
+    m = /^([A-Z]+)-/.exec(o.c);
+    k = m ? m[1] + '|' + o.n + '|' + (o.b || '') : '';
+    var src = base[k];
+    if (!src || src === o || o.t === 'legend') { continue; }
+    if ((o.d || []).join('+') !== src.d.join('+')) { log.push(o.c + ' domain ' + ((o.d || []).join('+') || 'none') + ' -> ' + src.d.join('+') + ' (as ' + src.c + ')'); o.d = src.d.slice(); }
+    if (o.t !== src.t && o.t !== 'token') { log.push(o.c + ' type ' + (o.t || 'none') + ' -> ' + src.t + ' (as ' + src.c + ')'); o.t = src.t; }
+  }
+  return log;
+}
+
 function main() {
   var buildId = '';
   var list = [];
@@ -589,6 +634,8 @@ function main() {
       list.push(o);
     }
     console.log('shaped cards: ' + list.length);
+    var mended = mend(list);
+    console.log('mended Riot\'s card data: ' + mended.length + (mended.length ? ': ' + mended.join('; ') : ''));
     var probeText = probe(items, list);
     console.log(probeText);
     if (process.env.CARDS_PROBE) { fs.writeFileSync(process.env.CARDS_PROBE, probeText, 'utf8'); }
@@ -878,7 +925,7 @@ function main() {
   });
 }
 
-module.exports = { buildPicks: buildPicks, shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport, lookups: lookups, fetchRunes: fetchRunes };
+module.exports = { mend: mend, BLOCKS: BLOCKS, buildPicks: buildPicks, shape: shape, probe: probe, numOf: numOf, kindsOf: kindsOf, fieldReport: fieldReport, lookups: lookups, fetchRunes: fetchRunes };
 
 // Run directly (node fetch-cards.js) it fetches; required by a test it only
 // hands over its functions.
