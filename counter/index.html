@@ -437,10 +437,10 @@
 <!-- THE BANNER SITS OUTSIDE THE STAGE: the stage is fixed, so it is its own
      layer, and a banner inside it could not rise above the strip. -->
 <div class="win frost" id="win" data-next="0">
-    <b id="wintext">Player 1 wins</b>
+    <b id="wintext">You win</b>
     <div class="nextbox">
       <span class="nlab">Next game, who goes first</span>
-      <div class="winrow" id="nextrow"><button type="button" class="sidebtn btn glass" data-open="1" data-k="do">Player 1 first</button><button type="button" class="sidebtn btn glass" data-open="2" data-k="do">Player 2 first</button></div>
+      <div class="winrow" id="nextrow"><button type="button" class="sidebtn btn glass" data-open="1" data-k="do">You first</button><button type="button" class="sidebtn btn glass" data-open="2" data-k="do">Opponent first</button></div>
       <button type="button" class="pact btn glass" id="callend" data-k="do" hidden>Time called, end the match here</button>
     </div>
     <div class="winrow"><button type="button" class="pact btn glass" id="winlog" data-k="do">Log</button><button type="button" class="pact btn glass" id="unwin" data-k="do">Undo</button><button type="button" class="pact btn glass" id="again" data-k="do">New match</button></div>
@@ -486,17 +486,17 @@
           </div>
           <div class="pcards glass" id="pcards">
             <div class="pcard" id="pcard1" data-p="1">
-              <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot1"></i><span class="pnm" id="pnm1">Player 1</span><span class="sp"></span><small class="plegh" id="plegh1">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+              <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot1"></i><span class="pnm" id="pnm1">You</span><span class="sp"></span><small class="plegh" id="plegh1">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody1" hidden>
-                <div class="nf tall"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 1 name" data-k="type"></div>
+                <div class="nf tall"><input type="text" id="n1" maxlength="14" autocomplete="off" spellcheck="false" placeholder="You" aria-label="Your name" data-k="type"></div>
                 <button type="button" class="door btn glass" id="lgp1" data-lgp="1" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
                 <div class="seg swatch" id="c1" data-k="pick"></div>
               </div>
             </div>
             <div class="pcard" id="pcard2" data-p="2">
-              <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot2"></i><span class="pnm" id="pnm2">Player 2</span><span class="sp"></span><small class="plegh" id="plegh2">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+              <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot2"></i><span class="pnm" id="pnm2">Opponent</span><span class="sp"></span><small class="plegh" id="plegh2">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
               <div class="pcbody" id="pcbody2" hidden>
-                <div class="nf tall"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Name" aria-label="Player 2 name" data-k="type"></div>
+                <div class="nf tall"><input type="text" id="n2" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Opponent" aria-label="Opponent's name" data-k="type"></div>
                 <button type="button" class="door btn glass" id="lgp2" data-lgp="2" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
                 <div class="seg swatch" id="c2" data-k="pick"></div>
               </div>
@@ -518,7 +518,7 @@
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">New match</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row"><div class="seg" id="blen" role="group" aria-label="Match length" data-k="pick"><button type="button" data-bo="1" aria-pressed="false">Single game</button><button type="button" data-bo="3" aria-pressed="true">Best of 3</button></div></div>
-    <div class="row"><div class="seg who1" id="first" role="group" aria-label="Who goes first" data-k="pick"><button type="button" data-first="1" aria-pressed="true">Player 1</button><button type="button" data-first="2" aria-pressed="false">Player 2</button></div></div>
+    <div class="row"><div class="seg who1" id="first" role="group" aria-label="Who goes first" data-k="pick"><button type="button" data-first="1" aria-pressed="true">You first</button><button type="button" data-first="2" aria-pressed="false">Opponent first</button></div></div>
     <div data-slot></div>
     <p class="cred">The game in progress stays as it is until you start the new one.</p>
   </div>
@@ -549,11 +549,11 @@
 <section class="panel frost" id="pend" aria-hidden="true" aria-label="End game">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">End game</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="row"><p class="lb">Who concedes?</p><div class="two"><button type="button" class="sidebtn btn glass" data-concede="1" id="cc1" data-k="do">Player 1</button><button type="button" class="sidebtn btn glass" data-concede="2" id="cc2" data-k="do">Player 2</button></div></div>
+    <div class="row"><p class="lb">Who concedes?</p><div class="two"><button type="button" class="sidebtn btn glass" data-concede="1" id="cc1" data-k="do">You</button><button type="button" class="sidebtn btn glass" data-concede="2" id="cc2" data-k="do">Opponent</button></div></div>
     <div class="row"><p class="lb">Time called: who won?</p><div class="three">
-      <button type="button" class="sidebtn btn glass" id="pendw1" data-endw="1" style="color:var(--pc)" data-k="do">Player 1</button>
+      <button type="button" class="sidebtn btn glass" id="pendw1" data-endw="1" style="color:var(--pc)" data-k="do">You</button>
       <button type="button" class="pact btn glass" id="pendtd" data-endw="0" data-k="do">Draw</button>
-      <button type="button" class="sidebtn btn glass" id="pendw2" data-endw="2" style="color:var(--pc)" data-k="do">Player 2</button>
+      <button type="button" class="sidebtn btn glass" id="pendw2" data-endw="2" style="color:var(--pc)" data-k="do">Opponent</button>
     </div><button type="button" class="pact btn glass" id="pendagree" data-endagree="1" data-k="do">Intentional draw</button></div>
   </div>
 </section>
@@ -1024,9 +1024,11 @@
     return (MON[mi] || "") + " " + parseInt(p[2], 10);
   }
   // Player 1 is blue and player 2 pink by default: the trade page's hues.
+  // A name is only what was typed; an empty one shows the side's default
+  // (nameOf): side 1 is the near side, the phone's owner, side 2 the far.
   var SWATCH = ["#5DA5EE","#EE5F9C","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
-  var players = { 1:{ name:"Player 1", legend:"", art:"", colour:"#5DA5EE" },
-                  2:{ name:"Player 2", legend:"", art:"", colour:"#EE5F9C" } };
+  var players = { 1:{ name:"", legend:"", art:"", colour:"#5DA5EE" },
+                  2:{ name:"", legend:"", art:"", colour:"#EE5F9C" } };
   // A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE. The stain (.14) and the
   // press (.50) are computed here rather than with color-mix(), which the
   // device floor cannot count on.
@@ -1042,7 +1044,22 @@
     el.style.setProperty("--pct", rgbaOf(c, .14));
     el.style.setProperty("--pcr", rgbaOf(c, .50));
   }
-  function nameOf(p){ return players[p].name || ("Player " + p); }
+  // YOUR NAME AND OPPONENT (plan 2 M3 block 2, Mako's yes 2026-11-02): the
+  // near side defaults to your name, the account's display name, else your
+  // Riot name, else "You"; the far side to "Opponent". Proven apps (the
+  // digital card games, chess apps) show your name against "Opponent".
+  function myName(){
+    var n = "";
+    try { var a = window.RAVI_ACCT && RAVI_ACCT.view(); if (a && typeof a.name === "string") { n = a.name.trim(); } } catch (e) {}
+    if (!n) { try { var m = window.RAVI_LIVE && RAVI_LIVE.me(); if (m && typeof m.n === "string") { n = m.n.trim(); } } catch (e) {} }
+    if (n.length > 14) { n = n.split(/\s+/)[0].slice(0, 14); }
+    return n || "You";
+  }
+  function defName(p){ return p === 2 ? "Opponent" : myName(); }
+  function nameOf(p){ return players[p].name || defName(p); }
+  // the sentences read for "You": You win, You concede, Your turn 3
+  function verb(n, v){ return n === "You" ? v.replace(/s$/, "") : v; }
+  function turnOf(n){ return n === "You" ? "Your" : n; }
 
   var stage = document.getElementById("stage");
   var field = document.getElementById("field");
@@ -1086,7 +1103,8 @@
       var o = JSON.parse(raw);
       for (var p = 1; p <= 2; p++) {
         if (o && o[p]) {
-          if (typeof o[p].name === "string") { players[p].name = o[p].name; }
+          // the old defaults (before plan 2 M3 block 2) read as no name typed
+          if (typeof o[p].name === "string" && o[p].name !== "Player " + p) { players[p].name = o[p].name; }
           if (typeof o[p].legend === "string") { players[p].legend = o[p].legend; }
           if (typeof o[p].art === "string") { players[p].art = o[p].art; }
           if (typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
@@ -1163,6 +1181,7 @@
     }
     if (!games.length) { return null; }
     var o = { v:1, at:m.at, bo:(m.bo === 1 || m.bo === 3) ? m.bo : (games.length > 1 ? 3 : 1), games:games };
+    if (m.me === 1 || m.me === 2) { o.me = m.me; }
     if (m.tag && typeof m.tag === "object" && (typeof m.tag.id === "string" || okNum(m.tag.id))) {
       o.tag = { id:m.tag.id, name:okTxt(m.tag.name), venue:okTxt(m.tag.venue), day:okTxt(m.tag.day) };
       if (typeof m.tag.type === "string" && m.tag.type) { o.tag.type = m.tag.type; }
@@ -1285,15 +1304,16 @@
   }
 
   function snap(){
-    return { 1:{ name:players[1].name, legend:players[1].legend, colour:players[1].colour },
-             2:{ name:players[2].name, legend:players[2].legend, colour:players[2].colour } };
+    return { 1:{ name:nameOf(1), legend:players[1].legend, colour:players[1].colour },
+             2:{ name:nameOf(2), legend:players[2].legend, colour:players[2].colour } };
   }
 
   function matchRecord(at){
     var games = banked.slice();
     if (decided(ev)) { games.push({ ev:ev.slice(), p:snap() }); }
     if (!games.length) { return null; }
-    var rec = { v:1, at:at, bo:bo, games:games };
+    // me: the side that was this phone's owner (the near side, 1), for auto-fill
+    var rec = { v:1, at:at, bo:bo, me:1, games:games };
     var cur = cseGet();
     if (cur) {
       rec.tag = { id:cur.id, name:cur.name, venue:cur.venue, day:cur.day };
@@ -1587,7 +1607,7 @@
     return "<div class=\"seamwrap\">" +
       "<button type=\"button\" class=\"pass btn glass\" id=\"seam\" data-k=\"play\"" + d +
       " style=\"--sc:" + players[c.p].colour + ";--pc:" + players[c.p].colour + "\">Pass turn<span class=\"dv\"></span>" +
-      "<em><b>" + esc(nameOf(c.p)) + "</b> turn " + c.n + "</em></button></div>";
+      "<em><b>" + esc(turnOf(nameOf(c.p))) + "</b> turn " + c.n + "</em></button></div>";
   }
 
   function logHTML(list, nm){
@@ -1598,12 +1618,12 @@
     for (var i = list.length - 1; i >= 0; i--) {
       var e = list[i];
       if (e.t === "point") {
-        out += "<li class=\"e" + (e.p === 2 ? 2 : 1) + "\"><span class=\"lt\">" + esc(nm(e.tp)) +
+        out += "<li class=\"e" + (e.p === 2 ? 2 : 1) + "\"><span class=\"lt\">" + esc(turnOf(nm(e.tp))) +
                " turn " + Number(e.tn) + "</span><span class=\"rt\"><b>" + esc(nm(e.p)) +
                " +1</b> " + SRC[e.src] + "</span></li>";
       } else if (e.t === "concede") {
         out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
-               "<span class=\"rt\"><b>" + esc(nm(e.p)) + " concedes</b></span></li>";
+               "<span class=\"rt\"><b>" + esc(nm(e.p)) + " " + verb(nm(e.p), "concedes") + "</b></span></li>";
       } else if (e.t === "end") {
         if (e.why === "agreed") {
           out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
@@ -1613,7 +1633,7 @@
                  "<span class=\"rt\"><b>Game drawn</b></span></li>";
         } else {
           out += "<li class=\"et\"><span class=\"lt\">Time called</span>" +
-                 "<span class=\"rt\"><b>" + esc(nm(e.w)) + " wins the game</b></span></li>";
+                 "<span class=\"rt\"><b>" + esc(nm(e.w)) + " " + verb(nm(e.w), "wins") + " the game</b></span></li>";
         }
       } else if (e.t === "pause") {
         out += "<li class=\"et\"><span class=\"lt\">Clock</span><span class=\"rt\">Paused</span></li>";
@@ -1629,7 +1649,7 @@
                  : gained === 0 ? "no points"
                  : gained === 1 ? "1 point"
                  : gained + " points";
-        out += "<li class=\"et\"><span class=\"lt\">" + esc(nm(e.p)) + " turn " + Number(e.n) +
+        out += "<li class=\"et\"><span class=\"lt\">" + esc(turnOf(nm(e.p))) + " turn " + Number(e.n) +
                "</span><span class=\"rt\">" + tail + "</span></li>";
       }
     }
@@ -1762,9 +1782,9 @@
     for (var i = 0; i < history.length; i++) {
       var m = history[i];
       var gs = m.games, g0 = gs[0];
-      var nm = (function(rec){
-        return function(pp){ return rec.p[pp].name || ("Player " + pp); };
-      })(g0);
+      var nm = (function(rec, me){
+        return function(pp){ return rec.p[pp].name || (pp === (me || 1) ? "You" : "Opponent"); };
+      })(g0, m.me);
       var multi = gs.length > 1 || m.bo === 3;
       var gw1 = 0, gw2 = 0, tt = 0, body = "";
       for (var j = 0; j < gs.length; j++) {
@@ -1817,13 +1837,13 @@
     if (w && !wasWon && fieldBuilt) { restartFx(elBanner, "winrise"); }
     var open = w ? matchOpen() : false;
     if (!w) {
-      elWin.textContent = nameOf(1) + " wins";
+      elWin.textContent = nameOf(1) + " " + verb(nameOf(1), "wins");
       elWin.style.color = "";
     } else if (open) {
       // the match continues (bo 3, no call yet, wins short of need()):
       // this banner is about the game that just ended, not the match
       var gw = winnerOf(ev);
-      elWin.textContent = nameOf(gw) + " wins game " + (banked.length + 1);
+      elWin.textContent = nameOf(gw) + " " + verb(nameOf(gw), "wins") + " game " + (banked.length + 1);
       elWin.style.color = players[gw].colour;
     } else {
       var mr = matchResult(curGames(), bo);
@@ -1832,13 +1852,13 @@
         elWin.textContent = (end && end.why === "agreed") ? "Intentional draw" : "Match drawn";
         elWin.style.color = "var(--bone)";
       } else if (mr === 1 || mr === 2) {
-        elWin.textContent = bo === 1 ? nameOf(mr) + " wins" : nameOf(mr) + " wins the match";
+        elWin.textContent = nameOf(mr) + " " + verb(nameOf(mr), "wins") + (bo === 1 ? "" : " the match");
         elWin.style.color = players[mr].colour;
       } else {
         // defensive fallback -- w is true (gameOver) and open is false,
         // so mr should never land here, but never show a blank banner
         var gw2 = winnerOf(ev);
-        elWin.textContent = gw2 ? (bo === 1 ? nameOf(gw2) + " wins" : nameOf(gw2) + " wins the match") : nameOf(1) + " wins";
+        elWin.textContent = gw2 ? nameOf(gw2) + " " + verb(nameOf(gw2), "wins") + (bo === 1 ? "" : " the match") : nameOf(1) + " " + verb(nameOf(1), "wins");
         elWin.style.color = gw2 ? players[gw2].colour : "";
       }
     }
@@ -1864,7 +1884,7 @@
     var lt = document.getElementById("logtime");
     if (lt) { lt.textContent = timeLineText(ev, nameOf); }
     elLog.innerHTML = logHTML(ev, nameOf);
-    document.getElementById("logcnt").textContent = nameOf(c.p) + " turn " + c.n;
+    document.getElementById("logcnt").textContent = turnOf(nameOf(c.p)) + " turn " + c.n;
     syncPend();
     syncClockRow();
   }
@@ -2458,7 +2478,9 @@
     syncClockRow();
     cseSyncRow();
     for (var p = 1; p <= 2; p++) {
-      document.getElementById("n" + p).value = players[p].name;
+      var nf = document.getElementById("n" + p);
+      nf.value = players[p].name;
+      nf.placeholder = defName(p);
       lgpLabel(p);
       syncPlayerHead(p);
       var bs = document.getElementById("c" + p).getElementsByTagName("button");
@@ -2571,6 +2593,11 @@
   pgame.addEventListener("change", onSetupField);
   pnew.addEventListener("input", onSetupField);
   pnew.addEventListener("change", onSetupField);
+
+  // your name follows the account: a profile change redraws the defaults
+  if (window.RAVI_ACCT && RAVI_ACCT.onChange) {
+    RAVI_ACCT.onChange(function(){ syncConcedeLabels(); syncFirst(); syncNext(); syncSetup(); render(); });
+  }
 
   document.getElementById("setupbtn").addEventListener("click", function(){
     disarmConcede(); syncSetup();
