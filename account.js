@@ -245,6 +245,23 @@
   function blocks(cb) { call("GET", "/blocks", null, cb); }
   function adminReports(cb) { call("GET", "/admin/reports", null, cb); }
   function adminAct(h, act, cb) { call("POST", "/admin/act", { h: h, act: act }, cb); }
+  // shared decks (plan 2 M3): the Public view (q, ql, f, sort, n, h), one deck by its link, a copy counted
+  function decks(o, cb) {
+    var q = [];
+    ["q", "ql", "f", "sort", "n", "h"].forEach(function (k) { if (o && o[k] !== undefined && o[k] !== "" && o[k] !== null) q.push(k + "=" + encodeURIComponent(Array.isArray(o[k]) ? o[k].join(",") : String(o[k]))); });
+    call("GET", "/decks" + (q.length ? "?" + q.join("&") : ""), null, cb);
+  }
+  function deckGet(h, id, cb) { call("GET", "/deck?h=" + encodeURIComponent(h) + "&d=" + encodeURIComponent(id), null, cb); }
+  function deckCopy(h, id, cb) { call("POST", "/deck/copy", { h: h, d: id }, cb || function () {}); }
+  // the name this account's shared decks go by in links: the server's handle (board.js handleOf),
+  // worked out here from the account id the phone already holds; never the id itself
+  function handle(cb) {
+    var v = view(), id = v && v.id;
+    if (!id || !root.crypto || !root.crypto.subtle || !root.TextEncoder) return cb(null);
+    root.crypto.subtle.digest("SHA-256", new TextEncoder().encode("ravi-board|" + id)).then(function (b) {
+      cb(Array.prototype.slice.call(new Uint8Array(b), 0, 12).map(function (x) { return (x < 16 ? "0" : "") + x.toString(16); }).join(""));
+    }, function () { cb(null); });
+  }
   function signOut(cb) {
     // forgotten on the phone whatever the server says; the phone then gets a new guest
     call("POST", "/out", {}, function () { forget(); changed(); makeGuest(function () { if (cb) cb(null); }, true); });
@@ -259,7 +276,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
-    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall,
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall, decks: decks, deckGet: deckGet, deckCopy: deckCopy, handle: handle,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -765,10 +782,11 @@
   }
 
   // ---- Reports (Mako's account only; plan 2 M2 block 3): each reported player once, and his calls ----
-  var WHY = { pic: "Their picture", name: "Their name or username", offers: "Unwanted offers", trade: "A trade went wrong", other: "Something else" };
+  var WHY = { pic: "Their picture", name: "Their name or username", offers: "Unwanted offers", trade: "A trade went wrong", other: "Something else", deck: "A shared deck" };
   var RACT = { pic: ["Remove picture", "Removes their picture; they can pick another."], name: ["Clear name and username", "Empties their name and @username."],
     off: ["Take off the board", "Hides what they share, ends their offers and stops new ones."], on: ["Put back on the board", "Shows what they share again."],
-    dismiss: ["Dismiss", "Closes these reports; nothing changes."] };
+    dismiss: ["Dismiss", "Closes these reports; nothing changes."],
+    doff: ["Take decks down", "Makes every deck they share private to others, links too."], don: ["Put decks back", "Shows the decks they share again."] };
   function renderReports() {
     var list = $("acreplist");
     list.innerHTML = '<p class="pnote">Loading...</p>';
@@ -777,7 +795,7 @@
       if (err) { list.innerHTML = ""; return say("acrepmsg", err); }
       list.innerHTML = "";
       var ps = (j && Array.isArray(j.players) ? j.players : []).filter(function (x) { return x && /^[0-9a-f]{24}$/.test(x.h); });
-      if (!ps.length) { var e = el("p", "pnote"); e.textContent = "No reports. Players report each other from the Trade board: Report or block."; list.appendChild(e); }
+      if (!ps.length) { var e = el("p", "pnote"); e.textContent = "No reports. Players report each other from the Trade board (Report or block) and from a shared deck."; list.appendChild(e); }
       ps.forEach(function (x) {
         function who(y) { return y && y.user ? "@" + y.user : (y && y.name ? y.name : "an account with no username"); }
         var head = el("div", "acrp"), av = el("span", "acav"), n = el("div", "acn");
@@ -790,10 +808,12 @@
         var bits = [];
         if (x.off) bits.push("Off the board since " + day(x.at, x.atT) + ".");
         if (x.pich) bits.push("Their picture is hidden from others until you decide.");
+        if (x.doff) bits.push("Their shared decks are taken down.");
         if (why.length) bits.push(why.join(" \u00b7 ") + ".");
         if (x.from && x.from.length) bits.push("From " + x.from.map(who).join(", ") + ", the latest " + day(x.at, x.atT) + ".");
         var note = el("p", "pnote"); note.textContent = bits.join(" ");
         var acts = x.off ? ["on"].concat(why.length ? ["dismiss"] : []) : [].concat(x.pic ? ["pic"] : [], x.name || x.user ? ["name"] : [], ["off", "dismiss"]);
+        acts.splice(acts.length - (acts[acts.length - 1] === "dismiss" ? 1 : 0), 0, x.doff ? "don" : "doff"); // shared decks (plan 2 M3), before Dismiss
         var rows = el("div", "doors acgap");
         rows.setAttribute("data-k", "do");
         acts.forEach(function (k) {

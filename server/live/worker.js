@@ -140,7 +140,9 @@ async function toAccounts(req, env, path) {
     init.body = text;
   }
   const stub = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
-  const r = await stub.fetch(new Request("https://accounts" + path, init));
+  // a GET keeps its search words (the Public view of decks, a shared deck's link: plan 2 M3), capped
+  const search = req.method === "GET" ? new URL(req.url).search.slice(0, 4000) : "";
+  const r = await stub.fetch(new Request("https://accounts" + path + search, init));
   if (/^\/b?pic\//.test(path) && r.ok) {
     // a player's photo: only ever a JPEG the server checked, never sniffed as anything else
     return new Response(r.body, { status: 200, headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable",

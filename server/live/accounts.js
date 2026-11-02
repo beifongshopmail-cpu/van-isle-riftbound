@@ -54,6 +54,7 @@
 import { BOARD_KEYS, rowsFrom, boardFor, handleOf } from "./board.js";
 import { OFFER, settingsFrom, cleanLines, holds, cleanCash, shapeOf, fits, settle, live, newOffer, cleanEvent, viewOf } from "./offers.js";
 import { REPORT, BLOCK, cleanWhy, closeFor, queueOf } from "./reports.js";
+import { DECK_KEY, DECKS, DECK_ID, rowsFrom as deckRows, rowOf as deckRow, search as deckSearch, codesFrom } from "./decks.js";
 
 export const RP_ID = "ravi.tools";
 export const ORIGINS = ["https://ravi.tools"];
@@ -67,7 +68,7 @@ export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page:
 // per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
 // sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
 // can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3) // per connection per day (guest: a store's wifi)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100, decks: 3000, deck: 3000, copy: 600 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3); decks, deck, copy: the Public view, one deck, copies (plan 2 M3) // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -380,6 +381,12 @@ function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS blk (by TEXT, who TEXT, at INTEGER, PRIMARY KEY (by, who))");
   sql.exec("CREATE INDEX IF NOT EXISTS blk_who ON blk (who)");
   sql.exec("CREATE TABLE IF NOT EXISTS modr (acct TEXT PRIMARY KEY, off INTEGER, pich INTEGER, at INTEGER)");
+  try { sql.exec("ALTER TABLE modr ADD COLUMN doff INTEGER"); } catch (e) { /* already there */ }
+  // shared decks (decks.js, plan 2 M3): an account's Link and Public decks, and who copied each
+  sql.exec("CREATE TABLE IF NOT EXISTS pdeck (acct TEXT, id TEXT, vis TEXT, vt INTEGER, t INTEGER, name TEXT, note TEXT, legend TEXT, d TEXT, PRIMARY KEY (acct, id))");
+  sql.exec("CREATE INDEX IF NOT EXISTS pdeck_vis ON pdeck (vis, vt)");
+  sql.exec("CREATE TABLE IF NOT EXISTS pcopy (acct TEXT, id TEXT, by TEXT, PRIMARY KEY (acct, id, by))");
+  sql.exec("CREATE INDEX IF NOT EXISTS pcopy_by ON pcopy (by)");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code, guest FROM acct WHERE id = ?", id),
@@ -425,9 +432,22 @@ function sqlStore(sql) {
     blockers: (who) => sql.exec("SELECT by FROM blk WHERE who = ?", who).toArray().map((x) => x.by),
     putBlk: (x) => sql.exec("INSERT OR REPLACE INTO blk VALUES (?, ?, ?)", x.by, x.who, x.at),
     delBlk: (by, who) => sql.exec("DELETE FROM blk WHERE by = ? AND who = ?", by, who),
-    mod: (acct) => one("SELECT off, pich, at FROM modr WHERE acct = ?", acct),
-    putMod: (acct, x) => (x.off || x.pich) ? sql.exec("INSERT OR REPLACE INTO modr VALUES (?, ?, ?, ?)", acct, x.off ? 1 : 0, x.pich ? 1 : 0, x.at || 0) : sql.exec("DELETE FROM modr WHERE acct = ?", acct),
-    offAccts: () => sql.exec("SELECT acct, at FROM modr WHERE off = 1 ORDER BY at DESC").toArray(),
+    mod: (acct) => one("SELECT off, pich, at, doff FROM modr WHERE acct = ?", acct),
+    putMod: (acct, x) => (x.off || x.pich || x.doff) ? sql.exec("INSERT OR REPLACE INTO modr (acct, off, pich, at, doff) VALUES (?, ?, ?, ?, ?)", acct, x.off ? 1 : 0, x.pich ? 1 : 0, x.at || 0, x.doff ? 1 : 0) : sql.exec("DELETE FROM modr WHERE acct = ?", acct),
+    offAccts: () => sql.exec("SELECT acct, at FROM modr WHERE off = 1 OR doff = 1 ORDER BY at DESC").toArray(),
+    deckItems: (acct) => sql.exec("SELECT k, id, d FROM item WHERE acct = ? AND d IS NOT NULL AND k = 'vir.decks.v1'", acct).toArray(),
+    putDecks: (acct, rows) => {
+      const keep = new Set(rows.map((r) => r.id));
+      sql.exec("SELECT id FROM pdeck WHERE acct = ?", acct).toArray().forEach((x) => { if (!keep.has(x.id)) sql.exec("DELETE FROM pcopy WHERE acct = ? AND id = ?", acct, x.id); });
+      sql.exec("DELETE FROM pdeck WHERE acct = ?", acct);
+      rows.forEach((r) => sql.exec("INSERT INTO pdeck VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", acct, r.id, r.vis, r.vt, r.t, r.name, r.note, r.legend, r.d));
+    },
+    pdeck: (acct, id) => one("SELECT acct, id, vis, vt, t, name, note, legend, d FROM pdeck WHERE acct = ? AND id = ?", acct, id),
+    pdecks: (acct) => sql.exec("SELECT acct, id, vis, vt, t, name, note, legend, d FROM pdeck WHERE acct = ? ORDER BY vt DESC", acct).toArray(),
+    pubDecks: (max) => sql.exec("SELECT acct, id, vis, vt, t, name, legend FROM pdeck WHERE vis = 'pub' ORDER BY vt DESC LIMIT ?", max).toArray(),
+    pubDeckCount: (acct) => one("SELECT COUNT(*) AS n FROM pdeck WHERE acct = ? AND vis = 'pub'", acct).n,
+    copyCounts: () => sql.exec("SELECT acct, id, COUNT(*) AS n FROM pcopy GROUP BY acct, id").toArray(),
+    putCopy: (acct, id, by) => sql.exec("INSERT OR IGNORE INTO pcopy VALUES (?, ?, ?)", acct, id, by),
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
@@ -454,6 +474,8 @@ function sqlStore(sql) {
       sql.exec("DELETE FROM rep WHERE by = ? OR who = ?", id, id);
       sql.exec("DELETE FROM blk WHERE by = ? OR who = ?", id, id);
       sql.exec("DELETE FROM modr WHERE acct = ?", id);
+      sql.exec("DELETE FROM pdeck WHERE acct = ?", id);
+      sql.exec("DELETE FROM pcopy WHERE acct = ? OR by = ?", id, id);
       sql.exec("DELETE FROM riot WHERE acct = ?", id);
       sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM prof WHERE acct = ?", id);
@@ -473,7 +495,7 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map(), pdeck: new Map(), pcopy: new Map() };
   const rk = (by, who) => by + "\n" + who;
   const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
@@ -526,8 +548,20 @@ export function memStore() {
     putBlk: (x) => T.blk.set(rk(x.by, x.who), copy(x)),
     delBlk: (by, who) => T.blk.delete(rk(by, who)),
     mod: (acct) => copy(T.modr.get(acct)),
-    putMod: (acct, x) => (x.off || x.pich) ? T.modr.set(acct, { off: x.off ? 1 : 0, pich: x.pich ? 1 : 0, at: x.at || 0 }) : T.modr.delete(acct),
-    offAccts: () => Array.from(T.modr.entries()).filter(([, x]) => x.off).sort((a, b) => b[1].at - a[1].at).map(([acct, x]) => ({ acct: acct, at: x.at })),
+    putMod: (acct, x) => (x.off || x.pich || x.doff) ? T.modr.set(acct, { off: x.off ? 1 : 0, pich: x.pich ? 1 : 0, at: x.at || 0, doff: x.doff ? 1 : 0 }) : T.modr.delete(acct),
+    offAccts: () => Array.from(T.modr.entries()).filter(([, x]) => x.off || x.doff).sort((a, b) => b[1].at - a[1].at).map(([acct, x]) => ({ acct: acct, at: x.at })),
+    deckItems: (acct) => Array.from(T.item.values()).filter((x) => x.acct === acct && x.d !== null && x.k === "vir.decks.v1").map((x) => copy({ k: x.k, id: x.id, d: x.d })),
+    putDecks: (acct, rows) => {
+      const keep = new Set(rows.map((r) => r.id));
+      T.pdeck.forEach((r, k) => { if (r.acct === acct) { if (!keep.has(r.id)) T.pcopy.forEach((c, ck) => { if (c.acct === acct && c.id === r.id) T.pcopy.delete(ck); }); T.pdeck.delete(k); } });
+      rows.forEach((r) => T.pdeck.set(acct + "\n" + r.id, copy(Object.assign({ acct: acct }, r))));
+    },
+    pdeck: (acct, id) => copy(T.pdeck.get(acct + "\n" + id) || null),
+    pdecks: (acct) => Array.from(T.pdeck.values()).filter((r) => r.acct === acct).sort((a, b) => b.vt - a.vt).map(copy),
+    pubDecks: (max) => Array.from(T.pdeck.values()).filter((r) => r.vis === "pub").sort((a, b) => b.vt - a.vt).slice(0, max).map((r) => copy({ acct: r.acct, id: r.id, vis: r.vis, vt: r.vt, t: r.t, name: r.name, legend: r.legend })),
+    pubDeckCount: (acct) => Array.from(T.pdeck.values()).filter((r) => r.acct === acct && r.vis === "pub").length,
+    copyCounts: () => { const m = new Map(); T.pcopy.forEach((c) => { const k = c.acct + "\n" + c.id; m.set(k, (m.get(k) || 0) + 1); }); return Array.from(m.entries()).map(([k, n]) => ({ acct: k.split("\n")[0], id: k.split("\n")[1], n: n })); },
+    putCopy: (acct, id, by) => T.pcopy.set(acct + "\n" + id + "\n" + by, { acct: acct, id: id, by: by }),
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
@@ -559,6 +593,7 @@ export function memStore() {
       T.board.delete(id); T.bh.forEach((a, h) => { if (a === id) T.bh.delete(h); });
       T.offer.forEach((o, k) => { if (o.a === id || o.b === id) T.offer.delete(k); }); T.bset.delete(id);
       ["rep", "blk"].forEach((t) => T[t].forEach((x, k) => { if (x.by === id || x.who === id) T[t].delete(k); })); T.modr.delete(id);
+      T.pdeck.forEach((r, k) => { if (r.acct === id) T.pdeck.delete(k); }); T.pcopy.forEach((c, k) => { if (c.acct === id || c.by === id) T.pcopy.delete(k); });
       T.prof.delete(id); T.photo.delete(id);
       T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
       T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
@@ -676,6 +711,37 @@ export function makeAccounts() {
       const sx = items.filter((x) => x.k === "vir.board.v1" && x.id === "all")[0];
       this.db.putBset(acctId, settingsFrom(sx ? sx.d : "{}"));
       this.db.putHandle(await handleOf(acctId), acctId);
+      // SHARED DECKS (decks.js): Link and Public decks from the synced decks, once saved, unless Mako took them down
+      this.db.putDecks(acctId, deckRows(this.db.deckItems(acctId), !a.guest, this.decksOff(acctId)));
+    }
+    decksOff(acctId) { const m = this.db.mod(acctId); return !!(m && m.doff); }
+    // what others see of a deck's owner: name, @username, picture (the board's face, without the board's settings)
+    deckFace(acctId) { const f = this.face(acctId); return { name: f.name, user: f.user, pic: f.pic }; }
+    copyMap() { const m = new Map(); this.db.copyCounts().forEach((x) => m.set(x.acct + "\n" + x.id, x.n)); return m; }
+    // the Public view (q: words; ql, f: legend codes; sort new or copied; n: how many to skip; h: one player's)
+    async deckList(me, u) {
+      const apart = this.apart(me), faces = new Map(), cm = this.copyMap();
+      const faceOf = (id) => { if (!faces.has(id)) faces.set(id, this.deckFace(id)); return faces.get(id); };
+      let rows = this.db.pubDecks(DECKS.list).filter((r) => !apart.has(r.acct));
+      const hq = u.searchParams.get("h");
+      if (hq !== null) { const who = /^[0-9a-f]{24}$/.test(hq) ? this.db.byHandle(hq) : null; rows = rows.filter((r) => r.acct === who); }
+      const hit = deckSearch(rows, { q: u.searchParams.get("q") || "", ql: codesFrom(u.searchParams.get("ql")), f: codesFrom(u.searchParams.get("f")), sort: u.searchParams.get("sort") },
+        faceOf, (a, id) => cm.get(a + "\n" + id) || 0);
+      const skip = Math.max(0, Math.min(DECKS.list, parseInt(u.searchParams.get("n"), 10) || 0));
+      const out = [], hs = new Map();
+      for (const r of hit.slice(skip, skip + DECKS.page)) {
+        if (!hs.has(r.acct)) hs.set(r.acct, await handleOf(r.acct));
+        out.push(Object.assign(deckRow(r, hs.get(r.acct), faceOf(r.acct), cm.get(r.acct + "\n" + r.id)), r.acct === me ? { mine: true } : {}));
+      }
+      return { v: 1, decks: out, total: hit.length, page: DECKS.page };
+    }
+    // one shared deck by its owner's handle and its id: Link or Public, never Private; for anyone with the link
+    deckAt(u) {
+      const hq = u.searchParams.get("h"), id = u.searchParams.get("d");
+      const who = typeof hq === "string" && /^[0-9a-f]{24}$/.test(hq) ? this.db.byHandle(hq) : null;
+      if (!who || typeof id !== "string" || !DECK_ID.test(id)) return null;
+      const r = this.db.pdeck(who, id);
+      return r ? Object.assign({ owner: who }, r) : null;
     }
     // REPORT AND BLOCK (reports.js)
     isOff(acctId) { const m = this.db.mod(acctId); return !!(m && m.off); }
@@ -700,7 +766,7 @@ export function makeAccounts() {
       let pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
       if (this.picHidden(acctId)) pic = null; // reported by REPORT.hide players: hidden until Mako decides
       const bs = this.db.bset(acctId) || settingsFrom("{}");
-      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic, open: bs.open, pct: bs.pct };
+      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic, open: bs.open, pct: bs.pct, dk: this.db.pubDeckCount(acctId) };
     }
     // OFFERS (offers.js): every offer an account is in, as it sees them, expired ones marked as read
     async offersFor(acct) {
@@ -847,7 +913,7 @@ export function makeAccounts() {
         const m = this.db.mod(who) || {};
         rows.push({ h: await handleOf(who), id: who, name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic,
           why: x ? x.why : {}, from: x ? x.from.map((b) => this.who2(b)) : [], at: x ? dayOf(x.at) : dayOf(m.at || 0), atT: x ? x.at : (m.at || 0),
-          off: !!m.off, pich: !!m.pich });
+          off: !!m.off, pich: !!m.pich, doff: !!m.doff });
       };
       for (const x of q) { if (this.db.acct(x.who)) await one(x.who, x); }
       for (const o of this.db.offAccts()) { if (!done.has(o.acct) && this.db.acct(o.acct)) await one(o.acct, null); }
@@ -857,7 +923,7 @@ export function makeAccounts() {
     async adminAct(body) {
       const who = typeof body.h === "string" && /^[0-9a-f]{24}$/.test(body.h) ? this.db.byHandle(body.h) : null;
       if (!who || !this.db.acct(who)) return [404, { error: "that player is gone" }];
-      const now = this.now(), m = this.db.mod(who) || { off: 0, pich: 0, at: 0 }, act = body.act;
+      const now = this.now(), m = this.db.mod(who) || { off: 0, pich: 0, at: 0, doff: 0 }, act = body.act;
       if (act === "pic") {
         const x = this.profOf(who); x.pk = null; x.ph = null; x.pcrop = null; this.db.putProf(x); this.db.delPhoto(who);
         m.pich = 0; this.db.delReps(who, "pic");
@@ -869,11 +935,13 @@ export function makeAccounts() {
         this.closeOffers(who); this.db.delReps(who);
       } else if (act === "on") {
         m.off = 0; m.at = now;
+      } else if (act === "doff" || act === "don") {
+        m.doff = act === "doff" ? 1 : 0; if (m.doff) { m.at = now; this.db.delReps(who, "deck"); }
       } else if (act === "dismiss") {
         m.pich = 0; this.db.delReps(who);
       } else return [400, { error: "bad request" }];
       this.db.putMod(who, m);
-      if (act === "off" || act === "on") await this.rebuild(who);
+      if (act === "off" || act === "on" || act === "doff" || act === "don") await this.rebuild(who);
       return [200, { ok: true, left: queueOf(this.db.reps()).length }];
     }
     // everything the server keeps for an account, for Download your data
@@ -898,7 +966,9 @@ export function makeAccounts() {
         blocked: this.db.blocks(a.id).map((x) => ({ player: this.who2(x.who), since: dayOf(x.at) })),
         reportsYouSent: this.db.repsBy(a.id).map((x) => ({ player: this.who2(x.who), reason: x.why, on: dayOf(x.at) })),
         reportsAboutYou: this.db.repsOf(a.id).map((x) => ({ reason: x.why, on: dayOf(x.at) })), // who sent them stays with RAVI
-        offTradeBoard: this.isOff(a.id), pictureHidden: this.picHidden(a.id),
+        sharedDecks: { what: "what others see of your shared decks (Link: anyone with its link; Public: on Decks' Public view too): the cards, name and note, with your name, @username and picture",
+          shown: !a.guest && !this.decksOff(a.id), decks: this.db.pdecks(a.id).map((r) => { let c = null; try { c = JSON.parse(r.d); } catch (e) { c = null; } return { id: r.id, sees: r.vis === "pub" ? "public" : "link", name: r.name, note: r.note, cards: c, shared: dayOf(r.vt) }; }) },
+        offTradeBoard: this.isOff(a.id), pictureHidden: this.picHidden(a.id), decksTakenDown: this.decksOff(a.id),
         synced: this.db.allItems(a.id).reduce((o, x) => { let d; try { d = JSON.parse(x.d); } catch (e) { d = x.d; } (o[x.k] = o[x.k] || {})[x.id] = d; return o; }, {}) };
     }
     // the next running number for an item's change
@@ -965,7 +1035,7 @@ export function makeAccounts() {
         const bm = /^\/bpic\/([0-9a-f]{24})$/.exec(u.pathname);
         if (bm) {
           // a trader's photo on the Trade board, by their board handle; only while they share something
-          const id = this.db.byHandle(bm[1]), p = id ? this.db.prof(id) : null, img = p && p.pk === "p" && !this.picHidden(id) && this.db.boardRows(id).some((r) => r.pub === 1) ? this.db.photo(id) : null;
+          const id = this.db.byHandle(bm[1]), p = id ? this.db.prof(id) : null, img = p && p.pk === "p" && !this.picHidden(id) && (this.db.boardRows(id).some((r) => r.pub === 1) || this.db.pdecks(id).length > 0) ? this.db.photo(id) : null;
           if (!img) return reply({ error: "no picture" }, 404);
           return new Response(img, { headers: { "Content-Type": "image/jpeg" } });
         }
@@ -980,6 +1050,21 @@ export function makeAccounts() {
           if (!me) return reply({ error: "signed out" }, 401);
           if (!(await this.spend("offers", ip))) return reply({ error: "offers have been opened too often from this connection today; try again tomorrow" }, 429);
           return reply(await this.offersFor(me.acct.id));
+        }
+        if (u.pathname === "/decks") {
+          if (!me) return reply({ error: "signed out" }, 401);
+          if (!(await this.spend("decks", ip))) return reply({ error: "public decks have been opened too often from this connection today; try again tomorrow" }, 429);
+          return reply(await this.deckList(me.acct.id, u));
+        }
+        if (u.pathname === "/deck") {
+          // anyone with the link, signed in or not (a browser tab opened from a shared link)
+          if (!(await this.spend("deck", ip))) return reply({ error: "decks have been opened too often from this connection today; try again tomorrow" }, 429);
+          const r = this.deckAt(u);
+          if (!r || (me && me.acct.id !== r.owner && this.blocked(me.acct.id, r.owner))) return reply({ error: "that deck isn't shared" }, 404);
+          let cards = null; try { cards = JSON.parse(r.d); } catch (e) { cards = null; }
+          const cm = this.copyMap();
+          return reply({ v: 1, h: await handleOf(r.owner), id: r.id, vis: r.vis, t: r.t, vt: r.vt, copies: cm.get(r.owner + "\n" + r.id) || 0, mine: !!me && me.acct.id === r.owner,
+            deck: Object.assign({ name: r.name, note: r.note }, cards), who: this.deckFace(r.owner) });
         }
         if (u.pathname === "/blocks") return me ? reply(await this.blocksOf(me.acct.id)) : reply({ error: "signed out" }, 401);
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
@@ -1181,13 +1266,21 @@ export function makeAccounts() {
         const want = Array.isArray(body.put) ? Math.min(body.put.length, SYNC.put) : 0;
         const room = want ? await this.spendUpTo("syncw", ip, want) : 0;
         const done = this.syncWith(me.acct.id, body, room, !!me.acct.guest);
-        if ((Array.isArray(body.put) ? body.put : []).some((x) => x && BOARD_KEYS.indexOf(x.k) >= 0)) await this.rebuild(me.acct.id);
+        if ((Array.isArray(body.put) ? body.put : []).some((x) => x && (BOARD_KEYS.indexOf(x.k) >= 0 || x.k === DECK_KEY))) await this.rebuild(me.acct.id);
         return reply(done);
       }
       if (p === "/offer/send" || p === "/offer/answer" || p === "/offer/meet" || p === "/offer/done") {
         if (!(await this.spend("offer", ip))) return reply({ error: "too many changes to offers today; try again tomorrow" }, 429);
         const r = p === "/offer/send" ? await this.offerSend(me, body) : this.offerAct(me, p, body);
         return reply(r[1], r[0]);
+      }
+      if (p === "/deck/copy") {
+        // a copy counts once per account, never the owner's own (Most copied, decks.js)
+        if (!(await this.spend("copy", ip))) return reply({ error: "too many copies today; try again tomorrow" }, 429);
+        const r = this.deckAt(new URL("https://x/?h=" + encodeURIComponent(String(body.h || "")) + "&d=" + encodeURIComponent(String(body.d || ""))));
+        if (!r || this.blocked(me.acct.id, r.owner)) return reply({ error: "that deck isn't shared" }, 404);
+        if (r.owner !== me.acct.id) this.db.putCopy(r.owner, r.id, me.acct.id);
+        return reply({ ok: true, copies: this.copyMap().get(r.owner + "\n" + r.id) || 0 });
       }
       if (p === "/report" || p === "/block") {
         if (!(await this.spend("offer", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);

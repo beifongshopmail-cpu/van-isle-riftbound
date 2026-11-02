@@ -7,7 +7,8 @@
 // one of REPORT.why, with no free text. One report per reporter per player: reporting again changes
 // the reason. Nobody but Mako sees a report or any count of them; it is never a rating. A picture
 // reported by REPORT.hide different players (accounts REPORT.oldDays old) is hidden from everyone else at once, until Mako decides.
-// Reports Mako has not decided are gone after REPORT.keepDays.
+// Reports Mako has not decided are gone after REPORT.keepDays. "deck" (plan 2 M3): a shared deck, its name or
+// note; Mako can take the player's shared decks down (decks.js).
 //
 // BLOCK (Instagram's and OfferUp's silent block): the two players leave each other's board, no offer
 // goes either way, an open offer between them closes and an agreed one is called off. The blocked
@@ -20,7 +21,7 @@
 // tells them), Put back, Dismiss.
 
 // oldDays: a report counts toward the instant hide only from an account this many days old (the security scan, 2026-11-01)
-export const REPORT = { why: ["pic", "name", "offers", "trade", "other"], hide: 2, oldDays: 3, keepDays: 90 };
+export const REPORT = { why: ["pic", "name", "offers", "trade", "other", "deck"], hide: 2, oldDays: 3, keepDays: 90 };
 export const BLOCK = { max: 500 };
 
 export function cleanWhy(v) { return REPORT.why.indexOf(v) >= 0 ? v : null; }

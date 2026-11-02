@@ -386,7 +386,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       out.me.off = j.me.off === true; out.me.pich = j.me.pich === true;
       out.me.blocked = Number.isSafeInteger(j.me.blocked) && j.me.blocked > 0 ? j.me.blocked : 0;
     }
-    function more(f, x){ f.open = OPENW[x.open] ? x.open : "trade"; f.pct = Number.isSafeInteger(x.pct) && x.pct >= 50 && x.pct <= 150 ? x.pct : 100; return f; }
+    function more(f, x){ f.open = OPENW[x.open] ? x.open : "trade"; f.pct = Number.isSafeInteger(x.pct) && x.pct >= 50 && x.pct <= 150 ? x.pct : 100;
+      f.dk = Number.isSafeInteger(x.dk) && x.dk > 0 && x.dk <= 99 ? x.dk : 0; return f; } // dk: their Public decks (plan 2 M3)
     (Array.isArray(j.people) ? j.people : []).forEach(function(x){ var f = okFace(x); if (f) { out.people[f.h] = more(f, x); } });
     (Array.isArray(j.traders) ? j.traders : []).forEach(function(x){
       var f = okFace(x);
@@ -634,6 +635,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
     h += '<p class="pnote">Prices are each player\'s own percent of market, a starting point to agree on.</p>';
+    // their Public decks (plan 2 M3): Decks' Public view on just this player
+    if (f.dk > 0) { h += '<div class="doors" data-k="deeper" style="margin-top:18px"><a class="door btn glass" id="bdecks" href="../decks/?pub=' + esc(WHO) + '"><span class="t">Public decks</span><span class="sp"></span><small>' + (+f.dk) + '</small>' + CVR + '</a></div>'; }
     h += repDoor("brep");
     $("pwhob").innerHTML = h;
   }
