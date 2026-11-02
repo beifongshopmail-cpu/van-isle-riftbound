@@ -153,6 +153,24 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .door.rec .t small{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 #shpick small{white-space:nowrap}
 .foot a{color:var(--bone)}
+/* OFFERS (plan 2 M2 block 2): the count on the bar's Offers slot, a card picked into an offer, My price */
+#taboff{position:relative}
+.tbadge{position:absolute;top:2px;right:calc(50% - 26px);min-width:20px;height:20px;box-sizing:border-box;padding:0 6px;border-radius:10px;background:var(--bone);color:var(--ink);font-family:var(--disp);font-weight:700;font-size:12px;line-height:20px;text-align:center;pointer-events:none}
+.ctile.sel .cpic{box-shadow:0 0 0 3px var(--bone)}
+.ctile .ck{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--bone);color:var(--ink);display:grid;place-items:center;pointer-events:none}
+.ctile .ck svg{width:16px;height:16px}
+.ctile.dim .cpic{opacity:.55}
+.bpct{margin-top:0}
+.bpct .nrow .circ{flex:0 0 auto}
+.ost{margin:0 2px 4px;font-size:15px;line-height:1.4}
+.ost b{font-family:var(--disp);font-weight:700}
+.mcash{margin-top:4px}
+.mcash .nf{margin-top:8px}
+.mcash .nf.off{opacity:.4;pointer-events:none}
+.oacts{margin-top:14px}
+#meetpick .rec .t{display:block;min-width:0}
+#meetpick .rec small{display:block;margin-top:2px;font-size:12px;font-weight:600;color:var(--muted);white-space:normal}
+.doors > .door.armed,.pact.armed{background-color:var(--glass-press)}
 </style>
 </head>
 <body>
@@ -181,7 +199,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"board"},
-  {tag:"button", icon:"offers", a:[["class", "tab"], ["id", "taboff"], ["disabled", null], ["aria-label", "Offers come next"], ["data-k", "slot"]]},
+  {tag:"button", icon:"offers", a:[["class", "tab"], ["id", "taboff"], ["aria-label", "Offers"], ["data-k", "slot"], ["data-fills", "poff"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["id", "tabset"], ["data-open", "pset"], ["aria-label", "Settings"], ["data-k", "slot"], ["data-fills", "pset"]]}
 ]);</script>
 <div class="scrim" id="scrim"></div>
@@ -209,17 +227,38 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="pbody">
     <p class="lb">What you share</p>
     <div class="pick" id="shpick" data-k="pick"></div>
-    <p class="pnote">Players see each card, its printing and how many, with your name, @username, home area and picture. No one sees what you paid, a card's condition or your Riot ID. You can also mark a binder For trade in its menu on Collection.</p>
+    <p class="pnote">Players see each card, its printing and how many, with your name, @username, home area and picture. No one sees what you paid or a card's condition, and your Riot ID only after you agree a trade. You can also mark a binder For trade in its menu on Collection.</p>
     <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
     <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">How others see you</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
+    <p class="lb" style="margin-top:14px">Open to</p>
+    <div class="pick" id="opick" data-k="pick"><button type="button" data-o="trade">Trades<span class="sp"></span><small>Cards for cards</small></button><button type="button" data-o="sale">Sales<span class="sp"></span><small>Your cards for cash</small></button><button type="button" data-o="both">Both</button></div>
+    <p class="lb" style="margin-top:14px">My price</p>
+    <div class="nrows bpct"><div class="nrow"><div><b id="pctv">At market</b><small>Shown on your cards, and used to price a trade</small></div><span class="sp"></span><button type="button" class="circ btn glass" id="pctdn" aria-label="Lower my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><button type="button" class="circ btn glass" id="pctup" aria-label="Raise my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
   </div>
+</section>
+<section class="panel frost" id="poff" aria-hidden="true" aria-label="Offers">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Offers</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="poffb"></div>
+</section>
+<section class="panel frost" id="poffer" aria-hidden="true" aria-label="Offer">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="poffert">Offer</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pofferb"></div>
+</section>
+<section class="panel frost" id="pmake" aria-hidden="true" aria-label="Make an offer">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="pmaket">Make an offer</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="pmakeb"></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="msend" data-k="do">Send offer</button></div>
+</section>
+<section class="panel frost" id="pmeet" aria-hidden="true" aria-label="Meet at">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Meet at</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="meetpick" data-k="pick"></div><p class="pnote">Events from the calendar in the next three weeks. Pick the one you plan to be at; the other player sees it.</p></div>
 </section>
 <script>
 (function(){
   "use strict";
   var A = window.RAVI_ACCT;
   var $ = function(id){ return document.getElementById(id); };
-  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset"), psort = $("psort"), pself = $("pself");
+  var scrim = $("scrim"), pnav = $("pnav"), pwho = $("pwho"), pcard = $("pcard"), pset = $("pset"), psort = $("psort"), pself = $("pself"), poff = $("poff"), poffer = $("poffer"), pmake = $("pmake"), pmeet = $("pmeet");
   function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]; }); }
 
   // MENUS: one on screen, a stack behind it (as the Tier list); a deeper menu slides in from the
@@ -316,10 +355,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       out.me.have = Number.isSafeInteger(j.me.have) ? j.me.have : 0;
       out.me.want = Number.isSafeInteger(j.me.want) ? j.me.want : 0;
     }
-    (Array.isArray(j.people) ? j.people : []).forEach(function(x){ var f = okFace(x); if (f) { out.people[f.h] = f; } });
+    function more(f, x){ f.open = OPENW[x.open] ? x.open : "trade"; f.pct = Number.isSafeInteger(x.pct) && x.pct >= 50 && x.pct <= 150 ? x.pct : 100; return f; }
+    (Array.isArray(j.people) ? j.people : []).forEach(function(x){ var f = okFace(x); if (f) { out.people[f.h] = more(f, x); } });
     (Array.isArray(j.traders) ? j.traders : []).forEach(function(x){
       var f = okFace(x);
       if (!f) { return; }
+      more(f, x);
       out.people[f.h] = out.people[f.h] || f;
       f.has = okLines(x.has); f.wants = okLines(x.wants); f.two = x.two === 1 ? 1 : 0; f.near = x.near === 1 ? 1 : 0;
       if (f.has.length || f.wants.length) { out.traders.push(f); }
@@ -526,10 +567,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // ---- THE PLAYER MENU: everything matched both ways, priced, and Price this trade ----
   var WHO = null;
   function grid(list, h, side){
+    var gp = h === "self" ? myPct() : side === "wants" ? myPct() : ((DATA.people[h] || {}).pct || 100);
     return '<div class="cgrid g4">' + list.slice().sort(byValue).map(function(x){
-      var c = card(x.i);
+      var c = card(x.i), gu = usd(x.i, x.f);
       return '<div class="ctile"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-c="' + x.i + "|" + esc(x.f) + '" data-who="' + esc(h) + '" data-side="' + side + '" aria-label="' + esc(cname(x.i) + ", " + x.f) + '" data-k="card">' + img(c) + '</button>'
-        + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(usd(x.i, x.f)) + '</b></div><span class="ttot">' + esc((x.q > 1 ? x.q + "x " : "") + (x.alt ? "Other printing" : x.f)) + '</span></div></div>';
+        + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(gu == null ? null : gu * gp / 100) + '</b></div><span class="ttot">' + esc((x.q > 1 ? x.q + "x " : "") + (x.alt ? "Other printing" : x.f)) + '</span></div></div>';
     }).join("") + '</div>';
   }
   function total(list){ var s = 0, any = false; list.forEach(function(x){ var u = usd(x.i, x.f); if (u != null) { s += u * x.q; any = true; } }); return any ? s : null; }
@@ -542,17 +584,23 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var t = tradeOf(WHO) || { has: [], wants: [], two: 0 };
     var rest = DATA.browse.filter(function(r){ return r.h === WHO && !t.has.some(function(x){ return x.i === r.i && x.f === r.f; }); });
     $("pwhot").textContent = nameOf(f);
-    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + (t.two ? BOTH : '') + '</div></div>';
+    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '<small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small>' + (t.two ? BOTH : '') + '</div></div>';
     if (t.has.length) { h += '<p class="bh3">Has ' + plural(cardsN(t.has), "card", "cards") + ' you want</p>' + grid(t.has, WHO, "has"); }
     if (t.wants.length) { h += '<p class="bh3">Wants ' + plural(cardsN(t.wants), "card", "cards") + ' you have</p>' + grid(t.wants, WHO, "wants"); }
     if (t.has.length || t.wants.length) {
       var th = total(t.has), yo = total(t.wants);
+      th = th == null ? null : th * f.pct / 100; yo = yo == null ? null : yo * myPct() / 100;
       h += '<div class="nrows"><div class="nrow"><div><b>Theirs</b><small>' + plural(cardsN(t.has), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(th) + '</span></div>'
         + '<div class="nrow"><div><b>Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div></div>';
       h += '<button type="button" class="pact btn glass" id="bprice" data-k="do">Price this trade</button><p class="bmsg" id="bpricemsg" hidden></p>';
     }
+    var ow = offerWith(WHO);
+    if (t.has.length || t.wants.length || rest.length || ow) {
+      h += '<button type="button" class="pact btn glass" id="bmake" data-k="deeper" style="margin-top:8px"' + (!ow && !selfSaved() ? ' disabled' : '') + '>' + (ow ? (ow.st === "accepted" ? "See your agreed trade" : "See your offer") : "Make an offer") + '</button>';
+      if (!ow && !selfSaved()) { h += '<p class="pnote">Save your account to make offers: tap your picture, top right.</p>'; }
+    }
     if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
-    h += '<p class="pnote">Prices are market price, a starting point to agree on. Offers, and picking the event where you meet, come next.</p>';
+    h += '<p class="pnote">Prices are each player\'s own percent of market, a starting point to agree on.</p>';
     $("pwhob").innerHTML = h;
   }
   pwho.__redraw = drawWho;
@@ -575,7 +623,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     var o = cur && typeof cur === "object" ? cur : {};
     function lines(list){ return list.map(function(x){ return { i: x.i, s: x.f, q: x.q }; }); }
-    o.s1 = lines(t.wants); o.s2 = lines(t.has); o.n1 = ""; o.n2 = nameOf(f).replace(/^@/, "").slice(0, 16); o.side = 2; o.p1 = 100; o.p2 = 100;
+    o.s1 = lines(t.wants); o.s2 = lines(t.has); o.n1 = ""; o.n2 = nameOf(f).replace(/^@/, "").slice(0, 16); o.side = 2; o.p1 = myPct(); o.p2 = f.pct || 100;
     if (o.cur !== "USD" && o.cur !== "CAD") { o.cur = CUR; }
     try { localStorage.setItem("vir.trade.v1", JSON.stringify(o)); } catch (e) {}
     location.href = "../trade/";
@@ -692,13 +740,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     $("shpick").innerHTML = rows.join("");
     var v = A && A.view && A.view();
     $("shguest").hidden = LOADED ? DATA.saved : !(v && v.guest);
+    drawOpen();
   }
   $("shpick").addEventListener("click", function(ev){
     var b = ev.target.closest("button");
     if (!b) { return; }
     if (b.hasAttribute("data-wish")) {
       var on = !shareWish();
-      try { localStorage.setItem("vir.board.v1", JSON.stringify({ wish: on })); } catch (e) {}
+      putBoardSet({ wish: on });
     } else {
       var s = coll(), id = b.getAttribute("data-bind");
       if (!s) { return; }
@@ -710,9 +759,396 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     CHANGED = true;
   });
 
+  // ---- OFFERS (plan 2 M2 block 2, Mako 2026-11-01; server/live/offers.js): cards both ways and
+  // cash on either side, no free text. Accept, decline or counter; each player picks the event
+  // where they meet; Trade done moves the cards in this phone's Collection. RAVI never handles money.
+  var OFF = [], OFFLOADED = false, OFFERR = "", OFFID = null, DAYMS = 86400000;
+  var STW = { open: "Open", accepted: "Agreed", declined: "Declined", withdrawn: "Withdrawn", countered: "Countered", expired: "Expired", cancelled: "Called off", lapsed: "Lapsed", done: "Done" };
+  var OPENW = { trade: "Open to trades", sale: "Open to sales", both: "Open to trades and sales" };
+  function okId(v){ return typeof v === "string" && /^[0-9a-f]{16}$/.test(v); }
+  function okEv(v){ return typeof v === "string" && /^[a-z]{0,4}\d{6,24}$/.test(v) ? v : ""; }
+  function okPct(v){ return Number.isSafeInteger(v) && v >= 50 && v <= 150 ? v : 100; }
+  function okOpen(v){ return OPENW[v] ? v : "trade"; }
+  function okCash(c){ return c && Number.isSafeInteger(c.n) && c.n > 0 && c.n <= 9999 && (c.by === "me" || c.by === "them") ? { n: c.n, by: c.by, cur: c.cur === "USD" ? "USD" : "CAD" } : null; }
+  function cleanOffers(j){
+    var out = [];
+    (j && j.v === 1 && Array.isArray(j.offers) ? j.offers : []).forEach(function(x){
+      if (!x || !okId(x.id) || !STW[x.st]) { return; }
+      var f = okFace(Object.assign({}, x.who, { h: x.h }));
+      if (!f) { return; }
+      f.open = okOpen(x.who && x.who.open); f.pct = okPct(x.who && x.who.pct);
+      var m = x.meet || {}, d = x.done || {};
+      out.push({ id: x.id, st: x.st, sent: x.sent === true, who: f, give: okLines(x.give), get: okLines(x.get), cash: okCash(x.cash),
+        exp: Number.isSafeInteger(x.exp) ? x.exp : 0, upd: Number.isSafeInteger(x.upd) ? x.upd : 0,
+        meet: { me: okEv(m.me), them: okEv(m.them) }, done: { me: d.me === true, them: d.them === true },
+        riot: typeof x.riot === "string" && x.riot.length <= 40 && !/[<>\u0000-\u001f]/.test(x.riot) ? x.riot : "", turn: x.turn === 1 });
+    });
+    return out;
+  }
+  function badge(){
+    var b = $("taboff"), n = OFF.filter(function(o){ return o.turn; }).length, el = b.querySelector(".tbadge");
+    if (!n) { if (el) { el.remove(); } b.setAttribute("aria-label", "Offers"); return; }
+    if (!el) { el = document.createElement("span"); el.className = "tbadge"; b.appendChild(el); }
+    el.textContent = n > 9 ? "9+" : String(n);
+    b.setAttribute("aria-label", "Offers, " + plural(n, "waiting on you", "waiting on you"));
+  }
+  function loadOffers(after){
+    if (!A || !A.signedIn() || !A.offers) { return; }
+    A.offers(function(err, j){
+      OFFERR = err || ""; if (!err) { OFF = cleanOffers(j); OFFLOADED = true; }
+      badge();
+      if (after) { after(); }
+    });
+  }
+  function offerWith(h){ for (var i = 0; i < OFF.length; i++) { if (OFF[i].who.h === h && (OFF[i].st === "open" || OFF[i].st === "accepted")) { return OFF[i]; } } return null; }
+  function offerById(id){ for (var i = 0; i < OFF.length; i++) { if (OFF[i].id === id) { return OFF[i]; } } return null; }
+  function cashWords(c){ return c ? (c.by === "me" ? "You add $" : "They add $") + c.n + " " + c.cur : ""; }
+  function daysLeft(t){ var d = Math.max(1, Math.ceil((t - Date.now()) / DAYMS)); return plural(d, "day", "days") + " left"; }
+
+  // the events on the calendar, for Meet at (data/events.json)
+  var EV = {}, EVLIST = [];
+  fetch("../data/events.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
+    (d && Array.isArray(d.events) ? d.events : []).forEach(function(e){
+      if (!e || typeof e.id !== "string" || !okEv(e.id) || typeof e.start !== "string") { return; }
+      var t = Date.parse(e.start);
+      if (!isFinite(t)) { return; }
+      EV[e.id] = { id: e.id, t: t, name: typeof e.name === "string" ? e.name.slice(0, 80) : "An event", where: typeof e.venue === "string" ? e.venue.slice(0, 60) : "" };
+    });
+    EVLIST = Object.keys(EV).map(function(k){ return EV[k]; }).sort(function(a, b){ return a.t - b.t; });
+    if (OPENP === poffer) { drawOffer(); }
+  }).catch(function(){});
+  var DFMT = new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  function evWhen(e){ return DFMT.format(new Date(e.t)).replace(/\./g, ""); }
+  function evWords(id){
+    if (!id) { return ""; }
+    var e = EV[id];
+    if (!e) { return "An event no longer on the calendar"; }
+    return e.name + " · " + evWhen(e) + (e.where ? ", " + e.where : "");
+  }
+
+  // the Offers menu: waiting on you, agreed, sent, then the past
+  function offerLine(o){
+    var bits = [];
+    if (o.get.length) { bits.push("You get " + cardsN(o.get)); }
+    if (o.give.length) { bits.push("you give " + cardsN(o.give)); }
+    var s = bits.join(", "); s = s.charAt(0).toUpperCase() + s.slice(1);
+    if (o.cash) { s += (s ? ", " : "") + (o.cash.by === "me" ? "you add $" : "they add $") + o.cash.n; }
+    return s;
+  }
+  function offerState(o){
+    if (o.st === "open") { return (o.turn ? "Waiting on you, " : "Waiting on them, ") + daysLeft(o.exp); }
+    if (o.st === "accepted") { return o.done.me ? "Agreed: you marked it done" : o.meet.me ? "Agreed: you meet at " + ((EV[o.meet.me] || {}).name || "an event") : "Agreed: pick where you meet"; }
+    return STW[o.st];
+  }
+  function offerRow(o){
+    return '<button type="button" class="door rec bwr btn glass" data-off="' + esc(o.id) + '">' + pic(o.who, 1) + '<span class="t">' + esc(nameOf(o.who)) + '<small>' + esc(offerState(o) + " · " + offerLine(o)) + '</small></span><span class="sp"></span>' + CVR + '</button>';
+  }
+  function drawOffers(){
+    var h = "";
+    if (!selfSaved()) { h += '<p class="bmsg">Save your account to make and answer offers: tap your picture, top right.</p>'; }
+    if (OFFERR && !OFFLOADED) { h += '<p class="bmsg">' + esc(OFFERR) + '</p>'; }
+    var groups = [["Waiting on you", OFF.filter(function(o){ return o.turn; })], ["Agreed", OFF.filter(function(o){ return o.st === "accepted"; })],
+      ["Sent", OFF.filter(function(o){ return o.st === "open" && o.sent; })], ["Past", OFF.filter(function(o){ return o.st !== "open" && o.st !== "accepted"; }).slice(0, 20)]];
+    var any = false;
+    groups.forEach(function(g){ if (g[1].length) { any = true; h += '<p class="bh3">' + esc(g[0]) + '</p><div class="doors" data-k="deeper">' + g[1].map(offerRow).join("") + '</div>'; } });
+    if (!any && OFFLOADED) { h += '<p class="bmsg">No offers yet. Open a player on the board and tap Make an offer.</p>'; }
+    if (!any && !OFFLOADED && !OFFERR) { h += '<p class="bmsg">Loading your offers.</p>'; }
+    h += '<p class="pnote">An open offer lasts ' + 7 + ' days. Only the two of you see an offer. RAVI never handles money: cash is what you agree to hand over when you meet.</p>';
+    $("poffb").innerHTML = h;
+  }
+  poff.__redraw = drawOffers;
+
+  // one offer: the cards each way, the cash, where each of you meets, and what you can do next
+  var ARM = { k: "", t: 0 };
+  function armed(k, b, msg){
+    if (ARM.k === k && Date.now() - ARM.t < 3000) { ARM.k = ""; return true; }
+    ARM.k = k; ARM.t = Date.now();
+    b.classList.add("armed"); b.querySelector(".t").textContent = "Sure? Tap again";
+    if (msg) { omsg(msg); }
+    setTimeout(function(){ if (ARM.k === k && Date.now() - ARM.t >= 3000) { ARM.k = ""; if (OPENP === poffer) { drawOffer(); } } }, 3100);
+    return false;
+  }
+  function omsg(t){ var m = $("omsg"); if (m) { m.hidden = !t; m.textContent = t || ""; } }
+  function lineGrid(list, pct){
+    return '<div class="cgrid g4">' + list.slice().sort(byValue).map(function(x){
+      var c = card(x.i), u = usd(x.i, x.f);
+      return '<div class="ctile"><span class="cpic' + (sealed(c) ? " sq" : "") + '" role="img" aria-label="' + esc(cname(x.i) + ", " + x.f) + '">' + img(c) + '</span>'
+        + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(u == null ? null : u * pct / 100) + '</b></div><span class="ttot">' + esc((x.q > 1 ? x.q + "x " : "") + x.f) + '</span></div></div>';
+    }).join("") + '</div>';
+  }
+  function myPct(){ return okPct(boardSet().pct); }
+  function drawOffer(){
+    var o = offerById(OFFID);
+    if (!o) { return; }
+    var f = o.who;
+    $("poffert").textContent = nameOf(f);
+    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
+    var st = o.st === "open" ? (o.turn ? "<b>Waiting on you.</b> " + daysLeft(o.exp) + " to answer." : "<b>Waiting on them.</b> " + daysLeft(o.exp) + " for them to answer.")
+      : o.st === "accepted" ? "<b>Agreed.</b> " + (o.done.me ? "You marked it done; waiting on them." : o.done.them ? "They marked it done." : "Meet up, swap, then tap Trade done.")
+      : "<b>" + esc(STW[o.st]) + ".</b>";
+    h += '<p class="ost">' + st + '</p>';
+    if (o.get.length) { h += '<p class="bh3">You get ' + plural(cardsN(o.get), "card", "cards") + '</p>' + lineGrid(o.get, f.pct); }
+    if (o.give.length) { h += '<p class="bh3">You give ' + plural(cardsN(o.give), "card", "cards") + '</p>' + lineGrid(o.give, myPct()); }
+    var tg = total(o.get), tv = total(o.give);
+    h += '<div class="nrows">';
+    if (o.get.length) { h += '<div class="nrow"><div><b>You get</b><small>' + (f.pct === 100 ? "At market" : f.pct + "% of market, their price") + '</small></div><span class="sp"></span><span class="v">' + money(tg == null ? null : tg * f.pct / 100) + '</span></div>'; }
+    if (o.give.length) { h += '<div class="nrow"><div><b>You give</b><small>' + (myPct() === 100 ? "At market" : myPct() + "% of market, your price") + '</small></div><span class="sp"></span><span class="v">' + money(tv == null ? null : tv * myPct() / 100) + '</span></div>'; }
+    if (o.cash) { h += '<div class="nrow"><div><b>Cash</b><small>' + (o.cash.by === "me" ? "You pay them" : "They pay you") + '</small></div><span class="sp"></span><span class="v">$' + o.cash.n + ' ' + o.cash.cur + '</span></div>'; }
+    if (o.st === "accepted" || o.st === "done") { h += '<div class="nrow"><div><b>Their Riot ID</b><small>Shown to you now that you agreed</small></div><span class="sp"></span><span class="v">' + esc(o.riot || "Not claimed") + '</span></div>'; }
+    h += '</div>';
+    if (o.st === "open" || o.st === "accepted") {
+      h += '<p class="bh3" style="margin-top:18px">Meet at</p><div class="doors" data-k="deeper"><button type="button" class="door rec btn glass" id="omeet"><span class="t">You</span><small>' + esc(o.meet.me ? evWords(o.meet.me) : "Pick the event you plan to be at") + '</small>' + CVR + '</button></div>';
+      h += '<div class="nrows"><div class="nrow"><div><b>Them</b><small>' + esc(o.meet.them ? evWords(o.meet.them) : "Not picked yet") + '</small></div></div></div>';
+      if (o.meet.me && o.meet.me === o.meet.them) { h += '<p class="pnote" style="margin-top:8px">You both picked the same event.</p>'; }
+    }
+    var acts = [];
+    if (o.st === "open" && o.turn) { acts.push(["accept", "Accept"], ["counter", "Counter", 1], ["decline", "Decline"]); }
+    if (o.st === "open" && o.sent) { acts.push(["withdraw", "Withdraw this offer"]); }
+    if (o.st === "accepted" && !o.done.me) { acts.push(["done", "Trade done"]); }
+    if (o.st === "accepted") { acts.push(["cancel", "Call it off"]); }
+    if (o.st !== "open" && o.st !== "accepted" && tradeOf(f.h)) { acts.push(["again", "Make a new offer", 1]); }
+    if (acts.length) {
+      h += '<div class="doors oacts" data-k="' + (acts.some(function(a){ return a[2]; }) ? "deeper" : "do") + '">' + acts.map(function(a){
+        return '<button type="button" class="door btn glass' + (a[2] ? "" : " act") + '" data-oa="' + a[0] + '"><span class="t">' + esc(a[1]) + '</span><span class="sp"></span>' + (a[2] ? CVR : "") + '</button>';
+      }).join("") + '</div>';
+    }
+    h += '<p class="bmsg" id="omsg" hidden></p>';
+    if (o.st === "accepted") { h += '<p class="pnote">Trade done moves the cards in your Collection: what you give leaves your For trade binders, what you get lands in No binder and comes off your Wishlist.</p>'; }
+    $("pofferb").innerHTML = h;
+  }
+  poffer.__redraw = drawOffer;
+  function openOffer(id, deep){ OFFID = id; ARM.k = ""; drawOffer(); if (deep) { deeper(poffer); } else { openPanel(poffer); } }
+  function act(what, body, then){
+    A.offerAct(what, body, function(err, j){
+      if (err) { omsg(err); return; }
+      loadOffers(function(){ if (OPENP === poffer) { drawOffer(); } if (then) { then(j); } });
+    });
+  }
+  poffer.addEventListener("click", function(ev){
+    var b = ev.target.closest("[data-oa],#omeet");
+    if (!b) { return; }
+    var o = offerById(OFFID);
+    if (!o) { return; }
+    if (b.id === "omeet") { drawMeet(); deeper(pmeet); return; }
+    var a = b.getAttribute("data-oa");
+    if (a === "accept") { act("answer", { id: o.id, act: "accept" }); return; }
+    if (a === "counter") { startMake(o.who.h, o); return; }
+    if (a === "again") { startMake(o.who.h, null); return; }
+    if (a === "decline" && armed("decline", b, "They see it as declined.")) { act("answer", { id: o.id, act: "decline" }); return; }
+    if (a === "withdraw" && armed("withdraw", b)) { act("answer", { id: o.id, act: "withdraw" }); return; }
+    if (a === "cancel" && armed("cancel", b, "This calls off the trade for you both.")) { act("answer", { id: o.id, act: "cancel" }); return; }
+    if (a === "done" && armed("done", b, "This moves the cards in your Collection.")) {
+      act("done", { id: o.id }, function(j){ if (j && j.first) { omsg(settleColl(o)); } });
+    }
+  });
+
+  // Meet at: the events in the next three weeks, as on the calendar
+  function drawMeet(){
+    var o = offerById(OFFID), now = Date.now();
+    if (!o) { return; }
+    var rows = ['<button type="button" data-ev=""' + (o.meet.me ? '' : ' class="on"') + '>Not decided</button>'];
+    EVLIST.filter(function(e){ return e.t > now - 3 * 3600000 && e.t < now + 21 * DAYMS; }).forEach(function(e){
+      var on = o.meet.me === e.id;
+      rows.push('<button type="button" class="rec' + (on ? " on" : "") + '" data-ev="' + esc(e.id) + '"><span class="t">' + esc(e.name) + '<small>' + esc(evWhen(e) + (e.where ? ", " + e.where : "")) + '</small></span></button>');
+    });
+    if (rows.length === 1) { rows.push('<button type="button" disabled>No events on the calendar yet</button>'); }
+    $("meetpick").innerHTML = rows.join("");
+  }
+  pmeet.__redraw = drawMeet;
+  $("meetpick").addEventListener("click", function(ev){
+    var b = ev.target.closest("button[data-ev]"), o = offerById(OFFID);
+    if (!b || !o) { return; }
+    A.offerAct("meet", { id: o.id, ev: b.getAttribute("data-ev") }, function(err){
+      if (err) { return; }
+      loadOffers(function(){ back(); });
+    });
+  });
+
+  // Trade done on this phone: what you gave leaves your binders (For trade ones first), what you got
+  // lands in No binder and comes off your Wishlist. Synced like any other change.
+  function settleColl(o){
+    var s = coll();
+    if (!s) { return "Your Collection isn't on this phone, so nothing moved."; }
+    var day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    var out = 0, inn = 0;
+    var order = s.ports.filter(function(p){ return p && p.trade === true; }).concat(s.ports.filter(function(p){ return p && p.trade !== true; }));
+    o.give.forEach(function(x){
+      var need = x.q;
+      order.map(function(p){ return p.items; }).concat([s.loose]).forEach(function(list){
+        if (!Array.isArray(list)) { return; }
+        for (var i = list.length - 1; i >= 0 && need > 0; i--) {
+          var h = list[i];
+          if (!h || +h.i !== x.i || h.f !== x.f) { continue; }
+          var take = Math.min(need, +h.q || 0);
+          need -= take; out += take; h.q = (+h.q || 0) - take;
+          if (h.q <= 0) { list.splice(i, 1); }
+        }
+      });
+    });
+    s.loose = Array.isArray(s.loose) ? s.loose : [];
+    s.wish = Array.isArray(s.wish) ? s.wish : [];
+    o.get.forEach(function(x){
+      s.loose.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), i: x.i, f: x.f, q: x.q, d: day, paid: null, pc: CUR, cond: "" });
+      inn += x.q;
+      var need = x.q;
+      [function(h){ return h.f === x.f; }, function(){ return true; }].forEach(function(same){
+        for (var i = s.wish.length - 1; i >= 0 && need > 0; i--) {
+          var h = s.wish[i];
+          if (!h || +h.i !== x.i || !same(h)) { continue; }
+          var take = Math.min(need, +h.q || 0);
+          need -= take; h.q = (+h.q || 0) - take;
+          if (h.q <= 0) { s.wish.splice(i, 1); }
+        }
+      });
+    });
+    try { localStorage.setItem("vir.coll.v1", JSON.stringify(s)); } catch (e) { return "Your Collection couldn't be saved on this phone."; }
+    mineIndex(); CHANGED = true;
+    return "Your Collection is updated: " + plural(out, "card", "cards") + " out, " + plural(inn, "card", "cards") + " in.";
+  }
+
+  // MAKE AN OFFER, or a counter: tap a card to put it in, again for another copy, past its count to take it out
+  var MK = null;
+  function theirShared(h){
+    var o = {}, out = [], t = tradeOf(h);
+    function add(x){ var k = x.i + "|" + x.f; if (!o[k]) { o[k] = { i: x.i, f: x.f, q: x.q, alt: x.alt ? 1 : 0, m: 0 }; out.push(o[k]); } else { o[k].q = Math.max(o[k].q, x.q); } }
+    if (t) { t.has.forEach(function(x){ add(x); o[x.i + "|" + x.f].m = 1; }); }
+    DATA.browse.forEach(function(r){ if (r.h === h) { add(r); } });
+    return out;
+  }
+  function startMake(h, re){
+    var f = re ? re.who : DATA.people[h];
+    if (!f) { return; }
+    var mine = myShare().have.map(function(x){ return { i: x.i, f: x.f, q: x.q, alt: 0, m: 0 }; }), theirs = theirShared(h), t = tradeOf(h);
+    var wants = {};
+    if (t) { t.wants.forEach(function(x){ wants[x.i + "|" + x.f] = 1; }); }
+    mine.forEach(function(x){ x.m = wants[x.i + "|" + x.f] ? 1 : 0; });
+    MK = { h: h, f: f, re: re ? re.id : null, theirs: theirs, mine: mine, get: {}, give: {}, cash: { by: "", n: "" }, err: "" };
+    if (re) {
+      // a counter starts from the offer as it stands, seen from your side
+      re.give.forEach(function(x){ MK.give[x.i + "|" + x.f] = x.q; if (!mine.some(function(y){ return y.i === x.i && y.f === x.f; })) { mine.push({ i: x.i, f: x.f, q: x.q, alt: 0, m: 1 }); } });
+      re.get.forEach(function(x){ MK.get[x.i + "|" + x.f] = x.q; if (!theirs.some(function(y){ return y.i === x.i && y.f === x.f; })) { theirs.push({ i: x.i, f: x.f, q: x.q, alt: 0, m: 1 }); } });
+      if (re.cash) { MK.cash = { by: re.cash.by, n: String(re.cash.n) }; }
+    } else {
+      theirs.forEach(function(x){ if (x.m) { MK.get[x.i + "|" + x.f] = x.q; } });
+      if (f.open === "sale") { var tv = 0; theirs.forEach(function(x){ if (MK.get[x.i + "|" + x.f]) { tv += (usd(x.i, x.f) || 0) * x.q; } }); MK.cash = { by: "me", n: tv ? String(Math.max(1, Math.round((CUR === "CAD" ? tv * FX : tv) * f.pct / 100))) : "" }; }
+      else { mine.forEach(function(x){ if (x.m) { MK.give[x.i + "|" + x.f] = x.q; } }); }
+    }
+    $("pmaket").textContent = re ? "Counter" : "Make an offer";
+    $("msend").textContent = re ? "Send counter" : "Send offer";
+    drawMake();
+    deeper(pmake);
+  }
+  function picked(map, list){ var out = []; list.forEach(function(x){ var q = map[x.i + "|" + x.f] || 0; if (q > 0) { out.push({ i: x.i, f: x.f, q: q }); } }); return out; }
+  function mkCash(){ var n = parseInt(MK.cash.n, 10); return MK.cash.by && n > 0 ? { n: Math.min(9999, n), by: MK.cash.by, cur: CUR } : null; }
+  function mkProblem(){
+    var get = picked(MK.get, MK.theirs), give = picked(MK.give, MK.mine), c = mkCash();
+    if (!selfSaved()) { return "Save your account first: tap your picture, top right."; }
+    if (!get.length && !give.length) { return "Tap a card to put it in the offer."; }
+    if (MK.cash.by && !c) { return "Type how many dollars, or pick No cash."; }
+    if (MK.re) { return ""; }
+    if (!get.length) { return "Put in at least one of their cards."; }
+    var open = MK.f.open;
+    if (give.length && open === "sale") { return nameOf(MK.f) + " is open to sales only: take your cards out and add cash."; }
+    if (!give.length && !(c && c.by === "me")) { return open === "sale" ? "Add the cash you'd pay." : "Add a card of yours" + (open === "both" ? ", or cash you'd pay." : "."); }
+    if (!give.length && open === "trade") { return nameOf(MK.f) + " is open to trades only: add a card of yours."; }
+    return "";
+  }
+  function mkTile(x, side){
+    var c = card(x.i), k = x.i + "|" + x.f, q = (side === "get" ? MK.get : MK.give)[k] || 0, u = usd(x.i, x.f), pct = side === "get" ? MK.f.pct : myPct();
+    var cap = q ? "In: " + q + " of " + x.q : (side === "give" && x.m ? "Wants this" : side === "get" && x.m ? "On your Wishlist" : (x.q > 1 ? x.q + " to trade" : x.f));
+    return '<div class="ctile' + (q ? " sel" : "") + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-mk="' + side + "|" + esc(k) + '" aria-pressed="' + (q > 0) + '" aria-label="' + esc(cname(x.i) + ", " + x.f + (q ? ", " + q + " in the offer" : "")) + '" data-k="card">' + img(c) + '</button>'
+      + (q ? '<span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg></span>' : '')
+      + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(u == null ? null : u * pct / 100) + '</b></div><span class="ttot">' + esc(cap) + '</span></div></div>';
+  }
+  function mkList(list, side){
+    if (!list.length) { return '<p class="bmsg">' + (side === "give" ? "Nothing in a For trade binder yet. Mark one in Trade board settings." : "Nothing of theirs is on the board right now.") + '</p>'; }
+    return '<div class="cgrid g4">' + list.slice().sort(function(a, b){ return b.m - a.m || byValue(a, b); }).map(function(x){ return mkTile(x, side); }).join("") + '</div>';
+  }
+  function drawMake(){
+    var f = MK.f, get = picked(MK.get, MK.theirs), give = picked(MK.give, MK.mine), c = mkCash();
+    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b><small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small></div></div>';
+    h += '<p class="bh3">You get</p>' + mkList(MK.theirs, "get");
+    h += '<p class="bh3" style="margin-top:18px">You give</p>' + mkList(MK.mine, "give");
+    h += '<p class="bh3" style="margin-top:18px">Cash</p><div class="mcash"><div class="seg" id="mcseg" role="group" aria-label="Cash" data-k="pick">'
+      + [["", "No cash"], ["me", "You add"], ["them", "They add"]].map(function(o){ return '<button type="button" data-by="' + o[0] + '" aria-pressed="' + (MK.cash.by === o[0]) + '">' + o[1] + '</button>'; }).join("")
+      + '</div><div class="nf' + (MK.cash.by ? "" : " off") + '"><input type="text" id="mcn" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Dollars, ' + CUR + '" aria-label="Dollars" value="' + esc(MK.cash.n) + '" data-k="type"></div></div>';
+    if (!MK.re && (f.open === "sale" || f.open === "both") && get.length && give.length) {
+      h += '<div class="doors" data-k="do" style="margin-top:14px"><button type="button" class="door act btn glass" id="mbuy"><span class="t">I\'d buy these instead</span><span class="sp"></span><small>Cash, no cards of yours</small></button></div>';
+    }
+    var tg = total(get), tv = total(give);
+    h += '<div class="nrows"><div class="nrow"><div><b>You get</b><small>' + plural(cardsN(get), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(tg == null ? null : tg * f.pct / 100) + '</span></div>'
+      + '<div class="nrow"><div><b>You give</b><small>' + plural(cardsN(give), "card", "cards") + (c ? ", " + cashWords(c).replace(/^You add/, "plus").replace(/^They add/, "they add") : "") + '</small></div><span class="sp"></span><span class="v">' + money(tv == null ? null : tv * myPct() / 100) + '</span></div></div>';
+    h += '<p class="bmsg" id="mmsg"' + (mkProblem() || MK.err ? '' : ' hidden') + '>' + esc(MK.err || mkProblem()) + '</p>';
+    h += '<p class="pnote">Cards only, no messages. An open offer lasts 7 days. Prices are each player\'s own percent of market, a starting point to agree on.</p>';
+    var b = $("pmakeb"), y = b.scrollTop;
+    b.innerHTML = h; b.scrollTop = y;
+    $("msend").disabled = !!mkProblem();
+  }
+  pmake.__redraw = drawMake;
+  pmake.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-mk],#mcseg > button,#mbuy");
+    if (!t || !MK) { return; }
+    MK.err = "";
+    if (t.id === "mbuy") {
+      var tv = 0; picked(MK.get, MK.theirs).forEach(function(x){ tv += (usd(x.i, x.f) || 0) * x.q; });
+      MK.give = {}; MK.cash = { by: "me", n: tv ? String(Math.max(1, Math.round((CUR === "CAD" ? tv * FX : tv) * MK.f.pct / 100))) : MK.cash.n };
+    } else if (t.hasAttribute("data-by")) {
+      MK.cash.by = t.getAttribute("data-by");
+      if (!MK.cash.by) { MK.cash.n = ""; }
+    } else {
+      var v = t.getAttribute("data-mk"), side = v.slice(0, v.indexOf("|")), k = v.slice(v.indexOf("|") + 1);
+      var map = side === "get" ? MK.get : MK.give, list = side === "get" ? MK.theirs : MK.mine, max = 0;
+      list.forEach(function(x){ if (x.i + "|" + x.f === k) { max = x.q; } });
+      var q = (map[k] || 0) + 1;
+      if (q > max) { delete map[k]; } else { map[k] = q; }
+    }
+    drawMake();
+  });
+  pmake.addEventListener("input", function(ev){
+    if (ev.target.id !== "mcn" || !MK) { return; }
+    var v = ev.target.value.replace(/[^0-9]/g, "").slice(0, 4);
+    if (v !== ev.target.value) { ev.target.value = v; }
+    MK.cash.n = v;
+    var p = mkProblem(), m = $("mmsg");
+    m.hidden = !p; m.textContent = p;
+    $("msend").disabled = !!p;
+  });
+  $("msend").addEventListener("click", function(){
+    if (!MK || mkProblem()) { return; }
+    var b = this, body = { give: picked(MK.give, MK.mine), get: picked(MK.get, MK.theirs) }, c = mkCash();
+    if (c) { body.cash = c; }
+    if (MK.re) { body.re = MK.re; } else { body.to = MK.h; }
+    b.disabled = true;
+    A.offerSend(body, function(err, j){
+      b.disabled = false;
+      if (err) { MK.err = err; drawMake(); return; }
+      MK = null;
+      loadOffers(function(){ STACK = [poff]; drawOffers(); OFFID = j && okId(j.id) ? j.id : null; if (OFFID) { drawOffer(); STACK.push(poffer); show(poffer, false, 1); } else { show(poff); } });
+    });
+  });
+  $("taboff").addEventListener("click", function(){
+    if (OPENP === poff) { hide(); return; }
+    drawOffers(); openPanel(poff);
+    loadOffers(function(){ if (OPENP === poff) { drawOffers(); } });
+  });
+  poff.addEventListener("click", function(ev){ var b = ev.target.closest("[data-off]"); if (b) { openOffer(b.getAttribute("data-off"), true); } });
+
+  // TRADE BOARD SETTINGS, part two: Open to, and My price (vir.board.v1, beside Share your Wishlist)
+  function boardSet(){ try { var v = JSON.parse(localStorage.getItem("vir.board.v1")); return v && typeof v === "object" && !Array.isArray(v) ? v : {}; } catch (e) { return {}; } }
+  function putBoardSet(ch){ var v = boardSet(); Object.keys(ch).forEach(function(k){ v[k] = ch[k]; }); try { localStorage.setItem("vir.board.v1", JSON.stringify(v)); } catch (e) {} CHANGED = true; }
+  function drawOpen(){
+    var v = boardSet(), o = okOpen(v.open), p = okPct(v.pct);
+    Array.prototype.forEach.call($("opick").children, function(b){ var on = b.getAttribute("data-o") === o; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
+    $("pctv").textContent = p === 100 ? "At market" : p + "% of market";
+    $("pctdn").disabled = p <= 50; $("pctup").disabled = p >= 150;
+  }
+  $("opick").addEventListener("click", function(ev){ var b = ev.target.closest("button[data-o]"); if (b) { putBoardSet({ open: b.getAttribute("data-o") }); drawOpen(); } });
+  $("pctdn").addEventListener("click", function(){ putBoardSet({ pct: Math.max(50, myPct() - 5) }); drawOpen(); });
+  $("pctup").addEventListener("click", function(){ putBoardSet({ pct: Math.min(150, myPct() + 5) }); drawOpen(); });
+
   // ---- TAPS ----
   document.addEventListener("click", function(ev){
-    var t = ev.target.closest("#bview > button,.bwho,[data-c],.door[data-who],#bprice,#bqx");
+    var t = ev.target.closest("#bview > button,.bwho,[data-c],.door[data-who],#bprice,#bmake,#bqx");
     if (!t) { return; }
     if (t.id === "bqx") { $("bq").value = ""; Q = ""; t.disabled = true; draw(); return; }
     if (t.parentNode && t.parentNode.id === "bview") {
@@ -721,6 +1157,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       draw(); return;
     }
     if (t.id === "bprice") { priceIt(t); return; }
+    if (t.id === "bmake") { var ow = offerWith(WHO); if (ow) { openOffer(ow.id, true); } else { startMake(WHO, null); } return; }
     if (t.classList.contains("bwho")) { openWho(t.getAttribute("data-who"), !!OPENP); return; }
     if (t.classList.contains("door")) { openWho(t.getAttribute("data-who"), !!OPENP); return; }
     if (t.hasAttribute("data-c")) {
@@ -746,6 +1183,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         LOADING = false;
         if (err) { ERR = err; LOADED = false; draw(); return; }
         DATA = clean(j); LOADED = true; ERR = ""; mineIndex(); demandAll(); draw();
+        loadOffers(function(){ if (OPENP === poff) { drawOffers(); } else if (OPENP === pwho) { drawWho(); } });
       });
     }
     if (window.RAVI_SYNC) { window.RAVI_SYNC.run(ask); } else { ask(); }

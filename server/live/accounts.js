@@ -52,6 +52,7 @@
 // No dependencies: CBOR and the key handling are written here.
 
 import { BOARD_KEYS, rowsFrom, boardFor, handleOf } from "./board.js";
+import { OFFER, settingsFrom, cleanLines, holds, cleanCash, shapeOf, fits, settle, live, newOffer, cleanEvent, viewOf } from "./offers.js";
 
 export const RP_ID = "ravi.tools";
 export const ORIGINS = ["https://ravi.tools"];
@@ -65,7 +66,7 @@ export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page:
 // per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
 // sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
 // can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500 }; // per connection per day (guest: a store's wifi)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60 }; // offersend: per account (Trade board offers, plan 2 M2 block 2) // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -366,6 +367,11 @@ function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS board (acct TEXT, s TEXT, i INTEGER, f TEXT, q INTEGER, pub INTEGER, PRIMARY KEY (acct, s, i, f))");
   sql.exec("CREATE INDEX IF NOT EXISTS board_si ON board (s, i)");
   sql.exec("CREATE TABLE IF NOT EXISTS bh (h TEXT PRIMARY KEY, acct TEXT UNIQUE)");
+  // offers (offers.js): a sends, b answers; d the cards and cash; ma, mb where each meets; da, dbb each marked done
+  sql.exec("CREATE TABLE IF NOT EXISTS offer (id TEXT PRIMARY KEY, a TEXT, b TEXT, st TEXT, d TEXT, made INTEGER, upd INTEGER, exp INTEGER, re TEXT, ma TEXT, mb TEXT, da INTEGER, dbb INTEGER)");
+  sql.exec("CREATE INDEX IF NOT EXISTS offer_a ON offer (a)");
+  sql.exec("CREATE INDEX IF NOT EXISTS offer_b ON offer (b)");
+  sql.exec("CREATE TABLE IF NOT EXISTS bset (acct TEXT PRIMARY KEY, open TEXT, pct INTEGER)");
   function one(q) { const a = sql.exec.apply(sql, [q].concat(Array.prototype.slice.call(arguments, 1))).toArray(); return a[0] || null; }
   return {
     acct: (id) => one("SELECT id, uh, made, code, guest FROM acct WHERE id = ?", id),
@@ -395,6 +401,12 @@ function sqlStore(sql) {
     boardWanted: (me, max) => sql.exec("SELECT i, f, COUNT(*) AS n FROM board WHERE s = 'w' AND pub = 1 AND acct <> ? GROUP BY i, f ORDER BY n DESC LIMIT ?", me, max).toArray(),
     putHandle: (h, acct) => sql.exec("INSERT OR REPLACE INTO bh VALUES (?, ?)", h, acct),
     byHandle: (h) => { const x = one("SELECT acct FROM bh WHERE h = ?", h); return x ? x.acct : null; },
+    bset: (acct) => one("SELECT open, pct FROM bset WHERE acct = ?", acct),
+    putBset: (acct, x) => sql.exec("INSERT OR REPLACE INTO bset VALUES (?, ?, ?)", acct, x.open, x.pct),
+    offer: (id) => one("SELECT * FROM offer WHERE id = ?", id),
+    offersOf: (acct) => sql.exec("SELECT * FROM offer WHERE a = ? OR b = ? ORDER BY upd DESC LIMIT 400", acct, acct).toArray(),
+    putOffer: (o) => sql.exec("INSERT OR REPLACE INTO offer (id, a, b, st, d, made, upd, exp, re, ma, mb, da, dbb) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", o.id, o.a, o.b, o.st, o.d, o.made, o.upd, o.exp, o.re, o.ma, o.mb, o.da, o.dbb),
+    pruneOffers: (cut) => sql.exec("DELETE FROM offer WHERE st NOT IN ('open', 'accepted') AND upd < ?", cut),
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
@@ -416,6 +428,8 @@ function sqlStore(sql) {
       sql.exec("DELETE FROM item WHERE acct = ?", id);
       sql.exec("DELETE FROM board WHERE acct = ?", id);
       sql.exec("DELETE FROM bh WHERE acct = ?", id);
+      sql.exec("DELETE FROM offer WHERE a = ? OR b = ?", id, id);
+      sql.exec("DELETE FROM bset WHERE acct = ?", id);
       sql.exec("DELETE FROM riot WHERE acct = ?", id);
       sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM prof WHERE acct = ?", id);
@@ -435,7 +449,7 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map() };
   const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
   return {
@@ -470,6 +484,12 @@ export function memStore() {
       return Array.from(m.entries()).map(([k, n]) => ({ i: Number(k.split("|")[0]), f: k.slice(k.indexOf("|") + 1), n: n })).sort((a, b) => b.n - a.n).slice(0, max); },
     putHandle: (h, acct) => T.bh.set(h, acct),
     byHandle: (h) => T.bh.has(h) ? T.bh.get(h) : null,
+    bset: (acct) => copy(T.bset.get(acct)),
+    putBset: (acct, x) => T.bset.set(acct, copy(x)),
+    offer: (id) => copy(T.offer.get(id)),
+    offersOf: (acct) => Array.from(T.offer.values()).filter((o) => o.a === acct || o.b === acct).sort((x, y) => y.upd - x.upd).slice(0, 400).map(copy),
+    putOffer: (o) => T.offer.set(o.id, copy(o)),
+    pruneOffers: (cut) => T.offer.forEach((o, k) => { if (o.st !== "open" && o.st !== "accepted" && o.upd < cut) T.offer.delete(k); }),
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
@@ -499,6 +519,7 @@ export function memStore() {
     delAcct: (id) => {
       T.item.forEach((x, key) => { if (x.acct === id) T.item.delete(key); });
       T.board.delete(id); T.bh.forEach((a, h) => { if (a === id) T.bh.delete(h); });
+      T.offer.forEach((o, k) => { if (o.a === id || o.b === id) T.offer.delete(k); }); T.bset.delete(id);
       T.prof.delete(id); T.photo.delete(id);
       T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
       T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
@@ -610,7 +631,10 @@ export function makeAccounts() {
     async rebuild(acctId) {
       const a = this.db.acct(acctId);
       if (!a) return;
-      this.db.putBoard(acctId, rowsFrom(this.db.boardItems(acctId), !a.guest));
+      const items = this.db.boardItems(acctId);
+      this.db.putBoard(acctId, rowsFrom(items, !a.guest));
+      const sx = items.filter((x) => x.k === "vir.board.v1" && x.id === "all")[0];
+      this.db.putBset(acctId, settingsFrom(sx ? sx.d : "{}"));
       this.db.putHandle(await handleOf(acctId), acctId);
     }
     // what others see of a trader: name, @username, home area, picture (never the account id or Riot ID)
@@ -619,7 +643,98 @@ export function makeAccounts() {
       let crop = null;
       try { crop = p && p.pcrop ? cleanCrop(JSON.parse(p.pcrop)) : null; } catch (e) { crop = null; }
       const pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
-      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic };
+      const bs = this.db.bset(acctId) || settingsFrom("{}");
+      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic, open: bs.open, pct: bs.pct };
+    }
+    // OFFERS (offers.js): every offer an account is in, as it sees them, expired ones marked as read
+    async offersFor(acct) {
+      const now = this.now(), list = this.db.offersOf(acct).map((o) => {
+        const x = settle(o, now);
+        if (x.st !== o.st) this.db.putOffer(x);
+        return x;
+      });
+      const hs = new Map();
+      for (const o of list) { const other = o.a === acct ? o.b : o.a; if (!hs.has(other)) hs.set(other, await handleOf(other)); }
+      const out = list.map((o) => viewOf(o, acct, hs.get(o.a === acct ? o.b : o.a), (id) => this.face(id), (id) => this.db.riotOf(id)));
+      return { v: 1, offers: out, wait: out.filter((x) => x.turn).length };
+    }
+    // a new offer or a counter from me; body: { to: handle, give, get, cash, re }
+    async offerSend(me, body) {
+      const now = this.now(), mine = me.acct.id;
+      if (me.acct.guest) return [409, { error: "save your account first: offers are between saved accounts" }];
+      let to = null, old = null;
+      if (body.re !== undefined) {
+        old = typeof body.re === "string" && /^[0-9a-f]{16}$/.test(body.re) ? this.db.offer(body.re) : null;
+        if (old) old = settle(old, now);
+        if (!old || old.b !== mine) return [404, { error: "that offer is not one you can counter" }];
+        if (old.st !== "open") return [409, { error: "that offer is no longer open" }];
+        to = old.a;
+      } else {
+        to = typeof body.to === "string" && /^[0-9a-f]{24}$/.test(body.to) ? this.db.byHandle(body.to) : null;
+      }
+      const ta = to ? this.db.acct(to) : null;
+      if (!ta || ta.guest || to === mine) return [404, { error: "that player is not on the board" }];
+      const ga = cleanLines(body.give), gb = cleanLines(body.get), cash = cleanCash(body.cash);
+      if (!ga || !gb || cash === undefined) return [400, { error: "bad offer" }];
+      if (!ga.length && !gb.length) return [400, { error: "an offer needs at least one card" }];
+      if (!holds(this.db.boardRows(mine), ga, false)) return [409, { error: "some of your cards are no longer in a For trade binder" }];
+      if (!holds(this.db.boardRows(to), gb, true)) return [409, { error: "some of their cards are no longer for trade" }];
+      if (!old) {
+        const open = (this.db.bset(to) || settingsFrom("{}")).open, shape = shapeOf(ga, gb, cash);
+        if (!fits(open, shape)) return [409, { error: open === "sale" ? "they are open to sales only: offer cash for their cards" : open === "trade" ? "they are open to trades only: add a card of yours" : "an offer asks for cards of theirs" }];
+      }
+      const all = this.db.offersOf(mine).map((o) => settle(o, now));
+      if (all.some((o) => o.st === "open" && (o.a === to || o.b === to) && (!old || o.id !== old.id))) return [409, { error: "you already have an offer open with this player: answer or withdraw it first" }];
+      if (all.filter(live).length >= OFFER.live || this.db.offersOf(to).map((o) => settle(o, now)).filter(live).length >= OFFER.live) return [409, { error: "too many offers open; finish or withdraw some first" }];
+      if (!(await this.spend("offersend", "acct:" + mine))) return [429, { error: "too many offers today; try again tomorrow" }];
+      const o = newOffer(hex(rand(8)), mine, to, ga, gb, cash, now, old ? old.id : null);
+      if (old) { o.ma = old.mb; o.mb = old.ma; old.st = "countered"; old.upd = now; this.db.putOffer(old); }
+      this.db.putOffer(o);
+      return [200, { ok: true, id: o.id }];
+    }
+    // accept, decline, withdraw, cancel, meet, done
+    offerAct(me, p, body) {
+      const now = this.now(), mine = me.acct.id;
+      let o = typeof body.id === "string" && /^[0-9a-f]{16}$/.test(body.id) ? this.db.offer(body.id) : null;
+      if (!o || (o.a !== mine && o.b !== mine)) return [404, { error: "that offer is not yours" }];
+      o = settle(o, now);
+      const isA = o.a === mine, gone = { error: "that offer is no longer open" };
+      if (p === "/offer/answer") {
+        const act = body.act;
+        if (act === "accept" || act === "decline") {
+          if (isA || o.st !== "open") return [409, gone];
+          if (act === "accept") {
+            const d = JSON.parse(o.d);
+            if (!holds(this.db.boardRows(o.a), d.ga, false) || !holds(this.db.boardRows(o.b), d.gb, false)) return [409, { error: "some of these cards are no longer for trade; counter with what is left" }];
+          }
+          o.st = act === "accept" ? "accepted" : "declined";
+        } else if (act === "withdraw") {
+          if (!isA || o.st !== "open") return [409, gone];
+          o.st = "withdrawn";
+        } else if (act === "cancel") {
+          if (o.st !== "accepted") return [409, { error: "only an agreed trade can be called off" }];
+          o.st = "cancelled";
+        } else return [400, { error: "bad request" }];
+        o.upd = now; this.db.putOffer(o);
+        return [200, { ok: true, st: o.st }];
+      }
+      if (p === "/offer/meet") {
+        if (o.st !== "open" && o.st !== "accepted") return [409, gone];
+        const ev = cleanEvent(body.ev);
+        if (ev === null) return [400, { error: "bad event" }];
+        if (isA) o.ma = ev || null; else o.mb = ev || null;
+        this.db.putOffer(o);
+        return [200, { ok: true }];
+      }
+      if (p === "/offer/done") {
+        if (o.st !== "accepted" && o.st !== "done") return [409, { error: "only an agreed trade can be marked done" }];
+        const first = isA ? !o.da : !o.dbb;
+        if (isA) o.da = 1; else o.dbb = 1;
+        if (o.da && o.dbb) o.st = "done";
+        o.upd = now; this.db.putOffer(o);
+        return [200, { ok: true, first: first, st: o.st }];
+      }
+      return [404, { error: "not found" }];
     }
     // everything the server keeps for an account, for Download your data
     exportOf(a) {
@@ -637,6 +752,9 @@ export function makeAccounts() {
         tradeBoard: { what: "what others see on the Trade board: card (TCGplayer product id), printing and count", shown: !a.guest,
           have: this.db.boardRows(a.id).filter((r) => r.s === "h" && r.pub === 1).map((r) => ({ card: r.i, printing: r.f, count: r.q })),
           want: this.db.boardRows(a.id).filter((r) => r.s === "w" && r.pub === 1).map((r) => ({ card: r.i, printing: r.f, count: r.q })) },
+        offers: this.db.offersOf(a.id).map((o) => { const d = JSON.parse(o.d), mine = o.a === a.id; return { sent: mine, status: o.st, made: dayOf(o.made), changed: dayOf(o.upd),
+          youGive: mine ? d.ga : d.gb, youGet: mine ? d.gb : d.ga, cash: d.c ? { dollars: Math.abs(d.c), currency: d.cur, paidBy: (d.c > 0) === mine ? "you" : "them" } : null, youMeetAt: (mine ? o.ma : o.mb) || null }; }),
+        tradeBoardSettings: this.db.bset(a.id) || null,
         synced: this.db.allItems(a.id).reduce((o, x) => { let d; try { d = JSON.parse(x.d); } catch (e) { d = x.d; } (o[x.k] = o[x.k] || {})[x.id] = d; return o; }, {}) };
     }
     // the next running number for an item's change
@@ -676,6 +794,7 @@ export function makeAccounts() {
         this.db.use("prune:guest", dayOf(now), 1);
         this.db.oldGuests(now - GUEST_DAYS * DAY, 1000).forEach((id) => this.db.delAcct(id));
         this.db.purgeGone(now - SYNC.keepGone * DAY); // deletes old enough to have reached every phone
+        this.db.pruneOffers(now - OFFER.keepDays * DAY); // finished offers are kept OFFER.keepDays, then gone
       }
       const me = await this.who(req);
       if (req.method === "GET" && u.pathname === "/admin/disputes") {
@@ -705,6 +824,11 @@ export function makeAccounts() {
           if (!me) return reply({ error: "signed out" }, 401);
           if (!(await this.spend("board", ip))) return reply({ error: "the board has been opened too often from this connection today; try again tomorrow" }, 429);
           return reply(Object.assign(await boardFor(this.db, me.acct.id, (id) => this.face(id)), { saved: !me.acct.guest }));
+        }
+        if (u.pathname === "/offers") {
+          if (!me) return reply({ error: "signed out" }, 401);
+          if (!(await this.spend("offers", ip))) return reply({ error: "offers have been opened too often from this connection today; try again tomorrow" }, 429);
+          return reply(await this.offersFor(me.acct.id));
         }
         if (u.pathname === "/me") return me ? reply(this.view(me.acct)) : reply({ error: "signed out" }, 401);
         if (u.pathname === "/devices") {
@@ -904,6 +1028,11 @@ export function makeAccounts() {
         const done = this.syncWith(me.acct.id, body, room, !!me.acct.guest);
         if ((Array.isArray(body.put) ? body.put : []).some((x) => x && BOARD_KEYS.indexOf(x.k) >= 0)) await this.rebuild(me.acct.id);
         return reply(done);
+      }
+      if (p === "/offer/send" || p === "/offer/answer" || p === "/offer/meet" || p === "/offer/done") {
+        if (!(await this.spend("offer", ip))) return reply({ error: "too many changes to offers today; try again tomorrow" }, 429);
+        const r = p === "/offer/send" ? await this.offerSend(me, body) : this.offerAct(me, p, body);
+        return reply(r[1], r[0]);
       }
       if (p === "/key/name" || p === "/key/off") {
         const c = typeof body.id === "string" && body.id.length < 1400 ? this.db.cred(body.id) : null;

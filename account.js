@@ -235,6 +235,10 @@
   function exportData(cb) { call("GET", "/export", null, cb); }
   function board(cb) { call("GET", "/board", null, cb); } // the Trade board as this account sees it (plan 2 M2)
   function syncCall(body, cb) { call("POST", "/sync", body, cb); }
+  // offers on the Trade board (plan 2 M2 block 2): the list, a new offer or a counter, and the rest
+  function offers(cb) { call("GET", "/offers", null, cb); }
+  function offerSend(body, cb) { call("POST", "/offer/send", body, cb); }
+  function offerAct(what, body, cb) { if (["answer", "meet", "done"].indexOf(what) < 0) return cb("bad request"); call("POST", "/offer/" + what, body, cb); }
   function signOut(cb) {
     // forgotten on the phone whatever the server says; the phone then gets a new guest
     call("POST", "/out", {}, function () { forget(); changed(); makeGuest(function () { if (cb) cb(null); }, true); });
@@ -249,7 +253,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
-    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, syncCall: syncCall,
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, syncCall: syncCall,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -324,7 +328,7 @@
         '<div class="doors acrow" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
         '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
-        '<p class="pnote">While you share a binder or your Wishlist, players on the Trade board see your name, @username, home area and picture. Your Riot ID and the line about you stay private.</p>' +
+        '<p class="pnote">While you share a binder or your Wishlist, players on the Trade board see your name, @username, home area and picture. Your Riot ID stays private until you agree a trade, and then only that player sees it. The line about you stays private.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
       acpicm: headTitle("Picture") + '<div class="pbody"><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span>' +
