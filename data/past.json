@@ -3,6 +3,28 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117454295314157802",
+   "name": "Skyhaven Sunday Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-01T18:00:00-07:00",
+   "day": "2026-11-01",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  },
+  {
+   "id": "rb117509539459382429",
+   "name": "Sunday morning nexus night",
+   "type": "nexus",
+   "start": "2026-11-01T12:30:00-07:00",
+   "day": "2026-11-01",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
    "id": "rb117509536477035676",
    "name": "Halloween Nexus night",
    "type": "nexus",
