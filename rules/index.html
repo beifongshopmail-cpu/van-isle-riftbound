@@ -222,7 +222,7 @@ body{-webkit-font-smoothing:antialiased;
   // One entry: the row that opens in place, and its body under it.
   function entry(it, sub){
     return '<button type="button" class="door btn glass rec" aria-expanded="false" data-id="' + esc(it.id) + '" data-k="open"><span class="t wrap">' + esc(title(it)) + (isNew(it) ? NEWB : '') + '</span>'
-      + (sub ? '<small>' + esc(sub) + '</small>' : '') + CHEV + '</button><div class="rbody" hidden></div>';
+      + (sub ? '<small>' + esc(sub) + '</small>' : '') + CHEV + '</button><div class="rbody sel" hidden></div>';
   }
   var ITEM = {};
   function toggle(btn){

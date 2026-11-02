@@ -39,11 +39,6 @@ body{-webkit-font-smoothing:antialiased;
 .hacts .pact{flex:1}
 #hhold{height:126px}   /* plate at rest: 10 + 40 + 8 + 44 + 10 = 112, plus a 14 gap */
 #hmain .lede{margin-top:0}
-/* a long press on a deck opens its menu; nothing on the list is selected by it (round 3) */
-/* round 4: the whole page, so a hold never lands on selectable words anywhere near it; fields,
-   notes and the export text stay selectable */
-html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .hsort{display:flex;align-items:center;gap:8px;margin:0 0 10px}
 .hsort .lede{flex:1;min-width:0;margin:0}
 /* Edit on the list arranges decks: a drag handle on each, My order on (round 2, 2026-10-19) */
@@ -558,7 +553,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Export</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="row"><div class="seg" id="xfmt" role="group" aria-label="Format" data-k="pick"><button type="button" data-x="text" aria-pressed="true">Event text</button><button type="button" data-x="code" aria-pressed="false">Deck code</button><button type="button" data-x="tts" aria-pressed="false">TTS code</button></div></div>
-    <pre class="xbox" id="xbox"></pre>
+    <pre class="xbox sel" id="xbox"></pre>
     <p class="pnote" id="xnote"></p>
   </div>
   <div class="pfoot"><div class="two" style="margin-top:0"><button type="button" class="pact btn glass" data-act="xcopy" data-k="do">Copy</button><button type="button" class="pact btn glass" data-act="xsave" data-k="do">Save as a file</button></div></div>
@@ -1458,7 +1453,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   var EF = { f: { dom: [], type: [], energy: [], set: [] }, sort: "name" };
   function eMatch(x){
     var f = EF.f;
-    if(f.dom.length){ var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; }
+    if(f.dom.length){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
     if(f.type.length && f.type.indexOf(x.t) < 0) return false;
     if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
     if(f.set.length && f.set.indexOf(x.s) < 0) return false;
@@ -1583,7 +1578,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
       var hay = (nm(x) + " " + X.codeOf(x.c) + " " + (x.g || []).join(" ")).toLowerCase();
       if(q.split(/\s+/).some(function(w){ return hay.indexOf(w) < 0; })) return false;
     }
-    if(f.dom.length){ var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; }
+    if(f.dom.length){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
     if(f.type.length && BR.sec !== "legend" && BR.sec !== "bf" && f.type.indexOf(x.t) < 0) return false;
     if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
     if(f.set.length && f.set.indexOf(x.s) < 0) return false;
@@ -1592,6 +1587,7 @@ input,textarea,.xbox{-webkit-user-select:text;user-select:text;-webkit-touch-cal
   }
   function brSort(a, b){
     if(BR.sort === "price"){ var pa = price(X.codeOf(a.c)) || 0, pb = price(X.codeOf(b.c)) || 0; if(pb !== pa) return pb - pa; }
+    if(BR.sort === "power"){ var wa = typeof a.w === "number" ? a.w : 0, wb = typeof b.w === "number" ? b.w : 0; if(wa !== wb) return wa - wb; var e1 = typeof a.e === "number" ? a.e : 99, e2 = typeof b.e === "number" ? b.e : 99; if(e1 !== e2) return e1 - e2; } // the printed power, then energy (Mako 2026-11-01)
     if(BR.sort === "energy"){ var ea = typeof a.e === "number" ? a.e : 99, eb = typeof b.e === "number" ? b.e : 99; if(ea !== eb) return ea - eb; }
     if(BR.sort === "number") return X.codeOf(a.c).localeCompare(X.codeOf(b.c), undefined, { numeric: true });
     return nm(a).localeCompare(nm(b)) || X.codeOf(a.c).localeCompare(X.codeOf(b.c));

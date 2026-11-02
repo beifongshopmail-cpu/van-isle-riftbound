@@ -65,6 +65,11 @@
 }
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
+/* HOLD TO HIGHLIGHT (Mako 2026-11-01): off everywhere, so a hold never selects the badge, a
+   button, a card or a heading. On only where someone would copy text: typed fields, and .sel
+   (an address, a Riot ID, a deck's export text, a recovery code, rules text). STYLE.md section 2. */
+html{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable="true"],.sel,.sel *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 /* THE SCROLLBAR STAYS PUT. Without this, a page that stops being
    scrollable -- a list collapsing, a filter narrowing it -- loses its
    scrollbar, the viewport widens by its width, and everything reflows

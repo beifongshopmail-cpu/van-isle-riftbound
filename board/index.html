@@ -941,7 +941,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     h += verdict(o.give, o.get, o.cash, f.pct);
     h += '<div class="nrows">';
     if (o.cash) { h += '<div class="nrow"><div><b>Cash</b><small>' + (o.cash.by === "me" ? "You pay them" : "They pay you") + '</small></div><span class="sp"></span><span class="v">$' + o.cash.n + ' ' + o.cash.cur + '</span></div>'; }
-    if (o.st === "accepted" || o.st === "done") { h += '<div class="nrow"><div><b>Their Riot ID</b><small>Shown to you now that you agreed</small></div><span class="sp"></span><span class="v">' + esc(o.riot || "Not claimed") + '</span></div>'; }
+    if (o.st === "accepted" || o.st === "done") { h += '<div class="nrow"><div><b>Their Riot ID</b><small>Shown to you now that you agreed</small></div><span class="sp"></span><span class="v sel">' + esc(o.riot || "Not claimed") + '</span></div>'; }
     h += '</div>';
     h = h.replace('<div class="nrows"></div>', '');
     if (o.st === "open" || o.st === "accepted") {

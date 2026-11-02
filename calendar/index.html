@@ -848,13 +848,21 @@ a{color:inherit;text-decoration:none}
       var info = document.createElement("div");
       info.className = "evinfo";
       var ad = document.createElement("span");
-      ad.className = "evaddr";
+      ad.className = "evaddr sel";
       ad.textContent = street;
       if (ends){
         var en = document.createElement("span");
         en.className = "evend";
         en.textContent = "Ends " + ends;
         ad.appendChild(en);
+      }
+      // the store's usual time stands in for Riot's hour-late one (fetch-events.js, the store's
+      // usual time, 2026-11-02): say so, with Riot's time, so nobody is left guessing
+      if (ev.guess && ev.riot){
+        var gs = document.createElement("span");
+        gs.className = "evend evguess";
+        gs.textContent = "The store's usual time. PlayRiftbound shows " + ev.riot + ".";
+        ad.appendChild(gs);
       }
       info.appendChild(ad);
       var btns = document.createElement("span");
