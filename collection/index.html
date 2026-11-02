@@ -134,7 +134,6 @@ body{-webkit-font-smoothing:antialiased;
 .dvrow .sp{flex:1}
 .dvsort.on{background:var(--glass-press)}
 .dvsort:active{transform:scale(.96)}
-.more{margin-top:12px}
 .first .pact + .pact{margin-top:8px}
 /* THE CARD BROWSER: full screen, as Decks' (the same bend of every-overlay-is-a-menu) */
 .brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
@@ -240,7 +239,6 @@ input[type="file"]{display:none}
     <section id="held">
       <p class="cempty" id="hnone" hidden>Nothing matches.</p>
       <div id="hlist"></div>
-      <button type="button" class="pact btn glass more" id="hmore" hidden data-k="do">Show all</button>
     </section>
 
     <section id="first" class="first" hidden>
@@ -814,12 +812,24 @@ input[type="file"]{display:none}
     box.className = list.length ? (grid ? "cgrid" : "cards plain") : "";
     box.innerHTML = list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("");
     el("hnone").hidden = !!list.length;
-    el("hmore").hidden = list.length <= LIMIT;
-    el("hmore").textContent = "Show all " + list.length;
+    HMANY = many;
     el("hqx").hidden = !q;
     segs(); selPaint();
+    if(list.length > LIMIT) requestAnimationFrame(hPump);
   }
-  var VIS = [];
+  var VIS = [], HMANY = false;
+  // ENDLESS SCROLL on your cards too (Mako 2026-11-02: 'do all similar searches also use endless now?'):
+  // the next 60 join the end while it is within about a screen and a half, in place of Show all
+  function hPump(){
+    var box = el("hlist");
+    if(!box || box.offsetParent === null || VIS.length <= LIMIT) return;
+    if(box.getBoundingClientRect().bottom - window.innerHeight > 1300) return;
+    var from = LIMIT, grid = SET.hview === "grid"; LIMIT += 60;
+    box.insertAdjacentHTML("beforeend", VIS.slice(from, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, HMANY); }).join(""));
+    selPaint();
+    requestAnimationFrame(hPump);
+  }
+  window.addEventListener("scroll", function(){ requestAnimationFrame(hPump); }, { passive: true });
   function segs(){
     el("range").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-r") === SET.range ? "true" : "false"); });
     el("cur").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-c") === SET.cur ? "true" : "false"); });
@@ -1436,7 +1446,6 @@ input[type="file"]{display:none}
   el("brw").addEventListener("scroll", function(){ requestAnimationFrame(brPump); }, { passive: true });
   el("hq").addEventListener("input", function(){ LIMIT = 60; render(); });
   el("hqx").addEventListener("click", function(){ el("hq").value = ""; render(); el("hq").focus(); });
-  el("hmore").addEventListener("click", function(){ LIMIT = 100000; render(); });
   var RT = 0;
   window.addEventListener("resize", function(){ clearTimeout(RT); RT = setTimeout(function(){ if(P) head(); }, 150); });
 
