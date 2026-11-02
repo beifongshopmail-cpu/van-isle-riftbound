@@ -286,7 +286,7 @@ input[type="file"]{display:none}
     </div>
     <div class="bopts" id="bopts"></div>
   </div></div>
-  <div class="bbody"><div class="cgrid" id="bgrid"></div><button type="button" class="pact btn glass more" id="bmore" hidden data-k="do">Show more</button></div>
+  <div class="bbody"><div class="cgrid" id="bgrid"></div></div>
 </section>
 
 <!-- THE STANDARD BAR: Hub, Go to, Add cards (the browser), Collection settings. -->
@@ -1077,10 +1077,20 @@ input[type="file"]{display:none}
     BR.list = brList();
     el("bgrid").innerHTML = BR.list.length ? BR.list.slice(0, BR.lim).map(brTile).join("") : '<p class="bnone">Nothing matches. Try another word, or All.</p>';
     el("bgrid").className = BR.list.length ? "cgrid" : "";
-    el("bmore").hidden = BR.list.length <= BR.lim;
     el("bqx").hidden = !BR.q;
     brOpts(); brNote();
     if(!keep) el("brw").scrollTop = 0;
+    if(BR.list.length > BR.lim) requestAnimationFrame(brPump);
+  }
+  // ENDLESS SCROLL (Mako 2026-11-02, in place of Show more): the next 60 cards join the end while it
+  // is within about a screen and a half; the cards already there are left alone
+  function brPump(){
+    var w = el("brw"), g = el("bgrid");
+    if(w.hidden || BR.list.length <= BR.lim) return;
+    if(g.getBoundingClientRect().bottom - w.getBoundingClientRect().bottom > 1300) return;
+    var from = BR.lim; BR.lim += 60;
+    g.insertAdjacentHTML("beforeend", BR.list.slice(from, BR.lim).map(brTile).join(""));
+    requestAnimationFrame(brPump);
   }
   // a change paints in place: only that tile's count and steppers, never its picture (STYLE, Decks)
   function brPaint(k){
@@ -1423,7 +1433,7 @@ input[type="file"]{display:none}
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
   el("bq").addEventListener("input", function(){ BR.q = el("bq").value.trim(); BR.lim = 60; brRender(); });
   el("bqx").addEventListener("click", function(){ el("bq").value = ""; BR.q = ""; brRender(); el("bq").focus(); });
-  el("bmore").addEventListener("click", function(){ BR.lim += 120; brRender(true); });
+  el("brw").addEventListener("scroll", function(){ requestAnimationFrame(brPump); }, { passive: true });
   el("hq").addEventListener("input", function(){ LIMIT = 60; render(); });
   el("hqx").addEventListener("click", function(){ el("hq").value = ""; render(); el("hq").focus(); });
   el("hmore").addEventListener("click", function(){ LIMIT = 100000; render(); });

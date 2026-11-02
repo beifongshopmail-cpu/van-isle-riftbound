@@ -404,7 +404,6 @@ body{-webkit-font-smoothing:antialiased;
 .ctile .cname{margin:6px 2px 0;font-family:var(--disp);font-size:13px;font-weight:600;line-height:1.25;text-align:center;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .cbox{position:relative}
-.bmore{margin-top:16px}
 .bnone{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
 
 /* menus */
@@ -1647,11 +1646,20 @@ body{-webkit-font-smoothing:antialiased;
     list.slice(0, BR.n).forEach(function(x){ h += brTile(x); });
     paint(el("bgrid"), h);
     el("bgrid").style.gridTemplateColumns = BR.sec === "bf" ? "repeat(2,minmax(0,1fr))" : "";
-    el("bmore").innerHTML = list.length > BR.n ? '<button type="button" class="pact btn glass bmore" data-act="bmore" data-k="do">Show ' + Math.min(120, list.length - BR.n) + ' more of ' + (list.length - BR.n) + '</button>'
-      : (list.length ? "" : '<p class="bnone">No cards match. Try another word, or Show all.</p>');
+    BR.len = list.length;
+    el("bmore").innerHTML = list.length ? "" : '<p class="bnone">No cards match. Try another word, or Show all.</p>';
     brChips(); brNote(list.length);
     el("bqx").disabled = !BR.q;
     if(!keepScroll) el("brw").scrollTop = 0;
+    if(BR.len > BR.n) requestAnimationFrame(brPump);
+  }
+  // ENDLESS SCROLL (Mako 2026-11-02, in place of 'Show X more of X'): the next 120 cards join the end
+  // while the end is within about a screen and a half; the cards already there stay as they are
+  function brPump(){
+    var w = el("brw");
+    if(w.hidden || !(BR.len > BR.n)) return;
+    if(el("bgrid").getBoundingClientRect().bottom - w.getBoundingClientRect().bottom > 1300) return;
+    BR.n += 120; brRender(true);
   }
   function brOpen(sec){
     brDefaults(sec);
@@ -2006,7 +2014,6 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "badd"){ brOpen(t.getAttribute("data-sec")); return; }
     if(a === "bclose"){ brClose(); return; }
     if(a === "bpick"){ brPick(t.getAttribute("data-code")); return; }
-    if(a === "bmore"){ BR.n += 120; brRender(true); return; }
     if(a === "freset"){ var fo = t.closest("#echips") ? EF : BR; fo.f = { dom: [], type: [], energy: [], set: [] }; if(fo === EF) eRender(); else brRender(); return; }
     if(a === "fl"){ FL = t.getAttribute("data-f"); FLS = t.closest("#echips") ? "e" : "br"; fillFl(); openPanel(el("pfl")); return; }
     if(a === "flpick"){
@@ -2050,6 +2057,7 @@ body{-webkit-font-smoothing:antialiased;
     if(ev.target.id === "hq"){ HQ = ev.target.value; renderHome(); return; }
     if(ev.target.id === "eq"){ EQ = ev.target.value; eRender(); return; }
   });
+  el("brw").addEventListener("scroll", function(){ requestAnimationFrame(brPump); }, { passive: true });
   el("bqx").addEventListener("click", function(){ el("bq").value = ""; BR.q = ""; brRender(); el("bq").focus(); });
   el("hqx").addEventListener("click", function(){ el("hq").value = ""; HQ = ""; renderHome(); });
   el("eqx").addEventListener("click", function(){ el("eq").value = ""; EQ = ""; eRender(); el("eq").focus(); });
