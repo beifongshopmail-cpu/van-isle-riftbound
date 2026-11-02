@@ -63,7 +63,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 /* a player's card: their picture and name (opens the trade), then a shelf per direction */
 .bt{border-radius:22px;padding:4px 0 12px;min-width:0}
 .bwho{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--sz-row);padding:6px 14px;margin:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.bwho:active{background:var(--glass-press)}
+.bt{transition:transform .12s}
+.bt:has(> .bwho:active){transform:scale(.98)}
+.bwho{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .bt .bwho{border-radius:22px 22px 0 0}
 .bpic{flex:0 0 36px;width:36px;height:36px;border-radius:50%;overflow:hidden;background:var(--track) no-repeat;display:grid;place-items:center;color:var(--muted)} /* size-exempt: a player's picture */
 .bpic svg{width:20px;height:20px}
@@ -168,9 +170,25 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .mcash .nf{margin-top:8px}
 .mcash .nf.off{opacity:.4;pointer-events:none}
 .oacts{margin-top:14px}
-#meetpick .rec .t{display:block;min-width:0}
-#meetpick .rec small{display:block;margin-top:2px;font-size:12px;font-weight:600;color:var(--muted);white-space:normal}
+#meetpick button{text-align:left}
+#meetpick .t{display:block;flex:1;min-width:0}
+#meetpick .t b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#meetpick .t small{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .doors > .door.armed,.pact.armed{background-color:var(--glass-press)}
+/* THE VERDICT in an offer (as the Trade page's ring, made small): Yours left, Theirs right, the difference between */
+.ovd{display:flex;align-items:center;gap:6px;margin-top:14px;padding:12px 10px;border-radius:22px;background:var(--recess)}
+.ovd .fl{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.ovd .fk{max-width:100%;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ovd .fs{max-width:100%;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ovd .fv{font-family:var(--disp);font-weight:700;font-size:17px;white-space:nowrap}
+.ovd{--yc:#5DA5EE;--tc:#EE5F9C}
+.ovd .f1 .fk{color:var(--yc)} .ovd .f2 .fk{color:var(--tc)}
+.ovd .mid{flex:0 0 112px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.ovd .mid .k{font-size:12px;color:var(--muted)}
+.ovd .mid .v{margin-top:2px;font-family:var(--disp);font-weight:800;font-size:22px;line-height:1.05}
+.ovd .mid .ld{margin-top:4px;height:22px;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.ovd .mid .ld svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ovd .mid .ld.l1{color:var(--yc)} .ovd .mid .ld.l2{color:var(--tc)}
 </style>
 </head>
 <body>
@@ -877,6 +895,20 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }).join("") + '</div>';
   }
   function myPct(){ return okPct(boardSet().pct); }
+  // the verdict: each side in this phone's currency at its own percent, cash counted on the side that adds it
+  function inCur(n, cur){ return cur === CUR ? n : CUR === "CAD" ? n * FX : n / FX; }
+  function sideVal(list, pct){ var v = total(list); return v == null ? 0 : (CUR === "CAD" ? v * FX : v) * pct / 100; }
+  var ARROW = { l: '<svg viewBox="0 0 24 24"><polyline points="11 6 5 12 11 18"/><line x1="5" y1="12" x2="19" y2="12"/></svg>', r: '<svg viewBox="0 0 24 24"><polyline points="13 6 19 12 13 18"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' };
+  function verdict(give, get, cash, theirPct){
+    var a = sideVal(give, myPct()), b = sideVal(get, theirPct);
+    if (cash) { if (cash.by === "me") { a += inCur(cash.n, cash.cur); } else { b += inCur(cash.n, cash.cur); } }
+    var d = Math.abs(a - b), ld = !(a + b) ? '<span class="ld"></span>' : d < 0.005 ? '<span class="ld">Even</span>' : '<span class="ld ' + (a > b ? "l1" : "l2") + '" role="img" aria-label="' + (a > b ? "Yours is worth more" : "Theirs is worth more") + '">' + (a > b ? ARROW.l : ARROW.r) + '</span>';
+    function sub(list, c){ var n = cardsN(list); return (n ? plural(n, "card", "cards") : "No cards") + (c ? " + $" + c.n : ""); }
+    return '<div class="ovd" aria-label="The difference">'
+      + '<div class="fl f1"><span class="fk">Yours</span><span class="fv">$' + a.toFixed(2) + '</span><span class="fs">' + esc(sub(give, cash && cash.by === "me" ? cash : null)) + '</span></div>'
+      + '<div class="mid"><span class="k">Difference, ' + CUR + '</span><span class="v">$' + d.toFixed(2) + '</span>' + ld + '</div>'
+      + '<div class="fl f2"><span class="fk">Theirs</span><span class="fv">$' + b.toFixed(2) + '</span><span class="fs">' + esc(sub(get, cash && cash.by === "them" ? cash : null)) + '</span></div></div>';
+  }
   function drawOffer(){
     var o = offerById(OFFID);
     if (!o) { return; }
@@ -889,13 +921,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     h += '<p class="ost">' + st + '</p>';
     if (o.get.length) { h += '<p class="bh3">You get ' + plural(cardsN(o.get), "card", "cards") + '</p>' + lineGrid(o.get, f.pct); }
     if (o.give.length) { h += '<p class="bh3">You give ' + plural(cardsN(o.give), "card", "cards") + '</p>' + lineGrid(o.give, myPct()); }
-    var tg = total(o.get), tv = total(o.give);
+    h += verdict(o.give, o.get, o.cash, f.pct);
     h += '<div class="nrows">';
-    if (o.get.length) { h += '<div class="nrow"><div><b>You get</b><small>' + (f.pct === 100 ? "At market" : f.pct + "% of market, their price") + '</small></div><span class="sp"></span><span class="v">' + money(tg == null ? null : tg * f.pct / 100) + '</span></div>'; }
-    if (o.give.length) { h += '<div class="nrow"><div><b>You give</b><small>' + (myPct() === 100 ? "At market" : myPct() + "% of market, your price") + '</small></div><span class="sp"></span><span class="v">' + money(tv == null ? null : tv * myPct() / 100) + '</span></div>'; }
     if (o.cash) { h += '<div class="nrow"><div><b>Cash</b><small>' + (o.cash.by === "me" ? "You pay them" : "They pay you") + '</small></div><span class="sp"></span><span class="v">$' + o.cash.n + ' ' + o.cash.cur + '</span></div>'; }
     if (o.st === "accepted" || o.st === "done") { h += '<div class="nrow"><div><b>Their Riot ID</b><small>Shown to you now that you agreed</small></div><span class="sp"></span><span class="v">' + esc(o.riot || "Not claimed") + '</span></div>'; }
     h += '</div>';
+    h = h.replace('<div class="nrows"></div>', '');
     if (o.st === "open" || o.st === "accepted") {
       h += '<p class="bh3" style="margin-top:18px">Meet at</p><div class="doors" data-k="deeper"><button type="button" class="door rec btn glass" id="omeet"><span class="t">You</span><small>' + esc(o.meet.me ? evWords(o.meet.me) : "Pick the event you plan to be at") + '</small>' + CVR + '</button></div>';
       h += '<div class="nrows"><div class="nrow"><div><b>Them</b><small>' + esc(o.meet.them ? evWords(o.meet.them) : "Not picked yet") + '</small></div></div></div>';
@@ -946,12 +977,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawMeet(){
     var o = offerById(OFFID), now = Date.now();
     if (!o) { return; }
-    var rows = ['<button type="button" data-ev=""' + (o.meet.me ? '' : ' class="on"') + '>Not decided</button>'];
+    var rows = ['<button type="button" class="rec' + (o.meet.me ? '' : ' on') + '" data-ev=""><span class="t"><b>Not decided</b><small>Pick an event when you know</small></span></button>'];
     EVLIST.filter(function(e){ return e.t > now - 3 * 3600000 && e.t < now + 21 * DAYMS; }).forEach(function(e){
       var on = o.meet.me === e.id;
-      rows.push('<button type="button" class="rec' + (on ? " on" : "") + '" data-ev="' + esc(e.id) + '"><span class="t">' + esc(e.name) + '<small>' + esc(evWhen(e) + (e.where ? ", " + e.where : "")) + '</small></span></button>');
+      rows.push('<button type="button" class="rec' + (on ? " on" : "") + '" data-ev="' + esc(e.id) + '"><span class="t"><b>' + esc(e.name) + '</b><small>' + esc(evWhen(e) + (e.where ? ", " + e.where : "")) + '</small></span></button>');
     });
-    if (rows.length === 1) { rows.push('<button type="button" disabled>No events on the calendar yet</button>'); }
+    if (rows.length === 1) { rows.push('<button type="button" class="rec" disabled><span class="t"><b>No events coming up</b><small>The calendar has none in the next three weeks</small></span></button>'); }
     $("meetpick").innerHTML = rows.join("");
   }
   pmeet.__redraw = drawMeet;
@@ -1075,9 +1106,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!MK.re && (f.open === "sale" || f.open === "both") && get.length && give.length) {
       h += '<div class="doors" data-k="do" style="margin-top:14px"><button type="button" class="door act btn glass" id="mbuy"><span class="t">I\'d buy these instead</span><span class="sp"></span><small>Cash, no cards of yours</small></button></div>';
     }
-    var tg = total(get), tv = total(give);
-    h += '<div class="nrows"><div class="nrow"><div><b>You get</b><small>' + plural(cardsN(get), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(tg == null ? null : tg * f.pct / 100) + '</span></div>'
-      + '<div class="nrow"><div><b>You give</b><small>' + plural(cardsN(give), "card", "cards") + (c ? ", " + cashWords(c).replace(/^You add/, "plus").replace(/^They add/, "they add") : "") + '</small></div><span class="sp"></span><span class="v">' + money(tv == null ? null : tv * myPct() / 100) + '</span></div></div>';
+    h += verdict(give, get, c, f.pct);
     h += '<p class="bmsg" id="mmsg"' + (mkProblem() || MK.err ? '' : ' hidden') + '>' + esc(MK.err || mkProblem()) + '</p>';
     h += '<p class="pnote">Cards only, no messages. An open offer lasts 7 days. Prices are each player\'s own percent of market, a starting point to agree on.</p>';
     var b = $("pmakeb"), y = b.scrollTop;
@@ -1109,6 +1138,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var v = ev.target.value.replace(/[^0-9]/g, "").slice(0, 4);
     if (v !== ev.target.value) { ev.target.value = v; }
     MK.cash.n = v;
+    var vd = $("pmakeb").querySelector(".ovd");
+    if (vd) { vd.outerHTML = verdict(picked(MK.give, MK.mine), picked(MK.get, MK.theirs), mkCash(), MK.f.pct); }
     var p = mkProblem(), m = $("mmsg");
     m.hidden = !p; m.textContent = p;
     $("msend").disabled = !!p;
