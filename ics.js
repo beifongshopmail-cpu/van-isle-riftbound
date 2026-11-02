@@ -94,6 +94,7 @@ function checkedAt(date) {
 function describe(ev, checked) {
   const bits = [LABELS[ev.type] || LABELS.other];
   bits.push(ev.venue + (ev.city ? ", " + ev.city : ""));
+  if (ev.guess && ev.riot) bits.push("Starts at the store's usual time; PlayRiftbound shows " + ev.riot);
   if (ev.cap != null) bits.push(Math.max(0, ev.cap - (ev.reg || 0)) + " of " + ev.cap + " spots left" + (checked ? ", checked " + checked : ""));
   bits.push(ev.cents ? "$" + (ev.cents / 100).toFixed(2) + " " + ev.currency : "Free");
   bits.push("Sign up: " + eventUrl(ev.id));

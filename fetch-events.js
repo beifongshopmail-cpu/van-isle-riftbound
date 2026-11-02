@@ -35,6 +35,7 @@ const RB_STORES = {
 const OUT_DIR = path.join(__dirname, "data");
 const OUT_FILE = path.join(OUT_DIR, "events.json");
 const PAST_FILE = path.join(OUT_DIR, "past.json");
+const SCHED_FILE = path.join(OUT_DIR, "sched.json");
 const PAST_DAYS = 30;
 const PAST_MAX = 400;
 const PAGE_SIZE = 100;
@@ -99,6 +100,102 @@ function localIso(date) {
   const hh = String(Math.floor(abs / 60)).padStart(2, "0");
   const mm = String(abs % 60).padStart(2, "0");
   return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}${sign}${hh}:${mm}`;
+}
+
+// ---- the store's usual time (2026-11-02, Mako) ----
+// BC kept daylight time from 2026 (UTC-7 all year). Some stores' PlayRiftbound events from
+// November on start an hour late in Riot's data, as if worked out with the old rules (fall
+// back to UTC-8 on the first Sunday of November, spring forward on the second Sunday of
+// March): Everything Games ran Sundays at 11:30 all October, then every Sunday from Nov 1
+// shows 12:30; Skyhaven's did the same until its owner fixed them by hand on 2026-11-01. Riot
+// sends no time zone with an event, so nothing in the feed says which stores are affected.
+// THE BEST GUESS (Mako: 'look at what the past schedule has been'): each run learns a store's
+// usual start for each weekday and kind of event from events outside the old rules' winter
+// (where both rules agree), kept in data/sched.json so it outlives past.json's 30 days. A
+// winter event in BC that starts exactly an hour after its store's usual time, where every
+// event the store ran on that weekday (that kind first, else any kind) started at one time,
+// is shown at the usual time, marked guess with Riot's own time beside it. A usual time needs
+// two or more days behind it. A store with any winter event on that weekday already at its
+// usual time is not shifted there (Colossal's November Saturdays) and is never guessed; so an
+// event a store or Riot has fixed stops the guessing by itself. No switch, no fixed offset. A
+// store with mixed times on a weekday is never guessed.
+const BC = new Set(["victoria", "island"]);
+function nthSunday(y, m, n) { // m 1-12; the nth Sunday as YYYY-MM-DD
+  const first = new Date(Date.UTC(y, m - 1, 1)).getUTCDay();
+  const d = 1 + ((7 - first) % 7) + (n - 1) * 7;
+  return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+}
+// the old rules' winter: from the first Sunday of November to the second Sunday of March;
+// only from 2026, the first winter BC did not fall back
+function oldWinter(day) {
+  if (!/^\d{4}-\d\d-\d\d$/.test(day || "") || day < "2026-11-01") return false;
+  const y = Number(day.slice(0, 4)), m = Number(day.slice(5, 7));
+  if (m >= 11) return day >= nthSunday(y, 11, 1);
+  if (m <= 3) return day < nthSunday(y, 3, 2);
+  return false;
+}
+function dowOf(day) { return new Date(day + "T12:00:00Z").getUTCDay(); }
+function schedKeys(ev) {
+  const who = (ev.sid !== null && ev.sid !== undefined) ? "s" + ev.sid : "v" + String(ev.venue || "").toLowerCase();
+  const w = dowOf(ev.day);
+  return [who + "|" + w + "|" + ev.type, who + "|" + w];
+}
+// sched: { v, groups: { key: { times: ["11:30"], days: [the days it was seen, the latest 12] } } }; learns in place
+function learnSched(sched, events) {
+  const g = sched.groups;
+  for (const ev of events || []) {
+    if (!ev || !BC.has(ev.region) || ev.guess || !ev.day || oldWinter(ev.day)) continue;
+    const t = String(ev.start || "").slice(11, 16);
+    if (!/^\d\d:\d\d$/.test(t)) continue;
+    for (const k of schedKeys(ev)) {
+      const x = g[k] || (g[k] = { times: [], days: [] });
+      if (!Array.isArray(x.days)) x.days = [];
+      if (x.times.indexOf(t) < 0 && x.times.length < 6) x.times.push(t);
+      if (x.days.indexOf(ev.day) < 0) { x.days.push(ev.day); x.days.sort(); if (x.days.length > 12) x.days.shift(); }
+    }
+  }
+  return sched;
+}
+function usualOf(sched, ev) {
+  const k = schedKeys(ev), a = sched.groups[k[0]], b = sched.groups[k[1]];
+  function ok(x) { return x && Array.isArray(x.days) && x.days.length >= 2; }
+  const x = ok(a) ? a : ok(b) ? b : null;
+  return x && x.times.length === 1 ? x.times[0] : null;
+}
+function shiftIso(iso, mins) { return iso ? localIso(new Date(Date.parse(iso) + mins * 60000)) : iso; }
+// One event, corrected in place when it is the hour-late shape; returns true when it was.
+// held: store-and-weekday keys not to guess (guessAll fills it).
+function guessTime(sched, ev, held) {
+  if (!ev || !BC.has(ev.region) || ev.guess || !oldWinter(ev.day)) return false;
+  if (held && held.has(schedKeys(ev)[1])) return false;
+  const u = usualOf(sched, ev), t = String(ev.start || "").slice(11, 16);
+  if (!u || !/^\d\d:\d\d$/.test(t)) return false;
+  const um = Number(u.slice(0, 2)) * 60 + Number(u.slice(3)), tm = Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+  if (tm - um !== 60) return false;
+  const was = ev.time;
+  const start = new Date(Date.parse(ev.start) - 3600000);
+  ev.start = localIso(start);
+  ev.end = shiftIso(ev.end, -60);
+  ev.day = dayKey(start);
+  ev.time = timeLabel(start);
+  ev.guess = 1;
+  ev.riot = was;
+  return true;
+}
+// Every event of a run: hold each store's weekday where a winter event already starts at its
+// usual time, then guess the rest. Returns the events it moved.
+function guessAll(sched, events) {
+  const held = new Set();
+  for (const ev of events) {
+    if (!ev || !BC.has(ev.region) || ev.guess || !oldWinter(ev.day)) continue;
+    const u = usualOf(sched, ev);
+    if (u && String(ev.start || "").slice(11, 16) === u) held.add(schedKeys(ev)[1]);
+  }
+  return events.filter(function (ev) { return guessTime(sched, ev, held); });
+}
+function readSched() {
+  const s = readJson(SCHED_FILE);
+  return s && s.groups && typeof s.groups === "object" ? { v: 1, groups: s.groups } : { v: 1, groups: {} };
 }
 
 // ---- fetching ----
@@ -483,6 +580,15 @@ async function main() {
     perAnchor.push({ name: anchor.name, region: anchor.region, source: "uvs", returned: rows.length, added: kept });
   }
 
+  // the store's usual time: learn from this run and the finished events, then guess
+  const sched = readSched();
+  const prevPast0 = readJson(PAST_FILE);
+  learnSched(sched, prevPast0 && prevPast0.events);
+  learnSched(sched, Array.from(byId.values()));
+  const moved = guessAll(sched, Array.from(byId.values()));
+  for (const ev of moved) console.log(`usual time: ${ev.venue} ${ev.day} ${ev.riot} -> ${ev.time} (${ev.id})`);
+  console.log(`usual time: ${moved.length} events shown at their store's usual time`);
+
   const events = Array.from(byId.values()).sort(function (a, b) {
     if (a.start !== b.start) return a.start < b.start ? -1 : 1;
     return a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0;
@@ -514,6 +620,7 @@ async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 1) + "\n", "utf8");
   fs.writeFileSync(PAST_FILE, JSON.stringify({ v: 1, days: PAST_DAYS, events: past }, null, 1) + "\n", "utf8");
+  fs.writeFileSync(SCHED_FILE, JSON.stringify(sched, null, 1) + "\n", "utf8");
   console.log(`wrote past.json (${past.length} finished events)`);
 
   const feeds = writeFeeds(OUT_DIR, events);
@@ -548,4 +655,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig };
+module.exports = { oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig };
