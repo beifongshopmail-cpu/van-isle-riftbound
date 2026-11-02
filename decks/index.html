@@ -98,7 +98,7 @@ body{-webkit-font-smoothing:antialiased;
 .esf{margin-top:8px}
 .resw{height:0;overflow:hidden;opacity:0;transition:height .28s var(--ease),opacity .2s ease}
 .resw.open{opacity:1}
-.res{padding-top:10px;max-height:min(52vh,430px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.res{margin-top:10px;max-height:min(52vh,430px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .res .bgrid{gap:10px 8px}
 .res .bnone{padding:14px 8px}
 
@@ -1452,7 +1452,7 @@ body{-webkit-font-smoothing:antialiased;
   var EF = { f: { dom: [], type: [], energy: [], set: [] }, sort: "name" };
   function eMatch(x){
     var f = EF.f, sx = X.sectionOf(x);
-    if(f.dom.length && sx !== "legend" && sx !== "bf"){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
+    if(f.dom.length && sx !== "bf"){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
     if(f.type.length && f.type.indexOf(x.t) < 0) return false;
     if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
     if(f.set.length && f.set.indexOf(x.s) < 0) return false;
@@ -1462,14 +1462,15 @@ body{-webkit-font-smoothing:antialiased;
     var box = el("eres"), w = el("eresw"), q = EQ.trim().toLowerCase(), h = "";
     el("eqx").disabled = !EQ;
     if(!q){ box.innerHTML = ""; el("echips").innerHTML = ""; w.classList.remove("open"); w.style.height = "0px"; return; }
-    // the legend's domains and Colorless to start, as Add cards (Mako 2026-11-02); legends and
-    // battlefields are not held to it; set again when the deck or its legend changes
+    // the legend's domains and Colorless to start, as Add cards (Mako 2026-11-02); battlefields are
+    // not held to it (legends are not in this search); set again when the deck or its legend changes
     var dk = deck(), DL = C(dk.legend), ek = CURID + "|" + (dk.legend || "");
     if(EF.deck !== ek){ EF.deck = ek; EF.f.dom = DL ? doms(DL).concat(["colorless"]) : []; }
     el("echips").innerHTML = chipsHTML(EF, "main");
     var keep = BR.sort; BR.sort = EF.sort;
     var hits = I.list.filter(function(x){
-      if(!X.sectionOf(x)) return false;
+      var sc = X.sectionOf(x);
+      if(!sc || sc === "legend") return false; // a legend changes by tapping the deck's legend (Mako 2026-11-02)
       if(!SET.allp && !BASE[X.codeOf(x.c)]) return false;
       if(!eMatch(x)) return false;
       var hay = (nm(x) + " " + X.codeOf(x.c) + " " + (x.g || []).join(" ")).toLowerCase();
@@ -1484,17 +1485,17 @@ body{-webkit-font-smoothing:antialiased;
     });
     paint(box, hits.length ? '<div class="bgrid">' + h + '</div>' : '<p class="bnone">No cards match. Try another word.</p>');
     w.classList.add("open");
-    w.style.height = (box.offsetHeight + el("echips").offsetHeight + 10) + "px";
+    w.style.height = (box.offsetHeight + el("echips").offsetHeight + 20) + "px"; // the chips' 10 above them, the results' 10 gap
     if(ELEN > EN) requestAnimationFrame(ePump);
   }
   // ENDLESS SCROLL in Edit's search too (Mako 2026-11-02), in place of 'N more: add a word to narrow it'
   function ePump(){
     var box = el("eres");
     if(!EQ.trim() || !(ELEN > EN) || box.offsetParent === null) return;
-    if(box.getBoundingClientRect().bottom - window.innerHeight > 1300) return;
+    if(box.scrollHeight - box.scrollTop - box.clientHeight > 900) return; // the results scroll in their own box
     EN += 60; eRender();
   }
-  window.addEventListener("scroll", function(){ requestAnimationFrame(ePump); }, { passive: true });
+  el("eres").addEventListener("scroll", function(){ requestAnimationFrame(ePump); }, { passive: true });
   function ePick(code){
     var d = deck(), x = C(code), s = X.sectionOf(x), L = C(d.legend);
     if(s === "legend"){ X.add(I, d, code); X.fitRunes(I, d); toast("Legend: " + nm(x)); }

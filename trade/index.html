@@ -66,7 +66,7 @@ a{color:inherit;text-decoration:none}
 .sides button[aria-pressed="true"] .n{background:rgba(18,19,22,.18)}
 .resw{height:0;overflow:hidden;opacity:0;transition:height .28s var(--ease),opacity .2s ease}
 .resw.open{opacity:1}
-.res{padding-top:8px;max-height:min(52vh,430px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.res{margin-top:10px;max-height:min(52vh,430px);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .rrow{display:flex;align-items:center;gap:10px;padding:8px 2px 8px 4px}
 .rrow+.rrow{border-top:1px solid rgba(255,255,255,.07)}
 .rmeta{flex:1;min-width:0}
@@ -722,7 +722,7 @@ a{color:inherit;text-decoration:none}
   // so nothing under the plate moves.
   function sizeRes(){
     var w = el("resw");
-    w.style.height = (w.classList.contains("open") ? el("res").offsetHeight : 0) + "px";
+    w.style.height = (w.classList.contains("open") ? el("res").offsetHeight + 10 : 0) + "px"; // and its 10 gap
   }
 
   function resClose(){
