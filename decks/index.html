@@ -1362,7 +1362,7 @@ body{-webkit-font-smoothing:antialiased;
   }
   function checkHTML(d, probs){
     var m = X.sum(d.main), r = X.sum(d.runes), s = X.sum(d.side), nd = X.needed(d), h = "";
-    h += '<section class="dsec glass ' + (probs.length ? "bad" : "okc") + '"' + (probs.length ? ' style="margin-top:0"' : '') + ' id="schk">'
+    h += '<section class="dsec glass ' + (probs.length ? "bad" : "okc") + '"' + (probs.length && !isRO() ? ' style="margin-top:0"' : '') + ' id="schk">'
       + '<div class="shead"><h2>' + (probs.length ? probs.length + (probs.length === 1 ? " thing to fix" : " things to fix") : "Ready for events") + '</h2><span class="sp"></span><span class="cnt">' + nd.have + '/' + nd.need + ' cards</span></div>'
       + '<div class="dcnt"><div><b>' + m + '/40</b><span>Main</span></div><div><b>' + r + '/12</b><span>Runes</span></div><div><b>' + d.bf.length + '/3</b><span>Battlefields</span></div><div><b>' + s + '</b><span>Sideboard</span></div></div><ul class="dchk">';
     if(!probs.length) h += '<li><span class="okmk">' + IC.ok + '</span><span>Every deck rule is met.</span></li>';
