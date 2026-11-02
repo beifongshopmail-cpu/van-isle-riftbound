@@ -556,6 +556,12 @@ html.gate body > :not(#ravigate){display:none!important}
 .aclg button:active{transform:scale(.96)}
 .aclg .acav{width:100%;height:100%}
 .aclg button.on .acav{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 2px var(--ground),0 0 0 4px var(--bone)}
+/* Or pick a card's search results (plan 2 M2): each circle with the card's name under it */
+.aclg.named{row-gap:14px}
+.aclg.named button{aspect-ratio:auto;border-radius:0;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.aclg.named .acav{height:auto;aspect-ratio:1;border-radius:50%}
+.aclg .acnm{width:100%;font-family:var(--text);font-size:12px;line-height:1.3;color:var(--muted);text-align:center;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+.panel.acct .acqn{margin:8px 2px 0}
 .acfile{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .accode{margin:6px 0 0;text-align:center;font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.4;letter-spacing:.04em;-webkit-user-select:text;user-select:text}
 .accode span{display:block}

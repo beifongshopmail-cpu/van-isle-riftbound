@@ -284,7 +284,7 @@
   var CV = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
   var BACK = '<button type="button" class="circ btn glass back" data-acback aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>';
   var REFRESH = 3600000; // the account is reread at most once an hour per phone
-  var pic, scrim, P = {}, stack = [], lifted = false, legends = null, preview = null, work = null, nextMsg = "";
+  var pic, scrim, P = {}, stack = [], lifted = false, legends = null, pics = null, preview = null, work = null, nextMsg = "";
 
   function el(tag, cls, html) { var e = doc.createElement(tag); if (cls) e.className = cls; if (html) e.innerHTML = html; return e; }
   function $(id) { return doc.getElementById(id); }
@@ -341,7 +341,8 @@
         '<p class="pnote acadjn" id="acadjn">Drag to move it, pinch to zoom.</p>' +
         '<div class="seg acrow" id="acprint" role="group" aria-label="Printing" data-k="pick" hidden></div>' +
         '<div class="doors acrow" id="acpicrows"></div>' +
-        '<p class="lb">Or pick a legend</p><div class="aclg" id="aclg" data-k="pick"></div><p class="acmsg" id="acpicmsg" aria-live="polite"></p></div>' +
+        '<p class="lb">Or pick a card</p><div class="sf" id="acsf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="acq" placeholder="Search every card" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-label="Search every card" data-k="type"><button type="button" class="fbtn fx glass" id="acqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>' +
+        '<p class="pnote acqn" id="acqn" aria-live="polite">Legends first. Search to find any other card.</p><div class="aclg" id="aclg" data-k="pick"></div><p class="acmsg" id="acpicmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acuse" data-k="do" disabled>Use this picture</button></div>',
       ackeys: headTitle("Passkeys") + '<div class="pbody"><div class="doors" id="ackeylist" data-k="deeper"></div><p class="pnote">A passkey is Face ID, a fingerprint or a phone\'s lock, kept by your phone or your password manager. Add one on each phone you use, or keep them synced in iCloud Keychain.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acaddkey" data-k="do">Add a passkey</button></div>',
@@ -812,7 +813,7 @@
     });
   }
 
-  // ---- Picture: upload a photo, or pick a legend ----
+  // ---- Picture: upload a photo, or pick any card (legends first; plan 2 M2, Mako 2026-11-01) ----
   function loadLegends(cb) {
     if (root.VIR_LEGENDS) return cb(root.VIR_LEGENDS);
     if (legends) return cb(legends);
@@ -821,6 +822,26 @@
     s.onload = function () { legends = root.VIR_LEGENDS || []; cb(legends); };
     s.onerror = function () { cb([]); };
     doc.head.appendChild(s);
+  }
+  // every card a player may wear (cards/pics.js, written by fetch-cards.js): [name, printing, art hash]
+  function loadPics(cb) {
+    if (pics) return cb(pics);
+    if (root.VIR_PICS) { pics = root.VIR_PICS; return cb(pics); }
+    var s = doc.createElement("script");
+    s.src = REL + "cards/pics.js";
+    s.onload = function () { pics = (root.VIR_PICS || []).filter(function (r) { return r && typeof r[0] === "string" && typeof r[1] === "string" && /^[0-9a-f]{40}$/.test(r[2]); }); cb(pics); };
+    s.onerror = function () { cb(null); };
+    doc.head.appendChild(s);
+  }
+  // a card's printings on offer, as the Printing track shows them: its own name's printings
+  function cardOf(h) {
+    if (!pics) return null;
+    var name = null, i;
+    for (i = 0; i < pics.length; i++) if (pics[i][2] === h) { name = pics[i][0]; break; }
+    if (!name) return null;
+    var out = [];
+    for (i = 0; i < pics.length; i++) if (pics[i][0] === name) out.push({ h: pics[i][2], l: pics[i][1] });
+    return { lg: { n: name }, prints: out };
   }
   // a legend's printings on offer: its own art first, then each overnumbered printing
   // (numbered past the set, such as OGN 299/298); never a signature (a star in its number),
@@ -848,8 +869,12 @@
     return null;
   }
   // a portrait image's width fills the circle at z 1, a landscape one's height
+  // a card's art is always z circle-widths wide (picFit and the Trade board draw it so), so a landscape
+  // battlefield needs z of its width over its height at least to fill the circle
+  function baseOf(w) { return w.k === "l" ? 1 : (w.aspect >= 1 ? w.aspect : 1); }
+  function zMin(w) { return w.k === "l" ? Math.max(1, w.aspect || CARD) : 1; }
   function fitOf(w) {
-    var base = w.aspect >= 1 ? w.aspect * 100 : 100;
+    var base = baseOf(w) * 100;
     return { size: Math.round(base * w.z * 10) / 10 + "% auto", pos: Math.round(w.x * 10) / 10 + "% " + Math.round(w.y * 10) / 10 + "%" };
   }
   function showWork() {
@@ -863,7 +888,7 @@
     $("acadjn").style.visibility = work ? "visible" : "hidden";
     $("acuse").disabled = !(work && !work.saved);
     // the Printing track: the chosen legend's own art and its overnumbered printing(s)
-    var tr = $("acprint"), info = work && work.k === "l" ? legendOf(work.h) : null;
+    var tr = $("acprint"), info = work && work.k === "l" ? legendOf(work.h) || cardOf(work.h) : null;
     tr.hidden = !info;
     if (info) {
       tr.innerHTML = "";
@@ -876,7 +901,9 @@
       });
     }
     var tiles = $("aclg").querySelectorAll("button"), lgName = info ? info.lg.n : "";
-    for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle("on", tiles[i].getAttribute("data-n") === lgName);
+    if (work && work.k === "l") shapeOf(work);
+    var byArt = $("aclg").classList.contains("named"); // a search rings the printing itself, the legends grid its legend
+    for (var i = 0; i < tiles.length; i++) tiles[i].classList.toggle("on", byArt ? !!work && tiles[i].getAttribute("data-h") === work.h : tiles[i].getAttribute("data-n") === lgName);
     paintAll();
   }
   function renderPics() {
@@ -887,20 +914,61 @@
     if ($("acnopic")) $("acnopic").addEventListener("click", function () {
       A.setPic({ k: null }, function (err) { if (err) return say("acpicmsg", err); work = null; preview = null; renderPics(); say("acpicmsg", "Picture removed."); });
     });
-    loadLegends(function (L) {
-      var g = $("aclg");
-      g.innerHTML = "";
-      // one circle per legend, its own art; its overnumbered printing is on the Printing track (as the Game page's legend picker)
-      L.forEach(function (lg) {
+    $("acq").value = ""; $("acqx").disabled = true;
+    loadLegends(function () {
+      drawCards();
+      if (!work || work.saved) work = workFromSaved();
+      showWork();
+    });
+    loadPics(function () { if (work && work.k === "l") showWork(); }); // a card's own printings for the track
+  }
+  // the grid under Or pick a card: one circle per legend, its own art (its overnumbered printing is on
+  // the Printing track, as the Game page's legend picker); with a search, every card whose name matches,
+  // each printing its own circle with its name under it, names that start with the search first
+  var PICMAX = 40;
+  function drawCards() {
+    var g = $("aclg"), q = String($("acq").value || "").trim().toLowerCase(), note = $("acqn");
+    g.innerHTML = "";
+    g.classList.toggle("named", !!q);
+    if (!q) {
+      (legends || root.VIR_LEGENDS || []).forEach(function (lg) {
         var p = printsOf(lg);
         if (!p.length) return;
         var b = el("button", "", '<span class="acav acart" style="background-image:url(' + REL + 'cards/art/' + p[0].h + '.t.webp)"></span>');
         b.type = "button"; b.setAttribute("aria-label", lg.n); b.setAttribute("data-h", p[0].h); b.setAttribute("data-n", lg.n);
         g.appendChild(b);
       });
-      if (!work || work.saved) work = workFromSaved();
+      note.textContent = "Legends first. Search to find any other card.";
       showWork();
+      return;
+    }
+    if (!pics) { note.textContent = "Loading every card..."; loadPics(function (L) { if (!L) { note.textContent = "The cards could not load. Try again with a connection."; return; } drawCards(); }); return; }
+    var first = [], rest = [];
+    pics.forEach(function (r) { var n = r[0].toLowerCase(), at = n.indexOf(q); if (at === 0) first.push(r); else if (at > 0) rest.push(r); });
+    var hits = first.concat(rest), shown = hits.slice(0, PICMAX);
+    shown.forEach(function (r) {
+      var b = el("button", "", '<span class="acav acart" style="background-image:url(' + REL + 'cards/art/' + r[2] + '.t.webp)"></span><span class="acnm"></span>');
+      b.type = "button"; b.setAttribute("aria-label", r[0] + ", " + r[1]); b.setAttribute("data-h", r[2]); b.setAttribute("data-n", r[0]);
+      b.querySelector(".acnm").textContent = r[0];
+      g.appendChild(b);
     });
+    note.textContent = !hits.length ? "No card is called that." : hits.length > PICMAX ? PICMAX + " of " + hits.length + " cards. Keep typing to narrow it." : hits.length === 1 ? "1 card." : hits.length + " cards.";
+    showWork();
+  }
+  // a card's shape from its art, so a landscape battlefield is placed to fill the circle
+  var SHAPES = {};
+  function shapeOf(w) {
+    if (SHAPES[w.h]) { setShape(w, SHAPES[w.h]); return; }
+    var im = new root.Image();
+    im.onload = function () { SHAPES[w.h] = im.naturalWidth / (im.naturalHeight || 1); if (work === w) { setShape(w, SHAPES[w.h]); showWork(); } };
+    im.src = w.url;
+  }
+  function setShape(w, a) {
+    if (Math.abs((w.aspect || 0) - a) < 0.001) return;
+    w.aspect = a;
+    // a fresh landscape pick starts as a legend does, on the art (CROP.z of its height), centred
+    if (!w.saved && a >= 1) { w.z = Math.min(4, A.CROP.z * a); w.x = 50; w.y = 50; }
+    else if (w.z < zMin(w)) w.z = zMin(w);
   }
   function pickLegend(h) {
     work = { k: "l", h: h, url: REL + "cards/art/" + h + ".t.webp", aspect: CARD, x: A.CROP.x, y: A.CROP.y, z: A.CROP.z, saved: false };
@@ -968,8 +1036,8 @@
     function move() {
       if (!work || !start || work.saved) return;
       var ids = Object.keys(pts), a = pts[ids[0]], b = pts[ids[1]], S = size();
-      if (b && start.d) work.z = Math.max(1, Math.min(4, start.z * Math.hypot(a.x - b.x, a.y - b.y) / start.d));
-      var base = work.aspect >= 1 ? work.aspect : 1, iw = S * base * work.z, ih = iw / work.aspect;
+      if (b && start.d) work.z = Math.max(zMin(work), Math.min(4, start.z * Math.hypot(a.x - b.x, a.y - b.y) / start.d));
+      var iw = S * baseOf(work) * work.z, ih = iw / work.aspect;
       if (iw - S > 0.5) work.x = Math.max(0, Math.min(100, start.x - (a.x - start.px) / (iw - S) * 100));
       if (ih - S > 0.5) work.y = Math.max(0, Math.min(100, start.y - (a.y - start.py) / (ih - S) * 100));
       showWork();
@@ -982,7 +1050,7 @@
       if (!work) return;
       e.preventDefault();
       if (work.saved) { if (work.k === "p") return; work = Object.assign({}, work, { saved: false }); }
-      work.z = Math.max(1, Math.min(4, work.z * (e.deltaY < 0 ? 1.08 : 1 / 1.08)));
+      work.z = Math.max(zMin(work), Math.min(4, work.z * (e.deltaY < 0 ? 1.08 : 1 / 1.08)));
       showWork();
     }, { passive: false });
   }
@@ -1062,6 +1130,10 @@
     $("acriotn").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acriott").focus(); });
     $("acriott").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("acriott").blur(); claimTap(); } });
     adjustable();
+    // Or pick a card: the search over every card, with its round X (STYLE: every search clears)
+    $("acq").addEventListener("input", function () { $("acqx").disabled = !this.value; drawCards(); });
+    $("acq").addEventListener("keydown", function (e) { if (e.key === "Enter") this.blur(); });
+    $("acqx").addEventListener("click", function () { $("acq").value = ""; this.disabled = true; drawCards(); $("acq").focus(); });
     $("ackeyname").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("ackeyname").blur(); $("ackeysave").click(); } });
     armed($("ackeyoff"), "ackeyonemsg", "This passkey stops signing in to RAVI. Delete it from your phone's Passwords too.", function () {
       A.keyOff(keyId, function (err) { if (err) return say("ackeyonemsg", err); renderKeys(); back(); say("ackeymsg", "Passkey removed."); });
