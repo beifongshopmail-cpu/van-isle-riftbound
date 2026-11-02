@@ -300,11 +300,14 @@ function shape(c) {
   for (var j = 0; j < cgTags.length; j++) {
     if (cgTags[j]) { cgList.push(String(cgTags[j])); }
   }
+  // Riot sends a few new cards with no type yet (11 Radiance cards, 2026-11-02); their own
+  // description still names it ('Riftbound Unit: ...'), so take it from there.
+  var tdesc = /^Riftbound (Unit|Spell|Gear|Legend|Battlefield|Rune):/.exec(String(img.accessibilityText || ''));
   var o = {
     c: String(c.publicCode || ''),
     n: String(c.name || ''),
     s: String(set.id || ''),
-    t: String(ct.id || ''),
+    t: String(ct.id || (tdesc ? tdesc[1].toLowerCase() : '')),
     r: String(rar.id || ''),
     d: doms,
     h: hashOf(img.url),
