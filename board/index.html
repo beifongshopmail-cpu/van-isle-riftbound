@@ -174,6 +174,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #meetpick .t{display:block;flex:1;min-width:0}
 #meetpick .t b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #meetpick .t small{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#meetpick .mhead .chev{flex:0 0 16px;width:16px;height:16px;color:var(--muted)}
+#meetpick > .msub{padding-left:32px}
 .doors > .door.armed,.pact.armed{background-color:var(--glass-press)}
 /* THE VERDICT in an offer (as the Trade page's ring, made small): Yours left, Theirs right, the difference between */
 .ovd{display:flex;align-items:center;gap:6px;margin-top:14px;padding:12px 10px;border-radius:22px;background:var(--recess)}
@@ -269,7 +271,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </section>
 <section class="panel frost" id="pmeet" aria-hidden="true" aria-label="Meet at">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Meet at</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="meetpick" data-k="pick"></div><p class="pnote">Events from the calendar in the next three weeks. Pick the one you plan to be at; the other player sees it.</p></div>
+  <div class="pbody"><div class="pick" id="meetpick" data-k="pick"></div><p class="pnote">Stores with events on the calendar in the next three weeks. Open one and pick the event you plan to be at; the other player sees it.</p></div>
 </section>
 <script>
 (function(){
@@ -614,7 +616,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     var ow = offerWith(WHO);
     if (t.has.length || t.wants.length || rest.length || ow) {
-      h += '<button type="button" class="pact btn glass" id="bmake" data-k="deeper" style="margin-top:8px"' + (!ow && !selfSaved() ? ' disabled' : '') + '>' + (ow ? (ow.st === "accepted" ? "See your agreed trade" : "See your offer") : "Make an offer") + '</button>';
+      h += '<button type="button" class="pact btn glass" id="bmake" data-k="deeper" style="margin-top:8px"' + (!ow && !selfSaved() ? ' disabled' : '') + '>' + (ow ? "See your offer" : "Make an offer") + '</button>';
       if (!ow && !selfSaved()) { h += '<p class="pnote">Save your account to make offers: tap your picture, top right.</p>'; }
     }
     if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
@@ -818,7 +820,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (after) { after(); }
     });
   }
-  function offerWith(h){ for (var i = 0; i < OFF.length; i++) { if (OFF[i].who.h === h && (OFF[i].st === "open" || OFF[i].st === "accepted")) { return OFF[i]; } } return null; }
+  // the offer still waiting on an answer with this player (one at a time); an agreed trade doesn't stop a new offer
+  function offerWith(h){ for (var i = 0; i < OFF.length; i++) { if (OFF[i].who.h === h && OFF[i].st === "open") { return OFF[i]; } } return null; }
   function offerById(id){ for (var i = 0; i < OFF.length; i++) { if (OFF[i].id === id) { return OFF[i]; } } return null; }
   function cashWords(c){ return c ? (c.by === "me" ? "You add $" : "They add $") + c.n + " " + c.cur : ""; }
   function daysLeft(t){ var d = Math.max(1, Math.ceil((t - Date.now()) / DAYMS)); return plural(d, "day", "days") + " left"; }
@@ -937,7 +940,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (o.st === "open" && o.sent) { acts.push(["withdraw", "Withdraw this offer"]); }
     if (o.st === "accepted" && !o.done.me) { acts.push(["done", "Trade done"]); }
     if (o.st === "accepted") { acts.push(["cancel", "Call it off"]); }
-    if (o.st !== "open" && o.st !== "accepted" && tradeOf(f.h)) { acts.push(["again", "Make a new offer", 1]); }
+    if (o.st !== "open" && !offerWith(f.h) && (tradeOf(f.h) || DATA.people[f.h])) { acts.push(["again", "Make a new offer", 1]); }
     if (acts.length) {
       h += '<div class="doors oacts" data-k="' + (acts.some(function(a){ return a[2]; }) ? "deeper" : "do") + '">' + acts.map(function(a){
         return '<button type="button" class="door btn glass' + (a[2] ? "" : " act") + '" data-oa="' + a[0] + '"><span class="t">' + esc(a[1]) + '</span><span class="sp"></span>' + (a[2] ? CVR : "") + '</button>';
@@ -960,7 +963,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!b) { return; }
     var o = offerById(OFFID);
     if (!o) { return; }
-    if (b.id === "omeet") { drawMeet(); deeper(pmeet); return; }
+    if (b.id === "omeet") { MOPEN = o.meet.me && EV[o.meet.me] ? (EV[o.meet.me].where || "Other events") : ""; drawMeet(); deeper(pmeet); return; }
     var a = b.getAttribute("data-oa");
     if (a === "accept") { act("answer", { id: o.id, act: "accept" }); return; }
     if (a === "counter") { startMake(o.who.h, o); return; }
@@ -974,19 +977,42 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   });
 
   // Meet at: the events in the next three weeks, as on the calendar
+  var MOPEN = "";
   function drawMeet(){
     var o = offerById(OFFID), now = Date.now();
     if (!o) { return; }
-    var rows = ['<button type="button" class="rec' + (o.meet.me ? '' : ' on') + '" data-ev=""><span class="t"><b>Not decided</b><small>Pick an event when you know</small></span></button>'];
+    var st = {}, names = [];
     EVLIST.filter(function(e){ return e.t > now - 3 * 3600000 && e.t < now + 21 * DAYMS; }).forEach(function(e){
-      var on = o.meet.me === e.id;
-      rows.push('<button type="button" class="rec' + (on ? " on" : "") + '" data-ev="' + esc(e.id) + '"><span class="t"><b>' + esc(e.name) + '</b><small>' + esc(evWhen(e) + (e.where ? ", " + e.where : "")) + '</small></span></button>');
+      var k = e.where || "Other events";
+      if (!st[k]) { st[k] = []; names.push(k); }
+      st[k].push(e);
     });
-    if (rows.length === 1) { rows.push('<button type="button" class="rec" disabled><span class="t"><b>No events coming up</b><small>The calendar has none in the next three weeks</small></span></button>'); }
+    names.sort(function(x, y){ x = x.toLowerCase(); y = y.toLowerCase(); return x < y ? -1 : x > y ? 1 : 0; });
+    var pickedAt = o.meet.me && EV[o.meet.me] ? (EV[o.meet.me].where || "Other events") : "";
+    if (MOPEN && !st[MOPEN]) { MOPEN = ""; }
+    var rows = ['<button type="button" class="rec' + (o.meet.me ? '' : ' on') + '" data-ev=""><span class="t"><b>Not decided</b><small>Pick an event when you know</small></span></button>'];
+    names.forEach(function(k){
+      var list = st[k], open = MOPEN === k;
+      rows.push('<button type="button" class="rec mhead" data-st="' + esc(k) + '" aria-expanded="' + open + '" data-k="open"><span class="t"><b>' + esc(k) + '</b><small>'
+        + esc(plural(list.length, "event", "events") + (pickedAt === k ? ", yours is here" : ", next " + evWhen(list[0]))) + '</small></span>'
+        + '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>');
+      if (!open) { return; }
+      list.forEach(function(e){
+        rows.push('<button type="button" class="rec msub' + (o.meet.me === e.id ? " on" : "") + '" data-ev="' + esc(e.id) + '"><span class="t"><b>' + esc(e.name) + '</b><small>' + esc(evWhen(e)) + '</small></span></button>');
+      });
+    });
+    if (!names.length) { rows.push('<button type="button" class="rec" disabled><span class="t"><b>No events coming up</b><small>The calendar has none in the next three weeks</small></span></button>'); }
     $("meetpick").innerHTML = rows.join("");
   }
   pmeet.__redraw = drawMeet;
   $("meetpick").addEventListener("click", function(ev){
+    var hd = ev.target.closest("button[data-st]");
+    if (hd) {
+      var k = hd.getAttribute("data-st");
+      MOPEN = MOPEN === k ? "" : k; drawMeet();
+      if (MOPEN) { Array.prototype.forEach.call($("meetpick").querySelectorAll(".msub"), function(r){ r.classList.add("reveal"); }); }
+      return;
+    }
     var b = ev.target.closest("button[data-ev]"), o = offerById(OFFID);
     if (!b || !o) { return; }
     A.offerAct("meet", { id: o.id, ev: b.getAttribute("data-ev") }, function(err){
