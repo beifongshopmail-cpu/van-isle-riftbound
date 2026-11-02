@@ -84,8 +84,9 @@ export function b64u(bytes) {
   for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
-export function unb64u(text) {
-  if (typeof text !== "string" || !/^[A-Za-z0-9_-]*$/.test(text) || text.length > 20000) return null;
+// max: the longest text taken (a passkey's parts by default; a photo passes its own)
+export function unb64u(text, max) {
+  if (typeof text !== "string" || !/^[A-Za-z0-9_-]*$/.test(text) || text.length > (max || 20000)) return null;
   const s = text.replace(/-/g, "+").replace(/_/g, "/");
   try {
     const bin = atob(s + "===".slice((s.length + 3) % 4));
@@ -710,7 +711,8 @@ export function makeAccounts() {
       });
       const hs = new Map();
       for (const o of list) { const other = o.a === acct ? o.b : o.a; if (!hs.has(other)) hs.set(other, await handleOf(other)); }
-      const out = list.map((o) => viewOf(o, acct, hs.get(o.a === acct ? o.b : o.a), (id) => this.face(id), (id) => this.db.riotOf(id)));
+      const apart = this.apart(acct); // a block hides the Riot ID even on a finished trade (the security scan, Mako's yes 2026-11-01)
+      const out = list.map((o) => viewOf(o, acct, hs.get(o.a === acct ? o.b : o.a), (id) => this.face(id), (id) => apart.has(id) ? null : this.db.riotOf(id)));
       return { v: 1, offers: out, wait: out.filter((x) => x.turn).length };
     }
     // a new offer or a counter from me; body: { to: handle, give, get, cash, re }
@@ -803,7 +805,10 @@ export function makeAccounts() {
       if (!(await this.spend("report", "acct:" + me.acct.id))) return [429, { error: "that is plenty of reports for today; try again tomorrow" }];
       const now = this.now();
       this.db.putRep({ by: me.acct.id, who: who, why: why, at: now });
-      if (why === "pic" && this.db.repsOf(who).filter((r) => r.why === "pic").length >= REPORT.hide) {
+      // the instant hide counts only reporters whose accounts are REPORT.oldDays old (the security scan, Mako's yes
+      // 2026-11-01): fresh accounts can't hide a picture; every report still reaches Mako's queue
+      const old = (r) => { const x = this.db.acct(r.by); return !!x && now - x.made >= REPORT.oldDays * DAY; };
+      if (why === "pic" && this.db.repsOf(who).filter((r) => r.why === "pic" && old(r)).length >= REPORT.hide) {
         const m = this.db.mod(who) || { off: 0, at: now };
         this.db.putMod(who, { off: m.off, pich: 1, at: m.at });
       }
@@ -1044,9 +1049,12 @@ export function makeAccounts() {
         if (ch.acct) {
           const a = this.db.acct(ch.acct);
           if (!a || !me || me.acct.id !== a.id) return reply({ error: "signed out" }, 401);
+          if (a.guest && !(await this.spend("made", ip))) return reply({ error: "too many new accounts from this connection today; try again tomorrow" }, 429);
           this.db.putCred({ id: r.id, acct: a.id, alg: r.alg, jwk: r.jwk, count: r.count, made: now, last: now, name: cleanText(body.name, 32) });
           if (a.guest) {
-            // Save your account: the first passkey makes the guest a saved account, with its recovery code
+            // Save your account: the first passkey makes the guest a saved account, with its recovery code.
+            // It counts as a new account toward the day's limit (the security scan, Mako's yes 2026-11-01:
+            // throwaway saved accounts must not be cheaper than new ones; spent above, before the passkey is kept)
             const code = newCode();
             a.guest = 0; a.code = await sha(cleanCode(code));
             this.db.putAcct(a);
@@ -1114,7 +1122,7 @@ export function makeAccounts() {
       }
       if (p === "/photo") {
         if (!(await this.spend("photo", ip))) return reply({ error: "too many pictures today; try again tomorrow" }, 429);
-        const img = typeof body.jpg === "string" && body.jpg.length < PHOTO_MAX * 1.4 ? unb64u(body.jpg) : null;
+        const img = typeof body.jpg === "string" && body.jpg.length < PHOTO_MAX * 1.4 ? unb64u(body.jpg, PHOTO_MAX * 1.4) : null; // a 256 square photo is 20 to 33K characters (the security scan, 2026-11-01)
         if (!img || !checkJpeg(img)) return reply({ error: "that picture could not be used; try another" }, 400);
         const x = this.profOf(me.acct.id);
         this.db.putPhoto(me.acct.id, img);

@@ -39,8 +39,9 @@ export function settingsFrom(d) {
   return { open: open, pct: pct };
 }
 
+// a printing's name (Normal, Foil): letters, digits, spaces and hyphens only (the security scan, 2026-11-01)
 function cleanFinish(f) {
-  return typeof f === "string" && f && f.length <= 60 && !/[\u0000-\u001f\u007f<>]/.test(f) ? f : null;
+  return typeof f === "string" && f.length <= 60 && /^[A-Za-z0-9][A-Za-z0-9 -]*$/.test(f) ? f : null;
 }
 // a side's cards from the phone: [{ i, f, q }], same card and printing added together; null when any line is bad
 export function cleanLines(list) {

@@ -153,7 +153,7 @@ async function toAlerts(req, env, path) {
   const text = await req.text();
   if (text.length > 4096) return json(req, 413, { error: "too big" });
   const stub = env.ALERTS.get(env.ALERTS.idFromName("all"));
-  const r = await stub.fetch(new Request("https://alerts" + path, { method: "POST", body: text, headers: { "Content-Type": "application/json" } }));
+  const r = await stub.fetch(new Request("https://alerts" + path, { method: "POST", body: text, headers: { "Content-Type": "application/json", "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } }));
   return json(req, r.status, await r.json().catch(function () { return {}; }));
 }
 

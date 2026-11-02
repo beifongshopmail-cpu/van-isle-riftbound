@@ -14,6 +14,9 @@ const SUBJECT = "https://github.com/beifongshopmail-cpu/van-isle-riftbound";
 const WAKE_MS = 30000;
 const KEEP_MS = 16 * 3600000;
 const MAX_ROWS = 2000, MAX_PER_PHONE = 5;
+// new requests a day per connection, so one person can't fill MAX_ROWS for everyone (the security scan,
+// Mako's yes 2026-11-01); the address is kept only as a one-way stamp with the day in it, for that day
+export const PER_DAY = 100;
 // the push services browsers use; anything else is refused
 const PUSH_HOSTS = /^(web\.push\.apple\.com|fcm\.googleapis\.com|updates\.push\.services\.mozilla\.com|[a-z0-9-]+\.notify\.windows\.com|android\.googleapis\.com)$/;
 
@@ -68,7 +71,10 @@ export function messageFor(live, row) {
 // storage: SQLite in the Durable Object, a plain list in the tests
 function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS asks (endpoint TEXT, event TEXT, p256dh TEXT, auth TEXT, n TEXT, tag TEXT, last INTEGER, at INTEGER, PRIMARY KEY (endpoint, event))");
+  sql.exec("CREATE TABLE IF NOT EXISTS lim (key TEXT PRIMARY KEY, day TEXT, c INTEGER)");
   return {
+    used: (key, day) => { const x = sql.exec("SELECT day, c FROM lim WHERE key = ?", key).toArray()[0]; return x && x.day === day ? x.c : 0; },
+    use: (key, day, c) => { sql.exec("DELETE FROM lim WHERE day <> ?", day); sql.exec("INSERT OR REPLACE INTO lim VALUES (?, ?, ?)", key, day, c); },
     all: () => sql.exec("SELECT * FROM asks").toArray(),
     count: () => sql.exec("SELECT COUNT(*) AS c FROM asks").one().c,
     phone: (ep) => sql.exec("SELECT COUNT(*) AS c FROM asks WHERE endpoint = ?", ep).one().c,
@@ -79,7 +85,10 @@ function sqlStore(sql) {
 }
 export function memStore() {
   let rows = [];
+  const lim = new Map();
   return {
+    used: (key, day) => { const x = lim.get(key); return x && x.day === day ? x.c : 0; },
+    use: (key, day, c) => { lim.forEach((x, k) => { if (x.day !== day) lim.delete(k); }); lim.set(key, { day: day, c: c }); },
     all: () => rows.map((r) => Object.assign({}, r)),
     count: () => rows.length,
     phone: (ep) => rows.filter((r) => r.endpoint === ep).length,
@@ -112,6 +121,13 @@ export function makeAlerts(getLive) {
         if (!r) return Response.json({ error: "bad request" }, { status: 400 });
         const had = this.db.all().some((x) => x.endpoint === r.endpoint && x.event === r.event);
         if (!had && (this.db.count() >= MAX_ROWS || this.db.phone(r.endpoint) >= MAX_PER_PHONE)) return Response.json({ error: "full" }, { status: 429 });
+        if (!had) {
+          const day = new Date(this.now()).toISOString().slice(0, 10);
+          const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode((req.headers.get("X-Ravi-Ip") || "") + "|" + day));
+          const key = "add:" + Array.from(new Uint8Array(b), (x) => x.toString(16).padStart(2, "0")).join(""), c = this.db.used(key, day);
+          if (c >= PER_DAY) return Response.json({ error: "too many alert requests from this connection today; try again tomorrow" }, { status: 429 });
+          this.db.use(key, day, c + 1);
+        }
         r.at = this.now(); r.last = 0;
         this.db.put(r);
         await this.wake();

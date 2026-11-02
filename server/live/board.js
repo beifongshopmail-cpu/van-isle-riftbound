@@ -31,8 +31,9 @@ export const BOARD = { side: 2000, traders: 100, browse: 3000, perCard: 40 };
 
 function J(s) { try { return JSON.parse(s); } catch (e) { return null; } }
 
+// a printing's name (Normal, Foil): letters, digits, spaces and hyphens only (the security scan, 2026-11-01)
 function cleanFinish(f) {
-  return typeof f === "string" && f && f.length <= 60 && !/[\u0000-\u001f\u007f<>]/.test(f) ? f : null;
+  return typeof f === "string" && f.length <= 60 && /^[A-Za-z0-9][A-Za-z0-9 -]*$/.test(f) ? f : null;
 }
 // one list of holdings into { "i|f": q }, adding counts; anything not a checked holding is dropped
 function addList(into, list) {
