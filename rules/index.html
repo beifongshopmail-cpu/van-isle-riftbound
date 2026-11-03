@@ -71,6 +71,15 @@ body{-webkit-font-smoothing:antialiased;
 .empty{margin:6px 4px 0;font-size:13px;color:var(--muted)}
 .foot a{color:var(--bone)}
 /* a row that leaves the app (Riot's PDFs) carries the out-arrow (.extl), never the deeper chevron */
+/* THE CHIPS (plan 2 M5): under the search, inside its plate, as Decks' tag chips: kind, then set,
+   one of each; a chosen chip is bone; again clears it. Scrolls sideways inside the plate. */
+.bchips{display:flex;gap:6px;margin:10px -10px 0;padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.bchips::-webkit-scrollbar{display:none}
+.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
+.fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
+/* A MATCHED WORD (plan 2 M5): bold and lit, so it never rests on colour alone */
+mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
+.rtx.old mark.hit{color:var(--bone)}
 .extl{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 </style>
 </head>
@@ -88,12 +97,13 @@ body{-webkit-font-smoothing:antialiased;
       <input id="q" type="search" placeholder="Search cards and rulings" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
       <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
+    <div class="bchips" id="rchips" role="group" aria-label="Narrow by kind and set"></div>
   </div>
 
   <section id="res" hidden>
     <div class="shead"><h2>Results</h2><span class="sp"></span><span class="cnt" id="rescnt"></span></div>
     <div id="reslist"></div>
-    <p class="empty" id="resnone" hidden>Nothing matches. Try a card name or a few words from the question.</p>
+    <p class="empty" id="resnone" hidden>Nothing matches. Try a card name, a few words from the question, or another chip.</p>
   </section>
 
   <div id="home">
@@ -229,6 +239,7 @@ body{-webkit-font-smoothing:antialiased;
     var b = btn.nextElementSibling, open = btn.getAttribute("aria-expanded") === "true";
     if(open){ btn.setAttribute("aria-expanded", "false"); b.hidden = true; b.innerHTML = ""; return; }
     b.innerHTML = body(ITEM[btn.getAttribute("data-id")]);
+    if(btn.closest("#reslist")) mark(b);
     btn.setAttribute("aria-expanded", "true");
     b.hidden = false;
     b.querySelectorAll("a").forEach(function(a){ a.target = "_blank"; a.rel = "noopener"; });
@@ -345,35 +356,125 @@ body{-webkit-font-smoothing:antialiased;
     window.RAVI_EDGES && window.RAVI_EDGES();
   }
 
-  // ---- search: card names, questions, titles and every word of the text ----
-  var IDX = [];
-  function find(q){
-    var words = q.toLowerCase().split(/\s+/).filter(Boolean), out = [], i;
-    for(i = 0; i < IDX.length && out.length < 40; i++){
-      var x = IDX[i], ok = true, w;
-      for(w = 0; w < words.length; w++){ if(x.t.indexOf(words[w]) === -1){ ok = false; break; } }
-      if(ok) out.push(x);
+  // ---- SEARCH (plan 2 M5; NEXT -- Rules page follow-ups, item 1: 'intuitive, useful, forgiving').
+  // Every word typed must match a word in the entry: the word itself or one of its forms
+  // (conquer, conquers, conquered, conquering), a word it starts (while still typing), or one
+  // close to it (a letter or two off: a typo). The card's own name ranks first, then the question
+  // or title, then the text. Matched words are marked. The chips under the search narrow it by
+  // kind and by set, one of each; with no search they list everything they choose. All in the
+  // page; nothing is sent anywhere. ----
+  var IDX = [], VOC = {}, VK = [], HITS = null, FK = "", FS = "";
+  var STOP = { the:1, and:1, for:1, you:1, your:1, are:1, can:1, with:1, that:1, this:1, does:1, what:1, when:1, how:1, its:1, has:1, have:1, not:1, but:1, from:1, into:1 };
+  function norm(w){ return w.toLowerCase().replace(/[’']/g, ""); }
+  function words(t){ return (String(t || "").toLowerCase().replace(/[’']/g, "").match(/[a-z0-9]+/g)) || []; }
+  function stem(w){
+    if(w.length > 5 && /ing$/.test(w)) w = w.slice(0, -3);
+    else if(w.length > 4 && /(ied|ies)$/.test(w)) w = w.slice(0, -3) + "y";
+    else if(w.length > 4 && /ed$/.test(w)) w = w.slice(0, -2);
+    else if(w.length > 4 && /(s|x|z|ch|sh)es$/.test(w)) w = w.slice(0, -2);
+    else if(w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) w = w.slice(0, -1);
+    if(w.length > 4 && /e$/.test(w)) w = w.slice(0, -1);
+    return w;
+  }
+  // at most k edits apart (a swap of two letters counts as one), with an early way out
+  function near(a, b, k){
+    if(Math.abs(a.length - b.length) > k) return false;
+    var m = a.length, n = b.length, p2 = null, p1 = [], cur, i, j, low, v;
+    for(j = 0; j <= n; j++) p1[j] = j;
+    for(i = 1; i <= m; i++){
+      cur = [i]; low = i;
+      for(j = 1; j <= n; j++){
+        v = Math.min(p1[j] + 1, cur[j - 1] + 1, p1[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+        if(p2 && j > 1 && a.charAt(i - 1) === b.charAt(j - 2) && a.charAt(i - 2) === b.charAt(j - 1)) v = Math.min(v, p2[j - 2] + 1);
+        cur[j] = v; if(v < low) low = v;
+      }
+      if(low > k) return false;
+      p2 = p1; p1 = cur;
     }
-    // names and questions that match first, then the rest
-    out.sort(function(a, b){ return (b.h.indexOf(words[0]) !== -1) - (a.h.indexOf(words[0]) !== -1); });
-    return out;
+    return p1[n] <= k;
+  }
+  // how well a typed word matches a word of the text: 3 the word or its form, 2 the start of it, 1 a typo
+  function level(q, qs, w, ws){
+    if(w === q || ws === qs) return 3;
+    if(q.length >= 3 && w.indexOf(q) === 0) return 2;
+    var k = q.length >= 8 ? 2 : q.length >= 4 ? 1 : 0;
+    return k && near(qs, ws, k) ? 1 : 0;
+  }
+  function find(q){
+    var qs = words(q), tot = null, hit = {}, i, j, x;
+    qs.forEach(function(qw){
+      var qst = stem(qw), best = {};
+      for(i = 0; i < VK.length; i++){
+        var w = VK[i], lv = level(qw, qst, w.w, w.s);
+        if(!lv) continue;
+        if(qw.length >= 3 && !STOP[qw]) hit[w.w] = 1;
+        for(j = 0; j < w.at.length; j++){
+          x = w.at[j];
+          var sc = lv * 2 + (x.where === 2 ? 6 : x.where === 1 ? 3 : 0);
+          if(!(best[x.i] >= sc)) best[x.i] = sc;
+        }
+      }
+      if(tot === null) tot = best;
+      else { var next = {}; for(var id in tot){ if(best[id] !== undefined) next[id] = tot[id] + best[id]; } tot = next; }
+    });
+    var ids = Object.keys(tot || {}).map(Number);
+    ids.sort(function(a, b){ return (tot[b] - tot[a]) || (a - b); });
+    return { ids: ids, hit: hit };
+  }
+  // the matched words, marked wherever they show in the results (names and opened text)
+  function mark(root){
+    if(!HITS) return;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while((n = tw.nextNode())){ if(!(n.parentNode && n.parentNode.closest && n.parentNode.closest("mark"))) nodes.push(n); }
+    nodes.forEach(function(t){
+      var txt = t.nodeValue, re = /[A-Za-z0-9’']+/g, m, last = 0, frag = null;
+      while((m = re.exec(txt))){
+        if(!HITS[norm(m[0])]) continue;
+        frag = frag || document.createDocumentFragment();
+        if(m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+        var k = document.createElement("mark"); k.className = "hit"; k.textContent = m[0]; frag.appendChild(k);
+        last = m.index + m[0].length;
+      }
+      if(!frag) return;
+      if(last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  function kindOf(it){ return it.kind === "errata" ? "errata" : "faq"; }
+  function chips(){
+    var h = "", sets = [], seen = {};
+    D.sources.slice().sort(function(a, b){ return String(a.published || "").localeCompare(String(b.published || "")); }).forEach(function(s){
+      if(s.set && (s.kind === "errata" || s.kind === "faq") && !seen[s.set]){ seen[s.set] = 1; sets.push(s.set); }
+    });
+    [["k", "errata", "Errata"], ["k", "faq", "FAQs"]].concat(sets.map(function(x){ return ["s", x, cap(x)]; })).forEach(function(c){
+      var on = c[0] === "k" ? FK === c[1] : FS === c[1];
+      h += '<button type="button" class="fchip btn glass' + (on ? " on" : "") + '" data-k="do" data-chip="' + c[0] + '" data-v="' + esc(c[1]) + '" aria-pressed="' + on + '">' + esc(c[2]) + '</button>';
+    });
+    el("rchips").innerHTML = h;
   }
   function search(){
-    var q = el("q").value.trim();
+    var q = el("q").value.trim(), on = !!(q || FK || FS);
     el("qx").disabled = !q;
-    el("home").hidden = !!q;
-    el("res").hidden = !q;
-    if(!q) return;
+    el("home").hidden = on;
+    el("res").hidden = !on;
+    if(!on){ HITS = null; el("reslist").innerHTML = ""; return; }
+    var list, cut = Infinity;
+    if(q){ var f = find(q); list = f.ids.map(function(i){ return IDX[i]; }); HITS = Object.keys(f.hit).length ? f.hit : null; cut = 40; }
+    else { list = IDX.slice(); HITS = null; }
+    list = list.filter(function(x){ return (!FK || kindOf(x.it) === FK) && (!FS || x.it.set === FS); });
+    var all = list.length;
+    list = list.slice(0, cut);
     // RESULTS BY KIND, each in its section's colour (Mako 2026-10-24: not the page's green): Errata
     // garnet, then FAQs and rulings gold, as the sections below them; the order inside each kept
-    var hits = find(q), h = "", err = "", faq = "";
-    hits.forEach(function(x){ var e = entry(x.it, (SRC[x.it.source] || {}).title); if(x.it.kind === "errata") err += e; else faq += e; });
+    var h = "", err = "", faq = "";
+    list.forEach(function(x){ var e = entry(x.it, (SRC[x.it.source] || {}).title); if(x.it.kind === "errata") err += e; else faq += e; });
     if(err) h += '<div class="row"><p class="lb">Errata</p><div class="doors" data-k="open" style="--tint:rgba(200,35,70,var(--cg))">' + err + '</div></div>';
     if(faq) h += '<div class="row"><p class="lb">FAQs and rulings</p><div class="doors" data-k="open" style="--tint:rgba(255,200,40,var(--cg))">' + faq + '</div></div>';
     el("reslist").innerHTML = h;
-    el("reslist").hidden = !hits.length;
-    el("resnone").hidden = !!hits.length;
-    el("rescnt").textContent = hits.length >= 40 ? "first 40" : hits.length;
+    el("reslist").hidden = !list.length;
+    el("resnone").hidden = !!list.length;
+    el("rescnt").textContent = all > list.length ? "first " + list.length : list.length;
+    mark(el("reslist"));
   }
 
   function boot(){
@@ -382,9 +483,16 @@ body{-webkit-font-smoothing:antialiased;
       ITEM[it.id] = it;
       (BYSRC[it.source] = BYSRC[it.source] || []).push(it);
       if(it.kind === "doc" || it.kind === "legal") return;
-      var head = title(it);
-      IDX.push({ it: it, h: head.toLowerCase(), t: (head + " " + (it.group || "") + " " + strip(it["new"]) + " " + strip(it.old) + " " + strip(it.a) + " " + strip(it.html)).toLowerCase() });
+      var head = title(it), i = IDX.length, where = {};
+      IDX.push({ it: it });
+      // 2 the card's own name, 1 the question or title, 0 the text
+      words(strip(it["new"]) + " " + strip(it.old) + " " + strip(it.a) + " " + strip(it.html) + " " + (it.group || "")).forEach(function(w){ where[w] = 0; });
+      words(head).forEach(function(w){ where[w] = 1; });
+      words((it.cards || []).join(" ")).forEach(function(w){ where[w] = 2; });
+      Object.keys(where).forEach(function(w){ (VOC[w] = VOC[w] || []).push({ i: i, where: where[w] }); });
     });
+    VK = Object.keys(VOC).map(function(w){ return { w: w, s: stem(w), at: VOC[w] }; });
+    chips();
     seenStart();
     render();
   }
@@ -408,6 +516,13 @@ body{-webkit-font-smoothing:antialiased;
   window.RAVI_GOTO(el("pnavgoto"), "rules", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
   el("q").addEventListener("input", search);
+  el("rchips").addEventListener("click", function(ev){
+    var c = ev.target.closest(".fchip");
+    if(!c) return;
+    var v = c.getAttribute("data-v");
+    if(c.getAttribute("data-chip") === "k") FK = FK === v ? "" : v; else FS = FS === v ? "" : v;
+    chips(); search();
+  });
   el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
 
   fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ D = d; boot(); })
