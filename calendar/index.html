@@ -193,10 +193,12 @@ a{color:inherit;text-decoration:none}
 .ev .lvl::before{content:"LIVE";display:inline-block;vertical-align:1px;margin-right:6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
 .evact .evlive{margin-top:12px}
 .evact .evlive[hidden]{display:none}
-/* GOING (plan 2 M3 block 5): a saved account marks an event it will be at; the Trade board shows
-   its next one to other traders, so the open card says so in words under the pressed button. */
-.evact .evgo{margin-top:12px}
-.evact .evgo[hidden]{display:none}
+/* GOING (plan 2 M3 block 5): a saved account marks an event it will be at, a round icon button
+   first in the row (Mako 2026-11-02: icons only, as the rest of the row). Pressed, the person's
+   plus becomes a check and the button sits pressed, and a line under the row says in words that
+   traders on the Trade board see it. */
+.evact .evbtns .evgo.on{background:var(--glass-press)}
+.evact .evbtns .evgo[hidden]{display:none}
 .evact .evgonote{margin:8px 2px 0;font-size:12px;line-height:1.4;color:var(--muted)}
 .evact .evgonote[hidden]{display:none}
 
@@ -502,6 +504,9 @@ a{color:inherit;text-decoration:none}
   var CALPLUS = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M21 13V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8"/><path d="M3 10h18"/><path d="M16 19h6"/><path d="M19 16v6"/></svg>';
   var OUT = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg>';
   // the Top cut page's trophy (Lucide, ISC), outline as the card's other buttons (M15)
+  // a person and a plus, a person and a check: Lucide's user-round-plus and user-round-check (lucide.dev, ISC)
+  var GOPLUS = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 13.292-6"/><circle cx="10" cy="8" r="5"/><path d="M19 16v6"/><path d="M22 19h-6"/></svg>';
+  var GOCHECK = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21a8 8 0 0 1 13.292-6"/><circle cx="10" cy="8" r="5"/><path d="m16 19 2 2 4-4"/></svg>';
   var TROPHY = '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></svg>';
   function withSim(list){
     var on = false;
@@ -873,6 +878,14 @@ a{color:inherit;text-decoration:none}
       info.appendChild(ad);
       var btns = document.createElement("span");
       btns.className = "evbtns";
+      // I'm going (block 5): saved accounts only, painted by paintGo
+      var gb = document.createElement("button");
+      gb.type = "button";
+      gb.className = "circ btn glass evgo";
+      gb.setAttribute("data-k", "do");
+      gb.setAttribute("data-go", String(ev.id));
+      gb.hidden = true;
+      btns.appendChild(gb);
       // a visited event (?visit=) has no address here and no calendar file
       if (!ev.visit) iconLink(btns, "evdir", mapUrl(street || placeOf(ev)), "Directions", PIN);
       // the test event (?sim=1) has no calendar file
@@ -890,14 +903,6 @@ a{color:inherit;text-decoration:none}
       iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT);
       info.appendChild(btns);
       act.appendChild(info);
-      // I'm going (block 5): saved accounts only, painted by paintGo
-      var gb = document.createElement("button");
-      gb.type = "button";
-      gb.className = "pact btn glass evgo";
-      gb.setAttribute("data-k", "do");
-      gb.setAttribute("data-go", String(ev.id));
-      gb.hidden = true;
-      act.appendChild(gb);
       var gn = document.createElement("p");
       gn.className = "evgonote";
       gn.hidden = true;
@@ -1253,7 +1258,9 @@ a{color:inherit;text-decoration:none}
     if (!b || !n || !GO) return;
     var show = GO.saved && goable(ev), on = !!GO.set[String(ev.id)], err = GO.err[String(ev.id)] || "";
     b.hidden = !show;
-    b.textContent = on ? "Going: tap to undo" : "I'm going";
+    if (b.getAttribute("data-on") !== String(on)) { b.innerHTML = on ? GOCHECK : GOPLUS; b.setAttribute("data-on", String(on)); }
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-label", on ? "Going: tap to undo" : "I'm going");
     b.setAttribute("aria-pressed", on ? "true" : "false");
     n.textContent = err || (on ? "Traders on the Trade board see this as your next event." : "");
     n.hidden = !show || !n.textContent;
