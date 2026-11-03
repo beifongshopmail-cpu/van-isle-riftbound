@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-02T22:11:38.714Z",
- "generated_local": "2026-11-02T15:11:38-07:00",
- "window_start": "2026-11-02T07:00:00.000Z",
+ "generated_at": "2026-11-03T07:40:04.078Z",
+ "generated_local": "2026-11-03T00:40:04-07:00",
+ "window_start": "2026-11-03T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -49,7 +49,13 @@
  "totals": {
   "fetched": 59,
   "unique": 59,
-  "prev_unique": 58
+  "prev_unique": 59,
+  "recent": [
+   {
+    "d": "2026-11-03",
+    "n": 59
+   }
+  ]
  },
  "unknown_templates": {
   "NEXUS_CUP": {
@@ -247,7 +253,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null,
+   "store": "Elite4",
    "swiss": 4,
    "cut": false
   },
@@ -777,7 +783,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null,
+   "store": "Elite4",
    "swiss": 4,
    "cut": false
   },
@@ -1108,14 +1114,14 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 7,
+   "reg": 8,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null,
+   "store": "Elite4",
    "swiss": 3,
    "cut": false
   },
@@ -1235,7 +1241,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null,
+   "store": "Elite4",
    "swiss": 3,
    "cut": false
   },
@@ -1309,7 +1315,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": null,
+   "store": "Elite4",
    "swiss": 3,
    "cut": false
   },
