@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#08090A">
-<meta name="description" content="App settings for RAVI: your Riot name, the hub's blocks, where the app opens, and the opening animation.">
+<meta name="description" content="App settings for RAVI: your Riot name and alerts, local decks, the hub's blocks, where the app opens, and motion.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RAVI">
@@ -18,32 +18,40 @@
 <script src="../live.js"></script>
 <style>
 /* App settings. The shared layer (tokens, glass, the bar, menus, the
-   footer) is app.css; this block holds only this page's own rules. Each
-   section is a glass card holding a sunken pick group, like the
-   calendar's card and the feedback form. */
+   footer) is app.css; this block holds only this page's own rules. A
+   search plate, then two press groups of rows, each row opening its own
+   menu with the setting in it, as iPhone Settings (plan 2 M6 block 4). */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #st{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
-.sts{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
-.sts .shead{margin:0 4px 10px}
-.sts .shead h2{font-size:17px}
-.stn{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+/* the search plate: sticky, parked 10 above --top-clear, plate frost, clear (as Rules and Decks) */
+.srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}
+.plate{border-radius:24px;padding:10px;
+  background:rgba(10,11,13,.94);
+  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.stgrp{margin-top:14px}
+.stgrp[hidden]{display:none}
+.stn{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.stnone{text-align:center}
+.sup{margin-top:20px}
 /* the reset slot while it waits for its second tap */
 .tab.armed{background:var(--glass-press)}
 .starm{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);text-align:center;visibility:hidden}
 .starm.show{visibility:visible}
 /* the Hub blocks note when an eighth pick is refused */
-.stwarn{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);visibility:hidden}
+.stwarn{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone);visibility:hidden}
 .stwarn.show{visibility:visible}
 .foot a{color:var(--bone)}
 /* YOUR RIOT NAME (M16): one field, saved on this phone, used by every live part */
-#stme .nf{margin:0}
-#stme .rid[hidden]{display:none}
-#stme .pact{margin-top:12px}
-#stme #stmeok{margin-top:6px}
-.stmsg{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--bone)}
+#pme .nf{margin:0}
+#pme .rid[hidden],#pme .pact[hidden]{display:none}
+#pme .pact{margin-top:12px}
+#pme #stmeok{margin-top:6px}
+.panel .pick+.pnote{margin-top:10px}
+.stmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
 </style>
 </head>
@@ -53,41 +61,27 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
 <main id="st">
   <h2 class="sr">App settings</h2>
-  <p class="lede">Your Riot name, and choices for the hub and for how the app opens and moves, saved on this phone.</p>
-  <section class="sts glass" id="stme">
-    <div class="shead"><h2>Your Riot name</h2></div>
-    <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
-      <div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
-    <button type="button" class="pact btn glass" id="stmeok" data-k="do">Save</button>
-    <p class="stn" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them. At a live event it finds your table, your record and your alerts. Saved on this phone only.</p>
-    <p class="stmsg" id="stmemsg" aria-live="polite"></p>
-    <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
-    <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
-  </section>
-  <section class="sts glass">
-    <div class="shead"><h2>Hub blocks</h2></div>
-    <div class="pick" id="sthub" data-k="pick"></div>
-    <p class="stn" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always lists every page.</p>
-    <p class="stwarn" id="sthubnote" aria-live="polite">Seven are on. Turn one off first.</p>
-  </section>
 
-  <section class="sts glass">
-    <div class="shead"><h2>Open the app to</h2></div>
-    <div class="pick" id="opento" data-k="pick"></div>
-    <p class="stn">The app opens to the page you pick here. Tap Hub on any page to come back.</p>
-  </section>
+  <!-- the search plate (sticky, as Rules and Decks; plan 2 M6 block 4, Mako 2026-11-03) -->
+  <div class="srow plate glass">
+    <div class="sf">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+      <input id="stq" type="search" placeholder="Search settings" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search settings" data-k="type">
+      <button type="button" class="fbtn fx glass" id="stqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
 
-  <section class="sts glass">
-    <div class="shead"><h2>Local decks</h2></div>
-    <div class="pick" id="stlocal" data-k="pick"><button type="button" id="stauto" aria-pressed="true" class="on">Fill in my deck</button></div>
-    <p class="stn">After an event you played, the legend you set on the Game page goes on the Tier list's Local view for your placing, once Riot's final standings are up. It needs your Riot name.</p>
-  </section>
-
-  <section class="sts glass">
-    <div class="shead"><h2>Motion</h2></div>
-    <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button></div>
-    <p class="stn">The RAVI name forming when the app opens.</p>
-  </section>
+  <!-- rows like iPhone Settings, each opening its own menu (Mako's yes 2026-11-03) -->
+  <div class="doors stgrp" id="styou" data-k="deeper">
+      <button type="button" class="door" data-st="pme"><span class="t">Riot name and alerts</span><span class="sp"></span><small id="pmev"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="plocal"><span class="t">Local decks</span><span class="sp"></span><small id="plocalv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+  <div class="doors stgrp" id="stapp" data-k="deeper">
+      <button type="button" class="door" data-st="phub"><span class="t">Hub blocks</span><span class="sp"></span><small id="phubv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="popen"><span class="t">Open the app to</span><span class="sp"></span><small id="popenv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="pmotion"><span class="t">Motion</span><span class="sp"></span><small id="pmotionv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+  <p class="stn stnone" id="stnone" hidden>No setting matches.</p>
 
   <section class="sup glass" id="support"></section>
   <script>RAVI_SUPPORT(document.getElementById("support"), "../");</script>
@@ -111,24 +105,73 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
+<!-- one menu per row (plan 2 M6 block 4) -->
+<section class="panel frost" id="pme" aria-hidden="true" aria-label="Riot name and alerts">
+  <div class="phead"><h4 class="ttl" id="pmet">Riot name and alerts</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
+      <div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
+    <button type="button" class="pact btn glass" id="stmeok" data-k="do">Save</button>
+    <p class="pnote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them. At a live event it finds your table, your record and your alerts.</p>
+    <p class="stmsg" id="stmemsg" aria-live="polite"></p>
+    <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
+    <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
+  </div>
+</section>
+<section class="panel frost" id="plocal" aria-hidden="true" aria-label="Local decks">
+  <div class="phead"><h4 class="ttl" id="plocalt">Local decks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="stlocal" data-k="pick"><button type="button" id="stauto" aria-pressed="true" class="on">Fill in my deck</button></div>
+    <p class="pnote">After an event you played, the legend you set on the Game page goes on the Tier list's Local view for your placing, once Riot's final standings are up. It needs your Riot name.</p>
+  </div>
+</section>
+<section class="panel frost" id="phub" aria-hidden="true" aria-label="Hub blocks">
+  <div class="phead"><h4 class="ttl" id="phubt">Hub blocks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="sthub" data-k="pick"></div>
+    <p class="pnote" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always lists every page.</p>
+    <p class="stwarn" id="sthubnote" aria-live="polite">Seven are on. Turn one off first.</p>
+  </div>
+</section>
+<section class="panel frost" id="popen" aria-hidden="true" aria-label="Open the app to">
+  <div class="phead"><h4 class="ttl" id="popent">Open the app to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="opento" data-k="pick"></div>
+    <p class="pnote">The app opens to the page you pick here. Tap Hub on any page to come back.</p>
+  </div>
+</section>
+<section class="panel frost" id="pmotion" aria-hidden="true" aria-label="Motion">
+  <div class="phead"><h4 class="ttl" id="pmotiont">Motion</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button></div>
+    <p class="pnote">The RAVI name forming when the app opens.</p>
+  </div>
+</section>
 
 <script>
 (function(){
-  // One menu on this page, the Go to list. While it is open the page is
-  // locked at the root (html.lock in app.css); the body is never pinned.
-  var pnav = document.getElementById("pnav"), scrim = document.getElementById("scrim"), open = false;
-  function set(on){
-    open = on;
-    if (on) { pnav.classList.add("show"); scrim.classList.add("show"); document.documentElement.classList.add("lock"); }
-    else { pnav.classList.remove("show"); scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
-    pnav.setAttribute("aria-hidden", on ? "false" : "true");
+  // The menus on this page: the Go to list, and one per settings row. One
+  // shows at a time; while it is open the page is locked at the root
+  // (html.lock in app.css); the body is never pinned.
+  var scrim = document.getElementById("scrim"), shown = null;
+  function show(p){
+    if (shown) { shown.classList.remove("show"); shown.setAttribute("aria-hidden", "true"); }
+    shown = p || null;
+    if (shown) { shown.classList.add("show"); shown.setAttribute("aria-hidden", "false"); }
+    scrim.classList.toggle("show", !!shown);
+    document.documentElement.classList.toggle("lock", !!shown);
   }
-  document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
+  window.ST_SHOW = function(id){ show(id ? document.getElementById(id) : null); };
+  var pnav = document.getElementById("pnav");
+  document.getElementById("tabnav").addEventListener("click", function(){ show(shown === pnav ? null : pnav); });
   window.RAVI_GOTO(document.getElementById("pnavgoto"), "settings", "../");
   // Settings has no Go to tile of its own, so there is no current tile.
   var here = document.getElementById("pnhere");
-  if (here) { here.addEventListener("click", function(){ set(false); }); }
-  scrim.addEventListener("click", function(){ set(false); });
+  if (here) { here.addEventListener("click", function(){ show(null); }); }
+  scrim.addEventListener("click", function(){ show(null); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && shown) { show(null); } });
+  document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", function(){ show(null); }); });
+  document.querySelectorAll("[data-st]").forEach(function(b){ b.addEventListener("click", function(){ show(document.getElementById(b.getAttribute("data-st"))); }); });
 })();
 </script>
 <script>
@@ -172,7 +215,50 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var af = !get(AKEY);
     auto.classList.toggle("on", af);
     auto.setAttribute("aria-pressed", af ? "true" : "false");
+    // each row's grey value: what its menu is set to now
+    var ot = "Hub";
+    for (n = 0; n < PAGES.length; n++) { if (PAGES[n].id === c) { ot = PAGES[n].name; } }
+    val("popen", ot);
+    val("phub", picks.length + " of " + window.RAVI_HUB_MAX);
+    val("pmotion", on ? "On" : "Off");
+    val("plocal", af ? "On" : "Off");
+    meVal();
   }
+  function val(id, t){ var e = document.getElementById(id + "v"); if (e) { e.textContent = t; } }
+  function meVal(){
+    var A = window.RAVI_ACCT, a = A && A.signedIn() ? A.view() : null, m = window.RAVI_LIVE && window.RAVI_LIVE.me();
+    var r = a ? (a.riot ? a.riot.n + "#" + a.riot.tag : "") : (m ? m.n + (m.tag ? "#" + m.tag : "") : "");
+    val("pme", r || "Not set");
+  }
+  // SEARCH (plan 2 M6 block 4): every typed word starts a word of a row's name, its menu's
+  // choices or what it is about; rows that match stay, a group with none left goes
+  var WORDS = {
+    pme: "riot name tag id alerts alert notifications test live table record",
+    plocal: "local decks deck fill legend tier list placing standings game",
+    phub: "hub blocks block pages home",
+    popen: "open the app to start launch first page",
+    pmotion: "motion opening animation intro movement"
+  };
+  window.ST_MEVAL = meVal;
+  if (window.RAVI_ACCT && window.RAVI_ACCT.onChange) { window.RAVI_ACCT.onChange(meVal); }
+  var stq = document.getElementById("stq"), stqx = document.getElementById("stqx"), none = document.getElementById("stnone");
+  function find(){
+    var q = stq.value.toLowerCase().replace(/[^a-z0-9#\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
+    stqx.disabled = !stq.value;
+    ["styou", "stapp"].forEach(function(g){
+      var grp = document.getElementById(g), left = 0;
+      grp.querySelectorAll("[data-st]").forEach(function(b){
+        var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);
+        var hit = q.every(function(w){ return have.some(function(h){ return h.indexOf(w) === 0; }); });
+        b.hidden = !hit; if (hit) { left++; }
+      });
+      grp.hidden = !left; if (left) { any = true; }
+    });
+    none.hidden = any;
+  }
+  stq.addEventListener("input", find);
+  stq.addEventListener("keydown", function(e){ if (e.key === "Enter") { stq.blur(); } });
+  stqx.addEventListener("click", function(){ stq.value = ""; find(); stq.focus(); });
   opento.addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest("button") : null;
     if (!t) { return; }
@@ -231,9 +317,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // signal on the first open), the two fields work as before.
   if (window.RAVI_ACCT && window.RAVI_ACCT.signedIn()) {
     document.getElementById("stmerid").hidden = true; document.getElementById("stmeok").hidden = true;
-    // the card keeps only the test alert, so it is named for that, and the page's line drops the Riot name (sweep, Mako's yes 2026-10-31)
-    document.querySelector("#stme .shead h2").textContent = "Live alerts";
-    var lede = document.querySelector(".lede"); if (lede) lede.textContent = "Choices for the hub and for how the app opens and moves, saved on this phone.";
+    // the menu keeps only the test alert, so it and its row are named for that (sweep, Mako's yes 2026-10-31)
+    document.getElementById("pmet").textContent = "Live alerts";
+    document.getElementById("pme").setAttribute("aria-label", "Live alerts");
+    document.querySelector('[data-st="pme"] .t').textContent = "Live alerts";
     var acv = window.RAVI_ACCT.view();
     document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "Your Riot ID is set on your profile. ") + "Tap your picture, top right, then Profile.";
   }
@@ -243,6 +330,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var p = L.setMe(!t && n.indexOf("#") >= 0 ? n : n + (t ? "#" + t : ""));
     mein.value = p ? p.n : ""; metag.value = p ? p.tag : "";
     memsg.textContent = p ? (p.tag ? "Saved." : "Saved. Add your #tag too, so a player with the same name is never taken for you.") : "Cleared.";
+    window.ST_MEVAL();
     mein.blur(); metag.blur();
   }
   document.getElementById("stmeok").addEventListener("click", saveMe);
