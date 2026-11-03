@@ -57,7 +57,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .hla{color:var(--bone)}
 .hlb.picked,.hlb.over{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
 .hls.over{box-shadow:inset 0 0 0 2px var(--bone)}
-.hlb.lift{z-index:5;pointer-events:none;filter:brightness(1.15);box-shadow:0 14px 30px rgba(0,0,0,.55)}
+/* the drag: a copy follows the finger, fixed and with no transition; the block's place dims */
+.hlghost{position:fixed;z-index:60;margin:0;pointer-events:none;transition:none;filter:brightness(1.15);box-shadow:0 14px 30px rgba(0,0,0,.55)}
+.hlhold{opacity:.35}
 .foot a{color:var(--bone)}
 /* YOUR RIOT NAME (M16): one field, saved on this phone, used by every live part */
 #pme .nf{margin:0}
@@ -69,6 +71,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .panel .pick+.pnote{margin-top:10px}
 .stmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
+/* Reset every setting while it waits for its second tap */
+.pact.armed{background-color:var(--glass-press)}
 </style>
 </head>
 <body>
@@ -411,14 +415,18 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   hl.addEventListener("click", function(e){ if (noClick) { noClick = false; return; } var el = e.target.closest(".hlb"); if (el) { tapHub(el); } });
   hs.addEventListener("click", function(e){ if (noClick) { noClick = false; return; } var el = e.target.closest(".hlb"); if (el) { tapHub(el); } });
   hoff.addEventListener("click", function(){ if (PICK && PICK.hub) { var list = ORDER.filter(function(x){ return x !== PICK.id; }); PICK = null; saveHub(list); } });
-  // the drag: a block follows the finger; on the hub the others make room as it passes; dropped
-  // on a block, a page from below swaps in; a hub block dropped below comes off the hub
+  // the drag (rebuilt after Mako's phone check, 2026-11-03: it was glitchy): a copy of the block
+  // follows the finger (fixed, no transition), its place dims in the grid. Where it would go is
+  // read from the places' boxes as they were when the drag began, never from a moving box, so a
+  // block sliding aside can never send the drag back. On the hub the others make room as it
+  // passes; dropped on a block, a page from below swaps in; a hub block dropped below comes off.
   function still(){ return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
-  function follow(x, y){
-    var r = D.el.getBoundingClientRect();
-    D.tx += x - D.gx - r.left; D.ty += y - D.gy - r.top;
-    D.el.style.transform = "translate(" + D.tx + "px," + D.ty + "px)";
+  function cellsOf(){ return Array.prototype.slice.call(hl.querySelectorAll(".hlb[data-id]")); }
+  function slotAt(x, y){
+    for (var k = 0; k < D.slots.length; k++) { var r = D.slots[k]; if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) { return k; } }
+    return -1;
   }
+  function inShelf(x, y){ var r = D.shelfBox; return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; }
   function flip(fn){
     var cells = Array.prototype.slice.call(hl.children), first = cells.map(function(c){ return c.getBoundingClientRect(); });
     fn();
@@ -426,25 +434,19 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     cells.forEach(function(c, i){
       if (c === D.el || !c.animate) { return; }
       var l = c.getBoundingClientRect(), dx = first[i].left - l.left, dy = first[i].top - l.top;
-      if (dx || dy) { c.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: 220, easing: "cubic-bezier(.22,.72,.2,1)" }); }
+      if (dx || dy) { c.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: 200, easing: "cubic-bezier(.22,.72,.2,1)" }); }
     });
   }
-  function under(x, y){
-    var u = document.elementFromPoint(x, y), cell = u && u.closest ? u.closest(".hlb") : null;
-    return { cell: cell && cell !== D.el ? cell : null, hub: !!(u && hl.contains(u)), shelf: !!(u && hs.contains(u)) };
-  }
-  function overMarks(w){
+  function overMarks(k, shelf){
     Array.prototype.forEach.call(document.querySelectorAll("#phub .hlb.over"), function(c){ c.classList.remove("over"); });
-    hs.classList.remove("over");
-    if (!w) { return; }
-    if (!D.hub && w.cell && hl.contains(w.cell) && !w.cell.classList.contains("hla")) { w.cell.classList.add("over"); }
-    if (D.hub && w.shelf) { hs.classList.add("over"); }
+    hs.classList.toggle("over", !!shelf);
+    if (k >= 0 && !D.hub) { var c = hl.children[k]; if (c && !c.classList.contains("hla")) { c.classList.add("over"); } }
   }
   function down(e){
     var el = e.target.closest ? e.target.closest(".hlb[data-id]") : null;
     if (!el || (e.button && e.button > 0)) { return; }
     noClick = false; // a new touch is never the click a drag left behind
-    D = { el: el, id: el.getAttribute("data-id"), hub: hl.contains(el), x: e.clientX, y: e.clientY, on: false, pid: e.pointerId, tx: 0, ty: 0, last: null };
+    D = { el: el, id: el.getAttribute("data-id"), hub: hl.contains(el), x: e.clientX, y: e.clientY, on: false, pid: e.pointerId, k: -1 };
   }
   function moved(e){
     if (!D || e.pointerId !== D.pid) { return; }
@@ -452,41 +454,60 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (Math.abs(e.clientX - D.x) + Math.abs(e.clientY - D.y) < 8) { return; }
       D.on = true; PICK = null; marks();
       try { D.el.setPointerCapture(D.pid); } catch (x) {}
-      var r = D.el.getBoundingClientRect(); D.gx = D.x - r.left; D.gy = D.y - r.top;
-      D.el.classList.add("lift");
+      var r = D.el.getBoundingClientRect();
+      D.gx = D.x - r.left; D.gy = D.y - r.top;
+      // every movable place on the hub (its blocks, then any empty ones), as it stands now
+      D.slots = Array.prototype.filter.call(hl.children, function(c){ return !c.classList.contains("hla"); }).map(function(c){ return c.getBoundingClientRect(); });
+      D.shelfBox = hs.getBoundingClientRect();
+      var g = D.el.cloneNode(true);
+      g.classList.add("hlghost"); g.removeAttribute("data-id"); g.setAttribute("aria-hidden", "true");
+      g.style.width = r.width + "px"; g.style.height = r.height + "px"; g.style.left = r.left + "px"; g.style.top = r.top + "px";
+      document.body.appendChild(g);
+      D.ghost = g;
+      D.el.classList.add("hlhold");
     }
     if (e.cancelable) { e.preventDefault(); }
-    follow(e.clientX, e.clientY);
-    var w = under(e.clientX, e.clientY);
-    // a block that just made room is still sliding under the finger: it moves again only once the
-    // finger has been over something else, so two blocks never trade places back and forth
-    if (w.cell !== D.last) { D.last = w.cell; } else { w.cell = w.cell && hl.contains(w.cell) && D.hub ? null : w.cell; }
-    if (D.hub && w.cell && hl.contains(w.cell) && w.cell.hasAttribute("data-id")) {
-      var kids = Array.prototype.slice.call(hl.children), from = kids.indexOf(D.el), to = kids.indexOf(w.cell);
-      flip(function(){ hl.insertBefore(D.el, to > from ? w.cell.nextSibling : w.cell); });
-      follow(e.clientX, e.clientY);
+    D.ghost.style.left = (e.clientX - D.gx) + "px"; D.ghost.style.top = (e.clientY - D.gy) + "px";
+    var k = slotAt(e.clientX, e.clientY), shelf = D.hub && inShelf(e.clientX, e.clientY);
+    if (D.hub && k >= 0) {
+      var cells = cellsOf(), n = cells.length, want = Math.min(k, n - 1), at = cells.indexOf(D.el);
+      if (want !== at) {
+        flip(function(){
+          var rest = cells.filter(function(c){ return c !== D.el; });
+          if (want < rest.length) { hl.insertBefore(D.el, rest[want]); }
+          else { hl.insertBefore(D.el, rest[rest.length - 1].nextSibling); }
+        });
+      }
     }
-    overMarks(w);
+    D.k = k;
+    overMarks(D.hub ? -1 : k, shelf);
   }
   function up(e){
     if (!D || e.pointerId !== D.pid) { return; }
-    var d = D; D = null;
-    if (!d.on) { return; }
+    var d = D;
+    if (!d.on) { D = null; return; }
     noClick = true; setTimeout(function(){ noClick = false; }, 400);
-    D = d; var w = under(e.clientX, e.clientY); overMarks(null); D = null;
-    var list = ORDER.slice(), ai = list.indexOf(d.id);
-    if (d.hub && w.shelf) { list.splice(ai, 1); }
-    else if (d.hub) { list = Array.prototype.map.call(hl.querySelectorAll(".hlb[data-id]"), function(c){ return c.getAttribute("data-id"); }); }
-    else if (w.cell && hl.contains(w.cell) && w.cell.hasAttribute("data-id")) { list[list.indexOf(w.cell.getAttribute("data-id"))] = d.id; }
-    else if (w.cell && w.cell.classList.contains("hle")) { list.push(d.id); }
+    var k = slotAt(e.clientX, e.clientY), shelf = d.hub && inShelf(e.clientX, e.clientY);
+    overMarks(-1, false);
+    if (d.ghost && d.ghost.parentNode) { d.ghost.parentNode.removeChild(d.ghost); }
+    d.el.classList.remove("hlhold");
+    D = null;
+    var list = ORDER.slice(), ai = list.indexOf(d.id), target = k >= 0 ? hl.children[k] : null;
+    if (d.hub && shelf) { list.splice(ai, 1); }
+    else if (d.hub) { list = cellsOf().map(function(c){ return c.getAttribute("data-id"); }); }
+    else if (target && target.hasAttribute("data-id")) { list[list.indexOf(target.getAttribute("data-id"))] = d.id; }
+    else if (target && target.classList.contains("hle")) { list.push(d.id); }
     else { drawHub(); return; }
     saveHub(list);
   }
+  function lost(){ if (D && D.ghost && D.ghost.parentNode) { D.ghost.parentNode.removeChild(D.ghost); } D = null; drawHub(); }
+  // iOS: while a block is dragged, the menu never scrolls under it
+  document.addEventListener("touchmove", function(e){ if (D && D.on && e.cancelable) { e.preventDefault(); } }, { passive: false });
   [hl, hs].forEach(function(g){
     g.addEventListener("pointerdown", down);
     g.addEventListener("pointermove", moved);
     g.addEventListener("pointerup", up);
-    g.addEventListener("pointercancel", function(){ D = null; drawHub(); });
+    g.addEventListener("pointercancel", lost);
   });
   intro.addEventListener("click", function(){
     put(IKEY, get(IKEY) ? null : "1");
@@ -510,7 +531,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   });
   // Reset: its slot opens a small menu (#preset); the menu's button acts in one tap
   reset.addEventListener("click", function(){ window.ST_SHOW(document.getElementById("preset").classList.contains("show") ? null : "preset"); });
+  // two taps, as every reset in the app (Mako 2026-11-03): Sure? Tap again, then it acts; 3 s lapses
+  var armT = 0;
+  function disarm(){ clearTimeout(armT); resetGo.classList.remove("armed"); resetGo.textContent = "Reset every setting"; }
   resetGo.addEventListener("click", function(){
+    if (!resetGo.classList.contains("armed")) {
+      resetGo.classList.add("armed"); resetGo.textContent = "Sure? Tap again";
+      armT = setTimeout(disarm, 3000);
+      return;
+    }
+    disarm();
     put(OKEY, null); put(IKEY, null); put(AKEY, null); put(FKEY, null); put(LKEY, null); put(CKEY, null); put(WKEY, null); window.RAVI_HUB_SAVE(null);
     if (window.RAVI_CUR() !== "CAD") { window.RAVI_SETCUR("CAD"); }
     document.documentElement.classList.remove("rm");
@@ -519,6 +549,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     resetGo.textContent = "Done"; resetGo.disabled = true;
     setTimeout(function(){ window.ST_SHOW(null); resetGo.textContent = "Reset every setting"; resetGo.disabled = false; }, 700);
   });
+  document.querySelectorAll("#preset [data-close]").forEach(function(b){ b.addEventListener("click", disarm); });
   render();
 
   // YOUR RIOT NAME (M16) and a test alert. Not part of Reset: it is who you are, not a setting.
