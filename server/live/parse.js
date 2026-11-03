@@ -212,3 +212,18 @@ export function liveFromTournament(t, fetchedAt) {
 export function liveFromHtml(html, fetchedAt) {
   return liveFromTournament(tournamentFromStream(streamFromHtml(html)), fetchedAt);
 }
+
+// AN EVENT THE STORE FORGOT TO END (Mako 2026-11-02: 'Shops can often forget to officially end
+// events online. We should have some sort of safeguard in place to treat them as ended'). An event
+// that has started rounds and whose data has not changed for QUIET_MS counts as finished, marked
+// quiet: true, its rounds left as Riot sent them. getLive applies it on every read (never to the
+// held copy), so the LIVE line, alerts, Top cut and the Local tier list all see the same thing, and
+// a store that comes back and carries on simply moves the event on again.
+export const QUIET_MS = 3 * 3600000;
+export function settle(live, now) {
+  if (!live || live.status === "done" || live.status === "upcoming" || !Array.isArray(live.rounds) || !live.rounds.length) return live;
+  let last = Date.parse(live.updatedAt || "");
+  if (!isFinite(last)) last = Date.parse(live.startsAt || "");
+  if (!isFinite(last) || now - last < QUIET_MS) return live;
+  return Object.assign({}, live, { status: "done", quiet: true });
+}

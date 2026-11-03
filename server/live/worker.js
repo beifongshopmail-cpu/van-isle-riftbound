@@ -5,7 +5,7 @@
 // changed, and at most one upstream check per event per FRESH_MS however
 // many people ask. RAVI names itself honestly; it never claims to be Riot.
 
-import { liveFromHtml } from "./parse.js";
+import { liveFromHtml, settle } from "./parse.js";
 import { makeAlerts } from "./alerts.js";
 import { vapidPublic } from "./push.js";
 import { makeFinishes } from "./finishes.js";
@@ -66,10 +66,16 @@ async function readPage(eid, fetcher, now) {
   return live;
 }
 
-// The one place upstream is read. Exported for the tests.
+// The one place upstream is read. Exported for the tests. Every answer is settled (an event the
+// store forgot to end counts as finished: parse.js settle); the held copy stays as Riot sent it.
 export async function getLive(eid, opts) {
-  const fetcher = (opts && opts.fetch) || fetch;
   const now = (opts && opts.now) || Date.now();
+  const r = await readLive(eid, opts, now);
+  const live = settle(r.live, now);
+  return live === r.live ? r : Object.assign({}, r, { live: live });
+}
+async function readLive(eid, opts, now) {
+  const fetcher = (opts && opts.fetch) || fetch;
   const hit = memo.get(eid);
   if (hit && now - hit.at < FRESH_MS) return { live: hit.live, upstream: "none" };
   if (inflight.has(eid)) return inflight.get(eid);

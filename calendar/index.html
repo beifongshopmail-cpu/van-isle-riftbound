@@ -1229,7 +1229,9 @@ a{color:inherit;text-decoration:none}
      Live menu every 20 seconds, its clock every second. Riot's names are
      only ever written with textContent. ---- */
   var LIVE = {};
-  var LIVE_KINDS = {nexus:1, skirmish:1, prerift:1, other:1};
+  // every kind: an Open Play or Learn-to-Play that runs rounds shows them too (plan 2 M5; a real
+  // Paris Open Play ran three Swiss rounds). The server says event unavailable for one with none.
+  var LIVE_KINDS = {nexus:1, skirmish:1, prerift:1, other:1, open:1, learn:1};
   function liveWanted(ev, now){
     // the test event (?sim=1) plays pretend live data from live.js, never the server
     if (ev && ev.sim) return true;
@@ -1669,8 +1671,8 @@ a{color:inherit;text-decoration:none}
   // whatever is tapped next.
   //
   // A scroll is a move, not a tap, and never reaches this. A pinch carries
-  // more than one touch point and returns early, so pinch-to-zoom still
-  // works. Attached at document level so it covers fixed overlays and
+  // more than one touch point and returns early; pages.js holds off page pinch-zoom
+  // (2026-11-02). Attached at document level so it covers fixed overlays and
   // anything added later.
   var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
   var lastT = 0, lastX = 0, lastY = 0;
