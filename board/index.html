@@ -248,13 +248,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="pbody">
     <p class="lb">What you share</p>
     <div class="pick" id="shpick" data-k="pick"></div>
-    <p class="pnote">Players see each card, its printing and how many, with your name, @username, home area and picture. No one sees what you paid or a card's condition, and your Riot ID only after you agree a trade. You can also mark a binder For trade in its menu on Collection.</p>
+    <p class="pnote">Players see each card, its printing and how many, with your name, @username, home area and picture, and your next event when you mark one I'm going in Events. No one sees what you paid or a card's condition, and your Riot ID only after you agree a trade. You can also mark a binder For trade in its menu on Collection.</p>
     <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
     <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">How others see you</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button><button type="button" class="door btn glass" id="bblk"><span class="t">Blocked players</span><span class="sp"></span><small id="bblkn"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <p class="lb" style="margin-top:14px">Open to</p>
     <div class="pick" id="opick" data-k="pick"><button type="button" data-o="trade">Trades<span class="sp"></span><small>Cards for cards</small></button><button type="button" data-o="sale">Sales<span class="sp"></span><small>Your cards for cash</small></button><button type="button" data-o="both">Both</button></div>
     <p class="lb" style="margin-top:14px">My price</p>
     <div class="nrows bpct"><div class="nrow"><div><b id="pctv">At market</b><small>Shown on your cards, and used to price a trade</small></div><span class="sp"></span><button type="button" class="circ btn glass" id="pctdn" aria-label="Lower my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><button type="button" class="circ btn glass" id="pctup" aria-label="Raise my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
+    <p class="lb" style="margin-top:14px">Offer alerts</p>
+    <div class="pick" data-k="pick"><button type="button" id="balert" aria-pressed="false">Alert me<span class="sp"></span><small>On this phone, when an offer comes</small></button></div>
+    <p class="bmsg" id="balertmsg" aria-live="polite" hidden></p>
   </div>
 </section>
 <section class="panel frost" id="poff" aria-hidden="true" aria-label="Offers">
@@ -331,7 +334,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   scrim.addEventListener("click", hide);
   Array.prototype.forEach.call(document.querySelectorAll(".panel [data-close]"), function(b){ b.addEventListener("click", hide); });
   Array.prototype.forEach.call(document.querySelectorAll(".panel [data-back]"), function(b){ b.addEventListener("click", back); });
-  $("tabset").addEventListener("click", function(){ if (OPENP === pset) { hide(); } else { drawShare(); openPanel(pset); } });
+  $("tabset").addEventListener("click", function(){ if (OPENP === pset) { hide(); } else { drawShare(); drawAlert(); openPanel(pset); } });
   $("bsort").addEventListener("click", function(){ drawSort(); openPanel(psort); });
   $("bself").addEventListener("click", function(){ drawSelf(); deeper(pself); });
 
@@ -385,9 +388,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       out.me.want = Number.isSafeInteger(j.me.want) ? j.me.want : 0;
       out.me.off = j.me.off === true; out.me.pich = j.me.pich === true;
       out.me.blocked = Number.isSafeInteger(j.me.blocked) && j.me.blocked > 0 ? j.me.blocked : 0;
+      out.me.nx = okEv(j.me.nx) || null;
     }
     function more(f, x){ f.open = OPENW[x.open] ? x.open : "trade"; f.pct = Number.isSafeInteger(x.pct) && x.pct >= 50 && x.pct <= 150 ? x.pct : 100;
-      f.dk = Number.isSafeInteger(x.dk) && x.dk > 0 && x.dk <= 99 ? x.dk : 0; return f; } // dk: their Public decks (plan 2 M3)
+      f.dk = Number.isSafeInteger(x.dk) && x.dk > 0 && x.dk <= 99 ? x.dk : 0; f.nx = okEv(x.nx) || null; return f; } // dk: their Public decks (plan 2 M3); nx: their next event (block 5)
     (Array.isArray(j.people) ? j.people : []).forEach(function(x){ var f = okFace(x); if (f) { out.people[f.h] = more(f, x); } });
     (Array.isArray(j.traders) ? j.traders : []).forEach(function(x){
       var f = okFace(x);
@@ -619,6 +623,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var rest = DATA.browse.filter(function(r){ return r.h === WHO && !t.has.some(function(x){ return x.i === r.i && x.f === r.f; }); });
     $("pwhot").textContent = nameOf(f);
     var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '<small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small>' + (t.two ? BOTH : '') + '</div></div>';
+    h += nextRow(f.nx, "Next event");
     if (t.has.length) { h += '<p class="bh3">Has ' + plural(cardsN(t.has), "card", "cards") + ' you want</p>' + grid(t.has, WHO, "has"); }
     if (t.wants.length) { h += '<p class="bh3">Wants ' + plural(cardsN(t.wants), "card", "cards") + ' you have</p>' + grid(t.wants, WHO, "wants"); }
     if (t.has.length || t.wants.length) {
@@ -690,6 +695,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawSelf(){
     var me = myShare(), f = selfFace(), h = "";
     if (!selfSaved()) { h += '<p class="bmsg">No one can see this yet. Save your account to show it: tap your picture, top right.</p>'; }
+    h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<p class="pnote" style="margin:0 2px 14px">Tap I\'m going on an event in Events, and the next one shows here for other traders.</p>';
     if (!me.have.length && !me.want.length) {
       h += '<p class="bmsg">You aren\'t sharing anything yet. Mark a binder For trade, or turn on Your Wishlist, in Trade board settings.</p>';
       $("pselfb").innerHTML = h; return;
@@ -706,6 +712,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var me = myShare();
     $("pwhot").textContent = nameOf(f);
     var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
+    h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<p class="pnote" style="margin:0 2px 14px">Tap I\'m going on an event in Events, and the next one shows here for other traders.</p>';
     if (me.have.length) { h += '<p class="bh3">For trade</p>' + grid(me.have, "self", "rest"); }
     if (me.want.length) { h += '<p class="bh3"' + (me.have.length ? ' style="margin-top:18px"' : '') + '>Wants</p>' + grid(me.want, "self", "wants"); }
     h += '<p class="pnote">' + (me.want.length ? "Your Wishlist shows only to players who have its cards." : "Your Wishlist is private. Turn it on in Trade board settings to share it.") + '</p>';
@@ -853,7 +860,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       EV[e.id] = { id: e.id, t: t, name: typeof e.name === "string" ? e.name.slice(0, 80) : "An event", where: typeof e.venue === "string" ? e.venue.slice(0, 60) : "" };
     });
     EVLIST = Object.keys(EV).map(function(k){ return EV[k]; }).sort(function(a, b){ return a.t - b.t; });
-    if (OPENP === poffer) { drawOffer(); }
+    if (OPENP === poffer) { drawOffer(); } else if (OPENP === pwho) { drawWho(); }
   }).catch(function(){});
   var DFMT = new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
   function evWhen(e){ return DFMT.format(new Date(e.t)).replace(/\./g, ""); }
@@ -862,6 +869,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var e = EV[id];
     if (!e) { return "An event no longer on the calendar"; }
     return e.name + " · " + evWhen(e) + (e.where ? ", " + e.where : "");
+  }
+
+  // a player's next event (block 5): only an event still on the calendar and not yet past, in words
+  function nextRow(id, label){
+    var e = id ? EV[id] : null;
+    if (!e || e.t + 16 * 3600000 < Date.now()) { return ""; }
+    return '<div class="nrows bnext" style="margin:0 0 14px"><div class="nrow"><div><b>' + esc(label) + '</b><small>' + esc(evWords(id)) + '</small></div></div></div>';
   }
 
   // the Offers menu: waiting on you, agreed, sent, then the past
@@ -1207,6 +1221,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     drawOffers(); openPanel(poff);
     loadOffers(function(){ if (OPENP === poff) { drawOffers(); } });
   });
+  // an offer alert opens the Offers menu (board/?offers=1, block 5)
+  if (/[?&]offers=1(&|$)/.test(location.search)) {
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    setTimeout(function(){ drawOffers(); openPanel(poff); loadOffers(function(){ if (OPENP === poff) { drawOffers(); } }); }, 0);
+  }
   poff.addEventListener("click", function(ev){ var b = ev.target.closest("[data-off]"); if (b) { openOffer(b.getAttribute("data-off"), true); } });
 
   // TRADE BOARD SETTINGS, part two: Open to, and My price (vir.board.v1, beside Share your Wishlist)
@@ -1221,6 +1240,24 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   $("opick").addEventListener("click", function(ev){ var b = ev.target.closest("button[data-o]"); if (b) { putBoardSet({ open: b.getAttribute("data-o") }); drawOpen(); } });
   $("pctdn").addEventListener("click", function(){ putBoardSet({ pct: Math.max(50, myPct() - 5) }); drawOpen(); });
   $("pctup").addEventListener("click", function(){ putBoardSet({ pct: Math.min(150, myPct() + 5) }); drawOpen(); });
+  // Offer alerts (plan 2 M3 block 5): a push to this phone when an offer or a counter comes; saved accounts only
+  function drawAlert(){
+    var b = $("balert"), on = !!(A && A.offerAlertsOn && A.offerAlertsOn());
+    b.setAttribute("aria-pressed", String(on)); b.classList.toggle("on", on);
+    b.disabled = !selfSaved();
+  }
+  $("balert").addEventListener("click", function(){
+    var b = $("balert"), m = $("balertmsg");
+    if (!A || b.disabled) { return; }
+    var on = A.offerAlertsOn();
+    b.disabled = true; m.hidden = false; m.textContent = on ? "Turning off." : "Turning on.";
+    (on ? A.offerAlertStop : function(cb){ A.offerAlertStart(new URL("../alerts-sw.js", location.href).href, cb); })(function(err){
+      drawAlert();
+      m.textContent = err || (on ? "Off on this phone." : "On. An alert comes to this phone when someone sends you an offer.");
+    });
+  });
+  drawAlert();
+  if (A) { A.onChange(drawAlert); }
 
   // ---- TAPS ----
   document.addEventListener("click", function(ev){

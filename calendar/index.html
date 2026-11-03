@@ -193,6 +193,12 @@ a{color:inherit;text-decoration:none}
 .ev .lvl::before{content:"LIVE";display:inline-block;vertical-align:1px;margin-right:6px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
 .evact .evlive{margin-top:12px}
 .evact .evlive[hidden]{display:none}
+/* GOING (plan 2 M3 block 5): a saved account marks an event it will be at; the Trade board shows
+   its next one to other traders, so the open card says so in words under the pressed button. */
+.evact .evgo{margin-top:12px}
+.evact .evgo[hidden]{display:none}
+.evact .evgonote{margin:8px 2px 0;font-size:12px;line-height:1.4;color:var(--muted)}
+.evact .evgonote[hidden]{display:none}
 
 /* THE LIVE MENU (#plive). Riot's pairings and standings, read only: rows
    carry no kind and no surface, as the Collection's List; hairlines
@@ -884,6 +890,18 @@ a{color:inherit;text-decoration:none}
       iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT);
       info.appendChild(btns);
       act.appendChild(info);
+      // I'm going (block 5): saved accounts only, painted by paintGo
+      var gb = document.createElement("button");
+      gb.type = "button";
+      gb.className = "pact btn glass evgo";
+      gb.setAttribute("data-k", "do");
+      gb.setAttribute("data-go", String(ev.id));
+      gb.hidden = true;
+      act.appendChild(gb);
+      var gn = document.createElement("p");
+      gn.className = "evgonote";
+      gn.hidden = true;
+      act.appendChild(gn);
       var lb = document.createElement("button");
       lb.type = "button";
       lb.className = "pact btn glass evlive";
@@ -895,6 +913,7 @@ a{color:inherit;text-decoration:none}
       act.appendChild(lb);
       card.appendChild(act);
       paintLive(card, ev.id);
+      paintGo(card, ev);
 
       listEl.appendChild(card);
     }
@@ -1222,6 +1241,54 @@ a{color:inherit;text-decoration:none}
     if (lv){ lv.textContent = txt; lv.hidden = !on || !txt || f.status === "done"; }
     if (lb){ lb.hidden = !on; lb.textContent = f && f.status === "done" ? "Final standings" : "Pairings and standings"; }
   }
+  // ---- GOING (plan 2 M3 block 5): your next event on your Trade board profile ----
+  var GO = { saved: false, set: {}, busy: false, err: {} };
+  function goable(ev){
+    if (!ev || ev.sim || ev.visit || !/^[a-z]{0,4}\d{6,24}$/.test(String(ev.id))) return false;
+    var t = Date.parse(ev.start);
+    return isFinite(t) && t + 16 * 3600000 > Date.now();
+  }
+  function paintGo(card, ev){
+    var b = card.querySelector(".evgo"), n = card.querySelector(".evgonote");
+    if (!b || !n || !GO) return;
+    var show = GO.saved && goable(ev), on = !!GO.set[String(ev.id)], err = GO.err[String(ev.id)] || "";
+    b.hidden = !show;
+    b.textContent = on ? "Going: tap to undo" : "I'm going";
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    n.textContent = err || (on ? "Traders on the Trade board see this as your next event." : "");
+    n.hidden = !show || !n.textContent;
+  }
+  function evById(id){ for (var i = 0; i < EVENTS.length; i++) if (String(EVENTS[i].id) === String(id)) return EVENTS[i]; return null; }
+  function paintAllGo(){
+    var cards = listEl.querySelectorAll(".ev");
+    for (var i = 0; i < cards.length; i++){ var e = evById(cards[i].getAttribute("data-id")); if (e) paintGo(cards[i], e); }
+  }
+  function goKeep(list){
+    GO.set = {};
+    (Array.isArray(list) ? list : []).forEach(function(g){ if (g && typeof g.ev === "string" && /^[a-z]{0,4}\d{6,24}$/.test(g.ev)) GO.set[g.ev] = 1; });
+  }
+  function goLoad(){
+    var A = window.RAVI_ACCT, v = A && A.view ? A.view() : null;
+    GO.saved = !!(A && A.signedIn() && v && !v.guest);
+    paintAllGo();
+    if (!GO.saved) return;
+    A.going(function(err, j){ if (!err && j) { goKeep(j.going); paintAllGo(); } });
+  }
+  listEl.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".evgo") : null;
+    if (!b || GO.busy || !window.RAVI_ACCT) return;
+    var id = b.getAttribute("data-go"), ev = evById(id);
+    if (!ev) return;
+    GO.busy = true; b.disabled = true; delete GO.err[id];
+    window.RAVI_ACCT.goingSet(id, Date.parse(ev.start), !GO.set[id], function(err, j){
+      GO.busy = false; b.disabled = false;
+      if (err) GO.err[id] = err; else goKeep(j && j.going);
+      paintAllGo();
+    });
+  });
+  if (window.RAVI_ACCT) window.RAVI_ACCT.onChange(goLoad);
+  setTimeout(goLoad, 0);
+
   function paintAllLive(){
     var cards = listEl.querySelectorAll(".ev");
     for (var i = 0; i < cards.length; i++) paintLive(cards[i], cards[i].getAttribute("data-id"));

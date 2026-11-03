@@ -238,6 +238,47 @@
   // offers on the Trade board (plan 2 M2 block 2): the list, a new offer or a counter, and the rest
   function offers(cb) { call("GET", "/offers", null, cb); }
   function offerSend(body, cb) { call("POST", "/offer/send", body, cb); }
+  // YOUR NEXT EVENT (plan 2 M3 block 5): the events this account marked Going, and a mark on or off
+  function going(cb) { call("GET", "/going", null, cb); }
+  function goingSet(ev, t, on, cb) { call("POST", "/going", { ev: ev, t: t, on: !!on }, cb); }
+  // OFFER ALERTS on this phone (block 5): the alerts-only worker, a push address, then the server.
+  // This phone remembers it turned them on (OA_KEY); cb(words or null)
+  var OA_KEY = "vir.offeralert.v1";
+  function pushOk() { return !!(root.navigator && "serviceWorker" in root.navigator && "PushManager" in root && "Notification" in root); }
+  function offerAlertsOn() { try { return root.localStorage.getItem(OA_KEY) === "1"; } catch (e) { return false; } }
+  function keyBytes(s) {
+    s = String(s).replace(/-/g, "+").replace(/_/g, "/");
+    while (s.length % 4) s += "=";
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function offerAlertStart(swUrl, cb) {
+    if (!pushOk()) { cb("Alerts need RAVI opened from your Home Screen."); return; }
+    root.Notification.requestPermission().then(function (p) {
+      if (p !== "granted") throw new Error("denied");
+      return root.navigator.serviceWorker.register(swUrl).then(function () { return root.navigator.serviceWorker.ready; });
+    }).then(function (reg) {
+      return root.fetch(BASE + "/vapid").then(function (r) { if (!r.ok) throw new Error("server"); return r.json(); }).then(function (v) {
+        return reg.pushManager.getSubscription().then(function (s) { return s || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(v.key) }); });
+      });
+    }).then(function (sub) {
+      var j = sub.toJSON();
+      call("POST", "/opush", { sub: { endpoint: j.endpoint, keys: j.keys } }, function (err) {
+        if (err) { cb(err); return; }
+        try { root.localStorage.setItem(OA_KEY, "1"); } catch (e) {}
+        cb(null);
+      });
+    }).catch(function (e) { cb(e && e.message === "denied" ? "Alerts are off for RAVI in your phone's Settings." : "Alerts did not turn on. Try again in a minute."); });
+  }
+  function offerAlertStop(cb) {
+    try { root.localStorage.removeItem(OA_KEY); } catch (e) {}
+    if (!pushOk()) { cb(null); return; }
+    root.navigator.serviceWorker.getRegistration().then(function (reg) { return reg && reg.pushManager.getSubscription(); }).then(function (s) {
+      if (!s) { cb(null); return; }
+      call("POST", "/opush/off", { endpoint: s.endpoint }, function () { cb(null); });
+    }, function () { cb(null); });
+  }
   function offerAct(what, body, cb) { if (["answer", "meet", "done"].indexOf(what) < 0) return cb("bad request"); call("POST", "/offer/" + what, body, cb); }
   // report and block (plan 2 M2 block 3); Mako's Reports queue
   function report(h, why, cb) { call("POST", "/report", { h: h, why: why }, cb); }
@@ -277,6 +318,7 @@
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
     keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall, decks: decks, deckGet: deckGet, deckCopy: deckCopy, handle: handle,
+    going: going, goingSet: goingSet, offerAlertsOn: offerAlertsOn, offerAlertStart: offerAlertStart, offerAlertStop: offerAlertStop,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
