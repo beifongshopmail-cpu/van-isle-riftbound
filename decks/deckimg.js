@@ -2,15 +2,15 @@
 // the deck, Riot's cards (through decks/deck.js) and the card art RAVI already keeps; it fetches
 // nothing else and needs no server. Works in the page (a canvas from the document) and in tests.
 //
-// THE PICTURE, 1080 wide (a phone's share size), height to fit:
-//   head    the Legend's whole card, then the deck's name, the Legend, the Chosen Champion and the
-//           counts, on a band in the deck's two domain colours (as its card on the Decks list)
-//   Main deck  every card once, whole, most copies shown as a bone pill (x3), sorted by energy
-//           then name; the Chosen Champion first, ringed in bone and named in the head
-//   Battlefields  the three, lying flat as they are played
-//   Runes   each rune's symbol with its count and name
-//   Sideboard  smaller, when the deck has one
-//   foot    ravi.tools and Riot's Legal Jibber Jabber notice
+// THE PICTURE, 1080 wide (a phone's share size), height to fit, on a dark ground washed top to
+// bottom in the deck's two domain colours (Mako's reference, 2026-11-02: Piltover Archive's export):
+//   title   the deck's name, its card count and champion; RAVI's name on the right
+//   Legend  its whole card and name, the runes under it (each rune's symbol and count)
+//   Battlefields  the three, stacked beside the Legend, lying flat as they are played
+//   Main Deck  every card once, whole, in rows of five; two or more copies as a bone disc (x3);
+//           the Chosen Champion first and ringed in bone; then by energy and name
+//   Sideboard  the same, when the deck has one
+//   foot    Riot's Legal Jibber Jabber notice
 // Colour is never the only signal: every count and name is written out.
 (function (root) {
   "use strict";
@@ -57,22 +57,24 @@
     };
   }
 
-  // how tall each part is, from the plan
+  // where each part sits, from the plan: a title row; then two columns, the Legend (its card, its
+  // name, the runes under it) and the battlefields stacked beside it; then the Main deck and the
+  // sideboard in rows of five; then the foot
+  var COLS = 5, CG = 20, HEAD = 52, SEC = 56;
   function layout(p) {
-    var cols = 6, cw = (W - 2 * PAD - (cols - 1) * GAP) / cols, ch = cw * RATIO;
-    var rows = Math.ceil(p.main.length / cols);
-    var y = PAD, parts = {};
-    parts.head = { y: y, h: 300 }; y += 300 + 44;
-    parts.main = { y: y, cols: cols, cw: cw, ch: ch, h: 56 + rows * (ch + GAP) - GAP }; y += parts.main.h + 44;
-    var bw = (W - 2 * PAD - 2 * GAP) / 3, bh = bw * 533 / 744;   // a battlefield's art is stored lying flat
-    if (p.bf.length) { parts.bf = { y: y, bw: bw, bh: bh, h: 56 + bh }; y += parts.bf.h + 44; }
-    if (p.runes.length) { parts.runes = { y: y, h: 56 + 96 }; y += parts.runes.h + 44; }
-    if (p.side.length) {
-      var sc = 8, sw = (W - 2 * PAD - (sc - 1) * GAP) / sc, sr = Math.ceil(p.side.length / sc);
-      parts.side = { y: y, cols: sc, cw: sw, ch: sw * RATIO, h: 56 + sr * (sw * RATIO + GAP) - GAP }; y += parts.side.h + 44;
-    }
-    parts.foot = { y: y, h: 120 }; y += 120 + PAD - 10;
-    return { parts: parts, H: Math.ceil(y) };
+    var cw = (W - 2 * PAD - (COLS - 1) * CG) / COLS, ch = cw * RATIO;
+    var parts = {}, y = PAD;
+    parts.title = { y: y, h: 96 }; y += 96 + 36;
+    var lw = 300, lh = lw * RATIO;
+    var left = HEAD + 18 + lh + 18 + 84 + (p.runes.length ? 30 + HEAD + 18 + 84 : 0);
+    var bw = 300, bh = bw * 533 / 744, bgap = 24;
+    var right = p.bf.length ? HEAD + 18 + p.bf.length * bh + (p.bf.length - 1) * bgap : 0;
+    parts.top = { y: y, lw: lw, lh: lh, bw: bw, bh: bh, bgap: bgap, h: Math.max(left, right) }; y += parts.top.h + SEC;
+    var rows = Math.ceil(p.main.length / COLS);
+    parts.main = { y: y, cw: cw, ch: ch, h: HEAD + 24 + rows * (ch + CG) - CG }; y += parts.main.h + SEC;
+    if (p.side.length) { var sr = Math.ceil(p.side.length / COLS); parts.side = { y: y, cw: cw, ch: ch, h: HEAD + 24 + sr * (ch + CG) - CG }; y += parts.side.h + SEC; }
+    parts.foot = { y: y, h: 96 }; y += 96 + PAD - 20;
+    return { parts: parts, H: Math.ceil(y), cols: COLS };
   }
 
   function rr(g, x, y, w, h, r) {
@@ -84,10 +86,9 @@
     while (s.length > 1 && g.measureText(s + "\u2026").width > max) { s = s.slice(0, -1); }
     return s.replace(/\s+$/, "") + "\u2026";
   }
-  function label(g, s, y, right) {
-    g.fillStyle = C.bone; g.font = "700 36px " + DISP; g.textBaseline = "alphabetic"; g.textAlign = "left";
-    g.fillText(s, PAD, y + 38);
-    if (right) { g.fillStyle = C.muted; g.font = "600 28px " + TEXT; g.textAlign = "right"; g.fillText(right, W - PAD, y + 36); g.textAlign = "left"; }
+  function heading(g, s, cx, y) {
+    g.fillStyle = C.bone; g.font = "700 46px " + DISP; g.textAlign = "center"; g.textBaseline = "alphabetic";
+    g.fillText(s, cx, y + 44); g.textAlign = "left";
   }
   function cardAt(g, img, x, y, w, h, r) {
     g.save(); rr(g, x, y, w, h, r); g.clip();
@@ -95,13 +96,28 @@
     if (img) { g.drawImage(img, x, y, w, h); }
     g.restore();
   }
-  function pill(g, s, cx, by, size) {
-    g.font = "700 " + size + "px " + DISP;
-    var tw = g.measureText(s).width, ph = size * 1.45, pw = Math.max(ph * 1.5, tw + size * 1.1);
-    rr(g, cx - pw / 2, by - ph, pw, ph, ph / 2); g.fillStyle = C.bone; g.fill();
+  // a copy count, bottom right of a card: a bone disc with the count in dark ink (x1 shows none)
+  function count(g, n, x, y, w, h) {
+    if (n < 2) { return; }
+    var r = Math.round(w * 0.17), cx = x + w - r - 8, cy = y + h - r - 10;
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fillStyle = C.bone; g.fill();
     g.lineWidth = 3; g.strokeStyle = C.ink; g.stroke();
-    g.fillStyle = C.ink; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(s, cx, by - ph / 2 + 1);
-    g.textAlign = "left"; g.textBaseline = "alphabetic";
+    g.fillStyle = C.ink; g.font = "700 " + Math.round(r * 0.9) + "px " + DISP; g.textAlign = "center"; g.textBaseline = "middle";
+    g.fillText("x" + n, cx, cy + 1); g.textAlign = "left"; g.textBaseline = "alphabetic";
+  }
+  function wrap(g, s, max) {
+    var words = s.split(" "), lines = [], ln = "";
+    words.forEach(function (w) { var t = ln ? ln + " " + w : w; if (ln && g.measureText(t).width > max) { lines.push(ln); ln = w; } else { ln = t; } });
+    if (ln) { lines.push(ln); }
+    return lines;
+  }
+  function grid(g, rows, P, art, champ) {
+    rows.forEach(function (r, i) {
+      var col = i % COLS, row = Math.floor(i / COLS), x = PAD + col * (P.cw + CG), y = P.y + HEAD + 24 + row * (P.ch + CG);
+      cardAt(g, art(r.x), x, y, P.cw, P.ch, 10);
+      if (champ && r.c === champ) { rr(g, x - 4, y - 4, P.cw + 8, P.ch + 8, 14); g.lineWidth = 5; g.strokeStyle = C.bone; g.stroke(); }
+      count(g, r.n, x, y, P.cw, P.ch);
+    });
   }
 
   // draw(X, I, deck, env) -> Promise of the canvas. env: { canvas(w, h), image(url) -> Promise<img|null>,
@@ -109,92 +125,69 @@
   function draw(X, I, d, env) {
     var p = plan(X, I, d), lay = layout(p), P = lay.parts;
     var urls = {};
-    function want(x, big) { if (x && /^[0-9a-f]{40}$/.test(x.h || "")) { urls[x.h + (big ? "" : ".t")] = env.art + x.h + (big ? ".webp" : ".t.webp"); } }
-    if (p.legend) { want(p.legend.x, true); }
-    p.main.forEach(function (r) { want(r.x, true); }); p.bf.forEach(function (r) { want(r.x, true); }); p.side.forEach(function (r) { want(r.x, false); });
+    function want(x) { if (x && /^[0-9a-f]{40}$/.test(x.h || "")) { urls[x.h] = env.art + x.h + ".webp"; } }
+    if (p.legend) { want(p.legend.x); }
+    p.main.forEach(function (r) { want(r.x); }); p.bf.forEach(function (r) { want(r.x); }); p.side.forEach(function (r) { want(r.x); });
     var runeUrls = {};
     p.runes.forEach(function (r) { var dm = (r.x.d || [])[0]; if (dm && RGB[dm]) { runeUrls[dm] = env.runes + "rune_" + dm + ".svg"; } });
     var all = Object.keys(urls).map(function (k) { return [k, urls[k]]; }).concat(Object.keys(runeUrls).map(function (k) { return ["rune:" + k, runeUrls[k]]; }));
     return Promise.all(all.map(function (u) { return env.image(u[1]).then(function (im) { return [u[0], im]; }, function () { return [u[0], null]; }); })).then(function (got) {
       var IM = {}; got.forEach(function (x) { IM[x[0]] = x[1]; });
-      function art(x, big) { return x && x.h ? IM[x.h + (big ? "" : ".t")] || null : null; }
+      function art(x) { return x && x.h ? IM[x.h] || null : null; }
       var cv = env.canvas(W, lay.H), g = cv.getContext("2d");
+
+      // the ground: dark, washed top to bottom in the deck's two domain colours
       g.fillStyle = C.ground; g.fillRect(0, 0, W, lay.H);
+      var gr = g.createLinearGradient(0, 0, 0, lay.H);
+      gr.addColorStop(0, "rgba(" + p.c1 + ",.30)"); gr.addColorStop(1, "rgba(" + p.c2 + ",.30)");
+      g.fillStyle = gr; g.fillRect(0, 0, W, lay.H);
 
-      // HEAD: the band in the deck's two colours, the Legend's card, the words
-      var hy = P.head.y, hh = P.head.h;
-      g.save(); rr(g, PAD, hy, W - 2 * PAD, hh, 36); g.clip();
-      var gr = g.createLinearGradient(PAD, hy, W - PAD, hy + hh);
-      gr.addColorStop(0, "rgba(" + p.c1 + ",.85)"); gr.addColorStop(1, "rgba(" + p.c2 + ",.85)");
-      g.fillStyle = gr; g.fillRect(PAD, hy, W - 2 * PAD, hh);
-      g.fillStyle = "rgba(0,0,0,.35)"; g.fillRect(PAD, hy, W - 2 * PAD, hh);
-      g.restore();
-      var lh = hh - 40, lw = lh / RATIO;
-      cardAt(g, p.legend ? art(p.legend.x, true) : null, PAD + 20, hy + 20, lw, lh, 12);
-      var tx = PAD + 20 + lw + 32, tw = W - PAD - 28 - tx;
-      g.fillStyle = C.bone; g.font = "700 54px " + DISP; g.fillText(fit(g, d.name || "Untitled deck", tw), tx, hy + 84);
-      g.font = "600 32px " + TEXT; g.fillStyle = C.bone;
-      g.fillText(fit(g, p.legend ? p.legend.f : "No Legend", tw), tx, hy + 136);
-      if (p.champ) { g.fillStyle = "rgba(239,235,227,.82)"; g.fillText(fit(g, "Chosen Champion: " + p.champ.f, tw), tx, hy + 184); }
-      g.fillStyle = "rgba(239,235,227,.82)"; g.font = "600 28px " + TEXT;
-      var cnt = [p.counts.main + " Main deck", p.counts.bf + " Battlefields", p.counts.runes + " Runes"].concat(p.counts.side ? [p.counts.side + " Sideboard"] : []).join(" \u00b7 ");
-      g.fillText(fit(g, cnt, tw), tx, hy + 246);
+      // TITLE: the deck's name; RAVI's name on the right
+      var T = P.title;
+      g.fillStyle = C.bone; g.font = "700 62px " + DISP; g.fillText(fit(g, d.name || "Untitled deck", W - 2 * PAD - 220), PAD, T.y + 62);
+      g.font = "600 30px " + TEXT; g.fillStyle = C.muted; g.fillText(fit(g, p.counts.main + " cards" + (p.legend ? " \u00b7 " + p.legend.f.split(",")[0] : ""), W - 2 * PAD - 220), PAD, T.y + 104);
+      g.font = "700 54px " + DISP; g.textAlign = "right";
+      var vw = g.measureText("VI").width;
+      g.fillStyle = "#EE5F9C"; g.fillText("VI", W - PAD, T.y + 58);
+      g.fillStyle = "#5DA5EE"; g.fillText("RA", W - PAD - vw - 2, T.y + 58);
+      g.font = "600 24px " + TEXT; g.fillStyle = C.muted; g.fillText("ravi.tools", W - PAD, T.y + 96);
+      g.textAlign = "left";
 
-      // MAIN DECK
-      var M = P.main;
-      label(g, "Main deck", M.y, p.counts.main + " cards");
-      p.main.forEach(function (r, i) {
-        var col = i % M.cols, row = Math.floor(i / M.cols), x = PAD + col * (M.cw + GAP), y = M.y + 56 + row * (M.ch + GAP);
-        cardAt(g, art(r.x, true), x, y, M.cw, M.ch, 9);
-        if (p.champ && r.c === d.champ) { rr(g, x - 3, y - 3, M.cw + 6, M.ch + 6, 12); g.lineWidth = 5; g.strokeStyle = C.bone; g.stroke(); }
-        pill(g, "x" + r.n, x + M.cw / 2, y + M.ch - 10, 26);
-      });
-
-      // BATTLEFIELDS, flat as they are played (Riot's art for them is already landscape)
-      if (P.bf) {
-        label(g, "Battlefields", P.bf.y);
-        p.bf.forEach(function (r, i) {
-          var x = PAD + i * (P.bf.bw + GAP), y = P.bf.y + 56, w = P.bf.bw, h = P.bf.bh, im = art(r.x, true);
-          g.save(); rr(g, x, y, w, h, 10); g.clip(); g.fillStyle = C.panel; g.fillRect(x, y, w, h);
-          if (im) { g.drawImage(im, x, y, w, h); }
-          g.restore();
+      // TOP: the Legend and its runes on the left, the battlefields stacked on the right
+      var Tp = P.top, cx1 = PAD + (W / 2 - PAD) / 2, cx2 = W / 2 + (W / 2 - PAD) / 2, y = Tp.y;
+      heading(g, "Legend", cx1, y);
+      cardAt(g, p.legend ? art(p.legend.x) : null, cx1 - Tp.lw / 2, y + HEAD + 18, Tp.lw, Tp.lh, 14);
+      var ny = y + HEAD + 18 + Tp.lh + 18;
+      g.fillStyle = C.bone; g.font = "700 32px " + DISP; g.textAlign = "center";
+      wrap(g, p.legend ? p.legend.f : "No Legend", W / 2 - PAD - 20).slice(0, 2).forEach(function (l, i) { g.fillText(l, cx1, ny + 34 + i * 42); });
+      g.textAlign = "left";
+      if (p.runes.length) {
+        var ry = ny + 84 + 30;
+        heading(g, "Runes", cx1, ry);
+        var s = 72, cy = ry + HEAD + 18, items = p.runes.map(function (r) { g.font = "700 54px " + DISP; return { r: r, w: s + 14 + g.measureText(String(r.n)).width }; });
+        var tot = items.reduce(function (a, it) { return a + it.w; }, 0) + (items.length - 1) * 40, rx = cx1 - tot / 2;
+        items.forEach(function (it) {
+          var dm = (it.r.x.d || [])[0], sym = IM["rune:" + dm];
+          if (sym) { g.drawImage(sym, rx, cy, s, s); } else { g.beginPath(); g.arc(rx + s / 2, cy + s / 2, s / 2, 0, Math.PI * 2); g.fillStyle = "rgb(" + (RGB[dm] || "90,90,100") + ")"; g.fill(); }
+          g.fillStyle = C.bone; g.font = "700 54px " + DISP; g.fillText(String(it.r.n), rx + s + 14, cy + 56);
+          rx += it.w + 40;
         });
       }
-
-      // RUNES: the symbol in its domain's colour, the count, the name
-      if (P.runes) {
-        label(g, "Runes", P.runes.y, p.counts.runes + " runes");
-        var rx = PAD;
-        p.runes.forEach(function (r) {
-          var dm = (r.x.d || [])[0], y = P.runes.y + 56, s = 96;
-          g.beginPath(); g.arc(rx + s / 2, y + s / 2, s / 2, 0, Math.PI * 2); g.fillStyle = "rgb(" + (RGB[dm] || "90,90,100") + ")"; g.fill();
-          var sym = IM["rune:" + dm]; if (sym) { g.drawImage(sym, rx + 18, y + 18, s - 36, s - 36); }
-          g.fillStyle = C.bone; g.font = "700 44px " + DISP; g.fillText(String(r.n), rx + s + 18, y + 52);
-          g.font = "600 26px " + TEXT; g.fillStyle = C.muted; g.fillText(fit(g, r.f, 300), rx + s + 18, y + 86);
-          g.font = "700 44px " + DISP;
-          rx += s + 18 + Math.max(g.measureText(String(r.n)).width, (g.font = "600 26px " + TEXT, g.measureText(r.f).width)) + 48;
-        });
+      if (p.bf.length) {
+        heading(g, "Battlefields", cx2, y);
+        p.bf.forEach(function (r, i) { cardAt(g, art(r.x), cx2 - Tp.bw / 2, y + HEAD + 18 + i * (Tp.bh + Tp.bgap), Tp.bw, Tp.bh, 12); });
       }
 
-      // SIDEBOARD, smaller
-      if (P.side) {
-        label(g, "Sideboard", P.side.y, p.counts.side + " cards");
-        p.side.forEach(function (r, i) {
-          var col = i % P.side.cols, row = Math.floor(i / P.side.cols), x = PAD + col * (P.side.cw + GAP), y = P.side.y + 56 + row * (P.side.ch + GAP);
-          cardAt(g, art(r.x, false), x, y, P.side.cw, P.side.ch, 7);
-          pill(g, "x" + r.n, x + P.side.cw / 2, y + P.side.ch - 6, 20);
-        });
-      }
+      // MAIN DECK and SIDEBOARD, rows of five, the copies on each card
+      heading(g, "Main Deck", W / 2, P.main.y);
+      grid(g, p.main, P.main, art, d.champ);
+      if (P.side) { heading(g, "Sideboard", W / 2, P.side.y); grid(g, p.side, P.side, art, ""); }
 
-      // FOOT
+      // FOOT: Riot's Legal Jibber Jabber notice, in its own words (RULE -- Riot's policies)
       var fy = P.foot.y;
-      g.strokeStyle = "rgba(255,255,255,.12)"; g.lineWidth = 2; g.beginPath(); g.moveTo(PAD, fy); g.lineTo(W - PAD, fy); g.stroke();
-      g.fillStyle = C.bone; g.font = "700 30px " + DISP; g.fillText("ravi.tools", PAD, fy + 50);
-      // Riot's Legal Jibber Jabber notice, in its own words (RULE -- Riot's policies)
-      g.fillStyle = C.muted; g.font = "600 22px " + TEXT;
-      var words = NOTICE.split(" "), ln = "", ly = fy + 84;
-      words.forEach(function (w) { var t = ln ? ln + " " + w : w; if (g.measureText(t).width > W - 2 * PAD) { g.fillText(ln, PAD, ly); ly += 30; ln = w; } else { ln = t; } });
-      if (ln) { g.fillText(ln, PAD, ly); }
+      g.fillStyle = C.muted; g.font = "600 22px " + TEXT; g.textAlign = "center";
+      wrap(g, NOTICE, W - 2 * PAD).forEach(function (l, i) { g.fillText(l, W / 2, fy + 30 + i * 30); });
+      g.textAlign = "left";
       return cv;
     });
   }
