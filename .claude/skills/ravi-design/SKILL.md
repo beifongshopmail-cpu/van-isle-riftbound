@@ -1,6 +1,6 @@
 ---
 name: ravi-design
-description: How RAVI design work is done - icons, page looks, hub and bar changes, any visual review for Mako. Load before drawing or changing anything Mako will see on the phone, and before building any new feature (prior art first). Points to STYLE.md, the icon rule, the review tools in rb-tools/design, and the critique pass that runs before Mako sees anything.
+description: How RAVI design work is done - any page part, menu, icon, hub or bar change, any visual review for Mako. Load before building, drawing or changing anything Mako will see on the phone, and before building any new feature (prior art first). Points to STYLE.md, the icon rule, the review tools in rb-tools/design, and the critique pass that runs before Mako sees anything.
 ---
 
 # RAVI design work
@@ -11,10 +11,14 @@ inventing a system in one pass.
 
 ## Before anything
 
-1. Read STYLE.md (app repo root) sections 1 and 4, and the records' RULE -- icons
+1. Read STYLE.md (app repo root) in full: it is the short core. Then style/<page>.md for every
+   page the change touches. For icons, also the records' RULE -- icons
    (mako-records ravi/rule/icons-how-they-are-drawn-and-how-they-ship-from-2026-10-07.md).
    STYLE.md is the rulebook; a rule may be challenged when Mako asks, but a change enters
    STYLE.md only with his yes to the quoted line, as its own commit.
+   Name the Kit parts (section 5) the change uses before writing it; a part the Kit lacks
+   goes into the page's notes in the same commit, and rb-tools style-lint.js runs before
+   the push (CLAUDE.md, Before any change Mako will see).
 2. Load the frontend-design skill for any visual direction or page design.
 3. Mako is colourblind (red-green, some blue-yellow): shape or words always carry meaning;
    colour never does it alone.

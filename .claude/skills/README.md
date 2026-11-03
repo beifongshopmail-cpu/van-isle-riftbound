@@ -6,7 +6,7 @@ win over anything a copied skill says.
 
 | Skill | Use it for | RAVI's limits |
 | --- | --- | --- |
-| ravi-design | Any icon, page looks, hub or bar change; prior art first for any feature | Ours. Load first for looks work. |
+| ravi-design | Any page part, menu, icon, hub or bar change; prior art first for any feature | Ours. Load first for anything Mako sees: STYLE.md core in full, the page's style notes, style-lint before the push. |
 | design-critique | Critique a sheet or page before Mako sees it | Fix what it finds; Mako sees the result, not the critique. |
 | accessibility-review | Contrast, touch size, screen-reader checks | Mako is colourblind: shape or words always carry meaning. |
 | design-system | Checking a change against STYLE.md, finding hardcoded values | STYLE.md is the system; a new rule only with Mako's yes. |

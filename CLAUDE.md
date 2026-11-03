@@ -27,6 +27,19 @@ Design rules: STYLE.md. These rules hold in every session.
 - Normalise CRLF before matching any search string (files may have either).
 - Recon before editing any file not read in this chat.
 
+## Before any change Mako will see (Mako 2026-11-03)
+- Read STYLE.md in full (the core, under 500 lines) and style/<page>.md for
+  every page the change touches. Every time, even for a small fix; never
+  build a part from memory or from scratch.
+- Build from the Kit (STYLE.md section 5): name the Kit parts the change uses
+  before writing it. A part the Kit lacks uses Kit tokens and surfaces, and
+  its class goes into that page's notes in the same commit.
+- A new page gets its style/<page>.md in the same commit as the page.
+- Run node style-lint.js (rb-tools, seconds) before the push. It fails on an
+  unlisted class, a typed colour or size, type off the rungs or a missing
+  guard script. Its baseline (style-baseline.json) only shrinks; never add
+  to it.
+
 ## Checks (rb-tools, private, branch master)
 - A logic change gets a test that fails on the unedited app and passes
   after; both counts go in the commit message.
