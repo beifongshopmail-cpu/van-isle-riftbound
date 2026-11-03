@@ -48,8 +48,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 /* YOUR RIOT NAME (M16): one field, saved on this phone, used by every live part */
 #pme .nf{margin:0}
 #pme .rid[hidden],#pme .pact[hidden]{display:none}
-#pme .pact{margin-top:12px}
-#pme #stmeok{margin-top:6px}
+#pme .pact{margin-top:6px}
+#pme .stmenote{margin:0 2px 10px}
+#pme .lb{margin:14px 2px 6px}
+#pme #sttest{margin-top:0}
+#pme .stmsg+.lb{margin-top:10px}
 .panel .pick+.pnote{margin-top:10px}
 .stmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
@@ -109,11 +112,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost" id="pme" aria-hidden="true" aria-label="Riot name and alerts">
   <div class="phead"><h4 class="ttl" id="pmet">Riot name and alerts</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
+    <p class="pnote stmenote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them. At a live event it finds your table, your record and your alerts.</p>
     <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
       <div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
     <button type="button" class="pact btn glass" id="stmeok" data-k="do">Save</button>
-    <p class="pnote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them. At a live event it finds your table, your record and your alerts.</p>
     <p class="stmsg" id="stmemsg" aria-live="polite"></p>
+    <p class="lb">Alerts</p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
   </div>
