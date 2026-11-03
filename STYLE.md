@@ -116,7 +116,7 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25); 22 Poppins 800 on the Trade board offer's verdict amount (.ovd .mid .v; plan 2 M2, signed off 2026-11-02). Go to tile labels are 12 with letter-spacing -.08em. The wordmark is a drawing (the badge, section 5), not type, so no rung binds it.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25); 22 Poppins 800 on the Trade board offer's verdict amount (.ovd .mid .v; plan 2 M2; as built, not chosen: M7 decides whether it moves to a rung). Go to tile labels are 12 with letter-spacing -.08em. The wordmark is a drawing (the badge, section 5), not type, so no rung binds it.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
@@ -158,7 +158,7 @@ Colour
 - A card with no domain (colourless) uses the palette's White, 240,240,245, so White is no longer spare. (Mako's yes 2026-10-24)
 - Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
 - On a page colour, grey text inside glass is #DCDEE2, not --muted.
-- A card picture's ground before it loads is #0E0F11 (the counter's .lgathumb and .lgppic; built before 2026-11-03).
+- A card picture's ground before it loads is #0E0F11 (the counter's .lgathumb and .lgppic; as built, not chosen: M7 decides whether it becomes a token or --ground).
 
 ## 5. The Kit (shared parts)
 
@@ -373,6 +373,7 @@ Each page's own rules, its menus and its page-local classes, one file per page i
 ## 12. Changing this file
 
 - A line that records a build Mako signed off on the phone goes in without a separate yes, once checked against the code as shipped and the latest decisions in the records (MAP, the milestone's handoff, LOG); its commit names the build and his sign-off. A rule beyond what was built still needs his yes. Either way it is its own commit, never inside a fix. (Mako 2026-10-29)
+- Mako's sign-off on a build is not a choice of every value in it: he judges what he sees, not each detail (Mako 2026-11-03). A value recorded from a build that he did not name is marked 'as built, not chosen' and stays open to the next sweep; only values he named count as his.
 - Mako's eye on the phone outranks any value here. Anything he names becomes a rule with a check.
 - If the code and this file disagree, one of them is a bug. Report it; do not pick.
 - To break a default on purpose, say so in one line in the commit message.
