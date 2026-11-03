@@ -2566,8 +2566,8 @@ body{-webkit-font-smoothing:antialiased;
   // whatever is tapped next.
   //
   // A scroll is a move, not a tap, and never reaches this. A pinch carries
-  // more than one touch point and returns early, so pinch-to-zoom still
-  // works. Attached at document level so it covers fixed overlays and
+  // more than one touch point and returns early; pages.js holds off page pinch-zoom
+  // (2026-11-02). Attached at document level so it covers fixed overlays and
   // anything added later.
   var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
   var lastT = 0, lastX = 0, lastY = 0;

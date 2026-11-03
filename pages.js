@@ -515,3 +515,20 @@ window.RAVI_BAR = function(nav, slots){
     return true;
   }
 })();
+
+// NO PAGE ZOOM (Mako 2026-11-02: 'the rest of the app should also not accidentally zoom in and
+// out ... possibly throughout the entire app'). The installed app never pinch-zooms its pages, as
+// no native app does; iPhone's own Zoom (Settings, Accessibility) still works everywhere. iOS
+// ignores user-scalable=no, so its pinch gesture events are cancelled everywhere (pointer events,
+// which the Picture placer reads, still arrive), and a two-finger touchmove is cancelled unless it
+// starts inside [data-pinch], the one place a pinch means something. Double-tap is held off by each
+// page's own touchend guard (ARCH -- the double-tap zoom guard).
+(function(){
+  if (typeof document === "undefined") { return; }
+  function hold(e){ e.preventDefault(); }
+  document.addEventListener("gesturestart", hold, { passive: false });
+  document.addEventListener("gesturechange", hold, { passive: false });
+  document.addEventListener("touchmove", function(e){
+    if (e.touches && e.touches.length > 1 && !(e.target && e.target.closest && e.target.closest("[data-pinch]"))) { e.preventDefault(); }
+  }, { passive: false });
+})();

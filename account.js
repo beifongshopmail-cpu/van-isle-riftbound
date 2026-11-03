@@ -396,7 +396,7 @@
         '<p class="pnote">While you share a binder or your Wishlist, players on the Trade board see your name, @username, home area and picture. Your Riot ID stays private until you agree a trade, and then only that player sees it. The line about you stays private.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
-      acpicm: headTitle("Picture") + '<div class="pbody"><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span>' +
+      acpicm: headTitle("Picture") + '<div class="pbody"><div class="acstage" id="acstage" data-pinch><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span></div>' +
         '<p class="pnote acadjn" id="acadjn">Drag to move it, pinch to zoom.</p>' +
         '<div class="seg acrow" id="acprint" role="group" aria-label="Printing" data-k="pick" hidden></div>' +
         '<div class="doors acrow" id="acpicrows"></div>' +
@@ -1082,9 +1082,11 @@
     if (work.k === "l") A.setPic({ k: "l", h: work.h, x: work.x, y: work.y, z: work.z }, fin);
     else { say("acpicmsg", "Saving..."); A.uploadPhoto(cutPhoto(work), fin); }
   }
-  // dragging moves the picture in the circle; two fingers (or a mouse wheel) zoom it
+  // dragging moves the picture in the circle; two fingers (or a mouse wheel) zoom it. The gestures
+  // are read on the stage, the menu's whole width around the circle, so a pinch beside the circle
+  // places it too (Mako 2026-11-02); the circle sets the scale.
   function adjustable() {
-    var adj = $("acadj"), pts = {}, start = null;
+    var adj = $("acadj"), stage = $("acstage") || adj, pts = {}, start = null;
     function size() { return adj.getBoundingClientRect().width || 1; }
     function begin() {
       if (!work) return;
@@ -1104,11 +1106,11 @@
       if (ih - S > 0.5) work.y = Math.max(0, Math.min(100, start.y - (a.y - start.py) / (ih - S) * 100));
       showWork();
     }
-    adj.addEventListener("pointerdown", function (e) { pts[e.pointerId] = { x: e.clientX, y: e.clientY }; try { adj.setPointerCapture(e.pointerId); } catch (x) {} begin(); e.preventDefault(); });
-    adj.addEventListener("pointermove", function (e) { if (!pts[e.pointerId]) return; pts[e.pointerId] = { x: e.clientX, y: e.clientY }; move(); e.preventDefault(); });
+    stage.addEventListener("pointerdown", function (e) { pts[e.pointerId] = { x: e.clientX, y: e.clientY }; try { stage.setPointerCapture(e.pointerId); } catch (x) {} begin(); e.preventDefault(); });
+    stage.addEventListener("pointermove", function (e) { if (!pts[e.pointerId]) return; pts[e.pointerId] = { x: e.clientX, y: e.clientY }; move(); e.preventDefault(); });
     function up(e) { delete pts[e.pointerId]; if (Object.keys(pts).length) begin(); else start = null; }
-    adj.addEventListener("pointerup", up); adj.addEventListener("pointercancel", up);
-    adj.addEventListener("wheel", function (e) {
+    stage.addEventListener("pointerup", up); stage.addEventListener("pointercancel", up);
+    stage.addEventListener("wheel", function (e) {
       if (!work) return;
       e.preventDefault();
       if (work.saved) { if (work.k === "p") return; work = Object.assign({}, work, { saved: false }); }

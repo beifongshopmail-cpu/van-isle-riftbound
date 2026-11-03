@@ -574,7 +574,8 @@ html.gate body > :not(#ravigate){display:none!important}
 .acmsg:empty{display:none}
 .panel.acct .door.armed{background-color:var(--glass-press)}
 /* the Picture menu's circle you drag and pinch to place the picture (Mako 2026-10-31) */
-.acadj{width:176px;height:176px;margin:2px auto 0;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}
+.acstage{display:flex;justify-content:center;margin:0 -16px;padding:2px 16px 0;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none} /* the placer takes the menu's whole width (Mako 2026-11-02) */
+.acadj{width:176px;height:176px;flex:none;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}
 .acadj svg{width:44px;height:44px} /* size-exempt: the person drawn inside the picture you place, a picture not a control */
 .panel.acct .acadjn{text-align:center;margin-top:8px}
 .panel.acct .acrow{margin-top:12px}

@@ -3082,8 +3082,8 @@
   // is a button, so that screen is unaffected by construction.
   //
   // A scroll is a move, not a tap, and never reaches this. A pinch carries
-  // more than one touch point and returns early, so pinch-to-zoom still
-  // works. Attached at document level so it covers fixed overlays and
+  // more than one touch point and returns early; pages.js holds off page pinch-zoom
+  // (2026-11-02). Attached at document level so it covers fixed overlays and
   // anything added later -- on this page that is the log sheet, the setup
   // panel, the legend picker, the card spotlight and the victory banner.
   var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
