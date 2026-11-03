@@ -125,13 +125,15 @@ window.RAVI_HUB_PICKS = function(){
   try { raw = localStorage.getItem(window.RAVI_HUB_KEY); } catch (e) {}
   if (raw !== null) { try { list = JSON.parse(raw); } catch (e) { list = null; } }
   if (!Array.isArray(list)) { list = window.RAVI_HUB_DEFAULT; }
-  for (i = 0; i < list.length; i++) { if (typeof list[i] === "string") { want[list[i]] = true; } }
-  for (i = 0; i < pages.length && out.length < window.RAVI_HUB_MAX; i++) {
-    if (pages[i].path && want.hasOwnProperty(pages[i].id)) { out.push(pages[i].id); }
+  // in the saved order (App settings' Hub layout, plan 2 M6, Mako 2026-11-03): pages that still
+  // exist, each once, up to the hub's seven
+  for (i = 0; i < pages.length; i++) { if (pages[i].path) { want[pages[i].id] = true; } }
+  for (i = 0; i < list.length && out.length < window.RAVI_HUB_MAX; i++) {
+    if (typeof list[i] === "string" && want[list[i]] && out.indexOf(list[i]) < 0) { out.push(list[i]); }
   }
   return out;
 };
-// Saves a list of ids (page order), or clears the key with null.
+// Saves a list of ids (the hub's order), or clears the key with null.
 window.RAVI_HUB_SAVE = function(ids){
   try {
     if (ids === null) { localStorage.removeItem(window.RAVI_HUB_KEY); }

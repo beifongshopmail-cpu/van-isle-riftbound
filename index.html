@@ -695,7 +695,7 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
   // THE GRID. Three per row, always: the blocks are the calendar .ev
   // body recipe, coloured by each page's own rgb. Eight blocks at most, so
   // the hub icon (the 3-3-2 grid) stays true: the viewer's picks from App
-  // settings (RAVI_HUB_PICKS in pages.js, up to seven, in page order), then
+  // settings (RAVI_HUB_PICKS in pages.js, up to seven, in the order Hub layout keeps), then
   // All pages, always last (M15, Mako 2026-10-26).
   // A block's icon and name take a pale tint of its own colour.
   function tint(rgb){
@@ -705,10 +705,11 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
   }
   var grid = document.getElementById("grid");
   var h = "", picks = window.RAVI_HUB_PICKS ? window.RAVI_HUB_PICKS() : [], on = {};
-  for (var k = 0; k < picks.length; k++) { on[picks[k]] = true; }
-  for (var i = 0; i < PAGES.length; i++) {
-    var p = PAGES[i];
-    if (!p.path || !on[p.id]) { continue; }
+  var byId = {};
+  for (var i = 0; i < PAGES.length; i++) { byId[PAGES[i].id] = PAGES[i]; }
+  for (var k = 0; k < picks.length; k++) {
+    var p = byId[picks[k]]; // in the order App settings' Hub layout keeps (plan 2 M6)
+    if (!p || !p.path) { continue; }
     h += '<a class="blk glass cg" href="' + p.path + '" style="--cl:' + p.rgb + ';--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '" data-k="do"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
   }
   h += '<button type="button" class="blk glass allp" id="hall" aria-haspopup="true" aria-expanded="false" aria-controls="pall" data-k="do"><span class="bi">' + window.RAVI_ICON("allpages") + '</span><span class="bn">All pages</span></button>';

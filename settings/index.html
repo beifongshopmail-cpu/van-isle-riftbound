@@ -37,9 +37,27 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .stn{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .stnone{text-align:center}
 .sup{margin-top:20px}
-/* the Hub blocks note when an eighth pick is refused */
-.stwarn{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone);visibility:hidden}
-.stwarn.show{visibility:visible}
+/* HUB LAYOUT (plan 2 M6, Mako 2026-11-03): a small copy of the hub's grid (its 3-3-2 rows, the
+   arc on the middle blocks, each block the page's coloured glass with its tinted icon and name),
+   All pages fixed last, empty places dashed; under it the pages not on the hub, three across.
+   Blocks are dragged (pointer events; touch-action none, so a drag never scrolls the menu) or
+   tapped one then another. */
+.hlg{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 10px;padding:14px 10px 10px;border-radius:24px;background:var(--recess)}
+.hlg > .hlb{width:calc((100% - 20px) / 3)}
+.hlg > .hlb:nth-child(2),.hlg > .hlb:nth-child(5){top:-8px}
+.hls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;border-radius:22px;background:var(--recess);min-height:64px}
+.hlb{position:relative;box-sizing:border-box;aspect-ratio:1/1;border:0;border-radius:16px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  color:rgb(var(--ci,237,234,227));font:inherit;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.hlb svg{flex:1 1 auto;min-height:0;width:34px;max-height:34px;stroke-width:1.5;--sw:1.5;opacity:.82} /* size-exempt: the hub's 60 icon drawn small in its copy */
+.hlb svg:has(.icb) .ico{display:none}
+.hlb svg .icb{display:inline}
+.hls .hlb svg{width:24px;max-height:24px} /* size-exempt: a page's hub icon in the shelf */
+.hlb span{max-width:100%;font-family:var(--disp);font-weight:700;font-size:12px;line-height:1.2;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hle{border:1.5px dashed var(--faint);background:none}
+.hla{color:var(--bone)}
+.hlb.picked,.hlb.over{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
+.hls.over{box-shadow:inset 0 0 0 2px var(--bone)}
+.hlb.lift{z-index:5;pointer-events:none;filter:brightness(1.15);box-shadow:0 14px 30px rgba(0,0,0,.55)}
 .foot a{color:var(--bone)}
 /* YOUR RIOT NAME (M16): one field, saved on this phone, used by every live part */
 #pme .nf{margin:0}
@@ -155,10 +173,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost" id="phub" aria-hidden="true" aria-label="Hub layout">
   <div class="phead"><h4 class="ttl" id="phubt">Hub layout</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="pick" id="sthub" data-k="pick"></div>
-    <p class="pnote" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always lists every page.</p>
-    <p class="stwarn" id="sthubnote" aria-live="polite">Seven are on. Turn one off first.</p>
+    <div class="hlg" id="sthub" data-k="pick" aria-label="The hub"></div>
+    <p class="lb">Not on the hub</p>
+    <div class="hls" id="sthubs" data-k="pick" aria-label="Pages not on the hub"></div>
+    <p class="pnote" id="sthubn">Drag a block to move it. Drag a page from below onto a block to swap it in, or a block down here to take it off. Or tap one, then another. All pages always comes last.</p>
   </div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="sthuboff" data-k="do" disabled>Take off the hub</button></div>
 </section>
 <section class="panel frost" id="popen" aria-hidden="true" aria-label="Open the app to">
   <div class="phead"><h4 class="ttl" id="popent">Open the app to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -238,7 +258,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1", AKEY = "vir.tier.auto.off.v1", FKEY = "ravi.fx.off.v1", LKEY = "vir.motion.v1";
   var PAGES = window.RAVI_PAGES || [];
   var opento = document.getElementById("opento"), intro = document.getElementById("stintro"), auto = document.getElementById("stauto"), fx = document.getElementById("stfx"), lessB = document.getElementById("stless");
-  var hubg = document.getElementById("sthub"), hubn = document.getElementById("sthubn"), hubw = document.getElementById("sthubnote"), hubT = 0;
+  var hl = document.getElementById("sthub"), hs = document.getElementById("sthubs"), hoff = document.getElementById("sthuboff");
   var reset = document.getElementById("streset"), resetGo = document.getElementById("stresetgo");
   function get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
   function put(k, v){ try { if (v === null) { localStorage.removeItem(k); } else { localStorage.setItem(k, v); } } catch (e) {} }
@@ -252,15 +272,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       h += tile(p.id, p.icon, p.name, c === p.id);
     }
     opento.innerHTML = h;
-    // Hub blocks: one check row per page, App settings included, in page order
-    var picks = window.RAVI_HUB_PICKS(), on = {}, g = "", n;
-    for (n = 0; n < picks.length; n++) { on[picks[n]] = true; }
-    for (n = 0; n < PAGES.length; n++) {
-      if (!PAGES[n].path) { continue; }
-      g += '<button type="button" class="' + (on[PAGES[n].id] ? "on" : "") + '" aria-pressed="' + (on[PAGES[n].id] ? "true" : "false") + '" data-id="' + PAGES[n].id + '">' + PAGES[n].name + '</button>';
-    }
-    hubg.innerHTML = g;
-    hubn.textContent = picks.length + " of " + window.RAVI_HUB_MAX + " on. The hub's last block, All pages, always lists every page.";
+    drawHub();
+    var n;
     var on = !get(IKEY), fxOn = !get(FKEY), less = get(LKEY) === "less", sys = window.RAVI_LESS ? false : !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     function mark(b, v){ b.classList.toggle("on", v); b.setAttribute("aria-pressed", v ? "true" : "false"); }
     mark(intro, on); mark(fx, fxOn); mark(lessB, less || sys);
@@ -274,7 +287,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var ot = "Hub";
     for (n = 0; n < PAGES.length; n++) { if (PAGES[n].id === c) { ot = PAGES[n].name; } }
     val("popen", ot);
-    val("phub", picks.length + " of " + window.RAVI_HUB_MAX);
+    val("phub", window.RAVI_HUB_PICKS().length + " of " + window.RAVI_HUB_MAX);
     val("pmotion", less || sys ? "Reduced" : on && fxOn ? "On" : !on && !fxOn ? "Off" : "Part on");
     val("plocal", af ? "On" : "Off");
     // Dates and prices: one pick each, the chosen row checked
@@ -297,7 +310,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     pme: "live event events pairing pairings alerts alert notifications riot name tag id test table round",
     poffer: "trade offers offer counter alerts alert notifications board",
     plocal: "share my legend tier list local decks deck placing standings game",
-    phub: "hub layout blocks block grid arrange order pages home",
+    phub: "hub layout blocks block grid arrange order move drag pages home",
     popen: "open the app to start launch first page",
     pmotion: "motion opening animation intro movement reduce glow rim hub effects",
     pcur: "prices price currency money dollars cad usd canadian us",
@@ -354,23 +367,126 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     put(OKEY, id ? id : null);
     render();
   });
-  hubg.addEventListener("click", function(e){
-    var t = e.target.closest ? e.target.closest("button") : null;
-    if (!t) { return; }
-    var id = t.getAttribute("data-id"), picks = window.RAVI_HUB_PICKS(), at = picks.indexOf(id), out = [], m;
-    if (at === -1 && picks.length >= window.RAVI_HUB_MAX) {
-      hubw.classList.add("show"); clearTimeout(hubT);
-      hubT = setTimeout(function(){ hubw.classList.remove("show"); }, 3000);
-      return;
+  // ---- HUB LAYOUT (plan 2 M6, Mako 2026-11-03): drag blocks into place, or tap one then another ----
+  var ORDER = [], PICK = null, D = null, noClick = false;
+  function pageOf(id){ for (var i = 0; i < PAGES.length; i++) { if (PAGES[i].id === id && PAGES[i].path) { return PAGES[i]; } } return null; }
+  function tint(rgb){ var c = rgb.split(","), o = []; for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .62)); } return o.join(","); }
+  function blk(p){ return '<button type="button" class="hlb glass cg" data-id="' + p.id + '" style="--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></button>'; }
+  function drawHub(){
+    ORDER = window.RAVI_HUB_PICKS();
+    var h = "", e;
+    ORDER.forEach(function(id){ var p = pageOf(id); if (p) { h += blk(p); } });
+    for (e = ORDER.length; e < window.RAVI_HUB_MAX; e++) { h += '<div class="hlb hle" aria-label="An empty place"></div>'; }
+    h += '<div class="hlb glass hla" aria-label="All pages, always last">' + window.RAVI_ICON("allpages") + '<span>All pages</span></div>';
+    hl.innerHTML = h;
+    var sh = "";
+    PAGES.forEach(function(p){ if (p.path && ORDER.indexOf(p.id) < 0) { sh += blk(p); } });
+    hs.innerHTML = sh;
+    PICK = null; marks();
+  }
+  function marks(){
+    Array.prototype.forEach.call(document.querySelectorAll("#phub .hlb[data-id]"), function(b){
+      b.classList.toggle("picked", !!PICK && b.getAttribute("data-id") === PICK.id && hl.contains(b) === PICK.hub);
+    });
+    hoff.disabled = !(PICK && PICK.hub);
+  }
+  function saveHub(list){ window.RAVI_HUB_SAVE(list.slice(0, window.RAVI_HUB_MAX)); render(); }
+  // tap one, then another: two on the hub swap; a page from below takes a hub block's place;
+  // a page from below and an empty place adds it; the same block again puts it down
+  function tapHub(el){
+    var id = el.getAttribute("data-id"), inHub = hl.contains(el), empty = el.classList.contains("hle"), list = ORDER.slice();
+    if (el.classList.contains("hla")) { return; }
+    if (!PICK) { if (id) { PICK = { id: id, hub: inHub }; marks(); } return; }
+    var a = PICK; PICK = null;
+    if (a.id === id && a.hub === inHub) { marks(); return; }
+    var ai = list.indexOf(a.id), bi = id ? list.indexOf(id) : -1;
+    if (a.hub && inHub && id) { list[ai] = id; list[bi] = a.id; }
+    else if (a.hub && empty) { list.splice(ai, 1); list.push(a.id); }
+    else if (a.hub && !inHub && id) { list[ai] = id; }
+    else if (!a.hub && inHub && id) { list[bi] = a.id; }
+    else if (!a.hub && empty) { list.push(a.id); }
+    else { PICK = { id: id, hub: false }; marks(); return; }
+    saveHub(list);
+  }
+  hl.addEventListener("click", function(e){ if (noClick) { noClick = false; return; } var el = e.target.closest(".hlb"); if (el) { tapHub(el); } });
+  hs.addEventListener("click", function(e){ if (noClick) { noClick = false; return; } var el = e.target.closest(".hlb"); if (el) { tapHub(el); } });
+  hoff.addEventListener("click", function(){ if (PICK && PICK.hub) { var list = ORDER.filter(function(x){ return x !== PICK.id; }); PICK = null; saveHub(list); } });
+  // the drag: a block follows the finger; on the hub the others make room as it passes; dropped
+  // on a block, a page from below swaps in; a hub block dropped below comes off the hub
+  function still(){ return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function follow(x, y){
+    var r = D.el.getBoundingClientRect();
+    D.tx += x - D.gx - r.left; D.ty += y - D.gy - r.top;
+    D.el.style.transform = "translate(" + D.tx + "px," + D.ty + "px)";
+  }
+  function flip(fn){
+    var cells = Array.prototype.slice.call(hl.children), first = cells.map(function(c){ return c.getBoundingClientRect(); });
+    fn();
+    if (still()) { return; }
+    cells.forEach(function(c, i){
+      if (c === D.el || !c.animate) { return; }
+      var l = c.getBoundingClientRect(), dx = first[i].left - l.left, dy = first[i].top - l.top;
+      if (dx || dy) { c.animate([{ transform: "translate(" + dx + "px," + dy + "px)" }, { transform: "none" }], { duration: 220, easing: "cubic-bezier(.22,.72,.2,1)" }); }
+    });
+  }
+  function under(x, y){
+    var u = document.elementFromPoint(x, y), cell = u && u.closest ? u.closest(".hlb") : null;
+    return { cell: cell && cell !== D.el ? cell : null, hub: !!(u && hl.contains(u)), shelf: !!(u && hs.contains(u)) };
+  }
+  function overMarks(w){
+    Array.prototype.forEach.call(document.querySelectorAll("#phub .hlb.over"), function(c){ c.classList.remove("over"); });
+    hs.classList.remove("over");
+    if (!w) { return; }
+    if (!D.hub && w.cell && hl.contains(w.cell) && !w.cell.classList.contains("hla")) { w.cell.classList.add("over"); }
+    if (D.hub && w.shelf) { hs.classList.add("over"); }
+  }
+  function down(e){
+    var el = e.target.closest ? e.target.closest(".hlb[data-id]") : null;
+    if (!el || (e.button && e.button > 0)) { return; }
+    noClick = false; // a new touch is never the click a drag left behind
+    D = { el: el, id: el.getAttribute("data-id"), hub: hl.contains(el), x: e.clientX, y: e.clientY, on: false, pid: e.pointerId, tx: 0, ty: 0, last: null };
+  }
+  function moved(e){
+    if (!D || e.pointerId !== D.pid) { return; }
+    if (!D.on) {
+      if (Math.abs(e.clientX - D.x) + Math.abs(e.clientY - D.y) < 8) { return; }
+      D.on = true; PICK = null; marks();
+      try { D.el.setPointerCapture(D.pid); } catch (x) {}
+      var r = D.el.getBoundingClientRect(); D.gx = D.x - r.left; D.gy = D.y - r.top;
+      D.el.classList.add("lift");
     }
-    hubw.classList.remove("show");
-    // saved in page order
-    for (m = 0; m < PAGES.length; m++) {
-      if (!PAGES[m].path) { continue; }
-      if (PAGES[m].id === id ? at === -1 : picks.indexOf(PAGES[m].id) !== -1) { out.push(PAGES[m].id); }
+    if (e.cancelable) { e.preventDefault(); }
+    follow(e.clientX, e.clientY);
+    var w = under(e.clientX, e.clientY);
+    // a block that just made room is still sliding under the finger: it moves again only once the
+    // finger has been over something else, so two blocks never trade places back and forth
+    if (w.cell !== D.last) { D.last = w.cell; } else { w.cell = w.cell && hl.contains(w.cell) && D.hub ? null : w.cell; }
+    if (D.hub && w.cell && hl.contains(w.cell) && w.cell.hasAttribute("data-id")) {
+      var kids = Array.prototype.slice.call(hl.children), from = kids.indexOf(D.el), to = kids.indexOf(w.cell);
+      flip(function(){ hl.insertBefore(D.el, to > from ? w.cell.nextSibling : w.cell); });
+      follow(e.clientX, e.clientY);
     }
-    window.RAVI_HUB_SAVE(out);
-    render();
+    overMarks(w);
+  }
+  function up(e){
+    if (!D || e.pointerId !== D.pid) { return; }
+    var d = D; D = null;
+    if (!d.on) { return; }
+    noClick = true; setTimeout(function(){ noClick = false; }, 400);
+    D = d; var w = under(e.clientX, e.clientY); overMarks(null); D = null;
+    var list = ORDER.slice(), ai = list.indexOf(d.id);
+    if (d.hub && w.shelf) { list.splice(ai, 1); }
+    else if (d.hub) { list = Array.prototype.map.call(hl.querySelectorAll(".hlb[data-id]"), function(c){ return c.getAttribute("data-id"); }); }
+    else if (w.cell && hl.contains(w.cell) && w.cell.hasAttribute("data-id")) { list[list.indexOf(w.cell.getAttribute("data-id"))] = d.id; }
+    else if (w.cell && w.cell.classList.contains("hle")) { list.push(d.id); }
+    else { drawHub(); return; }
+    saveHub(list);
+  }
+  [hl, hs].forEach(function(g){
+    g.addEventListener("pointerdown", down);
+    g.addEventListener("pointermove", moved);
+    g.addEventListener("pointerup", up);
+    g.addEventListener("pointercancel", function(){ D = null; drawHub(); });
   });
   intro.addEventListener("click", function(){
     put(IKEY, get(IKEY) ? null : "1");
