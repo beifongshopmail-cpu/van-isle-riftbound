@@ -104,3 +104,15 @@ jobs:
           else
             echo "no drop to report"
           fi
+          STOREBODY="$RUNNER_TEMP/anomaly-stores.md"
+          if [ -f "$STOREBODY" ]; then
+            gh label create new-store --color 5DA5EE --description "A store in the feed has no short name" 2>/dev/null || true
+            OPENSTORE=$(gh issue list --label new-store --state open --json number --jq "length")
+            if [ "$OPENSTORE" = "0" ]; then
+              gh issue create --title "A store has no short name" --label new-store --body-file "$STOREBODY"
+            else
+              echo "a new-store issue is already open; not opening another"
+            fi
+          else
+            echo "every store has a short name"
+          fi

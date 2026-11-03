@@ -150,6 +150,56 @@ check("priorUnique reads a well-formed prior count", function () {
   assert.strictEqual(priorUnique(good), 75);
 });
 
+// plan 2 M5 (2026-11-02): the slow slide (Sept 12 to Oct 9 went 52 to 19 with no run-to-run
+// drop big enough), and a new store with no short name
+const fe = require("./fetch-events");
+const ra = require("./report-anomalies");
+
+check("recentCounts keeps each day's highest count for 14 days", function () {
+  assert.strictEqual(typeof fe.recentCounts, "function");
+  const now = new Date("2026-11-02T12:00:00Z");
+  const prev = [{ d: "2026-10-15", n: 90 }, { d: "2026-10-20", n: 52 }, { d: "2026-11-02", n: 40 }];
+  const r = fe.recentCounts(prev, 35, now);
+  assert.deepStrictEqual(r, [{ d: "2026-10-20", n: 52 }, { d: "2026-11-02", n: 40 }]);
+  assert.deepStrictEqual(fe.recentCounts(null, 35, now), [{ d: "2026-11-02", n: 35 }]);
+  assert.deepStrictEqual(fe.recentCounts([{ d: "2026-11-02", n: 30 }], 35, now), [{ d: "2026-11-02", n: 35 }]);
+});
+
+check("reportDrop fires on a slow slide against the 14-day high", function () {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "vir-fixture-"));
+  const payload = { generated_at: "x", totals: { unique: 19, prev_unique: 21, recent: [{ d: "2026-10-01", n: 52 }, { d: "2026-10-09", n: 19 }] } };
+  const file = reportDrop(payload, dir);
+  assert.ok(file && fs.existsSync(file), "no body written");
+  assert.ok(/52/.test(fs.readFileSync(file, "utf8")), "the 14-day high is not named");
+});
+
+check("reportDrop stays quiet when the 14-day high is close", function () {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "vir-fixture-"));
+  const payload = { generated_at: "x", totals: { unique: 45, prev_unique: 46, recent: [{ d: "2026-10-01", n: 52 }, { d: "2026-10-09", n: 45 }] } };
+  assert.strictEqual(reportDrop(payload, dir), null);
+});
+
+check("reportStores names a store with no short name, and stays quiet when every store has one", function () {
+  assert.strictEqual(typeof ra.reportStores, "function");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "vir-fixture-"));
+  const file = ra.reportStores({ generated_at: "x", events: [
+    { venue: "Fixture Games", city: "Nanaimo", sid: "abc-123", store: null },
+    { venue: "Fixture Games", city: "Nanaimo", sid: "abc-123", store: null },
+    { venue: "Skyhaven Games", city: "Victoria", sid: 4294, store: "Skyhaven" }] }, dir);
+  assert.ok(file && fs.existsSync(file), "no body written");
+  const body = fs.readFileSync(file, "utf8");
+  assert.ok(/Fixture Games/.test(body) && /abc-123/.test(body) && !/Skyhaven/.test(body), body);
+  assert.strictEqual((body.match(/Fixture Games/g) || []).length, 1, "the store is listed once");
+  const dir2 = fs.mkdtempSync(path.join(os.tmpdir(), "vir-fixture-"));
+  assert.strictEqual(ra.reportStores({ generated_at: "x", events: [{ venue: "Skyhaven Games", city: "Victoria", sid: 4294, store: "Skyhaven" }] }, dir2), null);
+});
+
+check("Elite4 Games has a short name", function () {
+  const sh = typeof fe.shapeRb === "function" ? fe.shapeRb({ tournament: { id: "1", name: "Test", startsAt: "2026-11-05T02:00:00Z", config: { tournamentType: "SUMMONER_SKIRMISH" }, entryFee: null, registrantCounts: [] },
+    organizer: { id: "019fb060-927e-7709-b9cb-32c53ec8c895", name: "Elite4 Games", physicalAddress: { city: "Victoria", formattedAddress: "x" } } }, "victoria") : null;
+  assert.strictEqual(sh && sh.store, "Elite4");
+});
+
 if (failures) {
   console.log("FIXTURE FAILURES: " + failures);
   process.exit(1);

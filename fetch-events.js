@@ -14,7 +14,9 @@ const STORE_SHORT = {
   "2069": "Gauntlet",
   "29310": "Giddy-Up",
   "18437": "North Park Framing",
-  "4294": "Skyhaven"
+  "4294": "Skyhaven",
+  // a PlayRiftbound store with no old id is keyed by its PlayRiftbound organizer id (plan 2 M5)
+  "019fb060-927e-7709-b9cb-32c53ec8c895": "Elite4"
 };
 
 // PlayRiftbound stores -> the old feed's store id and display name, keyed by
@@ -453,7 +455,7 @@ function shapeRb(node, region) {
     round: null,
     wins: null,
     sid: known ? known.sid : (org.id || null),
-    store: known ? (STORE_SHORT[String(known.sid)] || null) : null
+    store: STORE_SHORT[String(known ? known.sid : org.id)] || null
   };
 }
 
@@ -611,7 +613,8 @@ async function main() {
     generated_local: localIso(new Date()),
     window_start: afterIso,
     anchors: perAnchor,
-    totals: { fetched: fetched, unique: events.length, prev_unique: prevUnique },
+    totals: { fetched: fetched, unique: events.length, prev_unique: prevUnique,
+      recent: recentCounts(prevFile && prevFile.totals && prevFile.totals.recent, events.length, new Date()) },
     unknown_templates: unknown,
     old_feed_error: oldError,
     events: events
@@ -655,4 +658,19 @@ if (require.main === module) {
   });
 }
 
-module.exports = { oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig };
+// THE 14-DAY HIGH (plan 2 M5; NEXT -- calendar follow-ups from M9, item 1): each day's highest
+// event count over the last RECENT_DAYS, kept in events.json's totals, so report-anomalies.js can
+// see a slow slide (Sept 12 to Oct 9 went 52 to 19 with no single run's drop big enough).
+const RECENT_DAYS = 14;
+function recentCounts(prev, n, now) {
+  const today = dayKey(now), cut = dayKey(new Date(now.getTime() - RECENT_DAYS * 86400000));
+  const by = {};
+  for (const r of Array.isArray(prev) ? prev : []) {
+    if (!r || typeof r.d !== "string" || typeof r.n !== "number" || r.d <= cut || r.d > today) continue;
+    by[r.d] = Math.max(by[r.d] || 0, r.n);
+  }
+  by[today] = Math.max(by[today] || 0, n);
+  return Object.keys(by).sort().map(function (d) { return { d: d, n: by[d] }; });
+}
+
+module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig };

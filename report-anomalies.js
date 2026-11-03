@@ -43,30 +43,32 @@ function reportUnknown(payload, outDir) {
   return file;
 }
 
+// Two checks: against the previous run (a sudden drop), and against the highest count of the last
+// 14 days (a slow slide, plan 2 M5: Sept 12 to Oct 9 went 52 to 19 with no single drop big enough).
+// The slide compares against a high above the floor; the current count may be below it.
 function reportDrop(payload, outDir) {
   const totals = payload.totals || {};
   const now = totals.unique;
   const prev = totals.prev_unique;
-  if (typeof now !== "number" || typeof prev !== "number") {
-    console.log("degradation check: no prior count, skipped");
+  if (typeof now !== "number") {
+    console.log("degradation check: no count, skipped");
     return null;
   }
-  if (now < DROP_FLOOR || prev < DROP_FLOOR) {
-    console.log("degradation check: below floor, skipped");
+  let sudden = null, slide = null;
+  if (typeof prev === "number" && now >= DROP_FLOOR && prev >= DROP_FLOOR && (prev - now) / prev > DROP_FRACTION) sudden = Math.round((prev - now) / prev * 100);
+  const high = (Array.isArray(totals.recent) ? totals.recent : []).reduce(function (m, r) { return r && typeof r.n === "number" && r.n > m.n ? r : m; }, { n: 0, d: "" });
+  if (high.n >= DROP_FLOOR && (high.n - now) / high.n > DROP_FRACTION) slide = Math.round((high.n - now) / high.n * 100);
+  if (sudden === null && slide === null) {
+    console.log("degradation check: " + prev + " -> " + now + " (14-day high " + high.n + "), within tolerance");
     return null;
   }
-  const drop = (prev - now) / prev;
-  if (drop <= DROP_FRACTION) {
-    console.log("degradation check: " + prev + " -> " + now + ", within tolerance");
-    return null;
-  }
-  const pct = Math.round(drop * 100);
   const lines = [];
-  lines.push("The event count dropped sharply against the previous run.");
+  lines.push(sudden !== null ? "The event count dropped sharply against the previous run." : "The event count has slid well below its 14-day high.");
   lines.push("");
-  lines.push("| previous | current | drop |");
-  lines.push("| --- | --- | --- |");
-  lines.push("| " + prev + " | " + now + " | " + pct + "% |");
+  lines.push("| against | then | current | drop |");
+  lines.push("| --- | --- | --- | --- |");
+  if (typeof prev === "number") lines.push("| previous run | " + prev + " | " + now + " | " + (sudden !== null ? sudden : Math.max(0, Math.round((prev - now) / prev * 100))) + "% |");
+  if (high.n) lines.push("| 14-day high (" + high.d + ") | " + high.n + " | " + now + " | " + Math.max(0, Math.round((high.n - now) / high.n * 100)) + "% |");
   lines.push("");
   lines.push("The calendar published anyway - this is a notice, not a");
   lines.push("failure. A drop this size is usually one of: upstream removed");
@@ -79,7 +81,41 @@ function reportDrop(payload, outDir) {
   lines.push("Feed generated at " + payload.generated_at + ".");
   const file = path.join(outDir, "anomaly-drop.md");
   fs.writeFileSync(file, lines.join("\n") + "\n", "utf8");
-  console.log("degradation check: " + prev + " -> " + now + ", " + pct + "% drop, wrote " + file);
+  console.log("degradation check: " + prev + " -> " + now + " (14-day high " + high.n + "), wrote " + file);
+  return file;
+}
+
+// A store with no short name in STORE_SHORT (fetch-events.js): its events show the full venue name,
+// which works but reads long. One body naming each such store once (plan 2 M5).
+function reportStores(payload, outDir) {
+  const seen = {}, rows = [];
+  for (const e of payload.events || []) {
+    if (!e || e.store) continue;
+    const k = String(e.sid) + "|" + e.venue;
+    if (seen[k]) continue;
+    seen[k] = 1;
+    rows.push("| " + String(e.venue || "").replace(/\|/g, "\\|") + " | " + String(e.city || "").replace(/\|/g, "\\|") + " | " + String(e.sid) + " |");
+  }
+  if (!rows.length) {
+    console.log("store names: every store has a short name");
+    return null;
+  }
+  const lines = [];
+  lines.push("The feed has events at a store with no short name.");
+  lines.push("");
+  lines.push("Its events still publish, with the full venue name on the cards.");
+  lines.push("");
+  lines.push("| venue | city | store id |");
+  lines.push("| --- | --- | --- |");
+  for (const r of rows) lines.push(r);
+  lines.push("");
+  lines.push("To fix: add each store id to STORE_SHORT in fetch-events.js with a");
+  lines.push("short name, then close this issue.");
+  lines.push("");
+  lines.push("Feed generated at " + payload.generated_at + ".");
+  const file = path.join(outDir, "anomaly-stores.md");
+  fs.writeFileSync(file, lines.join("\n") + "\n", "utf8");
+  console.log("store names: " + rows.length + " without a short name, wrote " + file);
   return file;
 }
 
@@ -88,10 +124,11 @@ function main() {
   const payload = JSON.parse(fs.readFileSync(DATA, "utf8"));
   reportUnknown(payload, outDir);
   reportDrop(payload, outDir);
+  reportStores(payload, outDir);
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { reportUnknown, reportDrop };
+module.exports = { reportUnknown, reportDrop, reportStores };
