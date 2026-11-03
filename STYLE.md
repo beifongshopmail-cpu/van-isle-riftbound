@@ -116,7 +116,7 @@ Type
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
 - Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
-- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25). Go to tile labels are 12 with letter-spacing -.08em. The wordmark is a drawing (the badge, section 5), not type, so no rung binds it.
+- Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25); 22 Poppins 800 on the Trade board offer's verdict amount (.ovd .mid .v; plan 2 M2, signed off 2026-11-02). Go to tile labels are 12 with letter-spacing -.08em. The wordmark is a drawing (the badge, section 5), not type, so no rung binds it.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
 - Size-exempt pictures carry a size-exempt comment on the line: trade card art, the counter's rune.
@@ -158,6 +158,7 @@ Colour
 - A card with no domain (colourless) uses the palette's White, 240,240,245, so White is no longer spare. (Mako's yes 2026-10-24)
 - Function before colour: no page colour where colour already means something (the counter, the players, the alarm, low spots).
 - On a page colour, grey text inside glass is #DCDEE2, not --muted.
+- A card picture's ground before it loads is #0E0F11 (the counter's .lgathumb and .lgppic; built before 2026-11-03).
 
 ## 5. The Kit (shared parts)
 
