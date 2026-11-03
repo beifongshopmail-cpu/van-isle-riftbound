@@ -1,3 +1,25 @@
+// REDUCE MOTION (App settings, Motion; plan 2 M6, Mako's yes 2026-11-03): vir.motion.v1 "less" does
+// what the phone's own Reduce Motion does, for RAVI alone. html.rm turns every transition and
+// animation off (app.css), and every script that asks for prefers-reduced-motion hears "reduce",
+// so the hub's intro, glow and rim, the sliding fills and the counter's moves stay still too.
+(function(){
+  if (typeof document === "undefined" || typeof window === "undefined") { return; }
+  var less = false;
+  try { less = localStorage.getItem("vir.motion.v1") === "less"; } catch (e) {}
+  window.RAVI_LESS = less;
+  if (!less) { return; }
+  document.documentElement.classList.add("rm");
+  var mm = window.matchMedia;
+  if (!mm) { return; }
+  function fixed(q, on){ var f = function(){}; return { matches: on, media: q, onchange: null, addListener: f, removeListener: f, addEventListener: f, removeEventListener: f, dispatchEvent: function(){ return false; } }; }
+  window.matchMedia = function(q){
+    var t = String(q);
+    if (/prefers-reduced-motion\s*:\s*reduce/.test(t)) { return fixed(t, true); }
+    if (/prefers-reduced-motion\s*:\s*no-preference/.test(t)) { return fixed(t, false); }
+    return mm.call(window, q);
+  };
+})();
+
 // THE ICONS. One drawing per name: 24 grid, 2-unit round lines, one corner size. Signed off
 // 2026-10-07 (M5); the icon pass (2026-10-15/16) redrew Game (block pommels), Trade (handshake),
 // Feedback (dots), Rules (a scroll), App settings (two gears), the bar's gear, Out, Latest (a
@@ -186,11 +208,22 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
 window.RAVI_SUPPORT_URL = "https://ko-fi.com/makosravi";
 window.RAVI_SUPPORT = function(el, rel){
   if (!el) { return; }
-  el.innerHTML = '<div class="shead"><h2>Support RAVI</h2></div>' +
-    '<div class="supwho"><img src="' + rel + 'img/mako.webp" alt="Mako" width="56" height="56"><span><b>Mako</b><small>Builds RAVI on Vancouver Island</small></span></div>' +
+  // folded by default (Mako 2026-11-03): one row, Mako's picture and the name, that opens in place
+  el.innerHTML = '<button type="button" class="suphd" id="suphd" aria-expanded="false" aria-controls="supbody" data-k="open">' +
+    '<img src="' + rel + 'img/mako.webp" alt="" width="56" height="56"><span class="supwho"><b>Support RAVI</b><small>Mako builds it on Vancouver Island</small></span>' +
+    '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>' +
+    '<div class="supbody" id="supbody" hidden>' +
     '<p class="suptx">Hello, Mako here! I play Riftbound on Vancouver Island, and I build RAVI in my spare time so the local scene has one place for events, decks, trades and more.</p>' +
     '<p class="suptx">RAVI is free, and always will be for the Island. If it helps you, a tip keeps it going. Always appreciated, never expected!</p>' +
-    '<a class="pact btn glass" href="' + window.RAVI_SUPPORT_URL + '" target="_blank" rel="noopener" data-k="do">Leave a tip on Ko-fi<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></a>';
+    '<a class="pact btn glass" href="' + window.RAVI_SUPPORT_URL + '" target="_blank" rel="noopener" data-k="do">Leave a tip on Ko-fi<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg></a></div>';
+  var hd = el.querySelector(".suphd"), body = el.querySelector(".supbody");
+  hd.addEventListener("click", function(){
+    var open = hd.getAttribute("aria-expanded") !== "true";
+    hd.setAttribute("aria-expanded", open ? "true" : "false");
+    body.hidden = !open;
+    body.classList.remove("reveal");
+    if (open) { void body.offsetWidth; body.classList.add("reveal"); }
+  });
 };
 
 // DATES AND TIMES, written one way on every page (M9.6 consistency sweep, 2026-10-16):
@@ -222,7 +255,33 @@ window.RAVI_SUPPORT = function(el, rel){
     var ms = x instanceof Date ? x.getTime() : +x;
     if (!isFinite(ms)) { return ""; }
     var p = parts(ms), now = parts(Date.now());
-    return MON[p.m - 1] + " " + p.d + (p.y !== now.y ? ", " + p.y : "") + ", " + p.h + ":" + p.mi + " " + p.ap;
+    return MON[p.m - 1] + " " + p.d + (p.y !== now.y ? ", " + p.y : "") + ", " + window.RAVI_TIME(p.h + ":" + p.mi + " " + p.ap);
+  };
+  // DATES AND PRICES (App settings, Display; plan 2 M6, Mako's yes 2026-11-03), on this phone:
+  //   vir.clock.v1 "24" writes every time 24-hour ("19:05"); none, 12-hour ("7:05 PM")
+  //   vir.week.v1  "mon" starts the calendar's weeks on Monday; none, Sunday
+  //   prices: the currency Trade, Decks, Collection and the Trade board already share, CAD or USD
+  //     (vir.trade.v1's cur, with Collection's own copy in vir.coll.set.v1); none, CAD
+  function got(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  window.RAVI_CLOCK24 = function(){ return got("vir.clock.v1") === "24"; };
+  // a clock time as text ("7:05 PM", "12:00 AM") in this phone's clock; anything else as it was
+  window.RAVI_TIME = function(t){
+    var m = /^\s*(\d{1,2}):(\d{2})\s*([AaPp])\.?\s*[Mm]\.?\s*$/.exec(String(t == null ? "" : t));
+    if (!m || !window.RAVI_CLOCK24()) { return t == null ? "" : String(t); }
+    var h = +m[1] % 12 + (/[Pp]/.test(m[3]) ? 12 : 0);
+    return (h < 10 ? "0" : "") + h + ":" + m[2];
+  };
+  window.RAVI_WEEK = function(){ return got("vir.week.v1") === "mon" ? 1 : 0; };
+  window.RAVI_CUR = function(){ try { var t = JSON.parse(got("vir.trade.v1") || "null"); if (t && (t.cur === "USD" || t.cur === "CAD")) { return t.cur; } } catch (e) {} return "CAD"; };
+  window.RAVI_SETCUR = function(c){
+    if (c !== "USD" && c !== "CAD") { return; }
+    [["vir.trade.v1", true], ["vir.coll.set.v1", false]].forEach(function(k){
+      var o = null;
+      try { o = JSON.parse(got(k[0]) || "null"); } catch (e) { o = null; }
+      if (!o || typeof o !== "object" || Array.isArray(o)) { if (!k[1]) { return; } o = {}; }
+      o.cur = c;
+      try { localStorage.setItem(k[0], JSON.stringify(o)); } catch (e) {}
+    });
   };
   // THE PRICE SOURCE LINE (M13 sweep, Mako 2026-10-25): one wording on every page that shows prices
   // (Trade, Decks, Collection), built from data/prices.json. Returns HTML; the benchmark sentence is

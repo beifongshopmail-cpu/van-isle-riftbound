@@ -954,7 +954,7 @@
       h += "<button type=\"button\" data-ev=\"" + esc(e.id) + "\"" +
         (on ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">" +
         "<span class=\"t\">" + esc(elab) + "</span><small>" +
-        esc((e.venue || "") + ", " + (e.time || "")) + "</small></button>";
+        esc((e.venue || "") + ", " + window.RAVI_TIME(e.time || "")) + "</small></button>";
     }
     h += "<button type=\"button\" data-ev=\"\"" +
       (!cur ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">No event</button>";

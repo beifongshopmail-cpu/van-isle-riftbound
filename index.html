@@ -378,6 +378,7 @@ html[data-glow="twinkle"] .sheen::before{
   96%{--t9x:723;--t9y:479;--t9a:0;animation-timing-function:step-end}
   100%{--t9x:572;--t9y:327;--t9a:0}}
 @media (prefers-reduced-motion:reduce){.sheen{display:none}}
+html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduce motion, or Hub glow and rim off (plan 2 M6) */
 
 .top{height:max(260px,42vh);display:flex;flex-direction:column;
   /* the name centres between the top clear line plus 36 and the middle
@@ -494,6 +495,7 @@ html[data-glow="twinkle"] .sheen::before{
     if (sessionStorage.getItem("ravi.glow.v1")) { var r = Math.random(); m = r < .4 ? "rings" : r < .8 ? "waves" : "twinkle"; }
     else { sessionStorage.setItem("ravi.glow.v1", "1"); }
   } catch (e) {}
+  try { if (localStorage.getItem("ravi.fx.off.v1")) { m = "off"; } } catch (e) {} // App settings: Hub glow and rim off (plan 2 M6)
   document.documentElement.setAttribute("data-glow", m);
 })();
 </script>
@@ -538,7 +540,8 @@ html[data-glow="twinkle"] .sheen::before{
   // intro is not playing or once it ends; never with reduced motion.
   function flow(){
     var b = h && h.querySelector(".rb");
-    if (b && !still) { b.classList.add("flow"); }
+    var off = false; try { off = !!localStorage.getItem("ravi.fx.off.v1"); } catch (e) {} // App settings: Hub glow and rim off (plan 2 M6)
+    if (b && !still && !off) { b.classList.add("flow"); }
   }
   // Not behind the install screen either (pages.js): it plays once the
   // visitor continues, or in the installed app.

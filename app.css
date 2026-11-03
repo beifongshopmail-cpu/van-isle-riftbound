@@ -350,16 +350,19 @@ html.lock,html.lock body{overflow:hidden}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .pact .cvr{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2} /* a row chevron in a pill keeps its row size */
 .pact .extl{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none} /* the out-arrow on a pill that leaves the app (the support plate) */
-/* THE SUPPORT PLATE (M15; pages.js RAVI_SUPPORT): App settings and Feedback. A glass card: head,
-   who (a 56 round picture, name, a muted line), two short paragraphs, the tip pill. */
-.sup{margin-top:20px;border-radius:22px;padding:14px 12px 12px}
-.sup .shead{margin:0 4px 10px}
-.sup .shead h2{font-size:17px}
-.supwho{display:flex;align-items:center;gap:12px;margin:0 4px 10px}
-.supwho img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:0 0 auto} /* size-exempt: portrait image */
-.supwho span{display:flex;flex-direction:column;gap:2px}
-.supwho b{font-family:var(--disp);font-weight:700;font-size:15px}
-.supwho small{font-size:12px;color:var(--muted)}
+/* THE SUPPORT PLATE (M15; pages.js RAVI_SUPPORT): App settings and Feedback. A glass card that
+   opens in place (Mako 2026-11-03): its row (a 56 round picture, Support RAVI, a muted line, the
+   chevron), then, open, two short paragraphs and the tip pill. */
+.sup{margin-top:20px;border-radius:22px;padding:8px}
+.suphd{display:flex;align-items:center;gap:12px;width:100%;min-height:var(--sz-row);padding:4px 8px 4px 4px;border:0;border-radius:18px;
+  background:none;color:var(--bone);text-align:left;font:inherit;-webkit-tap-highlight-color:transparent}
+.suphd:active{background:var(--glass-press)}
+.suphd img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:0 0 auto} /* size-exempt: portrait image */
+.suphd .chev{margin-left:auto;color:var(--muted)}
+.supwho{display:flex;flex-direction:column;gap:2px;min-width:0}
+.supwho b{font-family:var(--disp);font-weight:700;font-size:17px}
+.supwho small{font-family:var(--text);font-size:12px;color:var(--muted)}
+.supbody{padding:10px 4px 4px}
 .suptx{margin:0 4px 10px;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
 .sup .pact{margin-top:12px}
 .circ .chev{width:18px;height:18px;stroke-width:2.4} /* a chevron in a round button matches Back and the month arrows */
@@ -455,6 +458,8 @@ html.lock,html.lock body{overflow:hidden}
 @keyframes fln{0%{background:rgba(237,234,227,.85);color:var(--ink)}100%{}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* App settings' Reduce motion (pages.js adds html.rm): the same, for RAVI alone (plan 2 M6) */
+html.rm *,html.rm *::before,html.rm *::after{transition:none!important;animation:none!important}
 /* PAGE TO PAGE: no motion (STYLE.md, Motion). Pages switch instantly, as
    the tabs of an iPhone tab bar do, so the bar never changes between them.
    A cross-page fade was tried in M6 and dropped: the phone does not draw

@@ -32,15 +32,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   background:rgba(10,11,13,.94);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.stgrp{margin-top:14px}
-.stgrp[hidden]{display:none}
+.stlb{margin:14px 4px 6px}
+.stlb[hidden],.stgrp[hidden]{display:none}
 .stn{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .stnone{text-align:center}
 .sup{margin-top:20px}
-/* the reset slot while it waits for its second tap */
-.tab.armed{background:var(--glass-press)}
-.starm{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--bone);text-align:center;visibility:hidden}
-.starm.show{visibility:visible}
 /* the Hub blocks note when an eighth pick is refused */
 .stwarn{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone);visibility:hidden}
 .stwarn.show{visibility:visible}
@@ -73,21 +69,33 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </div>
 
-  <!-- rows like iPhone Settings, each opening its own menu (Mako's yes 2026-11-03) -->
-  <div class="doors stgrp" id="styou" data-k="deeper">
-      <button type="button" class="door" data-st="pme"><span class="t">Riot name and alerts</span><span class="sp"></span><small id="pmev"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
-      <button type="button" class="door" data-st="plocal"><span class="t">Local decks</span><span class="sp"></span><small id="plocalv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  <!-- rows like iPhone Settings, each opening its own menu (Mako's yes 2026-11-03), in groups
+       named for what they affect (his notes the same day) -->
+  <p class="lb stlb">Alerts</p>
+  <div class="doors stgrp" id="stalert" data-k="deeper">
+      <button type="button" class="door" data-st="pme"><span class="t">Live event pairings</span><span class="sp"></span><small id="pmev"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="poffer"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
-  <div class="doors stgrp" id="stapp" data-k="deeper">
-      <button type="button" class="door" data-st="phub"><span class="t">Hub blocks</span><span class="sp"></span><small id="phubv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  <p class="lb stlb">Hub</p>
+  <div class="doors stgrp" id="sthubg" data-k="deeper">
+      <button type="button" class="door" data-st="phub"><span class="t">Hub layout</span><span class="sp"></span><small id="phubv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door" data-st="popen"><span class="t">Open the app to</span><span class="sp"></span><small id="popenv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+  <p class="lb stlb">Tier list</p>
+  <div class="doors stgrp" id="sttier" data-k="deeper">
+      <button type="button" class="door" data-st="plocal"><span class="t">Share my legend</span><span class="sp"></span><small id="plocalv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+  <p class="lb stlb">Display</p>
+  <div class="doors stgrp" id="stdisp" data-k="deeper">
       <button type="button" class="door" data-st="pmotion"><span class="t">Motion</span><span class="sp"></span><small id="pmotionv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="pcur"><span class="t">Prices in</span><span class="sp"></span><small id="pcurv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="pclock"><span class="t">Clock</span><span class="sp"></span><small id="pclockv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="pweek"><span class="t">Week starts on</span><span class="sp"></span><small id="pweekv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
   <p class="stn stnone" id="stnone" hidden>No setting matches.</p>
 
   <section class="sup glass" id="support"></section>
   <script>RAVI_SUPPORT(document.getElementById("support"), "../");</script>
-  <p class="starm" id="starm" aria-live="polite">Tap reset again to put every setting back.</p>
   <footer class="foot">
     <p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p>
   </footer>
@@ -99,7 +107,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"settings"},
-  {tag:"button", icon:"reset", a:[["class", "tab"], ["id", "streset"], ["aria-label", "Reset settings"], ["data-k", "slot"]]},
+  {tag:"button", icon:"reset", a:[["class", "tab"], ["id", "streset"], ["aria-label", "Reset settings"], ["data-k", "slot"], ["data-fills", "preset"]]},
   {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]}
 ]);</script>
 
@@ -107,29 +115,45 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
+<!-- Reset opens from its slot (STYLE: an icon slot that resets opens a small menu; Mako's yes 2026-11-03) -->
+<section class="panel frost" id="preset" aria-hidden="true" aria-label="Reset settings">
+  <div class="phead"><h4 class="ttl">Reset settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><p class="pnote stresetn">Puts every setting here back as it came, except your Riot ID.</p></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" id="stresetgo" data-k="do">Reset every setting</button></div>
+</section>
 <!-- one menu per row (plan 2 M6 block 4) -->
-<section class="panel frost" id="pme" aria-hidden="true" aria-label="Riot name and alerts">
-  <div class="phead"><h4 class="ttl" id="pmet">Riot name and alerts</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pme" aria-hidden="true" aria-label="Live event pairings">
+  <div class="phead"><h4 class="ttl" id="pmet">Live event pairings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <p class="pnote stmenote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them. At a live event it finds your table, your record and your alerts.</p>
+    <p class="pnote stmenote">At a live event, tap Alert me when I'm paired, and each new pairing comes to this phone. RAVI finds you by your Riot ID.</p>
+    <p class="lb">Your Riot ID</p>
+    <p class="pnote stmenote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them.</p>
     <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
       <div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
     <button type="button" class="pact btn glass" id="stmeok" data-k="do">Save</button>
     <p class="stmsg" id="stmemsg" aria-live="polite"></p>
-    <p class="lb">Alerts</p>
+    <p class="lb">Try it</p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
   </div>
 </section>
-<section class="panel frost" id="plocal" aria-hidden="true" aria-label="Local decks">
-  <div class="phead"><h4 class="ttl" id="plocalt">Local decks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="poffer" aria-hidden="true" aria-label="Trade offers">
+  <div class="phead"><h4 class="ttl" id="poffert">Trade offers</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="pick" id="stlocal" data-k="pick"><button type="button" id="stauto" aria-pressed="true" class="on">Fill in my deck</button></div>
-    <p class="pnote">After an event you played, the legend you set on the Game page goes on the Tier list's Local view for your placing, once Riot's final standings are up. It needs your Riot name.</p>
+    <div class="pick" data-k="pick"><button type="button" id="stoffer" aria-pressed="false">Alert me<span class="sp"></span><small>When an offer comes</small></button></div>
+    <p class="pnote" id="stoffern">An alert on this phone when a player on the Trade board sends you an offer or a counter. The same switch as in Trade board settings.</p>
+    <p class="stmsg" id="stoffermsg" aria-live="polite"></p>
   </div>
 </section>
-<section class="panel frost" id="phub" aria-hidden="true" aria-label="Hub blocks">
-  <div class="phead"><h4 class="ttl" id="phubt">Hub blocks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="plocal" aria-hidden="true" aria-label="Share my legend">
+  <div class="phead"><h4 class="ttl" id="plocalt">Share my legend</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="stlocal" data-k="pick"><button type="button" id="stauto" aria-pressed="true" class="on">Share my legend</button></div>
+    <p class="pnote">After an event you played, the legend you set on the Game page goes on the Tier list's Local view with your placing, once Riot's final standings are up. Only the legend and the placing show, never your name. It needs your Riot ID.</p>
+  </div>
+</section>
+<section class="panel frost" id="phub" aria-hidden="true" aria-label="Hub layout">
+  <div class="phead"><h4 class="ttl" id="phubt">Hub layout</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="pick" id="sthub" data-k="pick"></div>
     <p class="pnote" id="sthubn">Pick up to seven pages for the hub. The hub's last block, All pages, always lists every page.</p>
@@ -139,15 +163,36 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost" id="popen" aria-hidden="true" aria-label="Open the app to">
   <div class="phead"><h4 class="ttl" id="popent">Open the app to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="pick" id="opento" data-k="pick"></div>
-    <p class="pnote">The app opens to the page you pick here. Tap Hub on any page to come back.</p>
+    <div class="goto" id="opento" data-k="pick"></div>
+    <p class="pnote">The app opens to the page you pick. Tap Hub on any page to come back.</p>
+  </div>
+</section>
+<section class="panel frost" id="pcur" aria-hidden="true" aria-label="Prices in">
+  <div class="phead"><h4 class="ttl" id="pcurt">Prices in</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="stcur" data-k="pick"><button type="button" data-v="CAD">Canadian dollars (CAD)</button><button type="button" data-v="USD">US dollars (USD)</button></div>
+    <p class="pnote">Every price in the app: Trade, Decks, Collection and the Trade board. Prices come in US dollars and turn into Canadian at the Bank of Canada's rate.</p>
+  </div>
+</section>
+<section class="panel frost" id="pclock" aria-hidden="true" aria-label="Clock">
+  <div class="phead"><h4 class="ttl" id="pclockt">Clock</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="stclock" data-k="pick"><button type="button" data-v="12">12-hour</button><button type="button" data-v="24">24-hour</button></div>
+    <p class="pnote">How every time in the app is written: 7:05 PM, or 19:05.</p>
+  </div>
+</section>
+<section class="panel frost" id="pweek" aria-hidden="true" aria-label="Week starts on">
+  <div class="phead"><h4 class="ttl" id="pweekt">Week starts on</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody">
+    <div class="pick" id="stweek" data-k="pick"><button type="button" data-v="sun">Sunday</button><button type="button" data-v="mon">Monday</button></div>
+    <p class="pnote">The first day of each week on the Events calendar.</p>
   </div>
 </section>
 <section class="panel frost" id="pmotion" aria-hidden="true" aria-label="Motion">
   <div class="phead"><h4 class="ttl" id="pmotiont">Motion</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button></div>
-    <p class="pnote">The RAVI name forming when the app opens.</p>
+    <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button><button type="button" id="stfx" aria-pressed="true" class="on">Hub glow and rim</button><button type="button" id="stless" aria-pressed="false">Reduce motion</button></div>
+    <p class="pnote" id="stmotionn">Opening animation is the RAVI name forming when the app opens. Hub glow and rim are the hub's glowing symbols and the badge's flowing edge. Reduce motion makes menus, slides and flashes instant everywhere.</p>
   </div>
 </section>
 
@@ -186,21 +231,25 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   //                     the hub's open-to check at its top reads it
   //   ravi.intro.off.v1 "1" turns the hub's launch intro off
   //   vir.tier.auto.off.v1 "1" turns off filling in your Local deck (live.js autoFill)
-  // Reset (the bar's third slot) asks for a second tap, then removes them all.
-  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1", AKEY = "vir.tier.auto.off.v1";
+  //   ravi.fx.off.v1    "1" turns the hub's glow and the badge's flowing rim off (index.html)
+  //   vir.motion.v1     "less" is Reduce motion (pages.js: html.rm, and scripts hear reduce)
+  // Reset (the bar's third slot) opens a small menu whose button removes them all.
+  var CKEY = "vir.clock.v1", WKEY = "vir.week.v1";
+  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1", AKEY = "vir.tier.auto.off.v1", FKEY = "ravi.fx.off.v1", LKEY = "vir.motion.v1";
   var PAGES = window.RAVI_PAGES || [];
-  var opento = document.getElementById("opento"), intro = document.getElementById("stintro"), auto = document.getElementById("stauto");
+  var opento = document.getElementById("opento"), intro = document.getElementById("stintro"), auto = document.getElementById("stauto"), fx = document.getElementById("stfx"), lessB = document.getElementById("stless");
   var hubg = document.getElementById("sthub"), hubn = document.getElementById("sthubn"), hubw = document.getElementById("sthubnote"), hubT = 0;
-  var reset = document.getElementById("streset"), armline = document.getElementById("starm");
+  var reset = document.getElementById("streset"), resetGo = document.getElementById("stresetgo");
   function get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
   function put(k, v){ try { if (v === null) { localStorage.removeItem(k); } else { localStorage.setItem(k, v); } } catch (e) {} }
-  function row(id, name, on){ return '<button type="button" class="' + (on ? "on" : "") + '" data-id="' + id + '">' + name + '</button>'; }
+  // Open the app to: Go to's tiles, Hub first, the chosen one filled (Mako 2026-11-03)
+  function tile(id, icon, name, on){ return '<button type="button" class="gt' + (on ? " on" : "") + '" aria-pressed="' + (on ? "true" : "false") + '" data-id="' + id + '">' + icon + '<span>' + name + '</span></button>'; }
   function render(){
-    var c = get(OKEY) || "", h = row("", "Hub", c === "");
+    var c = get(OKEY) || "", h = tile("", window.RAVI_ICON("hub"), "Hub", c === "");
     for (var i = 0; i < PAGES.length; i++) {
       var p = PAGES[i];
       if (!p.path || p.id === "settings") { continue; }
-      h += row(p.id, p.name, c === p.id);
+      h += tile(p.id, p.icon, p.name, c === p.id);
     }
     opento.innerHTML = h;
     // Hub blocks: one check row per page, App settings included, in page order
@@ -212,9 +261,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     hubg.innerHTML = g;
     hubn.textContent = picks.length + " of " + window.RAVI_HUB_MAX + " on. The hub's last block, All pages, always lists every page.";
-    var on = !get(IKEY);
-    intro.classList.toggle("on", on);
-    intro.setAttribute("aria-pressed", on ? "true" : "false");
+    var on = !get(IKEY), fxOn = !get(FKEY), less = get(LKEY) === "less", sys = window.RAVI_LESS ? false : !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    function mark(b, v){ b.classList.toggle("on", v); b.setAttribute("aria-pressed", v ? "true" : "false"); }
+    mark(intro, on); mark(fx, fxOn); mark(lessB, less || sys);
+    lessB.disabled = sys && !less; // the phone's own Reduce Motion is on: RAVI already follows it
+    document.getElementById("stmotionn").textContent = "Opening animation is the RAVI name forming when the app opens. Hub glow and rim are the hub's glowing symbols and the badge's flowing edge. " +
+      (sys && !less ? "Reduce motion is on in your phone's Settings, so RAVI's menus, slides and flashes are already instant." : "Reduce motion makes menus, slides and flashes instant everywhere.");
     var af = !get(AKEY);
     auto.classList.toggle("on", af);
     auto.setAttribute("aria-pressed", af ? "true" : "false");
@@ -223,32 +275,64 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     for (n = 0; n < PAGES.length; n++) { if (PAGES[n].id === c) { ot = PAGES[n].name; } }
     val("popen", ot);
     val("phub", picks.length + " of " + window.RAVI_HUB_MAX);
-    val("pmotion", on ? "On" : "Off");
+    val("pmotion", less || sys ? "Reduced" : on && fxOn ? "On" : !on && !fxOn ? "Off" : "Part on");
     val("plocal", af ? "On" : "Off");
+    // Dates and prices: one pick each, the chosen row checked
+    var cur = window.RAVI_CUR(), clk = get(CKEY) === "24" ? "24" : "12", wk = get(WKEY) === "mon" ? "mon" : "sun";
+    [["stcur", cur], ["stclock", clk], ["stweek", wk]].forEach(function(x){
+      document.querySelectorAll("#" + x[0] + " button").forEach(function(b){ b.classList.toggle("on", b.getAttribute("data-v") === x[1]); });
+    });
+    val("pcur", cur); val("pclock", clk === "24" ? "24-hour" : "12-hour"); val("pweek", wk === "mon" ? "Monday" : "Sunday");
     meVal();
   }
   function val(id, t){ var e = document.getElementById(id + "v"); if (e) { e.textContent = t; } }
   function meVal(){
     var A = window.RAVI_ACCT, a = A && A.signedIn() ? A.view() : null, m = window.RAVI_LIVE && window.RAVI_LIVE.me();
     var r = a ? (a.riot ? a.riot.n + "#" + a.riot.tag : "") : (m ? m.n + (m.tag ? "#" + m.tag : "") : "");
-    val("pme", r || "Not set");
+    val("pme", r || "Riot ID needed");
   }
   // SEARCH (plan 2 M6 block 4): every typed word starts a word of a row's name, its menu's
   // choices or what it is about; rows that match stay, a group with none left goes
   var WORDS = {
-    pme: "riot name tag id alerts alert notifications test live table record",
-    plocal: "local decks deck fill legend tier list placing standings game",
-    phub: "hub blocks block pages home",
+    pme: "live event events pairing pairings alerts alert notifications riot name tag id test table round",
+    poffer: "trade offers offer counter alerts alert notifications board",
+    plocal: "share my legend tier list local decks deck placing standings game",
+    phub: "hub layout blocks block grid arrange order pages home",
     popen: "open the app to start launch first page",
-    pmotion: "motion opening animation intro movement"
+    pmotion: "motion opening animation intro movement reduce glow rim hub effects",
+    pcur: "prices price currency money dollars cad usd canadian us",
+    pclock: "clock time times hour 12 24 am pm",
+    pweek: "week starts sunday monday calendar events day"
   };
   window.ST_MEVAL = meVal;
+  // TRADE OFFERS: the Trade board's Offer alerts switch, here too (account.js keeps it; saved accounts only)
+  var offer = document.getElementById("stoffer"), offerMsg = document.getElementById("stoffermsg");
+  function drawOffer(){
+    var A = window.RAVI_ACCT, on = !!(A && A.offerAlertsOn && A.offerAlertsOn()), saved = !!(A && A.signedIn() && !A.isGuest());
+    offer.setAttribute("aria-pressed", String(on)); offer.classList.toggle("on", on);
+    offer.disabled = !saved;
+    document.getElementById("stoffern").textContent = saved ? "An alert on this phone when a player on the Trade board sends you an offer or a counter. The same switch as in Trade board settings."
+      : "Save your account first: tap your picture, top right. Offers come only to a saved account.";
+    val("poffer", saved ? (on ? "On" : "Off") : "Off");
+  }
+  offer.addEventListener("click", function(){
+    var A = window.RAVI_ACCT;
+    if (!A || offer.disabled) { return; }
+    var on = A.offerAlertsOn();
+    offer.disabled = true; offerMsg.textContent = on ? "Turning off." : "Turning on.";
+    (on ? A.offerAlertStop : function(cb){ A.offerAlertStart(new URL("../alerts-sw.js", location.href).href, cb); })(function(err){
+      drawOffer();
+      offerMsg.textContent = err || (on ? "Off on this phone." : "On. An alert comes to this phone when someone sends you an offer.");
+    });
+  });
+  drawOffer();
+  if (window.RAVI_ACCT && window.RAVI_ACCT.onChange) { window.RAVI_ACCT.onChange(drawOffer); }
   if (window.RAVI_ACCT && window.RAVI_ACCT.onChange) { window.RAVI_ACCT.onChange(meVal); }
   var stq = document.getElementById("stq"), stqx = document.getElementById("stqx"), none = document.getElementById("stnone");
   function find(){
     var q = stq.value.toLowerCase().replace(/[^a-z0-9#\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
     stqx.disabled = !stq.value;
-    ["styou", "stapp"].forEach(function(g){
+    ["stalert", "sthubg", "sttier", "stdisp"].forEach(function(g){
       var grp = document.getElementById(g), left = 0;
       grp.querySelectorAll("[data-st]").forEach(function(b){
         var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);
@@ -256,6 +340,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         b.hidden = !hit; if (hit) { left++; }
       });
       grp.hidden = !left; if (left) { any = true; }
+      if (grp.previousElementSibling && grp.previousElementSibling.classList.contains("stlb")) { grp.previousElementSibling.hidden = !left; }
     });
     none.hidden = any;
   }
@@ -263,7 +348,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   stq.addEventListener("keydown", function(e){ if (e.key === "Enter") { stq.blur(); } });
   stqx.addEventListener("click", function(){ stq.value = ""; find(); stq.focus(); });
   opento.addEventListener("click", function(e){
-    var t = e.target.closest ? e.target.closest("button") : null;
+    var t = e.target.closest ? e.target.closest("button[data-id]") : null;
     if (!t) { return; }
     var id = t.getAttribute("data-id");
     put(OKEY, id ? id : null);
@@ -291,21 +376,32 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     put(IKEY, get(IKEY) ? null : "1");
     render();
   });
+  function picked(id, fn){ document.getElementById(id).addEventListener("click", function(e){ var b = e.target.closest ? e.target.closest("button[data-v]") : null; if (b) { fn(b.getAttribute("data-v")); render(); } }); }
+  picked("stcur", function(v){ window.RAVI_SETCUR(v); });
+  picked("stclock", function(v){ put(CKEY, v === "24" ? "24" : null); });
+  picked("stweek", function(v){ put(WKEY, v === "mon" ? "mon" : null); });
+  fx.addEventListener("click", function(){ put(FKEY, get(FKEY) ? null : "1"); render(); });
+  // Reduce motion is read as each page opens (pages.js), so this page follows at once by a reload of its class
+  lessB.addEventListener("click", function(){
+    var now = get(LKEY) !== "less";
+    put(LKEY, now ? "less" : null);
+    document.documentElement.classList.toggle("rm", now);
+    render();
+  });
   auto.addEventListener("click", function(){
     put(AKEY, get(AKEY) ? null : "1");
     render();
   });
-  var armed = false, armT = 0;
-  function disarm(){ armed = false; clearTimeout(armT); reset.classList.remove("armed"); armline.classList.remove("show"); }
-  reset.addEventListener("click", function(){
-    if (!armed) {
-      armed = true; reset.classList.add("armed"); armline.classList.add("show");
-      armT = setTimeout(disarm, 3000);
-      return;
-    }
-    put(OKEY, null); put(IKEY, null); put(AKEY, null); window.RAVI_HUB_SAVE(null);
-    disarm();
+  // Reset: its slot opens a small menu (#preset); the menu's button acts in one tap
+  reset.addEventListener("click", function(){ window.ST_SHOW(document.getElementById("preset").classList.contains("show") ? null : "preset"); });
+  resetGo.addEventListener("click", function(){
+    put(OKEY, null); put(IKEY, null); put(AKEY, null); put(FKEY, null); put(LKEY, null); put(CKEY, null); put(WKEY, null); window.RAVI_HUB_SAVE(null);
+    if (window.RAVI_CUR() !== "CAD") { window.RAVI_SETCUR("CAD"); }
+    document.documentElement.classList.remove("rm");
+    if (window.ST_RESET) { window.ST_RESET(); }
     render();
+    resetGo.textContent = "Done"; resetGo.disabled = true;
+    setTimeout(function(){ window.ST_SHOW(null); resetGo.textContent = "Reset every setting"; resetGo.disabled = false; }, 700);
   });
   render();
 
@@ -320,12 +416,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // signal on the first open), the two fields work as before.
   if (window.RAVI_ACCT && window.RAVI_ACCT.signedIn()) {
     document.getElementById("stmerid").hidden = true; document.getElementById("stmeok").hidden = true;
-    // the menu keeps only the test alert, so it and its row are named for that (sweep, Mako's yes 2026-10-31)
-    document.getElementById("pmet").textContent = "Live alerts";
-    document.getElementById("pme").setAttribute("aria-label", "Live alerts");
-    document.querySelector('[data-st="pme"] .t').textContent = "Live alerts";
     var acv = window.RAVI_ACCT.view();
-    document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "Your Riot ID is set on your profile. ") + "Tap your picture, top right, then Profile.";
+    document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "It is set on your profile. ") + "Tap your picture, top right, then Profile.";
   }
   function saveMe(){
     var t = metag.value.trim().replace(/^#/, ""), n = mein.value.trim();
