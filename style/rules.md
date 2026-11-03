@@ -1,0 +1,11 @@
+# RAVI style notes: Rules
+
+Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
+
+Rules (rules/index.html)
+- Reads data/rules.json (fetch-rules.js copies Riot's words; the page never rewrites them). .lede, a search field (.sf with a Clear .fbtn, dimmed while empty) in a sticky .plate with a chip row under the search (.bchips .fchip, as Decks' tags: Errata, FAQs, then each set oldest first; one of each, a chosen chip bone, again clears it; with no search they list what they choose), then Current documents (Riot's two PDFs as links with the out-arrow .extl; the two legality lists as deeper rows), Errata and FAQs and rulings (a .doors row per article, newest first, with its count).
+- An article opens #part: Riot's warning first where it has one (.rnote), its entries grouped as Riot groups them (.lb), each a .door.rec of kind open with its body (.rbody, Riot's markup in .rtx) under it, then the source line (.rsrc). Pictures stay on Riot's page (a .rpic link). Search lists matching entries the same way, grouped by kind (Errata, then FAQs and rulings, each in its section's colour), at most 40. It forgives: every typed word matches a word, its form (conquer, conquered), a word it starts, or one a letter or two off; the card's own name ranks first, then the question, then the text. Matched words are marked (mark.hit: bold and lit, never colour alone) in the names and in an opened entry. (Mako's phone yes 2026-11-03)
+- Bar: Hub, Go to, the third slot dimmed (Soon) until it has a use, Settings dimmed. NEW on an entry, a document or an article's row means changed since the last visit (vir.rules.seen.v1, the newest 'changed' day; a first visit is the baseline), as the calendar's NEW: badges stay while the page is open, leaving it records the visit. Latest retired for it (Mako 2026-10-24). The footer ends with Tell us, as Calendar and Trade.
+
+Page-local classes (not in app.css; not Kit parts):
+- rules/index.html: .bchips .empty .extl .fchip .hit .new .old .plate .rbody .rlab .rnote .rpic .rsrc .rtx .srow .wrap
