@@ -23,10 +23,11 @@
 // an event has ended. Those lists go to a second file, data/tierlists.json, and never into
 // tier.json: the top-cut lists themselves (as RAVI deck codes, with the event's date, size and the
 // placing; no name, no id, so no player's results across events), and each legend's most-played
-// cards across every list read. A list is read with Decks' own importer (decks/deck.js), so it
-// counts only when its cards are Riot's. TopDeck does not document Riftbound's list format, so
-// deckObj (sections of cards) and the plain text are both tried, and the file says how many lists
-// could not be read. The lists never fail the tier run: on trouble the last lists file stays.
+// cards across every list read (with each card's name and art, as the page loads no catalogue).
+// A list is read with Decks' own importer (decks/deck.js), so it counts only when its cards are
+// Riot's. TopDeck does not document Riftbound's list format, so deckObj (sections of cards) and the
+// plain text are both tried, and the file says how many lists could not be read. The lists never
+// fail the tier run: on trouble the last lists file stays.
 
 const fs = require("fs");
 const path = require("path");
@@ -38,7 +39,7 @@ const NOW = process.env.TIER_NOW ? new Date(process.env.TIER_NOW) : new Date();
 const DAYS = 30;
 const MIN_PLAYERS = 16;
 const LISTS_FILE = process.env.TIER_LISTS_OUT || path.join(__dirname, "data", "tierlists.json");
-const LISTS_PER_LEGEND = 15, CARDS_PER_LEGEND = 30, MIN_LISTS_FOR_CARDS = 3;
+const LISTS_PER_LEGEND = 15, CARDS_PER_LEGEND = 20, MIN_LISTS_FOR_CARDS = 3;
 const UA = "VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-isle-riftbound)";
 
 // ---- the legends RAVI knows ----
@@ -291,7 +292,12 @@ function lists(events, names, D) {
     rows.sort(function (x, y) { return y[1] - x[1] || y[2] - x[2] || (x[0] < y[0] ? -1 : 1); });
     cards[nm] = { k: b.k, c: rows.slice(0, CARDS_PER_LEGEND) };
   });
-  return { body: { lists: kept, cards: cards, read: tally }, tally: tally };
+  // each card's name and art for the Tier list, which does not load the whole catalogue
+  const named = {};
+  Object.keys(cards).forEach(function (nm) {
+    cards[nm].c.forEach(function (r) { const x = D.X.card(D.I, r[0]); named[r[0]] = [D.X.full(D.I, x), /^[0-9a-f]{40}$/.test(x.h || "") ? x.h : ""]; });
+  });
+  return { body: { lists: kept, cards: cards, names: named, read: tally }, tally: tally };
 }
 
 function writeLists(evs, names, file) {

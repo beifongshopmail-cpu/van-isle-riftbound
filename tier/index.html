@@ -99,6 +99,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .nrow b{display:block;font-family:var(--disp);font-weight:600;font-size:15px}
 .nrow small{display:block;font-size:12px;color:var(--muted)}
 .nrow .v{font-family:var(--disp);font-weight:600;font-size:15px}
+/* the legend's lists (plan 2 M4, Mako's yes 2026-11-02): a label over each group, then Top-cut lists
+   (rows that open the list in Decks), Most played cards (a small whole card, its name, how many of
+   the legend's lists run it and how many copies) and its Public decks */
+.lsh{margin:20px 2px 8px}
+.nrow.ncard{gap:12px;padding-left:12px}
+.nrow.ncard img,.nrow.ncard .tph{flex:0 0 auto;width:30px;height:42px;border-radius:3px;background:var(--track);object-fit:contain} /* size-exempt: a whole card, small */
+.nrow.ncard > span:nth-child(2){min-width:0}
+.nrow.ncard b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lmore{margin-top:10px}
 #phow .pbody p{margin:0 0 10px;font-size:15px;line-height:1.4}
 #phow .pbody p:last-child{margin-bottom:0}
 .foot a{color:var(--bone)}
@@ -174,6 +183,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p>Conversion: top cut divided by played. 1.00x is average; 2.00x makes the top cut twice as often as its play share predicts. A legend with few decks is pulled toward 1.00x, so a lucky handful cannot top the list.</p>
     <p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p>
     <p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the player's own pick when they add it, else the one most picks name. Picks from saved accounts whose past picks matched the players' own count a little more, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p>
+    <p>Top-cut lists and Most played cards: the same events' decklists, read from TopDeck.gg. A legend's menu shows its top-cut lists, best placing first, and the cards most of its lists run. A list is kept without its player's name.</p>
     <p>Legends and decks only: RAVI never ranks players.</p>
   </div>
 </section>
@@ -277,9 +287,73 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   // R: the totals behind what is drawn; COUNTS: Local before it has enough decks for tiers
   var R = null, BY = {}, COUNTS = false;
+  // THE LEGEND'S LISTS (data/tierlists.json, written by fetch-tier.js beside tier.json): its top-cut
+  // lists as deck codes with the event's size, day and the placing (never a player), and its
+  // most-played cards across every list read. Global only; loaded after the board.
+  var LISTS = undefined, LMORE = {};
+  function cleanLists(j){
+    if (!j || typeof j !== "object" || !Array.isArray(j.lists)) { return null; }
+    var by = {}, cards = {}, names = j.names && typeof j.names === "object" ? j.names : {};
+    j.lists.forEach(function(x){
+      if (!x || !KNOWN[x.l] || typeof x.c !== "string" || !/^[A-Z2-7]{8,600}$/.test(x.c) || !whole(x.n, 2, 4096) || !whole(x.r, 1, x.n) || !/^\d{4}-\d\d-\d\d$/.test(x.d || "")) { return; }
+      (by[x.l] = by[x.l] || []).push({ c: x.c, n: x.n, r: x.r, d: x.d });
+    });
+    Object.keys(j.cards || {}).forEach(function(l){
+      var v = j.cards[l];
+      if (!KNOWN[l] || !v || !whole(v.k, 1, 100000) || !Array.isArray(v.c)) { return; }
+      var rows = v.c.filter(function(r){
+        var nm = names[r && r[0]];
+        return Array.isArray(r) && r.length === 3 && whole(r[1], 1, v.k) && whole(r[2], 10, 990) && Array.isArray(nm) && typeof nm[0] === "string" && nm[0];
+      }).map(function(r){ var nm = names[r[0]]; return { n: nm[0].slice(0, 80), h: /^[0-9a-f]{40}$/.test(nm[1] || "") ? nm[1] : "", in: r[1], x: r[2] / 10 }; });
+      if (rows.length) { cards[l] = { k: v.k, c: rows }; }
+    });
+    return { by: by, cards: cards };
+  }
+  function shortDay(d){ try { return new Date(d + "T12:00:00Z").toLocaleDateString("en-CA", { month: "short", day: "numeric", timeZone: "UTC" }); } catch (e) { return d; } }
+  var IC_CVR = "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg>";
+  function listsHTML(name){
+    if (COUNTS || SCOPE !== "global") { return ""; }
+    if (LISTS === undefined) { return "<p class=\"lb lsh\">Top-cut lists</p><p class=\"pmsg\">Loading the lists.</p>"; }
+    if (!LISTS) { return ""; }
+    var champ = nameParts(name)[0], h = "", tops = LISTS.by[name] || [], cards = LISTS.cards[name], more = LMORE[name] || {};
+    if (tops.length) {
+      var shown = more.l ? tops : tops.slice(0, 5);
+      h += "<p class=\"lb lsh\">Top-cut lists</p><div class=\"doors\" data-k=\"do\">" + shown.map(function(x){
+        var lab = ordinal(x.r) + " of " + num(x.n), when = shortDay(x.d);
+        return "<a class=\"door rec\" href=\"../decks/?tl=" + x.c + "&amp;tn=" + encodeURIComponent(lab + " on " + when) + "\"><span class=\"t\">" + esc(lab) + "</span><small>" + esc(when + " \u00b7 opens in Decks") + "</small>" + IC_CVR + "</a>";
+      }).join("") + "</div>";
+      if (tops.length > shown.length) { h += "<button type=\"button\" class=\"pact btn glass lmore\" data-more=\"l\" data-k=\"do\">All " + tops.length + " lists</button>"; }
+    }
+    if (cards) {
+      var cs = more.c ? cards.c : cards.c.slice(0, 8);
+      h += "<p class=\"lb lsh\">Most played cards</p><div class=\"nrows\">" + cs.map(function(x){
+        var cp = x.x.toFixed(1).replace(/\.0$/, "");
+        return "<div class=\"nrow ncard\">" + card(x.h ? "../cards/art/" + x.h + ".t.webp" : "") + "<span><b>" + esc(x.n) + "</b><small>" + esc("In " + x.in + " of " + plural(cards.k, "list", "lists") + ", " + cp + (cp === "1" ? " copy" : " copies")) + "</small></span><span class=\"sp\"></span><span class=\"v\">" + Math.round(x.in * 100 / cards.k) + "%</span></div>";
+      }).join("") + "</div>";
+      if (cards.c.length > cs.length) { h += "<button type=\"button\" class=\"pact btn glass lmore\" data-more=\"c\" data-k=\"do\">All " + cards.c.length + " cards</button>"; }
+    }
+    h += "<p class=\"lb lsh\">Public decks</p><div class=\"doors\" data-k=\"do\"><a class=\"door rec\" href=\"../decks/?publ=" + encodeURIComponent(name) + "\"><span class=\"t\">" + esc("Most copied " + champ + " decks") + "</span><small>Shared by RAVI players \u00b7 opens in Decks</small>" + IC_CVR + "</a></div>";
+    if (tops.length || cards) { h += "<p class=\"tnote\">Lists and cards from TopDeck.gg events in the last 30 days; players' names are never kept.</p>"; }
+    return h;
+  }
+  $("plegb").addEventListener("click", function(ev){
+    var b = ev.target.closest ? ev.target.closest("[data-more]") : null;
+    if (!b || !LEGNOW) { return; }
+    var m = LMORE[LEGNOW] || (LMORE[LEGNOW] = {});
+    m[b.getAttribute("data-more")] = true;
+    var keep = $("plegb").scrollTop;
+    drawLegend(LEGNOW);
+    $("plegb").scrollTop = keep;
+  });
+  var LEGNOW = "";
   function openLegend(name, deep){
+    if (!drawLegend(name)) { return; }
+    // from a tier's menu it is one deeper: a back arrow and no X
+    if (deep) { deeper(pleg); } else { openPanel(pleg); }
+  }
+  function drawLegend(name){
     var x = BY[name];
-    if (!x || !R) { return; }
+    if (!x || !R) { return false; }
     var p = nameParts(x.l);
     $("plegt").textContent = p[0];
     var top = "<div class=\"lgtop\">" + card(artOf(KNOWN[x.l], true)) + "<div class=\"lgtx\"><p class=\"full\">" + esc(p[1]) + "</p>";
@@ -295,10 +369,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         "<div class=\"nrow\"><span><b>Played</b><small>" + esc(num(x.f) + " of " + num(R.entries) + " decks") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.fs) + "</span></div>" +
         "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc(num(x.t) + " of " + num(R.tops) + " top-cut spots") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.ts) + "</span></div>" +
         "<div class=\"nrow\"><span><b>Conversion</b><small>Top cut over played; 1.00x is average</small></span><span class=\"sp\"></span><span class=\"v\">" + x.cv.toFixed(2) + "x</span></div>" +
-        "</div><p class=\"tnote\">" + esc(R.foot) + "</p>";
+        "</div><p class=\"tnote\">" + esc(R.foot) + "</p>" + listsHTML(x.l);
     }
-    // from a tier's menu it is one deeper: a back arrow and no X
-    if (deep) { deeper(pleg); } else { openPanel(pleg); }
+    LEGNOW = name;
+    return true;
   }
 
   // the view switch was removed (Mako 2026-10-29); clear what it kept on this phone
@@ -735,7 +809,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (res.status === 404) { return { v: 1, legends: [], events: [] }; } // not written yet: no results
     if (!res.ok) { throw new Error("http " + res.status); }
     return res.json();
-  }).then(function(d){ GLOBAL = clean(d); if (SCOPE === "global") { drawGlobal(); } }).catch(function(){ GLOBAL = null; if (SCOPE === "global") { drawGlobal(); } });
+  }).then(function(d){ GLOBAL = clean(d); if (SCOPE === "global") { drawGlobal(); } }).catch(function(){ GLOBAL = null; if (SCOPE === "global") { drawGlobal(); } }).then(function(){
+    return getJson("../data/tierlists.json").then(function(j){
+      LISTS = cleanLists(j);
+      if (OPENP === pleg && LEGNOW) { var keep = $("plegb").scrollTop; drawLegend(LEGNOW); $("plegb").scrollTop = keep; }
+    });
+  });
   setScope(SCOPE, false);
 })();
 </script>
