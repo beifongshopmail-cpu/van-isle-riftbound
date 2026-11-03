@@ -1004,7 +1004,7 @@ a{color:inherit;text-decoration:none}
      island.ics, victoria.ics, upisland.ics, store/<id>.ics. RAVI cannot see
      the phone's calendar, so a bell only means "tapped on this phone"
      (FOLKEY); the note behind (i) says so. */
-  var FOLKEY = "vir.follow.v1", FOPEN = null;
+  var FOLKEY = "vir.follow.v1", FOPEN = null, FNAME = {}, FREG = {}, FARM = null, FARMT = null;
   function folSet(){ var o; try{ o = JSON.parse(localStorage.getItem(FOLKEY) || "{}"); }catch(e){ o = {}; } return o && typeof o === "object" ? o : {}; }
   function storeFile(e){ return String((e.sid !== null && e.sid !== undefined) ? e.sid : (e.venue + "-" + e.city)).replace(/[^A-Za-z0-9_-]/g, "") + ".ics"; }
   function nEv(n){ return n + (n === 1 ? " event" : " events"); }
@@ -1019,6 +1019,10 @@ a{color:inherit;text-decoration:none}
       if (!st[e.region][k]) st[e.region][k] = {venue:e.venue || "", n:0};
       st[e.region][k].n++;
     }
+    // every feed's name and area, shown or not, so a tap can say which feed already has its events
+    FNAME = {"island.ics": "Whole Island", "victoria.ics": "Greater Victoria", "upisland.ics": "Up Island"};
+    FREG = {"island.ics": "all", "victoria.ics": "victoria", "upisland.ics": "island"};
+    ["victoria", "island"].forEach(function(r){ Object.keys(st[r]).forEach(function(k){ FNAME["store/" + k] = st[r][k].venue; FREG["store/" + k] = r; }); });
     function row(box, file, title, count, sub){
       var a = document.createElement("a");
       a.href = base + file; a.setAttribute("data-file", file);
@@ -1557,6 +1561,29 @@ a{color:inherit;text-decoration:none}
     psinfo.setAttribute("aria-expanded", on ? "true" : "false");
     if (on){ f.classList.remove("reveal"); void f.offsetWidth; f.classList.add("reveal"); }
   });
+  /* FOLLOW ASKS FIRST (plan 2 M5, Mako's yes 2026-11-02; NEXT -- Follow: warn before a calendar
+     would show an event twice). The phone's calendar keeps every feed separately and shows a
+     shared event once per feed. RAVI only knows what was tapped here, so a row whose events are
+     already in a feed added on this phone reads 'Already in <feed>' (or 'Added before on this
+     phone' for the row itself) with 'Tap again', and only the second tap goes to the calendar
+     app. The ask lapses after 4 s, as the Game page's arm-and-confirm. */
+  function folOverlap(file, marks){
+    if (marks[file]) return file;
+    var r = FREG[file], ks = Object.keys(marks), i, m, mr;
+    for (i = 0; i < ks.length; i++){
+      m = ks[i]; mr = FREG[m];
+      if (!mr) continue;
+      if (r === "all" || mr === "all") return m;
+      if (r === mr && (/^store\//.test(file) !== /^store\//.test(m))) return m;
+    }
+    return null;
+  }
+  function folDisarm(){
+    clearTimeout(FARMT); FARMT = null;
+    if (!FARM) return;
+    var a = FARM; FARM = null;
+    if (a.__was){ a.querySelector(".t").textContent = a.__was[0]; a.querySelector("small").textContent = a.__was[1]; a.classList.remove("armed"); }
+  }
   psub.addEventListener("click", function(e){
     var h = e.target.closest ? e.target.closest(".fhead") : null;
     if (h){
@@ -1568,7 +1595,19 @@ a{color:inherit;text-decoration:none}
     }
     var a = e.target.closest ? e.target.closest("a[data-file]") : null;
     if (a){
-      var m = folSet(); m[a.getAttribute("data-file")] = 1;
+      var file = a.getAttribute("data-file"), m = folSet(), over = FARM === a ? null : folOverlap(file, m);
+      if (FARM && FARM !== a) folDisarm();
+      if (over){
+        e.preventDefault();
+        a.__was = [a.querySelector(".t").textContent, a.querySelector("small").textContent];
+        a.querySelector(".t").textContent = over === file ? "Added before on this phone" : "Already in " + (FNAME[over] || "a feed you added");
+        a.querySelector("small").textContent = "Tap again";
+        a.classList.add("armed");
+        FARM = a; FARMT = setTimeout(folDisarm, 4000);
+        return;
+      }
+      folDisarm();
+      m[file] = 1;
       try{ localStorage.setItem(FOLKEY, JSON.stringify(m)); }catch(err){}
       a.classList.add("fon");
     }

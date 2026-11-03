@@ -22,7 +22,7 @@
    the round-2 mockup, "RAVI counter and feedback mockup". */
 html{background:var(--ground)}
 /* LINKS TAKE THE COLOUR OF WHAT HOLDS THEM. app.css does not set this, and
-   without it the bar's Hub and open-the-form icons drew in link purple. */
+   without it the bar's Hub icon drew in link purple. */
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;
   /* THIS DOES NOT STOP DOUBLE-TAP ZOOM. The touchend guard at the end of
@@ -32,10 +32,10 @@ body{-webkit-font-smoothing:antialiased;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 /* the form sits in a glass card. Tally draws its own fields and colours;
    those are set in Tally, not here. */
-/* the form opens in place inside its group (kind open): the row, then the form under it */
+/* ONE WAY TO THE FORM (plan 2 M5, Mako's yes 2026-11-02): the form shows on arrival in its
+   group; no Send feedback fold row, and the bar no longer links out to Tally's own page */
 .fgrp{margin:20px 0 12px}
-.fgrp > .door:has(+ .fbody[hidden]){background-image:none}   /* no divider under the row while the form is folded */
-.fbody{padding:0 8px 8px;min-height:200px}
+.fbody{padding:8px 8px 8px;min-height:200px}
 .fbody iframe{display:block;width:100%;border:0;background:transparent}
 /* the store-neutral line: muted small print directly under the form */
 .fbn{margin:0 4px 30px;font-size:13px;line-height:1.5;color:var(--muted)}
@@ -55,8 +55,7 @@ body{-webkit-font-smoothing:antialiased;
   <p class="lede">If something is broken, an event is wrong or missing, or you want the app to do something it does not do yet, this is where to say so.</p>
 
 <div class="doors fgrp">
-  <button type="button" class="door btn glass" id="fopen" aria-expanded="false" aria-controls="fform" data-k="open"><span class="t">Send feedback</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
-  <div class="fbody" id="fform" hidden>
+  <div class="fbody" id="fform">
     <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
   </div>
   </div>
@@ -90,7 +89,7 @@ body{-webkit-font-smoothing:antialiased;
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"feedback"},
-  {tag:"a", icon:"out", a:[["class", "tab"], ["href", "https://tally.so/r/QKlGxX"], ["aria-label", "Open the form on its own page"], ["data-k", "slot"]]},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 
@@ -111,19 +110,6 @@ body{-webkit-font-smoothing:antialiased;
     pnav.setAttribute("aria-hidden", on ? "false" : "true");
   }
   document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
-  // The form opens in place under its row (kind open); the chevron points at what a tap will do.
-  var fo = document.getElementById("fopen"), ff = document.getElementById("fform");
-  fo.addEventListener("click", function(){
-    var on = fo.getAttribute("aria-expanded") !== "true";
-    fo.setAttribute("aria-expanded", on ? "true" : "false");
-    ff.hidden = !on;
-    // CONTENT A TAP OPENS eases in (app.css, .reveal), restarted per tap (motion sweep, 2026-10-16).
-    if (on) { ff.classList.remove("reveal"); void ff.offsetWidth; ff.classList.add("reveal"); }
-    // The form measured itself while folded away; loading it again once it shows lets it
-    // take its full height.
-    var f = ff.querySelector("iframe");
-    if (on && f && f.dataset.tallySrc && !f.dataset.shown) { f.dataset.shown = "1"; f.src = f.dataset.tallySrc; }
-  });
   window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
   document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
   scrim.addEventListener("click", function(){ set(false); });
