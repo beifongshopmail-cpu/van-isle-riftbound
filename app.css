@@ -571,6 +571,16 @@ html.gate body > :not(#ravigate){display:none!important}
 .accode{margin:6px 0 0;text-align:center;font-family:var(--disp);font-weight:700;font-size:20px;line-height:1.4;letter-spacing:.04em;-webkit-user-select:text;user-select:text}
 .accode span{display:block}
 .acmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
+/* LINKING A PHONE (plan 2 M6 block 3): the new phone's code and QR; the signed-in phone's camera.
+   The QR is drawn dark on white, with its own quiet zone, so a reader finds it in any theme. */
+.aclkcode{margin-top:4px;min-height:28px;letter-spacing:.16em}
+.aclkqr{width:176px;height:176px;margin:12px auto 0;border-radius:12px;overflow:hidden;background:var(--recess)}
+.aclkqr.on{background:#FFF}
+.aclkqr svg{display:block;width:100%;height:100%}
+.aclkcode.gone,.aclkqr.gone{opacity:.4}
+.panel.acct .aclknote{text-align:center}
+.aclkcam{margin:12px auto 0;width:100%;max-width:240px;aspect-ratio:1;border-radius:22px;overflow:hidden;background:var(--recess)}
+.aclkcam video{display:block;width:100%;height:100%;object-fit:cover}
 .acmsg:empty{display:none}
 .panel.acct .door.armed{background-color:var(--glass-press)}
 /* the Picture menu's circle you drag and pinch to place the picture (Mako 2026-10-31) */

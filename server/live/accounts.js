@@ -36,6 +36,18 @@
 // (one object per account was the first plan; one object needs no calls
 // between objects on the free plan, and can be split later).
 //
+// LINKING A PHONE (plan 2 M6 block 3, Mako's yes 2026-11-03): the new phone
+// asks for a link (POST /link/start) and shows a six-letter code and its QR;
+// a phone signed in to a saved account types or scans it inside RAVI
+// (/link/find shows the new phone's device name), approves it (/link/ok),
+// and the new phone, asking every few seconds (/link/wait, with a secret
+// only it holds), is signed in, its guest moving in as at a passkey sign-in.
+// Approving on the signed-in phone, never opening a link on the new one: a
+// link scanned with the iPhone camera opens Safari, whose storage is not the
+// installed app's. Kept per link, for LINK.ms at most: the code, a stamp of
+// the secret, the device name, when it was asked, and the account once
+// approved. The recovery code stays, as the last resort.
+//
 // DISPUTES: a player whose Riot ID another account holds can say it is
 // theirs. Mako (an account listed in the Worker variable ADMIN) sees each
 // dispute in his account menu and gives the ID to the player who asked, or
@@ -72,6 +84,8 @@ export const ORIGINS = ["https://ravi.tools"];
 export const CHALLENGE_MS = 5 * 60000;
 export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
+// a link code lasts ms; its letters (no I L O, no digits); a phone approves or reads one code at a time
+export const LINK = { ms: 10 * 60000, len: 6, abc: "ABCDEFGHJKMNPQRSTUVWXYZ" };
 export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1", "vir.board.v1"]; // vir.board.v1: what you share on the Trade board (plan 2 M2)
 // an item's text at most, an account's whole text, its items, items per call, items per answer, calls a day, days a delete is kept
 export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page: 300, day: 5000, keepGone: 120,
@@ -79,7 +93,7 @@ export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page:
 // per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
 // sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
 // can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100, decks: 3000, deck: 3000, copy: 600 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3); decks, deck, copy: the Public view, one deck, copies (plan 2 M3) // per connection per day (guest: a store's wifi)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100, decks: 3000, deck: 3000, copy: 600, linkstart: 60, linkwait: 4000, linkfind: 30 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3); decks, deck, copy: the Public view, one deck, copies (plan 2 M3) // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -306,6 +320,21 @@ export function cleanCode(v) {
   const s = typeof v === "string" ? v.toUpperCase().replace(/[\s-]/g, "").replace(/O/g, "0").replace(/[IL]/g, "1") : "";
   return /^[2-9A-HJKMNP-Z]{20}$/.test(s) ? s : null;
 }
+// ---- link codes: six letters, about 27 bits, good for LINK.ms and one use ----
+export function newLinkCode() {
+  const b = rand(LINK.len);
+  let s = "";
+  for (let i = 0; i < LINK.len; i++) s += LINK.abc[b[i] % LINK.abc.length];
+  return s;
+}
+// typed any case, with spaces or a dash, or read from the QR's link (?link=CODE)
+export function cleanLinkCode(v) {
+  let s = typeof v === "string" ? v.slice(0, 200) : "";
+  const m = /[?&#]link=([A-Za-z -]+)/.exec(s);
+  if (m) s = m[1];
+  s = s.toUpperCase().replace(/[\s-]/g, "");
+  return new RegExp("^[" + LINK.abc + "]{" + LINK.len + "}$").test(s) ? s : null;
+}
 
 // ---- the profile ----
 function cleanText(v, max) {
@@ -366,6 +395,7 @@ function sqlStore(sql) {
   sql.exec("CREATE INDEX IF NOT EXISTS sess_acct ON sess (acct)");
   sql.exec("CREATE TABLE IF NOT EXISTS chal (c TEXT PRIMARY KEY, kind TEXT, acct TEXT, uh TEXT, exp INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS lim (key TEXT PRIMARY KEY, day TEXT, c INTEGER)");
+  sql.exec("CREATE TABLE IF NOT EXISTS link (code TEXT PRIMARY KEY, sec TEXT, dev TEXT, made INTEGER, exp INTEGER, acct TEXT)"); // plan 2 M6: a phone asking to be linked
   sql.exec("CREATE TABLE IF NOT EXISTS prof (acct TEXT PRIMARY KEY, name TEXT, user TEXT UNIQUE, about TEXT, pk TEXT, ph TEXT, pv INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS photo (acct TEXT PRIMARY KEY, img BLOB)");
   try { sql.exec("ALTER TABLE prof ADD COLUMN area TEXT"); } catch (e) { /* already there */ }
@@ -466,6 +496,9 @@ function sqlStore(sql) {
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
+    link: (code) => one("SELECT code, sec, dev, made, exp, acct FROM link WHERE code = ?", code),
+    putLink: (x) => sql.exec("INSERT OR REPLACE INTO link VALUES (?, ?, ?, ?, ?, ?)", x.code, x.sec, x.dev, x.made, x.exp, x.acct || null),
+    delLink: (code) => sql.exec("DELETE FROM link WHERE code = ?", code),
     prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area, pcrop FROM prof WHERE acct = ?", acct),
     profByUser: (u) => one("SELECT acct FROM prof WHERE user = ?", u),
     putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area, pcrop) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null, x.pcrop || null),
@@ -500,6 +533,7 @@ function sqlStore(sql) {
       sql.exec("DELETE FROM cred WHERE acct = ?", id);
       sql.exec("DELETE FROM sess WHERE acct = ?", id);
       sql.exec("DELETE FROM chal WHERE acct = ?", id);
+      sql.exec("DELETE FROM link WHERE acct = ?", id);
       sql.exec("DELETE FROM acct WHERE id = ?", id);
     },
     goingOf: (acct) => sql.exec("SELECT ev, t FROM going WHERE acct = ? ORDER BY t", acct).toArray().map((x) => ({ ev: x.ev, t: x.t })),
@@ -512,13 +546,14 @@ function sqlStore(sql) {
     use: (key, day, c) => sql.exec("INSERT OR REPLACE INTO lim VALUES (?, ?, ?)", key, day, c),
     prune: (now, sessCut, day) => {
       sql.exec("DELETE FROM chal WHERE exp < ?", now);
+      sql.exec("DELETE FROM link WHERE exp < ?", now);
       sql.exec("DELETE FROM sess WHERE last < ?", sessCut);
       sql.exec("DELETE FROM lim WHERE day <> ?", day);
     }
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map(), pdeck: new Map(), pcopy: new Map(), going: new Map(), opush: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map(), pdeck: new Map(), pcopy: new Map(), going: new Map(), opush: new Map(), link: new Map() };
   const rk = (by, who) => by + "\n" + who;
   const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
@@ -589,6 +624,9 @@ export function memStore() {
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
     putChal: (x) => T.chal.set(x.c, copy(x)),
+    link: (code) => copy(T.link.get(code)),
+    putLink: (x) => T.link.set(x.code, copy(Object.assign({ acct: null }, x))),
+    delLink: (code) => T.link.delete(code),
     prof: (acct) => copy(T.prof.get(acct)),
     profByUser: (u) => { let f = null; T.prof.forEach((x) => { if (x.user === u) f = { acct: x.acct }; }); return f; },
     putProf: (x) => {
@@ -624,6 +662,7 @@ export function memStore() {
       T.opush.forEach((y, k) => { if (y.acct === id) T.opush.delete(k); });
       ["cred", "sess"].forEach((t) => T[t].forEach((v, k) => { if (v.acct === id) T[t].delete(k); }));
       T.chal.forEach((v, k) => { if (v.acct === id) T.chal.delete(k); });
+      T.link.forEach((v, k) => { if (v.acct === id) T.link.delete(k); });
       T.acct.delete(id);
     },
     goingOf: (acct) => Array.from(T.going.values()).filter((x) => x.acct === acct).sort((a, b) => a.t - b.t).map((x) => ({ ev: x.ev, t: x.t })),
@@ -636,6 +675,7 @@ export function memStore() {
     use: (key, day, c) => T.lim.set(key, { day: day, c: c }),
     prune: (now, sessCut, day) => {
       T.chal.forEach((v, k) => { if (v.exp < now) T.chal.delete(k); });
+      T.link.forEach((v, k) => { if (v.exp < now) T.link.delete(k); });
       T.sess.forEach((v, k) => { if (v.last < sessCut) T.sess.delete(k); });
       T.lim.forEach((v, k) => { if (v.day !== day) T.lim.delete(k); });
     }
@@ -1229,6 +1269,29 @@ export function makeAccounts() {
         return reply({ token: await this.session(a.id, body.dev), recovery: code, account: this.view(a) });
       }
 
+      // LINKING A PHONE: the new phone's side (it may have no account yet)
+      if (p === "/link/start") {
+        if (!(await this.spend("linkstart", ip))) return reply({ error: "too many link codes from this connection today; try again tomorrow" }, 429);
+        let code = newLinkCode();
+        for (let i = 0; i < 5 && this.db.link(code); i++) code = newLinkCode();
+        if (this.db.link(code)) return reply({ error: "RAVI's server is busy; try again" }, 503);
+        const sec = b64u(rand(32));
+        this.db.putLink({ code: code, sec: await sha(sec), dev: cleanDev(body.dev), made: now, exp: now + LINK.ms, acct: null });
+        return reply({ code: code, sec: sec, ttl: LINK.ms });
+      }
+      if (p === "/link/wait") {
+        if (!(await this.spend("linkwait", ip))) return reply({ error: "this phone has asked too often today; try again tomorrow" }, 429);
+        const c = cleanLinkCode(body.code), L = c ? this.db.link(c) : null;
+        if (!L || typeof body.sec !== "string" || body.sec.length > 100 || !same(new TextEncoder().encode(L.sec), new TextEncoder().encode(await sha(body.sec)))) return reply({ error: "this code has run out; get a new one" }, 410);
+        if (L.exp < now) { this.db.delLink(c); return reply({ error: "this code has run out; get a new one" }, 410); }
+        if (!L.acct) return reply({ wait: true, ttl: L.exp - now });
+        this.db.delLink(c); // one use
+        const a = this.db.acct(L.acct);
+        if (!a || a.guest) return reply({ error: "that account is gone; get a new code" }, 410);
+        this.into(me, a);
+        return reply({ token: await this.session(a.id, L.dev), account: this.view(a) });
+      }
+
       if (!me) return reply({ error: "signed out" }, 401);
       if (p === "/code") {
         if (me.acct.guest) return reply({ error: "save your account first: it adds a passkey and a recovery code" }, 409);
@@ -1236,6 +1299,19 @@ export function makeAccounts() {
         me.acct.code = await sha(cleanCode(code));
         this.db.putAcct(me.acct);
         return reply({ recovery: code, account: this.view(me.acct) });
+      }
+      // LINKING A PHONE: the signed-in phone's side, a saved account only (a guest is this phone's alone)
+      if (p === "/link/find" || p === "/link/ok") {
+        if (me.acct.guest) return reply({ error: "save your account first, then link another phone to it" }, 409);
+        if (!(await this.spend("linkfind", ip))) return reply({ error: "too many codes tried from this connection today; try again tomorrow" }, 429);
+        const c = cleanLinkCode(body.code), L = c ? this.db.link(c) : null;
+        if (!c) return reply({ error: "a link code is six letters" }, 400);
+        if (!L || L.exp < now) return reply({ error: "no phone is showing that code; check it, or get a new one on the new phone" }, 404);
+        if (L.acct && L.acct !== me.acct.id) return reply({ error: "no phone is showing that code; check it, or get a new one on the new phone" }, 404);
+        if (p === "/link/find") return reply({ dev: L.dev || "Computer", made: L.made, done: !!L.acct });
+        L.acct = me.acct.id;
+        this.db.putLink(L);
+        return reply({ dev: L.dev || "Computer", done: true });
       }
       if (p === "/profile") {
         if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);

@@ -197,6 +197,16 @@
       cb(null, j);
     });
   }
+  // LINKING A PHONE (plan 2 M6 block 3): the new phone asks and shows a code; a signed-in phone approves it
+  function linkStart(cb) { call("POST", "/link/start", { dev: devName() }, cb); }
+  function linkWait(code, sec, cb) {
+    call("POST", "/link/wait", { code: code, sec: sec }, function (err, j, st) {
+      if (!err && j && j.token) { keep(j.token, j.account); changed(); }
+      cb(err, j, st);
+    });
+  }
+  function linkFind(code, cb) { call("POST", "/link/find", { code: String(code || "").slice(0, 200) }, cb); }
+  function linkOk(code, cb) { call("POST", "/link/ok", { code: String(code || "").slice(0, 200) }, cb); }
   function me(cb) { if (!signedIn()) return cb("Signed out."); call("GET", "/me", null, function (err, j, st) { if (!err && j) setView(j); cb(err, j, st); }); }
   function saveProfile(o, cb) { call("POST", "/profile", { name: o.name, user: o.user, about: o.about }, cb); }
   function setPic(o, cb) { call("POST", "/pic", o, cb); }
@@ -319,6 +329,7 @@
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
     keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall, decks: decks, deckGet: deckGet, deckCopy: deckCopy, handle: handle,
     going: going, goingSet: goingSet, offerAlertsOn: offerAlertsOn, offerAlertStart: offerAlertStart, offerAlertStop: offerAlertStop,
+    linkStart: linkStart, linkWait: linkWait, linkFind: linkFind, linkOk: linkOk,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
     claimRiot: claimRiot, releaseRiot: releaseRiot, disputeRiot: disputeRiot, setArea: setArea, disputes: disputes, decide: decide };
@@ -415,8 +426,21 @@
         '<p class="acmsg" id="acdevmsg" aria-live="polite"></p></div>',
       acin: headTitle("Sign in") + '<div class="pbody"><div class="doors">' +
         '<button type="button" class="door act" id="acsign" data-k="do"><span class="t">Use a passkey</span></button>' +
-        '<button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Use a recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
+        '<button type="button" class="door" data-acgo="aclink" data-k="deeper"><span class="t">Use another phone</span><span class="sp"></span>' + CV + '</button></div>' +
+        // the recovery code is the last resort (plan 2 M6 block 3)
+        '<p class="lb">Lost all your devices?</p><div class="doors"><button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Use a recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="pnote" id="acinnote"></p><p class="acmsg" id="acinmsg" aria-live="polite"></p></div>',
+      // LINKING A PHONE (plan 2 M6 block 3): this phone shows a code and its QR; a signed-in phone approves it
+      aclink: headTitle("Use another phone") + '<div class="pbody"><p class="accode aclkcode" id="aclinkcode" aria-label="Link code"></p>' +
+        '<div class="aclkqr" id="aclinkqr"></div>' +
+        '<p class="pnote aclknote">On your signed-in phone, tap your picture, then Link a new device.</p>' +
+        '<p class="acmsg aclknote" id="aclinkmsg" aria-live="polite"></p></div>' +
+        '<div class="pfoot"><button type="button" class="pact btn glass" id="aclinknew" data-k="do" disabled>New code</button></div>',
+      acok: headTitle("Link a new device") + '<div class="pbody"><div class="nf tall"><input type="text" id="acokin" maxlength="12" placeholder="Code on the new phone" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Link code" data-k="type">' +
+        '<button type="button" class="fbtn glass" id="acokscan" data-k="do">Scan</button></div>' +
+        '<div class="aclkcam" id="acokcam" hidden><video id="acokvid" playsinline muted autoplay></video></div>' +
+        '<p class="pnote" id="acokwho"></p><p class="acmsg" id="acokmsg" aria-live="polite"></p></div>' +
+        '<div class="pfoot"><button type="button" class="pact btn glass" id="acokgo" data-k="do" disabled>Link</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Trade board shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
@@ -430,7 +454,7 @@
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", aclink: "Use another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -471,6 +495,7 @@
       var n = a && a.keys ? a.keys.length : 0;
       b.innerHTML = '<div class="doors" data-k="deeper">' +
         '<button type="button" class="door" data-acgo="acprof"><span class="t">Profile</span><span class="sp"></span>' + CV + '</button>' +
+        '<button type="button" class="door" data-acgo="acok"><span class="t">Link a new device</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="ackeys"><span class="t">Passkeys</span><span class="sp"></span>' + (n ? '<small>' + n + '</small>' : '') + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acdev"><span class="t">Signed-in devices</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="accode"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button>' +
@@ -535,6 +560,7 @@
     if (A.signedIn()) refresh(true); else A.makeGuest(null, true);
   }
   function closeAll() {
+    linkStop(); scanStop();
     var t = stack[stack.length - 1];
     stack = [];
     if (t) cls(t, "");
@@ -555,6 +581,8 @@
   function back() {
     if (stack.length < 2) return closeAll();
     var from = stack.pop(), to = stack[stack.length - 1];
+    if (from === P.aclink) linkStop();
+    if (from === P.acok) scanStop();
     if (from === P.acpicm && (preview || work)) { preview = null; work = null; paintAll(); }
     if (to === P.acm) { renderRoot(nextMsg); nextMsg = ""; }
     cls(from, "tor"); cls(to, "froml");
@@ -592,6 +620,8 @@
     } else if (id === "accode") { codeInfo(); }
     else if (id === "acdata") { say("acdatamsg", ""); prefetchData(); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
     else if (id === "acrec") { $("acrecin").value = ""; say("acrecmsg", ""); }
+    else if (id === "aclink") { linkShow(); }
+    else if (id === "acok") { scanStop(); okReset(); }
   }
 
   // ---- Passkeys: each one named, renamed or removed (never the last) ----
@@ -641,6 +671,142 @@
       list.hidden = !others.length;
       all.hidden = others.length < 2;
     });
+  }
+
+  // ---- LINKING A PHONE (plan 2 M6 block 3, Mako's yes 2026-11-03) ----
+  // The new phone (Use another phone) shows a six-letter code and its QR and asks the server every
+  // few seconds; a phone signed in to a saved account (Link a new device) types or scans the code
+  // inside RAVI, sees the new phone's name and approves it. Never the other way round: a link the
+  // iPhone camera scans opens Safari, whose storage is not the installed app's. The QR holds only
+  // the code. The reader (qrscan.js) and the drawer (qr.js) load only when needed.
+  var LINKABC = "ABCDEFGHJKMNPQRSTUVWXYZ", WAITMS = 3000, LK = null, scan = null, okCode = "";
+  var DEVWORD = { iPhone: "iPhone", iPad: "iPad", Android: "Android phone", Mac: "Mac", Windows: "Windows PC", Computer: "computer" };
+  function linkCode(v) {
+    var s = typeof v === "string" ? v.slice(0, 200) : "", m = /[?&#]link=([A-Za-z -]+)/.exec(s);
+    if (m) s = m[1];
+    s = s.toUpperCase().replace(/[\s-]/g, "");
+    return new RegExp("^[" + LINKABC + "]{6}$").test(s) ? s : null;
+  }
+  function spaced(c) { return c.slice(0, 3) + " " + c.slice(3); }
+  function load(file, ready) {
+    if (ready()) return Promise.resolve();
+    return new Promise(function (ok, no) { var t = doc.createElement("script"); t.src = REL + file; t.onload = function () { if (ready()) ok(); else no(); }; t.onerror = no; doc.head.appendChild(t); });
+  }
+  function linkStop() { if (LK && LK.timer) clearTimeout(LK.timer); LK = null; }
+  function linkShow() {
+    linkStop();
+    var box = $("aclinkcode"), qr = $("aclinkqr"), me = LK = {};
+    box.textContent = ""; box.removeAttribute("data-code"); box.classList.remove("gone");
+    qr.innerHTML = ""; qr.classList.remove("on", "gone"); $("aclinknew").disabled = true;
+    say("aclinkmsg", "Getting a code...");
+    A.linkStart(function (err, j) {
+      if (LK !== me) return;
+      if (err) { linkStop(); $("aclinknew").disabled = false; return say("aclinkmsg", err); }
+      me.code = j.code; me.sec = j.sec; me.until = Date.now() + (+j.ttl || 600000);
+      box.textContent = spaced(j.code); box.setAttribute("data-code", j.code);
+      load("qr.js", function () { return !!root.RAVI_QR; }).then(function () { if (LK === me) { qr.innerHTML = root.RAVI_QR(j.code); qr.classList.add("on"); } }, function () {});
+      linkLeft(me);
+      me.timer = setTimeout(function () { linkPoll(me); }, WAITMS);
+    });
+  }
+  function linkLeft(me) { say("aclinkmsg", "Runs out in " + Math.max(1, Math.ceil((me.until - Date.now()) / 60000)) + " min."); }
+  function linkOut() {
+    linkStop();
+    $("aclinkcode").classList.add("gone"); $("aclinkqr").classList.add("gone");
+    say("aclinkmsg", "This code ran out."); $("aclinknew").disabled = false;
+  }
+  function linkPoll(me) {
+    if (LK !== me) return;
+    if (Date.now() > me.until) return linkOut();
+    if (doc.hidden) { me.timer = setTimeout(function () { linkPoll(me); }, WAITMS); return; }
+    A.linkWait(me.code, me.sec, function (err, j, st) {
+      if (LK !== me) return;
+      if (!err && j && j.token) { linkStop(); return linked(); }
+      if (st === 410) return linkOut();
+      if (err) say("aclinkmsg", err); else linkLeft(me); // no signal: keep asking
+      me.timer = setTimeout(function () { linkPoll(me); }, WAITMS);
+    });
+  }
+  function linked() {
+    paintAll();
+    nextMsg = "Linked. This phone is signed in to your account.";
+    var i = stack.indexOf(P.acin); // back to the account menu itself
+    if (i > 0) { cls(P.acin, ""); stack.splice(i, 1); }
+    back();
+  }
+  // the signed-in phone: a typed or scanned code, the new phone's name, then Link
+  function okReset() {
+    $("acokin").value = ""; okCode = "";
+    $("acokwho").textContent = ""; say("acokmsg", "");
+    var g = $("acokgo"); clearTimeout(g._doneT); g.classList.remove("done"); g.disabled = true; g.textContent = "Link"; g.removeAttribute("data-words");
+  }
+  function okFind(v) {
+    var c = linkCode(v), g = $("acokgo");
+    okCode = ""; g.disabled = true; g.textContent = "Link"; $("acokwho").textContent = "";
+    if (!c) return say("acokmsg", v && v.replace(/[\s-]/g, "").length >= 6 ? "A link code is six letters." : "");
+    say("acokmsg", "Checking...");
+    A.linkFind(c, function (err, j) {
+      if (linkCode($("acokin").value) !== c) return;
+      if (err) return say("acokmsg", err);
+      var w = DEVWORD[j && j.dev] || "computer";
+      okCode = c; say("acokmsg", "");
+      $("acokwho").textContent = (/^[aeiou]/i.test(w) ? "An " : "A ") + w + " is waiting. Link it only if it's yours.";
+      g.textContent = "Link this " + w; g.disabled = false;
+    });
+  }
+  function okGo() {
+    if (!okCode) return;
+    var c = okCode, g = $("acokgo");
+    g.disabled = true; say("acokmsg", "Linking...");
+    A.linkOk(c, function (err) {
+      if (err) { g.disabled = false; return say("acokmsg", err); }
+      okCode = ""; $("acokwho").textContent = "";
+      say("acokmsg", "Linked. It shows in Signed-in devices.");
+      g.disabled = false; // says Linked for a moment, then dims until the next code
+      done(g, "Linked", function () { g.disabled = true; g.textContent = "Link"; });
+    });
+  }
+  function scanStop() {
+    if (!scan) return;
+    var s = scan; scan = null;
+    try { if (s.stream) s.stream.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {}
+    $("acokvid").srcObject = null; $("acokcam").hidden = true; $("acokscan").textContent = "Scan";
+  }
+  function scanStart() {
+    if (scan) return scanStop();
+    var md = root.navigator && root.navigator.mediaDevices;
+    if (!md || !md.getUserMedia) return say("acokmsg", "This phone can't scan here. Type the code instead.");
+    var me = scan = {}, det = null;
+    try { if (root.BarcodeDetector) det = new root.BarcodeDetector({ formats: ["qr_code"] }); } catch (e) { det = null; }
+    $("acokscan").textContent = "Stop"; say("acokmsg", "");
+    Promise.all([md.getUserMedia({ video: { facingMode: "environment" }, audio: false }), det ? null : load("qrscan.js", function () { return !!root.RAVI_QRSCAN; })]).then(function (r) {
+      if (scan !== me) { r[0].getTracks().forEach(function (t) { t.stop(); }); return; }
+      me.stream = r[0];
+      var v = $("acokvid"); v.srcObject = me.stream; $("acokcam").hidden = false;
+      var pl = v.play(); if (pl && pl.catch) pl.catch(function () {});
+      var cv = doc.createElement("canvas"), cx = cv.getContext("2d", { willReadFrequently: true });
+      function got(text) {
+        var c = linkCode(text);
+        if (!c || scan !== me) return false;
+        scanStop(); $("acokin").value = spaced(c); okFind(c);
+        return true;
+      }
+      (function look() {
+        if (scan !== me) return;
+        if (v.readyState >= 2 && v.videoWidth) {
+          var k = Math.min(1, 480 / Math.max(v.videoWidth, v.videoHeight));
+          cv.width = Math.round(v.videoWidth * k); cv.height = Math.round(v.videoHeight * k);
+          cx.drawImage(v, 0, 0, cv.width, cv.height);
+          if (det) {
+            det.detect(cv).then(function (cs) { if (!cs.some(function (x) { return got(x.rawValue); })) setTimeout(look, 200); }, function () { setTimeout(look, 200); });
+            return;
+          }
+          var res = root.RAVI_QRSCAN(cx.getImageData(0, 0, cv.width, cv.height).data, cv.width, cv.height, { inversionAttempts: "dontInvert" });
+          if (res && got(res.data)) return;
+        }
+        setTimeout(look, 200);
+      })();
+    }, function () { if (scan === me) { scanStop(); say("acokmsg", "RAVI can't use the camera. Type the code instead."); } });
   }
 
   // ---- Your data: a file of everything RAVI's server keeps for this account ----
@@ -1137,7 +1303,7 @@
     scrim.addEventListener("click", closeAll);
     doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && stack.length) closeAll(); });
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],[data-key],#acsign,#acsaveacct,#acout,#acsave,#acuse,#acaddkey,#ackeysave,#acrecgo,#acdl,.aclg button,#acclaim,#acdisp,#acareas button,#acprint button") : null;
+      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],[data-key],#acsign,#acsaveacct,#acout,#acsave,#acuse,#acaddkey,#ackeysave,#acrecgo,#acdl,.aclg button,#acclaim,#acdisp,#acareas button,#acprint button,#aclinknew,#acokscan,#acokgo") : null;
       if (!t || !stack.length) return;
       if (t.hasAttribute("data-acgo")) return deeper(t.getAttribute("data-acgo"));
       if (t.hasAttribute("data-acback")) return back();
@@ -1185,11 +1351,16 @@
         return A.addKey(function (err) { if (err) return say("ackeymsg", err); enter("ackeys"); say("ackeymsg", "Passkey added."); });
       }
       if (t.id === "acrecgo") return recover();
+      if (t.id === "aclinknew") return linkShow();
+      if (t.id === "acokscan") return scanStart();
+      if (t.id === "acokgo") return okGo();
       if (t.id === "acclaim") return claimTap();
       if (t.id === "acdisp") return disputeTap();
       if (t.parentNode && t.parentNode.id === "acareas") return pickArea(t.getAttribute("data-area"));
     });
     $("acrecin").addEventListener("keydown", function (e) { if (e.key === "Enter") recover(); });
+    $("acokin").addEventListener("input", function () { okFind(this.value); });
+    $("acokin").addEventListener("keydown", function (e) { if (e.key === "Enter") { this.blur(); if (okCode) okGo(); else okFind(this.value); } });
     ["acriotn", "acriott"].forEach(function (id) { $(id).addEventListener("input", function () { $("acdispw").hidden = true; claimState(); }); });
     $("acriotn").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acriott").focus(); });
     $("acriott").addEventListener("keydown", function (e) { if (e.key === "Enter") { $("acriott").blur(); claimTap(); } });
@@ -1211,7 +1382,7 @@
         paintAll(); stack = [P.acm, P.acdata]; back(); renderRoot("Account deleted. Everything on this phone stays, on a new account.");
       });
     });
-    doc.addEventListener("visibilitychange", function () { if (doc.hidden) return; if (A.signedIn()) refresh(false); else A.makeGuest(); });
+    doc.addEventListener("visibilitychange", function () { if (doc.hidden) return scanStop(); if (A.signedIn()) refresh(false); else A.makeGuest(); });
   }
   function recover() {
     var v = $("acrecin").value;
