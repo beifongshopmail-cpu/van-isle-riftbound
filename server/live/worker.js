@@ -113,24 +113,38 @@ export const Alerts = makeAlerts(getLive);
 // The decks played at finished events (finishes.js): one Durable Object.
 export const Finishes = makeFinishes(getLive);
 
+// who a signed-in phone is, from its token (the accounts store's /me), or null
+async function whoIs(req, env) {
+  const auth = req.headers.get("Authorization");
+  if (!auth || !env.ACCOUNTS) return null;
+  try {
+    const st = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
+    const r = await st.fetch(new Request("https://accounts/me", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": auth.slice(0, 200), "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } }));
+    return r.ok ? await r.json().catch(function () { return null; }) : null;
+  } catch (e) { return null; }
+}
+// a saved account's number (never a guest's): the honour weight's link (plan 2 M3 block 4)
+function savedId(j) { return j && !j.guest && typeof j.id === "string" && /^[0-9a-f]{24}$/.test(j.id) ? j.id : null; }
+
 async function toFinishes(req, env, path, method) {
   const init = { method: method, headers: { "Content-Type": "application/json", "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } };
-  if (method === "POST") {
+  if (path === "/hon") {
+    // your own two numbers: only ever your own, so signed out has none
+    const id = savedId(await whoIs(req, env));
+    if (!id) return json(req, 401, { error: "signed out" });
+    init.headers["X-Ravi-Acct"] = id;
+  } else if (method === "POST") {
     const text = await req.text();
     if (text.length > 2048) return json(req, 413, { error: "too big" });
     init.body = text;
     // a signed-in pick carries the Riot ID its account claimed (plan 2 M3
-    // block 3: the player's own pick decides their placing); only the worker
-    // sets this header, from the account's token, never from the phone
-    const auth = req.headers.get("Authorization");
-    if (auth && env.ACCOUNTS) {
-      try {
-        const st = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
-        const r = await st.fetch(new Request("https://accounts/me", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": auth.slice(0, 200), "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } }));
-        const j = r.ok ? await r.json().catch(function () { return null; }) : null;
-        if (j && j.riot && typeof j.riot.n === "string" && typeof j.riot.tag === "string" && j.riot.tag) init.headers["X-Ravi-Riot"] = (j.riot.n + "#" + j.riot.tag).slice(0, 80);
-      } catch (e) {}
-    }
+    // block 3: the player's own pick decides their placing) and, for a saved
+    // account, its number (block 4: the honour weight); only the worker sets
+    // these headers, from the account's token, never from the phone
+    const j = await whoIs(req, env);
+    if (j && j.riot && typeof j.riot.n === "string" && typeof j.riot.tag === "string" && j.riot.tag) init.headers["X-Ravi-Riot"] = (j.riot.n + "#" + j.riot.tag).slice(0, 80);
+    const id = savedId(j);
+    if (id) init.headers["X-Ravi-Acct"] = id;
   }
   const stub = env.FINISHES.get(env.FINISHES.idFromName("all"));
   const r = await stub.fetch(new Request("https://finishes" + path, init));
@@ -151,10 +165,15 @@ async function toAccounts(req, env, path) {
     if (text.length > (path === "/photo" ? 220000 : path === "/sync" ? 1100000 : 16384)) return json(req, 413, { error: "too big" });
     init.body = text;
   }
+  // deleting an account deletes its honour numbers too (plan 2 M3 block 4): who it is, asked first
+  const gone = path === "/delete" && req.method === "POST" && env.FINISHES ? savedId(await whoIs(req, env)) : null;
   const stub = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
   // a GET keeps its search words (the Public view of decks, a shared deck's link: plan 2 M3), capped
   const search = req.method === "GET" ? new URL(req.url).search.slice(0, 4000) : "";
   const r = await stub.fetch(new Request("https://accounts" + path + search, init));
+  if (gone && r.ok) {
+    try { await env.FINISHES.get(env.FINISHES.idFromName("all")).fetch(new Request("https://finishes/hon/del", { method: "POST", headers: { "X-Ravi-Acct": gone } })); } catch (e) {}
+  }
   if (/^\/b?pic\//.test(path) && r.ok) {
     // a player's photo: only ever a JPEG the server checked, never sniffed as anything else
     return new Response(r.body, { status: 200, headers: { "Content-Type": "image/jpeg", "Cache-Control": "public, max-age=31536000, immutable",
@@ -186,9 +205,10 @@ export default {
       if (req.method !== "GET" && req.method !== "POST") return json(req, 405, { error: "not allowed" });
       return toAccounts(req, env, am[1]);
     }
-    const fm = /^\/finishes(?:\/(\d{6,24}))?$/.exec(url.pathname);
+    const fm = /^\/finishes(?:\/(\d{6,24}|hon))?$/.exec(url.pathname);
     if (fm) {
       if (!env || !env.FINISHES) return json(req, 503, { error: "not set up" });
+      if (fm[1] === "hon") return req.method === "GET" ? toFinishes(req, env, "/hon", "GET") : json(req, 405, { error: "not allowed" });
       if (fm[1] && (req.method === "GET" || req.method === "POST")) return toFinishes(req, env, "/e/" + fm[1], req.method);
       if (!fm[1] && req.method === "GET") return toFinishes(req, env, "/list?ids=" + encodeURIComponent(String(url.searchParams.get("ids") || "").slice(0, 6000)), "GET");
       return json(req, 405, { error: "not allowed" });

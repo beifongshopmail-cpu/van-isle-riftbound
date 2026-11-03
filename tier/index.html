@@ -149,7 +149,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </section>
 <section class="panel frost" id="padd" aria-hidden="true" aria-label="Add decks">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Add decks</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div id="addlist"></div><p class="pnote" id="addnote"></p></div>
+  <div class="pbody"><div id="addlist"></div><p class="pnote" id="addnote"></p><p class="pnote" id="addhon" hidden></p></div>
 </section>
 <section class="panel frost" id="pev" aria-hidden="true" aria-label="Event">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="pevt">Event</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -163,7 +163,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="tgrid" id="pgrid" data-k="pick"></div>
     <p class="pmsg" id="pmsg" hidden></p>
     <button type="button" class="pact btn glass" id="pundo" data-k="do" hidden>Take back my pick</button>
-    <p class="pnote">Pick the legend this player played. It counts on trust: the legend most picks name stands, and two that tie are left out until another pick settles it.</p>
+    <p class="pnote">Pick the legend this player played. It counts on trust: the player's own pick decides, else the legend most picks name stands. Picks that have matched players' own before count a little more; two that tie are left out until another pick settles it.</p>
   </div>
 </section>
 <section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's counted">
@@ -173,7 +173,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p>Played: a legend's share of every deck. Top cut: its share of every top-cut spot (the cut the event played; an event that stopped after Swiss counts a top 8 from 17 players, a top 4 below).</p>
     <p>Conversion: top cut divided by played. 1.00x is average; 2.00x makes the top cut twice as often as its play share predicts. A legend with few decks is pulled toward 1.00x, so a lucky handful cannot top the list.</p>
     <p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p>
-    <p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the one most picks name, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p>
+    <p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the player's own pick when they add it, else the one most picks name. Picks from saved accounts whose past picks matched the players' own count a little more, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p>
     <p>Legends and decks only: RAVI never ranks players.</p>
   </div>
 </section>
@@ -571,8 +571,23 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg></button>";
     }).join("") + "</div>";
   }
+  // the honour weight (plan 2 M3 block 4): a saved account sees how its own picks have matched
+  // the players' own; only it, never others, never a list
+  function drawHon(){
+    var n = $("addhon"), ac = null;
+    try { ac = window.RAVI_ACCT && RAVI_ACCT.saved(); } catch (e) { ac = null; }
+    if (!ac || !ac.t || (ac.a && ac.a.guest)) { n.hidden = true; return; }
+    srv("/finishes/hon", { headers: { "Authorization": "Bearer " + ac.t } }).then(function(x){
+      var m = x.ok && x.j && whole(x.j.m, 0, 1e6) ? x.j.m : null, t = x.ok && x.j && whole(x.j.t, 0, 1e6) ? x.j.t : null;
+      if (m === null || t === null || m > t) { n.hidden = true; return; }
+      n.textContent = t > 0 ? "Your picks matched " + m + " of " + t + (t === 1 ? " player's own" : " players' own") + ". Picks that match count a little more. Only you see this." :
+        "When players add their own decks, your earlier picks are checked against them; picks that match count a little more. Only you see this.";
+      n.hidden = false;
+    }).catch(function(){ n.hidden = true; });
+  }
   $("ladd").addEventListener("click", function(){
     openPanel(padd);
+    drawHon();
     if (LSTATE === "idle" || LSTATE === "failed") { LSTATE = "idle"; loadLocal(); }
     drawAddList();
   });
