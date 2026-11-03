@@ -37,24 +37,38 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .stn{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .stnone{text-align:center}
 .sup{margin-top:20px}
-/* HUB LAYOUT (plan 2 M6, Mako 2026-11-03): a small copy of the hub's grid (its 3-3-2 rows, the
-   arc on the middle blocks, each block the page's coloured glass with its tinted icon and name),
-   All pages fixed last, empty places dashed; under it the pages not on the hub, three across.
+/* HUB LAYOUT (plan 2 M6, Mako 2026-11-03): a copy of the hub's grid, All pages fixed last, empty
+   places dashed; under it the pages not on the hub, three across.
+   The copy's blocks are the hub's own (index.html .blk: size, corner, padding, arc, icon and name;
+   Mako 2026-11-03: they must look the same). The menu's body spans the panel's width, which is the
+   hub plate's width on every phone, so the copy stands 7 in (8 less the panel's 1px rim) as the hub's grid does
+   and every block comes out the hub's size. Behind it, the hub plate's curved top in --recess.
    Blocks are dragged (pointer events; touch-action none, so a drag never scrolls the menu) or
    tapped one then another. */
-.hlg{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 10px;padding:14px 10px 10px;border-radius:24px;background:var(--recess)}
-.hlg > .hlb{width:calc((100% - 20px) / 3)}
-.hlg > .hlb:nth-child(2),.hlg > .hlb:nth-child(5){top:-8px}
+.hlg{display:flex;flex-wrap:wrap;justify-content:center;row-gap:18px;column-gap:12px;margin:0 -16px;padding:34px 7px 22px;
+  border-radius:50% 50% 0 0 / 40px 40px 0 0;background:var(--recess)}
+.hlg > .hlb{width:calc((100% - 24px) / 3)}
+.hlg > .hlb:nth-child(2),.hlg > .hlb:nth-child(5){top:-14px}
+.hlg > .hlb:nth-child(3n+1):nth-last-child(2),.hlg > .hlb:nth-child(3n+1):nth-last-child(2) + .hlb{margin:0 5px}
 .hls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;border-radius:22px;background:var(--recess);min-height:64px}
-.hlb{position:relative;box-sizing:border-box;aspect-ratio:1/1;border:0;border-radius:16px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+.hlb{position:relative;box-sizing:border-box;aspect-ratio:1/1;border:0;border-radius:20px;padding:11px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.45);
   color:rgb(var(--ci,237,234,227));font:inherit;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-.hlb svg{flex:1 1 auto;min-height:0;width:34px;max-height:34px;stroke-width:1.5;--sw:1.5;opacity:.82} /* size-exempt: the hub's 60 icon drawn small in its copy */
+.hlb svg{flex:0 0 auto;margin:auto 0;width:min(60px, calc(33.33vw - 69.6px));height:min(60px, calc(33.33vw - 69.6px));stroke-width:1.5;--sw:1.5;opacity:.82} /* the hub's 60, or less on a narrow phone, as index.html .blk .bi svg */
 .hlb svg:has(.icb) .ico{display:none}
 .hlb svg .icb{display:inline}
-.hls .hlb svg{width:24px;max-height:24px} /* size-exempt: a page's hub icon in the shelf */
-.hlb span{max-width:100%;font-family:var(--disp);font-weight:700;font-size:12px;line-height:1.2;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hle{border:1.5px dashed var(--faint);background:none}
-.hla{color:var(--bone)}
+.hlb span{max-width:100%;font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:389px){.hlb span{letter-spacing:-.02em}}
+/* the shelf's blocks stay small: a page's hub icon at 24 over its name at 12 */
+.hlsm{border-radius:16px;padding:6px 4px;justify-content:center;gap:4px;box-shadow:var(--glass-base)}
+.hlsm svg{flex:1 1 auto;margin:0;min-height:0;width:24px;height:auto;max-height:24px} /* size-exempt: a page's hub icon in the shelf */
+.hlsm span{font-size:12px;line-height:1.2;letter-spacing:0}
+.hle{border:1.5px dashed var(--faint);background:none;box-shadow:none}
+/* All pages: plain glass, frosted, no page colour (index.html .blk.allp), never the Settings tint */
+.hla{color:var(--bone);background:var(--frost-solid)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .hla{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+}
 .hlb.picked,.hlb.over{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
 .hls.over{box-shadow:inset 0 0 0 2px var(--bone)}
 /* the drag: a copy follows the finger, fixed and with no transition; the block's place dims */
@@ -375,7 +389,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var ORDER = [], PICK = null, D = null, noClick = false;
   function pageOf(id){ for (var i = 0; i < PAGES.length; i++) { if (PAGES[i].id === id && PAGES[i].path) { return PAGES[i]; } } return null; }
   function tint(rgb){ var c = rgb.split(","), o = []; for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .62)); } return o.join(","); }
-  function blk(p){ return '<button type="button" class="hlb glass cg" data-id="' + p.id + '" style="--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></button>'; }
+  function blk(p, sm){ return '<button type="button" class="hlb glass cg' + (sm ? ' hlsm' : '') + '" data-id="' + p.id + '" style="--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></button>'; }
   function drawHub(){
     ORDER = window.RAVI_HUB_PICKS();
     var h = "", e;
@@ -384,7 +398,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     h += '<div class="hlb glass hla" aria-label="All pages, always last">' + window.RAVI_ICON("allpages") + '<span>All pages</span></div>';
     hl.innerHTML = h;
     var sh = "";
-    PAGES.forEach(function(p){ if (p.path && ORDER.indexOf(p.id) < 0) { sh += blk(p); } });
+    PAGES.forEach(function(p){ if (p.path && ORDER.indexOf(p.id) < 0) { sh += blk(p, true); } });
     hs.innerHTML = sh;
     PICK = null; marks();
   }
