@@ -439,7 +439,7 @@
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acuse" data-k="do" disabled>Use this picture</button></div>',
       ackeys: headTitle("Passkeys") + '<div class="pbody"><div class="doors" id="ackeylist" data-k="deeper"></div><p class="pnote">Add one on each phone you use.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acaddkey" data-k="do">Add a passkey</button></div>',
-      ackey: headTitle("Passkey") + '<div class="pbody"><p class="lb">Name</p><div class="nf"><input type="text" id="ackeyname" maxlength="32" autocomplete="off" enterkeyhint="done" aria-label="Passkey name" data-k="type"></div>' +
+      ackey: headTitle("Passkey") + '<div class="pbody"><div class="nf"><input type="text" id="ackeyname" maxlength="32" placeholder="Passkey name" autocomplete="off" enterkeyhint="done" aria-label="Passkey name" data-k="type"></div>' +
         '<p class="pnote" id="ackeydays"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="ackeyoff"><span class="t">Remove this passkey</span></button></div>' +
         '<p class="acmsg" id="ackeyonemsg" aria-live="polite"></p></div>' +

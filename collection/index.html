@@ -320,8 +320,7 @@ input[type="file"]{display:none}
 <section class="panel frost" id="pnew" aria-hidden="true" aria-label="New binder">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">New binder</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <p class="lb">Name</p>
-    <div class="nf tall"><input id="newname" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
+    <div class="nf tall"><input id="newname" type="text" maxlength="40" autocomplete="off" placeholder="Binder name" aria-label="Binder name" data-k="type"></div>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" data-act="createport" data-k="do">Create binder</button></div>
 </section>
@@ -329,8 +328,7 @@ input[type="file"]{display:none}
 <section class="panel frost" id="pone" aria-hidden="true" aria-label="Binder">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="onettl">Binder</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <p class="lb">Name</p>
-    <div class="nf tall"><input id="onename" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
+    <div class="nf tall"><input id="onename" type="text" maxlength="40" autocomplete="off" placeholder="Binder name" aria-label="Binder name" data-k="type"></div>
     <div class="row" style="margin-top:14px"><p class="lb">Trade board</p><div class="pick" id="onetrade" data-k="pick"><button type="button" aria-pressed="false">For trade</button></div>
       <p class="pnote" id="onetradenote" style="margin-top:8px"></p><div id="onesave"></div></div>
     <p class="pnote" id="onenote"></p>
