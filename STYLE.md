@@ -69,7 +69,7 @@ Sizes
 Other
 - --ease cubic-bezier(.22,.72,.2,1)
 - --top-clear safe-area top inset + 28: nothing sharp and unfrosted sits above it [C]
-- No control height is a bare number; each reads a named size above. A page may add a token only in its own :root and only for its own part (counter: --over-deep, --mo-rise, --mo-travel, --mo-pulse, --mo-ease; trade: --yc, --tc). [A]
+- No control height is a bare number; each reads a named size above. A page may add a token only in its own :root and only for its own part (counter: --over-deep, --mo-rise, --mo-travel, --mo-pulse, --mo-ease; trade and Trade board: --yc, --tc; trade: --ycr, --tcr). [A]
 
 ## 3. Surfaces and kinds
 
@@ -138,7 +138,7 @@ Spacing
 - Nothing overflows sideways. [D]
 - A one-line row clips its text with an ellipsis; it never wraps.
 Colour
-- Players: Yours/P1 blue --p1, Theirs/P2 pink --p2. The counter's six swatches are the player's choice for one match; the first two are the defaults.
+- Players (plan 2 M8, Mako's phone yes 2026-11-04): the eight player colours (pages.js RAVI_PLAYER_COLOURS: Blue, Pink, Gold, Tangerine, Lime, Mint, Orchid, White) are the counter's swatches and the choices for Your colour on Profile. Yours, side 1 and P1 are your colour (blue with none); Theirs and side 2 are pink, or blue when yours is pink (RAVI_SIDES): the counter, the Trade page and an offer's verdict. A counter pick holds while your Profile colour stays the one it was made against. A player's picture (yours in the corner and on Profile, every player's on the Trade board) wears their colour as its 1 wide rim (.accol), their Trade board card and menu head are coloured glass in it, and their name always says who it is. [T]
 - The only alarm colour is --over (the counter's --over-deep #8C1F19 is its pressed shade). The calendar's amber #FFC24D on low spots is a caution, always with words.
 - Event types: each has a mark shape, a hue and its name in words on every card. Order everywhere: Open Play, Learn-to-Play, Nexus Nights, Summoner Skirmish, Pre-Rift, Other.
   - Open Play 115,80,240, circle (s-circle)
@@ -219,6 +219,7 @@ The account picture and its menus (account.js, app.css; plan 2 M1, Mako 2026-10-
 - Its menus (.panel.acct) are built by account.js, never by a page; their heads keep 68 on the right for the picture. The root shows your name and @username; Profile shows the picture at 88. Saving keeps you in the menu you saved from (Mako 2026-10-30).
 - Picture opens on a 176 circle you drag to move the picture and pinch to zoom, the gesture read across the menu's whole width around it (#acstage, data-pinch; Mako's phone yes 2026-11-03) (a card keeps its placing; a photo is placed, then cut to 256 square); under it a Printing track for the chosen card (a legend's own art, then its overnumbered printing; any other card, each of its printings; never a signature); then Upload a photo, then Or pick a card: a search (Search every card, the round X) over every card in cards/pics.js; with no search, one circle per legend, four across; with one, each matching printing as a circle with its name under it (12, muted), names that start with the search first, 40 at most with a count. A landscape battlefield is placed to fill the circle. A pick shows in the corner at once, is ringed in the grid, and is kept by Use this picture. (Mako's yes 2026-10-31; any card, signed off 2026-11-02)
 - A button that saves says so in its own words for a moment: Saved, Claimed. (Mako 2026-10-31)
+- Profile holds Your colour, a .seg.swatch of the eight player colours kept by Save, previewed on Profile's picture before Save (plan 2 M8, Mako's phone yes 2026-11-04).
 - Profile holds the Riot ID, one account per Riot ID, in two fields as Riot shows it, the name and the #tag (.rid), with Claim or Remove Riot ID as a full-width action under them (not Release; Mako 2026-10-31); the root menu's second line reads @username and the Riot ID. An account in ADMIN also has Disputes, whose two actions are Give it to @user and Keep it where it is. (Mako's yes 2026-10-31)
 - The root menu (Mako's sign-off 2026-10-31; regrouped in M7, his phone yes 2026-11-04): an account never saved shows Save your account first, a note that only this phone reaches it, then Profile and Your data, then Sign in to another account; a saved one shows Profile, Link a new device, Sign-in and security (Passkeys, Devices, Recovery code, as Apple Account's Sign-In and Security), Your data (and Disputes, Reports), then Sign out alone. Sign in to another account opens Use a passkey and Another phone, then Recovery code under the label Lost all your devices?
 - Wherever a page needs a saved account it shows a Save your account row (RAVI_SAVEROW in account.js), which opens the account menu; never directions such as 'tap your picture'. RAVI_ACCT_OPEN(menu) opens it at a deeper menu (the Riot ID's one home, Profile). (Mako's phone yes 2026-11-04, M7 C2 and C3)
