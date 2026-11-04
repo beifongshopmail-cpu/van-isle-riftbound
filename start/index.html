@@ -118,9 +118,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ndots li{width:32px;height:32px;box-sizing:border-box;border-radius:50%;border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:13px;color:var(--bone)}
 .ndots .nlast{background:var(--bone);color:var(--ink);border-color:var(--bone)}
 .ntk .ntx{margin:0 4px}
-/* Riot's domain symbols (cards/runes, Riot's files unchanged): inline beside a Power cost, and the
-   six in a row under More */
-.nsy{width:20px;height:20px;vertical-align:-4px;margin:0 4px 0 2px} /* size-exempt: Riot's domain symbol inline */
+/* Riot's symbols, Riot's files unchanged: the domains (cards/runes) and the card-text glyphs
+   (cards/glyphs: Energy in a circle, the rainbow any Power, Might, Exhaust), inline beside their words,
+   and the six domains in a row under More */
+.nsy{width:20px;height:20px;vertical-align:-4px;margin:0 2px} /* size-exempt: Riot's domain symbol inline */
 .ndom{list-style:none;margin:2px 0 12px;padding:0;display:flex;justify-content:space-between}
 .ndom li{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--text);font-size:12px;color:var(--muted)}
 .ndom img{width:28px;height:28px} /* size-exempt: Riot's domain symbol */
@@ -213,15 +214,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <img class="nrj" src="../cards/art/d6cac988aa7798945e550eba6841d3993868c4a4.webp" alt="Jinx, Demolitionist: 3 Energy and 1 Fury Power" width="744" height="1039" loading="lazy">
       <div class="nrp">
         <div class="nrs"><span class="nrr nx"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt=""></span><span class="nrr nx"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt=""></span><span class="nrr nx"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt=""></span></div>
-        <p class="ntx"><b>3 Energy:</b> exhaust 3 runes, turning them sideways.</p>
+        <p class="ntx"><b>3 Energy</b> <img class="nsy" src="../cards/glyphs/energy_3.svg" alt="the Energy 3 symbol" width="24" height="24"> <b>:</b> exhaust 3 runes, turning them sideways.</p>
         <div class="nrs"><span class="nrr"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt=""></span><svg class="nad" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M6 14l6 6 6-6"/></svg><span class="nrd">Rune deck, bottom</span></div>
-        <p class="ntx"><b>1 Fury Power</b> <img class="nsy" src="../cards/runes/rune_fury.svg" alt="the Fury symbol" width="24" height="24"><b>:</b> recycle 1 Fury rune.</p>
+        <p class="ntx"><b>1 Fury Power</b> <img class="nsy" src="../cards/runes/rune_fury.svg" alt="the Fury symbol" width="24" height="24"> <b>:</b> recycle 1 Fury rune.</p>
       </div>
     </div>
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
       <p class="ntx">Energy is the number in a card's top corner. Power is the domain symbol under it; a card can ask for more than one. There are six domains:</p>
       <ul class="ndom"><li><img src="../cards/runes/rune_fury.svg" alt="" width="24" height="24"><span>Fury</span></li><li><img src="../cards/runes/rune_calm.svg" alt="" width="24" height="24"><span>Calm</span></li><li><img src="../cards/runes/rune_mind.svg" alt="" width="24" height="24"><span>Mind</span></li><li><img src="../cards/runes/rune_body.svg" alt="" width="24" height="24"><span>Body</span></li><li><img src="../cards/runes/rune_chaos.svg" alt="" width="24" height="24"><span>Chaos</span></li><li><img src="../cards/runes/rune_order.svg" alt="" width="24" height="24"><span>Order</span></li></ul>
+      <p class="ntx">In a card's text, Energy is a number in a circle and Power a domain symbol. Jinx's Accelerate asks <img class="nsy" src="../cards/glyphs/energy_1.svg" alt="1 Energy" width="24" height="24"><img class="nsy" src="../cards/runes/rune_fury.svg" alt="1 Fury Power" width="24" height="24"> more to have her enter ready. <img class="nsy" src="../cards/glyphs/rune_rainbow.svg" alt="The rainbow symbol" width="24" height="24"> is Power of any domain.</p>
       <p class="ntx">To recycle a rune, put it on the bottom of your Rune deck. A rune you exhausted for Energy can still be recycled for Power, so one rune can pay for both.</p>
       <p class="ntx"><b>Example:</b> Jinx, Demolitionist costs 3 Energy and 1 Fury. Exhaust 3 runes, then recycle a Fury rune, which can be one of the three.</p>
     </div>
@@ -237,7 +239,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
-      <p class="ntx">A unit's Might, in its top corner, is both the damage it deals and the damage it can take.</p>
+      <p class="ntx">A unit's Might <img class="nsy" src="../cards/glyphs/might.svg" alt="the Might symbol" width="24" height="24">, in its top corner, is both the damage it deals and the damage it can take.</p>
+      <p class="ntx"><img class="nsy" src="../cards/glyphs/exhaust.svg" alt="The Exhaust symbol" width="24" height="24"> in a card's text means exhausting that card is part of the cost.</p>
       <p class="ntx">A unit can also enter at a battlefield you control. Units going to the same place can move together.</p>
       <p class="ntx">Move onto a battlefield with the other player's units and you fight. Move onto an empty one and you conquer it, though your opponent may answer first with an Action or Reaction card.</p>
     </div>
