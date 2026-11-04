@@ -9,3 +9,4 @@ Counter (counter/index.html)
 
 Page-local classes (not in app.css; not Kit parts):
 - counter/index.html: .lgppic .lgptile .num .pass .rail .res .spot .tmv .win
+- counter/index.html, listed in M7 from the style-lint baseline (2026-11-04): .clearpast .cred .dash .dtl .dv .e .e1 .e2 .empty .et .f .far .field .fmt .fpair .g1 .g2 .ghead .gsub .ic .legend .legrow .lgarune .lgathumb .lgpchips .lgpempty .lgpgrid .lgpn .lgppr .lgpprh .lgpq .lgpsub .lpf .lt .mbody .mday .mrow .name .nextbox .nlab .nm .nnm .nsuf .open .opp .passglow .pcbody .pcrow .pdot .pgrp .pips .pl1 .plegh .pn .pnm .pval .rdnf .rdraw .rgl .rloss .rt .rwin .s1 .s2 .sco .seamghost .seamwrap .sidebtn .spotpic .them .three .tmclock .tmfar .tmnm .tmover .tmp .tmp2 .tmpause .tmr .tmsplit .two .vs .who1 .winrow

@@ -12,3 +12,4 @@ Tier list (tier/index.html; M17, 2026-10-28)
 
 Page-local classes (not in app.css; not Kit parts):
 - tier/index.html: .lgtop .lgtx .lmore .lsh .ncard .nrows .nrow .pmsg .tc .tctl .tempty .tgrid .tleg .tlet .tlist .tnone .tnote .trow .tscope .tstrip .tph; menus #padd #pev #ppick (the maths in tier/tier.js; the data from fetch-tier.js and server/live/finishes.js)
+- tier/index.html, listed in M7 from the style-lint baseline (2026-11-04): .empty .fl .fr .full .off .say .tg .tier .tyou .v

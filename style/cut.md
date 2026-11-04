@@ -10,3 +10,4 @@ Top cut (cut/index.html; M15, 2026-10-27)
 
 Page-local classes (not in app.css; not Kit parts):
 - cut/index.html: .csec .srows .srow .sv .cseg .cnote .fh .fr .flist .vd .fmore (the maths in cut/cut.js)
+- cut/index.html, listed in M7 from the style-lint baseline (2026-11-04): .in .out .ties

@@ -9,3 +9,4 @@ Trade (trade/index.html)
 
 Page-local classes (not in app.css; not Kit parts):
 - trade/index.html: .bin .lbr .ln .lnh .rcpimgs .res .rrs .sidep .sidr .stp .tail .toast .trow .udb .vd
+- trade/index.html, listed in M7 from the style-lint baseline (2026-11-04): .a .art .b .bad .boot .buy .chip .cntx .d .d1 .d2 .f1 .f2 .fk .flank .frozen .fv .g1 .g2 .gap .glassr .gs .h2 .hold .k .l1 .l2 .lact .lamt .ld .lmid .lnm .lnow .lrow .lsub .mvp .n .nmf .now .open .pcx .r1 .r2 .rate .rates .rc .rcphint .resw .ringw .rmeta .rnm .rnone .rrow .rset .rsub .s1 .s2 .sempty .stick .sum .svempty .thd .tld .tlname .to2 .tog .tot .two .v

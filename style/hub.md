@@ -17,3 +17,4 @@ The hub block (index.html)
 
 Page-local classes (not in app.css; not Kit parts):
 - index.html (hub): .blk .blk.allp .bi .bn .hubfoot .low, the All pages tray #pall
+- index.html (hub), listed in M7 from the style-lint baseline (2026-11-04): .ilet .rbb .rbglint .rbt
