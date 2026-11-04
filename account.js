@@ -55,8 +55,10 @@
   function setView(account) {
     var s = saved();
     if (!s || !account || typeof account !== "object") return;
+    var was = s.a && s.a.col || "";
     keep(s.t, account);
     meFrom(account);
+    if ((account.col || "") !== was) changed(); // your colour moved: pages wearing it repaint (plan 2 M8)
   }
   // a claimed Riot ID is this phone's Riot name too (live.js reads vir.me.v1 for tables and alerts)
   function meFrom(a) {

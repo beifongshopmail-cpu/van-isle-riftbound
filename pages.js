@@ -137,6 +137,23 @@ window.RAVI_COLOUR = function(k){
 window.RAVI_MY_COLOUR = function(){
   try { var a = window.RAVI_ACCT && window.RAVI_ACCT.view(); return a ? window.RAVI_COLOUR(a.col) : null; } catch (e) { return null; }
 };
+// THE TWO SIDES of a trade or a game (plan 2 M8): yours is your colour (blue with none); theirs is
+// pink, or blue when yours is pink. Each is a player colour entry.
+window.RAVI_SIDES = function(){
+  var l = window.RAVI_PLAYER_COLOURS, mine = window.RAVI_MY_COLOUR() || l[0];
+  return { yours: mine, theirs: mine.k === "pink" ? l[0] : l[1] };
+};
+// paints the sides on a page that shows them (Trade, the Trade board's offers): --yc and --tc, each
+// colour's hex, and --ycr and --tcr, its rgb, on the root; again whenever your account changes
+window.RAVI_SIDES_PAINT = function(){
+  function go(){
+    var s = window.RAVI_SIDES(), st = document.documentElement.style;
+    st.setProperty("--yc", s.yours.hex); st.setProperty("--tc", s.theirs.hex);
+    st.setProperty("--ycr", s.yours.rgb); st.setProperty("--tcr", s.theirs.rgb);
+  }
+  go();
+  if (window.RAVI_ACCT && window.RAVI_ACCT.onChange) { window.RAVI_ACCT.onChange(go); }
+};
 window.RAVI_HUB_KEY = "vir.hub.blocks.v1";
 window.RAVI_HUB_MAX = 7;
 // New here took App settings' default place (2026-10-27): a newcomer sees it first; App settings

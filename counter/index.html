@@ -1026,16 +1026,20 @@
   // A name is only what was typed; an empty one shows the side's default
   // (nameOf): side 1 is the near side, the phone's owner, side 2 the far.
   // The swatches are the player colours (pages.js, plan 2 M8). A side's colour is the one picked
-  // here (set), or its default: yours (side 1) is your Profile's colour, else blue; theirs pink, or
-  // blue when yours is pink (defaults).
+  // here, or its default: yours (side 1) is your Profile's colour, else blue; theirs pink, or blue
+  // when yours is pink (defaults). A pick holds only while your Profile colour is the one it was
+  // made against (set keeps that colour's key, "" for none): change it on Profile and both sides
+  // follow it again (Mako's phone check 2026-11-04).
   var SWATCH = (window.RAVI_PLAYER_COLOURS || []).map(function(c){ return c.hex; });
   if (SWATCH.length < 2) { SWATCH = ["#5DA5EE","#EE5F9C"]; }
   var players = { 1:{ name:"", legend:"", art:"", colour:SWATCH[0], set:false },
                   2:{ name:"", legend:"", art:"", colour:SWATCH[1], set:false } };
+  function myKey(){ var m = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null; return m ? m.k : ""; }
   function defaults(){
-    var mine = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null;
-    if (!players[1].set) { players[1].colour = mine ? mine.hex : SWATCH[0]; }
-    if (!players[2].set) { players[2].colour = players[1].colour === SWATCH[1] ? SWATCH[0] : SWATCH[1]; }
+    var mine = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null, k = mine ? mine.k : "";
+    for (var q = 1; q <= 2; q++) { if (players[q].set !== false && players[q].set !== k) { players[q].set = false; } }
+    if (players[1].set === false) { players[1].colour = mine ? mine.hex : SWATCH[0]; }
+    if (players[2].set === false) { players[2].colour = players[1].colour === SWATCH[1] ? SWATCH[0] : SWATCH[1]; }
   }
   // A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE. The stain (.14) and the
   // press (.50) are computed here rather than with color-mix(), which the
@@ -1115,8 +1119,8 @@
           if (typeof o[p].name === "string" && o[p].name !== "Player " + p) { players[p].name = o[p].name; }
           if (typeof o[p].legend === "string") { players[p].legend = o[p].legend; }
           if (typeof o[p].art === "string") { players[p].art = o[p].art; }
-          if (o[p].set === true && typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
-            players[p].colour = o[p].colour; players[p].set = true;
+          if (typeof o[p].set === "string" && typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
+            players[p].colour = o[p].colour; players[p].set = o[p].set;
           }
         }
       }
@@ -2574,7 +2578,7 @@
     var col = t.getAttribute && t.getAttribute("data-col");
     if (col) {
       players[parseInt(t.getAttribute("data-p"), 10)].colour = col;
-      players[parseInt(t.getAttribute("data-p"), 10)].set = true;
+      players[parseInt(t.getAttribute("data-p"), 10)].set = myKey();
       defaults();
       savePlayers(); syncSetup(); syncFirst(); render();
       return;

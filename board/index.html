@@ -118,6 +118,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .cpic,.bcard{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 /* the player menu and the card menu */
 .btop{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.btop.cg{padding:10px 12px;border-radius:22px} /* a player's menu opens on their colour, as their card (plan 2 M8) */
 .btop .bpic{flex:0 0 56px;width:56px;height:56px} /* size-exempt: a player's picture */
 .btop .bpic svg{width:30px;height:30px}
 .btop .bnm b{font-size:17px;font-weight:700}
@@ -183,7 +184,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ovd .fk{max-width:100%;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ovd .fs{max-width:100%;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ovd .fv{font-family:var(--disp);font-weight:700;font-size:17px;white-space:nowrap}
-.ovd{--yc:#5DA5EE;--tc:#EE5F9C}
+:root{--yc:#5DA5EE;--tc:#EE5F9C} /* the offer's sides: yours is your colour (pages.js RAVI_SIDES_PAINT, plan 2 M8) */
 .ovd .f1 .fk{color:var(--yc)} .ovd .f2 .fk{color:var(--tc)}
 .ovd .mid{flex:0 0 112px;display:flex;flex-direction:column;align-items:center;text-align:center}
 .ovd .mid .k{font-size:12px;color:var(--muted)}
@@ -285,6 +286,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="pbody" id="pblkb"></div>
 </section>
 <script>
+if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your colour (plan 2 M8)
 (function(){
   "use strict";
   var A = window.RAVI_ACCT;
@@ -421,7 +423,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // a player's card wears their colour as coloured glass (plan 2 M8 block 2: your colour on your
   // Profile); with none it stays plain glass. Their name says who it is, never the colour.
   function cardOpen(f){ var c = window.RAVI_COLOUR && window.RAVI_COLOUR(f && f.col); return c ? '<article class="bt glass cg" style="--c:' + c.rgb + '">' : '<article class="bt glass">'; }
-  function pic(f, sm){ var st = picStyle(f); return '<span class="bpic' + (sm ? " sm" : "") + '"' + (st ? ' style="' + esc(st) + '"' : '') + '>' + (st ? '' : PERSON) + '</span>'; }
+  function topOpen(f){ var c = window.RAVI_COLOUR && window.RAVI_COLOUR(f && f.col); return c ? '<div class="btop glass cg" style="--c:' + c.rgb + '">' : '<div class="btop">'; }
+  // a player's picture wears their colour on its rim (plan 2 M8; app.css .accol)
+  function pic(f, sm){ var ps = picStyle(f), c = window.RAVI_COLOUR && window.RAVI_COLOUR(f && f.col), st = ps + (c ? (ps ? ";" : "") + "--acc:" + c.rgb : ""); return '<span class="bpic' + (sm ? " sm" : "") + (c ? " accol" : "") + '"' + (st ? ' style="' + esc(st) + '"' : '') + '>' + (ps ? '' : PERSON) + '</span>'; }
   function nameOf(f){ return f.name || (f.user ? "@" + f.user : "A RAVI player"); }
   function subOf(f){
     var bits = [];
@@ -626,7 +630,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var t = tradeOf(WHO) || { has: [], wants: [], two: 0 };
     var rest = DATA.browse.filter(function(r){ return r.h === WHO && !t.has.some(function(x){ return x.i === r.i && x.f === r.f; }); });
     $("pwhot").textContent = nameOf(f);
-    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '<small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small>' + (t.two ? BOTH : '') + '</div></div>';
+    var h = topOpen(f) + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '<small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small>' + (t.two ? BOTH : '') + '</div></div>';
     h += nextRow(f.nx, "Next event");
     if (t.wants.length) { h += '<p class="bh3">Wants ' + plural(cardsN(t.wants), "card", "cards") + ' you have</p>' + grid(t.wants, WHO, "wants"); }
     if (t.has.length) { h += '<p class="bh3">Has ' + plural(cardsN(t.has), "card", "cards") + ' you want</p>' + grid(t.has, WHO, "has"); }
@@ -713,7 +717,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   function drawSelfWho(f){
     var me = myShare();
     $("pwhot").textContent = nameOf(f);
-    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
+    var h = topOpen(f) + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
     h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<div class="doors" data-k="deeper" style="margin:0 0 14px"><a class="door btn glass" href="../calendar/"><span class="t">Your next event</span><span class="sp"></span><small>Pick one in Events</small>' + CVR + '</a></div>';
     if (me.have.length) { h += '<p class="bh3">For trade</p>' + grid(me.have, "self", "rest"); }
     if (me.want.length) { h += '<p class="bh3"' + (me.have.length ? ' style="margin-top:18px"' : '') + '>Wants</p>' + grid(me.want, "self", "wants"); }
@@ -949,7 +953,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     if (!o) { return; }
     var f = o.who;
     $("poffert").textContent = nameOf(f);
-    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
+    var h = topOpen(f) + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
     var st = o.st === "open" ? (o.turn ? "<b>Waiting on you.</b> " + daysLeft(o.exp) + " to answer." : "<b>Waiting on them.</b> " + daysLeft(o.exp) + " for them to answer.")
       : o.st === "accepted" ? "<b>Agreed.</b> " + (o.done.me ? "You marked it done; waiting on them." : o.done.them ? "They marked it done." : "Meet up, swap, then tap Trade done.")
       : "<b>" + esc(STW[o.st]) + ".</b>";
@@ -1157,7 +1161,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   }
   function drawMake(){
     var f = MK.f, get = picked(MK.get, MK.theirs), give = picked(MK.give, MK.mine), c = mkCash();
-    var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b><small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small></div></div>';
+    var h = topOpen(f) + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b><small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small></div></div>';
     h += '<p class="bh3">You give</p>' + mkList(MK.mine, "give");
     h += '<p class="bh3" style="margin-top:18px">You get</p>' + mkList(MK.theirs, "get");
     h += '<p class="bh3" style="margin-top:18px">Cash</p><div class="mcash"><div class="seg" id="mcseg" role="group" aria-label="Cash" data-k="pick">'
