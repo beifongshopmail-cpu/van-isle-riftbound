@@ -555,6 +555,7 @@ html.gate body > :not(#ravigate){display:none!important}
 .acbig svg{width:44px;height:44px} /* size-exempt: the person drawn inside the 88 profile picture, a picture not a control */
 .panel.acct .doors+.doors,.panel.acct .pnote+.doors{margin-top:14px}
 .panel.acct .acgap{margin-top:12px}
+.acsaverow{margin-top:10px} /* M7 C2: Save your account as a row, wherever a page needs a saved account (account.js RAVI_SAVEROW) */
 .acrp{display:flex;align-items:center;gap:12px;margin:18px 2px 0}
 .acrp:first-child{margin-top:4px}
 .acrp .acav{width:48px;height:48px;flex:none} /* size-exempt: a reported player's picture in Mako's Reports queue, a picture not a control */

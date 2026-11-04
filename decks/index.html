@@ -474,6 +474,7 @@ body{-webkit-font-smoothing:antialiased;
 /* a long press shows the full card; no iPhone callout over it */
 .cpic,.gpic,.crb,.lcard,.hc{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .foot a{color:var(--bone)}
+#svissave:not(:empty)+#sshare{margin-top:6px!important} /* M7 C2: the Save your account row and Share link sit 6 apart, one group */
 </style>
 </head>
 <body>
@@ -607,7 +608,7 @@ body{-webkit-font-smoothing:antialiased;
     <div id="sdeck">
       <div class="row"><div class="doors" data-k="deeper"><button type="button" class="door" data-act="tags2"><span class="t">Tags</span><span class="sp"></span><small id="stagn"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div></div>
       <div class="row" id="svisrow"><p class="lb">Who sees it</p><div class="seg" id="svis" role="group" aria-label="Who sees it" data-k="pick"><button type="button" data-act="vis" data-v="" aria-pressed="true">Private</button><button type="button" data-act="vis" data-v="link" aria-pressed="false">Link</button><button type="button" data-act="vis" data-v="pub" aria-pressed="false">Public</button></div>
-        <p class="pnote" id="svisnote" style="margin-top:8px"></p>
+        <p class="pnote" id="svisnote" style="margin-top:8px"></p><div id="svissave"></div>
         <button type="button" class="pact btn glass" id="sshare" data-act="share" data-k="do" style="margin-top:8px" disabled>Share link</button></div>
       <div class="row"><div class="trio">
         <button type="button" class="glass" data-act="exp2" data-k="do"><span class="t">Export</span></button>
@@ -617,7 +618,7 @@ body{-webkit-font-smoothing:antialiased;
     </div>
     <div id="sro" hidden>
       <div class="doors" data-k="do"><button type="button" class="door act" id="roreport" data-act="roreport"><span class="t">Report this deck</span></button></div>
-      <p class="pnote" id="roreportnote" style="margin-top:8px">For a name, note or picture that is wrong for RAVI. Only RAVI sees reports.</p>
+      <p class="pnote" id="roreportnote" style="margin-top:8px">For a name, note or picture that is wrong for RAVI. Only RAVI sees reports.</p><div id="rosave"></div>
     </div>
   </div>
 </section>
@@ -1106,7 +1107,8 @@ body{-webkit-font-smoothing:antialiased;
     var b = el("roreport"), ok = savedAcct();
     b.disabled = !ok || (RO && RO.sent);
     b.querySelector(".t").textContent = RO && RO.sent ? "Reported" : "Report this deck";
-    el("roreportnote").textContent = !ok ? "Save your account to report a deck: tap your picture, top right." : RO && RO.sent ? "Thanks. Only RAVI sees reports." : "For a name, note or picture that is wrong for RAVI. Only RAVI sees reports.";
+    el("rosave").innerHTML = !ok && window.RAVI_SAVEROW ? window.RAVI_SAVEROW() : "";
+    el("roreportnote").textContent = !ok ? "Reports come from saved accounts." : RO && RO.sent ? "Thanks. Only RAVI sees reports." : "For a name, note or picture that is wrong for RAVI. Only RAVI sees reports.";
   }
   function roReport(){
     if(!RO || !A) return;
@@ -1117,7 +1119,8 @@ body{-webkit-font-smoothing:antialiased;
     var v = d.vis === "link" || d.vis === "pub" ? d.vis : "", ok = savedAcct(), n = sharedN(), full = !v && n >= SHAREMAX;
     el("svis").querySelectorAll("button").forEach(function(b){ var bv = b.getAttribute("data-v"); b.setAttribute("aria-pressed", bv === v ? "true" : "false"); b.disabled = bv !== v && (!ok || (!!bv && full)); });
     var note;
-    if(!ok) note = "Save your account to share decks: tap your picture, top right.";
+    el("svissave").innerHTML = !ok && window.RAVI_SAVEROW ? window.RAVI_SAVEROW() : "";
+    if(!ok) note = "Sharing needs a saved account.";
     else if(full) note = "You share " + SHAREMAX + " decks, the most at once. Make one of them Private to share this one.";
     else note = (v === "pub" ? "Anyone can find this deck on Decks' Public view, open it and copy it." : v === "link" ? "Anyone with its link can open this deck and copy it. It is listed nowhere." : "Only you see this deck.")
       + " Others see its cards, name and notes, and your name, @username and picture. " + n + " of " + SHAREMAX + " shared.";

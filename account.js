@@ -348,6 +348,23 @@
   "use strict";
   var doc = root.document;
   if (!doc || !root.RAVI_ACCT) return;
+  // SAVE YOUR ACCOUNT, AS A WAY THERE (M7 C2, Mako 2026-11-04: a way somewhere is a row that goes
+  // there, never 'tap your picture, top right'). RAVI_SAVEROW() is the row a page shows to an unsaved
+  // account; any [data-acsave] opens the account menu, whose first row is Save your account. A page
+  // menu open under it closes first.
+  root.RAVI_SAVEROW = function (label) {
+    return '<div class="doors acsaverow" data-k="deeper"><button type="button" class="door btn glass" data-acsave><span class="t">' + (label || "Save your account") + '</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>';
+  };
+  root.RAVI_ACCT_OPEN = function () {
+    var p = doc.getElementById("acpic");
+    if (!p || doc.querySelector(".panel.acct.show")) return;
+    var sc = doc.querySelector(".scrim.show");
+    if (sc) { sc.click(); setTimeout(function () { p.click(); }, 260); } else p.click();
+  };
+  doc.addEventListener("click", function (e) {
+    var t = e.target && e.target.closest ? e.target.closest("[data-acsave]") : null;
+    if (t) { e.preventDefault(); root.RAVI_ACCT_OPEN(); }
+  });
   var A = root.RAVI_ACCT;
   var REL = /\/[a-z]+\/(index\.html)?$/.test(root.location.pathname) ? "../" : "";
   var SVG_ME = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M3.5 21.5c0-5 3.8-8.5 8.5-8.5s8.5 3.5 8.5 8.5z"/></svg>';
@@ -425,17 +442,21 @@
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="ackeyoff"><span class="t">Remove this passkey</span></button></div>' +
         '<p class="acmsg" id="ackeyonemsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="ackeysave" data-k="do">Save</button></div>',
-      acdev: headTitle("Signed-in devices") + '<div class="pbody"><p class="pnote" id="acdevhere"></p><div class="doors acgap" id="acdevlist" data-k="do"></div>' +
+      acsec: headTitle("Sign-in and security") + '<div class="pbody"><div class="doors" data-k="deeper">' +
+        '<button type="button" class="door" data-acgo="ackeys"><span class="t">Passkeys</span><span class="sp"></span><small id="acseckeys"></small>' + CV + '</button>' +
+        '<button type="button" class="door" data-acgo="acdev"><span class="t">Devices</span><span class="sp"></span>' + CV + '</button>' +
+        '<button type="button" class="door" data-acgo="accode"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button></div></div>',
+      acdev: headTitle("Devices") + '<div class="pbody"><p class="pnote" id="acdevhere"></p><div class="doors acgap" id="acdevlist" data-k="do"></div>' +
         '<div class="doors" id="acdevallw" data-k="do"><button type="button" class="door act" id="acdevall"><span class="t">Sign out every other device</span></button></div>' +
         '<p class="acmsg" id="acdevmsg" aria-live="polite"></p></div>',
       acin: headTitle("Sign in") + '<div class="pbody"><div class="doors">' +
         '<button type="button" class="door act" id="acsign" data-k="do"><span class="t">Use a passkey</span></button>' +
-        '<button type="button" class="door" data-acgo="aclink" data-k="deeper"><span class="t">Use another phone</span><span class="sp"></span>' + CV + '</button></div>' +
+        '<button type="button" class="door" data-acgo="aclink" data-k="deeper"><span class="t">Another phone</span><span class="sp"></span>' + CV + '</button></div>' +
         // the recovery code is the last resort (plan 2 M6 block 3)
-        '<p class="lb">Lost all your devices?</p><div class="doors"><button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Use a recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
+        '<p class="lb">Lost all your devices?</p><div class="doors"><button type="button" class="door" data-acgo="acrec" data-k="deeper"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="pnote" id="acinnote"></p><p class="acmsg" id="acinmsg" aria-live="polite"></p></div>',
       // LINKING A PHONE (plan 2 M6 block 3): this phone shows a code and its QR; a signed-in phone approves it
-      aclink: headTitle("Use another phone") + '<div class="pbody"><p class="accode aclkcode" id="aclinkcode" aria-label="Link code"></p>' +
+      aclink: headTitle("Another phone") + '<div class="pbody"><p class="accode aclkcode" id="aclinkcode" aria-label="Link code"></p>' +
         '<div class="aclkqr" id="aclinkqr"></div>' +
         '<p class="pnote aclknote">On your signed-in phone, tap your picture, then Link a new device.</p>' +
         '<p class="acmsg aclknote" id="aclinkmsg" aria-live="polite"></p></div>' +
@@ -467,11 +488,11 @@
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
         '<button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
         '<p class="acmsg" id="acdatamsg" aria-live="polite"></p></div>',
-      acrec: headTitle("Use a recovery code") + '<div class="pbody"><div class="nf tall"><input type="text" id="acrecin" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Recovery code" data-k="type"></div>' +
+      acrec: headTitle("Recovery code") + '<div class="pbody"><div class="nf tall"><input type="text" id="acrecin" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Recovery code" data-k="type"></div>' +
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", aclink: "Use another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", acsec: "Sign-in and security", ackeys: "Passkeys", ackey: "Passkey", acdev: "Devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Recovery code", aclink: "Another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -509,13 +530,10 @@
         signIn + '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
     } else {
       headOf(h, a, "Add your name and picture");
-      var n = a && a.keys ? a.keys.length : 0;
       b.innerHTML = '<div class="doors" data-k="deeper">' +
         '<button type="button" class="door" data-acgo="acprof"><span class="t">Profile</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acok"><span class="t">Link a new device</span><span class="sp"></span>' + CV + '</button>' +
-        '<button type="button" class="door" data-acgo="ackeys"><span class="t">Passkeys</span><span class="sp"></span>' + (n ? '<small>' + n + '</small>' : '') + CV + '</button>' +
-        '<button type="button" class="door" data-acgo="acdev"><span class="t">Signed-in devices</span><span class="sp"></span>' + CV + '</button>' +
-        '<button type="button" class="door" data-acgo="accode"><span class="t">Recovery code</span><span class="sp"></span>' + CV + '</button>' +
+        '<button type="button" class="door" data-acgo="acsec"><span class="t">Sign-in and security</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button>' +
         (a && a.admin ? '<button type="button" class="door" data-acgo="acdispm"><span class="t">Disputes</span><span class="sp"></span>' + (a.disputes ? '<small>' + a.disputes + '</small>' : '') + CV + '</button>' : '') +
         (a && a.admin ? '<button type="button" class="door" data-acgo="acrepm"><span class="t">Reports</span><span class="sp"></span>' + (a.reports ? '<small>' + a.reports + '</small>' : '') + CV + '</button>' : '') + '</div>' +
@@ -627,6 +645,7 @@
     else if (id === "acdispm") { renderDisputes(); }
     else if (id === "acrepm") { renderReports(); }
     else if (id === "acpicm") { work = null; renderPics(); say("acpicmsg", ""); }
+    else if (id === "acsec") { var ks = a && a.keys ? a.keys.length : 0; $("acseckeys").textContent = ks ? String(ks) : ""; }
     else if (id === "ackeys") { renderKeys(); say("ackeymsg", ""); }
     else if (id === "ackey") { keyInfo(); }
     else if (id === "acdev") { renderDevices(); }
@@ -780,7 +799,7 @@
     A.linkOk(c, function (err) {
       if (err) { g.disabled = false; return say("acokmsg", err); }
       okCode = ""; $("acokwho").textContent = "";
-      say("acokmsg", "Linked. It shows in Signed-in devices.");
+      say("acokmsg", "Linked. It shows in Devices.");
       g.disabled = false; // says Linked for a moment, then dims until the next code
       done(g, "Linked", function () { g.disabled = true; g.textContent = "Link"; });
     });
@@ -975,7 +994,7 @@
       var r = a && a.riot, can = A.signedIn() && !r;
       $("acsu2in").hidden = !can;
       $("acsu2note").textContent = r ? "Yours is " + r.n + "#" + r.tag + ". It finds your table and your alerts at live events." :
-        A.signedIn() ? "One RAVI account per Riot ID. It finds your table and your alerts at live events." : "Your Riot ID needs a connection. Add it later in Profile: tap your picture.";
+        A.signedIn() ? "One RAVI account per Riot ID. It finds your table and your alerts at live events." : "Your Riot ID needs a connection. Add it later in Profile.";
       if (can) riotInto(a);
       say("acsu2msg", "");
       suNext(2, !!r);

@@ -638,7 +638,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(AREA[a]) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
     var mine = picks();
     box.innerHTML = "<div class=\"doors\" data-k=\"deeper\">" + list.map(function(e){
-      var c = COUNTED[e.id], bits = [e.store, dayText(e)].filter(Boolean);
+      var c = COUNTED[e.id], bits = [window.RAVI_WHEN(e.t), e.store].filter(Boolean);
       if (c && c.s.length) { bits.push(c.s.length + " of " + c.n + " added"); }
       if (mine[e.id] && Object.keys(mine[e.id].p).length) { bits.push("you added " + Object.keys(mine[e.id].p).length); }
       return "<button type=\"button\" class=\"door rec\" data-ev=\"" + e.id + "\"><span class=\"t\">" + esc(e.name) + "</span><small>" + esc(bits.join(" \u00b7 ")) + "</small>" +

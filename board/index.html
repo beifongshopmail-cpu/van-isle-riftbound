@@ -72,8 +72,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bnm{flex:1;min-width:0}
 .bnm b{display:block;font-family:var(--disp);font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bnm small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bboth{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 9px 0 7px;border-radius:12px;background:var(--bone);color:var(--ink);font-family:var(--disp);font-weight:600;font-size:12px}
-.bboth svg{width:14px;height:14px}
+.bboth{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap} /* M7 B6: plain words; a glass or bone pill read as a button (Mako 2026-11-04) */
 .bwho .cvr{flex:0 0 16px}
 .bsec{padding:0 14px;margin-top:8px}
 .blab{margin:0 2px 6px;font-size:12px;font-weight:600;color:var(--muted)}
@@ -123,7 +122,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .btop .bpic svg{width:30px;height:30px}
 .btop .bnm b{font-size:17px;font-weight:700}
 .btop .bnm small{font-size:13px;margin-top:2px}
-.btop .bboth{margin-top:6px;display:inline-flex}
+.btop .bboth{margin-top:2px;display:block}
 .bcbig{flex:0 0 auto;width:104px;height:145px;border-radius:7px;overflow:hidden;background:var(--recess);position:relative} /* size-exempt: card art */
 .bcbig img{display:block;width:100%;height:100%;object-fit:cover}
 .bcbig.sq img{object-fit:contain}
@@ -203,7 +202,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="players" aria-pressed="false">Players</button><button type="button" data-v="cards" aria-pressed="false">All cards</button></div>
   </div>
   <div class="hsort" id="bhead" hidden><p id="bcount"></p><button type="button" class="dvsort glass" id="bsort" data-fills="psort" data-k="do"><span id="bsortt">Most in demand</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button></div>
-  <p class="bnote" id="bme"></p>
+  <p class="bnote" id="bme"></p><div id="bmesave"></div>
   <div id="blist"></div>
   <p class="bnote" id="bsum">Loading the board.</p>
 
@@ -249,7 +248,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="lb">What you share</p>
     <div class="pick" id="shpick" data-k="pick"></div>
     <p class="pnote">Others see each card and how many, with your name, area and picture. Never what you paid.</p>
-    <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
+    <div class="doors acsaverow" id="shguest" data-k="deeper" hidden><button type="button" class="door btn glass" data-acsave><span class="t">Save your account</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">How others see you</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button><button type="button" class="door btn glass" id="bblk"><span class="t">Blocked players</span><span class="sp"></span><small id="bblkn"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <p class="lb" style="margin-top:14px">Open to</p>
     <div class="pick" id="opick" data-k="pick"><button type="button" data-o="trade">Trades<span class="sp"></span><small>Cards for cards</small></button><button type="button" data-o="sale">Sales<span class="sp"></span><small>Your cards for cash</small></button><button type="button" data-o="both">Both</button></div>
@@ -427,8 +426,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (f.area) { bits.push(AREAS[f.area]); }
     return bits.join(" \u00b7 ");
   }
-  var BOTH = '<span class="bboth">' + window.RAVI_ICON("board") + 'Both ways</span>';
-  var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
+  var BOTH = '<span class="bboth">Both ways</span>';
+  function saveRow(l){ return window.RAVI_SAVEROW ? window.RAVI_SAVEROW(l) : ""; } // M7 C2: the way there, not directions
+var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
 
   // ---- STATE ----
   var DATA = clean(null), VIEW = "match", Q = "", LOADED = false, ERR = "";
@@ -502,8 +502,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       return '<article class="bt glass">'
         + '<button type="button" class="bwho" data-who="' + esc(t.h) + '" aria-label="' + esc(nameOf(t)) + ', see the trade" data-k="deeper">' + pic(t)
         + '<span class="bnm"><b>' + esc(nameOf(t)) + '</b>' + (subOf(t) ? '<small>' + esc(subOf(t)) + '</small>' : '') + '</span>' + (t.two ? BOTH : '') + CVR + '</button>'
-        + shelf(t.has, t.h, "has", "Has " + plural(cardsN(t.has), "card", "cards") + " you want")
         + shelf(t.wants, t.h, "wants", "Wants " + plural(cardsN(t.wants), "card", "cards") + " you have")
+        + shelf(t.has, t.h, "has", "Has " + plural(cardsN(t.has), "card", "cards") + " you want")
         + '</article>';
     }).join("");
     fades();
@@ -574,7 +574,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (DATA.me.want) { bits.push("Matched against your Wishlist (" + plural(DATA.me.want, "card", "cards") + ")"); }
     if (shared.binders) { bits.push((bits.length ? "and " : "Matched against ") + (shared.binders === 1 ? "your For trade binder" : "your " + shared.binders + " For trade binders")); }
     var s = bits.length ? bits.join(" ") + "." : "";
-    if (!DATA.saved) { s += (s ? " " : "") + "Others can't see your cards until you save your account: tap your picture, top right."; }
+    if (!DATA.saved) { s += (s ? " " : "") + "Others can't see your cards until you save your account."; }
     else if (!DATA.me.area) { s += (s ? " " : "") + "Set your home area on your profile to see players near you first."; }
     if (DATA.me.pich) { s = "Your picture is hidden from other players for now, after reports." + (s ? " " + s : ""); }
     return s;
@@ -588,6 +588,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board."; $("bsum").hidden = false; $("bme").textContent = ""; $("bhead").hidden = true; return; }
     $("bme").textContent = meLine();
     $("bme").hidden = !$("bme").textContent;
+    $("bmesave").innerHTML = DATA.saved || DATA.me.off ? "" : saveRow();
     HEADN = "";
     $("bsum").textContent = VIEW === "cards" ? drawBrowse() : VIEW === "players" ? drawPlayers() : drawMatches();
     $("bsum").hidden = !$("bsum").textContent;
@@ -624,19 +625,19 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     $("pwhot").textContent = nameOf(f);
     var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '<small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small>' + (t.two ? BOTH : '') + '</div></div>';
     h += nextRow(f.nx, "Next event");
-    if (t.has.length) { h += '<p class="bh3">Has ' + plural(cardsN(t.has), "card", "cards") + ' you want</p>' + grid(t.has, WHO, "has"); }
     if (t.wants.length) { h += '<p class="bh3">Wants ' + plural(cardsN(t.wants), "card", "cards") + ' you have</p>' + grid(t.wants, WHO, "wants"); }
+    if (t.has.length) { h += '<p class="bh3">Has ' + plural(cardsN(t.has), "card", "cards") + ' you want</p>' + grid(t.has, WHO, "has"); }
     if (t.has.length || t.wants.length) {
       var th = total(t.has), yo = total(t.wants);
       th = th == null ? null : th * f.pct / 100; yo = yo == null ? null : yo * myPct() / 100;
-      h += '<div class="nrows"><div class="nrow"><div><b>Theirs</b><small>' + plural(cardsN(t.has), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(th) + '</span></div>'
-        + '<div class="nrow"><div><b>Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div></div>';
+      h += '<div class="nrows"><div class="nrow"><div><b>Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div>'
+        + '<div class="nrow"><div><b>Theirs</b><small>' + plural(cardsN(t.has), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(th) + '</span></div></div>';
       h += '<button type="button" class="pact btn glass" id="bprice" data-k="do">Price this trade</button><p class="bmsg" id="bpricemsg" hidden></p>';
     }
     var ow = offerWith(WHO);
     if (t.has.length || t.wants.length || rest.length || ow) {
       h += '<button type="button" class="pact btn glass" id="bmake" data-k="deeper" style="margin-top:8px"' + (!ow && !selfSaved() ? ' disabled' : '') + '>' + (ow ? "See your offer" : "Make an offer") + '</button>';
-      if (!ow && !selfSaved()) { h += '<p class="pnote">Save your account to make offers: tap your picture, top right.</p>'; }
+      if (!ow && !selfSaved()) { h += saveRow(); }
     }
     if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
     // their Public decks (plan 2 M3): Decks' Public view on just this player
@@ -693,7 +694,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function selfSaved(){ if (LOADED) { return DATA.saved; } var v = A && A.view && A.view(); return !!(v && !v.guest); }
   function drawSelf(){
     var me = myShare(), f = selfFace(), h = "";
-    if (!selfSaved()) { h += '<p class="bmsg">No one can see this yet. Save your account to show it: tap your picture, top right.</p>'; }
+    if (!selfSaved()) { h += '<p class="bmsg">No one can see this yet.</p>' + saveRow(); }
     h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<div class="doors" data-k="deeper" style="margin:0 0 14px"><a class="door btn glass" href="../calendar/"><span class="t">Your next event</span><span class="sp"></span><small>Pick one in Events</small>' + CVR + '</a></div>';
     if (!me.have.length && !me.want.length) {
       h += '<p class="bmsg">You aren\'t sharing anything yet. Mark a binder For trade, or turn on Your Wishlist, in Trade board settings.</p>';
@@ -860,7 +861,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (OPENP === poffer) { drawOffer(); } else if (OPENP === pwho) { drawWho(); }
   }).catch(function(){});
   var DFMT = new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
-  function evWhen(e){ return DFMT.format(new Date(e.t)).replace(/\./g, ""); }
+  function evWhen(e){ return window.RAVI_WHEN(e.t); } // M7 B4: dates one way (pages.js)
   function evWords(id){
     if (!id) { return ""; }
     var e = EV[id];
@@ -878,8 +879,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // the Offers menu: waiting on you, agreed, sent, then the past
   function offerLine(o){
     var bits = [];
-    if (o.get.length) { bits.push("You get " + cardsN(o.get)); }
-    if (o.give.length) { bits.push("you give " + cardsN(o.give)); }
+    if (o.give.length) { bits.push("You give " + cardsN(o.give)); }
+    if (o.get.length) { bits.push((bits.length ? "you get " : "You get ") + cardsN(o.get)); }
     var s = bits.join(", "); s = s.charAt(0).toUpperCase() + s.slice(1);
     if (o.cash) { s += (s ? ", " : "") + (o.cash.by === "me" ? "you add $" : "they add $") + o.cash.n; }
     return s;
@@ -894,7 +895,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
   function drawOffers(){
     var h = "";
-    if (!selfSaved()) { h += '<p class="bmsg">Save your account to make and answer offers: tap your picture, top right.</p>'; }
+    if (!selfSaved()) { h += saveRow(); }
     if (OFFERR && !OFFLOADED) { h += '<p class="bmsg">' + esc(OFFERR) + '</p>'; }
     var groups = [["Waiting on you", OFF.filter(function(o){ return o.turn; })], ["Agreed", OFF.filter(function(o){ return o.st === "accepted"; })],
       ["Sent", OFF.filter(function(o){ return o.st === "open" && o.sent; })], ["Past", OFF.filter(function(o){ return o.st !== "open" && o.st !== "accepted"; }).slice(0, 20)]];
@@ -950,8 +951,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       : o.st === "accepted" ? "<b>Agreed.</b> " + (o.done.me ? "You marked it done; waiting on them." : o.done.them ? "They marked it done." : "Meet up, swap, then tap Trade done.")
       : "<b>" + esc(STW[o.st]) + ".</b>";
     h += '<p class="ost">' + st + '</p>';
-    if (o.get.length) { h += '<p class="bh3">You get ' + plural(cardsN(o.get), "card", "cards") + '</p>' + lineGrid(o.get, f.pct); }
     if (o.give.length) { h += '<p class="bh3">You give ' + plural(cardsN(o.give), "card", "cards") + '</p>' + lineGrid(o.give, myPct()); }
+    if (o.get.length) { h += '<p class="bh3">You get ' + plural(cardsN(o.get), "card", "cards") + '</p>' + lineGrid(o.get, f.pct); }
     h += verdict(o.give, o.get, o.cash, f.pct);
     h += '<div class="nrows">';
     if (o.cash) { h += '<div class="nrow"><div><b>Cash</b><small>' + (o.cash.by === "me" ? "You pay them" : "They pay you") + '</small></div><span class="sp"></span><span class="v">$' + o.cash.n + ' ' + o.cash.cur + '</span></div>'; }
@@ -1129,7 +1130,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function mkCash(){ var n = parseInt(MK.cash.n, 10); return MK.cash.by && n > 0 ? { n: Math.min(9999, n), by: MK.cash.by, cur: CUR } : null; }
   function mkProblem(){
     var get = picked(MK.get, MK.theirs), give = picked(MK.give, MK.mine), c = mkCash();
-    if (!selfSaved()) { return "Save your account first: tap your picture, top right."; }
+    if (!selfSaved()) { return "Save your account first."; }
     if (!get.length && !give.length) { return "Tap a card to put it in the offer."; }
     if (MK.cash.by && !c) { return "Type how many dollars, or pick No cash."; }
     if (MK.re) { return ""; }
@@ -1154,8 +1155,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawMake(){
     var f = MK.f, get = picked(MK.get, MK.theirs), give = picked(MK.give, MK.mine), c = mkCash();
     var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b><small>' + esc(OPENW[f.open] + (f.pct === 100 ? ", at market" : ", at " + f.pct + "% of market")) + '</small></div></div>';
-    h += '<p class="bh3">You get</p>' + mkList(MK.theirs, "get");
-    h += '<p class="bh3" style="margin-top:18px">You give</p>' + mkList(MK.mine, "give");
+    h += '<p class="bh3">You give</p>' + mkList(MK.mine, "give");
+    h += '<p class="bh3" style="margin-top:18px">You get</p>' + mkList(MK.theirs, "get");
     h += '<p class="bh3" style="margin-top:18px">Cash</p><div class="mcash"><div class="seg" id="mcseg" role="group" aria-label="Cash" data-k="pick">'
       + [["", "No cash"], ["me", "You add"], ["them", "They add"]].map(function(o){ return '<button type="button" data-by="' + o[0] + '" aria-pressed="' + (MK.cash.by === o[0]) + '">' + o[1] + '</button>'; }).join("")
       + '</div><div class="nf' + (MK.cash.by ? "" : " off") + '"><input type="text" id="mcn" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Dollars, ' + CUR + '" aria-label="Dollars" value="' + esc(MK.cash.n) + '" data-k="type"></div></div>';
@@ -1296,7 +1297,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var h = '<p class="bh3">What\'s wrong?</p><div class="doors" data-k="do">' + REASONS.map(function(r){
       return '<button type="button" class="door act btn glass" data-rp="' + r[0] + '"' + (saved ? '' : ' disabled') + '><span class="t">' + esc(r[1]) + '</span><span class="sp"></span>' + (REPSENT === r[0] ? '<small>Sent</small>' : '') + '</button>';
     }).join("") + '</div>';
-    if (!saved) { h += '<p class="pnote">Save your account to report: tap your picture, top right.</p>'; }
+    if (!saved) { h += saveRow(); }
     h += '<p class="bmsg" id="rpmsg" hidden></p>';
     h += '<p class="bh3" style="margin-top:18px">Block</p><div class="doors" data-k="do"><button type="button" class="door act btn glass" id="rpblock"><span class="t">Block ' + esc(nameOf(f)) + '</span></button></div>';
     h += '<p class="pnote">Only RAVI sees reports. Blocking is silent.</p>';

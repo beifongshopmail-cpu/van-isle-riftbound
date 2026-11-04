@@ -285,7 +285,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var e = list[i], on = st.ev === e.id;
       var who = e.reg !== null ? e.reg + (e.cap ? " of " + e.cap : "") + " registered" : "";
       h += '<button type="button" data-ev="' + esc(e.id) + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span class="t">' + esc(e.name) + '</span><small>' +
-        esc([window.RAVI_DATE(e.day, true), window.RAVI_TIME(e.time), e.venue, who].filter(Boolean).join(" \u00b7 ")) + '</small></button>';
+        esc([window.RAVI_DATE(e.day, true) + (e.time ? ", " + window.RAVI_TIME(e.time) : ""), e.venue, who].filter(Boolean).join(" \u00b7 ")) + '</small></button>';
     }
     if (!list.length) { h += '<button type="button" disabled aria-pressed="false">No events from today on</button>'; }
     h += '<button type="button" data-ev=""' + (!st.ev ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>No event</button>';

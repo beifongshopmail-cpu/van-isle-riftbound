@@ -74,17 +74,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lb stlb">Alerts</p>
   <div class="doors stgrp" id="stalert" data-k="deeper">
       <button type="button" class="door" data-st="pme"><span class="t">Live event pairings</span><span class="sp"></span><small id="pmev"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
-      <button type="button" class="door" data-st="poffer"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
+  <div class="pick stgrp" id="stalert2" data-k="pick"><button type="button" id="stoffer" data-st="poffer" aria-pressed="false"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small></button></div>
+  <p class="stmsg" id="stoffermsg" aria-live="polite"></p>
   <p class="lb stlb">Hub</p>
   <div class="doors stgrp" id="sthubg" data-k="deeper">
       <button type="button" class="door" data-st="phub"><span class="t">Hub layout</span><span class="sp"></span><small id="phubv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door" data-st="popen"><span class="t">Open the app to</span><span class="sp"></span><small id="popenv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
   <p class="lb stlb">Tier list</p>
-  <div class="doors stgrp" id="sttier" data-k="deeper">
-      <button type="button" class="door" data-st="plocal"><span class="t">Share my legend</span><span class="sp"></span><small id="plocalv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
-  </div>
+  <div class="pick stgrp" id="sttier" data-k="pick"><button type="button" id="stauto" data-st="plocal" aria-pressed="true" class="on"><span class="t">Share my legend</span></button></div>
   <p class="lb stlb">Display</p>
   <div class="doors stgrp" id="stdisp" data-k="deeper">
       <button type="button" class="door" data-st="pmotion"><span class="t">Motion</span><span class="sp"></span><small id="pmotionv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
@@ -108,7 +107,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   "hub",
   {go:"settings"},
   {tag:"button", icon:"reset", a:[["class", "tab"], ["id", "streset"], ["aria-label", "Reset settings"], ["data-k", "slot"], ["data-fills", "preset"]]},
-  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]}
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 
 <div class="scrim" id="scrim"></div>
@@ -135,21 +134,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="lb">Try it</p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
-  </div>
-</section>
-<section class="panel frost" id="poffer" aria-hidden="true" aria-label="Trade offers">
-  <div class="phead"><h4 class="ttl" id="poffert">Trade offers</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <div class="pick" data-k="pick"><button type="button" id="stoffer" aria-pressed="false">Alert me<span class="sp"></span><small>When an offer comes</small></button></div>
-    <p class="pnote" id="stoffern">An alert on this phone when a player on the Trade board sends you an offer or a counter. The same switch as in Trade board settings.</p>
-    <p class="stmsg" id="stoffermsg" aria-live="polite"></p>
-  </div>
-</section>
-<section class="panel frost" id="plocal" aria-hidden="true" aria-label="Share my legend">
-  <div class="phead"><h4 class="ttl" id="plocalt">Share my legend</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <div class="pick" id="stlocal" data-k="pick"><button type="button" id="stauto" aria-pressed="true" class="on">Share my legend</button></div>
-    <p class="pnote">After an event you played, the legend you set on the Game page goes on the Tier list's Local view with your placing, once Riot's final standings are up. Only the legend and the placing show, never your name. It needs your Riot ID.</p>
   </div>
 </section>
 <section class="panel frost" id="phub" aria-hidden="true" aria-label="Hub layout">
@@ -219,7 +203,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   scrim.addEventListener("click", function(){ show(null); });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape" && shown) { show(null); } });
   document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", function(){ show(null); }); });
-  document.querySelectorAll("[data-st]").forEach(function(b){ b.addEventListener("click", function(){ show(document.getElementById(b.getAttribute("data-st"))); }); });
+  document.querySelectorAll(".doors [data-st]").forEach(function(b){ b.addEventListener("click", function(){ show(document.getElementById(b.getAttribute("data-st"))); }); });
 })();
 </script>
 <script>
@@ -269,7 +253,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     val("popen", ot);
     val("phub", window.RAVI_HUB_PICKS().length + " of " + window.RAVI_HUB_MAX);
     val("pmotion", less || sys ? "Reduced" : on && fxOn ? "On" : !on && !fxOn ? "Off" : "Part on");
-    val("plocal", af ? "On" : "Off");
     // Dates and prices: one pick each, the chosen row checked
     var cur = window.RAVI_CUR(), clk = get(CKEY) === "24" ? "24" : "12", wk = get(WKEY) === "mon" ? "mon" : "sun";
     [["stcur", cur], ["stclock", clk], ["stweek", wk]].forEach(function(x){
@@ -303,14 +286,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawOffer(){
     var A = window.RAVI_ACCT, on = !!(A && A.offerAlertsOn && A.offerAlertsOn()), saved = !!(A && A.signedIn() && !A.isGuest());
     offer.setAttribute("aria-pressed", String(on)); offer.classList.toggle("on", on);
-    offer.disabled = !saved;
-    document.getElementById("stoffern").textContent = saved ? "An alert on this phone when a player on the Trade board sends you an offer or a counter. The same switch as in Trade board settings."
-      : "Save your account first: tap your picture, top right. Offers come only to a saved account.";
-    val("poffer", saved ? (on ? "On" : "Off") : "Off");
+    val("poffer", saved ? "" : "Save your account first");
   }
   offer.addEventListener("click", function(){
     var A = window.RAVI_ACCT;
     if (!A || offer.disabled) { return; }
+    if (!(A.signedIn() && !A.isGuest())) { if (window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN(); } return; }
     var on = A.offerAlertsOn();
     offer.disabled = true; offerMsg.textContent = on ? "Turning off." : "Turning on.";
     (on ? A.offerAlertStop : function(cb){ A.offerAlertStart(new URL("../alerts-sw.js", location.href).href, cb); })(function(err){
@@ -325,7 +306,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function find(){
     var q = stq.value.toLowerCase().replace(/[^a-z0-9#\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
     stqx.disabled = !stq.value;
-    ["stalert", "sthubg", "sttier", "stdisp"].forEach(function(g){
+    ["stalert", "stalert2", "sthubg", "sttier", "stdisp"].forEach(function(g){
       var grp = document.getElementById(g), left = 0;
       grp.querySelectorAll("[data-st]").forEach(function(b){
         var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);
@@ -333,7 +314,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         b.hidden = !hit; if (hit) { left++; }
       });
       grp.hidden = !left; if (left) { any = true; }
-      if (grp.previousElementSibling && grp.previousElementSibling.classList.contains("stlb")) { grp.previousElementSibling.hidden = !left; }
+    });
+    // a label stays while any group under it has a row left (Alerts holds a press group and a check row)
+    document.querySelectorAll("#st .stlb").forEach(function(lb){
+      var n = lb.nextElementSibling, left = false;
+      while (n && !n.classList.contains("stlb")) { if (n.classList.contains("stgrp") && !n.hidden) { left = true; } n = n.nextElementSibling; }
+      lb.hidden = !left;
     });
     none.hidden = any;
   }
