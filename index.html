@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script src="pages.js"></script>
 <script src="account.js"></script>
+<script src="hubedit.js"></script>
 <script>
 (function(){
   // THE OPEN-TO CHECK. If the visitor asked for the hub explicitly
@@ -542,13 +543,15 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
     var b = h && h.querySelector(".rb");
     var off = false; try { off = !!localStorage.getItem("ravi.fx.off.v1"); } catch (e) {} // App settings: Hub glow and rim off (plan 2 M6)
     if (b && !still && !off) { b.classList.add("flow"); }
+    // THE FIRST-TIME SETUP (plan 2 M6 block 6): once, on the installed app's first hub, after the intro
+    if (window.RAVI_SETUP) { window.RAVI_SETUP.auto(); }
   }
   // Not behind the install screen either (pages.js): it plays once the
   // visitor continues, or in the installed app.
   if (!h || window.RAVI_AWAY) { return; }
   if (window.RAVI_GATE) { flow(); return; }
   try {
-    if (still) { return; }
+    if (still) { if (window.RAVI_SETUP) { window.RAVI_SETUP.auto(); } return; } // no intro, no glow: the setup still opens
     if (!h.animate || !h.querySelector(".rbl")) { flow(); return; }
     if (localStorage.getItem("ravi.intro.off.v1")) { flow(); return; }
     if (sessionStorage.getItem("ravi.intro.v1")) { flow(); return; }
@@ -704,9 +707,12 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
     return o.join(",");
   }
   var grid = document.getElementById("grid");
-  var h = "", picks = window.RAVI_HUB_PICKS ? window.RAVI_HUB_PICKS() : [], on = {};
   var byId = {};
   for (var i = 0; i < PAGES.length; i++) { byId[PAGES[i].id] = PAGES[i]; }
+  // drawn on load, and again when the first-time setup's Your hub step changes the picks
+  // (plan 2 M6 block 6: window.RAVI_HUB_DRAW, called by account.js as the setup closes)
+  function drawGrid(){
+  var h = "", picks = window.RAVI_HUB_PICKS ? window.RAVI_HUB_PICKS() : [];
   for (var k = 0; k < picks.length; k++) {
     var p = byId[picks[k]]; // in the order App settings' Hub layout keeps (plan 2 M6)
     if (!p || !p.path) { continue; }
@@ -714,6 +720,9 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
   }
   h += '<button type="button" class="blk glass allp" id="hall" aria-haspopup="true" aria-expanded="false" aria-controls="pall" data-k="do"><span class="bi">' + window.RAVI_ICON("allpages") + '</span><span class="bn">All pages</span></button>';
   grid.innerHTML = h;
+  }
+  drawGrid();
+  window.RAVI_HUB_DRAW = drawGrid;
   // THE BLOCKS RISE IN ONCE PER LAUNCH, with the launch intro (STYLE.md,
   // Motion): one after another, while the name is being read, all done by
   // about 1.25s. Any other visit to the hub shows them at rest.
@@ -729,16 +738,18 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
 
   // THE ALL PAGES TRAY: the Go to tiles for every page, App settings last.
   // While it is open the page is locked at the root (html.lock in app.css).
-  var pall = document.getElementById("pall"), scrim = document.getElementById("scrim"), hall = document.getElementById("hall"), open = false;
+  var pall = document.getElementById("pall"), scrim = document.getElementById("scrim"), open = false;
   window.RAVI_GOTO(document.getElementById("pallgoto"), "hub", "", false, true);
   function set(v){
     open = v;
     pall.classList.toggle("show", v); scrim.classList.toggle("show", v);
     document.documentElement.classList.toggle("lock", v);
     pall.setAttribute("aria-hidden", v ? "false" : "true");
-    hall.setAttribute("aria-expanded", v ? "true" : "false");
+    var hall = document.getElementById("hall");
+    if (hall) { hall.setAttribute("aria-expanded", v ? "true" : "false"); }
   }
-  hall.addEventListener("click", function(){ set(!open); });
+  // on the grid, so a redrawn All pages block still opens the tray
+  grid.addEventListener("click", function(e){ if (e.target.closest && e.target.closest("#hall")) { set(!open); } });
   scrim.addEventListener("click", function(){ set(false); });
 
   /* iOS only fires the pressed state on non-button elements while a touch

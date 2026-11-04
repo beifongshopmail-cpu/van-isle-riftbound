@@ -329,6 +329,7 @@ html.lock,html.lock body{overflow:hidden}
    .door, or trailing a plain glass foot button (e.g. "Receipt image")
    that also opens one level deeper. */
 .door{display:flex;align-items:center;gap:10px;width:100%;height:var(--sz-row);box-sizing:border-box;padding:0 16px;border-radius:999px;
+a.door{color:inherit;text-decoration:none} /* a door that is a link looks like any door, on every page (the hub has no link reset of its own) */
   font-family:var(--disp);font-weight:600;font-size:15px;text-align:left}
 .door .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .door .sp{flex:1}
@@ -600,3 +601,42 @@ html.gate body > :not(#ravigate){display:none!important}
 .ridn{flex:1 1 auto;min-width:0}
 .ridt{flex:0 0 136px;min-width:0} /* a 5-letter tag at 16 with room to spare: its input stays wider than 88 */
 .rid .nf input{min-width:0;width:0} /* grows to fill its field (flex:1); an input never claims its default width here */
+
+/* HUB LAYOUT (plan 2 M6, Mako 2026-11-03; shared by App settings and the first-time setup from
+   block 6, hubedit.js): a copy of the hub's grid, All pages fixed last, empty
+   places dashed; under it the pages not on the hub, three across.
+   The copy's blocks are the hub's own (index.html .blk: size, corner, padding, arc, icon and name;
+   Mako 2026-11-03: they must look the same). The menu's body spans the panel's width, which is the
+   hub plate's width on every phone, so the copy stands 7 in (8 less the panel's 1px rim) as the hub's grid does
+   and every block comes out the hub's size. Behind it, the hub plate's curved top in --recess.
+   Blocks are dragged (pointer events; touch-action none, so a drag never scrolls the menu) or
+   tapped one then another. */
+.hlg{display:flex;flex-wrap:wrap;justify-content:center;row-gap:18px;column-gap:12px;margin:0 -16px;padding:34px 7px 22px;
+  border-radius:50% 50% 0 0 / 40px 40px 0 0;background:var(--recess)}
+.hlg > .hlb{width:calc((100% - 24px) / 3)}
+.hlg > .hlb:nth-child(2),.hlg > .hlb:nth-child(5){top:-14px}
+.hlg > .hlb:nth-child(3n+1):nth-last-child(2),.hlg > .hlb:nth-child(3n+1):nth-last-child(2) + .hlb{margin:0 5px}
+.hls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;border-radius:22px;background:var(--recess);min-height:64px}
+.hlb{position:relative;box-sizing:border-box;aspect-ratio:1/1;border:0;border-radius:20px;padding:11px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.45);
+  color:rgb(var(--ci,237,234,227));font:inherit;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.hlb svg{flex:0 0 auto;margin:auto 0;width:min(60px, calc(33.33vw - 69.6px));height:min(60px, calc(33.33vw - 69.6px));stroke-width:1.5;--sw:1.5;opacity:.82} /* the hub's 60, or less on a narrow phone, as index.html .blk .bi svg */
+.hlb svg:has(.icb) .ico{display:none}
+.hlb svg .icb{display:inline}
+.hlb span{max-width:100%;font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:389px){.hlb span{letter-spacing:-.02em}}
+/* the shelf's blocks stay small: a page's hub icon at 24 over its name at 12 */
+.hlsm{border-radius:16px;padding:6px 4px;justify-content:center;gap:4px;box-shadow:var(--glass-base)}
+.hlsm svg{flex:1 1 auto;margin:0;min-height:0;width:24px;height:auto;max-height:24px} /* size-exempt: a page's hub icon in the shelf */
+.hlsm span{font-size:12px;line-height:1.2;letter-spacing:0}
+.hle{border:1.5px dashed var(--faint);background:none;box-shadow:none}
+/* All pages: plain glass, frosted, no page colour (index.html .blk.allp), never the Settings tint */
+.hla{color:var(--bone);background:var(--frost-solid)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .hla{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+}
+.hlb.picked,.hlb.over{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
+.hls.over{box-shadow:inset 0 0 0 2px var(--bone)}
+/* the drag: a copy follows the finger, fixed and with no transition; the block's place dims */
+.hlghost{position:fixed;z-index:60;margin:0;pointer-events:none;transition:none;filter:brightness(1.15);box-shadow:0 14px 30px rgba(0,0,0,.55)}
+.hlhold{opacity:.35}

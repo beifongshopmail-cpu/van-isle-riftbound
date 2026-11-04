@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
 <script src="../account.js"></script>
+<script src="../hubedit.js"></script>
 <style>
 /* New here (M15, 2026-10-27): two guides, New to Riftbound and New to RAVI (Mako's notes
    2026-10-27), on one track. Static words, no data read, so nothing here can be fed from
@@ -30,7 +31,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .nsec .shead{margin:0 4px 6px}
 .ntx{margin:0 4px 10px;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
 .ntx b{font-family:var(--disp);font-weight:600}
-.nsec .doors{margin-top:12px}
+.nsec .doors,.nsec .pact{margin-top:12px}
 /* the guide track: New to Riftbound | New to RAVI; one guide shows at a time */
 .gsel{margin:16px 0 0}
 .foot a{color:var(--bone)}
@@ -160,11 +161,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="shead"><h2>Your deck</h2></div>
     <p class="ntx">A Legend, its Chosen Champion, a Main deck of 40 cards, 12 runes and 3 battlefields.</p>
     <div class="nfig ndk">
-      <figure class="ncd"><img src="../cards/art/f57c14381b126e9f5a7b5bc4913151cb24c14fc3.t.webp" alt="Jinx, Loose Cannon, a Legend" width="200" height="279" loading="lazy"><figcaption>Legend, 1</figcaption></figure>
-      <figure class="ncd"><img src="../cards/art/d6cac988aa7798945e550eba6841d3993868c4a4.t.webp" alt="Jinx, Demolitionist, a champion unit" width="200" height="279" loading="lazy"><figcaption>Chosen Champion, 1</figcaption></figure>
-      <figure class="ncd"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt="Fury Rune" width="200" height="279" loading="lazy"><figcaption>Runes, 12</figcaption></figure>
-      <figure class="ncd nland"><span class="nlay"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="Grove of the God-Willow, a battlefield, with two more face down behind it" width="744" height="533" loading="lazy"></span><figcaption>Battlefields, 3</figcaption></figure>
-      <figure class="ncd"><span class="nstk"><img src="../cards/backs/back-blue.webp" alt="A Main deck, face down" width="744" height="1039" loading="lazy"></span><figcaption>Main deck, 40 (39 + Chosen Champion)</figcaption></figure>
+      <figure class="ncd"><img src="../cards/art/f57c14381b126e9f5a7b5bc4913151cb24c14fc3.t.webp" alt="Jinx, Loose Cannon, a Legend" width="200" height="279" loading="lazy"><figcaption>1 Legend</figcaption></figure>
+      <figure class="ncd"><img src="../cards/art/d6cac988aa7798945e550eba6841d3993868c4a4.t.webp" alt="Jinx, Demolitionist, a champion unit" width="200" height="279" loading="lazy"><figcaption>1 Chosen Champion</figcaption></figure>
+      <figure class="ncd"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt="Fury Rune" width="200" height="279" loading="lazy"><figcaption>12 Runes</figcaption></figure>
+      <figure class="ncd nland"><span class="nlay"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="Grove of the God-Willow, a battlefield, with two more face down behind it" width="744" height="533" loading="lazy"></span><figcaption>3 Battlefields</figcaption></figure>
+      <figure class="ncd"><span class="nstk"><img src="../cards/backs/back-blue.webp" alt="A Main deck, face down" width="744" height="1039" loading="lazy"></span><figcaption>40 Main deck (39 + Chosen Champion)</figcaption></figure>
     </div>
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
@@ -435,6 +436,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="ntx">A free app for the Riftbound scene on Vancouver Island. It covers every store's events.</p>
   </section>
 
+  <section class="nsec glass" id="setup">
+    <div class="shead"><h2>Setup</h2></div>
+    <p class="ntx">Save your account, add your Riot ID, turn on alerts and arrange your hub, in four steps.</p>
+    <button type="button" class="pact btn glass" id="nsetup" data-k="do">Set up RAVI</button>
+  </section>
+
   <section class="nsec glass" id="around">
     <div class="shead"><h2>Getting around</h2></div>
     <p class="ntx">The hub is where the app opens. Its blocks are your seven picks, and its last block, <b>All pages</b>, lists every page so you can go to any of them.</p>
@@ -505,6 +512,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     });
   });
 })();
+</script>
+<script>
+// Set up RAVI runs the first-time setup again (plan 2 M6 block 6; account.js RAVI_SETUP)
+document.getElementById("nsetup").addEventListener("click", function(){ if (window.RAVI_SETUP) { window.RAVI_SETUP.open(); } });
 </script>
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">

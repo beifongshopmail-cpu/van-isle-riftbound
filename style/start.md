@@ -3,6 +3,7 @@
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 New here (start/index.html)
+- New to RAVI opens with What RAVI is, then Setup: one line and Set up RAVI (.pact, #nsetup: a lone action), which runs the first-time setup again (account.js RAVI_SETUP.open; plan 2 M6 block 6).
 - Two guides on one track (.gsel: New to Riftbound, New to RAVI; #ravi opens the second; vir.start.guide.v1 keeps the last one).
 - New to Riftbound runs: What Riftbound is, then How to play, then At the store (Try it first, Your first deck, Signing up, Kinds of events, What to bring, The rules). How to play and At the store are labels over their cards (.lb.nprt, muted). (plan 2 M6 block 5; Mako's yes 2026-11-03)
 - How to play is eight glass cards (.nsec): Your deck, The board, Setting up, A turn, Runes, Units and moving, Fights, Scoring. Each is a section head, a summary of one or two sentences, one picture (.nfig), then the detail under More: a quiet row under the card's divider (.nfo, data-k open, 44 high, Poppins 600 15, the chevron turning; the line is the event card's 1px at .07), opening .nmore in place with .reveal. Setting up's More holds only its rules.

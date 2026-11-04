@@ -386,6 +386,10 @@
   }
 
   function headTitle(t) { return '<div class="phead"><div class="ht">' + BACK + '<h4 class="ttl">' + t + '</h4></div></div>'; }
+  // THE FIRST-TIME SETUP's menus (plan 2 M6 block 6): a step's head counts it (1 of 4); its foot
+  // goes on, Not now until the step is done, then Next
+  function suHead(t, n) { return '<div class="phead"><div class="ht">' + (n > 1 || !n ? BACK : '') + '<h4 class="ttl">' + t + '</h4>' + (n ? '<span class="cnt">' + n + ' of 4</span>' : '') + '</div></div>'; }
+  function suFoot(n) { return '<div class="pfoot"><button type="button" class="pact btn glass" id="acsunext' + n + '" data-sunext="' + (n + 1) + '" data-k="do">Not now</button></div>'; }
   function build() {
     scrim = el("div", "scrim"); scrim.id = "acscrim";
     doc.body.appendChild(scrim);
@@ -441,6 +445,19 @@
         '<div class="aclkcam" id="acokcam" hidden><video id="acokvid" playsinline muted autoplay></video></div>' +
         '<p class="pnote" id="acokwho"></p><p class="acmsg" id="acokmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acokgo" data-k="do" disabled>Link</button></div>',
+      acsu1: suHead("Your account", 1) + '<div class="pbody" id="acsu1body"></div>' + suFoot(1),
+      acsu2: suHead("Riot ID", 2) + '<div class="pbody"><div id="acsu2in"><div class="rid"><div class="ridn"><div class="nf"><input type="text" id="acsurn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
+        '<div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="acsurt" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
+        '<button type="button" class="pact btn glass acgap" id="acsuclaim" data-k="do">Claim</button></div>' +
+        '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2),
+      acsu3: suHead("Alerts", 3) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" aria-pressed="false">Trade offers</button></div>' +
+        '<p class="pnote" id="acsu3note"></p><p class="pnote">Live event pairings: at a live event, tap Alert me when I\'m paired.</p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3),
+      acsu4: suHead("Your hub", 4) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
+        '<p class="pnote">Drag a block to move it, or down here to take it off. Or tap one, then another.</p>' +
+        '<button type="button" class="pact btn glass acgap" id="acsuhuboff" data-k="do" disabled>Take off the hub</button></div>' + suFoot(4),
+      acsu5: suHead("All set", 0) + '<div class="pbody"><p class="pnote">New here has guides to Riftbound and to RAVI, and runs this setup again.</p>' +
+        '<div class="doors acgap" data-k="deeper"><a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">New here</span><span class="sp"></span>' + CV + '</a></div></div>' +
+        '<div class="pfoot"><button type="button" class="pact btn glass" id="acsudone" data-k="do">Done</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Trade board shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
@@ -454,7 +471,7 @@
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", aclink: "Use another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", ackeys: "Passkeys", ackey: "Passkey", acdev: "Signed-in devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Use a recovery code", aclink: "Use another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -561,6 +578,7 @@
   }
   function closeAll() {
     linkStop(); scanStop();
+    if (suOn) { suOn = false; if (suHub && root.RAVI_HUB_DRAW) root.RAVI_HUB_DRAW(); suHub = false; }
     var t = stack[stack.length - 1];
     stack = [];
     if (t) cls(t, "");
@@ -618,6 +636,7 @@
         : "For an account you saved on another phone.";
       $("acsign").disabled = !A.supported();
     } else if (id === "accode") { codeInfo(); }
+    else if (/^acsu[1-5]$/.test(id)) { suEnter(+id.slice(4)); }
     else if (id === "acdata") { say("acdatamsg", ""); prefetchData(); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
     else if (id === "acrec") { $("acrecin").value = ""; say("acrecmsg", ""); }
     else if (id === "aclink") { linkShow(); }
@@ -852,20 +871,25 @@
       A.newCode(function (err, j) { if (err) return say("accodemsg", err); showCode(j.recovery, "Your old code no longer works."); });
     });
   }
-  function showCode(code, note) {
+  // the recovery code, shown once: one copy for the Recovery code menu and the setup's first step
+  // (ids from pre: accode and accopy here, acsucode and acsucopy in the setup)
+  function codeInto(body, code, note, pre) {
     var g = String(code || "").split("-");
-    $("accodebody").innerHTML = '<p class="accode" id="accode" aria-label="Your recovery code"><span></span><span></span></p>' +
-      '<button type="button" class="pact btn glass acgap" id="accopy" data-k="do">Copy code</button>' +
+    body.innerHTML = '<p class="accode" id="' + pre + 'code" aria-label="Your recovery code"><span></span><span></span></p>' +
+      '<button type="button" class="pact btn glass acgap" id="' + pre + 'copy" data-k="do">Copy code</button>' +
       '<p class="pnote">' + (note ? note + " " : "") + "Keep it in Passwords or Notes. If you ever lose your passkey, this code is the only way back in. RAVI can't show it again.</p>";
-    var sp = $("accode").querySelectorAll("span");
+    var c = $(pre + "code"), sp = c.querySelectorAll("span");
     sp[0].textContent = g.slice(0, 2).join("-"); sp[1].textContent = g.slice(2).join("-");
-    $("accode").setAttribute("data-code", code);
-    $("accodefoot").innerHTML = '<button type="button" class="pact btn glass" data-acback data-k="do">Done</button>';
-    $("accopy").addEventListener("click", function () {
+    c.setAttribute("data-code", code);
+    $(pre + "copy").addEventListener("click", function () {
       var b = this;
-      function pick() { try { var r = doc.createRange(); r.selectNodeContents($("accode")); var s = root.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+      function pick() { try { var r = doc.createRange(); r.selectNodeContents(c); var s = root.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
       try { root.navigator.clipboard.writeText(code).then(function () { b.textContent = "Copied"; }, pick); } catch (e) { pick(); }
     });
+  }
+  function showCode(code, note) {
+    codeInto($("accodebody"), code, note, "ac");
+    $("accodefoot").innerHTML = '<button type="button" class="pact btn glass" data-acback data-k="do">Done</button>';
   }
 
   // a second tap within 3 seconds acts; the line says what it does (STYLE.md, Confirm)
@@ -926,6 +950,116 @@
       say("acriotmsg", "Sent to RAVI to check. Send a screenshot of your Riot account page through Feedback, with your @username, and RAVI will settle it.");
     });
   }
+  // ---- THE FIRST-TIME SETUP (plan 2 M6 block 6, Mako's yes 2026-11-03) ----
+  // Once, on the installed app's first hub, after the intro (index.html calls RAVI_SETUP.auto()),
+  // and again from New here (RAVI_SETUP.open()). Four steps and All set, in this menu's stack: save
+  // the account, the Riot ID, alerts, the hub. Each can wait (Not now); closing it counts as done,
+  // so it never comes back by itself (vir.setup.v1). Never behind the install screen or for a test tool.
+  var SU_KEY = "vir.setup.v1", suOn = false, suHub = false, suEdit = null;
+  function suSeen() { try { return root.localStorage.getItem(SU_KEY) === "1"; } catch (e) { return true; } }
+  function suMark() { try { root.localStorage.setItem(SU_KEY, "1"); } catch (e) {} }
+  function suNext(n, ok) { var b = $("acsunext" + n); if (b) b.textContent = ok ? "Next" : "Not now"; }
+  function suEnter(n) {
+    var a = A.view();
+    if (n === 1) {
+      var body = $("acsu1body");
+      if (!A.signedIn()) { body.innerHTML = '<p class="pnote">RAVI sets up your account the first time this phone has a connection. Everything works without it.</p>'; suNext(1, true); }
+      else if (!A.isGuest()) { body.innerHTML = '<p class="pnote">Your account is saved. It is yours on any phone you sign in on.</p>'; suNext(1, true); }
+      else if (!A.supported()) { body.innerHTML = '<p class="pnote">Only this phone can reach your account. This phone can\'t make passkeys, so it can\'t save it. Update iOS, or sign in to an account saved on another phone.</p>'; suNext(1, false); }
+      else {
+        body.innerHTML = '<p class="pnote">Only this phone can reach your account until you save it. Saving adds a passkey: Face ID or your phone\'s lock.</p>' +
+          '<button type="button" class="pact btn glass acgap" id="acsusave" data-k="do">Save your account</button><p class="acmsg" id="acsu1msg" aria-live="polite"></p>';
+        suNext(1, false);
+      }
+    } else if (n === 2) {
+      var r = a && a.riot, can = A.signedIn() && !r;
+      $("acsu2in").hidden = !can;
+      $("acsu2note").textContent = r ? "Yours is " + r.n + "#" + r.tag + ". It finds your table and your alerts at live events." :
+        A.signedIn() ? "One RAVI account per Riot ID. It finds your table and your alerts at live events." : "Your Riot ID needs a connection. Add it later in Profile: tap your picture.";
+      if (can) riotInto(a);
+      say("acsu2msg", "");
+      suNext(2, !!r);
+    } else if (n === 3) {
+      var saved = A.signedIn() && !A.isGuest(), on = !!(A.offerAlertsOn && A.offerAlertsOn()), b = $("acsuoffer");
+      b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); b.disabled = !saved;
+      $("acsu3note").textContent = saved ? "An alert on this phone when someone on the Trade board sends you an offer." : "Trade offers come only to a saved account.";
+      say("acsu3msg", "");
+      suNext(3, on);
+    } else if (n === 4) {
+      if (!suEdit && root.RAVI_HUBEDIT) suEdit = root.RAVI_HUBEDIT({ grid: $("acsuhub"), shelf: $("acsuhubs"), off: $("acsuhuboff"), onSave: function () { suHub = true; suNext(4, true); } });
+      if (suEdit) suEdit.draw();
+      suNext(4, suHub);
+    }
+  }
+  // the Riot ID fields start from what this phone already has (as Profile does)
+  function riotInto(a) {
+    var here = null;
+    try { here = JSON.parse(root.localStorage.getItem("vir.me.v1") || "null"); } catch (e) {}
+    $("acsurn").value = here && here.n ? here.n : ""; $("acsurt").value = here && here.tag ? here.tag : "";
+  }
+  function suOpen() {
+    if (!pic || !P.acsu1) return;
+    if (stack.length) closeAll();
+    suMark(); suOn = true; suHub = false;
+    enter("acsu1");
+    lift(true);
+    stack = [P.acsu1];
+    cls(P.acsu1, "show");
+    scrim.classList.add("show");
+    doc.documentElement.classList.add("lock");
+    if (A.signedIn()) refresh(true); else A.makeGuest(null, true);
+  }
+  function suAuto() {
+    if (suSeen() || root.RAVI_GATE || root.RAVI_AWAY || (root.navigator && root.navigator.webdriver)) return;
+    if (!doc.querySelector(".hubname")) return; // the hub only
+    var wait = 450;
+    var tries = 0;
+    setTimeout(function go() {
+      if (suSeen()) return;
+      if ((!pic || stack.length) && tries++ < 25) { setTimeout(go, 200); return; } // the page's picture is not up yet, or a menu is open
+      if (pic && !stack.length) suOpen();
+    }, wait);
+  }
+  function suWire() {
+    doc.body.addEventListener("click", function (e) {
+      var t = e.target.closest ? e.target.closest("[data-sunext],#acsusave,#acsuclaim,#acsuoffer,#acsudone,#acsunew") : null;
+      if (!t || !suOn) return;
+      if (t.hasAttribute("data-sunext")) return deeper("acsu" + t.getAttribute("data-sunext"));
+      if (t.id === "acsudone") return closeAll();
+      if (t.id === "acsunew") { suOn = false; return; } // the link goes on to New here
+      if (t.id === "acsusave") {
+        t.disabled = true; say("acsu1msg", "Making your passkey...");
+        return A.addKey(function (err, j) {
+          t.disabled = false;
+          if (err) return say("acsu1msg", err);
+          paintAll();
+          codeInto($("acsu1body"), j.recovery, "Your account is saved.", "acsu");
+          suNext(1, true);
+        });
+      }
+      if (t.id === "acsuclaim") {
+        var n = $("acsurn").value, tag = $("acsurt").value;
+        if (!n.trim() || !tag.trim()) return say("acsu2msg", "Type your Riot name and its tag, as Riot shows them.");
+        t.disabled = true; say("acsu2msg", "Claiming...");
+        return A.claimRiot(n, tag, function (err, j, st) {
+          t.disabled = false;
+          if (err) return say("acsu2msg", err + (st === 409 ? " If it is yours, say so in Profile." : ""));
+          paintAll(); suEnter(2); say("acsu2msg", "Claimed. It is yours on RAVI.");
+        });
+      }
+      if (t.id === "acsuoffer") {
+        var on = A.offerAlertsOn();
+        t.disabled = true; say("acsu3msg", on ? "Turning off." : "Turning on.");
+        return (on ? A.offerAlertStop : function (cb) { A.offerAlertStart(new URL(REL + "alerts-sw.js", root.location.href).href, cb); })(function (err) {
+          suEnter(3); say("acsu3msg", err || (on ? "Off on this phone." : "On."));
+        });
+      }
+    });
+    $("acsurn").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acsurt").focus(); });
+    $("acsurt").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acsuclaim").click(); });
+  }
+  root.RAVI_SETUP = { open: function () { suOpen(); }, auto: function () { suAuto(); }, seen: suSeen, KEY: SU_KEY };
+
   // a button says it worked, in place, for a moment (Mako 2026-10-31: saving shows it saved)
   function done(btn, words, after) {
     var was = btn.getAttribute("data-words") || btn.textContent;
@@ -1409,6 +1543,7 @@
     build();
     paintAll();
     wire();
+    suWire();
     A.onChange(function () { paintAll(); if (stack[stack.length - 1] === P.acm) renderRoot(); });
     if (A.signedIn()) refresh(false); else A.makeGuest();
     root.addEventListener("online", function () { if (!A.signedIn()) A.makeGuest(null, true); });
