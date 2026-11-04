@@ -52,7 +52,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .nsec:has(> .nfo){overflow:hidden}
 .nmore{padding:12px 0 2px}
 .nmore .ntx:last-child{margin-bottom:4px}
-.nref{margin:0 4px 4px;font-family:var(--text);font-size:12px;color:var(--muted)}
 .nfig{margin:4px 0 12px}
 .nst{list-style:none;margin:0 0 8px;padding:0}
 .nst li{display:flex;gap:10px;align-items:flex-start;margin:0 0 8px 4px}
@@ -78,12 +77,25 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ndk{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 8px;align-items:flex-end}
 .ndk > .ncd{width:calc((100% - 16px) / 3)}
 /* a battlefield is the same card turned on its side: as wide as the others are tall */
-.ndk > .ncd.nland{width:calc((100% - 16px) / 3 * 1039 / 744)}
+.ndk > .ncd.nland{width:calc((100% - 16px) / 3 * 1039 / 744 + 8px)} /* + the stack offset, so the face-up card stays card-sized */
 .ncd{margin:0;display:flex;flex-direction:column;gap:6px}
 .ncd img{display:block;width:100%;height:auto;border-radius:5px} /* size-exempt: card picture */
 .ncd figcaption{font-family:var(--text);font-size:12px;line-height:1.3;color:var(--muted);text-align:center}
-.nstk{display:flex;align-items:center;justify-content:center;aspect-ratio:744/1039;width:calc(100% - 6px);margin:0 6px 6px 0;border-radius:5px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.05);
-  box-shadow:3px 3px 0 -1px var(--ground),3px 3px 0 0 rgba(255,255,255,.22),6px 6px 0 -1px var(--ground),6px 6px 0 0 rgba(255,255,255,.22);font-family:var(--disp);font-weight:700;font-size:20px;color:var(--bone)}
+.nstk{display:block;aspect-ratio:744/1039;width:calc(100% - 6px);margin:0 6px 6px 0;border-radius:5px;
+  box-shadow:3px 3px 0 -1px var(--ground),3px 3px 0 0 rgba(255,255,255,.22),6px 6px 0 -1px var(--ground),6px 6px 0 0 rgba(255,255,255,.22)}
+.nstk img{display:block;width:100%;height:100%;border-radius:5px} /* size-exempt: Riot's card back */
+/* three battlefields, the two behind face down (Riot's black back, turned), the top one face up */
+.nlay{position:relative;display:block;aspect-ratio:1039/744;margin:0 0 0 8px;width:calc(100% - 8px)}
+.nlay img{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:5px} /* size-exempt: card picture */
+.nlay img:nth-child(1){transform:translate(-8px,-8px)}
+.nlay img:nth-child(2){transform:translate(-4px,-4px)}
+.ndk > .ncd.nland .nlay{margin-top:8px}
+/* the rules a card rests on, in Riot's words with their numbers (Mako 2026-11-03), at the end of its More */
+.nqs{margin:4px 0 0;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+.nqh{margin:0 4px 8px;font-family:var(--disp);font-weight:600;font-size:13px;color:var(--muted)}
+.nqs ul{list-style:none;margin:0 0 12px;padding:0}
+.nqs li{display:flex;gap:10px;margin:0 4px 8px;font-family:var(--text);font-size:13px;line-height:1.4;color:var(--bone)}
+.nqs li b{flex:0 0 58px;font-family:var(--disp);font-weight:600;color:var(--muted)}
 .nrn{display:flex;gap:12px;align-items:flex-start}
 .nrj{flex:0 0 38%;width:38%;height:auto;border-radius:6px} /* size-exempt: card picture */
 .nrp{flex:1 1 auto;min-width:0}
@@ -150,14 +162,23 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <figure class="ncd"><img src="../cards/art/f57c14381b126e9f5a7b5bc4913151cb24c14fc3.t.webp" alt="Jinx, Loose Cannon, a Legend" width="200" height="279" loading="lazy"><figcaption>Legend, 1</figcaption></figure>
       <figure class="ncd"><img src="../cards/art/d6cac988aa7798945e550eba6841d3993868c4a4.t.webp" alt="Jinx, Demolitionist, a champion unit" width="200" height="279" loading="lazy"><figcaption>Chosen Champion, 1 of the 40</figcaption></figure>
       <figure class="ncd"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt="Fury Rune" width="200" height="279" loading="lazy"><figcaption>Runes, 12</figcaption></figure>
-      <figure class="ncd nland"><img src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="Grove of the God-Willow, a battlefield" width="744" height="533" loading="lazy"><figcaption>Battlefields, 3</figcaption></figure>
-      <figure class="ncd"><span class="nstk" aria-hidden="true">40</span><figcaption>Main deck, 40</figcaption></figure>
+      <figure class="ncd nland"><span class="nlay"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="Grove of the God-Willow, a battlefield, with two more face down behind it" width="744" height="533" loading="lazy"></span><figcaption>Battlefields, 3</figcaption></figure>
+      <figure class="ncd"><span class="nstk"><img src="../cards/backs/back-blue.webp" alt="A Main deck, face down" width="744" height="1039" loading="lazy"></span><figcaption>Main deck, 40</figcaption></figure>
     </div>
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
       <p class="ntx">Your Legend stays beside the board all game and has an ability of its own. Its two domains decide which cards and runes the deck can hold.</p>
       <p class="ntx">The Chosen Champion is one of the 40: a champion unit of your Legend, set aside at the start so you can play it whenever you can pay for it.</p>
       <p class="ntx">Up to 3 copies of any card.</p>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>103</b><q class="sel">To play Riftbound, a player must have a Main Deck, a Rune Deck, a Champion Legend, and a number of Battlefields determined by the Mode of Play. These are collectively referred to as a player’s deck.</q></li>
+          <li><b>103.3.b</b><q class="sel">Your Main Deck can include up to 3 copies of the same named card.</q></li>
+          <li><b>103.4.a.1</b><q class="sel">Cards in the Rune Deck must be of the Domain Identity of your Champion Legend.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
@@ -173,6 +194,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="nmore" hidden>
       <p class="ntx">Your base holds your units and gear that are not at a battlefield, and below them the runes you channel. Killed and discarded cards go to your trash. Your Main Deck and Rune Deck sit face down, apart.</p>
       <p class="ntx">In a game for two, each player puts one of their 3 battlefields in their Battlefield Zone, and the two mats face each other, so two battlefields are in play.</p>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>107.4.a</b><q class="sel">The space for each player's Champion Legend.</q></li>
+          <li><b>108.3.b</b><q class="sel">The space each player puts their Chosen Champion at the start of the game.</q></li>
+          <li><b>487.4.a</b><q class="sel">Each player provides three (3) Battlefields, included in their deck during deck building. Only 1 will be used, chosen during setup.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
@@ -187,6 +217,21 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <li><span class="nmk" aria-hidden="true">5</span><p class="ntx">Draw 4. You may set aside up to 2, draw that many, then put the set-aside cards on the bottom of your deck.</p></li>
       <li><span class="nmk" aria-hidden="true">6</span><p class="ntx">Going second, you channel 3 runes on your first turn instead of 2.</p></li>
     </ol>
+    <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="nmore" hidden>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>115</b><q class="sel">Determine Turn Order using any fair random method agreed on by all players.</q></li>
+          <li><b>116</b><q class="sel">Players each draw 4.</q></li>
+          <li><b>117.1</b><q class="sel">A player may choose up to two cards in their hand. They set those cards aside.</q></li>
+          <li><b>117.2</b><q class="sel">Then, that player draws as many cards as they set aside.</q></li>
+          <li><b>117.3</b><q class="sel">Finally, that player Recycles the cards that were set aside. See rule 417. Recycle for more information.</q></li>
+          <li><b>487.7</b><q class="sel">First Turn Process: The player going second channels an extra Rune from their Rune Deck during their first Channel Phase of the game.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
+    </div>
   </section>
 
   <section class="nsec glass" id="hturn">
@@ -203,7 +248,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
       <p class="ntx">Energy and Power you add but do not spend are lost at the end of the turn.</p>
-      <p class="nref">Core Rules 315 to 317</p>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>315.1.b</b><q class="sel">1. The Turn Player readies all Game Objects they control that are able to be readied. See rule 416. Ready for more information.</q></li>
+          <li><b>315.2.b.2</b><q class="sel">1. The Turn Player Holds all Battlefields they Control. See rule 469. Scoring for more information.</q></li>
+          <li><b>315.3.b</b><q class="sel">1. The Turn Player channels 2 runes from their Rune Deck. See rule 431. Channel for more information.</q></li>
+          <li><b>315.4.b</b><q class="sel">1. The Turn Player draws 1.</q></li>
+          <li><b>167</b><q class="sel">Every player's Rune Pool empties at the start of each player's Main Phase and the end of each player's turn.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
@@ -226,6 +281,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <p class="ntx">In a card's text, Energy is a number in a circle and Power a domain symbol. Jinx's Accelerate asks <img class="nsy" src="../cards/glyphs/energy_1.svg" alt="1 Energy" width="24" height="24"><img class="nsy" src="../cards/runes/rune_fury.svg" alt="1 Fury Power" width="24" height="24"> more to have her enter ready. <img class="nsy" src="../cards/glyphs/rune_rainbow.svg" alt="The rainbow symbol" width="24" height="24"> is Power of any domain.</p>
       <p class="ntx">To recycle a rune, put it on the bottom of your Rune deck. A rune you exhausted for Energy can still be recycled for Power, so one rune can pay for both.</p>
       <p class="ntx"><b>Example:</b> Jinx, Demolitionist costs 3 Energy and 1 Fury. Exhaust 3 runes, then recycle a Fury rune, which can be one of the three.</p>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>163.1</b><q class="sel">Energy is used to pay numeric Energy costs.</q></li>
+          <li><b>163.2</b><q class="sel">Power is used to pay Domain-associated Power Costs.</q></li>
+          <li><b>135.2.e.5</b><q class="sel">Power of any Domain is represented by a swirling rainbow symbol. Its shorthand is [A].</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
@@ -243,6 +307,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <p class="ntx"><img class="nsy" src="../cards/glyphs/exhaust.svg" alt="The Exhaust symbol" width="24" height="24"> in a card's text means exhausting that card is part of the cost.</p>
       <p class="ntx">A unit can also enter at a battlefield you control. Units going to the same place can move together.</p>
       <p class="ntx">Move onto a battlefield with the other player's units and you fight. Move onto an empty one and you conquer it, though your opponent may answer first with an Action or Reaction card.</p>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>143.4</b><q class="sel">Units enter the Board exhausted.</q></li>
+          <li><b>144.2</b><q class="sel">Exhausting the Unit is the Cost for this action.</q></li>
+          <li><b>144.4.a</b><q class="sel">Units may move from their Base to a Battlefield.</q></li>
+          <li><b>144.4.b</b><q class="sel">Units may move from a Battlefield to their Base.</q></li>
+          <li><b>144.4.c.1</b><q class="sel">Units with Ganking may use their Standard Move to Move from Battlefield to Battlefield. See rule 810. Ganking for more information.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
@@ -264,6 +339,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <li><span class="nmk" aria-hidden="true">5</span><p class="ntx">If only attackers are left, they conquer the battlefield. If a defender is left, the attackers go back to base.</p></li>
       <li><span class="nmk" aria-hidden="true">6</span><p class="ntx">Units that are left heal.</p></li>
       </ol>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>467.2.a</b><q class="sel">Sum the Might of all Attacking Units.</q></li>
+          <li><b>467.2.b</b><q class="sel">Sum the Might of all Defending Units.</q></li>
+          <li><b>467.2.c</b><q class="sel">Starting with the Attacker, each player assigns an amount of damage equal to their summed Might among the other's Units.</q></li>
+          <li><b>815.1.b</b><q class="sel">It is functionally short for "I must be assigned lethal damage before any other unit with the same controller as me that does not have [Tank] during the Combat Damage step."</q></li>
+          <li><b>143.2.b</b><q class="sel">If a Unit ever has nonzero damage marked on it equalling or exceeding its Might, it is Killed.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
@@ -280,7 +366,18 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <p class="ntx">The winning point must come from holding, or from scoring every battlefield in one turn. If not, you draw a card instead.</p>
       <p class="ntx"><b>Burn out:</b> if you must draw from an empty Main deck, your trash is shuffled in as your new deck and an opponent gains 1 point, then you draw.</p>
       <p class="ntx">Two-on-two games play to 11.</p>
-      <p class="nref">Burn out: Core Rules 431</p>
+      <div class="nqs" data-core="October 9, 2026">
+        <p class="nqh">Riot's Core Rules, October 9, 2026</p>
+        <ul>
+          <li><b>471.1</b><q class="sel">Conquer: A player gains Control of a Battlefield they did not yet Score this turn.</q></li>
+          <li><b>471.2</b><q class="sel">Hold: A player maintains Control of a Battlefield they did not yet Score this turn during their Beginning Phase.</q></li>
+          <li><b>472</b><q class="sel">A player may only Score, from either method, once per Battlefield per turn.</q></li>
+          <li><b>473.1.b.1</b><q class="sel">If the player has Scored every Battlefield this turn, that player Gains the Final Point. If the player has not Scored every Battlefield this turn, that player draws a card instead.</q></li>
+          <li><b>194.3</b><q class="sel">The Victory Score is 8 points by default.</q></li>
+          <li><b>432.2.c</b><q class="sel">Chooses an opponent to gain 1 point.</q></li>
+        </ul>
+        <div class="doors"><a class="door" href="../rules/" data-k="deeper"><span class="t">Rules</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+      </div>
     </div>
   </section>
 
