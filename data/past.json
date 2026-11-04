@@ -3,6 +3,17 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117548189527737427",
+   "name": "Nexus Night at AJ's Games",
+   "type": "nexus",
+   "start": "2026-11-03T18:00:00-07:00",
+   "day": "2026-11-03",
+   "venue": "AJ's Games",
+   "store": "AJ's",
+   "region": "island",
+   "sid": 21894
+  },
+  {
    "id": "rb117454295314157802",
    "name": "Skyhaven Sunday Nexus Night",
    "type": "nexus",

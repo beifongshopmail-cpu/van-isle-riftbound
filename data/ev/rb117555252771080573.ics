@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117555252771080573@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270124T163000
+DTEND;TZID=America/Vancouver:20270124T193000
+SUMMARY:Colossal Cards Vic Legacy Pre-Rift
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Pre-Rift\nColossal Cards & Collectables\, Victoria\n16 of 16 sp
+ ots left\n$40.00 CAD\nSign up: https://playriftbound.com/en-US/events/1175
+ 55252771080573
+URL:https://playriftbound.com/en-US/events/117555252771080573
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

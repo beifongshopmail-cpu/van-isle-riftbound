@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117555776676143574@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261107T103000
+DTEND;TZID=America/Vancouver:20261107T133000
+SUMMARY:Nexus Night
+LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
+DESCRIPTION:Nexus Nights\nElite4 Games\, Victoria\n13 of 16 spots left\n$5.
+ 00 CAD\nSign up: https://playriftbound.com/en-US/events/117555776676143574
+URL:https://playriftbound.com/en-US/events/117555776676143574
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

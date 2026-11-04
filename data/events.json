@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-03T19:59:33.564Z",
- "generated_local": "2026-11-03T12:59:33-07:00",
- "window_start": "2026-11-03T07:00:00.000Z",
+ "generated_at": "2026-11-04T07:18:58.298Z",
+ "generated_local": "2026-11-04T00:18:58-07:00",
+ "window_start": "2026-11-04T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 47,
-   "added": 47
+   "returned": 49,
+   "added": 49
   },
   {
    "name": "Courtenay",
@@ -21,8 +21,8 @@
    "name": "Campbell River",
    "region": "island",
    "source": "playriftbound",
-   "returned": 3,
-   "added": 3
+   "returned": 2,
+   "added": 2
   },
   {
    "name": "Victoria",
@@ -47,13 +47,17 @@
   }
  ],
  "totals": {
-  "fetched": 59,
-  "unique": 59,
+  "fetched": 60,
+  "unique": 60,
   "prev_unique": 59,
   "recent": [
    {
     "d": "2026-11-03",
     "n": 59
+   },
+   {
+    "d": "2026-11-04",
+    "n": 60
    }
   ]
  },
@@ -65,30 +69,6 @@
  },
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117548189527737427",
-   "name": "Nexus Night at AJ's Games",
-   "type": "nexus",
-   "start": "2026-11-03T18:00:00-07:00",
-   "end": null,
-   "day": "2026-11-03",
-   "time": "6:00 PM",
-   "venue": "AJ's Games",
-   "city": "Campbell River",
-   "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
-   "region": "island",
-   "cap": 16,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 21894,
-   "store": "AJ's",
-   "swiss": 4,
-   "cut": false
-  },
   {
    "id": "rb117525460412948679",
    "name": "North Park Picture Framing and Collectables Open Play",
@@ -111,6 +91,30 @@
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
+   "cut": false
+  },
+  {
+   "id": "rb117555776676143574",
+   "name": "Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-07T10:30:00-07:00",
+   "end": null,
+   "day": "2026-11-07",
+   "time": "10:30 AM",
+   "venue": "Elite4 Games",
+   "city": "Victoria",
+   "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 3,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
+   "store": "Elite4",
+   "swiss": 3,
    "cut": false
   },
   {
@@ -414,7 +418,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 1,
+   "reg": 2,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -1162,7 +1166,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1258,7 +1262,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 0,
+   "reg": 1,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
@@ -1317,6 +1321,30 @@
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 3,
+   "cut": false
+  },
+  {
+   "id": "rb117555252771080573",
+   "name": "Colossal Cards Vic Legacy Pre-Rift",
+   "type": "prerift",
+   "start": "2027-01-24T16:30:00-07:00",
+   "end": null,
+   "day": "2027-01-24",
+   "time": "4:30 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Victoria",
+   "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 4000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 15103,
+   "store": "Colossal Victoria",
+   "swiss": 4,
    "cut": false
   },
   {
@@ -1476,7 +1504,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 0,
+   "reg": 1,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
