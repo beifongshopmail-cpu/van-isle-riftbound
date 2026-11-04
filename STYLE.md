@@ -222,6 +222,7 @@ The account picture and its menus (account.js, app.css; plan 2 M1, Mako 2026-10-
 - The root menu (Mako's sign-off 2026-10-31): an account never saved shows Save your account first, a note that only this phone reaches it, then Profile and Your data, then Sign in to another account; a saved one shows Profile, Link a new device, Passkeys, Signed-in devices, Recovery code, Your data (and Disputes), then Sign out alone. Sign in to another account opens Use a passkey and Use another phone, then Use a recovery code under the label Lost all your devices?
 - Linking a phone (plan 2 M6; Mako's phone yes 2026-11-03): Use another phone shows a six-letter code in two threes (.accode at 20) over its QR, dark on a white 176 plate (.aclkqr, corner 12, the code alone in it), one centred line on what to do, and how long it lasts; a code that runs out dims both and wakes New code in the foot. Link a new device is a field (Code on the new phone) with Scan as its .fbtn; Scan opens the camera in a 240 square (.aclkcam, corner 22) under the field and closes it once read; the note names the waiting phone; the foot's action reads Link this iPhone (or the phone's name) and stays dim until a code is found.
 - Lists inside the account menus are rows: a passkey by its name with its last-used day (it opens a Passkey menu: Name, Remove this passkey, dim while it is the only one); another device by its name with its last-used day, a two-tap row that signs it out, and Sign out every other device under them once there are two. Days are the phone's own, never the server's UTC day. Download your data hands the file to the phone's share sheet where there is one.
+- The first-time setup (plan 2 M6; Mako's phone sign-off 2026-11-03) is in these menus, opening from your picture: once, on the installed app's first hub as the intro ends (never behind the install screen or for a test tool; vir.setup.v1), and again from New here's Set up RAVI. Four steps, each head counting it (.cnt, 1 of 4): Your account (Save your account, then the recovery code shown once), Riot ID (Claim), Alerts (Trade offers), Your hub (Hub layout); then All set, with a row to New here. Each foot reads Not now until its step is done, then Next; Back returns a step; closing it counts as done.
 
 The bar (every page except the hub)
 - .bar.frost: fixed pill, 56 high, 12 from the sides, max-width 456, bottom max(4px, safe-area bottom minus 12px), padding 5, four columns, gap 4, z-index 20. Round slots (.tab), 24 icon.
@@ -283,6 +284,8 @@ Icons (pages.js RAVI_ICON)
 - One line for every icon: 2-unit round lines on the 24 grid (1.5 on the hub). Shapes may be adapted from Lucide, Phosphor, Remix or Material Symbols and redrawn on this line; a family drawing kept as drawn uses the weight that matches (Material Symbols 600 in the bar, 400 on the hub as an .icb copy). (Mako 2026-10-16)
 - Hub icons are drawn solid in their tint and faded to .82 as one piece (opacity on the svg), never in a see-through colour, which stacks where two lines meet. (Mako 2026-10-16)
 - An icon may hold two masks: "@" for the filled drawing, "@b" for an outline cut; RAVI_ICON numbers both per copy.
+
+Hub layout (hubedit.js, app.css HUB LAYOUT; Mako's phone sign-off 2026-11-03): the hub's own blocks at the hub's size, dragged or tapped into place, the pages not on the hub below; one copy, drawn by App settings and the first-time setup (RAVI_HUBEDIT).
 
 The hub block and the install screen: style/hub.md and style/install.md.
 
@@ -347,7 +350,7 @@ The hub block and the install screen: style/hub.md and style/install.md.
 - An index written into markup comes from the source array, never the loop counter.
 - A legend is a Riftbound character.
 - Dates and times are written one way, by pages.js: RAVI_DATE gives "Sep 16, 2026" (short: "Sep 16"), RAVI_WHEN gives "Oct 15, 8:01 PM" in island time, with the year only when it is not this year. Riot's words on the Rules page stay as written. (Mako's yes 2026-10-16)
-- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), vir.start.guide.v1 (New here's last guide), vir.cut.v1 (Top cut's numbers and event), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings), vir.me.v1 (my Riot name, M16), vir.alerts.v1 (events with alerts on, M16); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser), ravi.glow.v1 (the hub has been seen; later hubs pick their glow).
+- Keys: vir.hub.open.v1 (page to open to), vir.hub.blocks.v1 (the hub's picks), vir.start.guide.v1 (New here's last guide), vir.cut.v1 (Top cut's numbers and event), ravi.intro.off.v1, vir.cal.filters.v1, vir.seen.v3, vir.follow.v1, vir.rules.seen.v1, vir.coll.v1 (binders, no binder, Wishlist), vir.coll.set.v1 (Collection's view and settings), vir.me.v1 (my Riot name, M16), vir.alerts.v1 (events with alerts on, M16), vir.setup.v1 (the first-time setup has opened; plan 2 M6); session: ravi.intro.v1, ravi.web.v1 (Continue in the browser), ravi.glow.v1 (the hub has been seen; later hubs pick their glow).
 
 ## 10. Page notes
 
