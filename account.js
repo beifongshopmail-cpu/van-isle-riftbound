@@ -208,7 +208,7 @@
   function linkFind(code, cb) { call("POST", "/link/find", { code: String(code || "").slice(0, 200) }, cb); }
   function linkOk(code, cb) { call("POST", "/link/ok", { code: String(code || "").slice(0, 200) }, cb); }
   function me(cb) { if (!signedIn()) return cb("Signed out."); call("GET", "/me", null, function (err, j, st) { if (!err && j) setView(j); cb(err, j, st); }); }
-  function saveProfile(o, cb) { call("POST", "/profile", { name: o.name, user: o.user, about: o.about }, cb); }
+  function saveProfile(o, cb) { var b = { name: o.name, user: o.user, about: o.about }; if (o.col !== undefined) b.col = o.col; call("POST", "/profile", b, cb); }
   function setPic(o, cb) { call("POST", "/pic", o, cb); }
   function uploadPhoto(jpgB64, cb) { call("POST", "/photo", { jpg: jpgB64 }, cb); }
   // a Riot ID in its two parts, as Riot shows them: the name, and the tag after the #
@@ -426,8 +426,9 @@
         '<p class="acmsg" id="acriotmsg" aria-live="polite"></p>' +
         '<div class="doors acrow" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
         '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
+        '<p class="lb">Your colour</p><div class="seg swatch" id="accols" role="group" aria-label="Your colour" data-k="pick"></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
-        '<p class="pnote">On the Trade board others see your name, @username, area and picture. Your Riot ID only after a trade is agreed.</p>' +
+        '<p class="pnote">On the Trade board others see your name, @username, area, colour and picture. Your Riot ID only after a trade is agreed.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
       acpicm: headTitle("Picture") + '<div class="pbody"><div class="acstage" id="acstage" data-pinch><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span></div>' +
@@ -641,7 +642,7 @@
       $("acname").value = a && a.name || ""; $("acuser").value = a && a.user || ""; $("acabout").value = a && a.about || "";
       riotFill(a);
       say("acprofmsg", ""); say("acriotmsg", ""); $("acdispw").hidden = true;
-      claimState(); areaText(); paintAll();
+      claimState(); areaText(); paintAll(); colours(a && a.col || "");
     }
     else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
     else if (id === "acdispm") { renderDisputes(); }
@@ -1090,6 +1091,23 @@
     btn._doneT = setTimeout(function () { btn.classList.remove("done"); btn.textContent = btn.getAttribute("data-words"); btn.removeAttribute("data-words"); if (after) after(); }, 1800);
   }
 
+  // ---- Your colour (plan 2 M8 block 2): the player colours, kept by Save with the rest of Profile ----
+  function colours(cur) {
+    var g = $("accols"), l = root.RAVI_PLAYER_COLOURS || [];
+    if (!g) return;
+    g.innerHTML = "";
+    l.forEach(function (c) {
+      var b = el("button", "");
+      b.type = "button"; b.setAttribute("data-col", c.k); b.setAttribute("aria-label", c.name);
+      b.setAttribute("aria-pressed", c.k === cur ? "true" : "false"); b.style.setProperty("--sw", "rgb(" + c.rgb + ")");
+      g.appendChild(b);
+    });
+  }
+  function colPicked() { var b = doc.querySelector("#accols button[aria-pressed=true]"); return b ? b.getAttribute("data-col") : null; }
+  function pickCol(k) {
+    Array.prototype.forEach.call(doc.querySelectorAll("#accols button"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-col") === k ? "true" : "false"); });
+  }
+
   // ---- Home area ----
   var AREAS = [["", "Not set"], ["victoria", "Greater Victoria"], ["island", "Up Island"], ["away", "Somewhere else"]];
   function areaName(code) { for (var i = 0; i < AREAS.length; i++) if (AREAS[i][0] === (code || "")) return AREAS[i][1]; return "Not set"; }
@@ -1458,7 +1476,7 @@
     scrim.addEventListener("click", closeAll);
     doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && stack.length) closeAll(); });
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],[data-key],#acsign,#acsaveacct,#acout,#acsave,#acuse,#acaddkey,#ackeysave,#acrecgo,#acdl,.aclg button,#acclaim,#acdisp,#acareas button,#acprint button,#aclinknew,#acokscan,#acokgo") : null;
+      var t = e.target.closest ? e.target.closest("[data-acgo],[data-acback],[data-key],#acsign,#acsaveacct,#acout,#acsave,#acuse,#acaddkey,#ackeysave,#acrecgo,#acdl,.aclg button,#acclaim,#acdisp,#acareas button,#accols button,#acprint button,#aclinknew,#acokscan,#acokgo") : null;
       if (!t || !stack.length) return;
       if (t.hasAttribute("data-acgo")) return deeper(t.getAttribute("data-acgo"));
       if (t.hasAttribute("data-acback")) return back();
@@ -1491,7 +1509,7 @@
       if (t.id === "acout") return A.signOut(function () { paintAll(); renderRoot("Signed out. Everything on this phone stays, on a new account until you sign in again."); });
       if (t.id === "acsave") {
         say("acprofmsg", "Saving...");
-        return A.saveProfile({ name: $("acname").value, user: $("acuser").value, about: $("acabout").value }, function (err) {
+        return A.saveProfile({ name: $("acname").value, user: $("acuser").value, about: $("acabout").value, col: colPicked() }, function (err) {
           if (err) return say("acprofmsg", err);
           var a = A.view();
           $("acuser").value = a && a.user || "";
@@ -1512,6 +1530,7 @@
       if (t.id === "acclaim") return claimTap();
       if (t.id === "acdisp") return disputeTap();
       if (t.parentNode && t.parentNode.id === "acareas") return pickArea(t.getAttribute("data-area"));
+      if (t.parentNode && t.parentNode.id === "accols") return pickCol(t.getAttribute("data-col"));
     });
     $("acrecin").addEventListener("keydown", function (e) { if (e.key === "Enter") recover(); });
     $("acokin").addEventListener("input", function () { okFind(this.value); });

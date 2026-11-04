@@ -98,6 +98,8 @@ export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
 export const AREAS = ["victoria", "island", "away"]; // Greater Victoria, Up Island, Somewhere else
+// YOUR COLOUR (plan 2 M8 block 2): one of the player colours (pages.js RAVI_PLAYER_COLOURS), or none
+export const COLOURS = ["blue", "pink", "gold", "tangerine", "lime", "mint", "orchid", "white"];
 const RESERVED = ["ravi", "admin", "administrator", "support", "help", "mod", "moderator", "staff", "official", "riot", "riotgames", "system", "root", "null", "undefined", "me", "you", "account", "settings"];
 const DAY = 86400000;
 const ALGS = [-7, -257]; // ES256, RS256
@@ -400,6 +402,7 @@ function sqlStore(sql) {
   sql.exec("CREATE TABLE IF NOT EXISTS photo (acct TEXT PRIMARY KEY, img BLOB)");
   try { sql.exec("ALTER TABLE prof ADD COLUMN area TEXT"); } catch (e) { /* already there */ }
   try { sql.exec("ALTER TABLE prof ADD COLUMN pcrop TEXT"); } catch (e) { /* already there */ }
+  try { sql.exec("ALTER TABLE prof ADD COLUMN col TEXT"); } catch (e) { /* already there (plan 2 M8: your colour) */ }
   sql.exec("CREATE TABLE IF NOT EXISTS riot (k TEXT PRIMARY KEY, acct TEXT UNIQUE, n TEXT, tag TEXT, at INTEGER)");
   sql.exec("CREATE TABLE IF NOT EXISTS disp (id TEXT PRIMARY KEY, k TEXT, acct TEXT, n TEXT, tag TEXT, at INTEGER, UNIQUE (k, acct))");
   try { sql.exec("ALTER TABLE acct ADD COLUMN guest INTEGER"); } catch (e) { /* already there */ }
@@ -501,7 +504,7 @@ function sqlStore(sql) {
     delLink: (code) => sql.exec("DELETE FROM link WHERE code = ?", code),
     prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area, pcrop FROM prof WHERE acct = ?", acct),
     profByUser: (u) => one("SELECT acct FROM prof WHERE user = ?", u),
-    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area, pcrop) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null, x.pcrop || null),
+    putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area, pcrop, col) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null, x.pcrop || null, x.col || null),
     riotOf: (acct) => one("SELECT k, acct, n, tag, at FROM riot WHERE acct = ?", acct),
     riotByKey: (k) => one("SELECT k, acct, n, tag, at FROM riot WHERE k = ?", k),
     putRiot: (x) => { sql.exec("DELETE FROM riot WHERE acct = ?", x.acct); sql.exec("INSERT INTO riot VALUES (?, ?, ?, ?, ?)", x.k, x.acct, x.n, x.tag, x.at); },
@@ -751,14 +754,14 @@ export function makeAccounts() {
       const r = this.db.riotOf(a.id);
       const mine = this.db.disps().filter((d) => d.acct === a.id).map((d) => ({ n: d.n, tag: d.tag, at: dayOf(d.at) }));
       const out = { v: 1, id: a.id, made: dayOf(a.made), keys: this.db.creds(a.id).map((c) => ({ id: c.id, name: c.name || "", made: dayOf(c.made), last: dayOf(c.last), mt: c.made, lt: c.last })), // the times too: the phone writes the day in its own time zone (sweep, 2026-10-31)
-        name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", area: p && p.area || "", pic: pic,
+        name: p && p.name || "", user: p && p.user || "", about: p && p.about || "", area: p && p.area || "", col: p && p.col || "", pic: pic,
         riot: r ? { n: r.n, tag: r.tag } : null, asked: mine };
       if (a.guest) out.guest = true;
       if (this.isAdmin(a.id)) { out.admin = true; out.disputes = this.db.disps().length; out.reports = queueOf(this.db.reps()).length; }
       return out;
     }
     isAdmin(id) { return String(this.env.ADMIN || "").split(/[\s,]+/).indexOf(id) >= 0; }
-    profOf(id) { return this.db.prof(id) || { acct: id, name: "", user: null, about: "", pk: null, ph: null, pv: 0, area: null }; }
+    profOf(id) { return this.db.prof(id) || { acct: id, name: "", user: null, about: "", pk: null, ph: null, pv: 0, area: null, col: null }; }
     who2(acct) { const p = this.db.prof(acct); return { user: p && p.user || "", name: p && p.name || "" }; }
     async session(acctId, dev) {
       const t = b64u(rand(32)), now = this.now();
@@ -775,7 +778,7 @@ export function makeAccounts() {
       const T = this.profOf(tid);
       if (G) {
         let changed = false;
-        ["name", "about", "area"].forEach((f) => { if (!T[f] && G[f]) { T[f] = G[f]; changed = true; } });
+        ["name", "about", "area", "col"].forEach((f) => { if (!T[f] && G[f]) { T[f] = G[f]; changed = true; } });
         if (!T.user && G.user && !this.db.profByUser(G.user)) { T.user = G.user; changed = true; }
         if (!T.pk && G.pk) {
           T.pk = G.pk; T.ph = G.ph; T.pv = G.pv; T.pcrop = G.pcrop; changed = true;
@@ -858,7 +861,7 @@ export function makeAccounts() {
       let pic = p && p.pk === "l" && p.ph ? Object.assign({ k: "l", h: p.ph }, crop || {}) : p && p.pk === "p" ? { k: "p", v: p.pv || 0 } : null;
       if (this.picHidden(acctId)) pic = null; // reported by REPORT.hide players: hidden until Mako decides
       const bs = this.db.bset(acctId) || settingsFrom("{}");
-      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", pic: pic, open: bs.open, pct: bs.pct, dk: this.db.pubDeckCount(acctId), nx: this.nextOf(acctId) };
+      return { name: p && p.name || "", user: p && p.user || "", area: p && p.area || "", col: p && p.col || "", pic: pic, open: bs.open, pct: bs.pct, dk: this.db.pubDeckCount(acctId), nx: this.nextOf(acctId) };
     }
     // OFFERS (offers.js): every offer an account is in, as it sees them, expired ones marked as read
     async offersFor(acct) {
@@ -1046,7 +1049,7 @@ export function makeAccounts() {
         recoveryCode: a.code ? "set: RAVI keeps only a scrambled copy (SHA-256) and can't show it" : "none yet",
         passkeys: this.db.credsFull(a.id).map((c) => ({ name: c.name || "", made: dayOf(c.made), lastUsed: dayOf(c.last), kind: c.alg === -7 ? "ES256" : "RS256", publicKey: c.jwk })),
         devices: this.db.sessions(a.id).map((x) => ({ device: x.dev || "Computer", signedIn: dayOf(x.made), lastUsed: dayOf(x.last) })),
-        profile: { name: v.name, username: v.user, about: v.about, homeArea: v.area, picture: v.pic },
+        profile: { name: v.name, username: v.user, about: v.about, homeArea: v.area, colour: v.col || null, picture: v.pic },
         photo: ph ? "data:image/jpeg;base64," + btoa(Array.from(ph, (x) => String.fromCharCode(x)).join("")) : null,
         riotId: r ? { name: r.n, tag: r.tag, claimed: dayOf(r.at) } : null,
         disputes: v.asked,
@@ -1315,7 +1318,10 @@ export function makeAccounts() {
       }
       if (p === "/profile") {
         if (!(await this.spend("prof", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);
+        // your colour (plan 2 M8 block 2): one of COLOURS, null for none; left out, it stays
+        if (body.col !== undefined && body.col !== null && COLOURS.indexOf(body.col) < 0) return reply({ error: "not a colour RAVI knows" }, 400);
         const x = this.profOf(me.acct.id);
+        if (body.col !== undefined) x.col = body.col;
         x.name = cleanText(body.name, 32);
         x.about = cleanText(body.about, 80);
         if (body.user === "" || body.user === null) x.user = null;

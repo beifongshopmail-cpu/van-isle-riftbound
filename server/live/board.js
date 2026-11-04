@@ -79,7 +79,7 @@ export async function handleOf(acctId) {
 }
 
 // What one viewer sees. db: the accounts store; me: the viewer's account id.
-// pub(acct): the public face of a trader { name, user, area, pic } (accounts.js builds it).
+// pub(acct): the public face of a trader { name, user, area, col, pic } (accounts.js builds it; col: their colour, plan 2 M8).
 // skip: accounts this viewer never sees, both ways (a block, reports.js).
 export async function boardFor(db, me, face, skip) {
   const out = (r) => !(skip && skip.has(r.acct));
@@ -104,7 +104,7 @@ export async function boardFor(db, me, face, skip) {
   for (const [acct, x] of T) {
     const f = face(acct);
     const two = exact(x.has) > 0 && exact(x.wants) > 0 ? 1 : 0;
-    traders.push({ acct: acct, h: await handleOf(acct), name: f.name, user: f.user, area: f.area, pic: f.pic, open: f.open || "trade", pct: f.pct || 100, dk: f.dk || 0, nx: f.nx || null,
+    traders.push({ acct: acct, h: await handleOf(acct), name: f.name, user: f.user, area: f.area, col: f.col || "", pic: f.pic, open: f.open || "trade", pct: f.pct || 100, dk: f.dk || 0, nx: f.nx || null,
       has: x.has, wants: x.wants, two: two, near: myArea && f.area === myArea ? 1 : 0, n: x.has.length + x.wants.length });
   }
   traders.sort((a, b) => b.two - a.two || b.near - a.near || b.n - a.n || (a.h < b.h ? -1 : 1));
@@ -113,8 +113,8 @@ export async function boardFor(db, me, face, skip) {
   return {
     v: 1,
     me: { area: myArea, have: Object.keys(myHave).length, want: Object.keys(myWant).length },
-    traders: keep.filter((x) => x.n > 0).slice(0, BOARD.traders).map((x) => ({ h: x.h, name: x.name, user: x.user, area: x.area, pic: x.pic, open: x.open, pct: x.pct, two: x.two, near: x.near, has: x.has, wants: x.wants })),
-    people: keep.map((x) => ({ h: x.h, name: x.name, user: x.user, area: x.area, pic: x.pic, open: x.open, pct: x.pct, dk: x.dk, nx: x.nx })), // dk: their Public decks (decks.js, plan 2 M3); nx: their next event (block 5)
+    traders: keep.filter((x) => x.n > 0).slice(0, BOARD.traders).map((x) => ({ h: x.h, name: x.name, user: x.user, area: x.area, col: x.col, pic: x.pic, open: x.open, pct: x.pct, two: x.two, near: x.near, has: x.has, wants: x.wants })),
+    people: keep.map((x) => ({ h: x.h, name: x.name, user: x.user, area: x.area, col: x.col, pic: x.pic, open: x.open, pct: x.pct, dk: x.dk, nx: x.nx })), // dk: their Public decks (decks.js, plan 2 M3); nx: their next event (block 5)
     browse: browse.filter((r) => hOf.has(r.acct)).map((r) => ({ h: hOf.get(r.acct), i: r.i, f: r.f, q: r.q })),
     // how many other players want each card (a shared Wishlist): demand that is RAVI's own (board/demand.js)
     wanted: db.boardWanted(me, BOARD.browse).map((r) => ({ i: r.i, f: r.f, n: r.n }))

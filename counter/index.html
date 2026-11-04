@@ -1025,9 +1025,18 @@
   // Player 1 is blue and player 2 pink by default: the trade page's hues.
   // A name is only what was typed; an empty one shows the side's default
   // (nameOf): side 1 is the near side, the phone's owner, side 2 the far.
-  var SWATCH = ["#5DA5EE","#EE5F9C","#FFB020","#4ADE80","#A78BFA","#F2F3F5"];
-  var players = { 1:{ name:"", legend:"", art:"", colour:"#5DA5EE" },
-                  2:{ name:"", legend:"", art:"", colour:"#EE5F9C" } };
+  // The swatches are the player colours (pages.js, plan 2 M8). A side's colour is the one picked
+  // here (set), or its default: yours (side 1) is your Profile's colour, else blue; theirs pink, or
+  // blue when yours is pink (defaults).
+  var SWATCH = (window.RAVI_PLAYER_COLOURS || []).map(function(c){ return c.hex; });
+  if (SWATCH.length < 2) { SWATCH = ["#5DA5EE","#EE5F9C"]; }
+  var players = { 1:{ name:"", legend:"", art:"", colour:SWATCH[0], set:false },
+                  2:{ name:"", legend:"", art:"", colour:SWATCH[1], set:false } };
+  function defaults(){
+    var mine = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null;
+    if (!players[1].set) { players[1].colour = mine ? mine.hex : SWATCH[0]; }
+    if (!players[2].set) { players[2].colour = players[1].colour === SWATCH[1] ? SWATCH[0] : SWATCH[1]; }
+  }
   // A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE. The stain (.14) and the
   // press (.50) are computed here rather than with color-mix(), which the
   // device floor cannot count on.
@@ -1106,8 +1115,8 @@
           if (typeof o[p].name === "string" && o[p].name !== "Player " + p) { players[p].name = o[p].name; }
           if (typeof o[p].legend === "string") { players[p].legend = o[p].legend; }
           if (typeof o[p].art === "string") { players[p].art = o[p].art; }
-          if (typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
-            players[p].colour = o[p].colour;
+          if (o[p].set === true && typeof o[p].colour === "string" && SWATCH.indexOf(o[p].colour) >= 0) {
+            players[p].colour = o[p].colour; players[p].set = true;
           }
         }
       }
@@ -2301,8 +2310,9 @@
     for (var p = 1; p <= 2; p++) {
       var sw = document.getElementById("c" + p), h = "";
       for (var j = 0; j < SWATCH.length; j++) {
-        h += "<button data-p=\"" + p + "\" data-col=\"" + SWATCH[j] +
-             "\" style=\"--sw:" + SWATCH[j] + "\" aria-pressed=\"false\"></button>";
+        var cn = (window.RAVI_PLAYER_COLOURS || [])[j];
+        h += "<button type=\"button\" data-p=\"" + p + "\" data-col=\"" + SWATCH[j] +
+             "\" style=\"--sw:" + SWATCH[j] + "\" aria-label=\"" + (cn ? cn.name : SWATCH[j]) + "\" aria-pressed=\"false\"></button>";
       }
       sw.innerHTML = h;
     }
@@ -2564,6 +2574,8 @@
     var col = t.getAttribute && t.getAttribute("data-col");
     if (col) {
       players[parseInt(t.getAttribute("data-p"), 10)].colour = col;
+      players[parseInt(t.getAttribute("data-p"), 10)].set = true;
+      defaults();
       savePlayers(); syncSetup(); syncFirst(); render();
       return;
     }
@@ -2595,7 +2607,7 @@
 
   // your name follows the account: a profile change redraws the defaults
   if (window.RAVI_ACCT && RAVI_ACCT.onChange) {
-    RAVI_ACCT.onChange(function(){ syncConcedeLabels(); syncFirst(); syncNext(); syncSetup(); render(); });
+    RAVI_ACCT.onChange(function(){ defaults(); syncConcedeLabels(); syncFirst(); syncNext(); syncSetup(); render(); });
   }
 
   document.getElementById("setupbtn").addEventListener("click", function(){
@@ -3025,7 +3037,7 @@
   lgaLoad();
   lgrLoad();
   clockLoad();
-  loadPlayers();
+  loadPlayers(); defaults();
   window.RAVI_GOTO(document.getElementById("pgamegoto"), "counter", "../", true);
   history = loadHistory();
   loadMatch();

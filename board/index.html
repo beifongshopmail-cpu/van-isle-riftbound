@@ -376,7 +376,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       ["x", "y", "z"].forEach(function(k){ if (typeof p[k] === "number" && isFinite(p[k])) { pic[k] = p[k]; } });
     } else if (p && p.k === "p" && Number.isSafeInteger(p.v)) { pic = { k: "p", v: p.v }; }
     return { h: x.h, name: typeof x.name === "string" ? x.name.slice(0, 32) : "", user: typeof x.user === "string" && /^[a-z0-9_]{3,20}$/.test(x.user) ? x.user : "",
-      area: AREAS[x.area] ? x.area : "", pic: pic };
+      area: AREAS[x.area] ? x.area : "", col: window.RAVI_COLOUR && window.RAVI_COLOUR(x.col) ? x.col : "", pic: pic };
   }
   function clean(j){
     var out = { me: { area: "", have: 0, want: 0, off: false, pich: false, blocked: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [], wanted: {} };
@@ -418,6 +418,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     return "background-image:url('" + A.BASE + "/acct/bpic/" + f.h + "?v=" + f.pic.v + "');background-size:cover;background-position:50% 50%";
   }
+  // a player's card wears their colour as coloured glass (plan 2 M8 block 2: your colour on your
+  // Profile); with none it stays plain glass. Their name says who it is, never the colour.
+  function cardOpen(f){ var c = window.RAVI_COLOUR && window.RAVI_COLOUR(f && f.col); return c ? '<article class="bt glass cg" style="--c:' + c.rgb + '">' : '<article class="bt glass">'; }
   function pic(f, sm){ var st = picStyle(f); return '<span class="bpic' + (sm ? " sm" : "") + '"' + (st ? ' style="' + esc(st) + '"' : '') + '>' + (st ? '' : PERSON) + '</span>'; }
   function nameOf(f){ return f.name || (f.user ? "@" + f.user : "A RAVI player"); }
   function subOf(f){
@@ -499,7 +502,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
       return "";
     }
     $("blist").innerHTML = list.map(function(t){
-      return '<article class="bt glass">'
+      return cardOpen(t)
         + '<button type="button" class="bwho" data-who="' + esc(t.h) + '" aria-label="' + esc(nameOf(t)) + ', see the trade" data-k="deeper">' + pic(t)
         + '<span class="bnm"><b>' + esc(nameOf(t)) + '</b>' + (subOf(t) ? '<small>' + esc(subOf(t)) + '</small>' : '') + '</span>' + (t.two ? BOTH : '') + CVR + '</button>'
         + shelf(t.wants, t.h, "wants", "Wants " + plural(cardsN(t.wants), "card", "cards") + " you have")
@@ -560,7 +563,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
 
   // a Players block: the player (opens their menu), then four of their cards
   function playerBlock(f, cards, n, two){
-    return '<article class="bt glass">'
+    return cardOpen(f)
       + '<button type="button" class="bwho" data-who="' + esc(f.h) + '" aria-label="' + esc(nameOf(f)) + ', see everything they have for trade" data-k="deeper">' + pic(f)
       + '<span class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span>' + (two ? BOTH : '<span class="bcnt">' + esc(plural(n, "card", "cards")) + '</span>') + CVR + '</button>'
       + '<div class="bsec"><div class="bprev">' + cards.slice(0, 4).map(function(x){ return shelfCard(x, f.h, "rest"); }).join("") + '</div></div>'
@@ -675,7 +678,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   // from this phone's Collection and profile, so it shows what sync is about to share ----
   function selfFace(){
     var a = (A && A.view()) || {};
-    return { h: "self", self: 1, name: typeof a.name === "string" ? a.name.slice(0, 32) : "", user: typeof a.user === "string" ? a.user : "", area: AREAS[a.area] ? a.area : "" };
+    return { h: "self", self: 1, name: typeof a.name === "string" ? a.name.slice(0, 32) : "", user: typeof a.user === "string" ? a.user : "", area: AREAS[a.area] ? a.area : "", col: typeof a.col === "string" ? a.col : "" };
   }
   function merged(lists){
     var o = {}, out = [];

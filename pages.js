@@ -115,6 +115,28 @@ window.RAVI_PAGES = [
 // default seven. A saved value is rebuilt from checked fields on every read (M14's rule): only
 // ids of pages with a path count, once each, the first seven; anything that is not a list falls
 // back to the default. RAVI_HUB_PICKS() returns the ids in page order, whatever order was saved.
+// THE PLAYER COLOURS (plan 2 M8 block 2): your colour on your Profile, the counter's swatches, a
+// player's card on the Trade board. Eight from the palette that read as text on the ground (contrast
+// 6 or more); blue and pink first, the counter's defaults. Keys match the server's COLOURS.
+window.RAVI_PLAYER_COLOURS = [
+  {k:"blue", name:"Blue", rgb:"93,165,238", hex:"#5DA5EE"},
+  {k:"pink", name:"Pink", rgb:"238,95,156", hex:"#EE5F9C"},
+  {k:"gold", name:"Gold", rgb:"255,200,40", hex:"#FFC828"},
+  {k:"tangerine", name:"Tangerine", rgb:"255,150,40", hex:"#FF9628"},
+  {k:"lime", name:"Lime", rgb:"170,210,60", hex:"#AAD23C"},
+  {k:"mint", name:"Mint", rgb:"80,230,170", hex:"#50E6AA"},
+  {k:"orchid", name:"Orchid", rgb:"215,90,230", hex:"#D75AE6"},
+  {k:"white", name:"White", rgb:"240,240,245", hex:"#F0F0F5"}
+];
+// one colour by its key (null when it is not one); RAVI_MY_COLOUR(): your own, from your account
+window.RAVI_COLOUR = function(k){
+  var l = window.RAVI_PLAYER_COLOURS;
+  for (var i = 0; i < l.length; i++) { if (l[i].k === k) { return l[i]; } }
+  return null;
+};
+window.RAVI_MY_COLOUR = function(){
+  try { var a = window.RAVI_ACCT && window.RAVI_ACCT.view(); return a ? window.RAVI_COLOUR(a.col) : null; } catch (e) { return null; }
+};
 window.RAVI_HUB_KEY = "vir.hub.blocks.v1";
 window.RAVI_HUB_MAX = 7;
 // New here took App settings' default place (2026-10-27): a newcomer sees it first; App settings
