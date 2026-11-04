@@ -46,7 +46,8 @@ body{-webkit-font-smoothing:antialiased;
 .hv{margin-top:8px}
 #pchips{height:var(--sz-row);margin:8px -10px 0;align-items:center}
 .dcend .cp{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
-.dcard.cg2 .dcend .cp{color:#DCDEE2}
+.dcard.cg2{--muted:#DCDEE2} /* STYLE section 4: grey text inside a coloured glass */
+.dcard.cg2 .dcend .cp{color:var(--muted)}
 .rocard .rowho{display:flex;align-items:center;gap:12px}
 .ropic{flex:0 0 48px;width:48px;height:48px;border-radius:50%;background:var(--recess) center/cover no-repeat;display:grid;place-items:center;color:var(--muted)} /* size-exempt: a player's picture */
 .ropic svg{width:26px;height:26px;fill:currentColor}
@@ -76,7 +77,7 @@ body{-webkit-font-smoothing:antialiased;
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   .dcard.cg2{background:linear-gradient(145deg,rgba(var(--c),.44) calc(var(--s) - 15%),rgba(var(--c2),.44) calc(var(--s) + 15%)),var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 }
-.dcard.cg2 .dcsub{color:#DCDEE2}
+.dcard.cg2 .dcsub{color:var(--muted)}
 .dcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 14px 10px 10px;border-radius:22px;text-align:left;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .dcard:active{transform:scale(.98)}
 .dcpic{flex:0 0 54px;width:54px;height:75px;border-radius:5px;overflow:hidden;background:var(--recess)} /* size-exempt: card art image */
@@ -92,7 +93,7 @@ body{-webkit-font-smoothing:antialiased;
 .dcstat{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap}
 .dcstat svg{flex:0 0 auto;width:15px;height:15px}
 .dcend .n{font-size:12px;font-weight:600;color:var(--muted)}
-.dcard.cg2 .dcend .n{color:#DCDEE2}
+.dcard.cg2 .dcend .n{color:var(--muted)}
 .dcend .pr{margin-top:2px;font-family:var(--disp);font-size:15px;font-weight:700}
 .hnone{margin:24px 4px 0;font-size:15px;line-height:1.45;color:var(--muted);text-align:center}
 
@@ -105,7 +106,8 @@ body{-webkit-font-smoothing:antialiased;
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) calc(var(--s) - 15%),rgba(var(--c2),.32) calc(var(--s) + 15%)),rgba(10,11,13,.94)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) calc(var(--s) - 15%),rgba(var(--c2),.32) calc(var(--s) + 15%)),rgba(10,11,13,.5)}}
-.plate.cg2 .ptl span{color:#DCDEE2}
+.plate.cg2{--muted:#DCDEE2}
+.plate.cg2 .ptl span{color:var(--muted)}
 /* the deck's plate: 10 + 36 + 8 + 40 (+ 8 + 40, the view row in Deck) + 10, plus a 14 gap */
 .hold{height:118px}
 #deck.dv .hold{height:166px}
