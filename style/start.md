@@ -16,6 +16,9 @@ New here (start/index.html)
 - The board's Legend Zone, Champion Zone, Main Deck, Rune Deck and Trash are card-shaped: 72 wide columns, rows a card's height (Mako 2026-11-03). A card whose picture carries Riot's BANNED stamp is never used. An exhausted rune is the rune card turned 90 degrees (.nx).
 - Facts come from Riot's own documents. Every More ends with the rules its card rests on (.nqs): a head naming Riot's Core Rules and their date (.nqh, 13 muted), each rule's number and Riot's words word for word (.sel, 13), then a Rules row to the Rules page (Mako 2026-11-03). rb-tools p2m6h H10 checks each quote against Riot's text and fails when Riot dates a newer Core Rules.
 
+- How to play's eight cards each wear a palette colour as coloured glass, walking the hues: Your deck Garnet, The board Tangerine, Setting up Gold, A turn Lime, Runes Mint, Units and moving Sky, Fights Tanzanite, Scoring Orchid (plan 2 M8; Mako 2026-11-03). Keywords in the guide's own words are drawn as the cards print them (.nkw): a slanted tag in Riot's colour (sampled from the card images: teal --kwt 14,116,94 for Accelerate, Action, Reaction; crimson --kwr 204,44,104 for Tank, Assault; lime --kwg 146,176,44 for Ganking, with ink text), the word in capitals, Poppins 700 12. Riot's quoted rules keep their own text.
+
 Page-local classes (not in app.css; not Kit parts):
 - start/index.html: .nsec .ntx .gsel .guide (two guides on one track: New to Riftbound, New to RAVI; #ravi opens the second)
+- start/index.html, plan 2 M8: .nkw (a keyword as the cards print it; data-kc r crimson, g lime, else teal)
 - start/index.html, How to play (plan 2 M6 block 5): .nprt .nfo .nmore .nqs .nqh .nfig .nst .nmk .nrw .nz .nb .nzt .nzy .nsl .nbd .ndk .ncd .nland .nlay .nstk .nrn .nrj .nrp .nrs .nrr .nx .nad .nrd .nmv .nmc .nmu .nmg .nmb .nah .nar .ncb .ncs .nus .nu .ncn .ncr .ndots .nlast .ntk .nsy .ndom

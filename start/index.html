@@ -54,6 +54,19 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .nmore{padding:12px 0 2px}
 .nmore .ntx:last-child{margin-bottom:4px}
 .nfig{margin:4px 0 12px}
+/* plan 2 M8 (Mako's phone check 2026-11-03: every card the same colour was boring): How to play's eight
+   cards each wear a palette colour, walking the hues in order from Your deck (Garnet) to Scoring
+   (Orchid), as coloured glass (.cg, --c on the section); the words still name each card */
+/* KEYWORDS as the cards print them (plan 2 M8, Mako 2026-11-03): a slanted tag in the colour Riot
+   prints it, the word in capitals; sampled from the card images (cards/art): teal for Accelerate,
+   Action and Reaction, crimson for Tank and Assault, lime for Ganking. The word is always there. */
+:root{--kwt:14,116,94;--kwr:204,44,104;--kwg:146,176,44}
+.nkw{display:inline-block;position:relative;isolation:isolate;margin:0 3px;padding:0 6px;font-family:var(--disp);font-weight:700;font-size:12px;
+  line-height:18px;letter-spacing:.04em;text-transform:uppercase;color:var(--bone);vertical-align:1px;white-space:nowrap}
+.nkw::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:2px;background:rgb(var(--kwt));transform:skewX(-14deg)}
+.nkw[data-kc="r"]::before{background:rgb(var(--kwr))}
+.nkw[data-kc="g"]{color:var(--ink)}
+.nkw[data-kc="g"]::before{background:rgb(var(--kwg))}
 .nst{list-style:none;margin:0 0 8px;padding:0}
 .nst li{display:flex;gap:10px;align-items:flex-start;margin:0 0 8px 4px}
 .nst .ntx{margin:2px 0 0}
@@ -157,7 +170,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   <p class="lb nprt">How to play</p>
 
-  <section class="nsec glass" id="hdeck">
+  <section class="nsec glass cg" id="hdeck" style="--c:200,35,70">
     <div class="shead"><h2>Your deck</h2></div>
     <p class="ntx">A Legend, its Chosen Champion, a Main deck of 40 cards, 12 runes and 3 battlefields.</p>
     <div class="nfig ndk">
@@ -184,7 +197,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hboard">
+  <section class="nsec glass cg" id="hboard" style="--c:255,150,40">
     <div class="shead"><h2>The board</h2></div>
     <p class="ntx">Each player plays on a mat like this. The battlefields are where points are scored.</p>
     <div class="nfig nbd" role="img" aria-label="A player's mat: a top row of Battlefield Zone, Legend Zone and Champion Zone; a middle row of Base: Units and Gears and Main Deck; a bottom row of Rune Deck, Base: Runes and Trash">
@@ -208,7 +221,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hsetup">
+  <section class="nsec glass cg" id="hsetup" style="--c:255,200,40">
     <div class="shead"><h2>Setting up</h2></div>
     <p class="ntx">Pick your battlefield, shuffle, draw 4. You may swap up to 2.</p>
     <ol class="nst">
@@ -236,7 +249,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hturn">
+  <section class="nsec glass cg" id="hturn" style="--c:170,210,60">
     <div class="shead"><h2>A turn</h2></div>
     <p class="ntx">A, B, C, D, then your actions, then the end.</p>
     <ol class="nst">
@@ -264,7 +277,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hrunes">
+  <section class="nsec glass cg" id="hrunes" style="--c:80,230,170">
     <div class="shead"><h2>Runes</h2></div>
     <p class="ntx">Runes pay for cards. Exhaust a rune for 1 Energy. Recycle a rune for 1 Power of its domain.</p>
     <div class="nfig nrn">
@@ -280,7 +293,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="nmore" hidden>
       <p class="ntx">Energy is the number in a card's top corner. Power is the domain symbol under it; a card can ask for more than one. There are six domains:</p>
       <ul class="ndom"><li><img src="../cards/runes/rune_fury.svg" alt="" width="24" height="24"><span>Fury</span></li><li><img src="../cards/runes/rune_calm.svg" alt="" width="24" height="24"><span>Calm</span></li><li><img src="../cards/runes/rune_mind.svg" alt="" width="24" height="24"><span>Mind</span></li><li><img src="../cards/runes/rune_body.svg" alt="" width="24" height="24"><span>Body</span></li><li><img src="../cards/runes/rune_chaos.svg" alt="" width="24" height="24"><span>Chaos</span></li><li><img src="../cards/runes/rune_order.svg" alt="" width="24" height="24"><span>Order</span></li></ul>
-      <p class="ntx">In a card's text, Energy is a number in a circle and Power a domain symbol. Jinx's Accelerate asks <img class="nsy" src="../cards/glyphs/energy_1.svg" alt="1 Energy" width="24" height="24"><img class="nsy" src="../cards/runes/rune_fury.svg" alt="1 Fury Power" width="24" height="24"> more to have her enter ready. <img class="nsy" src="../cards/glyphs/rune_rainbow.svg" alt="The rainbow symbol" width="24" height="24"> is Power of any domain.</p>
+      <p class="ntx">In a card's text, Energy is a number in a circle and Power a domain symbol. Jinx's <span class="nkw">Accelerate</span> asks <img class="nsy" src="../cards/glyphs/energy_1.svg" alt="1 Energy" width="24" height="24"><img class="nsy" src="../cards/runes/rune_fury.svg" alt="1 Fury Power" width="24" height="24"> more to have her enter ready. <img class="nsy" src="../cards/glyphs/rune_rainbow.svg" alt="The rainbow symbol" width="24" height="24"> is Power of any domain.</p>
       <p class="ntx">To recycle a rune, put it on the bottom of your Rune deck. A rune you exhausted for Energy can still be recycled for Power, so one rune can pay for both.</p>
       <p class="ntx"><b>Example:</b> Jinx, Demolitionist costs 3 Energy and 1 Fury. Exhaust 3 runes, then recycle a Fury rune, which can be one of the three.</p>
       <div class="nqs" data-core="October 9, 2026">
@@ -295,11 +308,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hmove">
+  <section class="nsec glass cg" id="hmove" style="--c:30,205,230">
     <div class="shead"><h2>Units and moving</h2></div>
     <p class="ntx">A unit arrives exhausted at your base. Once ready, it exhausts to move to a battlefield or back.</p>
     <div class="nfig nmv" role="img" aria-label="Flame Chompers, a unit at your base, can move to either battlefield and back; only Ganking moves from one battlefield to the other">
-      <img class="nmc" src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="" width="744" height="533" loading="lazy"><span class="nmg"><svg class="nah" viewBox="0 0 48 24" aria-hidden="true"><path d="M4 12h40M10 6l-6 6 6 6M38 6l6 6-6 6"/></svg><span>Ganking only</span></span><img class="nmc" src="../cards/art/8767d9ed30e2873d3fa1045f973be229da56175d.webp" alt="" width="744" height="533" loading="lazy">
+      <img class="nmc" src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="" width="744" height="533" loading="lazy"><span class="nmg"><svg class="nah" viewBox="0 0 48 24" aria-hidden="true"><path d="M4 12h40M10 6l-6 6 6 6M38 6l6 6-6 6"/></svg><span><span class="nkw" data-kc="g">Ganking</span> only</span></span><img class="nmc" src="../cards/art/8767d9ed30e2873d3fa1045f973be229da56175d.webp" alt="" width="744" height="533" loading="lazy">
       <svg class="nar" viewBox="0 0 24 48" aria-hidden="true"><path d="M12 4v40M6 10l6-6 6 6M6 38l6 6 6-6"/></svg><span></span><svg class="nar" viewBox="0 0 24 48" aria-hidden="true"><path d="M12 4v40M6 10l6-6 6 6M6 38l6 6 6-6"/></svg>
       <div class="nz nb nzy nmb"><img class="nmu" src="../cards/art/1f6f5ebd18e5daac30d62626fddd785c4b457c2b.t.webp" alt="" width="200" height="279" loading="lazy"><span>Your base</span></div>
     </div>
@@ -308,7 +321,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <p class="ntx">A unit's Might <img class="nsy" src="../cards/glyphs/might.svg" alt="the Might symbol" width="24" height="24">, in its top corner, is both the damage it deals and the damage it can take.</p>
       <p class="ntx"><img class="nsy" src="../cards/glyphs/exhaust.svg" alt="The Exhaust symbol" width="24" height="24"> in a card's text means exhausting that card is part of the cost.</p>
       <p class="ntx">A unit can also enter at a battlefield you control. Units going to the same place can move together.</p>
-      <p class="ntx">Move onto a battlefield with the other player's units and you fight. Move onto an empty one and you conquer it, though your opponent may answer first with an Action or Reaction card.</p>
+      <p class="ntx">Move onto a battlefield with the other player's units and you fight. Move onto an empty one and you conquer it, though your opponent may answer first with an <span class="nkw">Action</span> or <span class="nkw">Reaction</span> card.</p>
       <div class="nqs" data-core="October 9, 2026">
         <p class="nqh">Riot's Core Rules, October 9, 2026</p>
         <ul>
@@ -323,7 +336,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hfight">
+  <section class="nsec glass cg" id="hfight" style="--c:115,80,240">
     <div class="shead"><h2>Fights</h2></div>
     <p class="ntx">Move onto a battlefield the other player controls and you fight. Each side deals its total Might as damage.</p>
     <div class="nfig ncb" role="img" aria-label="Example: your Flame Chompers, 3 Might, and Mystic Poro, 2 Might, attack their Kinkou Monk, 4 Might. Kinkou Monk and Flame Chompers are killed; Mystic Poro is left, so you conquer">
@@ -335,8 +348,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="nmore" hidden>
       <ol class="nst">
       <li><span class="nmk" aria-hidden="true">1</span><p class="ntx">"When I defend" abilities, then "When I attack" abilities.</p></li>
-      <li><span class="nmk" aria-hidden="true">2</span><p class="ntx">Players take turns playing Action and Reaction cards until both pass.</p></li>
-      <li><span class="nmk" aria-hidden="true">3</span><p class="ntx">Each side adds up its Might and splits that much damage among the other side. Lethal damage goes to one unit before the next, and Tank units take it first.</p></li>
+      <li><span class="nmk" aria-hidden="true">2</span><p class="ntx">Players take turns playing <span class="nkw">Action</span> and <span class="nkw">Reaction</span> cards until both pass.</p></li>
+      <li><span class="nmk" aria-hidden="true">3</span><p class="ntx">Each side adds up its Might and splits that much damage among the other side. Lethal damage goes to one unit before the next, and <span class="nkw" data-kc="r">Tank</span> units take it first.</p></li>
       <li><span class="nmk" aria-hidden="true">4</span><p class="ntx">All damage lands at once. A unit with damage equal to its Might or more is killed.</p></li>
       <li><span class="nmk" aria-hidden="true">5</span><p class="ntx">If only attackers are left, they conquer the battlefield. If a defender is left, the attackers go back to base.</p></li>
       <li><span class="nmk" aria-hidden="true">6</span><p class="ntx">Units that are left heal.</p></li>
@@ -355,7 +368,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass" id="hscore">
+  <section class="nsec glass cg" id="hscore" style="--c:215,90,230">
     <div class="shead"><h2>Scoring</h2></div>
     <p class="ntx">Score 1 when you conquer a battlefield and 1 when you hold one as your turn starts. 8 points wins.</p>
     <div class="nfig ntk">
