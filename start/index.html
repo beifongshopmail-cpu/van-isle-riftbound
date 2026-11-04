@@ -77,7 +77,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ndk{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 8px;align-items:flex-end}
 .ndk > .ncd{width:calc((100% - 16px) / 3)}
 /* a battlefield is the same card turned on its side: as wide as the others are tall */
-.ndk > .ncd.nland{width:calc((100% - 16px) / 3 * 1039 / 744 + 8px)} /* + the stack offset, so the face-up card stays card-sized */
+.ndk > .ncd.nland{width:calc((100% - 16px) / 3 * 1039 / 744 + 16px)} /* + the stack offset, so the face-up card stays card-sized */
 .ncd{margin:0;display:flex;flex-direction:column;gap:6px}
 .ncd img{display:block;width:100%;height:auto;border-radius:5px} /* size-exempt: card picture */
 .ncd figcaption{font-family:var(--text);font-size:12px;line-height:1.3;color:var(--muted);text-align:center}
@@ -85,11 +85,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   box-shadow:3px 3px 0 -1px var(--ground),3px 3px 0 0 rgba(255,255,255,.22),6px 6px 0 -1px var(--ground),6px 6px 0 0 rgba(255,255,255,.22)}
 .nstk img{display:block;width:100%;height:100%;border-radius:5px} /* size-exempt: Riot's card back */
 /* three battlefields, the two behind face down (Riot's black back, turned), the top one face up */
-.nlay{position:relative;display:block;aspect-ratio:1039/744;margin:0 0 0 8px;width:calc(100% - 8px)}
+.nlay{position:relative;display:block;aspect-ratio:1039/744;margin:0 0 0 16px;width:calc(100% - 16px)}
 .nlay img{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:5px} /* size-exempt: card picture */
-.nlay img:nth-child(1){transform:translate(-8px,-8px)}
-.nlay img:nth-child(2){transform:translate(-4px,-4px)}
-.ndk > .ncd.nland .nlay{margin-top:8px}
+.nlay img:nth-child(1){transform:translate(-16px,-16px)}
+.nlay img:nth-child(2){transform:translate(-8px,-8px)}
+.ndk > .ncd.nland .nlay{margin-top:16px}
 /* the rules a card rests on, in Riot's words with their numbers (Mako 2026-11-03), at the end of its More */
 .nqs{margin:4px 0 0;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
 .nqh{margin:0 4px 8px;font-family:var(--disp);font-weight:600;font-size:13px;color:var(--muted)}
@@ -110,7 +110,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .nmv{display:grid;grid-template-columns:1fr 78px 1fr;gap:6px;justify-items:center;align-items:center}
 .nmv .nz{width:100%}
 .nmc{width:100%;height:auto;border-radius:5px} /* size-exempt: card picture */
-.nmb{gap:12px;padding:8px 12px;justify-content:flex-start}
+.nmb{position:relative;padding:8px 12px;justify-content:flex-start}
+.nmb span{position:absolute;left:0;right:0;text-align:center;pointer-events:none}
 .nmu{width:56px;height:auto;border-radius:4px} /* size-exempt: card picture */
 .nmb{grid-column:1 / -1}
 .nmv .nz.nmb{min-height:var(--sz-row)}
@@ -160,14 +161,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="ntx">A Legend, its Chosen Champion, a Main deck of 40 cards, 12 runes and 3 battlefields.</p>
     <div class="nfig ndk">
       <figure class="ncd"><img src="../cards/art/f57c14381b126e9f5a7b5bc4913151cb24c14fc3.t.webp" alt="Jinx, Loose Cannon, a Legend" width="200" height="279" loading="lazy"><figcaption>Legend, 1</figcaption></figure>
-      <figure class="ncd"><img src="../cards/art/d6cac988aa7798945e550eba6841d3993868c4a4.t.webp" alt="Jinx, Demolitionist, a champion unit" width="200" height="279" loading="lazy"><figcaption>Chosen Champion, 1 of the 40</figcaption></figure>
+      <figure class="ncd"><img src="../cards/art/d6cac988aa7798945e550eba6841d3993868c4a4.t.webp" alt="Jinx, Demolitionist, a champion unit" width="200" height="279" loading="lazy"><figcaption>Chosen Champion, 1</figcaption></figure>
       <figure class="ncd"><img src="../cards/art/12bcd0cde5d9ff4640e82945001e9fef863530f1.t.webp" alt="Fury Rune" width="200" height="279" loading="lazy"><figcaption>Runes, 12</figcaption></figure>
       <figure class="ncd nland"><span class="nlay"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/backs/back-black-side.webp" alt="" width="1039" height="744" loading="lazy"><img src="../cards/art/1574863000ab23d69cbd388a32b1a09f29f78d5f.webp" alt="Grove of the God-Willow, a battlefield, with two more face down behind it" width="744" height="533" loading="lazy"></span><figcaption>Battlefields, 3</figcaption></figure>
-      <figure class="ncd"><span class="nstk"><img src="../cards/backs/back-blue.webp" alt="A Main deck, face down" width="744" height="1039" loading="lazy"></span><figcaption>Main deck, 40</figcaption></figure>
+      <figure class="ncd"><span class="nstk"><img src="../cards/backs/back-blue.webp" alt="A Main deck, face down" width="744" height="1039" loading="lazy"></span><figcaption>Main deck, 40 (39 + Chosen Champion)</figcaption></figure>
     </div>
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
-      <p class="ntx">Your Legend stays beside the board all game and has an ability of its own. Its two domains decide which cards and runes the deck can hold.</p>
+      <p class="ntx">Your Legend stays beside the board all game and has an ability of its own. Its two domains decide which cards and runes can go in the deck.</p>
       <p class="ntx">The Chosen Champion is one of the 40: a champion unit of your Legend, set aside at the start so you can play it whenever you can pay for it.</p>
       <p class="ntx">Up to 3 copies of any card.</p>
       <div class="nqs" data-core="October 9, 2026">
@@ -192,7 +193,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
     <button type="button" class="nfo" aria-expanded="false" data-k="open" data-fold><span>More</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="nmore" hidden>
-      <p class="ntx">Your base holds your units and gear that are not at a battlefield, and below them the runes you channel. Killed and discarded cards go to your trash. Your Main Deck and Rune Deck sit face down, apart.</p>
+      <p class="ntx">Your base keeps your units and gear that are not at a battlefield, and below them the runes you channel. Killed and discarded cards go to your trash. Your Main Deck and Rune Deck sit face down, apart.</p>
       <p class="ntx">In a game for two, each player puts one of their 3 battlefields in their Battlefield Zone, and the two mats face each other, so two battlefields are in play.</p>
       <div class="nqs" data-core="October 9, 2026">
         <p class="nqh">Riot's Core Rules, October 9, 2026</p>
@@ -239,7 +240,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="ntx">A, B, C, D, then your actions, then the end.</p>
     <ol class="nst">
       <li><span class="nmk" aria-hidden="true">A</span><p class="ntx"><b>Awaken.</b> Ready everything you exhausted: units, Legend and runes.</p></li>
-      <li><span class="nmk" aria-hidden="true">B</span><p class="ntx"><b>Beginning.</b> Start-of-turn effects, then score 1 for each battlefield you hold.</p></li>
+      <li><span class="nmk" aria-hidden="true">B</span><p class="ntx"><b>Beginning.</b> Start-of-turn effects, then score 1 for each battlefield you control.</p></li>
       <li><span class="nmk" aria-hidden="true">C</span><p class="ntx"><b>Channel.</b> The top 2 runes of your Rune deck go onto the board, ready.</p></li>
       <li><span class="nmk" aria-hidden="true">D</span><p class="ntx"><b>Draw.</b> Draw 1. There is no hand limit.</p></li>
       <li><span class="nmk" aria-hidden="true">Act</span><p class="ntx"><b>Action.</b> Play cards, use abilities and move units, in any order, as often as you can pay.</p></li>
@@ -323,7 +324,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   <section class="nsec glass" id="hfight">
     <div class="shead"><h2>Fights</h2></div>
-    <p class="ntx">Move onto a battlefield the other player holds and you fight. Each side deals its total Might as damage.</p>
+    <p class="ntx">Move onto a battlefield the other player controls and you fight. Each side deals its total Might as damage.</p>
     <div class="nfig ncb" role="img" aria-label="Example: your Flame Chompers, 3 Might, and Mystic Poro, 2 Might, attack their Kinkou Monk, 4 Might. Kinkou Monk and Flame Chompers are killed; Mystic Poro is left, so you conquer">
       <div class="ncs nzt"><span class="nsl">Theirs, defending</span><div class="nus"><figure class="nu"><img src="../cards/art/648b22c6f419ee55723247bbf4c3ac10f0be9ab5.t.webp" alt="Kinkou Monk, 4 Might" width="200" height="279" loading="lazy"><figcaption><b>4</b> Might, killed</figcaption></figure></div><p class="ncn">4 damage: 3 to your Flame Chompers, 1 to your Mystic Poro</p></div>
       <div class="ncs nzy"><span class="nsl">Yours, attacking</span><div class="nus"><figure class="nu"><img src="../cards/art/1f6f5ebd18e5daac30d62626fddd785c4b457c2b.t.webp" alt="Flame Chompers, 3 Might" width="200" height="279" loading="lazy"><figcaption><b>3</b> Might, killed</figcaption></figure><figure class="nu"><img src="../cards/art/11af57d045768e886d05e1c0933b0d57cb1e459d.t.webp" alt="Mystic Poro, 2 Might" width="200" height="279" loading="lazy"><figcaption><b>2</b> Might, left</figcaption></figure></div><p class="ncn">5 damage: all 5 to their Kinkou Monk</p></div>
