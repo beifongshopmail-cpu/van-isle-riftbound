@@ -1,0 +1,48 @@
+name: fetch core rules
+
+# Run by hand (workflow_dispatch) when New here's rule quotes are written or Riot updates its
+# Core Rules. fetch-core-rules.js downloads Riot's Core Rules PDF, from the link data/rules.json
+# already holds, byte for byte from Riot's file host.
+#
+# THIS WORKFLOW NEVER WRITES TO main and opens no pull request. It puts the PDF and its report
+# (core-rules.md) on the bot branch core-rules/fetch; a chat reads Riot's words there and quotes
+# them in its own reviewed commit. The bot's branch is reset each run.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-core-rules
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Fetch Riot's Core Rules
+        run: node fetch-core-rules.js
+        env:
+          CORE_OUT: riot
+
+      - name: Report
+        run: cat riot/core-rules.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Put it on the bot branch
+        run: |
+          BRANCH="core-rules/fetch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add riot
+          git commit -m "core rules: Riot's Core Rules PDF $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --force origin "$BRANCH"
