@@ -387,8 +387,11 @@
   }
 
   // draw a picture into a circle: art, the photo, or a filled person (every phone has an account)
-  function paint(node, a, over) {
+  function paint(node, a, over, colKey) {
     var url = over ? over.url : A.picUrl(a, REL), fit = over ? over.fit : A.picFit(a);
+    var c = root.RAVI_COLOUR ? root.RAVI_COLOUR(colKey !== undefined ? colKey : a && a.col) : null;
+    node.classList.toggle("accol", !!c);
+    if (c) node.style.setProperty("--acc", c.rgb); else node.style.removeProperty("--acc");
     node.style.backgroundImage = url ? "url(\"" + url.replace(/["\\]/g, "") + "\")" : "";
     node.style.backgroundSize = url && fit ? fit.size : "";
     node.style.backgroundPosition = url && fit ? fit.pos : "";
@@ -399,8 +402,8 @@
   function paintAll() {
     var a = A.view();
     paint(pic, a, preview);
-    var big = $("acbig");
-    if (big) paint(big, a, preview);
+    var big = $("acbig"), sh = $("acprof") && $("acprof").classList.contains("show");
+    if (big) paint(big, a, preview, sh ? colPicked() : undefined);
     pic.setAttribute("aria-label", "Your account");
   }
 
@@ -642,7 +645,7 @@
       $("acname").value = a && a.name || ""; $("acuser").value = a && a.user || ""; $("acabout").value = a && a.about || "";
       riotFill(a);
       say("acprofmsg", ""); say("acriotmsg", ""); $("acdispw").hidden = true;
-      claimState(); areaText(); paintAll(); colours(a && a.col || "");
+      claimState(); areaText(); colours(a && a.col || ""); paintAll();
     }
     else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
     else if (id === "acdispm") { renderDisputes(); }
@@ -1106,6 +1109,7 @@
   function colPicked() { var b = doc.querySelector("#accols button[aria-pressed=true]"); return b ? b.getAttribute("data-col") : null; }
   function pickCol(k) {
     Array.prototype.forEach.call(doc.querySelectorAll("#accols button"), function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-col") === k ? "true" : "false"); });
+    var big = $("acbig"); if (big) paint(big, A.view(), preview, k); // Profile's picture shows the pick before Save
   }
 
   // ---- Home area ----

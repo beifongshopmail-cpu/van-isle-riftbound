@@ -502,7 +502,7 @@ function sqlStore(sql) {
     link: (code) => one("SELECT code, sec, dev, made, exp, acct FROM link WHERE code = ?", code),
     putLink: (x) => sql.exec("INSERT OR REPLACE INTO link VALUES (?, ?, ?, ?, ?, ?)", x.code, x.sec, x.dev, x.made, x.exp, x.acct || null),
     delLink: (code) => sql.exec("DELETE FROM link WHERE code = ?", code),
-    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area, pcrop FROM prof WHERE acct = ?", acct),
+    prof: (acct) => one("SELECT acct, name, user, about, pk, ph, pv, area, pcrop, col FROM prof WHERE acct = ?", acct),
     profByUser: (u) => one("SELECT acct FROM prof WHERE user = ?", u),
     putProf: (x) => sql.exec("INSERT OR REPLACE INTO prof (acct, name, user, about, pk, ph, pv, area, pcrop, col) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", x.acct, x.name, x.user, x.about, x.pk, x.ph, x.pv, x.area || null, x.pcrop || null, x.col || null),
     riotOf: (acct) => one("SELECT k, acct, n, tag, at FROM riot WHERE acct = ?", acct),

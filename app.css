@@ -552,6 +552,9 @@ html.gate body > :not(#ravigate){display:none!important}
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);display:grid;place-items:center;color:var(--muted)}
 .acav.acart{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 .acbig{width:88px;height:88px;margin:2px auto 0}
+/* your colour (plan 2 M8, Mako 2026-11-04): your picture's rim wears it, 2 wide, on the corner picture
+   and Profile's; --acc is the colour's rgb, set by account.js */
+.acpic.accol,.acav.accol{box-shadow:inset 0 0 0 2px rgb(var(--acc))}
 .acbig svg{width:44px;height:44px} /* size-exempt: the person drawn inside the 88 profile picture, a picture not a control */
 .panel.acct .doors+.doors,.panel.acct .pnote+.doors{margin-top:14px}
 .panel.acct .acgap{margin-top:12px}
