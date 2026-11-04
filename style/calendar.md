@@ -11,4 +11,4 @@ Calendar (calendar/index.html)
 - NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
 
 Page-local classes (not in app.css; not Kit parts):
-- calendar/index.html: .cell .dots .ev .evact .evhead .evlive .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .lvl .mk .mrow .spots .stick .tyrow; the Live menu #plive: .lalnote .lclk .lempty .levn .lfind .lgrp .lhd .lme .lms .lmt .ln .lp .lrow .lseg .lsmall .lst .lt .me .mine .nm .omw .pts .rs .sv .wld .won
+- calendar/index.html: .cell .dots .ev .evact .evhead .evlb .evlive .evpill .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .lvl .mk .mrow .spots .stick .tyrow; the Live menu #plive: .lalnote .lclk .lempty .levn .lfind .lgrp .lhd .lme .lms .lmt .ln .lp .lrow .lseg .lsmall .lst .lt .me .mine .nm .omw .pts .rs .sv .wld .won

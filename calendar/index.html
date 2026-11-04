@@ -17,6 +17,7 @@
 <script src="../account.js"></script>
 <script src="../live.js"></script>
 <style>
+:root{--sz-evpill:52px} /* page token: the event card's action pills (M7 C1) */
 /* The calendar, at the site root. CARD SYSTEM, converted 2026-09-19.
    The shared layer (tokens, glass, frost, bar, panels, option tracks,
    press feedback) lives in app.css, linked above this block. This block
@@ -180,11 +181,16 @@ a{color:inherit;text-decoration:none}
    left and circles right. No words on the buttons; each carries an
    aria-label. [hidden] is restated so it beats display:flex. */
 .evact{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
-.evact .evinfo{display:flex;align-items:center;gap:12px}
+.evact .evinfo{display:flex;flex-direction:column;align-items:stretch;gap:10px}
 .evact .evaddr{flex:1;min-width:0;font-size:13px;line-height:1.4;color:var(--bone)}
 .evact .evaddr .evend{display:block;font-size:12px;color:var(--muted);margin-top:2px}
-.evact .evbtns{display:flex;gap:8px;flex:0 0 auto}
-.evact .evbtns .circ svg{stroke:currentColor;stroke-width:2;fill:none} /* drawn icons: the icon line (2), as every drawn icon in a round button */
+.evact .evbtns{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+/* M7 C1 (Mako 2026-11-04): each action a pill with its word under its icon, as Apple Maps' place card */
+.evact .evpill{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;height:var(--sz-evpill);border-radius:20px;color:var(--bone)}
+.evact .evpill svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none} /* drawn icons: the icon line (2) */
+.evact .evpill .evlb{font-family:var(--disp);font-size:12px;font-weight:600;line-height:1;white-space:nowrap}
+.evact .evpill[hidden]{display:none}
+@media (max-width:389px){.evact .evpill .evlb{letter-spacing:-.06em}} /* five pills on a narrow phone: Directions stays whole at 360, as the Go to tiles track their labels */
 .evact[hidden]{display:none}
 /* LIVE (M16): a running event's card says where it stands in words, and
    its open row gains one action into the Live menu. Live data comes from
@@ -491,13 +497,13 @@ a{color:inherit;text-decoration:none}
     if (!IS_APPLE) return rel;
     return "x-safari-" + new URL(rel, location.href).href;
   }
-  function iconLink(box, cls, href, label, svg){
+  function iconLink(box, cls, href, label, svg, word){
     var a = document.createElement("a");
-    a.className = "circ btn glass " + cls;
+    a.className = "evpill btn glass " + cls;
     a.href = href;
     if (!/^x-safari-/.test(href)){ a.target = "_blank"; a.rel = "noopener"; }
     a.setAttribute("aria-label", label);
-    a.innerHTML = svg;
+    a.innerHTML = svg + '<span class="evlb">' + word + '</span>';
     box.appendChild(a);
   }
   // the icon pass (2026-10-16): pin with a solid dot (after Material), calendar-plus (Lucide), out (after Phosphor)
@@ -883,26 +889,26 @@ a{color:inherit;text-decoration:none}
       // I'm going (block 5): saved accounts only, painted by paintGo
       var gb = document.createElement("button");
       gb.type = "button";
-      gb.className = "circ btn glass evgo";
+      gb.className = "evpill btn glass evgo";
       gb.setAttribute("data-k", "do");
       gb.setAttribute("data-go", String(ev.id));
       gb.hidden = true;
       btns.appendChild(gb);
       // a visited event (?visit=) has no address here and no calendar file
-      if (!ev.visit) iconLink(btns, "evdir", mapUrl(street || placeOf(ev)), "Directions", PIN);
+      if (!ev.visit) iconLink(btns, "evdir", mapUrl(street || placeOf(ev)), "Directions", PIN, "Directions");
       // the test event (?sim=1) has no calendar file
-      if (!ev.sim && !ev.visit) iconLink(btns, "evadd", calUrl(ev.id), "Add this event to your calendar", CALPLUS);
+      if (!ev.sim && !ev.visit) iconLink(btns, "evadd", calUrl(ev.id), "Add this event to your calendar", CALPLUS, "Calendar");
       // the top-cut calculator for this event (M15), in the app: every kind but Learn-to-Play and
       // Open Play, which have no cut; not the test event, which is not in the feed
       if (!ev.sim && ev.type !== "learn" && ev.type !== "open"){
         var cl = document.createElement("a");
-        cl.className = "circ btn glass evcut";
+        cl.className = "evpill btn glass evcut";
         cl.href = "../cut/?ev=" + encodeURIComponent(String(ev.id));
         cl.setAttribute("aria-label", "Top cut calculator for this event");
-        cl.innerHTML = TROPHY;
+        cl.innerHTML = TROPHY + '<span class="evlb">Top cut</span>';
         btns.appendChild(cl);
       }
-      iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT);
+      iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT, "Website");
       info.appendChild(btns);
       act.appendChild(info);
       var gn = document.createElement("p");
@@ -1266,7 +1272,7 @@ a{color:inherit;text-decoration:none}
     if (!b || !n || !GO) return;
     var show = GO.saved && goable(ev), on = !!GO.set[String(ev.id)], err = GO.err[String(ev.id)] || "";
     b.hidden = !show;
-    if (b.getAttribute("data-on") !== String(on)) { b.innerHTML = on ? GOCHECK : GOPLUS; b.setAttribute("data-on", String(on)); }
+    if (b.getAttribute("data-on") !== String(on)) { b.innerHTML = (on ? GOCHECK : GOPLUS) + '<span class="evlb">Going</span>'; b.setAttribute("data-on", String(on)); }
     b.classList.toggle("on", on);
     b.setAttribute("aria-label", on ? "Going: tap to undo" : "I'm going");
     b.setAttribute("aria-pressed", on ? "true" : "false");
@@ -1416,7 +1422,7 @@ a{color:inherit;text-decoration:none}
         if (res) t2.appendChild(document.createTextNode(", " + RES_WORD[res]));
       } else {
         t1.textContent = L.nameText(mine);
-        t2.textContent = "Not in this round's pairings. Tap to change the name.";
+        t2.textContent = "Not in this round's pairings." + (claimedRiot() ? "" : " Tap to change the name.");
       }
       var rec = L.myRecord(f, mine);
       if (rec && mt){ t2.appendChild(document.createTextNode(" (" + rec.w + "-" + rec.l + "-" + rec.d + (f.status === "done" ? " final)" : " so far)"))); }
@@ -1513,7 +1519,8 @@ a{color:inherit;text-decoration:none}
     var b = e.target.closest("button"); if (!b) return;
     LV.round = +b.getAttribute("data-n"); liveRender();
   });
-  document.getElementById("plme").addEventListener("click", function(){ LV.editing = true; liveRender(); var i = document.getElementById("plmein"); i.value = window.RAVI_LIVE.nameText(window.RAVI_LIVE.me()); i.focus(); });
+  function claimedRiot(){ var A = window.RAVI_ACCT, v = A && A.signedIn && A.signedIn() && A.view ? A.view() : null; return !!(v && v.riot); }
+  document.getElementById("plme").addEventListener("click", function(){ if (claimedRiot() && window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN("acprof"); return; } /* M7 C3: a claimed Riot ID changes in Profile */ LV.editing = true; liveRender(); var i = document.getElementById("plmein"); i.value = window.RAVI_LIVE.nameText(window.RAVI_LIVE.me()); i.focus(); });
   function saveMe(){
     var i = document.getElementById("plmein");
     window.RAVI_LIVE.setMe(i.value);

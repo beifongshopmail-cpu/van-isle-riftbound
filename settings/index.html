@@ -125,7 +125,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><h4 class="ttl" id="pmet">Live event pairings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <p class="pnote stmenote">Each new pairing at a live event comes to this phone.</p>
-    <p class="lb">Your Riot ID</p>
+    <p class="lb" id="stmelb">Your Riot ID</p>
+    <div class="doors" id="stmeprof" data-k="deeper" hidden><button type="button" class="door btn glass" id="stmeprofb"><span class="t">Your Riot ID</span><span class="sp"></span><small id="stmeprofv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <p class="pnote stmenote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them.</p>
     <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
       <div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
@@ -389,9 +390,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // signal on the first open), the two fields work as before.
   if (window.RAVI_ACCT && window.RAVI_ACCT.signedIn()) {
     document.getElementById("stmerid").hidden = true; document.getElementById("stmeok").hidden = true;
+    // M7 C3 (Mako 2026-11-04): one home for the Riot ID, Profile; here a row shows it and opens Profile
     var acv = window.RAVI_ACCT.view();
-    document.getElementById("stmenote").textContent = (acv && acv.riot ? "Yours is " + acv.riot.n + "#" + acv.riot.tag + ", on your profile. " : "It is set on your profile. ") + "Tap your picture, top right, then Profile.";
+    document.getElementById("stmenote").hidden = true; document.getElementById("stmelb").hidden = true;
+    document.getElementById("stmeprof").hidden = false;
+    document.getElementById("stmeprofv").textContent = acv && acv.riot ? acv.riot.n + "#" + acv.riot.tag : "Not set";
   }
+  document.getElementById("stmeprofb").addEventListener("click", function(){ if (window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN("acprof"); } });
   function saveMe(){
     var t = metag.value.trim().replace(/^#/, ""), n = mein.value.trim();
     // the whole Name#TAG typed into the name field, out of habit, still saves

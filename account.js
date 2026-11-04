@@ -355,11 +355,13 @@
   root.RAVI_SAVEROW = function (label) {
     return '<div class="doors acsaverow" data-k="deeper"><button type="button" class="door btn glass" data-acsave><span class="t">' + (label || "Save your account") + '</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>';
   };
-  root.RAVI_ACCT_OPEN = function () {
+  // to: a deeper menu to open straight after the root (M7 C3: the Riot ID's one home is Profile)
+  root.RAVI_ACCT_OPEN = function (to) {
     var p = doc.getElementById("acpic");
     if (!p || doc.querySelector(".panel.acct.show")) return;
     var sc = doc.querySelector(".scrim.show");
-    if (sc) { sc.click(); setTimeout(function () { p.click(); }, 260); } else p.click();
+    function go() { p.click(); if (to && P[to]) setTimeout(function () { deeper(to); }, 380); }
+    if (sc) { sc.click(); setTimeout(go, 260); } else go();
   };
   doc.addEventListener("click", function (e) {
     var t = e.target && e.target.closest ? e.target.closest("[data-acsave]") : null;
