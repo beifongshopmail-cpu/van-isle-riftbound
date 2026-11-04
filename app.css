@@ -376,7 +376,7 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 .goto .gt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:60px;min-width:0;
   border-radius:20px;font-family:var(--disp);font-weight:600;font-size:12px;letter-spacing:-.08em;padding:0 2px;color:inherit;text-decoration:none}
 .goto .gt span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.goto .gt svg{width:22px;height:22px}
+.goto .gt svg{width:22px;height:22px;color:var(--gi,currentColor)} /* --gi: the page colour, lifted (pages.js RAVI_GOTO; plan 2 M8) */
 .goto .gt:active{background:var(--hi)}
 .goto .gt.on{background:var(--bone);color:var(--ink)}
 /* never more than four across (Mako 2026-10-27): one row up to four; five and six as rows of

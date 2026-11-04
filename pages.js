@@ -98,12 +98,12 @@ window.RAVI_PAGES = [
   {id:"calendar", name:"Events", path:"calendar/", get icon(){ return window.RAVI_ICON("events"); }, rgb:"255,200,40"},
   {id:"counter", name:"Game", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, rgb:"200,35,70"},
   {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, rgb:"115,80,240"},
-  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, rgb:"115,80,240"}, // plan 2 M2: Trade's violet, provisional until the colour pass (plan 2 M8)
-  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, rgb:"40,95,240", glass:true},
+  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, rgb:"255,150,40"}, // Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
+  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, rgb:"134,143,162", glass:true}, // Slate (plan 2 M8, Mako 2026-11-04: a dull colour; was Cobalt, too close to Trade)
   {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, rgb:"0,190,140", glass:true},
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, rgb:"80,230,170"},
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, rgb:"220,90,30"},
-  {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, rgb:"70,185,235", glass:true},
+  {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, rgb:"30,205,230", glass:true}, // Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)
   {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, rgb:"170,210,60"},
   {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, rgb:"215,90,230"},
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
@@ -186,6 +186,14 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
   if (!container) { return; }
   var HUB_ICON = window.RAVI_ICON("hub");
   var pages = window.RAVI_PAGES || [];
+  // plan 2 M8 (Mako's yes 2026-11-04, note 6 of 2026-11-02): each tile's icon wears its page colour,
+  // lifted .30 toward white so it reads on the sunken track; the words and the chosen tile stay as
+  // they were, and the icon's shape still names the page
+  function lift(rgb){
+    var c = String(rgb).split(","), o = [];
+    for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .30)); }
+    return "rgb(" + o.join(",") + ")";
+  }
   // A page whose bar already carries Hub leaves it out of Go to; only the
   // counter, whose strip has no Hub slot, passes withHub.
   var h = withHub ? '<a class="gt' + (hereId === "hub" ? " on" : "") + '" href="' + rel + '?hub">' + HUB_ICON + '<span>Hub</span></a>' : '';
@@ -195,7 +203,7 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
     if (p.id === hereId) {
       h += '<button type="button" class="gt on" id="pnhere" data-close>' + p.icon + '<span>' + p.name + '</span></button>';
     } else {
-      h += '<a class="gt" href="' + rel + p.path + '">' + p.icon + '<span>' + p.name + '</span></a>';
+      h += '<a class="gt" href="' + rel + p.path + '" style="--gi:' + lift(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></a>';
     }
   }
   container.innerHTML = h;
