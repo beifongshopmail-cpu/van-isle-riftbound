@@ -1,0 +1,48 @@
+name: fetch glyphs
+
+# Run by hand (workflow_dispatch) when Riot's card-text symbols are wanted or have changed.
+# fetch-glyphs.js downloads Riot's own glyph files (Energy, Power, Might, Exhaust and the rest
+# that Riot's card gallery uses) byte for byte from Riot's CDN.
+#
+# THIS WORKFLOW NEVER WRITES TO main and opens no pull request. It puts the files and their
+# report (glyphs.md) on the bot branch glyphs/fetch; a chat reads them there and copies the ones
+# a page uses into cards/glyphs in its own reviewed commit. The bot's branch is reset each run.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-glyphs
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Fetch Riot's glyphs
+        run: node fetch-glyphs.js
+        env:
+          GLYPHS_OUT: cards/glyphs
+
+      - name: Report
+        run: cat cards/glyphs/glyphs.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Put them on the bot branch
+        run: |
+          BRANCH="glyphs/fetch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add cards/glyphs
+          git commit -m "glyphs: Riot's card-text symbols $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --force origin "$BRANCH"
