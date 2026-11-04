@@ -7,7 +7,7 @@ Collection (collection/index.html)
 - The bars are one piece of glass in Rust inside a glass card, edge to edge, each step one smooth curve, a faint rim on top; one bar a day, a week a bar past 62 days. Market movement by default, Total value in settings. (Mako 2026-10-25)
 - Movers: one glass row that opens in place into one block: Gains, a line, Losses, each titled with its arrow; no colour (the firm rule). Closed on every visit; Show Movers in settings. (Mako's yes 2026-10-25)
 - Collection is the whole: every binder and the cards in no binder; the Wishlist never counts. A tap under Collection adds into no binder; minus only takes from what the view itself holds. Grid by default (the count pill at the picture's foot, the price of one, the total past one copy); List without glass.
-- The browser: the same three-row plate (close and the binder pill, the search, Sets and Held here); Sets is a menu (each set with its day, held and worth; Organized Play promos; Other promos; sealed in its set); a tap on a picture adds one; minus (the bin at one) and plus on the picture.
+- The browser: the same three-row plate (close and the binder pill, the search, then Decks' chip row: Set and a chip for what the pill holds, In this binder, Owned or On Wishlist; M7 B7); Sets is a menu (each set with its day, held and worth; Organized Play promos; Other promos; sealed in its set); a tap on a picture adds one; minus (the bin at one) and plus on the picture.
 - Collection: a tile and a List row word a total the same way, "$x for 3"; Edit binders is reached only from the binder pill's menu. (Mako's yes 2026-10-25)
 
 Page-local classes (not in app.css; not Kit parts):
