@@ -326,7 +326,7 @@ a{color:inherit;text-decoration:none}
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
-    <p>A community calendar covering every store on the island. It is not a contact form or a storefront for any of them.</p>
+    <p>A community calendar for every store on the island.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -1454,7 +1454,7 @@ a{color:inherit;text-decoration:none}
         (R.byes || []).forEach(function(p){ box.appendChild(pairRow({t: null, a: p, b: null, res: "W", games: [], st: "done"}, mine)); });
         list.appendChild(box);
       }
-      note.textContent = f.players + " players" + (f.bestOf ? ", best of " + f.bestOf : "") + (f.dropped ? ", " + f.dropped + " dropped" : "") + ". From the event page; results show as players report them.";
+      note.textContent = f.players + " players" + (f.bestOf ? ", best of " + f.bestOf : "") + (f.dropped ? ", " + f.dropped + " dropped" : "") + ".";
     } else {
       if (!R || !R.standings){ list.appendChild(el("p", "lempty", "Standings show once round 1 is done.")); }
       else {
@@ -1465,7 +1465,7 @@ a{color:inherit;text-decoration:none}
         R.standings.forEach(function(s){ box.appendChild(standRow(s, mine)); });
         list.appendChild(box);
       }
-      note.textContent = "After round " + (R ? R.n : "") + ", as the event page ranks them. OMW is opponents' match-win percentage, the first tiebreaker.";
+      note.textContent = "After round " + (R ? R.n : "") + ". OMW: opponents' match-win percentage.";
     }
   }
   // PAIRING ALERTS (M16): a push when my next table is up. Needs my Riot name; the phone asks

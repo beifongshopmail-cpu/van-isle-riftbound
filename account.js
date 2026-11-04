@@ -408,7 +408,7 @@
         '<div class="doors acrow" id="acdispw" data-k="do" hidden><button type="button" class="door act" id="acdisp"><span class="t">This is my Riot ID</span></button></div>' +
         '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
-        '<p class="pnote">While you share a binder or your Wishlist, players on the Trade board see your name, @username, home area and picture. Your Riot ID stays private until you agree a trade, and then only that player sees it. The line about you stays private.</p>' +
+        '<p class="pnote">On the Trade board others see your name, @username, area and picture. Your Riot ID only after a trade is agreed.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
       acpicm: headTitle("Picture") + '<div class="pbody"><div class="acstage" id="acstage" data-pinch><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span></div>' +
@@ -416,9 +416,9 @@
         '<div class="seg acrow" id="acprint" role="group" aria-label="Printing" data-k="pick" hidden></div>' +
         '<div class="doors acrow" id="acpicrows"></div>' +
         '<p class="lb">Or pick a card</p><div class="sf" id="acsf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="acq" placeholder="Search every card" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-label="Search every card" data-k="type"><button type="button" class="fbtn fx glass" id="acqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg></button></div>' +
-        '<p class="pnote acqn" id="acqn" aria-live="polite">Legends first. Search to find any other card.</p><div class="aclg" id="aclg" data-k="pick"></div><p class="acmsg" id="acpicmsg" aria-live="polite"></p></div>' +
+        '<p class="pnote acqn" id="acqn" aria-live="polite"></p><div class="aclg" id="aclg" data-k="pick"></div><p class="acmsg" id="acpicmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acuse" data-k="do" disabled>Use this picture</button></div>',
-      ackeys: headTitle("Passkeys") + '<div class="pbody"><div class="doors" id="ackeylist" data-k="deeper"></div><p class="pnote">A passkey is Face ID, a fingerprint or a phone\'s lock, kept by your phone or your password manager. Add one on each phone you use, or keep them synced in iCloud Keychain.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
+      ackeys: headTitle("Passkeys") + '<div class="pbody"><div class="doors" id="ackeylist" data-k="deeper"></div><p class="pnote">Add one on each phone you use.</p><p class="acmsg" id="ackeymsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acaddkey" data-k="do">Add a passkey</button></div>',
       ackey: headTitle("Passkey") + '<div class="pbody"><p class="lb">Name</p><div class="nf"><input type="text" id="ackeyname" maxlength="32" autocomplete="off" enterkeyhint="done" aria-label="Passkey name" data-k="type"></div>' +
         '<p class="pnote" id="ackeydays"></p>' +
@@ -501,8 +501,8 @@
       headOf(h, a, "Add your name and picture");
       var can = A.supported();
       b.innerHTML = '<div class="doors" data-k="do"><button type="button" class="door act" id="acsaveacct"' + (can ? '' : ' disabled') + '><span class="t">Save your account</span></button></div>' +
-        '<p class="pnote acsavenote">' + (can ? "Not saved yet: only this phone can reach it. Saving adds a passkey (Face ID or your phone's lock), so it is yours on any phone."
-          : "Not saved yet: only this phone can reach it. This phone can't make passkeys, so it can't save it. Update iOS, or sign in to an account saved on another phone.") + '</p>' +
+        '<p class="pnote acsavenote">' + (can ? "Only this phone can reach your account until you save it."
+          : "Only this phone can reach your account. This phone can't make passkeys, so it can't save it. Update iOS, or sign in to an account saved on another phone.") + '</p>' +
         '<div class="doors" data-k="deeper">' +
         '<button type="button" class="door" data-acgo="acprof"><span class="t">Profile</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button></div>' +
@@ -967,7 +967,7 @@
       else if (!A.isGuest()) { body.innerHTML = '<p class="pnote">Your account is saved. It is yours on any phone you sign in on.</p>'; suNext(1, true); }
       else if (!A.supported()) { body.innerHTML = '<p class="pnote">Only this phone can reach your account. This phone can\'t make passkeys, so it can\'t save it. Update iOS, or sign in to an account saved on another phone.</p>'; suNext(1, false); }
       else {
-        body.innerHTML = '<p class="pnote">Only this phone can reach your account until you save it. Saving adds a passkey: Face ID or your phone\'s lock.</p>' +
+        body.innerHTML = '<p class="pnote">Only this phone can reach your account until you save it.</p>' +
           '<button type="button" class="pact btn glass acgap" id="acsusave" data-k="do">Save your account</button><p class="acmsg" id="acsu1msg" aria-live="polite"></p>';
         suNext(1, false);
       }
@@ -1104,7 +1104,7 @@
         function who(x) { return x && x.user ? "@" + x.user : (x && x.name ? x.name : "an account with no username"); }
         var head = el("p", "lb"); head.textContent = d.riot;
         var note = el("p", "pnote");
-        note.textContent = (d.holder ? "Held by " + who(d.holder) + " since " + day(d.holder.since, d.holder.sinceT) + ". " : "Nobody holds it now. ") + who(d.asker) + " says it is theirs (" + day(d.at, d.atT) + "). Check their screenshot in Feedback first.";
+        note.textContent = (d.holder ? "Claimed by " + who(d.holder) + " since " + day(d.holder.since, d.holder.sinceT) + ". " : "Nobody has claimed it. ") + who(d.asker) + " says it is theirs (" + day(d.at, d.atT) + "). Check their screenshot in Feedback first.";
         var rows = el("div", "doors acgap");
         rows.setAttribute("data-k", "do");
         rows.innerHTML = '<button type="button" class="door act" data-give="1"><span class="t"></span></button><button type="button" class="door act" data-give="0"><span class="t"></span></button>';
@@ -1300,7 +1300,7 @@
         b.type = "button"; b.setAttribute("aria-label", lg.n); b.setAttribute("data-h", p[0].h); b.setAttribute("data-n", lg.n);
         g.appendChild(b);
       });
-      note.textContent = "Legends first. Search to find any other card.";
+      note.textContent = "";
       showWork();
       return;
     }

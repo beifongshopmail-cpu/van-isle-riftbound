@@ -144,7 +144,7 @@ body{-webkit-font-smoothing:antialiased;
 .bsr{display:flex;align-items:center;gap:8px}
 .bsr .sf{flex:1;min-width:0}
 .bsr .circ{flex:0 0 auto}
-/* the browser's second row: which set (a menu, Mako 2026-10-25: sets only grow) and Held here */
+/* the browser's second row: which set (a menu, Mako 2026-10-25: sets only grow) and the Held here chip (In this binder, Owned, On Wishlist: M7, hold is the scoring word) */
 .bopts{display:flex;align-items:center;gap:8px;margin-top:10px}
 .bopts .dvsort{flex:1 1 auto;justify-content:space-between}
 /* the Sets menu: each set's release day, how much of it is held, and what that is worth */
@@ -253,7 +253,7 @@ input[type="file"]{display:none}
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
-    <p>Your collection follows your account; a binder you mark For trade shows on the Trade board. Card data and pictures by Riot Games. Market price is a public benchmark, not an offer from any store.</p>
+    <p>Card data and pictures by Riot Games. Market price is a public benchmark, not an offer from any store.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -321,7 +321,6 @@ input[type="file"]{display:none}
   <div class="pbody">
     <p class="lb">Name</p>
     <div class="nf tall"><input id="newname" type="text" maxlength="40" autocomplete="off" data-k="type"></div>
-    <p class="pnote">Cards can sit in a binder or in your collection outside any binder.</p>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" data-act="createport" data-k="do">Create binder</button></div>
 </section>
@@ -345,12 +344,12 @@ input[type="file"]{display:none}
 
 <section class="panel frost" id="psets" aria-hidden="true" aria-label="Sets">
   <div class="phead"><h4 class="ttl">Sets</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div><p class="pnote" style="margin-top:10px">Held counts every printing in your Collection, not the Wishlist. Sealed product sits in its set.</p></div>
+  <div class="pbody"><div class="pick" id="setpick" data-k="pick"></div></div>
 </section>
 
 <section class="panel frost" id="pmove" aria-hidden="true" aria-label="Move to">
   <div class="phead"><h4 class="ttl" id="mvttl">Move to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="doors" id="movelist" data-k="do"></div><p class="pnote" style="margin-top:10px">A card already there adds to its count.</p></div>
+  <div class="pbody"><div class="doors" id="movelist" data-k="do"></div></div>
 </section>
 
 <section class="panel frost" id="pdeck" aria-hidden="true" aria-label="Add a deck">
@@ -369,7 +368,7 @@ input[type="file"]{display:none}
       <button type="button" class="door btn glass act" data-act="pickcsv"><span class="t">A Collectr file</span><span class="sp"></span><small>CSV</small></button>
       <button type="button" class="door btn glass act" data-act="pickbak"><span class="t">A RAVI backup</span><span class="sp"></span><small>JSON</small></button>
     </div>
-    <p class="pnote" style="margin-top:10px">In Collectr, export a portfolio as a CSV file and pick it here. Each Collectr portfolio becomes a binder here with the same name; one already here with that name is replaced. Watchlist items go to the Wishlist. A RAVI backup replaces everything on this page.</p>
+    <p class="pnote" style="margin-top:10px">In Collectr, export a portfolio as a CSV file and pick it here. A RAVI backup replaces everything here.</p>
     <input type="file" id="fcsv" accept=".csv,text/csv,text/plain">
     <input type="file" id="fbak" accept=".json,application/json">
   </div>
@@ -382,7 +381,6 @@ input[type="file"]{display:none}
     <div class="row"><div class="seg" role="group" aria-label="Currency" id="cur" data-k="pick"><button type="button" data-c="CAD" aria-pressed="true">CAD</button><button type="button" data-c="USD" aria-pressed="false">USD</button></div></div>
     <div class="row"><p class="lb">The chart shows</p>
       <div class="pick" id="mode" data-k="pick"><button type="button" data-m="market">Market movement</button><button type="button" data-m="total">Total value</button></div>
-      <p class="pnote" style="margin-top:8px">Market movement prices what you hold now on every day, so adding cards never moves the line. Total value counts each card from the day it was added.</p>
     </div>
     <div class="row"><div class="pick" id="showmv" data-k="pick"><button type="button" aria-pressed="true" class="on">Show Movers</button></div></div>
     <div class="row"><div class="doors" data-k="deeper">
@@ -400,7 +398,7 @@ input[type="file"]{display:none}
       <button type="button" class="door btn glass act" data-act="savebak"><span class="t">A RAVI backup</span><span class="sp"></span><small>JSON</small></button>
       <button type="button" class="door btn glass act" data-act="savecsv"><span class="t">A spreadsheet</span><span class="sp"></span><small>CSV</small></button>
     </div>
-    <p class="pnote" style="margin-top:10px">Your collection lives on this phone only. Save a backup now and then; Import puts it back. The spreadsheet uses Collectr's columns, so Collectr and spreadsheet apps can read it.</p>
+    <p class="pnote" style="margin-top:10px">The spreadsheet opens in Collectr and spreadsheet apps.</p>
   </div>
 </section>
 
@@ -706,8 +704,8 @@ input[type="file"]{display:none}
     el("valu").textContent = SET.cur;
     SR = series(items, SET.mode);
     headChange();
-    el("mnote").textContent = (SET.view === "wish" ? "The Wishlist never counts toward your value. " : "")
-      + (SET.mode === "market" ? "Market movement: what you hold now, priced on each day." : "Total value: each card counted from the day it was added.");
+    el("mnote").textContent = SET.view === "wish" ? "The Wishlist never counts toward your value." : "";
+    el("mnote").hidden = SET.view !== "wish";
     drawChart(el("chart"), SR, function(k, week){
       if(k == null){ el("val").textContent = money(now / 100); headChange(); return; }
       el("val").textContent = money(SR.v[k] / 100);
@@ -792,7 +790,7 @@ input[type="file"]{display:none}
     el("chg").hidden = empty; el("chart").hidden = empty; el("range").hidden = empty; el("mnote").hidden = empty;
     el("firstttl").textContent = SET.view === "wish" ? "Your wishlist is empty" : "Start your collection";
     el("firsttx").textContent = SET.view === "wish"
-      ? "Cards you want go here. The Wishlist never counts toward your value."
+      ? "Cards you want go here."
       : "Add cards and sealed product while browsing every one, add a whole deck, or bring your collection over from Collectr.";
     el("hsf").hidden = empty; el("hview").hidden = empty;
     if(empty){ selEnd(); return; }
@@ -955,15 +953,14 @@ input[type="file"]{display:none}
     el("onename").value = ONE.name;
     var n = count(viewItems(ONE.id));
     tradeRow();
-    el("onenote").textContent = n ? "Deleting it removes its " + n.toLocaleString("en-US") + (n === 1 ? " card" : " cards") + " from this page." : "It holds no cards yet.";
+    el("onenote").textContent = n ? "" : "No cards in it yet."; el("onenote").hidden = !!n;
   }
   // the binder's For trade row: on, its cards are your have list on the Trade board
   function tradeRow(){
     if(!ONE) return;
     var b = el("onetrade").firstChild, on = ONE.trade === true, A = window.RAVI_ACCT, v = A && A.view && A.view();
     b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
-    el("onetradenote").textContent = (on ? "Shown on the Trade board: other players see each card, its printing and how many. Never what you paid or its condition."
-      : "On, players on the Trade board can see this binder's cards, printings and counts.")
+    el("onetradenote").textContent = "Others on the Trade board see its cards and counts. Never what you paid."
       + (v && v.guest ? " Save your account first: tap your picture, top right." : "");
   }
   // where a new card goes: the binder or Wishlist on show; under Collection, into no binder (round 5)
@@ -1034,7 +1031,7 @@ input[type="file"]{display:none}
   }
   function brOpts(){
     el("bopts").innerHTML = '<button type="button" class="dvsort glass" data-act="sets" data-fills="psets" data-k="do"><span>' + esc(setName(BR.set)) + '</span>' + IV.down + '</button>'
-      + '<button type="button" class="fchip glass' + (BR.own ? " on" : "") + '" data-act="own" aria-pressed="' + !!BR.own + '" data-k="pick">Held here</button>';
+      + '<button type="button" class="fchip glass' + (BR.own ? " on" : "") + '" data-act="own" aria-pressed="' + !!BR.own + '" data-k="pick">' + (target() === "wish" ? "On Wishlist" : target() === "loose" ? "Owned" : "In this binder") + '</button>';
   }
   // THE SETS MENU (after Collectr's Sets screen): each set with its release day, how many of its
   // printings you hold (every portfolio) and what they are worth; then the two promo groups
@@ -1044,7 +1041,7 @@ input[type="file"]{display:none}
     P.cards.forEach(function(c){ var g = groupOf(c); all[g] = (all[g] || 0) + 1; tot++; });
     function n(o){ return o ? Object.keys(o).length : 0; }
     function row(v, name, sub){ return '<button type="button" class="rec' + (BR.set === v ? " on" : "") + '" data-bs="' + esc(v) + '"><span class="t">' + esc(name) + '</span><small>' + esc(sub) + '</small></button>'; }
-    function heldOf(g){ return n(held[g]) + " of " + all[g] + " held \u00b7 " + money((val[g] || 0) / 100); }
+    function heldOf(g){ return n(held[g]) + " of " + all[g] + " owned \u00b7 " + money((val[g] || 0) / 100); }
     var h = row("", "All sets", tot.toLocaleString("en-US") + " products");
     setsInOrder().forEach(function(x){ var g = String(x.g); if(all[g]) h += row(g, x.n, window.RAVI_DATE(String(x.p).slice(0, 10)) + " \u00b7 " + heldOf(g)); });
     ["op", "promo"].forEach(function(g){ if(all[g]) h += row(g, GROUPN[g], heldOf(g)); });
@@ -1155,8 +1152,8 @@ input[type="file"]{display:none}
     el("decklist").innerHTML = ds.length ? ds.map(function(d){
       var r = deckCards(d), n = 0; Object.keys(r.cards).forEach(function(k){ n += r.cards[k]; });
       return '<button type="button" class="door btn glass act" data-act="adddeck" data-id="' + esc(d.id) + '"><span class="t">' + esc(d.name || "Untitled deck") + '</span><span class="sp"></span><small>' + n + (n === 1 ? " card" : " cards") + '</small></button>';
-    }).join("") : '<p class="cempty" style="padding:12px 16px">No decks on this phone yet. Build one on the Decks page.</p>';
-    el("decknote").textContent = "Adds every card of the deck to " + targetName() + ", in the printing the deck is priced at.";
+    }).join("") : '<p class="cempty" style="padding:12px 16px">No decks yet. Build one on the Decks page.</p>';
+    el("decknote").textContent = "Adds every card of the deck to " + targetName() + ".";
   }
 
   // ---- THE CARD MENU ----
@@ -1176,7 +1173,7 @@ input[type="file"]{display:none}
       + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count<small>' + (h.q > 1 ? money(h.q * now / 100) + " for " + h.q : money(now / 100) + " for one") + '</small></span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + Number(h.q) + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
       + (fs.length > 1 ? '<div class="row"><p class="lb">Finish</p><div class="seg" role="group" aria-label="Finish" id="hfin" data-k="pick">' + fs.map(function(f){ return '<button type="button" data-f="' + esc(f) + '" aria-pressed="' + (f === h.f) + '">' + esc(f) + '</button>'; }).join("") + '</div></div>' : '')
       + (HPORT !== "wish" ? '<div class="row"><p class="lb">Price paid for one</p><div class="nf"><input id="hpaid" type="text" inputmode="decimal" placeholder="Not set" value="' + (h.paid != null ? esc(Number(h.paid).toFixed(2)) : "") + '" data-k="type"><span class="unit">' + esc(h.paid != null ? h.pc : SET.cur) + '</span></div></div>'
-        + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ", the first day RAVI has prices for: " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
+        + '<p class="hgain">' + (gain != null ? (h.paid != null ? "Against what you paid: " : (DAYS.length && (h.d || "") < DAYS[0] ? "Since " + window.RAVI_DATE(DAYS[0]) + ": " : "Since you added it: ")) + '<b>' + (chip(gain / 100, base ? (now - base) / base * 100 : null) || "No change") + '</b>' : "") + '</p>' : '')
       + '<div class="row"><p class="lb">Added</p><div class="nf"><input id="hdate" type="date" value="' + esc(h.d || "") + '" max="' + today() + '" data-k="type"></div></div>'
       + (sealed(c) ? '' : '<div class="row"><p class="lb">Condition</p><div class="seg" role="group" aria-label="Condition" id="hcond" data-k="pick">' + CONDS.map(function(k){ return '<button type="button" data-c="' + k[0] + '" aria-pressed="' + (condCode(h.cond) === k[0]) + '">' + k[0] + '</button>'; }).join("") + '</div></div>')
       + (S.ports.length && HPORT !== "wish" ? '<div class="row"><p class="lb">Binder</p><div class="pick" id="hport" data-k="pick">' + [["loose", "No binder"]].concat(S.ports.map(function(p){ return [p.id, p.name]; })).map(function(p){ return '<button type="button" data-v="' + esc(p[0]) + '"' + (p[0] === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p[1]) + '</span></button>'; }).join("") + '</div></div>' : '');

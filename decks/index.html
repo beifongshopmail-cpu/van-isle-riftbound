@@ -538,7 +538,7 @@ body{-webkit-font-smoothing:antialiased;
   <div id="dkfoot">
     <footer class="foot">
       <p id="stamp">&nbsp;</p>
-      <p>Decks are kept on this phone. Card data and pictures by Riot Games; the deck rules follow Riot's Core Rules and Tournament Rules. Market price is a public benchmark, not an offer from any store.</p>
+      <p>Card data and pictures by Riot Games; the deck rules follow Riot's Core Rules and Tournament Rules. Market price is a public benchmark, not an offer from any store.</p>
       <p>
           Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
           Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -593,7 +593,7 @@ body{-webkit-font-smoothing:antialiased;
   <div class="phead"><h4 class="ttl">Import a deck</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <textarea class="dnote" id="itext" placeholder="Paste a deck code or a list" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Deck to import" data-k="type"></textarea>
-    <p class="pnote">A deck code, or a list from Piltover Archive, Riftmana, riftbound.zone, the Event Locator or Tabletop Simulator. It opens as a new deck.</p>
+    <p class="pnote">Opens as a new deck.</p>
     <p class="ires" id="ires" aria-live="polite"></p>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" data-act="idone" data-k="do">Import</button></div>
@@ -624,12 +624,12 @@ body{-webkit-font-smoothing:antialiased;
 
 <section class="panel frost" id="pmiss" aria-hidden="true" aria-label="Add missing cards to">
   <div class="phead"><h4 class="ttl">Add missing cards to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="doors" id="misslist" data-k="do"></div><p class="pnote" style="margin-top:10px">Each card in the printing the deck is priced at. The Wishlist only tops up to what is missing.</p></div>
+  <div class="pbody"><div class="doors" id="misslist" data-k="do"></div></div>
 </section>
 
 <section class="panel frost" id="pundo" aria-hidden="true" aria-label="Undo">
   <div class="phead"><div class="ht"><h4 class="ttl">Undo</h4><span class="cnt" id="undocnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="doors" id="undolist"></div><p class="pnote" style="margin-top:10px">Newest first. Tap a change to undo just that one.</p></div>
+  <div class="pbody"><div class="doors" id="undolist"></div></div>
 </section>
 
 <section class="panel frost" id="pdsort" aria-hidden="true" aria-label="Sort decks">
@@ -663,7 +663,6 @@ body{-webkit-font-smoothing:antialiased;
   <div class="pbody">
     <div class="row"><p class="lb">Sort by</p><div class="seg" id="ssort" role="group" aria-label="Sort by" data-k="pick"><button type="button" data-v="energy">Energy</button><button type="button" data-v="power">Power</button><button type="button" data-v="name">Name</button><button type="button" data-v="price">Price</button></div></div>
     <div class="row"><p class="lb">Group by</p><div class="seg" id="sgroup" role="group" aria-label="Group by" data-k="pick"><button type="button" data-v="type">Type</button><button type="button" data-v="energy">Energy</button><button type="button" data-v="domain">Domain</button><button type="button" data-v="none">None</button></div></div>
-    <p class="pnote">For every deck. A section's own menu can sort it its own way.</p>
   </div>
 </section>
 
@@ -1165,7 +1164,7 @@ body{-webkit-font-smoothing:antialiased;
     var d = tagDeck(); if(!d) return;
     if(hasTag(d, t)) d.tags = tagsOf(d).filter(function(x){ return tagKey(x) !== tagKey(t); });
     else if(tagsOf(d).length < TAGMAX) d.tags = tagsOf(d).concat([t]);
-    else { toast("A deck holds " + TAGMAX + " tags"); return; }
+    else { toast("A deck has at most " + TAGMAX + " tags"); return; }
     if(!d.tags.length) delete d.tags;
     if(HTAG && !allTags().some(function(x){ return tagKey(x) === tagKey(HTAG); })) HTAG = "";
     tagSave(d); fillTags(); tagNums(); renderHome();
@@ -1176,7 +1175,7 @@ body{-webkit-font-smoothing:antialiased;
     var same = allTags().filter(function(x){ return tagKey(x) === tagKey(v); })[0];
     el("tgnew").value = "";
     if(hasTag(d, v)){ fillTags(); return; }
-    if(tagsOf(d).length >= TAGMAX){ toast("A deck holds " + TAGMAX + " tags"); fillTags(); return; }
+    if(tagsOf(d).length >= TAGMAX){ toast("A deck has at most " + TAGMAX + " tags"); fillTags(); return; }
     d.tags = tagsOf(d).concat([same || v]);
     tagSave(d); fillTags(); tagNums(); renderHome();
   }
@@ -1730,7 +1729,7 @@ body{-webkit-font-smoothing:antialiased;
     h += '<div class="trio" style="margin-top:12px"><button type="button" class="glass" data-act="hnew" data-k="do"><span class="t">New hand</span></button><button type="button" class="glass" data-act="hmull" data-k="do"' + (!canMull || !ASIDE.length ? " disabled" : "") + '><span class="t">Mulligan' + (ASIDE.length ? " " + ASIDE.length : "") + '</span></button>'
       + '<button type="button" class="glass" data-act="hdraw" data-k="do"' + (HAND.lib.length ? "" : " disabled") + '><span class="t">Draw a card</span></button></div>';
     var ch = C(d.champ);
-    if(canMull) h += '<p class="hnote">Tap up to two cards to set aside, then Mulligan. Hold a card to see it big.' + (ch ? " " + esc(nm(ch)) + " starts in the Champion Zone." : "") + '</p>';
+    if(canMull) h += '<p class="hnote">Tap up to two cards to set aside, then Mulligan.' + (ch ? " " + esc(nm(ch)) + " starts in the Champion Zone." : "") + '</p>';
     h += '<div class="hdrawn">';
     drawn.forEach(function(c, i){ var x = C(c); h += '<button type="button" class="hc" data-act="hview" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + ', turn ' + (i + 1) + '" data-k="card">' + img(x, true) + '<span class="hmark">Turn ' + (i + 1) + '</span></button>'; });
     h += '</div>';
@@ -1747,7 +1746,7 @@ body{-webkit-font-smoothing:antialiased;
       + [[0, "No mulligan"], [1, "Mulligan 1"], [2, "Mulligan 2"]].map(function(m){ return '<button type="button" data-om="' + m[0] + '" aria-pressed="' + (OM === m[0]) + '">' + m[1] + '</button>'; }).join("") + '</div><div class="otiles">';
     var groups = OD.map(function(c){ return [c]; });
     for(var t = 1; t <= 6; t++) h += '<div class="otile"><b>' + Math.round(X.odds(d, groups, 4 + OM + t) * 100) + '%</b><span>Turn ' + t + '</span></div>';
-    h += '</div><p class="dsub" style="margin-top:8px">The chance by your turn: 4 cards to open, then 1 each turn' + (OM ? ", with " + OM + (OM === 1 ? " card" : " cards") + " mulliganed away when the hand misses" : "") + '. In a 1v1 game both players draw on turn 1.</p></section>';
+    h += '</div><p class="dsub" style="margin-top:8px">The chance by each turn' + (OM ? ", with " + OM + (OM === 1 ? " card" : " cards") + " mulliganed away when the hand misses" : "") + '.</p></section>';
     el("vhand").innerHTML = h;
   }
   function fillOdds(){
@@ -1840,7 +1839,7 @@ body{-webkit-font-smoothing:antialiased;
     var vv = v || SET.view, ss = s || SET.sort;
     h += '<div class="row"><p class="lb">Show as</p><div class="seg" role="group" aria-label="Show as" data-k="pick">' + b("data-sv", "list", vv === "list", "List") + b("data-sv", "grid", vv === "grid", "Grid") + b("data-sv", "text", vv === "text", "Text") + '</div></div>';
     if(SEC !== "bf") h += '<div class="row"><p class="lb">Sort by</p><div class="seg" role="group" aria-label="Sort by" data-k="pick">' + b("data-ss", "energy", ss === "energy", "Energy") + b("data-ss", "name", ss === "name", "Name") + b("data-ss", "price", ss === "price", "Price") + '</div></div>';
-    h += '<p class="pnote">' + (v || s ? "This section shows its own way." : "This section follows the deck's view row.") + '</p>';
+    if (v || s) h += '<p class="pnote">This section shows its own way.</p>';
     el("secbody").innerHTML = h;
     el("psec").querySelector('[data-act="ssame"]').disabled = !(v || s);
   }
@@ -1967,7 +1966,7 @@ body{-webkit-font-smoothing:antialiased;
     var mine = BR.f.dom.length && L && BR.f.dom.join() === doms(L).concat(["colorless"]).join();
     if(mine) on.shift();
     var many = count + (count === 1 ? " card" : " cards") + (mine ? " in your Legend's domains" : "");
-    var line2 = on.length ? many + (mine ? ": " : ", showing ") + on.join("; ") + "." : (mine ? many + "." : many + ". Tap a card to add it; hold it to see it big.");
+    var line2 = on.length ? many + (mine ? ": " : ", showing ") + on.join("; ") + "." : (mine ? many + "." : many + ". Tap a card to add it.");
     el("bnote").innerHTML = "<b>" + esc(where) + ".</b><b>" + esc(line2) + "</b>";
   }
   function brTile(x){
@@ -2091,7 +2090,7 @@ body{-webkit-font-smoothing:antialiased;
         } else if(SET.price) h += '<p class="pnone">No price yet</p>';
         h += '</div>';
       });
-      h += '</div><p class="pnote" style="margin-top:8px">The same card in play. Prices from TCGplayer\'s list, which also has promos Riot\'s gallery leaves out.</p></div>';
+      h += '</div></div>';
     }
     var facts = [typeWord(x), domWords(x)];
     if(typeof x.e === "number") facts.push(x.e + " energy");
@@ -2117,10 +2116,10 @@ body{-webkit-font-smoothing:antialiased;
   var XF = "text";
   function xText(){ var d = deck(); return XF === "code" ? X.toCode(I, d) : (XF === "tts" ? X.toTTS(I, d) : X.toText(I, d)); }
   var XNOTE = {
-    text: "For the Event Locator's deck list, Piltover Archive and TCG Arena. The Chosen Champion has its own section.",
-    code: "For Piltover Archive, Riftmana and riftbound.zone. It keeps every card's printing.",
+    text: "For the Event Locator, Piltover Archive and TCG Arena.",
+    code: "For Piltover Archive, Riftmana and riftbound.zone.",
     tts: "For Tabletop Simulator. Its tables leave the sideboard out.",
-    img: "A picture of the deck to share or save: every card, its battlefields and runes."
+    img: "Every card, its battlefields and runes."
   };
   // THE DECK IMAGE (decks/deckimg.js): drawn here on the phone from the art RAVI keeps; no server
   var XIMG = { key: "", blob: null, url: "", busy: false };
@@ -2144,7 +2143,7 @@ body{-webkit-font-smoothing:antialiased;
     el("xnote").textContent = "Drawing the picture.";
     deckImage(function(b){
       w.classList.remove("busy"); if(XF !== "img") return;
-      if(b){ el("ximg").src = XIMG.url; el("xnote").textContent = XNOTE.img + " Export opens to the format you used last."; }
+      if(b){ el("ximg").src = XIMG.url; el("xnote").textContent = XNOTE.img; }
       else el("xnote").textContent = "The picture could not be drawn on this phone.";
     });
   }
@@ -2168,8 +2167,8 @@ body{-webkit-font-smoothing:antialiased;
     el("xcopyb").textContent = im ? "Share" : "Copy";
     if(im){ pressSeg(el("xfmt"), "data-x", XF); fillImg(); return; }
     var t = xText();
-    el("xbox").textContent = t || (XF === "code" ? "This deck holds a card the deck code cannot carry yet." : "Nothing in this deck yet.");
-    el("xnote").textContent = XNOTE[XF] + " Export opens to the format you used last.";
+    el("xbox").textContent = t || (XF === "code" ? "This deck has a card the deck code cannot carry yet." : "Nothing in this deck yet.");
+    el("xnote").textContent = XNOTE[XF];
     pressSeg(el("xfmt"), "data-x", XF);
   }
   function copyText(t){
@@ -2177,7 +2176,7 @@ body{-webkit-font-smoothing:antialiased;
     function fallback(){
       var ta = document.createElement("textarea"); ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
       document.body.appendChild(ta); ta.select(); var ok = false; try{ ok = document.execCommand("copy"); }catch(e){} document.body.removeChild(ta);
-      toast(ok ? "Copied" : "Could not copy: press and hold the text to copy it");
+      toast(ok ? "Copied" : "Could not copy: press the text to copy it");
     }
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, fallback); }
     else fallback();

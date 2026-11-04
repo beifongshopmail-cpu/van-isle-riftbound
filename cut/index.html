@@ -80,7 +80,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="doors"><button type="button" class="door" id="evbtn" aria-haspopup="true" aria-controls="pev" data-k="deeper"><span class="t">Event</span><span class="sp"></span><small id="evname">No event</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <div class="srows"><div class="srow"><span class="t">Players</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="n" data-d="-1" aria-label="One fewer players" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vn" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="n" data-d="1" aria-label="One more players" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div><div class="srow"><span class="t">Swiss rounds</span><span class="sp"></span><button type="button" class="circ btn glass" data-step="r" data-d="-1" aria-label="One fewer swiss rounds" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button><output class="sv" id="vr" aria-live="polite"></output><button type="button" class="circ btn glass" data-step="r" data-d="1" aria-label="One more swiss rounds" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg></button></div></div>
     <div class="seg cseg" role="group" aria-label="Top cut" id="kseg" data-k="pick"><button type="button" data-k2="0" aria-pressed="false">None</button><button type="button" data-k2="2" aria-pressed="false">Top 2</button><button type="button" data-k2="4" aria-pressed="false">Top 4</button><button type="button" data-k2="8" aria-pressed="false">Top 8</button><button type="button" data-k2="16" aria-pressed="false">Top 16</button></div>
-    <p class="cnote" id="evnote">Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.</p>
+    <p class="cnote" id="evnote">The usual rounds and cut for this many players.</p>
   </section>
 
   <section class="csec glass" id="srec">
@@ -326,7 +326,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var played = st.w + st.l + st.d;
     $("reccnt").textContent = "After round " + played + " of " + st.r;
     $("evname").textContent = evInfo ? evLabel(evInfo) : (st.ev ? "Not in the feed" : "No event");
-    var note = "Rounds and cut follow the usual numbers for the players; the store sets its own, so change them to match.";
+    var note = "The usual rounds and cut for this many players.";
     if (evInfo) {
       var live = evInfo.day <= today();
       // what the event's page gave (M17 block 4), while not changed by hand

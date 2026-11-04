@@ -125,7 +125,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <section class="panel frost" id="pme" aria-hidden="true" aria-label="Live event pairings">
   <div class="phead"><h4 class="ttl" id="pmet">Live event pairings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <p class="pnote stmenote">At a live event, tap Alert me when I'm paired, and each new pairing comes to this phone. RAVI finds you by your Riot ID.</p>
+    <p class="pnote stmenote">Each new pairing at a live event comes to this phone.</p>
     <p class="lb">Your Riot ID</p>
     <p class="pnote stmenote" id="stmenote">The name you play under on PlayRiftbound and its #tag, as Riot shows them.</p>
     <div class="rid" id="stmerid"><div class="ridn"><div class="nf"><input type="text" id="stmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div>
@@ -158,7 +158,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="hlg" id="sthub" data-k="pick" aria-label="The hub"></div>
     <p class="lb">Not on the hub</p>
     <div class="hls" id="sthubs" data-k="pick" aria-label="Pages not on the hub"></div>
-    <p class="pnote" id="sthubn">Drag a block to move it. Drag a page from below onto a block to swap it in, or a block down here to take it off. Or tap one, then another. All pages always comes last.</p>
+    <p class="pnote" id="sthubn">Drag a block, or tap one and then another.</p>
   </div>
   <div class="pfoot"><button type="button" class="pact btn glass" id="sthuboff" data-k="do" disabled>Take off the hub</button></div>
 </section>
@@ -166,21 +166,19 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><h4 class="ttl" id="popent">Open the app to</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="goto" id="opento" data-k="pick"></div>
-    <p class="pnote">The app opens to the page you pick. Tap Hub on any page to come back.</p>
   </div>
 </section>
 <section class="panel frost" id="pcur" aria-hidden="true" aria-label="Prices in">
   <div class="phead"><h4 class="ttl" id="pcurt">Prices in</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="pick" id="stcur" data-k="pick"><button type="button" data-v="CAD">Canadian dollars (CAD)</button><button type="button" data-v="USD">US dollars (USD)</button></div>
-    <p class="pnote">Every price in the app: Trade, Decks, Collection and the Trade board. Prices come in US dollars and turn into Canadian at the Bank of Canada's rate.</p>
+    <p class="pnote">Canadian at the Bank of Canada's rate.</p>
   </div>
 </section>
 <section class="panel frost" id="pclock" aria-hidden="true" aria-label="Clock">
   <div class="phead"><h4 class="ttl" id="pclockt">Clock</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="pick" id="stclock" data-k="pick"><button type="button" data-v="12">12-hour</button><button type="button" data-v="24">24-hour</button></div>
-    <p class="pnote">How every time in the app is written: 7:05 PM, or 19:05.</p>
+    <div class="pick" id="stclock" data-k="pick"><button type="button" data-v="12">12-hour<span class="sp"></span><small>7:05 PM</small></button><button type="button" data-v="24">24-hour<span class="sp"></span><small>19:05</small></button></div>
   </div>
 </section>
 <section class="panel frost" id="pweek" aria-hidden="true" aria-label="Week starts on">
@@ -194,7 +192,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><h4 class="ttl" id="pmotiont">Motion</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="pick" id="stmotion" data-k="pick"><button type="button" id="stintro" aria-pressed="true" class="on">Opening animation</button><button type="button" id="stfx" aria-pressed="true" class="on">Hub glow and rim</button><button type="button" id="stless" aria-pressed="false">Reduce motion</button></div>
-    <p class="pnote" id="stmotionn">Opening animation is the RAVI name forming when the app opens. Hub glow and rim are the hub's glowing symbols and the badge's flowing edge. Reduce motion makes menus, slides and flashes instant everywhere.</p>
+    <p class="pnote" id="stmotionn" hidden></p>
   </div>
 </section>
 
@@ -260,8 +258,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     function mark(b, v){ b.classList.toggle("on", v); b.setAttribute("aria-pressed", v ? "true" : "false"); }
     mark(intro, on); mark(fx, fxOn); mark(lessB, less || sys);
     lessB.disabled = sys && !less; // the phone's own Reduce Motion is on: RAVI already follows it
-    document.getElementById("stmotionn").textContent = "Opening animation is the RAVI name forming when the app opens. Hub glow and rim are the hub's glowing symbols and the badge's flowing edge. " +
-      (sys && !less ? "Reduce motion is on in your phone's Settings, so RAVI's menus, slides and flashes are already instant." : "Reduce motion makes menus, slides and flashes instant everywhere.");
+    document.getElementById("stmotionn").textContent = sys && !less ? "Reduce motion is on in your phone's Settings." : "";
+    document.getElementById("stmotionn").hidden = !(sys && !less);
     var af = !get(AKEY);
     auto.classList.toggle("on", af);
     auto.setAttribute("aria-pressed", af ? "true" : "false");

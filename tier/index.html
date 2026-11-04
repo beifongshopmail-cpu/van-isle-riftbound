@@ -172,7 +172,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="tgrid" id="pgrid" data-k="pick"></div>
     <p class="pmsg" id="pmsg" hidden></p>
     <button type="button" class="pact btn glass" id="pundo" data-k="do" hidden>Take back my pick</button>
-    <p class="pnote">Pick the legend this player played. It counts on trust: the player's own pick decides, else the legend most picks name stands. Picks that have matched players' own before count a little more; two that tie are left out until another pick settles it.</p>
+    <p class="pnote">The legend this player played. Picks count on trust.</p>
   </div>
 </section>
 <section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's counted">
@@ -524,7 +524,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
   function drawLocal(){
     var box = $("tiers"), sum = $("tsum"), a = area(), name = AREA[a];
-    $("larea").textContent = "Local is your Events area, " + name + ": decks players add for its recent events, on trust.";
+    $("larea").textContent = "Decks players add for " + name + "'s recent events.";
     COUNTS = false;
     if (LSTATE !== "ready") {
       sum.textContent = LSTATE === "failed" ? "The local results could not be read. Try again later." : "Loading the local results.";
@@ -582,7 +582,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!rows.length) { return; }
     $("ptiert").textContent = name;
     $("ptierb").innerHTML = "<div class=\"tgrid\">" + rows.map(function(x){ return tileHTML(x, name, "<em>" + x.cv.toFixed(2) + "x</em>"); }).join("") + "</div>" +
-      "<p class=\"tnote\">Best conversion first. Tap a legend for its numbers.</p>";
+      "";
     openPanel(ptier);
   }
   $("tiers").addEventListener("click", function(ev){
@@ -632,7 +632,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   function drawAddList(){
     var box = $("addlist"), a = area(), now = Date.now();
-    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + AREA[a] + ". Fill in any deck you know; every pick counts on trust.";
+    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + AREA[a] + ".";
     if (LSTATE !== "ready") { box.innerHTML = "<p class=\"pmsg\">" + (LSTATE === "failed" ? "The events could not be read. Try again later." : "Loading the events.") + "</p>"; return; }
     var list = EVS.filter(function(e){ return inArea(e, a) && openable(e, now); });
     if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(AREA[a]) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
@@ -725,7 +725,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg></button>";
     }).join("");
     box.innerHTML = "<p class=\"tnote\" id=\"pevsum\">" + esc(filled + " of " + c.rows.length + " placings have a legend.") + "</p><div class=\"doors\" data-k=\"deeper\">" + h + "</div>" +
-      "<p class=\"pnote\">Tap a player to set the legend they played. Placings are Riot's final standings; the legends are added by players, on trust.</p>";
+      "<p class=\"pnote\">Placings are Riot's final standings.</p>";
     if (flash) {
       var n = box.querySelector("[data-r=\"" + flash + "\"]");
       if (n) { n.classList.remove("flash-n"); void n.offsetWidth; n.classList.add("flash-n"); }

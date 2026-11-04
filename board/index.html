@@ -248,7 +248,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="pbody">
     <p class="lb">What you share</p>
     <div class="pick" id="shpick" data-k="pick"></div>
-    <p class="pnote">Players see each card, its printing and how many, with your name, @username, home area and picture, and your next event when you mark one I'm going in Events. No one sees what you paid or a card's condition, and your Riot ID only after you agree a trade. You can also mark a binder For trade in its menu on Collection.</p>
+    <p class="pnote">Others see each card and how many, with your name, area and picture. Never what you paid.</p>
     <p class="pnote" id="shguest" hidden>Save your account to show these on the board: tap your picture, top right.</p>
     <div class="doors" data-k="deeper" style="margin-top:14px"><button type="button" class="door btn glass" id="bself"><span class="t">How others see you</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button><button type="button" class="door btn glass" id="bblk"><span class="t">Blocked players</span><span class="sp"></span><small id="bblkn"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <p class="lb" style="margin-top:14px">Open to</p>
@@ -275,7 +275,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </section>
 <section class="panel frost" id="pmeet" aria-hidden="true" aria-label="Meet at">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Meet at</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="meetpick" data-k="pick"></div><p class="pnote">Stores with events on the calendar in the next three weeks. Open one and pick the event you plan to be at; the other player sees it.</p></div>
+  <div class="pbody"><div class="pick" id="meetpick" data-k="pick"></div></div>
 </section>
 <section class="panel frost" id="prep" aria-hidden="true" aria-label="Report or block">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Report or block</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -508,7 +508,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }).join("");
     fades();
     HEADN = plural(list.length, "match", "matches");
-    return DATA.traders.some(function(t){ return t.two; }) ? "Both ways means each of you has something the other wants." : "";
+    return "";
   }
 
   // All cards: every card players share for trade, one tile per card and printing
@@ -555,7 +555,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No player or card matches your search.</p></div>'; return ""; }
     $("blist").innerHTML = list.map(function(p){ return playerBlock(p.f, p.cards, p.n, (tradeOf(p.f.h) || {}).two); }).join("");
     HEADN = plural(list.length, "player", "players") + " trading";
-    return (near({ area: DATA.me.area }) ? "Players near you come first. " : "") + "Each shows their " + (SORT.o === "price" ? "four dearest cards." : "four cards most in demand.");
+    return near({ area: DATA.me.area }) ? "Players near you come first." : "";
   }
 
   // a Players block: the player (opens their menu), then four of their cards
@@ -639,7 +639,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (!ow && !selfSaved()) { h += '<p class="pnote">Save your account to make offers: tap your picture, top right.</p>'; }
     }
     if (rest.length) { h += '<p class="bh3"' + (t.has.length || t.wants.length ? ' style="margin-top:18px">Also for trade' : '>For trade') + '</p>' + grid(rest.map(function(r){ return { i: r.i, f: r.f, q: r.q, alt: 0 }; }), WHO, "rest"); }
-    h += '<p class="pnote">Prices are each player\'s own percent of market, a starting point to agree on.</p>';
     // their Public decks (plan 2 M3): Decks' Public view on just this player
     if (f.dk > 0) { h += '<div class="doors" data-k="deeper" style="margin-top:18px"><a class="door btn glass" id="bdecks" href="../decks/?pub=' + esc(WHO) + '"><span class="t">Public decks</span><span class="sp"></span><small>' + (+f.dk) + '</small>' + CVR + '</a></div>'; }
     h += repDoor("brep");
@@ -695,7 +694,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawSelf(){
     var me = myShare(), f = selfFace(), h = "";
     if (!selfSaved()) { h += '<p class="bmsg">No one can see this yet. Save your account to show it: tap your picture, top right.</p>'; }
-    h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<p class="pnote" style="margin:0 2px 14px">Tap I\'m going on an event in Events, and the next one shows here for other traders.</p>';
+    h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<div class="doors" data-k="deeper" style="margin:0 0 14px"><a class="door btn glass" href="../calendar/"><span class="t">Your next event</span><span class="sp"></span><small>Pick one in Events</small>' + CVR + '</a></div>';
     if (!me.have.length && !me.want.length) {
       h += '<p class="bmsg">You aren\'t sharing anything yet. Mark a binder For trade, or turn on Your Wishlist, in Trade board settings.</p>';
       $("pselfb").innerHTML = h; return;
@@ -704,7 +703,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       h += '<p class="bh3">In Players</p>' + playerBlock(f, me.have.slice().sort(byPreview), cardsN(me.have), 0);
     }
     h += '<div class="doors" data-k="deeper" style="margin-top:14px">' + whoRow(f, 0, "When they tap you") + '</div>';
-    h += '<p class="pnote">In Matches, a player sees the cards that fit their own lists first. No one sees what you paid, a card\'s condition or your Riot ID.</p>';
     $("pselfb").innerHTML = h;
   }
   pself.__redraw = drawSelf;
@@ -712,7 +710,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var me = myShare();
     $("pwhot").textContent = nameOf(f);
     var h = '<div class="btop">' + pic(f) + '<div class="bnm"><b>' + esc(nameOf(f)) + '</b>' + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</div></div>';
-    h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<p class="pnote" style="margin:0 2px 14px">Tap I\'m going on an event in Events, and the next one shows here for other traders.</p>';
+    h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<div class="doors" data-k="deeper" style="margin:0 0 14px"><a class="door btn glass" href="../calendar/"><span class="t">Your next event</span><span class="sp"></span><small>Pick one in Events</small>' + CVR + '</a></div>';
     if (me.have.length) { h += '<p class="bh3">For trade</p>' + grid(me.have, "self", "rest"); }
     if (me.want.length) { h += '<p class="bh3"' + (me.have.length ? ' style="margin-top:18px"' : '') + '>Wants</p>' + grid(me.want, "self", "wants"); }
     h += '<p class="pnote">' + (me.want.length ? "Your Wishlist shows only to players who have its cards." : "Your Wishlist is private. Turn it on in Trade board settings to share it.") + '</p>';
@@ -722,8 +720,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // ---- THE SORT MENU ----
   function drawSort(){
     $("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ var on = SORT.o === k; return '<button type="button" data-s="' + k + '" aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + '>' + esc(SORTS[k][0]) + '</button>'; }).join("");
-    $("sortnote").textContent = "Most in demand weighs a card's price, how many players want it, special printings and a rising price. "
-      + (DATA.me.area ? "Players near you always come first, and in Matches, players who trade both ways." : "In Matches, players who trade both ways come first. Set your home area on your profile to see players near you first.");
+    $("sortnote").textContent = ""; $("sortnote").hidden = true;
   }
   psort.addEventListener("click", function(ev){
     var b = ev.target.closest("#sortpick > button");
@@ -905,7 +902,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     groups.forEach(function(g){ if (g[1].length) { any = true; h += '<p class="bh3">' + esc(g[0]) + '</p><div class="doors" data-k="deeper">' + g[1].map(offerRow).join("") + '</div>'; } });
     if (!any && OFFLOADED) { h += '<p class="bmsg">No offers yet. Open a player on the board and tap Make an offer.</p>'; }
     if (!any && !OFFLOADED && !OFFERR) { h += '<p class="bmsg">Loading your offers.</p>'; }
-    h += '<p class="pnote">An open offer lasts ' + 7 + ' days. Only the two of you see an offer. RAVI never handles money: cash is what you agree to hand over when you meet.</p>';
+    h += '<p class="pnote">Offers last 7 days. RAVI never handles money.</p>';
     $("poffb").innerHTML = h;
   }
   poff.__redraw = drawOffers;
@@ -1167,7 +1164,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     h += verdict(give, get, c, f.pct);
     h += '<p class="bmsg" id="mmsg"' + (mkProblem() || MK.err ? '' : ' hidden') + '>' + esc(MK.err || mkProblem()) + '</p>';
-    h += '<p class="pnote">Cards only, no messages. An open offer lasts 7 days. Prices are each player\'s own percent of market, a starting point to agree on.</p>';
+    h += '<p class="pnote">Cards only, no messages. Offers last 7 days.</p>';
     var b = $("pmakeb"), y = b.scrollTop;
     b.innerHTML = h; b.scrollTop = y;
     $("msend").disabled = !!mkProblem();
@@ -1302,7 +1299,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!saved) { h += '<p class="pnote">Save your account to report: tap your picture, top right.</p>'; }
     h += '<p class="bmsg" id="rpmsg" hidden></p>';
     h += '<p class="bh3" style="margin-top:18px">Block</p><div class="doors" data-k="do"><button type="button" class="door act btn glass" id="rpblock"><span class="t">Block ' + esc(nameOf(f)) + '</span></button></div>';
-    h += '<p class="pnote">Only RAVI sees reports. Nobody else is told, and a report never counts against anyone on the board. Blocking takes you both off each other\'s board and ends any offer between you; they aren\'t told. Unblock in Trade board settings.</p>';
+    h += '<p class="pnote">Only RAVI sees reports. Blocking is silent.</p>';
     $("prepb").innerHTML = h;
   }
   prep.__redraw = drawRep;
