@@ -109,7 +109,7 @@ Type
 - Two faces. Poppins (--disp) for display and every tappable label. Nunito (--text) for text and data.
 - Poppins ships 600, 700, 800 only. Any other Poppins weight is synthesised and wrong. [C]
 - Five rungs: 12, 13, 15, 17, 20. Whole pixels only. [C]
-- Words: as few plain words as do the job, so RAVI reads as a proper app throughout. A label names the thing or the action; no sentence under it repeats the label. A note only when the control cannot say it: one short sentence on what happens, never how the app works inside ("on this phone", "in your account", not "synced" or "stored locally"). No please, no exclamation marks. Explanations live in New here, not on the page. (Mako's yes 2026-11-03; a starting point, refined in M7)
+- Words: as few plain words as do the job. A label names the thing or the action; no sentence under it repeats the label. A note only when the control cannot say it: one short sentence on what happens, at most one per menu. Never how the app works inside, and never directions to another control: a way somewhere is a row or button that goes there. No please, no exclamation marks. Explanations live in New here. (Mako's yes 2026-11-03, refined 2026-11-04, M7 S2)
 - Hold is the scoring word only (holding a battlefield). A long press is press; having cards is own or have; a Riot ID is claimed. (Mako's yes 2026-11-04, M7 S1)
 - Page title and menu title 20, Poppins 700 (.ttl). Section head 17, Poppins 700 (.shead h2). Sentence case.
 - Buttons and tappable labels: Poppins 600. Body: Nunito 400 at 15, line-height 1.4. Passive metadata: 12, muted.
