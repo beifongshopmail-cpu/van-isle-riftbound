@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-05T07:45:20.731Z",
- "generated_local": "2026-11-05T00:45:20-07:00",
+ "generated_at": "2026-11-05T20:29:32.717Z",
+ "generated_local": "2026-11-05T13:29:32-07:00",
  "window_start": "2026-11-05T07:00:00.000Z",
  "anchors": [
   {
@@ -49,7 +49,7 @@
  "totals": {
   "fetched": 66,
   "unique": 66,
-  "prev_unique": 60,
+  "prev_unique": 66,
   "recent": [
    {
     "d": "2026-11-03",
@@ -86,7 +86,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -110,7 +110,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 5,
+   "reg": 6,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
