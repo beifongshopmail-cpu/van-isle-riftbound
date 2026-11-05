@@ -111,6 +111,15 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 }
 /* on a page colour, grey text inside glass is lifted to stay readable (4.4:1 or better on the lightest, Settings) */
 html.paged .glass,html.paged .doors{--muted:#DCDEE2}
+/* ONE LAYER OF GLASS (plan 2 M8, Mako 2026-11-04, after Apple's Liquid Glass guidance): glass is for what
+   floats (the bar, menus, the sticky plates, cards and buttons on the page, the hub's blocks). A part
+   inside a glass surface, a menu or a plate is flat: a light fill (--flat), no rim light, no base glow;
+   the same shape, size and press shade. A coloured surface inside one keeps its colour, flat. */
+:root{--flat:rgba(255,255,255,.08)}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors):not(.cg):not(.door){background:linear-gradient(var(--tint),var(--tint)),var(--flat);box-shadow:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg):not(.door)::before{content:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) .cg{box-shadow:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) .btn.glass:not(.door):active{background:linear-gradient(var(--tint),var(--tint)),var(--glass-press)}
 .glass::before,.doors::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
