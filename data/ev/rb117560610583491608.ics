@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117560610583491608@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261118T180000
+DTEND;TZID=America/Vancouver:20261118T210000
+SUMMARY:Gauntlet Games Nexus Night
+LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
+DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n16 of 16 spots left\n$
+ 5.00 CAD\nSign up: https://playriftbound.com/en-US/events/1175606105834916
+ 08
+URL:https://playriftbound.com/en-US/events/117560610583491608
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-04T20:18:42.835Z",
- "generated_local": "2026-11-04T13:18:42-07:00",
- "window_start": "2026-11-04T07:00:00.000Z",
+ "generated_at": "2026-11-05T07:45:20.731Z",
+ "generated_local": "2026-11-05T00:45:20-07:00",
+ "window_start": "2026-11-05T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 49,
-   "added": 49
+   "returned": 53,
+   "added": 53
   },
   {
    "name": "Courtenay",
@@ -21,8 +21,8 @@
    "name": "Campbell River",
    "region": "island",
    "source": "playriftbound",
-   "returned": 2,
-   "added": 2
+   "returned": 4,
+   "added": 4
   },
   {
    "name": "Victoria",
@@ -47,8 +47,8 @@
   }
  ],
  "totals": {
-  "fetched": 60,
-  "unique": 60,
+  "fetched": 66,
+  "unique": 66,
   "prev_unique": 60,
   "recent": [
    {
@@ -58,13 +58,17 @@
    {
     "d": "2026-11-04",
     "n": 60
+   },
+   {
+    "d": "2026-11-05",
+    "n": 66
    }
   ]
  },
  "unknown_templates": {
   "NEXUS_CUP": {
-   "count": 3,
-   "sample_name": "Skyhaven Legacy Nexus Cup"
+   "count": 4,
+   "sample_name": "Legacy Nexus Cup"
   }
  },
  "old_feed_error": null,
@@ -186,6 +190,30 @@
    "wins": null,
    "sid": 4294,
    "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
+  },
+  {
+   "id": "rb117560608744223758",
+   "name": "Gauntlet Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-11T18:00:00-07:00",
+   "end": null,
+   "day": "2026-11-11",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
    "swiss": 3,
    "cut": false
   },
@@ -382,6 +410,30 @@
    "cut": false
   },
   {
+   "id": "rb117560610583491608",
+   "name": "Gauntlet Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-18T18:00:00-07:00",
+   "end": null,
+   "day": "2026-11-18",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
+   "swiss": 3,
+   "cut": false
+  },
+  {
    "id": "rb117525465882512888",
    "name": "North Park Picture Framing and Collectables Open Play",
    "type": "open",
@@ -548,6 +600,30 @@
    "wins": null,
    "sid": 4294,
    "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
+  },
+  {
+   "id": "rb117560611882439366",
+   "name": "Gauntlet Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-25T18:00:00-07:00",
+   "end": null,
+   "day": "2026-11-25",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
    "swiss": 3,
    "cut": false
   },
@@ -1130,6 +1206,30 @@
    "cut": false
   },
   {
+   "id": "rb117560253985210722",
+   "name": "Legacy Pre rift",
+   "type": "prerift",
+   "start": "2027-01-22T18:00:00-07:00",
+   "end": null,
+   "day": "2027-01-22",
+   "time": "6:00 PM",
+   "venue": "AJ's Games",
+   "city": "Campbell River",
+   "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
+   "region": "island",
+   "cap": 16,
+   "reg": 0,
+   "cents": 4000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 21894,
+   "store": "AJ's",
+   "swiss": 4,
+   "cut": false
+  },
+  {
    "id": "rb117520416780087041",
    "name": "North Park Picture Framing and Collectables Legacy Pre-Rift",
    "type": "prerift",
@@ -1199,6 +1299,30 @@
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 3,
+   "cut": false
+  },
+  {
+   "id": "rb117560257911341412",
+   "name": "Legacy Pre Rift",
+   "type": "prerift",
+   "start": "2027-01-23T17:00:00-07:00",
+   "end": null,
+   "day": "2027-01-23",
+   "time": "5:00 PM",
+   "venue": "AJ's Games",
+   "city": "Campbell River",
+   "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
+   "region": "island",
+   "cap": 16,
+   "reg": 0,
+   "cents": 4000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 21894,
+   "store": "AJ's",
+   "swiss": 4,
    "cut": false
   },
   {
@@ -1465,6 +1589,30 @@
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 5,
+   "cut": false
+  },
+  {
+   "id": "rb117560152232916078",
+   "name": "Legacy Nexus Cup",
+   "type": "other",
+   "start": "2027-02-13T10:30:00-07:00",
+   "end": null,
+   "day": "2027-02-13",
+   "time": "10:30 AM",
+   "venue": "Elite4 Games",
+   "city": "Victoria",
+   "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 2000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
+   "store": "Elite4",
+   "swiss": 4,
    "cut": false
   },
   {
