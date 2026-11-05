@@ -1904,7 +1904,7 @@ body{-webkit-font-smoothing:antialiased;
     set: { title: "Set", opts: function(){ var L = (window.__CATL && window.__CATL.sets) || {}; return ["OGN", "OGS", "SFD", "UNL", "VEN", "RAD"].filter(function(s){ return L[s]; }).map(function(s){ return [s, L[s]]; }); } }
   };
   // each sort: its key, its name, its natural way; choosing it again flips it (RAVI_SORT; plan 2 M8)
-  var SORTS = [["energy", "Energy", "up"], ["power", "Power", "up"], ["name", "Name", "up"], ["number", "Set number", "up"], ["price", "Price", "down"]];
+  var SORTS = [["energy", "Energy", "up"], ["power", "Power", "up"], ["name", "Name", "up"], ["number", "Set and number", "up"], ["price", "Price", "down"]];
   function sortOf(v){ var k = window.RAVI_SORT.key(v); return SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; }
   // a sort track (Sort and group, a section's own menu): the chosen word carries its arrow
   function segSort(box, v){ var R = window.RAVI_SORT, k = R.key(v); box.querySelectorAll("button").forEach(function(b){ var bv = b.getAttribute("data-v") || b.getAttribute("data-ss"), s = sortOf(bv), on = bv === k, d = R.dir(v, s[2]); b.setAttribute("aria-pressed", on ? "true" : "false"); b.innerHTML = esc(s[1]) + (on ? R.arrow(d) : ""); if(on) b.setAttribute("aria-label", s[1] + ", " + R.words(d)); else b.removeAttribute("aria-label"); }); }

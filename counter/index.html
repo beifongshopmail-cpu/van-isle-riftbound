@@ -315,7 +315,7 @@
      (pcOpen/pcShut). */
   .pcards{margin-bottom:14px;border-radius:22px;overflow:hidden}
   .pcard{padding:0}
-  .pcard:not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
+  .pcard:not(:last-child):has(~ :not([hidden])){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
   .pcard.open{padding:12px}
   .pcard.open .pchead{padding:0 4px}
   .pchead,.pcrow{display:flex;align-items:center;gap:8px;width:100%;height:var(--sz-row);padding:0 16px;border-radius:0;text-align:left}

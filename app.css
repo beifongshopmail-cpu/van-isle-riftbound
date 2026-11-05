@@ -364,7 +364,8 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 .doors > .door::before{content:none}
 .doors > .door:active{background-color:var(--glass-press);transform:none}
 /* the hairline between rows, in either group */
-.pick > :not(:last-child),.doors > :not(:last-child){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
+/* a hairline under a row only when a shown row follows it (a hidden last row drew one under Game settings' Event: Mako 2026-11-05) */
+.pick > :not(:last-child):has(~ :not([hidden])),.doors > :not(:last-child):has(~ :not([hidden])){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
 /* .door.act: the same row (left .t, .sp, grey small on the right) for a
    plain action, data-k="do", never deeper -- no .cvr. STYLE.md, Control
    kinds: in a stack of rows an action is this, never a centred .pact; a

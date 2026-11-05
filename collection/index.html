@@ -200,6 +200,8 @@ body{-webkit-font-smoothing:antialiased;
 .cpic,.crow{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .foot a{color:var(--bone)}
 input[type="file"]{display:none}
+/* on a phone under 390 the view row is full: the sort chip is its arrow, its name kept for screen readers (plan 2 M8) */
+@media (max-width:389px){#hview .dvsort[data-act=sort]{min-width:44px;justify-content:center}#hview .dvsort[data-act=sort] > span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 </style>
 </head>
 <body>
@@ -757,14 +759,15 @@ input[type="file"]{display:none}
   }
   function numKey(x){ var c = BYID[x.h.i] || {}, s = setOf(c); return [String(s.p || ""), String(c.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })]; }
   // each sort: its name, its order, its natural way (up: low to high, A to Z; down: high to low, newest
-  // first). Choosing it again in the menu flips it (RAVI_SORT, pages.js; plan 2 M8)
+  // first), and a shorter name for the chip where the full one will not fit beside Select at 402.
+  // Choosing it again in the menu flips it (RAVI_SORT, pages.js; plan 2 M8; names Mako 2026-11-05)
   var SORTS = {
-    value: ["Value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }, "down"],
-    price: ["Price", function(a, b){ return nowCents(b.h) - nowCents(a.h); }, "down"],
-    move: ["Movement", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }, "down"],
+    value: ["Total value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }, "down"],
+    price: ["Card price", function(a, b){ return nowCents(b.h) - nowCents(a.h); }, "down"],
+    move: ["Market movement", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }, "down", "Movement"],
     name: ["Name", function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); }, "up"],
-    number: ["Set number", function(a, b){ var x = numKey(a), y = numKey(b); return x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]) || (a.h.f < b.h.f ? -1 : 1); }, "up"],
-    added: ["Added", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }, "down"]
+    number: ["Set and number", function(a, b){ var x = numKey(a), y = numKey(b); return x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]) || (a.h.f < b.h.f ? -1 : 1); }, "up"],
+    added: ["Recent", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }, "down"]
   };
   function nameHit(x, q){
     var c = BYID[x.h.i]; if(!c) return false;
@@ -780,7 +783,7 @@ input[type="file"]{display:none}
     function b(v, label){ return '<button type="button" data-hv="' + v + '" aria-label="' + label + '" aria-pressed="' + (SET.hview === v) + '">' + IV[v] + '</button>'; }
     return '<div class="seg dvseg" id="hvseg" role="group" aria-label="Cards show as" data-k="pick">' + b("grid", "Grid") + b("list", "List") + '</div><span class="sp"></span>'
       + '<button type="button" class="dvsort glass' + (SEL ? " on" : "") + '" data-act="select" aria-pressed="' + !!SEL + '" data-k="do">Select</button>'
-      + (function(){ var R = window.RAVI_SORT, so = SORTS[R.key(SET.sort)], d = R.dir(SET.sort, so[2]); return '<button type="button" class="dvsort glass" data-act="sort" data-fills="psort" aria-label="' + esc(R.label(so[0], d)) + '" data-k="do">' + R.chip(esc(so[0]), d) + '</button>'; })();
+      + (function(){ var R = window.RAVI_SORT, so = SORTS[R.key(SET.sort)], d = R.dir(SET.sort, so[2]); return '<button type="button" class="dvsort glass" data-act="sort" data-fills="psort" aria-label="' + esc(R.label(so[0], d)) + '" data-k="do">' + R.chip(esc(so[3] || so[0]), d) + '</button>'; })();
   }
   function render(){
     if(!P) return;
