@@ -76,6 +76,7 @@ Other
 Surfaces
 - Glass (.glass): means press. Body --glass, a 1px rim lit at the top fading down the sides, --glass-base inside. No full outline on any button. Used for buttons, cards, event cards, the page head. [D]
 - Glass pressed: --glass-press.
+- One layer of glass (plan 2 M8, after Apple's Liquid Glass guidance; Mako's yes 2026-11-04): glass is for what floats: the bar, menus, the sticky plates, cards and buttons on the page, the hub's blocks. A glass part inside a glass surface, a menu or a plate is flat: --flat (white .08), no rim light, no base glow, the same shape, size and press shade (app.css ONE LAYER OF GLASS). A coloured surface inside one keeps its colour, flat. [T]
 - Sunken (--recess): means choose or type. Tracks (.seg, .goto), groups (.pick), fields (.nf, .sf). Chosen option: bone fill, ink text. A track whose options own a colour (trade .sides) fills the chosen one in that colour, with ink text.
 - Chosen picture or colour: a bone ring, inset 0 0 0 2px bone then 2px ground (.seg.swatch).
 - Frost (.frost): chrome that blurs what passes behind it. Fallback --frost-solid; with blur, --frost, blur 20 saturate 160% on the bar and strip, blur 24 saturate 160% on menus, 1px rim --frost-rim.
