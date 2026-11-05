@@ -83,23 +83,11 @@ window.RAVI_ICON = (function(){
     // the Collection page's Add cards slot: a card with a plus (M13 icon pass, 2026-10-26; Lucide's square-plus, ISC, card-shaped)
     add: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><rect width="15" height="20" x="4.5" y="2" rx="2"/><path d="M8.5 12h7M12 8.5v7"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect width="15" height="20" x="4.5" y="2" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 12h7M12 8.5v7" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
     // a menu head's explanation, opened in place (calendar Follow)
-    // SORT ICONS (plan 2 M8 block 5): one drawing each, no filled twin (a sort row or chip has no
-    // on state; the chosen row wears its check). Lucide (ISC) as drawn, its 24 grid and 2 line: the
-    // arrow-down family for an order (A-Z, 0-1, small first, big first), clock-arrow-down for newest,
-    // coins, trending-up-down, crown, flame and copy; bynumber is Lucide's hash set in the arrow
-    // family's right column; bymine is Decks' own drag handle (.dgrip), three lines. class srt: 18 in a sort menu row, 16 in a sort chip (app.css).
-    byname: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M20 8h-5"/><path d="M15 10V6.5a2.5 2.5 0 0 1 5 0V10"/><path d="M15 14h5l-5 6h5"/></svg>',
-    byenergy: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><rect x="15" y="4" width="4" height="6" ry="2"/><path d="M17 20v-6h-2"/><path d="M15 20h4"/></svg>',
-    bypower: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h4"/><path d="M11 8h7"/><path d="M11 12h10"/></svg>',
-    byprice: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M11 4h10"/><path d="M11 8h7"/><path d="M11 12h4"/></svg>',
-    bynumber: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M13.5 9h7.5"/><path d="M13 15h7.5"/><path d="M16.5 4.5 15 19.5"/><path d="M20.5 4.5 19 19.5"/></svg>',
-    bynew: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v6l2 1"/><path d="M12.337 21.994a10 10 0 1 1 9.588-8.767"/><path d="m14 18 4 4 4-4"/><path d="M18 14v8"/></svg>',
-    byvalue: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.744 17.736a6 6 0 1 1-7.48-7.48"/><path d="M15 6h1v4"/><path d="m6.134 14.768.866-.5 2 3.464"/><circle cx="16" cy="8" r="6"/></svg>',
-    bymove: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.828 14.828 21 21"/><path d="M21 16v5h-5"/><path d="m21 3-9 9-4-4-6 6"/><path d="M21 8V3h-5"/></svg>',
-    bylegend: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>',
-    bymine: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14"/><path d="M5 12h14"/><path d="M5 16h14"/></svg>',
-    bydemand: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>',
-    bycopied: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+    // THE SORT ARROW (plan 2 M8, Mako 2026-11-05: an arrow and the sort's name, as Apple's Files and Mail
+    // do): up for ascending (A to Z, low to high, oldest first), down for descending. Lucide (ISC) as
+    // drawn. class srt: 16 in a sort chip, 18 in the chosen row of a Sort menu (app.css).
+    sortup: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>',
+    sortdn: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>',
     info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"/><path d="M12 11v5.5"/><path d="M12 7.6h.01" style="stroke-width:calc(var(--sw,2)*1.4)"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11v5.5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 7.6h.01" fill="none" stroke="#000" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>'
   };
   return function(name){
@@ -109,7 +97,26 @@ window.RAVI_ICON = (function(){
     // "@" is the filled drawing's mask, "@b" an outline cut; each copy gets its own pair
     return s.replace(/id="@(b?)"/g, 'id="rvm' + n + '$1"').replace(/url\(#@(b?)\)/g, 'url(#rvm' + n + '$1)');
   };
+
 })();
+// ONE SORT, EVERY PAGE (plan 2 M8, Mako 2026-11-05). A sort is stored as its key, with "-" on the end
+// when the player flipped it ("price-"). Each sort has a natural way (up or down); choosing it again in
+// its menu flips it, unless it is fixed (My order; Public decks, which the server orders).
+window.RAVI_SORT = {
+  key: function(v){ return String(v || "").replace(/-$/, ""); },
+  flip: function(v){ return /-$/.test(String(v || "")); },
+  dir: function(v, natural){ return (natural === "up") !== /-$/.test(String(v || "")) ? "up" : "down"; },
+  next: function(cur, k, fixed){ return !fixed && window.RAVI_SORT.key(cur) === k && !window.RAVI_SORT.flip(cur) ? k + "-" : k; },
+  arrow: function(dir){ return window.RAVI_ICON(dir === "up" ? "sortup" : "sortdn"); },
+  words: function(dir){ return dir === "up" ? "ascending" : "descending"; },
+  // a cmp for the natural way, turned round when flipped
+  cmp: function(v, f){ return window.RAVI_SORT.flip(v) ? function(a, b){ return -f(a, b); } : f; },
+  // the chip's insides: the arrow (none for a sort with no way) and the name
+  chip: function(name, dir){ return (dir ? window.RAVI_SORT.arrow(dir) : "") + '<span>' + name + '</span>'; },
+  label: function(name, dir){ return "Sort: " + name + (dir ? ", " + window.RAVI_SORT.words(dir) : ""); },
+  // a Sort menu row: the name; the chosen one shows its arrow where the check would be
+  row: function(attrs, name, on, dir){ return '<button type="button" ' + attrs + ' aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + (on && dir ? ' aria-label="' + name + ', ' + window.RAVI_SORT.words(dir) + '"' : '') + '>' + name + (on && dir ? window.RAVI_SORT.arrow(dir) : '') + '</button>'; }
+};
 
 // The hub's page list. Add a line here to add a page to the hub.
 // A line with an empty path is a dead placeholder. Replace one to add a page.

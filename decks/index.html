@@ -137,8 +137,8 @@ body{-webkit-font-smoothing:antialiased;
 .dvsort svg{flex:0 0 auto;width:14px;height:14px}
 /* with Grid's size showing, the pill reads just the sort */
 .dvsort:active{transform:scale(.96)}
-/* with the grid size showing, the view row is full: the sort chip shows its icon and chevron, its words kept for screen readers (plan 2 M8 block 5) */
-.dvrow:has(#dcols:not([hidden])) .dvsort > span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* on a narrow phone with the grid size showing, the view row is full: the sort chip keeps its arrow, its name kept for screen readers (plan 2 M8) */
+@media (max-width:389px){.dvrow:has(#dcols:not([hidden])) .dvsort{min-width:44px;justify-content:center}.dvrow:has(#dcols:not([hidden])) .dvsort > span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 .sbtns{display:flex;gap:6px;margin-right:-4px}
 .shead .circ.on{background:var(--glass-press)}   /* a section shown its own way */
 
@@ -945,7 +945,8 @@ body{-webkit-font-smoothing:antialiased;
   // when, the domains, copies); a deck opens read-only (RO), with Copy to my decks and Copy deck code.
   var A = window.RAVI_ACCT || null;
   var SHAREMAX = 6, HV = "mine", PFF = "leg";
-  var PSORTS = [["new", "Newest", "bynew"], ["copied", "Most copied", "bycopied"]];
+  // Public decks: the server orders them, newest shared or most copied first; they do not flip
+  var PSORTS = [["new", "Shared", "down"], ["copied", "Copies", "down"]];
   var PUB = { q: "", leg: "", dom: [], sort: "new", h: "", hname: "", rows: [], total: 0, loaded: false, loading: false, err: "", seq: 0, qt: 0 };
   var RO = null;   // { h, id, deck, who, copies, vis, vt, prev, sent }; a Tier list deck: { tier: "1st of 272 on Oct 31", h: "" }
   var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.2"/><path d="M3.8 20.5c.9-4.2 4.2-6.6 8.2-6.6s7.3 2.4 8.2 6.6z"/></svg>';
@@ -1024,7 +1025,7 @@ body{-webkit-font-smoothing:antialiased;
     PUB.rows.forEach(function(r){ h += pubRow(r); });
     paint(el("hlist"), h);
     el("hlede").textContent = PUB.loaded && !PUB.err ? PUB.total + (PUB.total === 1 ? " public deck" : " public decks") + (any ? " match" + (PUB.total === 1 ? "es" : "") : "") : "";
-    hsortSet(PSORTS[PUB.sort === "copied" ? 1 : 0]);
+    hsortSet(PSORTS[PUB.sort === "copied" ? 1 : 0], "");
     if(PUB.rows.length < PUB.total) requestAnimationFrame(pubPump);
   }
   function fillPf(){
@@ -1192,14 +1193,16 @@ body{-webkit-font-smoothing:antialiased;
     box.hidden = !all.length;
     box.innerHTML = all.map(function(t){ var on = HTAG && tagKey(t) === tagKey(HTAG); return '<button type="button" class="fchip btn glass' + (on ? " on" : "") + '" data-act="htag" data-v="' + esc(t) + '" aria-pressed="' + (on ? "true" : "false") + '" data-k="pick">' + esc(t) + '</button>'; }).join("");
   }
-  var DSORTS = [["recent", "Last edited", "bynew"], ["name", "Name", "byname"], ["legend", "Legend", "bylegend"], ["mine", "My order", "bymine"]];
-  // the list's sort chip: the sort's icon, its name, the chevron (plan 2 M8 block 5)
-  function hsortSet(x){ var b = el("hsortb"); b.innerHTML = window.RAVI_ICON(x[2]) + '<span>' + esc(x[1]) + '</span>' + IC.down; b.setAttribute("aria-label", "Sort: " + x[1]); }
+  // each sort: its key, its name, its natural way ("" for My order, which has none); choosing a sort
+  // again flips it (RAVI_SORT, pages.js; plan 2 M8, Mako 2026-11-05)
+  var DSORTS = [["recent", "Edited", "down"], ["name", "Name", "up"], ["legend", "Legend", "up"], ["mine", "My order", ""]];
+  // the list's sort chip: the arrow and the sort's name (v: the stored sort, with "-" when flipped)
+  function hsortSet(x, v){ var R = window.RAVI_SORT, d = x[2] ? R.dir(v, x[2]) : "", b = el("hsortb"); b.innerHTML = R.chip(esc(x[1]), d); b.setAttribute("aria-label", R.label(x[1], d)); }
   function listOrder(){
-    var all = DECKS.slice();
-    if(SET.dsort === "name") all.sort(function(a, b){ return (a.name || "").localeCompare(b.name || ""); });
-    else if(SET.dsort === "legend") all.sort(function(a, b){ var x = C(a.legend), y = C(b.legend); return (x ? nm(x) : "~").localeCompare(y ? nm(y) : "~") || (a.name || "").localeCompare(b.name || ""); });
-    else if(SET.dsort === "recent") all.sort(function(a, b){ return (b.t || 0) - (a.t || 0); });
+    var all = DECKS.slice(), R = window.RAVI_SORT, k = R.key(SET.dsort);
+    if(k === "name") all.sort(R.cmp(SET.dsort, function(a, b){ return (a.name || "").localeCompare(b.name || ""); }));
+    else if(k === "legend") all.sort(R.cmp(SET.dsort, function(a, b){ var x = C(a.legend), y = C(b.legend); return (x ? nm(x) : "~").localeCompare(y ? nm(y) : "~") || (a.name || "").localeCompare(b.name || ""); }));
+    else if(k === "recent") all.sort(R.cmp(SET.dsort, function(a, b){ return (b.t || 0) - (a.t || 0); }));
     return all;   // mine: DECKS as kept
   }
   function renderHome(){
@@ -1235,8 +1238,8 @@ body{-webkit-font-smoothing:antialiased;
     // saved accounts see how many they share (Mako 2026-11-02: 'X private and X/X public'; Link counts too, so 'shared')
     var whole = savedAcct() ? (all.length - sh) + " private \u00b7 " + sh + " of " + SHAREMAX + " shared" : all.length + (all.length === 1 ? " deck" : " decks");
     el("hlede").textContent = all.length ? (list.length === all.length ? whole : list.length + " of " + all.length + " decks") + (EDIT ? ". Drag to arrange." : "") : "";
-    var ds = DSORTS.filter(function(x){ return x[0] === SET.dsort; })[0] || DSORTS[0];
-    hsortSet(ds);
+    var ds = DSORTS.filter(function(x){ return x[0] === window.RAVI_SORT.key(SET.dsort); })[0] || DSORTS[0];
+    hsortSet(ds, ds[0] === window.RAVI_SORT.key(SET.dsort) ? SET.dsort : ds[0]);
     el("hsortb").hidden = !all.length;
   }
   // ARRANGE (Edit on the list): drag a deck by its handle; the order becomes My order
@@ -1274,14 +1277,14 @@ body{-webkit-font-smoothing:antialiased;
 
   // ---- ONE DECK ----
   function sorter(sec){
-    var s = SET.ss[sec] || SET.sort;
-    return function(a, b){
+    var v = SET.ss[sec] || SET.sort, s = window.RAVI_SORT.key(v);
+    return window.RAVI_SORT.cmp(v, function(a, b){
       var x = C(a), y = C(b);
       if(s === "price"){ var pa = price(a) || 0, pb = price(b) || 0; if(pb !== pa) return pb - pa; }
       if(s === "energy"){ var ea = typeof x.e === "number" ? x.e : 99, eb = typeof y.e === "number" ? y.e : 99; if(ea !== eb) return ea - eb; }
       if(s === "power"){ var wa = typeof x.w === "number" ? x.w : 0, wb = typeof y.w === "number" ? y.w : 0; if(wa !== wb) return wa - wb; var e1 = typeof x.e === "number" ? x.e : 99, e2 = typeof y.e === "number" ? y.e : 99; if(e1 !== e2) return e1 - e2; }
       return nm(x).localeCompare(nm(y));
-    };
+    });
   }
   var TYPES = ["unit", "gear", "spell"];
   function groupsOf(m, sec, d){
@@ -1348,11 +1351,11 @@ body{-webkit-font-smoothing:antialiased;
   // shows (List, Grid, Text as icons), the grid size only while Grid is on, and Sort, which
   // opens Sort and group. A section's own menu (the gear in its head) can show it its own way.
   function viewRow(){
-    var v = SET.view, s = SORTS.filter(function(x){ return x[0] === SET.sort; })[0] || SORTS[0];
+    var v = SET.view, s = sortOf(SET.sort);
     function b(val, label){ return '<button type="button" data-dv="' + val + '" aria-label="' + label + '" aria-pressed="' + (v === val) + '">' + IC["v" + val] + '</button>'; }
     return '<div class="dvrow" id="dview"><div class="seg dvseg" role="group" aria-label="Cards show as" data-k="pick">' + b("list", "List") + b("grid", "Grid") + b("text", "Text") + '</div>'
       + '<div class="seg dvseg cols" id="dcols" role="group" aria-label="Grid size" data-k="pick"' + (v === "grid" ? "" : " hidden") + '><button type="button" data-dc="3" aria-label="3 across" aria-pressed="' + (SET.cols !== 4) + '">3</button><button type="button" data-dc="4" aria-label="4 across" aria-pressed="' + (SET.cols === 4) + '">4</button></div>'
-      + '<button type="button" class="dvsort glass" data-act="dsort" data-fills="psort" data-k="do">' + window.RAVI_ICON(s[2]) + '<span><span class="sr">Sort: </span>' + esc(s[0] === "number" ? "Number" : s[1].split(",")[0]) + '</span>' + IC.down + '</button></div>';
+      + '<button type="button" class="dvsort glass" data-act="dsort" data-fills="psort" data-k="do">' + sortChip(SET.sort) + '</button></div>';
   }
   function headHTML(sec, title, cnt){
     var shut = !!SET.shut[sec], own = !!(SET.sv[sec] || SET.ss[sec]);
@@ -1849,6 +1852,7 @@ body{-webkit-font-smoothing:antialiased;
     if(SEC !== "bf") h += '<div class="row"><p class="lb">Sort by</p><div class="seg" role="group" aria-label="Sort by" data-k="pick">' + b("data-ss", "energy", ss === "energy", "Energy") + b("data-ss", "name", ss === "name", "Name") + b("data-ss", "price", ss === "price", "Price") + '</div></div>';
     if (v || s) h += '<p class="pnote">This section shows its own way.</p>';
     el("secbody").innerHTML = h;
+    var sseg = el("secbody").querySelector('[aria-label="Sort by"]'); if(sseg) segSort(sseg, ss);
     el("psec").querySelector('[data-act="ssame"]').disabled = !(v || s);
   }
 
@@ -1899,7 +1903,11 @@ body{-webkit-font-smoothing:antialiased;
     energy: { title: "Energy", opts: function(){ var a = []; for(var i = 0; i <= 8; i++) a.push([String(i), i + " energy"]); a.push(["9", "9 or more"]); return a; } },
     set: { title: "Set", opts: function(){ var L = (window.__CATL && window.__CATL.sets) || {}; return ["OGN", "OGS", "SFD", "UNL", "VEN", "RAD"].filter(function(s){ return L[s]; }).map(function(s){ return [s, L[s]]; }); } }
   };
-  var SORTS = [["energy", "Energy", "byenergy"], ["power", "Power", "bypower"], ["name", "Name", "byname"], ["number", "Set and number", "bynumber"], ["price", "Price, highest first", "byprice"]];
+  // each sort: its key, its name, its natural way; choosing it again flips it (RAVI_SORT; plan 2 M8)
+  var SORTS = [["energy", "Energy", "up"], ["power", "Power", "up"], ["name", "Name", "up"], ["number", "Set number", "up"], ["price", "Price", "down"]];
+  function sortOf(v){ var k = window.RAVI_SORT.key(v); return SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; }
+  // a sort track (Sort and group, a section's own menu): the chosen word carries its arrow
+  function segSort(box, v){ var R = window.RAVI_SORT, k = R.key(v); box.querySelectorAll("button").forEach(function(b){ var bv = b.getAttribute("data-v") || b.getAttribute("data-ss"), s = sortOf(bv), on = bv === k, d = R.dir(v, s[2]); b.setAttribute("aria-pressed", on ? "true" : "false"); b.innerHTML = esc(s[1]) + (on ? R.arrow(d) : ""); if(on) b.setAttribute("aria-label", s[1] + ", " + R.words(d)); else b.removeAttribute("aria-label"); }); }
   function brDefaults(sec){
     var d = deck(), L = C(d.legend);
     BR.sec = sec; BR.q = ""; BR.n = 120; BR.f = { dom: [], type: [], energy: [], set: [] };
@@ -1927,11 +1935,13 @@ body{-webkit-font-smoothing:antialiased;
     if(!SET.allp && !BASE[X.codeOf(x.c)]) return false;
     return true;
   }
-  function brSort(a, b){
-    if(BR.sort === "price"){ var pa = price(X.codeOf(a.c)) || 0, pb = price(X.codeOf(b.c)) || 0; if(pb !== pa) return pb - pa; }
-    if(BR.sort === "power"){ var wa = typeof a.w === "number" ? a.w : 0, wb = typeof b.w === "number" ? b.w : 0; if(wa !== wb) return wa - wb; var e1 = typeof a.e === "number" ? a.e : 99, e2 = typeof b.e === "number" ? b.e : 99; if(e1 !== e2) return e1 - e2; } // the printed power, then energy (Mako 2026-11-01)
-    if(BR.sort === "energy"){ var ea = typeof a.e === "number" ? a.e : 99, eb = typeof b.e === "number" ? b.e : 99; if(ea !== eb) return ea - eb; }
-    if(BR.sort === "number") return X.codeOf(a.c).localeCompare(X.codeOf(b.c), undefined, { numeric: true });
+  function brSort(a, b){ var r = brSort0(a, b); return window.RAVI_SORT.flip(BR.sort) ? -r : r; }
+  function brSort0(a, b){
+    var bs = window.RAVI_SORT.key(BR.sort);
+    if(bs === "price"){ var pa = price(X.codeOf(a.c)) || 0, pb = price(X.codeOf(b.c)) || 0; if(pb !== pa) return pb - pa; }
+    if(bs === "power"){ var wa = typeof a.w === "number" ? a.w : 0, wb = typeof b.w === "number" ? b.w : 0; if(wa !== wb) return wa - wb; var e1 = typeof a.e === "number" ? a.e : 99, e2 = typeof b.e === "number" ? b.e : 99; if(e1 !== e2) return e1 - e2; } // the printed power, then energy (Mako 2026-11-01)
+    if(bs === "energy"){ var ea = typeof a.e === "number" ? a.e : 99, eb = typeof b.e === "number" ? b.e : 99; if(ea !== eb) return ea - eb; }
+    if(bs === "number") return X.codeOf(a.c).localeCompare(X.codeOf(b.c), undefined, { numeric: true });
     return nm(a).localeCompare(nm(b)) || X.codeOf(a.c).localeCompare(X.codeOf(b.c));
   }
   function inDeck(code){
@@ -1940,10 +1950,10 @@ body{-webkit-font-smoothing:antialiased;
     if(s === "bf") return d.bf.indexOf(code) > -1 ? 1 : 0;
     return d[s][code] || 0;
   }
-  // a browser's Sort chip: the sort's icon and its short name (plan 2 M8 block 5: the icon says Sort)
-  function sortChip(k){ var s = SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; return window.RAVI_ICON(s[2]) + '<span><span class="sr">Sort: </span>' + esc(s[1].split(",")[0]) + '</span>'; }
+  // a browser's Sort chip: the arrow and the sort's name (plan 2 M8, Mako 2026-11-05)
+  function sortChip(v){ var R = window.RAVI_SORT, s = sortOf(v), d = R.dir(v, s[2]); return R.chip('<span class="sr">Sort: </span>' + esc(s[1]), d); }
   function chipsHTML(st, sec){
-    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(st.sort) + IC.down + '</button>';
+    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(st.sort) + '</button>';
     ["dom", "type", "energy", "set"].forEach(function(k){
       if((k === "type" || k === "energy") && (sec === "legend" || sec === "bf")) return;
       var n = st.f[k].length;
@@ -1953,7 +1963,7 @@ body{-webkit-font-smoothing:antialiased;
     return h;
   }
   function brChips(){
-    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(BR.sort) + IC.down + '</button>';
+    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(BR.sort) + '</button>';
     ["dom", "type", "energy", "set"].forEach(function(k){
       if(k === "type" && (BR.sec === "legend" || BR.sec === "bf")) return;
       if(k === "energy" && (BR.sec === "legend" || BR.sec === "bf")) return;
@@ -2043,7 +2053,7 @@ body{-webkit-font-smoothing:antialiased;
   function fillFl(){
     var h = "", st = FO();
     el("flttl").textContent = FL === "sort" ? "Sort" : FILTERS[FL].title;
-    if(FL === "sort"){ SORTS.forEach(function(s){ h += '<button type="button" data-act="flpick" data-v="' + s[0] + '"' + (st.sort === s[0] ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + window.RAVI_ICON(s[2]) + esc(s[1]) + '</button>'; }); }
+    if(FL === "sort"){ var R = window.RAVI_SORT; SORTS.forEach(function(s){ var on = R.key(st.sort) === s[0]; h += R.row('data-act="flpick" data-v="' + s[0] + '"', esc(s[1]), on, on ? R.dir(st.sort, s[2]) : ""); }); }
     else FILTERS[FL].opts().forEach(function(o){ var on = st.f[FL].indexOf(o[0]) > -1; h += '<button type="button" data-act="flpick" data-v="' + esc(o[0]) + '"' + (on ? ' class="on"' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>'; });
     el("flpick").innerHTML = h;
     el("flfoot").hidden = FL === "sort";
@@ -2216,7 +2226,7 @@ body{-webkit-font-smoothing:antialiased;
 
   // ---- settings menu ----
   function pressSeg(box, attr, val){ box.querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute(attr) === String(val) ? "true" : "false"); }); }
-  function fillSort(){ pressSeg(el("sgroup"), "data-v", SET.group); pressSeg(el("ssort"), "data-v", SET.sort); }
+  function fillSort(){ pressSeg(el("sgroup"), "data-v", SET.group); segSort(el("ssort"), SET.sort); }
   function fillSet(){
     var d = deck();
     var ro = isRO();
@@ -2292,12 +2302,12 @@ body{-webkit-font-smoothing:antialiased;
   function dmDisarm(){ clearTimeout(DMT); var b = el("dmdel"); b.classList.remove("armed"); b.querySelector(".t").textContent = "Delete this deck"; }
   function fillDsort(){
     if(HV === "pub"){
-      el("dsortpick").innerHTML = PSORTS.map(function(x){ var on = PUB.sort === x[0]; return '<button type="button" data-act="psset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + window.RAVI_ICON(x[2]) + x[1] + '</button>'; }).join("");
-      el("dsortnote").textContent = "Newest is the newest shared. Most copied counts each player once.";
+      el("dsortpick").innerHTML = PSORTS.map(function(x){ var on = PUB.sort === x[0]; return window.RAVI_SORT.row('data-act="psset" data-v="' + x[0] + '"', x[1], on, on ? "down" : ""); }).join("");
+      el("dsortnote").textContent = "Shared puts the newest first. Copies counts each player once.";
       return;
     }
     el("dsortnote").textContent = "My order is the order you arrange: tap the pencil on this screen, then drag a deck by its handle.";
-    el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = SET.dsort === x[0]; return '<button type="button" data-act="dsset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + window.RAVI_ICON(x[2]) + x[1] + '</button>'; }).join("");
+    var R = window.RAVI_SORT; el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = R.key(SET.dsort) === x[0]; return R.row('data-act="dsset" data-v="' + x[0] + '"', x[1], on, on && x[2] ? R.dir(SET.dsort, x[2]) : ""); }).join("");
   }
   document.addEventListener("touchmove", function(ev){
     if(!LP.el) return;
@@ -2361,12 +2371,12 @@ body{-webkit-font-smoothing:antialiased;
     if(t.hasAttribute("data-dc")){ SET.cols = +t.getAttribute("data-dc"); saveSet(); render(); return; }
     // a section's own menu
     if(t.hasAttribute("data-sv")){ SET.sv[SEC] = t.getAttribute("data-sv"); saveSet(); render(); fillSec(); return; }
-    if(t.hasAttribute("data-ss")){ SET.ss[SEC] = t.getAttribute("data-ss"); saveSet(); render(); fillSec(); return; }
+    if(t.hasAttribute("data-ss")){ SET.ss[SEC] = window.RAVI_SORT.next(SET.ss[SEC] || SET.sort, t.getAttribute("data-ss")); saveSet(); render(); fillSec(); return; }
     if(t.parentNode.id === "xfmt"){ XF = t.getAttribute("data-x"); SET.exp = XF; saveSet(); fillExp(); return; }
     var box = t.parentNode.id;
     if(box === "sgroup" || box === "ssort"){
       var v = t.getAttribute("data-v");
-      if(box === "sgroup") SET.group = v; else { SET.sort = v; SET.ss = {}; }
+      if(box === "sgroup") SET.group = v; else { SET.sort = window.RAVI_SORT.next(SET.sort, v); SET.ss = {}; }
       saveSet(); fillSort(); render(); return;
     }
     if(box === "sshow"){ var k = t.getAttribute("data-v"); SET[k] = !SET[k]; saveSet(); fillSet(); render(); return; }
@@ -2398,7 +2408,7 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "umenu"){ fillUndo(); openPanel(el("pundo")); return; }
     if(a === "undoat"){ openPanel(null); undoAt(+t.getAttribute("data-i")); return; }
     if(a === "hsort"){ fillDsort(); openPanel(el("pdsort")); return; }
-    if(a === "dsset"){ SET.dsort = t.getAttribute("data-v"); saveSet(); openPanel(null); renderHome(); return; }
+    if(a === "dsset"){ var dv = t.getAttribute("data-v"); SET.dsort = window.RAVI_SORT.next(SET.dsort, dv, dv === "mine"); saveSet(); openPanel(null); renderHome(); return; }
     if(a === "dmopen"){ openPanel(null); go("deck", DM); return; }
     if(a === "dmtags"){ TAGD = DM; el("tgnew").value = ""; fillTags(); deeper(el("ptags")); return; }
     if(a === "tags2"){ var td = deck(); if(!td || isRO()) return; TAGD = td.id; el("tgnew").value = ""; fillTags(); deeper(el("ptags")); return; }
@@ -2461,7 +2471,7 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "fl"){ FL = t.getAttribute("data-f"); FLS = t.closest("#echips") ? "e" : "br"; fillFl(); openPanel(el("pfl")); return; }
     if(a === "flpick"){
       var fv = t.getAttribute("data-v"), st = FO(), redo = FLS === "e" ? eRender : function(){ brRender(); };
-      if(FL === "sort"){ st.sort = fv; openPanel(null); redo(); return; }
+      if(FL === "sort"){ st.sort = window.RAVI_SORT.next(st.sort, fv); openPanel(null); redo(); return; }
       var arr = st.f[FL], at = arr.indexOf(fv); if(at > -1) arr.splice(at, 1); else arr.push(fv);
       fillFl(); redo(); return;
     }

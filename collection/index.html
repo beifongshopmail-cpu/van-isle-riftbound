@@ -475,7 +475,7 @@ input[type="file"]{display:none}
     if(cur) SET.cur = cur;
     try{ var z = JSON.parse(localStorage.getItem(SKEY)); if(z){ for(var k in SET){ if(z.hasOwnProperty(k) && typeof z[k] === typeof SET[k]) SET[k] = z[k]; } } }catch(e){}
     if(SET.view !== "all" && SET.view !== "wish" && !port(SET.view)) SET.view = "all";
-    if(!SORTS[SET.sort]) SET.sort = "value";
+    if(!SORTS[window.RAVI_SORT.key(SET.sort)]) SET.sort = "value";
   }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
   function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
@@ -756,15 +756,15 @@ input[type="file"]{display:none}
     };
   }
   function numKey(x){ var c = BYID[x.h.i] || {}, s = setOf(c); return [String(s.p || ""), String(c.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })]; }
-  // each sort: its name in the menu, its order, its icon (pages.js), and its short name on the chip, which
-  // has to share its row with Grid | List and Select (plan 2 M8 block 5)
+  // each sort: its name, its order, its natural way (up: low to high, A to Z; down: high to low, newest
+  // first). Choosing it again in the menu flips it (RAVI_SORT, pages.js; plan 2 M8)
   var SORTS = {
-    value: ["Total value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }, "byvalue", "Value"],
-    price: ["Individual value", function(a, b){ return nowCents(b.h) - nowCents(a.h); }, "byprice", "Price"],
-    move: ["Movement", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }, "bymove", "Movement"],
-    name: ["Name", function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); }, "byname", "Name"],
-    number: ["Set and number", function(a, b){ var x = numKey(a), y = numKey(b); return x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]) || (a.h.f < b.h.f ? -1 : 1); }, "bynumber", "Number"],
-    added: ["Recently added", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }, "bynew", "Newest"]
+    value: ["Value", function(a, b){ return b.h.q * nowCents(b.h) - a.h.q * nowCents(a.h); }, "down"],
+    price: ["Price", function(a, b){ return nowCents(b.h) - nowCents(a.h); }, "down"],
+    move: ["Movement", function(a, b){ var x = moveOf(a.h) || [0, 0], y = moveOf(b.h) || [0, 0]; return (y[1] - y[0]) * b.h.q - (x[1] - x[0]) * a.h.q; }, "down"],
+    name: ["Name", function(a, b){ var x = BYID[a.h.i], y = BYID[b.h.i]; return String(x ? x.n : "").localeCompare(String(y ? y.n : "")) || (a.h.f < b.h.f ? -1 : 1); }, "up"],
+    number: ["Set number", function(a, b){ var x = numKey(a), y = numKey(b); return x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]) || (a.h.f < b.h.f ? -1 : 1); }, "up"],
+    added: ["Added", function(a, b){ return String(b.h.d || "").localeCompare(String(a.h.d || "")); }, "down"]
   };
   function nameHit(x, q){
     var c = BYID[x.h.i]; if(!c) return false;
@@ -780,7 +780,7 @@ input[type="file"]{display:none}
     function b(v, label){ return '<button type="button" data-hv="' + v + '" aria-label="' + label + '" aria-pressed="' + (SET.hview === v) + '">' + IV[v] + '</button>'; }
     return '<div class="seg dvseg" id="hvseg" role="group" aria-label="Cards show as" data-k="pick">' + b("grid", "Grid") + b("list", "List") + '</div><span class="sp"></span>'
       + '<button type="button" class="dvsort glass' + (SEL ? " on" : "") + '" data-act="select" aria-pressed="' + !!SEL + '" data-k="do">Select</button>'
-      + '<button type="button" class="dvsort glass" data-act="sort" data-fills="psort" aria-label="Sort: ' + esc(SORTS[SET.sort][0]) + '" data-k="do">' + window.RAVI_ICON(SORTS[SET.sort][2]) + '<span>' + esc(SORTS[SET.sort][3]) + '</span>' + IV.down + '</button>';
+      + (function(){ var R = window.RAVI_SORT, so = SORTS[R.key(SET.sort)], d = R.dir(SET.sort, so[2]); return '<button type="button" class="dvsort glass" data-act="sort" data-fills="psort" aria-label="' + esc(R.label(so[0], d)) + '" data-k="do">' + R.chip(esc(so[0]), d) + '</button>'; })();
   }
   function render(){
     if(!P) return;
@@ -805,7 +805,7 @@ input[type="file"]{display:none}
     if(SET.movers && MVOPEN){ var mv = movers(items); el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn; }
     el("hview").innerHTML = viewRow();
     var list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
-    list.sort(SORTS[SET.sort][1]);
+    list.sort(window.RAVI_SORT.cmp(SET.sort, SORTS[window.RAVI_SORT.key(SET.sort)][1]));
     VIS = list;
     var many = SET.view === "all" && (S.ports.length + (S.loose.length ? 1 : 0)) > 1, grid = SET.hview === "grid", box = el("hlist");
     box.className = list.length ? (grid ? "cgrid" : "cards plain") : "";
@@ -1341,7 +1341,7 @@ input[type="file"]{display:none}
     }
     var par = t.parentNode && t.parentNode.id;
     if(par === "portpick"){ SET.view = t.getAttribute("data-v"); saveSet(); LIMIT = 60; selEnd(); if(PORTB){ openPanel(null); brRender(true); return; } render(); openPanel(null); return; }
-    if(par === "sortpick"){ SET.sort = t.getAttribute("data-s"); saveSet(); render(); openPanel(null); return; }
+    if(par === "sortpick"){ SET.sort = window.RAVI_SORT.next(SET.sort, t.getAttribute("data-s")); saveSet(); render(); openPanel(null); return; }
     if(par === "range"){ SET.range = t.getAttribute("data-r"); saveSet(); render(); return; }
     if(par === "cur"){ SET.cur = t.getAttribute("data-c"); saveSet(); render(); return; }
     if(par === "mode"){ SET.mode = t.getAttribute("data-m"); saveSet(); render(); return; }
@@ -1367,7 +1367,7 @@ input[type="file"]{display:none}
     if(a === "sets"){ fillSets(); openPanel(el("psets")); return; }
     if(a === "own"){ BR.own = !BR.own; BR.lim = 60; brRender(); return; }
     if(a === "bclose"){ brClose(); return; }
-    if(a === "sort"){ el("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ return '<button type="button" data-s="' + k + '"' + (SET.sort === k ? ' class="on"' : '') + '>' + window.RAVI_ICON(SORTS[k][2]) + esc(SORTS[k][0]) + '</button>'; }).join(""); openPanel(el("psort")); return; }
+    if(a === "sort"){ var R = window.RAVI_SORT; el("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ var on = R.key(SET.sort) === k; return R.row('data-s="' + k + '"', esc(SORTS[k][0]), on, on ? R.dir(SET.sort, SORTS[k][2]) : ""); }).join(""); openPanel(el("psort")); return; }
     if(a === "select"){ if(SEL){ selEnd(); render(); } else selStart(); return; }
     if(a === "seldone"){ selEnd(); render(); return; }
     if(a === "selall"){ var all = true; VIS.forEach(function(x){ if(!SEL[x.p + "|" + x.h.id]) all = false; }); VIS.forEach(function(x){ if(all) delete SEL[x.p + "|" + x.h.id]; else SEL[x.p + "|" + x.h.id] = 1; }); render(); return; }
