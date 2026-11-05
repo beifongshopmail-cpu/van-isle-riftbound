@@ -202,7 +202,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="bq" placeholder="Search cards or players" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search cards or players" data-k="type"><button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
     <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="players" aria-pressed="false">Players</button><button type="button" data-v="cards" aria-pressed="false">All cards</button></div>
   </div>
-  <div class="hsort" id="bhead" hidden><p id="bcount"></p><button type="button" class="dvsort glass" id="bsort" data-fills="psort" data-k="do"><span id="bsortt">Most in demand</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button></div>
+  <div class="hsort" id="bhead" hidden><p id="bcount"></p><button type="button" class="dvsort glass" id="bsort" data-fills="psort" data-k="do"><span id="bsorti"></span><span id="bsortt">Most in demand</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button></div>
   <p class="bnote" id="bme"></p><div id="bmesave"></div>
   <div id="blist"></div>
   <p class="bnote" id="bsum">Loading the board.</p>
@@ -455,7 +455,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   // most in demand (demand.js), highest price or name; players near you always come first. Kept on
   // this phone only (vir.board.sort.v1, never synced: a way of looking, not something you share).
   var SORT = { o: "demand", near: true };
-  var SORTS = { demand: ["Most in demand"], price: ["Highest price"], name: ["Name"] };
+  var SORTS = { demand: ["Most in demand", "bydemand"], price: ["Highest price", "byprice"], name: ["Name", "byname"] };
   try { var so = JSON.parse(localStorage.getItem("vir.board.sort.v1")); if (so && SORTS[so.o]) { SORT.o = so.o; } } catch (e) {}
   function saveSort(){ try { localStorage.setItem("vir.board.sort.v1", JSON.stringify({ o: SORT.o })); } catch (e) {} }
   function pr(x){ return usd(x.i, x.f) || 0; }
@@ -591,6 +591,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var segs = $("bview").querySelectorAll("button");
     Array.prototype.forEach.call(segs, function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-v") === VIEW ? "true" : "false"); });
     $("bsortt").textContent = SORTS[SORT.o][0];
+    $("bsorti").outerHTML = window.RAVI_ICON(SORTS[SORT.o][1]).replace('class="srt"', 'class="srt" id="bsorti"');
     $("bsort").setAttribute("aria-label", "Sort: " + SORTS[SORT.o][0]);
     if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board."; $("bsum").hidden = false; $("bme").textContent = ""; $("bhead").hidden = true; return; }
     $("bme").textContent = meLine();
@@ -727,7 +728,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
 
   // ---- THE SORT MENU ----
   function drawSort(){
-    $("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ var on = SORT.o === k; return '<button type="button" data-s="' + k + '" aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + '>' + esc(SORTS[k][0]) + '</button>'; }).join("");
+    $("sortpick").innerHTML = Object.keys(SORTS).map(function(k){ var on = SORT.o === k; return '<button type="button" data-s="' + k + '" aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + '>' + window.RAVI_ICON(SORTS[k][1]) + esc(SORTS[k][0]) + '</button>'; }).join("");
     $("sortnote").textContent = ""; $("sortnote").hidden = true;
   }
   psort.addEventListener("click", function(ev){

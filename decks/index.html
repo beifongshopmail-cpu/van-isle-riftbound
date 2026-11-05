@@ -136,8 +136,9 @@ body{-webkit-font-smoothing:antialiased;
   font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
 .dvsort svg{flex:0 0 auto;width:14px;height:14px}
 /* with Grid's size showing, the pill reads just the sort */
-.dvrow:has(#dcols:not([hidden])) .dvsort .pre{display:none}
 .dvsort:active{transform:scale(.96)}
+/* with the grid size showing, the view row is full: the sort chip shows its icon and chevron, its words kept for screen readers (plan 2 M8 block 5) */
+.dvrow:has(#dcols:not([hidden])) .dvsort > span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .sbtns{display:flex;gap:6px;margin-right:-4px}
 .shead .circ.on{background:var(--glass-press)}   /* a section shown its own way */
 
@@ -944,7 +945,7 @@ body{-webkit-font-smoothing:antialiased;
   // when, the domains, copies); a deck opens read-only (RO), with Copy to my decks and Copy deck code.
   var A = window.RAVI_ACCT || null;
   var SHAREMAX = 6, HV = "mine", PFF = "leg";
-  var PSORTS = [["new", "Newest"], ["copied", "Most copied"]];
+  var PSORTS = [["new", "Newest", "bynew"], ["copied", "Most copied", "bycopied"]];
   var PUB = { q: "", leg: "", dom: [], sort: "new", h: "", hname: "", rows: [], total: 0, loaded: false, loading: false, err: "", seq: 0, qt: 0 };
   var RO = null;   // { h, id, deck, who, copies, vis, vt, prev, sent }; a Tier list deck: { tier: "1st of 272 on Oct 31", h: "" }
   var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.2"/><path d="M3.8 20.5c.9-4.2 4.2-6.6 8.2-6.6s7.3 2.4 8.2 6.6z"/></svg>';
@@ -1023,7 +1024,7 @@ body{-webkit-font-smoothing:antialiased;
     PUB.rows.forEach(function(r){ h += pubRow(r); });
     paint(el("hlist"), h);
     el("hlede").textContent = PUB.loaded && !PUB.err ? PUB.total + (PUB.total === 1 ? " public deck" : " public decks") + (any ? " match" + (PUB.total === 1 ? "es" : "") : "") : "";
-    el("hsortb").querySelector("span").textContent = PUB.sort === "copied" ? "Most copied" : "Newest";
+    hsortSet(PSORTS[PUB.sort === "copied" ? 1 : 0]);
     if(PUB.rows.length < PUB.total) requestAnimationFrame(pubPump);
   }
   function fillPf(){
@@ -1191,7 +1192,9 @@ body{-webkit-font-smoothing:antialiased;
     box.hidden = !all.length;
     box.innerHTML = all.map(function(t){ var on = HTAG && tagKey(t) === tagKey(HTAG); return '<button type="button" class="fchip btn glass' + (on ? " on" : "") + '" data-act="htag" data-v="' + esc(t) + '" aria-pressed="' + (on ? "true" : "false") + '" data-k="pick">' + esc(t) + '</button>'; }).join("");
   }
-  var DSORTS = [["recent", "Last edited"], ["name", "Name"], ["legend", "Legend"], ["mine", "My order"]];
+  var DSORTS = [["recent", "Last edited", "bynew"], ["name", "Name", "byname"], ["legend", "Legend", "bylegend"], ["mine", "My order", "bymine"]];
+  // the list's sort chip: the sort's icon, its name, the chevron (plan 2 M8 block 5)
+  function hsortSet(x){ var b = el("hsortb"); b.innerHTML = window.RAVI_ICON(x[2]) + '<span>' + esc(x[1]) + '</span>' + IC.down; b.setAttribute("aria-label", "Sort: " + x[1]); }
   function listOrder(){
     var all = DECKS.slice();
     if(SET.dsort === "name") all.sort(function(a, b){ return (a.name || "").localeCompare(b.name || ""); });
@@ -1233,7 +1236,7 @@ body{-webkit-font-smoothing:antialiased;
     var whole = savedAcct() ? (all.length - sh) + " private \u00b7 " + sh + " of " + SHAREMAX + " shared" : all.length + (all.length === 1 ? " deck" : " decks");
     el("hlede").textContent = all.length ? (list.length === all.length ? whole : list.length + " of " + all.length + " decks") + (EDIT ? ". Drag to arrange." : "") : "";
     var ds = DSORTS.filter(function(x){ return x[0] === SET.dsort; })[0] || DSORTS[0];
-    el("hsortb").querySelector("span").textContent = ds[1];
+    hsortSet(ds);
     el("hsortb").hidden = !all.length;
   }
   // ARRANGE (Edit on the list): drag a deck by its handle; the order becomes My order
@@ -1349,7 +1352,7 @@ body{-webkit-font-smoothing:antialiased;
     function b(val, label){ return '<button type="button" data-dv="' + val + '" aria-label="' + label + '" aria-pressed="' + (v === val) + '">' + IC["v" + val] + '</button>'; }
     return '<div class="dvrow" id="dview"><div class="seg dvseg" role="group" aria-label="Cards show as" data-k="pick">' + b("list", "List") + b("grid", "Grid") + b("text", "Text") + '</div>'
       + '<div class="seg dvseg cols" id="dcols" role="group" aria-label="Grid size" data-k="pick"' + (v === "grid" ? "" : " hidden") + '><button type="button" data-dc="3" aria-label="3 across" aria-pressed="' + (SET.cols !== 4) + '">3</button><button type="button" data-dc="4" aria-label="4 across" aria-pressed="' + (SET.cols === 4) + '">4</button></div>'
-      + '<button type="button" class="dvsort glass" data-act="dsort" data-fills="psort" data-k="do"><span><span class="pre">Sort: </span>' + esc(s[0] === "number" ? "Number" : s[1].split(",")[0]) + '</span>' + IC.down + '</button></div>';
+      + '<button type="button" class="dvsort glass" data-act="dsort" data-fills="psort" data-k="do">' + window.RAVI_ICON(s[2]) + '<span><span class="sr">Sort: </span>' + esc(s[0] === "number" ? "Number" : s[1].split(",")[0]) + '</span>' + IC.down + '</button></div>';
   }
   function headHTML(sec, title, cnt){
     var shut = !!SET.shut[sec], own = !!(SET.sv[sec] || SET.ss[sec]);
@@ -1896,7 +1899,7 @@ body{-webkit-font-smoothing:antialiased;
     energy: { title: "Energy", opts: function(){ var a = []; for(var i = 0; i <= 8; i++) a.push([String(i), i + " energy"]); a.push(["9", "9 or more"]); return a; } },
     set: { title: "Set", opts: function(){ var L = (window.__CATL && window.__CATL.sets) || {}; return ["OGN", "OGS", "SFD", "UNL", "VEN", "RAD"].filter(function(s){ return L[s]; }).map(function(s){ return [s, L[s]]; }); } }
   };
-  var SORTS = [["energy", "Energy"], ["power", "Power"], ["name", "Name"], ["number", "Set and number"], ["price", "Price, highest first"]];
+  var SORTS = [["energy", "Energy", "byenergy"], ["power", "Power", "bypower"], ["name", "Name", "byname"], ["number", "Set and number", "bynumber"], ["price", "Price, highest first", "byprice"]];
   function brDefaults(sec){
     var d = deck(), L = C(d.legend);
     BR.sec = sec; BR.q = ""; BR.n = 120; BR.f = { dom: [], type: [], energy: [], set: [] };
@@ -1937,8 +1940,10 @@ body{-webkit-font-smoothing:antialiased;
     if(s === "bf") return d.bf.indexOf(code) > -1 ? 1 : 0;
     return d[s][code] || 0;
   }
+  // a browser's Sort chip: the sort's icon and its short name (plan 2 M8 block 5: the icon says Sort)
+  function sortChip(k){ var s = SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; return window.RAVI_ICON(s[2]) + '<span><span class="sr">Sort: </span>' + esc(s[1].split(",")[0]) + '</span>'; }
   function chipsHTML(st, sec){
-    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">Sort: ' + esc(SORTS.filter(function(s){ return s[0] === st.sort; })[0][1].split(",")[0]) + IC.down + '</button>';
+    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(st.sort) + IC.down + '</button>';
     ["dom", "type", "energy", "set"].forEach(function(k){
       if((k === "type" || k === "energy") && (sec === "legend" || sec === "bf")) return;
       var n = st.f[k].length;
@@ -1948,7 +1953,7 @@ body{-webkit-font-smoothing:antialiased;
     return h;
   }
   function brChips(){
-    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">Sort: ' + esc(SORTS.filter(function(s){ return s[0] === BR.sort; })[0][1].split(",")[0]) + IC.down + '</button>';
+    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(BR.sort) + IC.down + '</button>';
     ["dom", "type", "energy", "set"].forEach(function(k){
       if(k === "type" && (BR.sec === "legend" || BR.sec === "bf")) return;
       if(k === "energy" && (BR.sec === "legend" || BR.sec === "bf")) return;
@@ -2038,7 +2043,7 @@ body{-webkit-font-smoothing:antialiased;
   function fillFl(){
     var h = "", st = FO();
     el("flttl").textContent = FL === "sort" ? "Sort" : FILTERS[FL].title;
-    if(FL === "sort"){ SORTS.forEach(function(s){ h += '<button type="button" data-act="flpick" data-v="' + s[0] + '"' + (st.sort === s[0] ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + esc(s[1]) + '</button>'; }); }
+    if(FL === "sort"){ SORTS.forEach(function(s){ h += '<button type="button" data-act="flpick" data-v="' + s[0] + '"' + (st.sort === s[0] ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + window.RAVI_ICON(s[2]) + esc(s[1]) + '</button>'; }); }
     else FILTERS[FL].opts().forEach(function(o){ var on = st.f[FL].indexOf(o[0]) > -1; h += '<button type="button" data-act="flpick" data-v="' + esc(o[0]) + '"' + (on ? ' class="on"' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>'; });
     el("flpick").innerHTML = h;
     el("flfoot").hidden = FL === "sort";
@@ -2287,12 +2292,12 @@ body{-webkit-font-smoothing:antialiased;
   function dmDisarm(){ clearTimeout(DMT); var b = el("dmdel"); b.classList.remove("armed"); b.querySelector(".t").textContent = "Delete this deck"; }
   function fillDsort(){
     if(HV === "pub"){
-      el("dsortpick").innerHTML = PSORTS.map(function(x){ var on = PUB.sort === x[0]; return '<button type="button" data-act="psset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + x[1] + '</button>'; }).join("");
+      el("dsortpick").innerHTML = PSORTS.map(function(x){ var on = PUB.sort === x[0]; return '<button type="button" data-act="psset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + window.RAVI_ICON(x[2]) + x[1] + '</button>'; }).join("");
       el("dsortnote").textContent = "Newest is the newest shared. Most copied counts each player once.";
       return;
     }
     el("dsortnote").textContent = "My order is the order you arrange: tap the pencil on this screen, then drag a deck by its handle.";
-    el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = SET.dsort === x[0]; return '<button type="button" data-act="dsset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + x[1] + '</button>'; }).join("");
+    el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = SET.dsort === x[0]; return '<button type="button" data-act="dsset" data-v="' + x[0] + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' + window.RAVI_ICON(x[2]) + x[1] + '</button>'; }).join("");
   }
   document.addEventListener("touchmove", function(ev){
     if(!LP.el) return;
