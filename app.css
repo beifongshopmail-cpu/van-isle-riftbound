@@ -113,14 +113,19 @@ button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
 html.paged .glass,html.paged .doors{--muted:#DCDEE2}
 /* ONE LAYER OF GLASS (plan 2 M8, Mako 2026-11-04, after Apple's Liquid Glass guidance): glass is for what
    floats (the bar, menus, the sticky plates, cards and buttons on the page, the hub's blocks). A part
-   inside a glass surface, a menu or a plate is flat: a light fill (--flat), no rim light, no base glow;
-   the same shape, size and press shade. A coloured surface inside one keeps its colour, flat. A chosen
-   part (.on: a filter chip that is on) keeps its bone fill and rim, as before block 4 (block 5 fix). */
+   inside a glass surface, a menu or a plate is flat: a light fill (--flat), no rim light, no base glow,
+   no frost of its own; the same shape, size and press shade. A coloured surface inside one keeps its
+   colour, flat. A chosen part (.on) keeps its own fill (a filter chip's bone, Select's press shade), flat.
+   Rows in a group (.doors > .door) are already flat inside it. (Consistency pass, Mako 2026-11-05.) */
 :root{--flat:rgba(255,255,255,.08)}
-:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors):not(.cg):not(.door):not(.on){background:linear-gradient(var(--tint),var(--tint)),var(--flat);box-shadow:none}
-:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg):not(.door):not(.on)::before{content:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors):not(.cg):not(.doors > .door):not(.on){background:linear-gradient(var(--tint),var(--tint)),var(--flat);box-shadow:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors).on:not(.cg):not(.doors > .door){box-shadow:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg):not(.doors > .door)::before{content:none}
 :is(.panel,.plate,.card,.glass,.doors,.cg) .cg{box-shadow:none}
-:is(.panel,.plate,.card,.glass,.doors,.cg) .btn.glass:not(.door):not(.on):active{background:linear-gradient(var(--tint),var(--tint)),var(--glass-press)}
+:is(.panel,.plate,.card,.glass,.doors,.cg) .btn.glass:not(.doors > .door):not(.on):active{background:linear-gradient(var(--tint),var(--tint)),var(--glass-press)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  :root :is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg){-webkit-backdrop-filter:none;backdrop-filter:none}
+}
 .glass::before,.doors::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none}
@@ -649,7 +654,7 @@ html.gate body > :not(#ravigate){display:none!important}
 .hlsm span{font-size:12px;line-height:1.2;letter-spacing:0}
 .hle{border:1.5px dashed var(--faint);background:none;box-shadow:none}
 /* All pages: plain glass, frosted, no page colour (index.html .blk.allp), never the Settings tint */
-.hla{color:var(--bone);background:var(--frost-solid)}
+.hla{--tint:transparent;color:var(--bone);background:var(--frost-solid)} /* never the Settings tint, inside Hub layout's menu too */
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   .hla{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
 }
