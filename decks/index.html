@@ -758,9 +758,11 @@ body{-webkit-font-smoothing:antialiased;
   function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
   function svgi(d){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>'; }
+  // the deck handle in Arrange (plan 2 M8 round 3, Mako's pick H2): Material Symbols drag_indicator, six dots (Apache-2.0)
   var IC = {
     plus: svgi("M12 6v12M6 12h12"), minus: svgi("M6 12h12"),
-    bin: svgi("M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"),
+    // the bin (plan 2 M8 round 3, Mako's pick B1 slanted): Lucide trash-2 (ISC) on the drawn-icon line, its sides drawn in
+    bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M5 6l1.2 14.2a2 2 0 0 0 2 1.8h7.6a2 2 0 0 0 2-1.8L19 6M10 11v6M14 11v6"/></svg>',
     down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
     // the warning: a solid triangle with its mark cut out (M13 icon pass, Mako's pick 2026-10-25;
     // Material Symbols Rounded warning, filled, weight 600, Apache-2.0)
@@ -770,8 +772,10 @@ body{-webkit-font-smoothing:antialiased;
     noent: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg>',
     // the app's gear (pages.js), its outline, for a section's own menu (Mako 2026-10-19)
     gear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.23 10.21A9.4 9.4 0 0 1 21.23 13.79Q15.05 13.76 18.17 19.09A9.4 9.4 0 0 1 15.06 20.89Q12 15.52 8.94 20.89A9.4 9.4 0 0 1 5.83 19.09Q8.95 13.76 2.77 13.79A9.4 9.4 0 0 1 2.77 10.21Q8.95 10.24 5.83 4.91A9.4 9.4 0 0 1 8.94 3.11Q12 8.48 15.06 3.11A9.4 9.4 0 0 1 18.17 4.91Q15.05 10.24 21.23 10.21z"/><path d="M9.8 12a2.2 2.2 0 1 0 4.4 0a2.2 2.2 0 1 0 -4.4 0z"/></svg>',
-    ok: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.7 2.7L16 9.6"/></svg>',
-    star: '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.6 6.1.7-4.5 4.2 1.2 6.1L12 16.8l-5.4 3 1.2-6.1-4.5-4.2 6.1-.7z"/></svg>',
+    // Ready (plan 2 M8 round 3, Mako: R1's filled circle with the app's own check): a solid circle with the list's check cut out
+    ok: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0ZM7.98 11.22L10.73 13.97L15.95 7.7A1.1 1.1 0 0 1 17.65 9.1L11.65 16.3A1.1 1.1 0 0 1 10.02 16.38L6.42 12.78A1.1 1.1 0 0 1 7.98 11.22Z" fill="currentColor" stroke="none" fill-rule="evenodd"/></svg>',
+    // the Chosen Champion star (plan 2 M8 round 3, Mako's pick C2): Phosphor star, filled (MIT)
+    star: '<svg class="star" viewBox="0 0 256 256" aria-hidden="true"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg>',
     // the three views, after Lucide's layout-list, layout-grid and text (ISC), on the app's line
     vlist: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 4.5h7M14 8.5h5M14 15.5h7M14 19.5h5"/></svg>',
     vgrid: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
@@ -949,7 +953,8 @@ body{-webkit-font-smoothing:antialiased;
   var PSORTS = [["new", "Shared", "down"], ["copied", "Copies", "down"]];
   var PUB = { q: "", leg: "", dom: [], sort: "new", h: "", hname: "", rows: [], total: 0, loaded: false, loading: false, err: "", seq: 0, qt: 0 };
   var RO = null;   // { h, id, deck, who, copies, vis, vt, prev, sent }; a Tier list deck: { tier: "1st of 272 on Oct 31", h: "" }
-  var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.2"/><path d="M3.8 20.5c.9-4.2 4.2-6.6 8.2-6.6s7.3 2.4 8.2 6.6z"/></svg>';
+  // no picture yet: the corner's person (plan 2 M8 round 3, P1: Phosphor user, filled, MIT)
+  var PERSON = '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"/></svg>';
   function isRO(){ return !!(RO && CURID === RO.deck.id); }
   function savedAcct(){ try{ return !!(A && A.signedIn() && !A.isGuest()); }catch(e){ return false; } }
   function installed(){ try{ return navigator.standalone === true || window.matchMedia("(display-mode: standalone)").matches; }catch(e){ return false; } }
@@ -1226,7 +1231,7 @@ body{-webkit-font-smoothing:antialiased;
       if(co) cg = ' cg2" style="--c:' + co.c + ';--c2:' + co.c2 + ';--s:' + co.s + '%';
       h += '<div class="dwrap" data-id="' + esc(d.id) + '">'
         + '<button type="button" class="dcard btn glass' + cg + '" data-act="open" data-id="' + esc(d.id) + '" data-k="do">'
-        + (EDIT ? '<span class="dgrip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h14"/></svg></span>' : '')
+        + (EDIT ? '<span class="dgrip" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2m-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2m0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2" fill="currentColor" stroke="none"/></svg></span>' : '')
         + '<span class="dcpic">' + (L ? img(L) : "") + '</span>' + (run ? '<span class="dcrun">' + run + '</span>' : '')
         + '<span class="dcmid"><span class="dcname">' + esc(d.name || "Untitled deck") + '</span><span class="dcsub">' + esc(L ? nm(L) : "No Legend yet") + '</span></span>'
         + '<span class="dcend"><span class="dcstat">' + (p ? '<span class="wmk">' + IC.warn + '</span><span>' + p + ' to fix</span>' : '<span class="okmk">' + IC.ok + '</span><span>Ready</span>') + '</span>'

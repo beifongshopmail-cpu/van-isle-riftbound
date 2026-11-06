@@ -371,7 +371,8 @@
   });
   var A = root.RAVI_ACCT;
   var REL = /\/[a-z]+\/(index\.html)?$/.test(root.location.pathname) ? "../" : "";
-  var SVG_ME = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M3.5 21.5c0-5 3.8-8.5 8.5-8.5s8.5 3.5 8.5 8.5z"/></svg>';
+  // no picture yet (plan 2 M8 round 3, Mako's pick P1): Phosphor user, filled (phosphoricons.com, MIT)
+  var SVG_ME = '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"/></svg>';
   var CV = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
   var BACK = '<button type="button" class="circ btn glass back" data-acback aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>';
   var REFRESH = 3600000; // the account is reread at most once an hour per phone

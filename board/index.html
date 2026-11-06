@@ -410,7 +410,8 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   }
 
   // ---- A PLAYER: picture, name, where ----
-  var PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21a8 8 0 0 1 16 0z" fill="currentColor"/></svg>';
+  // no picture yet: the corner's person (plan 2 M8 round 3, P1: Phosphor user, filled, MIT)
+  var PERSON = '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z" fill="currentColor"/></svg>';
   function picStyle(f){
     if (f.self) { var su = A && A.picUrl(A.view(), "../"); if (!su) { return ""; } var sf = A.picFit(A.view()); return "background-image:url('" + su + "');background-size:" + sf.size + ";background-position:" + sf.pos; }
     if (!f.pic) { return ""; }
@@ -1156,7 +1157,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var c = card(x.i), k = x.i + "|" + x.f, q = (side === "get" ? MK.get : MK.give)[k] || 0, u = usd(x.i, x.f), pct = side === "get" ? MK.f.pct : myPct();
     var cap = q ? "In: " + q + " of " + x.q : (side === "give" && x.m ? "Wants this" : side === "get" && x.m ? "On your Wishlist" : (x.q > 1 ? x.q + " to trade" : x.f));
     return '<div class="ctile' + (q ? " sel" : "") + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-mk="' + side + "|" + esc(k) + '" aria-pressed="' + (q > 0) + '" aria-label="' + esc(cname(x.i) + ", " + x.f + (q ? ", " + q + " in the offer" : "")) + '" data-k="card">' + img(c) + '</button>'
-      + (q ? '<span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg></span>' : '')
+      + (q ? '<span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></span>' : '')
       + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(u == null ? null : u * pct / 100) + '</b></div><span class="ttot">' + esc(cap) + '</span></div></div>';
   }
   function mkList(list, side){
