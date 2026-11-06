@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117568096495937543@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20261108T010000Z
 DTEND:20261108T040000Z
 SUMMARY:Saturday Evening nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n31 of 32 spots left\
- , checked Nov 6\, 12:44 AM\nFree\nSign up: https://playriftbound.com/en-US
+ , checked Nov 6\, 12:52 PM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117568096495937543
 URL:https://playriftbound.com/en-US/events/117568096495937543
 CATEGORIES:Nexus Nights
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117568101204024672@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20261108T183000Z
 DTEND:20261108T213000Z
 SUMMARY:sunday morning Nexus "night"
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Victoria\n23 of 24 spots left\
- , checked Nov 6\, 12:44 AM\n$6.00 CAD\nSign up: https://playriftbound.com/
+ , checked Nov 6\, 12:52 PM\n$6.00 CAD\nSign up: https://playriftbound.com/
  en-US/events/117568101204024672
 URL:https://playriftbound.com/en-US/events/117568101204024672
 CATEGORIES:Nexus Nights
@@ -41,13 +41,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096953908084886@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20261122T193000Z
 DTEND:20261122T223000Z
 SUMMARY:Radiance Summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n31 of 32 spots 
- left\, checked Nov 6\, 12:44 AM\n$20.00 CAD\nSign up: https://playriftboun
+ left\, checked Nov 6\, 12:52 PM\n$20.00 CAD\nSign up: https://playriftboun
  d.com/en-US/events/117096953908084886
 URL:https://playriftbound.com/en-US/events/117096953908084886
 CATEGORIES:Summoner Skirmish
@@ -56,13 +56,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117096961730592935@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20261227T193000Z
 DTEND:20261227T223000Z
 SUMMARY:Radiance summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Victoria\n32 of 32 spots 
- left\, checked Nov 6\, 12:44 AM\n$20.00 CAD\nSign up: https://playriftboun
+ left\, checked Nov 6\, 12:52 PM\n$20.00 CAD\nSign up: https://playriftboun
  d.com/en-US/events/117096961730592935
 URL:https://playriftbound.com/en-US/events/117096961730592935
 CATEGORIES:Summoner Skirmish
@@ -71,13 +71,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117533557541460958@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20270123T020000Z
 DTEND:20270123T050000Z
 SUMMARY:Legacy Pre rift
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Pre-Rift\nEverything Games\, Victoria\n23 of 24 spots left\, ch
- ecked Nov 6\, 12:44 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-
+ ecked Nov 6\, 12:52 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-
  US/events/117533557541460958
 URL:https://playriftbound.com/en-US/events/117533557541460958
 CATEGORIES:Pre-Rift
@@ -86,13 +86,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117533563518629686@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20270124T193000Z
 DTEND:20270124T223000Z
 SUMMARY:Legacy Pre rift
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Pre-Rift\nEverything Games\, Victoria\n31 of 32 spots left\, ch
- ecked Nov 6\, 12:44 AM\n$45.00 USD\nSign up: https://playriftbound.com/en-
+ ecked Nov 6\, 12:52 PM\n$45.00 USD\nSign up: https://playriftbound.com/en-
  US/events/117533563518629686
 URL:https://playriftbound.com/en-US/events/117533563518629686
 CATEGORIES:Pre-Rift
@@ -101,13 +101,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117533572584004975@van-isle-riftbound
-DTSTAMP:20261106T074436Z
+DTSTAMP:20261106T195232Z
 DTSTART:20270307T193000Z
 DTEND:20270307T223000Z
 SUMMARY:Legacy Nexus cup
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Event\nEverything Games\, Victoria\n31 of 32 spots left\, check
- ed Nov 6\, 12:44 AM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/
+ ed Nov 6\, 12:52 PM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/
  events/117533572584004975
 URL:https://playriftbound.com/en-US/events/117533572584004975
 CATEGORIES:Event

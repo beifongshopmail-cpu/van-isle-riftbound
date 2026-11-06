@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-06T07:44:36.595Z",
- "generated_local": "2026-11-06T00:44:36-07:00",
+ "generated_at": "2026-11-06T19:52:32.682Z",
+ "generated_local": "2026-11-06T12:52:32-07:00",
  "window_start": "2026-11-06T07:00:00.000Z",
  "anchors": [
   {
@@ -49,7 +49,7 @@
  "totals": {
   "fetched": 68,
   "unique": 68,
-  "prev_unique": 66,
+  "prev_unique": 68,
   "recent": [
    {
     "d": "2026-11-03",
@@ -90,7 +90,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 7,
+   "reg": 8,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
