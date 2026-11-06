@@ -3,6 +3,17 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117525460412948679",
+   "name": "North Park Picture Framing and Collectables Open Play",
+   "type": "open",
+   "start": "2026-11-05T19:00:00-07:00",
+   "day": "2026-11-05",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
    "id": "rb117548189527737427",
    "name": "Nexus Night at AJ's Games",
    "type": "nexus",
