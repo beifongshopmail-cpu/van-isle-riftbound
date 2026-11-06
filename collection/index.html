@@ -44,7 +44,7 @@ body{-webkit-font-smoothing:antialiased;
 .cchg .w{color:var(--muted);font-weight:400;overflow:hidden;text-overflow:ellipsis}
 /* the movement chip, as Trade's: the arrow rides the percent and carries the direction, never a colour */
 .chip{display:inline-flex;align-items:center;gap:.25em;font:inherit;color:inherit;white-space:nowrap}
-.chip svg{width:.6em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.chip svg{width:.72em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 /* THE CHART: glass bars in Rust inside a glass card (Mako's pick, 2026-10-25), one a day, a week
    a bar past 62 days; a finger on it reads one bar */
 .chw{position:relative;margin:12px 0 0;height:190px;border-radius:22px;overflow:hidden;touch-action:pan-y;-webkit-user-select:none;user-select:none}
@@ -152,7 +152,7 @@ body{-webkit-font-smoothing:antialiased;
 #setpick button.rec{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;text-align:left}
 #setpick button.rec .t{display:block;align-self:stretch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #setpick button.rec small{display:block;align-self:stretch;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;color:var(--bone)}
+.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;color:var(--bone)}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .bnote{margin:8px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .bbody{max-width:480px;margin:0 auto;padding:14px 12px calc(env(safe-area-inset-bottom,0px) + 28px)}
@@ -277,7 +277,7 @@ input[type="file"]{display:none}
 <section class="brw" id="brw" hidden aria-label="Add cards">
   <div class="bhead"><div class="bin1 plate glass">
     <div class="bsr">
-      <button type="button" class="circ btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button type="button" class="circ trk btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="bportbtn" data-fills="pport"><span class="t" id="bportname"></span><span class="sp"></span><small id="bportcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     </div>
     <div class="sf psf">
@@ -500,8 +500,8 @@ input[type="file"]{display:none}
   function conv(usd){ return SET.cur === "CAD" ? usd * FX : usd; }
   function fmt(v){ return "$" + Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
   function money(usd){ return fmt(conv(usd)); }
-  var UP = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 11V1.5M1.5 5L5 1.5 8.5 5"/></svg>';
-  var DN = '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 1v9.5M1.5 7L5 10.5 8.5 7"/></svg>';
+  var UP = '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>';
+  var DN = '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("dn") + '"/></svg>';
   // the percent carries the arrow (STYLE: direction is an arrow, never a colour); amounts are unsigned
   // and wear no arrow of their own (Mako 2026-10-25: one arrow, on the percent)
   function pctChip(pct){
@@ -753,8 +753,8 @@ input[type="file"]{display:none}
       return '<div class="mvh">' + svg + title + '</div>' + (list.length ? list.map(one).join("") : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
     }
     return {
-      up: card("Gains", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>', up),
-      dn: card("Losses", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>', dn)
+      up: card("Gains", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>', up),
+      dn: card("Losses", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + window.RAVI_ARROW("dn") + '"/></svg>', dn)
     };
   }
   function numKey(x){ var c = BYID[x.h.i] || {}, s = setOf(c); return [String(s.p || ""), String(c.c || "").replace(/^(\d+)/, function(m){ return ("0000" + m).slice(-4); })]; }

@@ -44,7 +44,7 @@ body{-webkit-font-smoothing:antialiased;
    its height; a row is Piltover Archive's (the legend, the deck's name, by @user and when, its domains,
    how many copied it) */
 .hv{margin-top:8px}
-#pchips{height:var(--sz-row);margin:8px -10px 0;align-items:center}
+#pchips{height:var(--sz-track);margin:8px -10px 0;align-items:center}
 .dcend .cp{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 .dcard.cg2{--muted:#DCDEE2} /* STYLE section 4: grey text inside a coloured glass */
 .dcard.cg2 .dcend .cp{color:var(--muted)}
@@ -321,7 +321,7 @@ body{-webkit-font-smoothing:antialiased;
 
 /* HAND's odds (round 2): the cards asked about, the mulligan, turns 1 to 6 */
 .ochips{display:flex;flex-wrap:wrap;gap:6px}
-.ochip{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:var(--sz-sm);padding:0 6px 0 14px;border-radius:18px;font-family:var(--disp);font-size:13px;font-weight:600}
+.ochip{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:var(--sz-track);padding:0 6px 0 14px;border-radius:20px;font-family:var(--disp);font-size:13px;font-weight:600}
 .ochip .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ochip svg{flex:0 0 auto;width:16px;height:16px}
 .ochip.add{padding:0 14px 0 10px;color:var(--muted)}
@@ -417,7 +417,7 @@ body{-webkit-font-smoothing:antialiased;
 .bsr .circ{flex:0 0 auto}
 .bchips{display:flex;gap:6px;margin:10px -10px 0;padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .bchips::-webkit-scrollbar{display:none}
-.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
+.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .fchip .n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--ink);color:var(--bone);font-size:12px}
 .fchip svg{width:14px;height:14px}
@@ -556,7 +556,7 @@ body{-webkit-font-smoothing:antialiased;
 <section class="brw" id="brw" hidden aria-label="Add cards">
   <div class="bhead"><div class="bin1 plate glass">
     <div class="bsr">
-      <button type="button" class="circ btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button type="button" class="circ trk btn glass" data-act="bclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="sf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="bq" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
@@ -2105,7 +2105,7 @@ body{-webkit-font-smoothing:antialiased;
         var dfin = r.fins.filter(function(f){ return f.fin === "Normal"; })[0] || r.fins[0];
         h += '<div class="prow' + (mine ? " on" : "") + '"><button type="button" class="prb" data-act="pset" data-code="' + esc(r.code) + '" data-v="' + (r.code ? "" : esc(dfin.id + "|" + dfin.fin)) + '" aria-pressed="' + mine + '" data-k="pick">'
           + '<span class="art pv' + (x.t === "battlefield" ? " rot" : "") + '">' + img(C(r.pic)) + (r.promo ? '<span class="vbadge sm">PROMO</span>' : '') + '</span><span class="pti"><span class="cnm">' + esc((r.setName ? r.setName + ", " : "") + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small></span>'
-          + (mine ? '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : '') + '</button>';
+          + (mine ? '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>' : '') + '</button>';
         if(r.fins.length && SET.price){
           h += '<div class="pfins" role="group" aria-label="Finish" data-k="pick">';
           r.fins.forEach(function(f){

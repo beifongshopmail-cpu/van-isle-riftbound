@@ -148,6 +148,15 @@ html.paged .glass,html.paged .doors{--muted:#DCDEE2}
 /* THE STRIP'S LAYOUT TRACK is the one tall track: its options are --sz-seg-tall (38), so the
    track is 44 like the strip's three slots and sits 6 from the strip's top and bottom. */
 .bar.strip .seg button{height:var(--sz-seg-tall)}
+/* PARTS THAT SIT TOGETHER SHARE ONE HEIGHT (plan 2 M8 block 7, Mako's notes 2026-11-04/05). In a sticky plate every
+   control is the track's height and carries 13: a full-width action and a lone row-pill join the field and the
+   track at 40 (New deck | Import, Collection's binder pill). A round button sharing a row with a field or a pill
+   is .circ.trk, 40 (a card browser's Close). In a menu, a track stacked with row-height parts is .seg.tall, 44
+   (38 segments), as the strip's Layout track; a field over a full-width action is .nf.tall. */
+.plate .pact,.plate .door{height:var(--sz-track);font-size:13px}
+.plate .doors{border-radius:20px}
+.circ.trk{width:var(--sz-track);height:var(--sz-track)}
+.seg.tall button{height:var(--sz-seg-tall)}
 .tab:active,.tab.on{background:var(--on-pc,var(--on))}
 .tab.on{color:var(--on-ink,inherit)}
 /* ICONS: each carries an outline drawing (.ico) and a filled one (.icf). The filled one

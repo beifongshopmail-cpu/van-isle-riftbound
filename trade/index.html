@@ -152,7 +152,7 @@ a{color:inherit;text-decoration:none}
    matches the text it sits after. The arrow is sized in em to the line,
    and its stroke lands near that text's stem width once scaled. */
 .chip{display:inline-flex;align-items:center;gap:.25em;font:inherit;color:inherit;white-space:nowrap}
-.chip svg{width:.6em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.chip svg{width:.72em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
 
 .rate.nmf input{text-align:left;font-weight:600}
 .nmf.r1 input{color:var(--yc)} .nmf.r2 input{color:var(--tc)}
@@ -702,8 +702,8 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
     var p = dltPct(c, sub);
     if(p === null) return "";
     return '<span class="chip">' + (p > 0
-      ? '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 11V1.5M1.5 5L5 1.5 8.5 5"/></svg>'
-      : '<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M5 1v9.5M1.5 7L5 10.5 8.5 7"/></svg>')
+      ? '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>'
+      : '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("dn") + '"/></svg>')
       + Math.abs(p) + '%</span>';
   }
 
@@ -806,13 +806,13 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   var IC = {
     plus: svgi("M12 6v12M6 12h12"),
     minus: svgi("M6 12h12"),
-    down: svgi("M12 5v14M6 13l6 6 6-6"),
-    up: svgi("M12 19V5M6 11l6-6 6 6"),
+    down: svgi(window.RAVI_ARROW("dn")),
+    up: svgi(window.RAVI_ARROW("up")),
     x: svgi("M7 7l10 10M17 7L7 17"),
     // the bin (plan 2 M8 round 3, B1 slanted): Lucide trash-2 (ISC), drawn-icon line
     bin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M5 6l1.2 14.2a2 2 0 0 0 2 1.8h7.6a2 2 0 0 0 2-1.8L19 6M10 11v6M14 11v6"/></svg>',
-    left: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
-    right: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+    left: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + window.RAVI_ARROW("l") + '"/></svg>',
+    right: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + window.RAVI_ARROW("r") + '"/></svg>'
   };
 
   function sideCount(n){

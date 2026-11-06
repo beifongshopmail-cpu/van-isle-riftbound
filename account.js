@@ -425,8 +425,8 @@
         '<p class="lb">Display name</p><div class="nf"><input type="text" id="acname" maxlength="32" autocomplete="nickname" enterkeyhint="next" aria-label="Display name" data-k="type"></div>' +
         '<p class="lb">Username</p><div class="nf"><span class="acat">@</span><input type="text" id="acuser" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Username" data-k="type"></div>' +
         '<p class="pnote">Yours alone on RAVI: 3 to 20 letters, numbers or _.</p>' +
-        '<p class="lb">Riot ID</p><div class="rid"><div class="ridn"><div class="nf"><input type="text" id="acriotn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
-        '<div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="acriott" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
+        '<p class="lb">Riot ID</p><div class="rid"><div class="ridn"><div class="nf tall"><input type="text" id="acriotn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
+        '<div class="ridt"><div class="nf tall"><span class="acat">#</span><input type="text" id="acriott" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
         '<button type="button" class="pact btn glass" id="acclaim" data-k="do">Claim</button>' +
         '<p class="pnote">One RAVI account per Riot ID. It finds your table and your alerts at live events.</p>' +
         '<p class="acmsg" id="acriotmsg" aria-live="polite"></p>' +
@@ -476,8 +476,8 @@
         '<p class="pnote" id="acokwho"></p><p class="acmsg" id="acokmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acokgo" data-k="do" disabled>Link</button></div>',
       acsu1: suHead("Your account", 1) + '<div class="pbody" id="acsu1body"></div>' + suFoot(1),
-      acsu2: suHead("Riot ID", 2) + '<div class="pbody"><div id="acsu2in"><div class="rid"><div class="ridn"><div class="nf"><input type="text" id="acsurn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
-        '<div class="ridt"><div class="nf"><span class="acat">#</span><input type="text" id="acsurt" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
+      acsu2: suHead("Riot ID", 2) + '<div class="pbody"><div id="acsu2in"><div class="rid"><div class="ridn"><div class="nf tall"><input type="text" id="acsurn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
+        '<div class="ridt"><div class="nf tall"><span class="acat">#</span><input type="text" id="acsurt" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
         '<button type="button" class="pact btn glass acgap" id="acsuclaim" data-k="do">Claim</button></div>' +
         '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2),
       acsu3: suHead("Alerts", 3) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" aria-pressed="false">Trade offers</button></div>' +

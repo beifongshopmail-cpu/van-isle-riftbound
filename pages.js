@@ -35,6 +35,11 @@
 // Outline lines set no width of their own, so the hub's thinner line reaches them all. A filled
 // drawing's gaps are cut by a mask ("@"), an outline overlap by a second one ("@b"); mask ids
 // must be unique on a page, so RAVI_ICON numbers each copy it hands out.
+// ONE ARROW (plan 2 M8 block 7, Mako's notes 2026-11-05): Lucide's arrow (ISC) in four directions, the path's d
+// only; every arrow the app draws is this one (the sort chip, Trade's move and verdict, the Trade board's verdict,
+// Collection's Movers and its price-change chips). Beside words, a small arrow uses the arrow's own box,
+// viewBox "4 4 16 16", line 2.
+window.RAVI_ARROW = function(dir){ return { up: "M12 19V5M5 12l7-7 7 7", dn: "M12 5v14M19 12l-7 7-7-7", l: "M19 12H5M12 19l-7-7 7-7", r: "M5 12h14M12 5l7 7-7 7" }[dir]; };
 window.RAVI_ICON = (function(){
   var n = 0;
   var SVG = {
@@ -86,10 +91,10 @@ window.RAVI_ICON = (function(){
     add: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M4 6v14a2 2 0 0 0 2 2h11"/><rect width="13.5" height="17" x="7.5" y="2" rx="2"/><path d="M11.25 10.5h6M14.25 7.5v6"/></g><g class="icf"><path d="M4 6v14a2 2 0 0 0 2 2h11"/><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect width="13.5" height="17" x="7.5" y="2" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.25 10.5h6M14.25 7.5v6" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
     // a menu head's explanation, opened in place (calendar Follow)
     // THE SORT ARROW (plan 2 M8, Mako 2026-11-05: an arrow and the sort's name, as Apple's Files and Mail
-    // do): up for ascending (A to Z, low to high, oldest first), down for descending. Lucide (ISC) as
+    // do): up for ascending (A to Z, low to high, oldest first), down for descending. RAVI_ARROW, Lucide (ISC) as
     // drawn. class srt: 16 in a sort chip, 18 in the chosen row of a Sort menu (app.css).
-    sortup: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>',
-    sortdn: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>',
+    sortup: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>',
+    sortdn: '<svg class="srt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + window.RAVI_ARROW("dn") + '"/></svg>',
     // Info (plan 2 M8 round 5, Mako's pick I2): Phosphor info, bold (MIT); filled, the same bold i cut from a solid disc (Mako 2026-11-06:
     // Phosphor's own fill drew a thinner i); drawn 22.5 across, not 20.25, so the round icon reads as big as its square
     // neighbours on the bar (Mako 2026-11-06)

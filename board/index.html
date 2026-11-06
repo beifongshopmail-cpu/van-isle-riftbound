@@ -942,7 +942,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   // the verdict: each side in this phone's currency at its own percent, cash counted on the side that adds it
   function inCur(n, cur){ return cur === CUR ? n : CUR === "CAD" ? n * FX : n / FX; }
   function sideVal(list, pct){ var v = total(list); return v == null ? 0 : (CUR === "CAD" ? v * FX : v) * pct / 100; }
-  var ARROW = { l: '<svg viewBox="0 0 24 24"><polyline points="11 6 5 12 11 18"/><line x1="5" y1="12" x2="19" y2="12"/></svg>', r: '<svg viewBox="0 0 24 24"><polyline points="13 6 19 12 13 18"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' };
+  var ARROW = { l: '<svg viewBox="0 0 24 24"><path d="' + window.RAVI_ARROW("l") + '"/></svg>', r: '<svg viewBox="0 0 24 24"><path d="' + window.RAVI_ARROW("r") + '"/></svg>' };
   function verdict(give, get, cash, theirPct){
     var a = sideVal(give, myPct()), b = sideVal(get, theirPct);
     if (cash) { if (cash.by === "me") { a += inCur(cash.n, cash.cur); } else { b += inCur(cash.n, cash.cur); } }
