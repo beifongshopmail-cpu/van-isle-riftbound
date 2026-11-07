@@ -118,8 +118,8 @@ body{-webkit-font-smoothing:antialiased;
 .selp{position:fixed;left:12px;right:12px;max-width:456px;margin:0 auto;z-index:21;
   bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);
   border-radius:24px;padding:10px;display:flex;align-items:center;gap:6px;
-  background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.selp{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+  background:var(--plate-solid);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.selp{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .selp .n{flex:1;min-width:0;padding-left:8px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .selp button{flex:0 0 auto;height:var(--sz-sm);padding:0 12px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
 .selp button:disabled{opacity:.4;pointer-events:none}
@@ -138,8 +138,8 @@ body{-webkit-font-smoothing:antialiased;
 /* THE CARD BROWSER: full screen, as Decks' (the same bend of every-overlay-is-a-menu) */
 .brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .bhead{position:sticky;top:calc(var(--top-clear) - 10px);margin-top:calc(var(--top-clear) - 10px);z-index:2;padding:0 12px}
-.plate{border-radius:24px;padding:10px;background:rgba(10,11,13,.94);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.plate{border-radius:24px;padding:10px;background:var(--plate-solid);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .bin1{max-width:456px;margin:0 auto}
 .bsr{display:flex;align-items:center;gap:8px}
 .bsr .sf{flex:1;min-width:0}

@@ -43,9 +43,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bctl{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
 /* the plate, as Rules': the Kit's glass (its lit rim) under the plate frost */
 .plate{border-radius:24px;padding:10px;
-  background:rgba(10,11,13,.94);
+  background:var(--plate-solid);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:rgba(10,11,13,.5);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 /* the list head, as Decks' list of decks: how many on the left, Sort on the right (its chip names
    the order and opens the Sort menu; a pick there closes it, as Collection's and Decks') */
 .hsort{display:flex;align-items:center;gap:8px;margin:12px 0 0}
