@@ -75,6 +75,11 @@ body{-webkit-font-smoothing:antialiased;
   scroll-snap-type:x mandatory;scroll-padding:0 14px;scrollbar-width:none}
 .mvrow::-webkit-scrollbar{display:none}
 .mvrow .ctile{flex:0 0 calc((100cqw - 16px) / 3);scroll-snap-align:start}
+/* round 2 (Mako 2026-11-07): in Grid no glass block; the head is a lone glass row, Gains and Losses sit on the
+   page with the grid's left edge, their rows run to the screen's edges, and a line closes Movers above your cards */
+#movers.mvgrid #mvbody{padding:0 0 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+#movers.mvgrid #mvbody::before{content:none}
+#movers.mvgrid .mvrow{margin:0 -12px;padding:0 12px 4px;scroll-padding:0 12px}
 /* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
 .cards{border-radius:22px;padding:0 14px}
 /* List sits on the page as Grid does, no glass behind it (Mako 2026-10-25, round 2) */
@@ -817,6 +822,7 @@ input[type="file"]{display:none}
     el("movers").hidden = !SET.movers || !!q;
     el("mvtog").setAttribute("aria-expanded", MVOPEN ? "true" : "false");
     el("mvbody").hidden = !MVOPEN;
+    var mvg = SET.hview === "grid"; el("movers").classList.toggle("mvgrid", mvg); el("movers").querySelector(".mvbox").classList.toggle("doors", !mvg);
     el("mvcnt").textContent = rangeWords().replace(/^in /, "");
     if(SET.movers && MVOPEN){ var mv = movers(items); el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn; }
     el("hview").innerHTML = viewRow();
