@@ -382,7 +382,7 @@ async function claudeSum(input, key) {
   const res = await fetch(CLAUDE + "/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "User-Agent": RB.ua },
-    body: JSON.stringify({ model: MODEL, max_tokens: 200, system: ASK, messages: [{ role: "user", content: input.slice(0, 12000) }] }),
+    body: JSON.stringify({ model: MODEL, max_tokens: 1024, system: ASK, messages: [{ role: "user", content: input.slice(0, 12000) }] }),
     signal: AbortSignal.timeout(60000)
   });
   if (res.status !== 200) { throw new Error("HTTP " + res.status); }
