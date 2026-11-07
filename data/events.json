@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-07T06:52:34.545Z",
- "generated_local": "2026-11-06T23:52:34-07:00",
- "window_start": "2026-11-06T07:00:00.000Z",
+ "generated_at": "2026-11-07T17:57:31.491Z",
+ "generated_local": "2026-11-07T10:57:31-07:00",
+ "window_start": "2026-11-07T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 55,
+   "returned": 56,
    "added": 55
   },
   {
@@ -47,9 +47,9 @@
   }
  ],
  "totals": {
-  "fetched": 69,
+  "fetched": 70,
   "unique": 69,
-  "prev_unique": 68,
+  "prev_unique": 69,
   "recent": [
    {
     "d": "2026-11-03",
@@ -65,6 +65,10 @@
    },
    {
     "d": "2026-11-06",
+    "n": 69
+   },
+   {
+    "d": "2026-11-07",
     "n": 69
    }
   ]
@@ -90,7 +94,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 7,
+   "reg": 8,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -114,7 +118,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 1,
+   "reg": 3,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
