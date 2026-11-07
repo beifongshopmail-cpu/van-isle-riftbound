@@ -121,6 +121,10 @@ body{-webkit-font-smoothing:antialiased;
 /* In Edit, Search cards takes the track's place (both 40), so nothing on the page moves;
    its results open over the page (the trade plate's) */
 .esf{margin-top:8px}
+/* while the search has text its chips (Sort, Filters) take the view row's place, 8 under the search,
+   so the plate keeps its height (plan 2 M8.5, Mako 2026-11-06) */
+#echips{margin-top:8px}
+#pfls .door small{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .resw{height:0;overflow:hidden;opacity:0;transition:height .28s var(--ease),opacity .2s ease}
 .resw.open{opacity:1}
 .res{margin-top:10px;max-height:min(52vh,430px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
@@ -527,7 +531,8 @@ body{-webkit-font-smoothing:antialiased;
           <button type="button" class="fbtn fx glass" id="eqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         </div>
         <div class="pvrow" id="pvrow"></div>
-        <div class="resw" id="eresw"><div class="bchips" id="echips"></div><div class="res" id="eres"></div></div>
+        <div class="bchips" id="echips" hidden></div>
+        <div class="resw" id="eresw"><div class="res" id="eres"></div></div>
       </section>
     </div>
     <div class="hold"></div>
@@ -681,10 +686,16 @@ body{-webkit-font-smoothing:antialiased;
   <div class="pbody"><div class="pick" id="oddspick" data-k="pick"></div></div>
 </section>
 
+<section class="panel frost" id="pfls" aria-hidden="true" aria-label="Filters">
+  <div class="phead"><h4 class="ttl">Filters</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="flsrows" data-k="deeper"></div></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="flsall" data-k="do">Show all</button></div>
+</section>
+
 <section class="panel frost" id="pfl" aria-hidden="true" aria-label="Filter">
-  <div class="phead"><h4 class="ttl" id="flttl">Filter</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="flttl">Filter</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="pick" id="flpick" data-k="pick"></div></div>
-  <div class="pfoot" id="flfoot"><button type="button" class="pact btn glass" data-act="flclear" data-k="do">Show all</button></div>
+  <div class="pfoot" id="flfoot"><button type="button" class="pact btn glass" data-act="flclear" data-k="do">Any</button></div>
 </section>
 
 <section class="panel frost" id="ppf" aria-hidden="true" aria-label="Filter public decks">
@@ -1798,6 +1809,7 @@ body{-webkit-font-smoothing:antialiased;
   function eRender(){
     var box = el("eres"), w = el("eresw"), q = EQ.trim().toLowerCase(), h = "";
     el("eqx").disabled = !EQ;
+    el("echips").hidden = !q; el("pvrow").hidden = VIEW !== "deck" || !!q;
     if(!q){ box.innerHTML = ""; el("echips").innerHTML = ""; w.classList.remove("open"); w.style.height = "0px"; return; }
     // the legend's domains and Colorless to start, as Add cards (Mako 2026-11-02); battlefields are
     // not held to it (legends are not in this search); set again when the deck or its legend changes
@@ -1822,7 +1834,7 @@ body{-webkit-font-smoothing:antialiased;
     });
     paint(box, hits.length ? '<div class="bgrid">' + h + '</div>' : '<p class="bnone">No cards match. Try another word.</p>');
     w.classList.add("open");
-    w.style.height = (box.offsetHeight + el("echips").offsetHeight + 20) + "px"; // the chips' 10 above them, the results' 10 gap
+    w.style.height = (box.offsetHeight + 10) + "px"; // the results' 10 gap under the chips
     if(ELEN > EN) requestAnimationFrame(ePump);
   }
   // ENDLESS SCROLL in Edit's search too (Mako 2026-11-02), in place of 'N more: add a word to narrow it'
@@ -1886,7 +1898,7 @@ body{-webkit-font-smoothing:antialiased;
     pl.classList.toggle("cg2", !!co);
     if(co){ pl.style.setProperty("--c", co.c); pl.style.setProperty("--c2", co.c2); pl.style.setProperty("--s", co.s + "%"); }
     el("deck").classList.toggle("dv", VIEW === "deck");
-    el("pvrow").hidden = VIEW !== "deck";
+    el("pvrow").hidden = VIEW !== "deck" || !!EQ.trim();
 
     el("ptname").textContent = d.name || "Untitled deck";
     el("ptprice").textContent = SET.price ? money(deckPrice(d)) + " " + CUR + (EDIT ? " \u00b7 editing" : "") : (EDIT ? "Editing" : "");
@@ -1959,26 +1971,26 @@ body{-webkit-font-smoothing:antialiased;
   }
   // a browser's Sort chip: the arrow and the sort's name (plan 2 M8, Mako 2026-11-05)
   function sortChip(v){ var R = window.RAVI_SORT, s = sortOf(v), d = R.dir(v, s[2]); return R.chip('<span class="sr">Sort: </span>' + esc(s[1]), d); }
+  // A SEARCH'S CHIPS (plan 2 M8.5, Mako's yes 2026-11-06): Sort, then one Filters chip counting the
+  // picks that are on; Filters opens a menu with each filter as a row (the shopping apps' Sort | Filter)
+  function flKeys(sec){ return ["dom", "type", "energy", "set"].filter(function(k){ return !((k === "type" || k === "energy") && (sec === "legend" || sec === "bf")); }); }
+  function flCount(st, sec){ return flKeys(sec).reduce(function(n, k){ return n + st.f[k].length; }, 0); }
   function chipsHTML(st, sec){
-    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(st.sort) + '</button>';
-    ["dom", "type", "energy", "set"].forEach(function(k){
-      if((k === "type" || k === "energy") && (sec === "legend" || sec === "bf")) return;
-      var n = st.f[k].length;
-      h += '<button type="button" class="fchip btn glass' + (n ? " on" : "") + '" data-act="fl" data-f="' + k + '" data-k="do">' + FILTERS[k].title + (n ? '<span class="n">' + n + '</span>' : IC.down) + '</button>';
-    });
-    if(st.f.dom.length || st.f.type.length || st.f.energy.length || st.f.set.length) h += '<button type="button" class="fchip btn glass" data-act="freset" data-k="do">Show all</button>';
-    return h;
+    var n = flCount(st, sec);
+    return '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(st.sort) + '</button>'
+      + '<button type="button" class="fchip btn glass' + (n ? " on" : "") + '" data-act="fls" data-k="do" aria-label="Filters' + (n ? ", " + n + " on" : "") + '">Filters' + (n ? '<span class="n">' + n + '</span>' : IC.down) + '</button>';
   }
-  function brChips(){
-    var h = '<button type="button" class="fchip btn glass" data-act="fl" data-f="sort" data-k="do">' + sortChip(BR.sort) + '</button>';
-    ["dom", "type", "energy", "set"].forEach(function(k){
-      if(k === "type" && (BR.sec === "legend" || BR.sec === "bf")) return;
-      if(k === "energy" && (BR.sec === "legend" || BR.sec === "bf")) return;
-      var n = BR.f[k].length;
-      h += '<button type="button" class="fchip btn glass' + (n ? " on" : "") + '" data-act="fl" data-f="' + k + '" data-k="do">' + FILTERS[k].title + (n ? '<span class="n">' + n + '</span>' : IC.down) + '</button>';
-    });
-    if(BR.f.dom.length || BR.f.type.length || BR.f.energy.length || BR.f.set.length) h += '<button type="button" class="fchip btn glass" data-act="freset" data-k="do">Show all</button>';
-    el("bchips").innerHTML = h;
+  function brChips(){ el("bchips").innerHTML = chipsHTML(BR, BR.sec); }
+  // a filter's value in words: Any, or its picks
+  function flValue(st, k){
+    if(!st.f[k].length) return "Any";
+    return FILTERS[k].opts().filter(function(o){ return st.f[k].indexOf(o[0]) > -1; }).map(function(o){ return k === "energy" ? (o[0] === "9" ? "9+" : o[0]) : o[1]; }).join(", ");
+  }
+  function fillFls(){
+    var st = FO(), sec = FLS === "e" ? "main" : BR.sec, h = "";
+    flKeys(sec).forEach(function(k){ h += '<button type="button" class="door" data-act="fl" data-f="' + k + '"><span class="t">' + FILTERS[k].title + '</span><span class="sp"></span><small>' + esc(flValue(st, k)) + '</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>'; });
+    el("flsrows").innerHTML = h;
+    el("pfls").querySelector('[data-act="flsall"]').disabled = !flCount(st, sec);
   }
   function brNote(count){
     var d = deck(), L = C(d.legend), on = [], s = BR.sec;
@@ -2474,15 +2486,16 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "badd"){ brOpen(t.getAttribute("data-sec")); return; }
     if(a === "bclose"){ brClose(); return; }
     if(a === "bpick"){ brPick(t.getAttribute("data-code")); return; }
-    if(a === "freset"){ var fo = t.closest("#echips") ? EF : BR; fo.f = { dom: [], type: [], energy: [], set: [] }; if(fo === EF) eRender(); else brRender(); return; }
-    if(a === "fl"){ FL = t.getAttribute("data-f"); FLS = t.closest("#echips") ? "e" : "br"; fillFl(); openPanel(el("pfl")); return; }
+    if(a === "fls"){ FLS = t.closest("#echips") ? "e" : "br"; fillFls(); openPanel(el("pfls")); return; }
+    if(a === "flsall"){ FO().f = { dom: [], type: [], energy: [], set: [] }; fillFls(); if(FLS === "e") eRender(); else brRender(); return; }
+    if(a === "fl"){ FL = t.getAttribute("data-f"); if(t.closest("#pfls")){ fillFl(); deeper(el("pfl")); return; } FLS = t.closest("#echips") ? "e" : "br"; fillFl(); openPanel(el("pfl")); return; }
     if(a === "flpick"){
       var fv = t.getAttribute("data-v"), st = FO(), redo = FLS === "e" ? eRender : function(){ brRender(); };
       if(FL === "sort"){ st.sort = window.RAVI_SORT.next(st.sort, fv); openPanel(null); redo(); return; }
       var arr = st.f[FL], at = arr.indexOf(fv); if(at > -1) arr.splice(at, 1); else arr.push(fv);
-      fillFl(); redo(); return;
+      fillFl(); fillFls(); redo(); return;
     }
-    if(a === "flclear"){ FO().f[FL] = []; fillFl(); if(FLS === "e") eRender(); else brRender(); return; }
+    if(a === "flclear"){ FO().f[FL] = []; fillFl(); fillFls(); if(FLS === "e") eRender(); else brRender(); return; }
     if(a === "card"){
       if(t.closest("#vhand")) return;
       CARD = { code: t.getAttribute("data-code"), sec: t.getAttribute("data-sec") };
