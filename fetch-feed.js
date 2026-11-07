@@ -35,9 +35,11 @@
 //   description, picture and words, cleaned the way the rules watcher cleans
 //   Riot's markup (fetch-rules.js). A page that will not read is skipped with
 //   a WARN and tried again next run.
-// - Every item gets a short summary in plain words: written by Claude (Haiku)
-//   when ANTHROPIC_API_KEY is set, else Riot's first sentence without links,
-//   hashtags or emoji. A summary is written once per wording (sumKey) and
+// - Every item gets a headline (title), a short summary in plain words (sum)
+//   and the dates a player can act on (dates: entries close, a drawing, an
+//   event; Mako 2026-11-07, for pinning later): written by Claude (Haiku)
+//   when ANTHROPIC_API_KEY is set, else no headline and Riot's first sentence
+//   without links, hashtags or emoji. A summary is written once per wording (sumKey) and
 //   kept; a first-sentence one is replaced by Claude's once the key is there.
 //   A failed or refused call falls back to the first sentence; it never fails
 //   the run. At most SUMS_PER_RUN calls and ARTS_PER_RUN pages per run.
@@ -352,14 +354,14 @@ async function fetchArticle(url) {
 
 // The words a summary is written from: Riot's post, then its article.
 function sumInput(it) {
-  const parts = [];
+  const parts = ["Published: " + (it.posted || "unknown")];
   if (it.text) { parts.push(it.text); }
   if (it.art) { parts.push(it.art.title, it.art.desc || "", RULES.text(it.art.html).slice(0, 6000)); }
-  return parts.filter(Boolean).join("\n\n").trim();
+  return parts.length > 1 ? parts.filter(Boolean).join("\n\n").trim() : "";
 }
 
 function sumKey(input) {
-  return crypto.createHash("sha256").update(input).digest("hex").slice(0, 16);
+  return crypto.createHash("sha256").update("v2\n" + input).digest("hex").slice(0, 16);   // v2: headline, summary and dates
 }
 
 // Riot's first sentence, without links, hashtags or emoji: the summary when
@@ -373,10 +375,31 @@ function firstSentence(t) {
   return f;
 }
 
-const ASK = "You write the summary line for a post in RAVI, a free community app for the Riftbound trading card game. " +
-  "Summarise the official Riot Games post below for players in one or two short, plain sentences, under 40 words. " +
-  "Say what is happening and when, if the post says. Use only facts in the post. No hashtags, emoji, quotes or hype. " +
-  "Reply with the summary only.";
+const ASK = "You write for RAVI, a free community app for the Riftbound trading card game. Read the official Riot Games post below. " +
+  "Reply with one JSON object and nothing else: " +
+  "{\"title\": a plain headline of at most 8 words; " +
+  "\"summary\": one or two short, plain sentences, under 40 words, saying what is happening and when, if the post says; " +
+  "\"dates\": the dates in the post a player could act on, each {\"what\": one of \"entries open\", \"entries close\", \"drawing\", \"event\", \"release\", \"deadline\", \"other\", " +
+  "\"label\": at most 6 words, \"from\": \"YYYY-MM-DD\", \"to\": \"YYYY-MM-DD\" or null}, or [] when there are none}. " +
+  "Use only facts in the post; work out relative dates (tomorrow, next week) from its published day. No hashtags, emoji, quotes or hype.";
+const WHAT = ["entries open", "entries close", "drawing", "event", "release", "deadline", "other"];
+
+// Claude's reply -> { title, sum, dates } or a thrown error
+function readReply(t) {
+  const a = t.indexOf("{"), b = t.lastIndexOf("}");
+  if (a === -1 || b < a) { throw new Error("no JSON"); }
+  const d = JSON.parse(t.slice(a, b + 1));
+  const clean = function (x, n) { return typeof x === "string" ? x.replace(/\s+/g, " ").trim().replace(/^["']|["']$/g, "").slice(0, n) : ""; };
+  const title = clean(d.title, 100), sum = clean(d.summary, 400);
+  if (!title || !sum) { throw new Error("no title or summary"); }
+  const ok = function (x) { return typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x) && !isNaN(Date.parse(x + "T12:00:00Z")); };
+  const dates = (Array.isArray(d.dates) ? d.dates : []).filter(function (x) { return x && WHAT.indexOf(x.what) !== -1 && ok(x.from); }).slice(0, 6).map(function (x) {
+    const o = { what: x.what, label: clean(x.label, 60) || x.what, from: x.from };
+    if (ok(x.to) && x.to >= x.from) { o.to = x.to; }
+    return o;
+  });
+  return { title: title, sum: sum, dates: dates };
+}
 
 async function claudeSum(input, key) {
   const res = await fetch(CLAUDE + "/v1/messages", {
@@ -388,9 +411,7 @@ async function claudeSum(input, key) {
   if (res.status !== 200) { throw new Error("HTTP " + res.status); }
   const d = await res.json();
   if (d.stop_reason && d.stop_reason !== "end_turn") { throw new Error("stopped: " + d.stop_reason); }
-  const t = (d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" ").replace(/\s+/g, " ").trim().replace(/^["']|["']$/g, "");
-  if (!t || t.length > 400) { throw new Error("empty or too long"); }
-  return t;
+  return readReply((d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" "));
 }
 
 // Articles and summaries for every item, keeping what an earlier run wrote.
@@ -413,18 +434,19 @@ async function enrich(items, prevItems, key) {
     if (!it.art) { delete it.art; }
     if (isVideo(it.url)) { it.video = true; } else { delete it.video; }
     const input = sumInput(it);
-    if (!input) { delete it.sum; delete it.sumBy; delete it.sumKey; continue; }
+    const keep = function (from) { ["title", "sum", "sumBy", "dates"].forEach(function (f) { if (from[f] !== undefined) { it[f] = from[f]; } else { delete it[f]; } }); };
+    if (!input) { keep({}); delete it.sumKey; continue; }
     const k = sumKey(input);
-    if (was.sumKey === k && was.sum && (was.sumBy === "claude" || !key)) { it.sum = was.sum; it.sumBy = was.sumBy; it.sumKey = k; continue; }
-    let sum = null;
+    if (was.sumKey === k && was.sum && (was.sumBy === "claude" || !key)) { keep(was); it.sumKey = k; continue; }
+    let got = null;
     if (key && sumBudget > 0) {
       sumBudget--;
-      try { sum = await claudeSum(input, key); wrote++; }
+      try { got = await claudeSum(input, key); wrote++; }
       catch (e) { console.log("WARN summary for " + it.id + " fell back to the first sentence: " + e.message); fell++; }
     }
-    if (sum) { it.sum = sum; it.sumBy = "claude"; }
-    else if (was.sumKey === k && was.sum) { it.sum = was.sum; it.sumBy = was.sumBy; }
-    else { it.sum = firstSentence(it.text || (it.art && (it.art.desc || it.art.title)) || ""); it.sumBy = "first"; }
+    if (got) { keep({ title: got.title, sum: got.sum, sumBy: "claude", dates: got.dates.length ? got.dates : undefined }); }
+    else if (was.sumKey === k && was.sum) { keep(was); }
+    else { keep({ title: it.art ? it.art.title : undefined, sum: firstSentence(it.text || (it.art && (it.art.desc || it.art.title)) || ""), sumBy: "first" }); }
     it.sumKey = k;
   }
   console.log("articles: " + read + " read; summaries: " + wrote + " by Claude" + (fell ? ", " + fell + " fell back" : "") + (key ? "" : " (no ANTHROPIC_API_KEY: first sentences)"));
@@ -505,4 +527,4 @@ if (require.main === module) {
 }
 
 module.exports = { linksOf, norm, isRiot, kindOf, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL,
-  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, MODEL };
+  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, readReply, MODEL };

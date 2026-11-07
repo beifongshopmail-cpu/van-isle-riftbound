@@ -164,7 +164,7 @@ window.RAVI_PAGES = [
   {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, rgb:"30,205,230", glass:true}, // Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)
   {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, rgb:"170,210,60"},
   {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, rgb:"215,90,230"},
-  {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, rgb:"170,140,255", glass:true}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); the megaphone Rules' Latest wore
+  {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, rgb:"170,140,255"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
 ];
 

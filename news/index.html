@@ -20,10 +20,10 @@
 <style>
 /* The News page (plan 2 M8.7 block 1, Mako 2026-11-07). Riot's posts from data/feed.json
    (fetch-feed.js: Riot's Facebook posts through Muse, Riot's own articles read from
-   playriftbound.com), each with RAVI's short summary, read without leaving the app; and This
-   week: the biggest price moves (data/prices.json) and the top legends (data/tier.json through
-   tier/tier.js). Nothing here rewrites Riot's words; only the summary is RAVI's. The shared layer
-   is app.css; this block holds only the page's own rules. */
+   playriftbound.com), each with RAVI's headline and summary (Claude), read without leaving the
+   app; and This week: the biggest price moves (data/prices.json) and the top legends
+   (data/tier.json through tier/tier.js). Nothing here rewrites Riot's words; only the headline and
+   summary are RAVI's. The shared layer is app.css; this block holds only the page's own rules. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
 body{-webkit-font-smoothing:antialiased;
@@ -32,31 +32,53 @@ body{-webkit-font-smoothing:antialiased;
   touch-action:manipulation}
 #nw{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
-#week,#posts{margin-top:22px}
-/* THIS WEEK: one glass card, two lists you read (no taps), a line between them (STYLE 3) */
-.wk{border-radius:22px;padding:12px 16px}
-.wk .lb{margin:2px 0 6px;color:var(--muted);font-size:12px}
+#home > section,#res{margin-top:22px}
+/* THE SEARCH STAYS AT THE TOP (Mako 2026-11-07, as Rules'): a sticky plate parked 10 above
+   --top-clear, plate frost, clear; the Kinds chip under the search (STYLE 7: three kinds or more
+   fold into one chip that opens a menu of rows). */
+.srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
+.plate{border-radius:24px;padding:10px;
+  background:var(--plate-solid);
+  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.bchips{display:flex;gap:6px;margin:10px 0 0}
+.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;color:var(--bone)}
+.fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
+.fchip svg{width:14px;height:14px}   /* the down chevron, as Decks' Filters chip */
+mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
+/* THIS WEEK: two glass cards; you read their lists (no taps). The legends card ends with the Tier
+   list under the in-card line, as an event card's open row sits under its line (STYLE 3, .evact). */
+.wk{border-radius:22px;padding:12px 14px;margin:0 0 8px}
+.wk .lb{margin:0 0 4px;color:var(--muted);font-size:12px}
 .wkl{list-style:none;margin:0;padding:0}
 .wkl li{display:flex;align-items:center;gap:8px;min-height:32px;font-size:15px}
 .wkl .t{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wkl small{flex:0 0 auto;font-weight:600;font-size:12px;color:var(--muted)}
 .wkl .mv{flex:0 0 auto;display:inline-flex;align-items:center;gap:2px;font-weight:600;font-size:13px}
 .mv svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.wkd{height:1px;background:rgba(255,255,255,.07);margin:10px 0}
-.wkgo{margin-top:10px}
-/* A POST: a record row (.door.rec) that opens its menu; the day and kind over RAVI's summary,
-   Riot's picture on the right when its article has one */
-.door.rec.nrow{flex-direction:row;align-items:center;gap:12px}   /* the chevron sits on the right as every record's (app.css .door.rec .cvr) */
-.nrow .nt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
-.nrow .nm{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nrow .ns{font-family:var(--text);font-size:15px;font-weight:400;line-height:1.35;color:var(--bone);
+.wkact{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+/* A POST: its own card in its kind's colour (Mako 2026-11-07: colour like Rules): a one-row press
+   group (.doors, a glass card: the page sets only its margin) tinted as Rules tints its sections,
+   its row a record (.door.rec) that opens the post's menu. Riot's picture on the left; the kind
+   (bold, lit in its colour, always the word beside the colour) and the day; the headline bold; the
+   summary. */
+.nc{margin:0 0 8px}
+.door.rec.ncb{flex-direction:row;align-items:center;gap:12px}   /* the chevron sits on the right as every record's (app.css .door.rec .cvr) */
+.nt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
+.nl1{display:flex;align-items:center;gap:8px;font-size:12px;max-width:100%}
+.nl1 .ty{font-family:var(--disp);font-weight:700;color:rgb(var(--cl))}
+.nl1 .when{font-family:var(--text);font-weight:400;color:var(--muted);white-space:nowrap}
+.nh{font-family:var(--disp);font-size:15px;font-weight:700;line-height:1.3;white-space:normal}
+.ns{font-family:var(--text);font-size:13px;font-weight:400;line-height:1.4;color:var(--muted);white-space:normal;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .nthumb{flex:0 0 auto;width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--recess)} /* size-exempt: Riot's article picture */
-.new{display:inline-block;vertical-align:1px;margin-left:8px;font-size:12px;font-weight:700;letter-spacing:.06em;
+.new{display:inline-block;vertical-align:1px;font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
-/* A POST'S MENU: RAVI's summary, Riot's picture, Riot's words */
-.rlab{margin:12px 0 4px;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+/* A POST'S MENU: RAVI's summary, Riot's picture, Riot's words; the head in the kind's colour as a
+   Rules article's is (a menu that shows the page's content is coloured as the page codes it) */
+.rlab{margin:14px 0 4px;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 .rlab:first-child{margin-top:0}
+.mty{font-family:var(--disp);font-weight:700;font-size:12px;color:rgb(var(--cl))}
 .nsum{margin:0;font-size:15px;line-height:1.4;color:var(--bone)}
 .npic{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin:12px 0 0;background:var(--recess)} /* size-exempt: Riot's article picture */
 .rtx{font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
@@ -72,7 +94,6 @@ body{-webkit-font-smoothing:antialiased;
 .rtx a{color:var(--bone);text-decoration:underline;text-underline-offset:2px}
 .rtx img{display:block;max-width:100%;height:auto;border-radius:14px;margin:0 0 8px} /* size-exempt: Riot's pictures in its article */
 .rsrc{margin:14px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)} /* menu small print, as app.css .pnote */
-.rsrc a{color:var(--bone)}
 .nwatch{margin-top:12px}
 .extl{width:16px;height:16px;flex:0 0 auto;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .empty{margin:6px 4px 0;font-size:13px;color:var(--muted)}
@@ -85,34 +106,48 @@ body{-webkit-font-smoothing:antialiased;
 
 <main id="nw">
   <h2 class="sr">News</h2>
-  <p class="lede">Riftbound news from Riot, newest first.</p>
 
-  <section id="week" hidden>
-    <div class="shead"><h2>This week</h2></div>
-    <div class="wk glass">
-      <div id="wkprices" hidden>
+  <div class="srow plate glass">
+    <div class="sf">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+      <input id="q" type="search" placeholder="Search the news" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+      <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="bchips"><button type="button" class="fchip btn glass" id="kchip" data-k="do" aria-pressed="false">Kinds</button></div>
+  </div>
+
+  <div id="home">
+    <section id="week" hidden>
+      <div class="shead"><h2>This week</h2></div>
+      <div class="wk glass" id="wkprices" hidden>
         <p class="lb">Biggest price moves, last 7 days</p>
         <ul class="wkl" id="wkp"></ul>
       </div>
-      <div class="wkd" id="wkdiv" hidden></div>
-      <div id="wklegends" hidden>
+      <div class="wk glass" id="wklegends" hidden>
         <p class="lb">Top legends, last <span id="wkdays">30</span> days</p>
         <ul class="wkl" id="wkt"></ul>
+        <div class="wkact"><a class="pact btn glass" href="../tier/" data-k="do"><span class="ico17" id="wkico"></span>Tier list</a></div>
       </div>
-    </div>
-    <a class="pact btn glass wkgo" id="wktier" href="../tier/" data-k="do" hidden>Tier list</a>
-  </section>
-
-  <section id="posts" hidden>
-    <div class="shead"><h2>From Riot</h2><span class="sp"></span><span class="cnt" id="pcnt"></span></div>
-    <div class="doors" id="plist" data-k="deeper"></div>
+    </section>
+    <section id="snew" hidden>
+      <div class="shead"><h2>New</h2><span class="sp"></span><span class="cnt" id="ncnt"></span></div>
+      <div id="nlist"></div>
+    </section>
+    <section id="sold" hidden>
+      <div class="shead"><h2 id="oh">From Riot</h2><span class="sp"></span><span class="cnt" id="ocnt"></span></div>
+      <div id="olist"></div>
+    </section>
+  </div>
+  <section id="res" hidden>
+    <div class="shead"><h2 id="rh">Results</h2><span class="sp"></span><span class="cnt" id="rcnt"></span></div>
+    <div id="rlist"></div>
   </section>
   <p class="empty" id="loadfail" hidden>The news could not be loaded. Check your connection and open the page again.</p>
 
   <footer class="foot">
     <p id="stamp"></p>
     <p>Market price is a public benchmark, not an offer from any store.</p>
-    <p>News by Riot Games, word for word from Riot's Facebook page and playriftbound.com. Each summary is RAVI's, written by Claude.</p>
+    <p>News by Riot Games, word for word from Riot's Facebook page and playriftbound.com. Each headline and summary is RAVI's, written by Claude.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -120,7 +155,7 @@ body{-webkit-font-smoothing:antialiased;
   </footer>
 </main>
 
-<!-- THE STANDARD BAR: Hub, Go to, the third slot unused for now (dimmed), Settings (dimmed). -->
+<!-- THE STANDARD BAR: Hub, Go to, the third slot unused for now (dimmed; the M8.7 sweep judges every Soon slot), Settings (dimmed). -->
 <nav class="bar frost" id="tabs"></nav>
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
@@ -137,13 +172,31 @@ body{-webkit-font-smoothing:antialiased;
   <div class="phead"><div class="ht"><h4 class="ttl" id="pttl">Post</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
   <div class="pbody" id="pbody"></div>
 </section>
+<section class="panel frost" id="pkind" aria-hidden="true" aria-label="Kinds">
+  <div class="phead"><div class="ht"><h4 class="ttl">Kinds</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="klist" data-k="pick"></div></div>
+</section>
 
 <script>
 (function(){
-  var D = null, ITEM = {};
+  var D = null, ITEM = {}, LIST = [];
   function el(id){ return document.getElementById(id); }
   function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
-  var KIND = { rules: "Rules", product: "Product", event: "Event", announcement: "Announcement", market: "Market" };
+  // KINDS BY COLOUR, as Rules colours by section (Mako 2026-11-07): each kind borrows the colour of
+  // the page it belongs with, and its name always sits beside the colour. A new kind (local stores,
+  // later) takes its own palette colour.
+  var KIND = {
+    rules:        { label: "Rules",        rgb: "0,190,140" },     // the Rules page's jade
+    event:        { label: "Event",        rgb: "255,200,40" },    // the Events page's gold
+    product:      { label: "Product",      rgb: "220,90,30" },     // Collection's rust
+    announcement: { label: "Announcement", rgb: "30,205,230" },    // New here's sky
+    market:       { label: "Market",       rgb: "134,143,162" }    // Slate
+  };
+  var ORDER = ["rules", "event", "product", "announcement", "market"];
+  var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+  function kindOf(it){ return KIND[it.kind] ? it.kind : "market"; }
+  // the word's colour: the kind's colour lifted .40 toward white (the calendar's lit)
+  function lit(rgb){ return rgb.split(",").map(function(c){ return Math.round(+c + (255 - +c) * .40); }).join(","); }
   var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
   var OUT = '<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 6.5H5a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h10.5a2 2 0 0 0 2-2v-6M15 3h6v6M21 3l-9 9"/></svg>';
   function arrow(d){ return '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW(d) + '"/></svg>'; }
@@ -194,11 +247,13 @@ body{-webkit-font-smoothing:antialiased;
   function plain(t){
     return String(t || "").trim().split(/\n\s*\n/).map(function(p){ return "<p>" + esc(p).replace(/\n/g, "<br>") + "</p>"; }).join("");
   }
+  function textOf(html){ return PARSE.parseFromString("<!doctype html><body>" + (html || "") + "</body>", "text/html").body.textContent || ""; }
 
-  // ---- NEW SINCE THE LAST VISIT (as Rules and Events): a post posted after the newest day this
-  // phone has seen (vir.news.seen.v1). A first visit is the baseline: nothing is NEW. Badges stay
-  // while the page is open; leaving it records the newest day. ----
-  var SEENK = "vir.news.seen.v1", SEEN = null, NEWB = '<span class="new">NEW</span>';
+  // ---- NEW SINCE THE LAST VISIT (Mako 2026-11-07: no button; they gather at the top under New):
+  // posts posted after the newest day this phone had seen (vir.news.seen.v1). A first visit is the
+  // baseline: nothing is new. The sections stay while the page is open; leaving it records the
+  // newest day. ----
+  var SEENK = "vir.news.seen.v1", SEEN = null;
   function newest(){ var m = ""; D.items.forEach(function(it){ if(it.posted && it.posted > m) m = it.posted; }); return m; }
   function isNew(it){ return !!(SEEN && it.posted && it.posted > SEEN); }
   function seenStart(){
@@ -211,41 +266,181 @@ body{-webkit-font-smoothing:antialiased;
 
   // a post is shown when it has words: its summary, Riot's text or its article
   function shown(it){ return !!(it && it.id && (it.sum || it.text || it.art)); }
-  function headline(it){ return it.sum || (it.art && it.art.title) || it.text || ""; }
+  function head(it){ return it.title || (it.art && it.art.title) || it.sum || it.text || ""; }
+  function sub(it){ var h = head(it); return it.sum && it.sum !== h ? it.sum : ""; }
   function pic(it){ return it.art && riotPic(it.art.pic) ? it.art.pic : ""; }
-  function row(it){
-    var p = pic(it);
-    return '<button type="button" class="door btn glass rec nrow" data-id="' + esc(it.id) + '" data-k="deeper"><span class="nt">'
-      + '<span class="nm">' + esc(day(it.posted)) + ', ' + esc(KIND[it.kind] || "News") + (isNew(it) ? NEWB : '') + '</span>'
-      + '<span class="ns">' + esc(headline(it)) + '</span></span>'
-      + (p ? '<img class="nthumb" src="' + esc(p) + '" alt="" loading="lazy">' : '') + CVR + '</button>';
+  function card(it, badge){
+    var k = KIND[kindOf(it)], p = pic(it), s = sub(it);
+    return '<div class="doors nc" style="--tint:rgba(' + k.rgb + ',var(--cg));--c:' + k.rgb + ';--cl:' + lit(k.rgb) + '">'
+      + '<button type="button" class="door btn glass rec ncb" data-id="' + esc(it.id) + '" data-k="deeper">'
+      + (p ? '<img class="nthumb" src="' + esc(p) + '" alt="" loading="lazy">' : '')
+      + '<span class="nt"><span class="nl1"><span class="ty">' + esc(k.label) + '</span><span class="when">' + esc(day(it.posted)) + '</span>'
+      + (badge ? '<span class="new">NEW</span>' : '') + '</span>'
+      + '<span class="nh">' + esc(head(it)) + '</span>'
+      + (s ? '<span class="ns">' + esc(s) + '</span>' : '') + '</span>' + CVR + '</button></div>';
   }
   function render(){
-    var list = D.items.filter(shown);
-    el("plist").innerHTML = list.map(row).join("");
-    el("pcnt").textContent = list.length;
-    el("posts").hidden = !list.length;
-    if(!list.length){ el("loadfail").textContent = "No news yet."; el("loadfail").hidden = false; }
+    var all = D.items.filter(shown), fresh = all.filter(isNew), rest = all.filter(function(it){ return !isNew(it); });
+    el("nlist").innerHTML = fresh.map(function(it){ return card(it); }).join("");
+    el("ncnt").textContent = fresh.length;
+    el("snew").hidden = !fresh.length;
+    el("olist").innerHTML = rest.map(function(it){ return card(it); }).join("");
+    el("ocnt").textContent = rest.length;
+    el("oh").textContent = fresh.length ? "Earlier" : "From Riot";
+    el("sold").hidden = !rest.length;
+    if(!all.length){ el("loadfail").textContent = "No news yet."; el("loadfail").hidden = false; }
   }
+
+  // ---- SEARCH (as Rules', Mako 2026-11-07): every word typed must match a word of the post: the
+  // word, one of its forms, a word it starts, or one a letter or two off. The headline ranks first,
+  // then the summary, then Riot's own words. Matched words are marked (bold and lit, never colour
+  // alone). The Kinds chip narrows to one kind. All in the page; nothing is sent anywhere. ----
+  var IDX = [], VOC = {}, VK = [], HITS = null, FK = "";
+  var STOP = { the:1, and:1, for:1, you:1, your:1, are:1, can:1, with:1, that:1, this:1, does:1, what:1, when:1, how:1, its:1, has:1, have:1, not:1, but:1, from:1, into:1 };
+  function norm(w){ return w.toLowerCase().replace(/[\u2019']/g, ""); }
+  function words(t){ return (String(t || "").toLowerCase().replace(/[\u2019']/g, "").match(/[a-z0-9]+/g)) || []; }
+  function stem(w){
+    if(w.length > 5 && /ing$/.test(w)) w = w.slice(0, -3);
+    else if(w.length > 4 && /(ied|ies)$/.test(w)) w = w.slice(0, -3) + "y";
+    else if(w.length > 4 && /ed$/.test(w)) w = w.slice(0, -2);
+    else if(w.length > 4 && /(s|x|z|ch|sh)es$/.test(w)) w = w.slice(0, -2);
+    else if(w.length > 3 && /s$/.test(w) && !/ss$/.test(w)) w = w.slice(0, -1);
+    if(w.length > 4 && /e$/.test(w)) w = w.slice(0, -1);
+    return w;
+  }
+  // at most k edits apart (a swap of two letters counts as one), with an early way out
+  function near(a, b, k){
+    if(Math.abs(a.length - b.length) > k) return false;
+    var m = a.length, n = b.length, p2 = null, p1 = [], cur, i, j, low, v;
+    for(j = 0; j <= n; j++) p1[j] = j;
+    for(i = 1; i <= m; i++){
+      cur = [i]; low = i;
+      for(j = 1; j <= n; j++){
+        v = Math.min(p1[j] + 1, cur[j - 1] + 1, p1[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+        if(p2 && j > 1 && a.charAt(i - 1) === b.charAt(j - 2) && a.charAt(i - 2) === b.charAt(j - 1)) v = Math.min(v, p2[j - 2] + 1);
+        cur[j] = v; if(v < low) low = v;
+      }
+      if(low > k) return false;
+      p2 = p1; p1 = cur;
+    }
+    return p1[n] <= k;
+  }
+  // how well a typed word matches a word of the text: 3 the word or its form, 2 the start of it, 1 a typo
+  function level(q, qs, w, ws){
+    if(w === q || ws === qs) return 3;
+    if(q.length >= 3 && w.indexOf(q) === 0) return 2;
+    var k = q.length >= 8 ? 2 : q.length >= 4 ? 1 : 0;
+    return k && near(qs, ws, k) ? 1 : 0;
+  }
+  function index(){
+    LIST = D.items.filter(shown);
+    LIST.forEach(function(it, i){
+      [[head(it), 2], [it.sum || "", 1], [(it.text || "") + " " + (it.art ? it.art.title + " " + textOf(it.art.html) : ""), 0]].forEach(function(f){
+        words(f[0]).forEach(function(w){
+          var v = VOC[w] || (VOC[w] = { w: w, s: stem(w), at: [] });
+          var last = v.at[v.at.length - 1];
+          if(last && last.i === i){ if(f[1] > last.where) last.where = f[1]; }
+          else v.at.push({ i: i, where: f[1] });
+        });
+      });
+    });
+    VK = Object.keys(VOC).map(function(w){ return VOC[w]; });
+  }
+  function find(q){
+    var qs = words(q), tot = null, hit = {}, i, j, x;
+    qs.forEach(function(qw){
+      var qst = stem(qw), best = {};
+      for(i = 0; i < VK.length; i++){
+        var w = VK[i], lv = level(qw, qst, w.w, w.s);
+        if(!lv) continue;
+        if(qw.length >= 3 && !STOP[qw]) hit[w.w] = 1;
+        for(j = 0; j < w.at.length; j++){
+          x = w.at[j];
+          var sc = lv * 2 + (x.where === 2 ? 6 : x.where === 1 ? 3 : 0);
+          if(!(best[x.i] >= sc)) best[x.i] = sc;
+        }
+      }
+      if(tot === null) tot = best;
+      else { var next = {}; for(var id in tot){ if(best[id] !== undefined) next[id] = tot[id] + best[id]; } tot = next; }
+    });
+    var ids = Object.keys(tot || {}).map(Number);
+    ids.sort(function(a, b){ return (tot[b] - tot[a]) || (a - b); });
+    return { ids: ids, hit: hit };
+  }
+  // the matched words, marked wherever they show in the results (headlines and the opened post)
+  function mark(root){
+    if(!HITS) return;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+    while((n = tw.nextNode())){ if(!(n.parentNode && n.parentNode.closest && n.parentNode.closest("mark,.ty,.when,.rlab"))) nodes.push(n); }
+    nodes.forEach(function(t){
+      var txt = t.nodeValue, re = /[A-Za-z0-9\u2019']+/g, m, last = 0, frag = null;
+      while((m = re.exec(txt))){
+        if(!HITS[norm(m[0])]) continue;
+        frag = frag || document.createDocumentFragment();
+        if(m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+        var k = document.createElement("mark"); k.className = "hit"; k.textContent = m[0]; frag.appendChild(k);
+        last = m.index + m[0].length;
+      }
+      if(!frag) return;
+      if(last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  function search(){
+    var q = el("q").value.trim(), on = !!(q || FK);
+    el("qx").disabled = !q;
+    el("home").hidden = on;
+    el("res").hidden = !on;
+    if(!on){ HITS = null; el("rlist").innerHTML = ""; return; }
+    var list;
+    if(q){ var f = find(q); list = f.ids.map(function(i){ return LIST[i]; }); HITS = Object.keys(f.hit).length ? f.hit : null; }
+    else { list = LIST.slice(); HITS = null; }
+    list = list.filter(function(it){ return !FK || kindOf(it) === FK; });
+    el("rh").textContent = q ? "Results" : KIND[FK].label;
+    el("rcnt").textContent = list.length;
+    chip();
+    el("rlist").innerHTML = list.length ? list.map(function(it){ return card(it, isNew(it)); }).join("") : '<p class="empty">Nothing matches.</p>';
+    mark(el("rlist"));
+  }
+  el("q").addEventListener("input", search);
+  el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
+  el("q").addEventListener("keydown", function(e){ if(e.key === "Enter") el("q").blur(); });
+  // the Kinds chip: the kinds there are, in a pick list; picking one narrows the list, All kinds clears
+  function kinds(){
+    var have = {}; LIST.forEach(function(it){ have[kindOf(it)] = 1; });
+    var h = '<button type="button" data-v=""' + (FK ? '' : ' class="on"') + '>All kinds</button>';
+    ORDER.forEach(function(k){ if(have[k]) h += '<button type="button" data-v="' + k + '"' + (FK === k ? ' class="on"' : '') + '>' + esc(KIND[k].label) + '</button>'; });
+    el("klist").innerHTML = h;
+  }
+  function chip(){
+    el("kchip").innerHTML = esc(FK ? KIND[FK].label : "Kinds") + DOWN;
+    el("kchip").classList.toggle("on", !!FK);
+    el("kchip").setAttribute("aria-pressed", FK ? "true" : "false");
+  }
+  el("kchip").addEventListener("click", function(){ kinds(); show(el("pkind")); });
+  el("klist").addEventListener("click", function(ev){
+    var b = ev.target.closest("button[data-v]"); if(!b) return;
+    FK = b.getAttribute("data-v"); chip(); show(null); search();
+  });
 
   // ---- A POST'S MENU: RAVI's summary, then Riot's own words (the Facebook post, then its
   // article), then where it came from. Only a video leaves the app, to be watched. ----
   function fill(it){
-    var a = it.art, h = "", fb = it.id.indexOf("fb:") === 0;
-    el("pttl").textContent = a ? a.title : (KIND[it.kind] || "News");
+    var a = it.art, k = KIND[kindOf(it)], h = "", fb = it.id.indexOf("fb:") === 0;
+    var m = el("ppost");
+    m.style.setProperty("--c", k.rgb); m.style.setProperty("--cl", lit(k.rgb)); m.style.setProperty("--tint", "rgba(" + k.rgb + ",var(--cg))");
+    el("pttl").textContent = head(it);
+    h += '<p class="rlab"><span class="mty">' + esc(k.label) + '</span>, ' + esc(dayLong(it.posted)) + '</p>';
     if(it.sum) h += '<p class="rlab">RAVI\'s summary</p><p class="nsum sel">' + esc(it.sum) + '</p>';
     if(pic(it)) h += '<img class="npic" src="' + esc(pic(it)) + '" alt="">';
     if(it.text) h += '<p class="rlab">Riot\'s post</p><div class="rtx sel">' + plain(it.text) + '</div>';
-    if(a){
-      h += '<p class="rlab">' + (it.text ? "Riot's article: " + esc(a.title) : "Riot's article") + '</p><div class="rtx sel">' + clean(a.html) + '</div>';
-    }
-    var where = fb ? "Riot, on Facebook" : "Riot, on playriftbound.com";
-    var src = web(it.url) ? it.url : "";
-    h += '<p class="rsrc">' + esc(where) + ', ' + esc(dayLong(it.posted)) + '.' + (a && fb && web(a.url) ? ' The article is from playriftbound.com.' : '') + '</p>';
-    if(it.video && src){
-      h += '<a class="pact btn glass nwatch" href="' + esc(src) + '" target="_blank" rel="noopener" data-k="do">Watch on ' + (/youtu/.test(src) ? "YouTube" : "Facebook") + ' ' + OUT + '</a>';
+    if(a) h += '<p class="rlab">' + (it.text ? "Riot's article: " + esc(a.title) : "Riot's article") + '</p><div class="rtx sel">' + clean(a.html) + '</div>';
+    h += '<p class="rsrc">' + (fb ? "Riot, on Facebook" : "Riot, on playriftbound.com") + '.' + (a && fb ? ' The article is from playriftbound.com.' : '') + '</p>';
+    if(it.video && web(it.url)){
+      h += '<a class="pact btn glass nwatch" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do">Watch on ' + (/youtu/.test(it.url) ? "YouTube" : "Facebook") + ' ' + OUT + '</a>';
     }
     el("pbody").innerHTML = h;
+    mark(el("pbody"));
   }
 
   // ---- THIS WEEK ----
@@ -259,7 +454,7 @@ body{-webkit-font-smoothing:antialiased;
       Object.keys(c.p).forEach(function(f){
         var now = c.p[f], was = c.a["7"][f];
         if(typeof now !== "number" || typeof was !== "number" || now < 5 || was <= 0) return;
-        out.push({ n: c.n, f: f, now: now, pct: (now - was) / was });
+        out.push({ n: c.n, now: now, pct: (now - was) / was });
       });
     });
     out.sort(function(a, b){ return Math.abs(b.pct) - Math.abs(a.pct) || a.n.localeCompare(b.n); });
@@ -271,8 +466,8 @@ body{-webkit-font-smoothing:antialiased;
         + arrow(m.pct >= 0 ? "up" : "dn") + Math.round(Math.abs(m.pct) * 100) + '%</span></li>';
     }).join("");
     el("wkprices").hidden = false;
+    el("week").hidden = false;
     el("stamp").innerHTML = window.RAVI_STAMP(P) || "";
-    week();
   }
   // The top legends: the Tier list's own maths (tier/tier.js) on TopDeck.gg's results.
   function legends(T){
@@ -286,13 +481,9 @@ body{-webkit-font-smoothing:antialiased;
       return '<li><span class="t">' + esc(x.l) + '</span><small>Tier ' + esc(x.tier === "R" ? "Rogue" : x.tier) + ', ' + x.t + (x.t === 1 ? " top cut" : " top cuts") + '</small></li>';
     }).join("");
     if(T.days) el("wkdays").textContent = T.days;
+    el("wkico").innerHTML = window.RAVI_ICON("tier");
     el("wklegends").hidden = false;
-    el("wktier").hidden = false;
-    week();
-  }
-  function week(){
     el("week").hidden = false;
-    el("wkdiv").hidden = el("wkprices").hidden || el("wklegends").hidden;
   }
 
   // ---- menus: one at a time ----
@@ -311,8 +502,8 @@ body{-webkit-font-smoothing:antialiased;
     }
     window.RAVI_EDGES && window.RAVI_EDGES();
   }
-  el("plist").addEventListener("click", function(ev){
-    var b = ev.target.closest(".nrow");
+  el("nw").addEventListener("click", function(ev){
+    var b = ev.target.closest(".ncb");
     if(!b || !ITEM[b.getAttribute("data-id")]) return;
     fill(ITEM[b.getAttribute("data-id")]);
     show(el("ppost"));
@@ -323,12 +514,15 @@ body{-webkit-font-smoothing:antialiased;
   window.RAVI_GOTO(el("pnavgoto"), "news", "../");
   el("pnhere").addEventListener("click", function(){ show(null); });
 
+  chip();
   fetch("../data/feed.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
     if(!d || !Array.isArray(d.items)) throw new Error("shape");
     D = d;
     D.items.forEach(function(it){ if(it && it.id) ITEM[it.id] = it; });
     seenStart();
     render();
+    index();
+    if(el("q").value.trim()) search();
   }).catch(function(){ el("loadfail").hidden = false; });
   fetch("../data/prices.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(prices).catch(function(){});
   fetch("../data/tier.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(legends).catch(function(){});
