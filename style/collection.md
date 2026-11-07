@@ -11,5 +11,5 @@ Collection (collection/index.html)
 - Collection: a tile and a List row word a total the same way, "$x for 3"; Edit binders is reached only from the binder pill's menu. (Mako's yes 2026-10-25)
 
 Page-local classes (not in app.css; not Kit parts):
-- collection/index.html: .armed .art .bhead .bin1 .bopts .boot .bsr .brw .camt .cards .cchg .cempty .cend .cgrid .chip .chw .ck .cmid .cmv .cnm .cnote .cpic .crow .cseg .csub .ctile .cval .dvrow .dvseg .dvsort .fchip .first .hchg .hfacts .hgain .hnow .hpic .hrow .isum .lpm .lq .lsteps .more .mvbox .mvgrid .mvh .mvrow .mvsep .owd .plate .psf .rot .sel .selp .stk .stp .tcap .tnm .toast .tpr .ttot
+- collection/index.html: .armed .art .bhead .bin1 .bopts .boot .bsr .brw .camt .cards .cchg .cempty .cend .cgrid .chip .chw .ck .cmid .cmv .cnm .cnote .cpic .crow .cseg .csub .ctile .cval .dvrow .dvseg .dvsort .fchip .first .hchg .hfacts .hgain .hnow .hpic .hrow .isum .lpm .lq .lsteps .more .mvbox .mvh .mvrow .mvsep .owd .plate .psf .rot .sel .selp .stk .stp .tcap .tnm .toast .tpr .ttot
 - collection/index.html, listed in M7 from the style-lint baseline (2026-11-04): .bbody .bin .bnone .bnote .brwon .cbox .dot .land .lbl .mk .n .none .plain .selon .sq .u .unit .v .w

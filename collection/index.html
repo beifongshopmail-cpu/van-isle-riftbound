@@ -67,19 +67,15 @@ body{-webkit-font-smoothing:antialiased;
 .mvsep{height:1px;background:rgba(255,255,255,.07);margin-top:6px}
 .mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
 .mvh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-/* in Grid, Gains and Losses are each a row of cards at the grid's own size, sliding sideways (plan 2 M8.5,
-   Mako's notes of 2026-11-05): Movers is as wide as the grid below, so a tile is a third of it less the
-   grid's two 8 gaps; the row runs to the block's edges and its cards slide under them */
+/* in Grid, Gains and Losses are each a row of cards sliding sideways (plan 2 M8.5, Mako's notes of 2026-11-05);
+   round 4 (Mako 2026-11-07): three fit inside the glass, a touch smaller than the grid's: a tile is a third of
+   Movers' width less its 14 sides and the grid's two 8 gaps; the row runs to the block's edges and its cards
+   slide under them */
 #movers{container-type:inline-size}
 .mvrow{display:flex;gap:8px;margin:0 -14px;padding:0 14px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
   scroll-snap-type:x mandatory;scroll-padding:0 14px;scrollbar-width:none}
 .mvrow::-webkit-scrollbar{display:none}
-.mvrow .ctile{flex:0 0 calc((100cqw - 16px) / 3);scroll-snap-align:start}
-/* round 2 (Mako 2026-11-07): in Grid no glass block; the head is a lone glass row, Gains and Losses sit on the
-   page with the grid's left edge, their rows run to the screen's edges, and a line closes Movers above your cards */
-#movers.mvgrid #mvbody{padding:0 0 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-#movers.mvgrid #mvbody::before{content:none}
-#movers.mvgrid .mvrow{margin:0 -12px;padding:0 12px 4px;scroll-padding:0 12px}
+.mvrow .ctile{flex:0 0 calc((100cqw - 44px) / 3);scroll-snap-align:start}
 /* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
 .cards{border-radius:22px;padding:0 14px}
 /* List sits on the page as Grid does, no glass behind it (Mako 2026-10-25, round 2) */
@@ -822,7 +818,6 @@ input[type="file"]{display:none}
     el("movers").hidden = !SET.movers || !!q;
     el("mvtog").setAttribute("aria-expanded", MVOPEN ? "true" : "false");
     el("mvbody").hidden = !MVOPEN;
-    var mvg = SET.hview === "grid"; el("movers").classList.toggle("mvgrid", mvg); el("movers").querySelector(".mvbox").classList.toggle("doors", !mvg);
     el("mvcnt").textContent = rangeWords().replace(/^in /, "");
     if(SET.movers && MVOPEN){ var mv = movers(items); el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn; }
     el("hview").innerHTML = viewRow();
