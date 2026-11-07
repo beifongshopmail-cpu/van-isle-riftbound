@@ -26,13 +26,31 @@
 // RAVI names itself honestly: Discord gets the user agent form Discord asks
 // bots for, naming RAVI; GitHub gets RAVI's own user agent.
 //
+// FOR THE NEWS PAGE (plan 2 M8.7 block 1, Mako 2026-11-07: read it all
+// without leaving the app):
+// - A post Muse read twice (Facebook gives the same post a new address on a
+//   later day) is one item: the same words within a week fold into the first.
+// - Riot's own article (a playriftbound.com news page, the post itself or one
+//   a post links to) is read once, as RAVI, and kept with the post: its title,
+//   description, picture and words, cleaned the way the rules watcher cleans
+//   Riot's markup (fetch-rules.js). A page that will not read is skipped with
+//   a WARN and tried again next run.
+// - Every item gets a short summary in plain words: written by Claude (Haiku)
+//   when ANTHROPIC_API_KEY is set, else Riot's first sentence without links,
+//   hashtags or emoji. A summary is written once per wording (sumKey) and
+//   kept; a first-sentence one is replaced by Claude's once the key is there.
+//   A failed or refused call falls back to the first sentence; it never fails
+//   the run. At most SUMS_PER_RUN calls and ARTS_PER_RUN pages per run.
+//
 // FAILURE: a missing key, or Discord or GitHub refusing a read, fails the
 // run and the last file stays. A Muse file that is not valid JSON in the
 // agreed shape is skipped with a WARN line; the rest of the run goes on.
 
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 const { RB } = require("./config");
+const RULES = require("./fetch-rules");
 
 const CHANNEL = "1558738517679415407"; // #riot-feed in Mako's RAVI feed server
 const RECORDS = "beifongshopmail-cpu/mako-records";
@@ -46,6 +64,12 @@ const GITHUB = process.env.FEED_GITHUB_BASE || "https://api.github.com";
 const OUT_FILE = process.env.FEED_OUT || path.join(__dirname, "data", "feed.json");
 const SHORT = process.env.FEED_SHORT_BASE || ""; // stands in for https://riot.com in tests
 const TODAY = process.env.FEED_TODAY || "";
+const PR_BASE = process.env.FEED_PR_BASE || "";        // stands in for https://playriftbound.com in tests
+const CLAUDE = process.env.FEED_CLAUDE_BASE || "https://api.anthropic.com";
+const MODEL = "claude-haiku-5-5";
+const ARTS_PER_RUN = 12;
+const SUMS_PER_RUN = 40;
+const PAUSE = 1500;
 
 // Riot's own places. A host alone, or a host plus the account path.
 // Not sure of every Riftbound social handle: add one here when it shows up.
@@ -254,6 +278,159 @@ async function expand(items, cache) {
   return items;
 }
 
+// ---- repeats ----
+
+// The words of a post with its links, tags and spacing taken out: two
+// readings of the same post share this.
+function wordsKey(t) {
+  return String(t || "").toLowerCase().replace(/https?:\/\/\S+/g, " ").replace(/[^a-z0-9]+/g, " ").trim().slice(0, 200);
+}
+
+function daysApart(a, b) {
+  return Math.abs((Date.parse(a + "T12:00:00Z") - Date.parse(b + "T12:00:00Z")) / 86400000);
+}
+
+// Muse posts with the same words posted within a week are one post: the first
+// reading keeps its place and takes the others' sources and links.
+function foldRepeats(items) {
+  const out = [];
+  items.slice().sort(function (a, b) { return (a.posted || "").localeCompare(b.posted || "") || a.id.localeCompare(b.id); }).forEach(function (it) {
+    const k = it.id.indexOf("fb:") === 0 ? wordsKey(it.text) : "";
+    const home = k.length >= 30 ? out.filter(function (o) { return o.id.indexOf("fb:") === 0 && wordsKey(o.text) === k && daysApart(o.posted, it.posted) <= 7; })[0] : null;
+    if (!home) { out.push(it); return; }
+    it.via.forEach(function (v) { if (home.via.indexOf(v) === -1) { home.via.push(v); } });
+    home.via.sort();
+    (it.links || []).forEach(function (l) { home.links = home.links || []; if (home.links.indexOf(l) === -1 && l !== home.url) { home.links.push(l); } });
+  });
+  out.sort(function (a, b) { return (b.posted || "").localeCompare(a.posted || "") || a.id.localeCompare(b.id); });
+  return out;
+}
+
+// ---- Riot's article ----
+
+function isArticle(u) {
+  const n = norm(u);
+  return !!n && new URL(n).hostname === "playriftbound.com" && /^\/[a-z]{2}-[a-z]{2}\/news\/[^/]+\/[^/]+\/$/.test(new URL(n).pathname);
+}
+
+// the article a post stands for: the post itself, else the first one it links to
+function articleOf(it) {
+  if (isArticle(it.url)) { return norm(it.url); }
+  const l = (it.links || []).filter(isArticle)[0];
+  return l ? norm(l) : null;
+}
+
+function isVideo(u) {
+  return /^https:\/\/(facebook\.com\/reel\/|facebook\.com\/[^/]+\/videos\/|youtube\.com\/|youtu\.be\/)/.test(norm(u) || "");
+}
+
+// Riot's page data -> { url, title, desc, pic, published, html }, the words
+// cleaned as the rules watcher cleans them (fetch-rules.js sanitize).
+function readArticle(html, url) {
+  const page = RULES.pageData(html);
+  const body = [];
+  RULES.parts(page).forEach(function (p) {
+    if (p.type === "rich") { body.push(p.html); return; }
+    if (p.title) { body.push("<h3>" + RULES.sanitize(String(p.title)) + "</h3>"); }
+    p.groups.forEach(function (g) { body.push("<h4>" + RULES.sanitize(g.q) + "</h4>" + g.a); });
+  });
+  const pic = page.metaImage && typeof page.metaImage.url === "string" && /^https:\/\/cmsassets\.rgpub\.io\/[^"<>`\s]+$/.test(page.metaImage.url) ? page.metaImage.url : null;
+  const out = { url: url, title: RULES.text(String(page.title || "")), desc: RULES.text(String(page.description || "")), published: page.displayedPublishDate || null, html: body.join("").slice(0, 60000) };
+  if (pic) { out.pic = pic; }
+  if (!out.title || !out.html) { throw new Error("no title or words"); }
+  return out;
+}
+
+async function fetchArticle(url) {
+  const at = PR_BASE ? PR_BASE + new URL(url).pathname : url;
+  const res = await fetch(at, { headers: { "User-Agent": RB.ua, "Accept": "text/html", "Accept-Language": "en-US" }, redirect: "follow", signal: AbortSignal.timeout(30000) });
+  if (res.status !== 200) { throw new Error("HTTP " + res.status); }
+  return readArticle(await res.text(), url);
+}
+
+// ---- summaries ----
+
+// The words a summary is written from: Riot's post, then its article.
+function sumInput(it) {
+  const parts = [];
+  if (it.text) { parts.push(it.text); }
+  if (it.art) { parts.push(it.art.title, it.art.desc || "", RULES.text(it.art.html).slice(0, 6000)); }
+  return parts.filter(Boolean).join("\n\n").trim();
+}
+
+function sumKey(input) {
+  return crypto.createHash("sha256").update(input).digest("hex").slice(0, 16);
+}
+
+// Riot's first sentence, without links, hashtags or emoji: the summary when
+// Claude is not there.
+function firstSentence(t) {
+  const s = String(t || "").replace(/https?:\/\/\S+/g, " ").replace(/#[A-Za-z0-9_]+/g, " ")
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{1F1E6}-\u{1F1FF}]/gu, " ").replace(/\s+/g, " ").trim();
+  const m = /^.*?[.!?](?=\s|$)/.exec(s);
+  let f = (m ? m[0] : s).trim();
+  if (f.length > 200) { f = f.slice(0, 197).replace(/\s+\S*$/, "") + "..."; }
+  return f;
+}
+
+const ASK = "You write the summary line for a post in RAVI, a free community app for the Riftbound trading card game. " +
+  "Summarise the official Riot Games post below for players in one or two short, plain sentences, under 40 words. " +
+  "Say what is happening and when, if the post says. Use only facts in the post. No hashtags, emoji, quotes or hype. " +
+  "Reply with the summary only.";
+
+async function claudeSum(input, key) {
+  const res = await fetch(CLAUDE + "/v1/messages", {
+    method: "POST",
+    headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "User-Agent": RB.ua },
+    body: JSON.stringify({ model: MODEL, max_tokens: 200, system: ASK, messages: [{ role: "user", content: input.slice(0, 12000) }] }),
+    signal: AbortSignal.timeout(60000)
+  });
+  if (res.status !== 200) { throw new Error("HTTP " + res.status); }
+  const d = await res.json();
+  if (d.stop_reason && d.stop_reason !== "end_turn") { throw new Error("stopped: " + d.stop_reason); }
+  const t = (d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" ").replace(/\s+/g, " ").trim().replace(/^["']|["']$/g, "");
+  if (!t || t.length > 400) { throw new Error("empty or too long"); }
+  return t;
+}
+
+// Articles and summaries for every item, keeping what an earlier run wrote.
+async function enrich(items, prevItems, key) {
+  const before = {};
+  prevItems.forEach(function (p) { before[p.id] = p; });
+  const arts = {};
+  prevItems.forEach(function (p) { if (p.art) { arts[p.art.url] = p.art; } });
+  let artBudget = ARTS_PER_RUN, sumBudget = SUMS_PER_RUN, read = 0, wrote = 0, fell = 0;
+  for (const it of items) {
+    const was = before[it.id] || {};
+    const a = articleOf(it);
+    if (a && arts[a]) { it.art = arts[a]; }
+    else if (a && artBudget > 0) {
+      artBudget--;
+      if (read) { await new Promise(function (r) { setTimeout(r, PROD ? PAUSE : 0); }); }
+      try { it.art = await fetchArticle(a); arts[a] = it.art; read++; }
+      catch (e) { console.log("WARN article " + a + " not read: " + e.message + "; tried again next run"); }
+    }
+    if (!it.art) { delete it.art; }
+    if (isVideo(it.url)) { it.video = true; } else { delete it.video; }
+    const input = sumInput(it);
+    if (!input) { delete it.sum; delete it.sumBy; delete it.sumKey; continue; }
+    const k = sumKey(input);
+    if (was.sumKey === k && was.sum && (was.sumBy === "claude" || !key)) { it.sum = was.sum; it.sumBy = was.sumBy; it.sumKey = k; continue; }
+    let sum = null;
+    if (key && sumBudget > 0) {
+      sumBudget--;
+      try { sum = await claudeSum(input, key); wrote++; }
+      catch (e) { console.log("WARN summary for " + it.id + " fell back to the first sentence: " + e.message); fell++; }
+    }
+    if (sum) { it.sum = sum; it.sumBy = "claude"; }
+    else if (was.sumKey === k && was.sum) { it.sum = was.sum; it.sumBy = was.sumBy; }
+    else { it.sum = firstSentence(it.text || (it.art && (it.art.desc || it.art.title)) || ""); it.sumBy = "first"; }
+    it.sumKey = k;
+  }
+  console.log("articles: " + read + " read; summaries: " + wrote + " by Claude" + (fell ? ", " + fell + " fell back" : "") + (key ? "" : " (no ANTHROPIC_API_KEY: first sentences)"));
+}
+const PROD = !process.env.FEED_PR_BASE;
+
 // ---- reading ----
 
 async function get(url, headers) {
@@ -305,7 +482,8 @@ async function main() {
   let prev = null;
   try { prev = JSON.parse(fs.readFileSync(OUT_FILE, "utf8")); } catch (e) {}
   const before = prev ? prev.items : [];
-  const items = merge(before, fromDiscord.concat(muse.items));
+  const items = foldRepeats(merge(before, fromDiscord.concat(muse.items)));
+  await enrich(items, before, process.env.ANTHROPIC_API_KEY || "");
   const oldIds = before.map(function (i) { return i.id; });
   const fresh = items.filter(function (i) { return oldIds.indexOf(i.id) === -1; });
   const rules = fresh.some(function (i) { return i.kind === "rules"; });
@@ -313,7 +491,7 @@ async function main() {
 
   if (prev && JSON.stringify(prev.items) === JSON.stringify(items)) { console.log("no change; nothing written"); return; }
   const today = TODAY || day(new Date().toISOString());
-  const out = { updated: today, note: "Riot's own posts. Facebook text is Riot's, word for word; Discord gives only the link and the day.", items: items };
+  const out = { updated: today, note: "Riot's own posts. Facebook text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).", items: items };
   fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 1) + "\n");
   console.log("wrote " + items.length + " items (" + fresh.length + " new" + (rules ? ", rules among them" : "") + ")");
@@ -326,4 +504,5 @@ if (require.main === module) {
   });
 }
 
-module.exports = { linksOf, norm, isRiot, kindOf, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL };
+module.exports = { linksOf, norm, isRiot, kindOf, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL,
+  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, MODEL };

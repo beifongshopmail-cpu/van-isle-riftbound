@@ -508,4 +508,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { sanitize, blocks, text, slug, parts, parseErrata, parseFaq, parseHub, pickSources, itemsFor, stamp, notice, classify, setName };
+module.exports = { sanitize, blocks, text, slug, parts, pageData, parseErrata, parseFaq, parseHub, pickSources, itemsFor, stamp, notice, classify, setName };
