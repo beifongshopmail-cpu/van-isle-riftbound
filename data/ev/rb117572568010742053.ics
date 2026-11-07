@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117572568010742053@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270221T130000
+DTEND;TZID=America/Vancouver:20270221T160000
+SUMMARY:CCV Legacy Nexus Cup
+LOCATION:515 Chatham St #101\, Victoria\, BC V8T 1E1\, Canada
+DESCRIPTION:Event\nColossal Cards & Collectables\, Victoria\n16 of 16 spots
+  left\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/events/1175725
+ 68010742053
+URL:https://playriftbound.com/en-US/events/117572568010742053
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

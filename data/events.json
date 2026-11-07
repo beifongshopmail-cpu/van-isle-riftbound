@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-06T19:52:32.682Z",
- "generated_local": "2026-11-06T12:52:32-07:00",
+ "generated_at": "2026-11-07T06:52:34.545Z",
+ "generated_local": "2026-11-06T23:52:34-07:00",
  "window_start": "2026-11-06T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 54,
-   "added": 54
+   "returned": 55,
+   "added": 55
   },
   {
    "name": "Courtenay",
@@ -47,8 +47,8 @@
   }
  ],
  "totals": {
-  "fetched": 68,
-  "unique": 68,
+  "fetched": 69,
+  "unique": 69,
   "prev_unique": 68,
   "recent": [
    {
@@ -65,13 +65,13 @@
    },
    {
     "d": "2026-11-06",
-    "n": 68
+    "n": 69
    }
   ]
  },
  "unknown_templates": {
   "NEXUS_CUP": {
-   "count": 5,
+   "count": 6,
    "sample_name": "Legacy Nexus Cup"
   }
  },
@@ -90,7 +90,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 8,
+   "reg": 7,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -162,7 +162,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -186,7 +186,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 600,
    "currency": "CAD",
    "updated": null,
@@ -210,7 +210,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 0,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -1218,7 +1218,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 8,
+   "reg": 9,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1290,7 +1290,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1314,7 +1314,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 2,
+   "reg": 3,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1386,7 +1386,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 7,
+   "reg": 8,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1434,7 +1434,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 1,
+   "reg": 2,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
@@ -1458,7 +1458,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 18,
-   "reg": 7,
+   "reg": 8,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1660,6 +1660,30 @@
    "store": "Elite4",
    "swiss": 4,
    "cut": false
+  },
+  {
+   "id": "rb117572568010742053",
+   "name": "CCV Legacy Nexus Cup",
+   "type": "other",
+   "start": "2027-02-21T13:00:00-07:00",
+   "end": null,
+   "day": "2027-02-21",
+   "time": "1:00 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Victoria",
+   "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 0,
+   "cents": 1000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 15103,
+   "store": "Colossal Victoria",
+   "swiss": 4,
+   "cut": true
   },
   {
    "id": "rb117520594838845121",
