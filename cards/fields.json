@@ -311,18 +311,6 @@
     "1"
    ]
   },
-  "flags[].id": {
-   "n": 1,
-   "ex": [
-    "new"
-   ]
-  },
-  "flags[].label": {
-   "n": 1,
-   "ex": [
-    "New"
-   ]
-  },
   "id": {
    "n": 1408,
    "ex": [
@@ -372,31 +360,31 @@
    ]
   },
   "might.label": {
-   "n": 786,
+   "n": 787,
    "ex": [
     "Might"
    ]
   },
   "might.value.icon.provider": {
-   "n": 786,
+   "n": 787,
    "ex": [
     "web"
    ]
   },
   "might.value.icon.type": {
-   "n": 786,
+   "n": 787,
    "ex": [
     "image"
    ]
   },
   "might.value.icon.url": {
-   "n": 786,
+   "n": 787,
    "ex": [
     "https://assetcdn.rgpub.io/public/live/riot-shared/player-exp"
    ]
   },
   "might.value.id": {
-   "n": 786,
+   "n": 787,
    "ex": [
     "3",
     "4",
@@ -404,7 +392,7 @@
    ]
   },
   "might.value.label": {
-   "n": 786,
+   "n": 787,
    "ex": [
     "3",
     "4",
@@ -633,8 +621,8 @@
   "subtitle": {
    "n": 369,
    "ex": [
-    "Inquisitive",
     "Alluring",
+    "Inquisitive",
     "Confident"
    ]
   },
