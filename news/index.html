@@ -41,10 +41,17 @@ body{-webkit-font-smoothing:antialiased;
   background:var(--plate-solid);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.bchips{display:flex;gap:6px;margin:10px 0 0}
-.fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;color:var(--bone)}
-.fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
-.fchip svg{width:14px;height:14px}   /* the down chevron, as Decks' Filters chip */
+/* THE VIEW ROW (as Collection's and Decks'): Grid or List, then the Kinds chip (three kinds or more
+   fold into one chip that opens a menu of rows, STYLE 7) */
+.dvrow{display:flex;align-items:center;gap:8px;margin-top:10px}
+.dvrow .sp{flex:1}
+.dvseg button{width:40px;padding:0;display:grid;place-items:center}
+.dvseg svg{width:18px;height:18px;fill:currentColor}
+.dvsort{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
+  font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--bone)}
+.dvsort svg{flex:0 0 auto;width:14px;height:14px}
+.dvsort.on{background:var(--bone);color:var(--ink);box-shadow:none}
+.dvsort:active{transform:scale(.96)}
 mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
 /* THIS WEEK: two glass cards; you read their lists (no taps). The legends card ends with the Tier
    list under the in-card line, as an event card's open row sits under its line (STYLE 3, .evact). */
@@ -72,6 +79,22 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 .ns{font-family:var(--text);font-size:13px;font-weight:400;line-height:1.4;color:var(--muted);white-space:normal;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .nthumb{flex:0 0 auto;width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--recess)} /* size-exempt: Riot's article picture */
+/* NO PICTURE: a stand-in in the kind's colour with the icon of the page the kind belongs with, so
+   every post is laid out alike (Mako 2026-11-07) */
+.nph{display:grid;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
+.nph svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* GRID (Mako 2026-11-07: a grid or a list, two across at most): each post a tile, its picture on
+   top (16:9, corner 14 inside the card's 22 and 8), the kind and day, the headline; the summary waits
+   in the post's menu. This week stays as it is. */
+.ngrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ngrid .nc{margin:0;display:flex}
+.ntile{display:flex;flex-direction:column;gap:6px;width:100%;padding:8px 8px 12px;border-radius:22px;text-align:left;color:var(--bone);font:inherit}
+.ntile .ngpic{display:block;width:100%;aspect-ratio:16/9;border-radius:14px;object-fit:cover;background:var(--recess)} /* size-exempt: Riot's article picture */
+.ntile .ngpic.nph{display:grid}
+.ngrid .nc > .ntile{flex:1 1 auto;align-self:stretch}   /* a row's tiles stand as tall as the tallest */
+.ntile .nl1,.ntile .nh{padding:0 4px}
+.ntile .nl1 .cvr{margin-left:auto}
+.ntile .nh{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .new{display:inline-block;vertical-align:1px;font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
 /* A POST'S MENU: RAVI's summary, Riot's picture, Riot's words; the head in the kind's colour as a
@@ -97,6 +120,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 .nwatch{margin-top:12px}
 .extl{width:16px;height:16px;flex:0 0 auto;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .empty{margin:6px 4px 0;font-size:13px;color:var(--muted)}
+.ngrid .empty{grid-column:1 / -1}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -110,10 +134,10 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   <div class="srow plate glass">
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
-      <input id="q" type="search" placeholder="Search the news" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+      <input id="q" type="search" placeholder="Search news" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
       <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
-    <div class="bchips"><button type="button" class="fchip btn glass" id="kchip" data-k="do" aria-pressed="false">Kinds</button></div>
+    <div class="dvrow"><div class="seg dvseg" id="vseg" role="group" aria-label="Posts show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="false"></button><button type="button" data-v="list" aria-label="List" aria-pressed="true"></button></div><span class="sp"></span><button type="button" class="dvsort glass" id="kchip" data-k="do" aria-pressed="false">Kinds</button></div>
   </div>
 
   <div id="home">
@@ -193,6 +217,15 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     market:       { label: "Market",       rgb: "134,143,162" }    // Slate
   };
   var ORDER = ["rules", "event", "product", "announcement", "market"];
+  var IV = {
+    // the view chips, as Collection's and Decks' (plan 2 M8 round 5): Phosphor's squares-four, bold (MIT), and List
+    grid: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM200,36H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,60H160V60h36Zm-96,40H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96Zm104-60H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,200,136Zm-4,60H160V160h36Z" fill="currentColor" stroke="none"/></svg>',
+    list: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM100,136H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96ZM148,42H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,90H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,142H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,190H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24Z" fill="currentColor" stroke="none"/></svg>'
+  };
+  // the stand-in's icon: the page the kind belongs with
+  var KICON = { rules: "rules", event: "events", product: "collection", announcement: "whatsnew", market: "trade" };
+  var VIEWK = "vir.news.view.v1", VIEW = "list";
+  try{ if(localStorage.getItem(VIEWK) === "grid") VIEW = "grid"; }catch(e){}
   var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
   function kindOf(it){ return KIND[it.kind] ? it.kind : "market"; }
   // the word's colour: the kind's colour lifted .40 toward white (the calendar's lit)
@@ -269,16 +302,40 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   function head(it){ return it.title || (it.art && it.art.title) || it.sum || it.text || ""; }
   function sub(it){ var h = head(it); return it.sum && it.sum !== h ? it.sum : ""; }
   function pic(it){ return it.art && riotPic(it.art.pic) ? it.art.pic : ""; }
+  function picture(it, cls){
+    var p = pic(it);
+    return p ? '<img class="' + cls + '" src="' + esc(p) + '" alt="" loading="lazy">'
+      : '<span class="' + cls + ' nph" aria-hidden="true">' + window.RAVI_ICON(KICON[kindOf(it)]) + '</span>';
+  }
   function card(it, badge){
-    var k = KIND[kindOf(it)], p = pic(it), s = sub(it);
-    return '<div class="doors nc" style="--tint:rgba(' + k.rgb + ',var(--cg));--c:' + k.rgb + ';--cl:' + lit(k.rgb) + '">'
+    var k = KIND[kindOf(it)], s = sub(it), wrap = '<div class="doors nc" style="--tint:rgba(' + k.rgb + ',var(--cg));--c:' + k.rgb + ';--cl:' + lit(k.rgb) + '">';
+    if(VIEW === "grid"){
+      return wrap + '<button type="button" class="ntile btn glass ncb" data-id="' + esc(it.id) + '" data-k="deeper">' + picture(it, "ngpic")
+        + '<span class="nl1"><span class="ty">' + esc(k.label) + '</span><span class="when">' + esc(day(it.posted)) + '</span>'
+        + (badge ? '<span class="new">NEW</span>' : '') + CVR + '</span>'
+        + '<span class="nh">' + esc(head(it)) + '</span></button></div>';
+    }
+    return wrap
       + '<button type="button" class="door btn glass rec ncb" data-id="' + esc(it.id) + '" data-k="deeper">'
-      + (p ? '<img class="nthumb" src="' + esc(p) + '" alt="" loading="lazy">' : '')
+      + picture(it, "nthumb")
       + '<span class="nt"><span class="nl1"><span class="ty">' + esc(k.label) + '</span><span class="when">' + esc(day(it.posted)) + '</span>'
       + (badge ? '<span class="new">NEW</span>' : '') + '</span>'
       + '<span class="nh">' + esc(head(it)) + '</span>'
       + (s ? '<span class="ns">' + esc(s) + '</span>' : '') + '</span>' + CVR + '</button></div>';
   }
+  function views(){
+    Array.prototype.forEach.call(el("vseg").querySelectorAll("button"), function(b){
+      var v = b.getAttribute("data-v"); b.innerHTML = IV[v]; b.setAttribute("aria-pressed", VIEW === v ? "true" : "false");
+    });
+    ["nlist", "olist", "rlist"].forEach(function(id){ el(id).classList.toggle("ngrid", VIEW === "grid"); });
+  }
+  el("vseg").addEventListener("click", function(ev){
+    var b = ev.target.closest("button[data-v]"); if(!b) return;
+    VIEW = b.getAttribute("data-v");
+    try{ localStorage.setItem(VIEWK, VIEW); }catch(e){}
+    views();
+    if(D){ render(); if(!el("res").hidden) search(); }
+  });
   function render(){
     var all = D.items.filter(shown), fresh = all.filter(isNew), rest = all.filter(function(it){ return !isNew(it); });
     el("nlist").innerHTML = fresh.map(function(it){ return card(it); }).join("");
@@ -515,6 +572,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   el("pnhere").addEventListener("click", function(){ show(null); });
 
   chip();
+  views();
   fetch("../data/feed.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
     if(!d || !Array.isArray(d.items)) throw new Error("shape");
     D = d;
