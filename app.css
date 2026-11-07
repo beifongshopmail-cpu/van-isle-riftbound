@@ -270,6 +270,15 @@ html.lock,html.lock body{overflow:hidden}
   -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat;
   mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat}
 .pick .sp{flex:1}
+/* BACK TO TOP (pages.js RAVI_TOTOP; plan 2 M8.5): a round frosted button, 44, 8 above the bar at its right
+   end (in a card browser, where the bar would be), shown once a long card list is two screens down; under
+   the bar, the scrim and menus */
+.totop{position:fixed;right:max(12px,calc((100% - 456px) / 2));bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 8px);
+  z-index:19;width:var(--sz-row);height:var(--sz-row);border-radius:50%;display:grid;place-items:center;color:var(--bone);box-shadow:0 8px 24px rgba(0,0,0,.5);
+  opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .2s ease,transform .2s var(--ease),visibility 0s linear .2s}
+.totop.show{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.totop.show:active{transform:scale(.96)}
+.totop svg{width:18px;height:18px}
 /* the sort arrow (pages.js srt, RAVI_SORT; plan 2 M8): 16 in front of a sort chip's name; in a Sort menu the
    chosen row shows it where the check would be, 18; in a sort track, after the chosen word, 14 */
 .srt{flex:0 0 auto;width:18px;height:18px}

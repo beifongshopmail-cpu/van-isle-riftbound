@@ -1403,6 +1403,8 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   }).catch(function(){});
   draw();
   load();
+  // back to top on All cards (plan 2 M8.5)
+  window.RAVI_TOTOP(null, function(){ return VIEW === "cards"; });
 })();
 </script>
 <script>

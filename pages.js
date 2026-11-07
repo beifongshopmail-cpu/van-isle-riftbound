@@ -128,6 +128,27 @@ window.RAVI_SORT = {
   row: function(attrs, name, on, dir){ return '<button type="button" ' + attrs + ' aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + (on && dir ? ' aria-label="' + name + ', ' + window.RAVI_SORT.words(dir) + '"' : '') + '>' + name + (on && dir ? window.RAVI_SORT.arrow(dir) : '') + '</button>'; }
 };
 
+// BACK TO TOP (plan 2 M8.5, Mako's notes of 2026-11-05): a web app gets no tap on the status bar, so a
+// long card list gets a round Top button, 8 above the bar at its right end (app.css .totop), once it is
+// scrolled two screens down; a tap scrolls back to the top. scroller: the element that scrolls (a card
+// browser), or null for the page; on: optional, whether the list it serves is showing.
+window.RAVI_TOTOP = function(scroller, on){
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "totop frost"; b.setAttribute("aria-label", "Back to top"); b.setAttribute("aria-hidden", "true"); b.setAttribute("data-k", "do");
+  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>';
+  (scroller || document.body).appendChild(b);
+  function y(){ return scroller ? scroller.scrollTop : (window.pageYOffset || document.documentElement.scrollTop || 0); }
+  function update(){ var s = y() > window.innerHeight * 2 && (!on || on()); b.classList.toggle("show", s); b.setAttribute("aria-hidden", s ? "false" : "true"); }
+  (scroller || window).addEventListener("scroll", update, { passive: true });
+  // a view switch (a track, a tab) may leave the page far down: look again after any tap
+  document.addEventListener("click", function(){ requestAnimationFrame(update); }, true);
+  b.addEventListener("click", function(){
+    var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    (scroller || window).scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
+  });
+  return { update: update };
+};
+
 // The hub's page list. Add a line here to add a page to the hub.
 // A line with an empty path is a dead placeholder. Replace one to add a page.
 // icon is a getter so each use gets its own mask ids (see THE ICONS above).

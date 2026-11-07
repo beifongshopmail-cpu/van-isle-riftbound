@@ -2544,6 +2544,8 @@ body{-webkit-font-smoothing:antialiased;
   el("spotsheet").addEventListener("click", spotClose);
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
   el("tabedit").addEventListener("click", function(){ EDIT = !EDIT; render(); });
+  // back to top on Public and in the card browser (plan 2 M8.5)
+  window.RAVI_TOTOP(null, function(){ return SCREEN === "home" && HV === "pub"; }); window.RAVI_TOTOP(el("brw"));
   el("tabset").addEventListener("click", function(){ if(STACK[0] === el("pset")){ openPanel(null); return; } fillSet(); openPanel(el("pset")); });
   window.RAVI_GOTO(el("pnavgoto"), "decks", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });

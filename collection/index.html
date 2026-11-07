@@ -67,6 +67,14 @@ body{-webkit-font-smoothing:antialiased;
 .mvsep{height:1px;background:rgba(255,255,255,.07);margin-top:6px}
 .mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
 .mvh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* in Grid, Gains and Losses are each a row of cards at the grid's own size, sliding sideways (plan 2 M8.5,
+   Mako's notes of 2026-11-05): Movers is as wide as the grid below, so a tile is a third of it less the
+   grid's two 8 gaps; the row runs to the block's edges and its cards slide under them */
+#movers{container-type:inline-size}
+.mvrow{display:flex;gap:8px;margin:0 -14px;padding:0 14px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;scroll-padding:0 14px;scrollbar-width:none}
+.mvrow::-webkit-scrollbar{display:none}
+.mvrow .ctile{flex:0 0 calc((100cqw - 16px) / 3);scroll-snap-align:start}
 /* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
 .cards{border-radius:22px;padding:0 14px}
 /* List sits on the page as Grid does, no glass behind it (Mako 2026-10-25, round 2) */
@@ -733,9 +741,9 @@ input[type="file"]{display:none}
       + '<span class="cend"><span class="camt">' + money(nowCents(h) / 100) + '</span><span class="cmv">' + (m ? pctChip(pctOf(m[0], m[1])) : "") + '</span></span></button>';
   }
   // a holding as a tile: the picture with its count, the name, the price of one and its move, the total
-  function tileHtml(x){
-    var h = x.h, c = BYID[h.i], m = moveOf(h);
-    return '<div class="ctile' + (isSel(x) ? " sel" : "") + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" aria-label="' + esc(c ? c.n : "") + '" data-k="card">' + (SEL ? CHECK : '') + img(c)
+  function tileHtml(x, noSel){
+    var h = x.h, c = BYID[h.i], m = moveOf(h), sel = SEL && !noSel;
+    return '<div class="ctile' + (sel && isSel(x) ? " sel" : "") + '"><button type="button" class="cpic' + (sealed(c) ? " sq" : "") + '" data-h="' + esc(h.id) + '" data-p="' + esc(x.p) + '" aria-label="' + esc(c ? c.n : "") + '" data-k="card">' + (sel ? CHECK : '') + img(c)
       + '<span class="lq">x' + Number(h.q) + '</span></button>'
       + '<div class="tcap"><span class="tnm">' + esc(c ? c.n : "Unknown product") + '</span>'
       + '<span class="tpr"><b>' + money(nowCents(h) / 100) + '</b><span>' + (m ? pctChip(pctOf(m[0], m[1])) : "") + '</span></span>'
@@ -748,9 +756,12 @@ input[type="file"]{display:none}
     var dn = rows.filter(function(r){ return r.d < 0; }).sort(function(a, b){ return a.d - b.d; }).slice(0, 5);
     // a mover's row is a Cards row: the price of one, its move, and the total for all copies in its line
     // (Mako 2026-10-25, round 2); the list is still ranked by what the move did to the whole holding
-    function one(r){ return rowHtml(r.x, false, true); }
+    // in Grid, each side is a row of tiles that slides sideways (plan 2 M8.5)
+    var grid = SET.hview === "grid";
+    function one(r){ return grid ? tileHtml(r.x, true) : rowHtml(r.x, false, true); }
     function card(title, svg, list){
-      return '<div class="mvh">' + svg + title + '</div>' + (list.length ? list.map(one).join("") : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
+      var body = list.map(one).join("");
+      return '<div class="mvh">' + svg + title + '</div>' + (list.length ? (grid ? '<div class="mvrow">' + body + '</div>' : body) : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
     }
     return {
       up: card("Gains", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>', up),
@@ -1441,6 +1452,8 @@ input[type="file"]{display:none}
   el("scrim").addEventListener("click", function(){ openPanel(null); });
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
   el("tabadd").addEventListener("click", function(){ openPanel(null); brOpen(); });
+  // back to top on your cards and in the card browser (plan 2 M8.5)
+  window.RAVI_TOTOP(null); window.RAVI_TOTOP(el("brw"));
   el("tabset").addEventListener("click", function(){ if(OPENP === el("pset")){ openPanel(null); return; } fillManage(); segs(); openPanel(el("pset")); });
   el("portbtn").addEventListener("click", function(){ PORTB = false; fillPorts(); openPanel(el("pport")); });
   el("bportbtn").addEventListener("click", function(){ PORTB = true; fillPorts(); openPanel(el("pport")); });
