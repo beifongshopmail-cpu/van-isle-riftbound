@@ -35,11 +35,11 @@
   /* FROSTED CHROME: the bar, the counter's strip, menus. Real blur, "clearest" strength. */
   --frost:rgba(36,37,38,.22);
   --frost-solid:rgba(36,37,38,.94);
-  /* THE STICKY PLATE (plan 2 M8 block 7, Mako's pick B 2026-11-06): the page's colour (--page, set by pages.js)
-     at --cg over the plate's dark base, so the sunken tracks and searches read on it, as on a deck's plate.
+  /* THE STICKY PLATE (plan 2 M8 block 7, Mako's pick: grey, 2026-11-06): a dark grey, so the sunken tracks and
+     searches read on it. The page colours were tried and clashed with colours that mean something on the page.
      --plate-glass under blur, --plate-solid without it. */
-  --plate-glass:linear-gradient(rgba(var(--page,10,11,13),var(--cg)),rgba(var(--page,10,11,13),var(--cg))),rgba(10,11,13,.5);
-  --plate-solid:linear-gradient(rgba(var(--page,10,11,13),var(--cg)),rgba(var(--page,10,11,13),var(--cg))),rgba(10,11,13,.94);
+  --plate-glass:rgba(42,44,48,.62);
+  --plate-solid:rgba(42,44,48,.94);
   --frost-rim:rgba(255,255,255,.10);
   --on:rgba(255,255,255,.14);      /* the bar's "you are here" pill */
   --tint:transparent;             /* the page colour in the glass; pages.js sets it from RAVI_PAGES */
