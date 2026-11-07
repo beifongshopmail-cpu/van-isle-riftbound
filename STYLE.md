@@ -350,7 +350,7 @@ The hub block and the install screen: style/hub.md and style/install.md.
 
 ## 9. Phone mechanics and names
 
-- Double-tap zoom is held off by a touchend script on every page: a second touch within 320ms and 30px is cancelled, passive:false, buttons and links skipped, and the timer resets on every skip. [T]
+- Double-tap zoom is held off by a touchend script on every page: a second touch within 320ms and 30px is cancelled, passive:false, buttons and links let through at once, but a skipped tap still starts the timer, so a quick tap on words after a control (a menu opened by its row) is held off too (plan 2 M8 close-out). [T]
 - Anything tappable is a button, or an a, or carries role=button.
 - A disabled control drops out of hit-testing.
 - Every button declares its background, even none (app.css sets background none on button).
