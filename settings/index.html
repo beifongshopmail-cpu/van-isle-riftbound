@@ -431,8 +431,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // Controls and links are skipped outright. They were already immune to
   // the gesture, and guarding them costs a visible delay on fast repeated
   // taps -- quantity steppers and scoring buttons in particular. A skipped
-  // tap resets the timer so a control tap never arms the guard for
-  // whatever is tapped next.
+  // tap still starts the timer, so a quick tap on words after a control
+  // (a menu opened by its row) is held off too.
   //
   // A scroll is a move, not a tap, and never reaches this. A pinch carries
   // more than one touch point and returns early; pages.js holds off page pinch-zoom
@@ -443,12 +443,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   document.addEventListener("touchend", function(ev){
     if (ev.touches.length > 0) return;
     if (ev.changedTouches.length !== 1) return;
-    if (ev.target.closest && ev.target.closest(SKIP)){
-      lastT = 0;
-      return;
-    }
     var tch = ev.changedTouches[0];
     var now = Date.now();
+    // A control's tap goes through at once, but starts the timer: a quick second tap on a menu's
+    // words or a gap after tapping the row that opened it is still a double-tap to iPhone
+    // (plan 2 M8 close-out, Mako 2026-11-04: tap-to-zoom in menus).
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+      return;
+    }
     var dx = Math.abs(tch.clientX - lastX);
     var dy = Math.abs(tch.clientY - lastY);
     if (now - lastT < 320 && dx < 30 && dy < 30){
