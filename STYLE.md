@@ -60,10 +60,10 @@ Type
 Sizes
 - --barH 56
 - --sz-row 44: menu rows, fields, full-width actions
-- --sz-track 40: a sunken track, search and name fields
+- --sz-track 40: a sunken track, search and name fields; every control in a sticky plate
 - --sz-sm 36: round buttons and compact pills
 - --sz-seg 34: a segment inside a track, swatches
-- --sz-seg-tall 38: a segment in the counter strip's Layout track, nowhere else
+- --sz-seg-tall 38: a segment in a tall track (.seg.tall): the counter strip's Layout track, and a track stacked with row-height parts in a menu
 - --sz-score 48, --sz-score-min 38, --sz-seam 50: counter only
 - --r-cut 6, --gap-cut 3: the cut track
 Other
@@ -80,7 +80,7 @@ Surfaces
 - Sunken (--recess): means choose or type. Tracks (.seg, .goto), groups (.pick), fields (.nf, .sf). Chosen option: bone fill, ink text. A track whose options own a colour (trade .sides) fills the chosen one in that colour, with ink text.
 - Chosen picture or colour: a bone ring, inset 0 0 0 2px bone then 2px ground (.seg.swatch).
 - Frost (.frost): chrome that blurs what passes behind it. Fallback --frost-solid; with blur, --frost, blur 20 saturate 160% on the bar and strip, blur 24 saturate 160% on menus, 1px rim --frost-rim.
-- Plate frost: the calendar's month card (.card), the trade control plate (.plate), the Decks plate (.plate), the Rules search plate (.plate) and the Trade board plate (.plate) are page-local sticky surfaces: fallback rgba(10,11,13,.94); with blur rgba(10,11,13,.5), blur 18 saturate 180%; shadow --glass-base then 0 8px 24px rgba(0,0,0,.45); corner 24.
+- Plate frost: the trade control plate (.plate), the Decks plate (.plate), the Rules search plate (.plate), the Trade board plate (.plate), Collection's plate and select plate (.selp) and Settings' search plate are page-local sticky surfaces in one dark grey (Mako's pick 2026-11-06, so the sunken tracks and searches read on it; the page colours were tried and clashed with colours that mean something on the page): app.css --plate-glass rgba(42,44,48,.62), blur 18 saturate 180%; fallback --plate-solid rgba(42,44,48,.94); shadow --glass-base then 0 8px 24px rgba(0,0,0,.45); corner 24. A deck's plate and its card browser carry the deck's two colours (.plate.cg2) instead. The calendar's month card (.card) keeps the old plate: fallback rgba(10,11,13,.94); with blur rgba(10,11,13,.5), blur 18 saturate 180%; the same shadow and corner.
 - Bone: chosen in a track. A bone check on the right means chosen in a list.
 - A fill means selected, never important.
 - A glass surface is never its own scroller. A still glass wrapper holds a plain scrolling child.
@@ -117,7 +117,8 @@ Type
 - The grey value in a row: Nunito 600, 12, muted (small in .door and .pick).
 - Numerals: Poppins 800 for scores and money (counter, trade). Calendar day numbers (.cell .d): Poppins 15 at 600, 700 when selected.
 - Tabular figures on body, inherited by every number.
-- Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13. Text inputs, play and grid are exempt. [D]
+- Type follows height: a 44px control carries 15; a 34, 36 or 38px control carries 13; a sticky plate's 40px actions and row-pills carry 13, as its track does. Text inputs, play and grid are exempt. [D]
+- Parts that sit together share one height (plan 2 M8 block 7, Mako's yes 2026-11-06): in a sticky plate every control is --sz-track 40 (fields, tracks, .pact, a lone .doors row-pill, chips, a round button sharing a row with a field: .circ.trk); in a menu, parts stacked together are --sz-row 44 (a field over a full-width action is .nf.tall; a track over one is .seg.tall). A title row with round buttons over a track, cards and tiles, and steppers in their own pill are different kinds and keep their sizes. [A]
 - Named exemptions, nothing else: 16 text inputs; 16 counter score words at .06em; the counter numerals (column formula in .num, 40 on the slim banner); 26 trade ring amount; 34 Poppins 800 on the Collection's value (.cval .v; Mako's yes 2026-10-25). Go to tile labels are 12 with letter-spacing -.08em. The wordmark is a drawing (the badge, section 5), not type, so no rung binds it.
 Sizes
 - Control heights come from section 2. Measure the surface the eye sees, not the control inside it. [A]
@@ -199,7 +200,7 @@ Press lists (trade/index.html)
 - .doors: glass group (corner 22, rows flat). .door: 44 high, Poppins 600 15, .t clipped, .sp, small grey value, .cvr right chevron (16, muted).
     <div class="doors" data-k="deeper"><button type="button" class="door"><span class="t">All saved trades</span><span class="sp"></span><small>12</small><svg class="cvr" ...></svg></button></div>
 - .door.act: the same row for a plain action, data-k="do", no .cvr. In a stack of rows an action is this.
-- .pact.btn.glass: a centred full-width action (44 high, Poppins 600 15). Stands alone or sits in a menu foot. Never in a stack of rows.
+- .pact.btn.glass: a centred full-width action (44 high, Poppins 600 15; in a sticky plate 40 and 13). Stands alone or sits in a menu foot. Never in a stack of rows.
     <button type="button" class="pact btn glass" data-k="do">Clear both sides</button>
 
 Tracks and fields (app.css; calendar and trade menus)
@@ -212,7 +213,7 @@ Tracks and fields (app.css; calendar and trade menus)
 - Every search field clears with a round X at its right end (.fbtn.fx: the field's glass button made round, the bare X glyph), shown only while there is text; hidden, it keeps its place. A track never shares the search's row; it sits on the row under it (trade .plate, the counter's legend picker). (Mako's yes 2026-10-16; the round X 2026-10-24)
 
 Buttons (calendar/index.html, app.css)
-- .btn.glass: round glass pill, shade --glass-press on press. .circ: 36 round, icon 18. Use .circ.btn.glass for round icon buttons (close X, back, gear, chevron toggle).
+- .btn.glass: round glass pill, shade --glass-press on press. .circ: 36 round, icon 18. Use .circ.btn.glass for round icon buttons (close X, back, gear, chevron toggle). .circ.trk: 40 round, for a round button sharing a row with a field or a pill (a card browser's Close).
     <button type="button" class="circ btn glass" aria-label="Close" data-k="do"><svg ...></svg></button>
 - .hemi (calendar-local, with .hl and .hr): two halves of one pill, 36 square each, outer curve half of 36, 5 at the join, 4 overlap. Copy from calendar/index.html if a page needs a pair.
 
@@ -243,7 +244,7 @@ The bar (every page except the hub)
       {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
     ]);</script>
 - The counter's strip is the same shell (.bar.strip.frost) with its own four controls, and no Hub slot, so its Go to keeps a Hub tile. Its Layout track is in the markup; RAVI_BAR adds Undo, Log and Game settings after it. The hub has no bar.
-- The strip's Layout track is the one tall track: its options are --sz-seg-tall (38), so the track is 44 like the strip's slots and sits 6 from the strip's top and bottom. A named exception to the Kit rule. [T] (Mako's yes 2026-10-16)
+- The strip's Layout track is a tall track (.seg.tall): its options are --sz-seg-tall (38), so the track is 44 like the strip's slots and sits 6 from the strip's top and bottom. A named exception to the Kit rule. [T] (Mako's yes 2026-10-16)
 - Every bar in every state, in one picture: rb-tools bar-sheet.js (out/bars/bars-sheet.png). node bar-sheet.js --compare <dirA> <dirB> proves two builds draw the same bars, pixel for pixel.
 
 Menus
@@ -293,6 +294,7 @@ Icons (pages.js RAVI_ICON)
 - M8 page icons (Mako's rounds 1 and 2, 2026-11-05): Tier list is Phosphor's chart-bar-horizontal, Trade board Phosphor's users-three, All pages Phosphor's stack, each as drawn (bold in the bar, filled when on, regular on the hub as an .icb copy); New here, Top cut and Offers stayed.
 - M8 round 3 (Mako's picks 2026-11-05, phone yes 2026-11-06): Collection's Add is two cards, the front one card-shaped (Material library_add on the app's line); the no-picture person is Phosphor's user, filled, one drawing in the corner, the Trade board and Decks; I'm going and Going are Phosphor's user-plus and user-check, a touch smaller than Directions and Calendar beside them and on their line (Mako 2026-11-06: level, it read larger); the bin is Lucide's trash-2 with its sides drawn in, line 2, one drawing on every page; Decks' Ready is a solid circle with the app's check cut out, its Chosen Champion star Phosphor's, its handle six dots (Material drag_indicator). Every drawn check is the list's (4 12 10 18 20 6); Top cut's plus and minus span 12 (as built, not chosen).
 - M8 round 5 (Mako's picks and phone yes 2026-11-06): Info is Phosphor's info, bold, drawn 22.5 across so the round icon reads as big as its square neighbours; its filled twin is the same bold i cut from a solid disc. The view chips (Decks, Collection): Grid and Text are Phosphor's squares-four and text-align-left, bold; List is two of Grid's squares with lines on the same bold line, one drawing on both pages. Open the event page keeps its drawing; the pairings menu's Open the event page wears the out-arrow (.extl) too; links inside a line of text stay plain.
+- One arrow (plan 2 M8 block 7, Mako's yes 2026-11-06): every arrow the app draws is RAVI_ARROW (pages.js; Lucide's arrow, ISC) in four directions: the sort chip, Trade's move and verdict, the Trade board's verdict, Collection's Movers, and the price chips beside words (viewBox 4 4 16 16, line 2). Decks' printing-row check is the list's check.
 - Sorts (pages.js RAVI_SORT; Mako's yes 2026-11-05): a sort chip shows an up or down arrow and the sort's name; the sort menu is words only, the arrow on the chosen row; a second tap on the chosen row flips it (not My order, not Public). One name per idea on every page, named in RAVI_SORT.
 
 Hub layout (hubedit.js, app.css HUB LAYOUT; Mako's phone sign-off 2026-11-03): the hub's own blocks at the hub's size, dragged or tapped into place, the pages not on the hub below; one copy, drawn by App settings and the first-time setup (RAVI_HUBEDIT).
