@@ -67,15 +67,9 @@ body{-webkit-font-smoothing:antialiased;
 .mvsep{height:1px;background:rgba(255,255,255,.07);margin-top:6px}
 .mvh{display:flex;align-items:center;gap:8px;padding:14px 2px 4px;font-family:var(--disp);font-size:15px;font-weight:700}
 .mvh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-/* in Grid, Gains and Losses are each a row of cards sliding sideways (plan 2 M8.5, Mako's notes of 2026-11-05);
-   round 4 (Mako 2026-11-07): three fit inside the glass, a touch smaller than the grid's: a tile is a third of
-   Movers' width less its 14 sides and the grid's two 8 gaps; the row runs to the block's edges and its cards
-   slide under them */
-#movers{container-type:inline-size}
-.mvrow{display:flex;gap:8px;margin:0 -14px;padding:0 14px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
-  scroll-snap-type:x mandatory;scroll-padding:0 14px;scrollbar-width:none}
-.mvrow::-webkit-scrollbar{display:none}
-.mvrow .ctile{flex:0 0 calc((100cqw - 44px) / 3);scroll-snap-align:start}
+/* in Grid, Gains and Losses are each the grid three across inside the glass, a touch smaller than the
+   grid below; never sliding sideways (plan 2 M8.5, Mako 2026-11-07, round 5) */
+#mvbody .cgrid{padding:2px 0 12px}
 /* A HOLDING AS A ROW (List): the picture, the name and its printing, the price of one and its move */
 .cards{border-radius:22px;padding:0 14px}
 /* List sits on the page as Grid does, no glass behind it (Mako 2026-10-25, round 2) */
@@ -757,12 +751,12 @@ input[type="file"]{display:none}
     var dn = rows.filter(function(r){ return r.d < 0; }).sort(function(a, b){ return a.d - b.d; }).slice(0, 5);
     // a mover's row is a Cards row: the price of one, its move, and the total for all copies in its line
     // (Mako 2026-10-25, round 2); the list is still ranked by what the move did to the whole holding
-    // in Grid, each side is a row of tiles that slides sideways (plan 2 M8.5)
+    // in Grid, each side is the grid three across, inside Movers' glass (plan 2 M8.5, round 5)
     var grid = SET.hview === "grid";
     function one(r){ return grid ? tileHtml(r.x, true) : rowHtml(r.x, false, true); }
     function card(title, svg, list){
       var body = list.map(one).join("");
-      return '<div class="mvh">' + svg + title + '</div>' + (list.length ? (grid ? '<div class="mvrow">' + body + '</div>' : body) : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
+      return '<div class="mvh">' + svg + title + '</div>' + (list.length ? (grid ? '<div class="cgrid">' + body + '</div>' : body) : '<p class="cempty">None ' + esc(rangeWords()) + '.</p>');
     }
     return {
       up: card("Gains", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>', up),
