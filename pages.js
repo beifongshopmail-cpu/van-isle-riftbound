@@ -170,15 +170,18 @@ window.RAVI_PAGES = [
 
 // THE MOTION TRIAL (plan 2 M8.7 motion block, 2026-11-08). The test copy in an Artifact could not run
 // page-to-page motion (its pages do not count as one site there), so the trial runs in the real app,
-// dormant: nothing below changes anything unless this phone holds ravi.try.motion.v1. Five quick taps
-// on the hub's badge turn it on (and reload); a yellow Try pill then sits top left on every page, its
-// panel switching Pages (rise, fade, slide, none), Hub (open, page), Blocks (pulse, still) and Slow data
-// (each data file waits 1.6s, so the loading blocks show), and End trial turning it off. Comes out when
-// Mako has picked: his picks become the app's, for everyone.
+// on by default (Mako 2026-11-08 16:48: "There are no users yet, can you just make it the default"):
+// a yellow Try pill sits top left on every page, its panel switching Pages (rise, fade, slide, none),
+// Hub (open, page), Blocks (pulse, still) and Slow data (each data file waits 1.6s, so the loading
+// blocks show; starts off), and End trial turning it off for that phone ({off:true} in
+// ravi.try.motion.v1); five quick taps on the hub's badge turn it back on. Automated checks
+// (navigator.webdriver) see the app without it unless they store it on, so every other suite checks
+// the app as it is outside the trial. Comes out when Mako has picked: his picks become the app's.
 window.RAVI_TRY = (function(){
-  var K = "ravi.try.motion.v1", D = { pm: "rise", hm: "open", sk: "pulse", slow: "on" }, c, k;
+  var K = "ravi.try.motion.v1", D = { pm: "rise", hm: "open", sk: "pulse", slow: "off" }, c, k;
   try { c = JSON.parse(localStorage.getItem(K) || "null"); } catch (e) { c = null; }
-  if (!c || typeof c !== "object") { return null; }
+  if (!c || typeof c !== "object") { c = navigator.webdriver ? null : {}; }
+  if (!c || c.off) { return null; }
   for (k in D) { if (!c[k]) { c[k] = D[k]; } }
   return c;
 })();
@@ -195,7 +198,7 @@ window.RAVI_TRY = (function(){
     b.addEventListener("click", function(){
       var now = Date.now();
       n = now - t < 700 ? n + 1 : 1; t = now;
-      if (n >= 5) { n = 0; save(c ? null : { pm: "rise", hm: "open", sk: "pulse", slow: "on" }); location.reload(); }
+      if (n >= 5) { n = 0; save(c ? { off: true } : { pm: "rise", hm: "open", sk: "pulse", slow: "off" }); location.reload(); }
     });
   });
   if (!c) { return; }
@@ -228,14 +231,14 @@ window.RAVI_TRY = (function(){
         x += '</div></div>';
       });
       x += '<button type="button" data-end="1" style="width:100%;height:36px;border-radius:999px;border:2px solid var(--hi);background:transparent;color:var(--bone);font:700 13px var(--text)">End trial</button>';
-      x += '<div style="color:var(--muted);margin:8px 2px 0">On this phone only. Slow data takes effect on the next page you open.</div>';
+      x += '<div style="color:var(--muted);margin:8px 2px 0">Kept on this phone. Slow data takes effect on the next page you open. Five quick taps on the hub badge bring the trial back.</div>';
       p.innerHTML = x;
     }
     draw();
     p.addEventListener("click", function(e){
       var t = e.target.closest("button");
       if (!t) { return; }
-      if (t.getAttribute("data-end")) { save(null); location.reload(); return; }
+      if (t.getAttribute("data-end")) { save({ off: true }); location.reload(); return; }
       c[t.getAttribute("data-k")] = t.getAttribute("data-v"); save(c); apply(); draw();
     });
     b.addEventListener("click", function(){ p.hidden = !p.hidden; });
