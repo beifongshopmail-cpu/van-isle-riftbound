@@ -1,14 +1,38 @@
 {
- "updated": "2026-11-07",
- "note": "Riot's own posts. Facebook text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).",
+ "updated": "2026-11-08",
+ "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).",
  "items": [
+  {
+   "id": "fb:https://facebook.com/reel/958435193703586",
+   "kind": "product",
+   "url": "https://facebook.com/reel/958435193703586",
+   "posted": "2026-11-07",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "T1 are back in Riftbound. This time, with the T1 2025 Worlds Champion Player bundle that honors the winners with Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. Play or collect them, and celebrate their place in League history! Register for the drawing starting November 13 at 9 AM…",
+   "via": [
+    "muse"
+   ],
+   "video": true,
+   "title": "T1 2025 Worlds Champion Player Bundle Drawing",
+   "sum": "T1 returns to Riftbound with a 2025 Worlds Champion Player bundle, featuring Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. Drawing registration starts November 13 at 9 AM.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "entries open",
+     "label": "Drawing registration opens, 9 AM",
+     "from": "2026-11-13"
+    }
+   ],
+   "sumKey": "35a956111aee6f24"
+  },
   {
    "id": "fb:https://youtube.com/watch",
    "kind": "event",
    "url": "https://youtube.com/watch",
    "posted": "2026-11-07",
    "source": "Riftbound",
-   "credit": "Riot, on Facebook",
+   "credit": "Riot, on YouTube",
    "text": "Riftbound Regional Championship Europe - Day 2 (Rounds 7-12)",
    "via": [
     "muse"
@@ -35,6 +59,64 @@
    "sumBy": "claude",
    "sumKey": "c451f0129ca6d3bd",
    "title": "T1 Faker and Keria preview Riftbound K/DA Couture artbook"
+  },
+  {
+   "id": "fb:https://instagram.com/p/DfX2L-YgTqu",
+   "kind": "reveal",
+   "url": "https://instagram.com/p/DfX2L-YgTqu",
+   "posted": "2026-11-05",
+   "source": "Riftbound",
+   "credit": "Riot, on Instagram",
+   "text": "swipe for a Mech surprise",
+   "via": [
+    "muse"
+   ],
+   "title": "Riftbound teaser hints at a Mech surprise",
+   "sum": "An official Riot Games post teases a Mech surprise for Riftbound, with a prompt to swipe. It gives no details or dates.",
+   "sumBy": "claude",
+   "sumKey": "5aeac699f0eb15d1"
+  },
+  {
+   "id": "fb:https://playriftbound.com/en-us/news/organizedplay/riftbound-world-showcase/",
+   "kind": "event",
+   "url": "https://playriftbound.com/en-us/news/organizedplay/riftbound-world-showcase/",
+   "posted": "2026-11-05",
+   "source": "Riftbound",
+   "credit": "Riot, on playriftbound.com",
+   "text": "Riftbound had an explosive first year, and we're excited to conclude the inaugural competitive season in style with the World Showcase happening January 22-23, 2027, in Shanghai, China. The world's best Riftbounders will battle it out for the glory of becoming the first Riftbound World Champion.",
+   "via": [
+    "muse"
+   ],
+   "art": {
+    "url": "https://playriftbound.com/en-us/news/organizedplay/riftbound-world-showcase/",
+    "title": "Riftbound World Showcase",
+    "desc": "We’re announcing the format and prizing for the Riftbound World Showcase.",
+    "published": "2026-11-05T17:00:00.000Z",
+    "html": "<p>Riftbound had an explosive first year, and we’re excited to conclude the inaugural competitive season in style with the World Showcase happening&nbsp;<strong>January 22-23, 2027,&nbsp;</strong>in Shanghai, China. The world’s best Riftbounders will battle it out for the glory of becoming the first Riftbound World Champion.&nbsp;</p><p>Riftbound’s next set,&nbsp;<i>Legacy,&nbsp;</i>doesn’t release until&nbsp;<strong>January 29</strong>, one week after the event—but to push competitors to their limits and delight viewers, World Showcase competitors will get to play with the set.&nbsp;</p><p>Competitors in the event will get early access to the complete&nbsp;<i>Legacy</i> card list two weeks before the event (which will be before previews are completed for the community). Additionally, competitors will have to register and compete with&nbsp;<strong>three</strong> separate constructed decks, which must be built without overlapping Domains.&nbsp;</p><h1>Riftbound World Showcase - Event Details</h1><p><strong>Date:&nbsp;</strong>January 22-23, 2027&nbsp;</p><p><strong>Location:&nbsp;</strong>Shanghai, China</p><p><strong>Where to Watch:&nbsp;</strong><a href=\"https://www.twitch.tv/riftbound\"><u>Twitch</u></a> │<a href=\"https://www.youtube.com/@riftbound\"><u>YouTube</u></a></p><h2>Deckbuilding</h2><p>Competitors will get early access to the&nbsp;<i>Legacy</i> card list. They’ll have to build&nbsp;<strong>three&nbsp;</strong>decks (Deck A, Deck B, Deck C) with the following requirements:</p><ul><li>No overlapping Domains between the three decks.</li><li>One deck must be designated during registration as their “Playoff Deck.”&nbsp;<ul><li>They will use the designated deck in the Top 4.</li></ul></li></ul><h2>Pairings</h2><p>At the World Showcase, competitors will play 9 rounds of Swiss matches before reaching the top 4. In Swiss matches, competitors will use Deck A for rounds 1-3, Deck B for rounds 4-6, and Deck C for rounds 7-9.</p><p>While using Deck A in the first rounds, competitors will&nbsp;<strong>not</strong> be matched against the same opponent in multiple games. Once competitors transition to playing Deck B or Deck C in later rounds, they&nbsp;<strong>may</strong> be matched against an opponent they have already played.        </p><table><tbody><tr><td><p><strong>Day 1 (Swiss)</strong></p></td><td><p><strong>Day 2 (Swiss/Top 4)</strong></p></td><td><p><strong>Day 2 (Top 4)</strong></p></td></tr><tr><td><p>Rounds 1-3: Deck A</p><p>Rounds 4-6: Deck B</p></td><td><p>Rounds 7-9: Deck C</p></td><td><p>Single Elimination</p><p>Best-of-3 matches</p><p>Playoff Deck</p></td></tr></tbody></table><h2>Prizing</h2><p>Riftbounders who have ascended to the pinnacle of competition deserve a fitting reward for their hard work. Check out the prizing details below:</p><ul><li>An all expenses paid trip to China for the competition.</li><li>A premium competitor goodie bag.</li><li>Exclusive serialized English promo numbered 1-24 (matching the total number of competitors), distributed based on final standings.</li><li>$100k USD total prize pool.</li><li>World Champion trophy.</li><li>OVN Foil Plated Legends drafted based on final standing.<ul><li>All Legends including&nbsp;<i>Legacy&nbsp;</i>will be available to draft.</li><li>This will differ from the Regional Championship Overnumber Foil Plated Legends and will not have a promo stamp.&nbsp;</li></ul></li></ul><p>Keep an eye on our social channels&nbsp;<a href=\"https://x.com/playriftbound\"><u>@PlayRiftbound</u></a> and&nbsp;<a href=\"https://x.com/riftboundop\"><u>@RiftboundOP</u></a> for updates, and good luck to all of the competitors heading into our Regional Championships!</p>",
+    "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/1fadd760f522f5052ee25ef991f49fc96b5f3217-1920x1080.jpg?accountingTag=RB"
+   },
+   "title": "Riftbound World Showcase Format and Prizing Announced",
+   "sum": "The Riftbound World Showcase runs January 22-23, 2027, in Shanghai, China, with three-deck Swiss rounds and a top 4 playoff. Competitors get early access to the Legacy card list.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "other",
+     "label": "Legacy card list early access",
+     "from": "2027-01-08"
+    },
+    {
+     "what": "event",
+     "label": "Riftbound World Showcase in Shanghai",
+     "from": "2027-01-22",
+     "to": "2027-01-23"
+    },
+    {
+     "what": "release",
+     "label": "Legacy set release",
+     "from": "2027-01-29"
+    }
+   ],
+   "sumKey": "90e9a101e1d7506a"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0mPqaQbLF8FDG1pwrseTDqZ5t7KBFCNLVfyauyYyTXhqox6uVauJdPnWUfwvqgHfgl",
@@ -405,14 +487,73 @@
    ]
   },
   {
-   "id": "link:https://playriftbound.com/en-us/news/announcements/riftbounds-2026-drawings/",
-   "kind": "announcement",
-   "url": "https://playriftbound.com/en-us/news/announcements/riftbounds-2026-drawings/",
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid021d2HvBsiT9BNxskHUvSkE79QfiGHzSaGM2zQ2Ap5q7V2YZ8kQ41tpuLTjaefvw19l",
+   "kind": "event",
+   "url": "https://facebook.com/playriftbound/posts/pfbid021d2HvBsiT9BNxskHUvSkE79QfiGHzSaGM2zQ2Ap5q7V2YZ8kQ41tpuLTjaefvw19l",
    "posted": "2026-10-22",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Due to long queues and attendee safety SPIEL Essen requested we cancel Secret Garden sales for today. We've worked with SPIEL Essen to address concerns and are changing how Secret Garden purchases will be available. For the next three days, Secret Garden purchases use reserved time slots. Scan the QR code or use the link to sign up for a time slot…",
    "via": [
-    "discord"
+    "muse"
    ],
-   "shape": "followed",
+   "title": "Secret Garden sales move to reserved time slots",
+   "sum": "Secret Garden sales were cancelled for today at SPIEL Essen because of long queues and safety concerns. For the next three days, purchases will use reserved time slots, booked by QR code or link.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "other",
+     "label": "Secret Garden sales cancelled today",
+     "from": "2026-10-22"
+    },
+    {
+     "what": "other",
+     "label": "Reserved time slot Secret Garden sales",
+     "from": "2026-10-23",
+     "to": "2026-10-25"
+    }
+   ],
+   "sumKey": "e20096a7b990bbab"
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02DrzqXjQZnQi7FuhM7feogf8YB6JKpwnFi6VWF8C7TzhSumPrayHW4kRNoB3hWKPSl",
+   "kind": "event",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02DrzqXjQZnQi7FuhM7feogf8YB6JKpwnFi6VWF8C7TzhSumPrayHW4kRNoB3hWKPSl",
+   "posted": "2026-10-22",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "We’re heading to #SPIEL2026! 🇩🇪 Stop by our booth from October 22–25 to demo Riftbound and pick up Secret Garden while supplies last. See you in Essen!",
+   "via": [
+    "muse"
+   ],
+   "title": "Riftbound at SPIEL 2026 in Essen",
+   "sum": "Riot Games is at SPIEL 2026 in Essen, with a booth for Riftbound demos and Secret Garden pickups while supplies last.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "event",
+     "label": "SPIEL 2026 booth in Essen",
+     "from": "2026-10-22",
+     "to": "2026-10-25"
+    }
+   ],
+   "sumKey": "5829d6caf0f21a04"
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02MD2XHaGVCEspsWGKcuDK3kN3fB8nT3q5N7qfJ4VpTLcNFaEYb4V8RKdwTJDqpSdGl",
+   "kind": "product",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02MD2XHaGVCEspsWGKcuDK3kN3fB8nT3q5N7qfJ4VpTLcNFaEYb4V8RKdwTJDqpSdGl",
+   "posted": "2026-10-22",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "There's still plenty more Riftbound coming in 2026! Check out the drawing dates for our upcoming products and everything you need to know before they arrive. Learn more: https://riot.com/48buW8W",
+   "via": [
+    "discord",
+    "muse"
+   ],
+   "links": [
+    "https://playriftbound.com/en-us/news/announcements/riftbounds-2026-drawings/"
+   ],
    "art": {
     "url": "https://playriftbound.com/en-us/news/announcements/riftbounds-2026-drawings/",
     "title": "Riftbound’s 2026 Drawings",
@@ -421,20 +562,26 @@
     "html": "<p>We’re about to wrap up 2026, which comes with three new products for Riftbound. Here’s everything you need to know about each bundle and how to buy them.</p><p>Important note: some of these products will be available at in-person events! Check the “Purchase Details” sections for more info. (If there are more details to share closer to each event, the Riftbound <a href=\"https://x.com/playriftbound\">social channels</a> will announce them.)</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/ddcf8b5b7b587cf960ef53d5420928b856884c5c-2234x1257.jpg\" width=\"2234\" height=\"1257\"></p><h2><i>Riftbound x K/DA Couture Collection</i></h2><p>The <i>Riftbound x K/DA: Couture Collection</i> pulls back the curtain on a new stage for K/DA—the tabletop. Unbox collectible Legends and a Battlefield celebrating the FIRESTARTER era, complete with all-new artwork by Fortiche.</p><h3>Contents</h3><ul><li>4 collectible Legend cards, featuring brand-new K/DA artwork.<ul><li>Agony’s Embrace (Evelynn), Nine-Tailed Fox (Ahri), Rogue Assassin (Akali), Daughter of the Void (Kai’Sa).</li></ul></li><li>1 collectible Battlefield card.<ul><li>Packed Amphitheater.</li></ul></li><li>1 K/DA Limited Edition Playmat.</li><li>1 K/DA Limited Edition Deck Box.</li><li>1 pack of K/DA Limited Edition Card Sleeves.</li><li>4 K/DA Limited Edition D12 Metal Dice.</li><li>1 FIRESTARTER KiT Keychain and User Manual.<ul><li>The K/DA - FIRESTARTER KiT Keychain can be connected to your phone to play K/DA’s newest single and official music video.</li></ul></li></ul><p><strong>Cost:</strong> $150.00 + shipping and handling.</p><p><strong>Languages: </strong>English and Chinese.</p><h3>Purchase Details</h3><p>The <i>Riftbound x K/DA Couture Collection</i> will be available via online drawing, where you can enter for the chance to purchase it from the Riot Games Merch store. If you are selected from drawing, you’ll be notified via email, and you’ll have a 24-hour window to complete your purchase.</p><ul><li>Drawing registration opens: October 27, 9:00 AM PT</li><li>Drawing registration closes: October 30, 9:00 AM PT</li><li>Emails to first round of selectees: November 3</li></ul><p>Fulfillment of online purchases will begin within 1-3 business days after orders are placed.</p><p>The <i>Riftbound x K/DA Couture Collection</i> will also be available to purchase on-site at <a href=\"https://convergencefest.riotgames.com/en-us/\">Convergence Fest</a>, December 11-13.</p><h2><i>T1 2025 Worlds Champion Player Bundle</i></h2><p>The League of Legends World Championship has just begun, and we’ve got new esports-themed bundles to celebrate.</p><p>The <i>T1 2025 Worlds Champion Player Bundle</i> honors the 2025 winners with Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. (These are the same cards as in the <i>T1 2025 Worlds Champion Signature Edition</i>, with different Alt Arts.) Play or collect them—with limited-edition accessories—and celebrate their place in League history.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/74f003439be52d41236c41b5cc06550cb6257bc5-1327x1220.jpg\" width=\"1327\" height=\"1220\"></p><h3>Contents</h3><ul><li>5 collectible Champion cards, featuring official T1 Worlds 2025 skin splash art.<ul><li>Ambessa The Wolf, Xin Zhao The Vigilant, Galio Indefatigable, Miss Fortune Buccaneer, and Seraphine Not Alone.</li></ul></li><li>1 T1 Worlds Champion Deck Box.</li><li>1 T1 Worlds Champion Card Binder.</li><li>1 pack of T1 Worlds Champion Card Sleeves.</li><li>1 T1 Worlds Champion D12 Dice.<ul><li>Each bundle has a chance to contain a rare gold dice variant.</li></ul></li></ul><p><strong>Cost:</strong> $70.00 + shipping and handling.</p><p><strong>Languages: </strong>English, Chinese, Korean.</p><h3>Purchase Details</h3><p>The&nbsp;T1 2025 Worlds Champion Player Bundle will be available at on-site merch stores at&nbsp; Worlds Fan Fest (New York City, New York) in November.&nbsp;</p><p>It will also be available via online drawing. Enter for the chance to purchase it from the Riot Games Merch store. If you are selected from drawing, you’ll be notified via email, and you’ll have a 24-hour window to complete your purchase.</p><ul><li>Drawing registration opens: November 13, 9:00 AM PT</li><li>Drawing registration closes: November 16, 9:00 AM PT</li><li>Emails to first round of selectees: November 17</li></ul><p>Fulfillment of purchases will begin in mid-December.</p><h2><i>Riftbound x Worlds 2026 Edition</i></h2><p>All things League collide in the <i>Riftbound x Worlds 2026 Edition.</i> Celebrate the peak of League of Legends competition with an Alt Art Yasuo promo card, 3 Battlefield promo cards with custom art of each North American host city, and Worlds-themed accessories.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/c81340b874ad8ff22fe2d23481479649e8e09db3-2560x1440.jpg\" width=\"2560\" height=\"1440\"></p><h3>Contents</h3><ul><li>1 collectible Legend promo card, featuring new art exclusively for Worlds.<ul><li>Unforgiven (Yasuo).</li></ul></li><li>3 collectible Battlefield promo cards, featuring art of each Worlds 2026 host city.<ul><li>Los Angeles, Allen, and New York City.</li></ul></li><li>1 Worlds 2026 Deck Box.</li><li>1 pack of Worlds 2026 Foil Card Sleeves.</li></ul><p><strong>Cost:</strong> $80.00 + shipping and handling.</p><p><strong>Languages: </strong>English.</p><h3>Purchase Details</h3><p>The <i>Riftbound x Worlds 2026 Edition </i>will be available at on-site merch stores for Worlds Quarterfinals (Allen, Texas), Semifinals (Allen, Texas), and Worlds Fan Fest (New York City, New York) throughout November.</p><p>The <i>Worlds 2026 Edition </i>will also be available via online drawing. When purchased online, it will include the Worlds Unvaulted Capsule 2026, an in-game item redeemable in League of Legends.</p><p>When the online drawing opens, enter for the chance to purchase from the Riot Games Merch store. If you are selected from drawing, you’ll be notified via email, and you’ll have a 24-hour window to complete your purchase.</p><ul><li>Drawing registration opens: November 13, 9:00 AM PT</li><li>Drawing registration closes: November 16, 9:00 AM PT</li><li>Emails to first round of selectees: November 17</li></ul><p>Fulfillment of online purchases will begin in mid-December.</p><h2><i>Gift of the Rift Bundle</i></h2><p>The <i>Gift of the Rift Bundle</i> celebrates the first year of Riftbound in style! It includes Booster Packs from Riftbound’s first five sets, seasonal accessories, and an Alt Art Akali promo card, exclusive to the English version.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/cce8b4c4764176c8e352bb0c74558b1f5a4a2af8-3840x2160.jpg\" width=\"3840\" height=\"2160\"></p><h3>Contents</h3><ul><li>16 Booster Packs.<ul><li>3 <i>Origins</i>, 3 <i>Spiritforged</i>, 3 <i>Unleashed</i>, 3 <i>Vendetta</i>, and 4 <i>Radiance</i> Booster Packs.</li></ul></li><li>36 Runes, featuring a foil treatment.<ul><li>6 Order, 6 Chaos, 6 Fury, 6 Calm, 6 Mind, and 6 Body.</li></ul></li><li>1 collectible Legend promo card.<ul><li>Rogue Assassin (Akali), exclusive to the English version.</li></ul></li><li>1 pack of Akali Card Sleeves.<ul><li>Featuring art from the Akali promo card, exclusive to the English version.</li></ul></li><li>1 Card Storage Box.<ul><li>Holds 2000 cards.</li></ul></li></ul><p><strong>Cost:</strong> $109</p><p><strong>Languages: </strong>English (with exclusive Akali promo), Chinese (with exclusive Kennen promo).</p><h3>Purchase Details</h3><p>This product will be sold via your Local Game Store and other retailers. It’ll be available starting December 4, just in time for the holidays!</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/fdf97284fecd92386fac4a3a5fc7c881a931d302-1039x489.jpg\" width=\"1039\" height=\"489\"></p>",
     "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/3dca0c33a0b7567ee83b4aa2b3a4d1175f68dda2-2880x1620.jpg?accountingTag=RB"
    },
-   "sum": "Everything about the K/DA Collection, T1 Player Bundle, 2026 Worlds Bundle, and Gift of the Rift.",
+   "title": "Riftbound’s 2026 Drawings",
+   "sum": "There's still plenty more Riftbound coming in 2026!",
    "sumBy": "first",
-   "sumKey": "5c7c0aa5d974850c",
-   "title": "Riftbound’s 2026 Drawings"
+   "sumKey": "9d875640e35dfdc1"
   },
   {
-   "id": "link:https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
-   "kind": "rules",
-   "url": "https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
+   "id": "fb:https://facebook.com/reel/1416407920478774",
+   "kind": "product",
+   "url": "https://facebook.com/reel/1416407920478774",
    "posted": "2026-10-21",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "The Riftbound x K/DA: Couture Collection pulls back the curtain on a new stage for K/DA—the tabletop. Unbox 4 collectible Legends and a Battlefield celebrating the FIRESTARTER era in Riftbound style, complete with all-new artwork by Fortiche. Register for the drawing starting October 27 at 9am PT…",
    "via": [
-    "discord"
+    "discord",
+    "muse"
    ],
-   "shape": "followed",
+   "links": [
+    "https://playriftbound.com/en-us/news/announcements/product-drawing-faq/"
+   ],
    "art": {
     "url": "https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
     "title": "Riftbound T1 Player Bundle and Worlds 2026 Drawing",
@@ -443,10 +590,34 @@
     "html": "<p>The League of Legends World Championship has just begun, and we’ve got new esports-themed bundles to celebrate. Here’s what to know about the drawing for the <i>T1 2025 Worlds Champion Player Bundle</i> and the <i>Riftbound x Worlds 2026 Edition.</i></p><p>Both products will be available as part of a single online drawing. When it opens, you can enter for the chance to purchase one or both products from the Riot Games Merch store. If you are selected from drawing, you’ll be notified via email, and you’ll have a 24-hour window to complete your purchase.</p><ul><li>Drawing registration opens: November 13, 9:00 AM PT</li><li>Drawing registration closes: November 16, 9:00 AM PT</li><li>Emails to first round of selectees: November 17</li></ul><p>Fulfillment of online purchases will begin in mid-December.</p><p>These products will also be available at on-site merch stores for Worlds Quarterfinals (Allen, Texas), Semifinals (Allen, Texas), and Worlds Fan Fest (New York City, New York) throughout November, while supplies last. Scroll down for details on each bundle’s contents and pricing.</p><h2><i>T1 2025 Worlds Champion Player Bundle</i></h2><p>The <i>T1 2025 Worlds Champion Player Bundle</i> honors the 2025 winners with Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. (These are the same cards as in the <i>T1 2025 Worlds Champion Signature Edition</i>, with different Alt Arts.) Play or collect them—with limited-edition accessories—and celebrate their place in League history.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/74f003439be52d41236c41b5cc06550cb6257bc5-1327x1220.jpg\" width=\"1327\" height=\"1220\"></p><h3>Contents</h3><ul><li>5 collectible Champion cards, featuring official T1 Worlds 2025 skin splash art.<ul><li>Ambessa The Wolf, Xin Zhao The Vigilant, Galio Indefatigable, Miss Fortune Buccaneer, and Seraphine Not Alone.</li></ul></li><li>1 T1 Worlds Champion Deck Box.</li><li>1 T1 Worlds Champion Card Binder.</li><li>1 pack of T1 Worlds Champion Card Sleeves.</li><li>1 T1 Worlds Champion D12 Dice.<ul><li>Each bundle has a chance to contain a rare gold dice variant.</li></ul></li></ul><p><strong>Cost:</strong> $70.00 + shipping and handling.</p><p><strong>Languages: </strong>English, Chinese, Korean.</p><h2><i>Riftbound x Worlds 2026 Edition</i></h2><p>All things League collide in the <i>Riftbound x Worlds 2026 Edition.</i> Celebrate the peak of League of Legends competition with an Alt Art Yasuo promo card, 3 Battlefield promo cards with custom art of each North American host city, and Worlds-themed accessories.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/c81340b874ad8ff22fe2d23481479649e8e09db3-2560x1440.jpg\" width=\"2560\" height=\"1440\"></p><h3>Contents</h3><ul><li>1 collectible Legend promo card, featuring new art exclusively for Worlds.<ul><li>Unforgiven (Yasuo).</li></ul></li><li>3 collectible Battlefield promo cards, featuring art of each Worlds 2026 host city.<ul><li>Los Angeles, Allen, and New York City.</li></ul></li><li>1 Worlds 2026 Deck Box.</li><li>1 pack of Worlds 2026 Foil Card Sleeves.</li></ul><p><strong>Cost:</strong> $80.00 + shipping and handling.</p><p><strong>Languages: </strong>English.</p><h1>The Drawing Experience&nbsp;</h1><p>Riftbound uses a drawing system for purchasing certain products from the Riot Merch Store. Here’s the details:</p><ul><li>During the registration window, you can throw your name in the ring for the opportunity to purchase product.</li><li>If your name is drawn, you’ll be sent a link to purchase a few days later via email. If you would like to purchase the products you selected, you’ll have a 24-hour window to do so.&nbsp;<ul><li>The selection process is entirely random, with multiple layers to check that the chosen account is real and not fraudulent.</li></ul></li><li>If you decide not to purchase, or the time window expires and you haven’t completed your purchase, someone new will be drawn and notified.</li><li>Players should ensure that riotgames.com emails are not being marked as spam or filtered into the trash.</li><li>Players should check that they have access to their account prior to the sign up period for the drawing. If not they can visit <a href=\"https://recovery.riotgames.com/\">Riot’s recovery platform</a> or submit a ticket to <a href=\"https://support-leagueoflegends.riotgames.com/hc/en/requests/new\">player support</a>.</li></ul><h4>What happens if my name is drawn?</h4><p>If your name is chosen in the drawing, you’ll be sent a link to a shopping cart with the products that your name was drawn for. The link to purchase will work for 24 hours. If you choose not to purchase, we will move on to the next person, chosen at random.&nbsp;</p><h4>What if I’m selected for multiple products?</h4><p>You are able to remove items from your shopping cart if you do not wish to purchase all products which you were drawn for. Removing an item from your cart is final and cannot be undone.</p><h4>What happens if someone is drawn but doesn’t purchase their product?</h4><p>If a player is chosen to purchase one or more products but decides not to, that player’s chance at the bundle will be done as soon as their purchase window expires.&nbsp;</p><p>Once a player’s purchase window expires, the stock will be returned to the store and the system will do a new drawing for the product that was not purchased. This drawing will only be drawn from among people who have not yet been selected for those products. These waves will continue until the stock on the Riot Merch store is depleted.</p><h4>How do I receive product?</h4><p>Once you’ve purchased the items you drew, they will begin fulfillment the day of the product’s wide release.&nbsp;</p><h4>How do I provide feedback or get help with any issues?</h4><p>If you have feedback or run into issues or have questions, reach out to our <a href=\"https://support-leagueoflegends.riotgames.com/hc/en-us/requests/new\">Player Support team.</a></p>",
     "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/consumer_products_live/794ab83f812aea708173d416f0fdc1628f4bd958-2560x1440.png?accountingTag=RB"
    },
-   "sum": "Riot's drawing for the T1 2025 Worlds Champion Player Bundle and Riftbound x Worlds 2026 Edition runs November 13 to November 16, 2026, 9:00 AM PT. Purchase fulfillment begins in mid-December.",
+   "video": true,
+   "title": "Riftbound T1 Player Bundle and Worlds 2026 Drawing",
+   "sum": "The Riftbound x K/DA: Couture Collection pulls back the curtain on a new stage for K/DA—the tabletop.",
+   "sumBy": "first",
+   "sumKey": "793ef69be010ea44"
+  },
+  {
+   "id": "fb:https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
+   "kind": "product",
+   "url": "https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
+   "posted": "2026-10-21",
+   "source": "Riftbound (official website)",
+   "credit": "Riot, on playriftbound.com",
+   "text": "Everything you need to know about the Riftbound x K/DA: Couture Collection drawings. The Riftbound x K/DA: Couture Collection Drawing The Riftbound x K/DA: Couture Collection drawings have arrived! The FIRESTARTER era shines in this premium bundle. Important Details Contents: The Riftbound x K/DA: Couture Collection pulls back the curtain…",
+   "via": [
+    "muse"
+   ],
+   "art": {
+    "url": "https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
+    "title": "Riftbound T1 Player Bundle and Worlds 2026 Drawing",
+    "desc": "Get the details on the T1 2025 Worlds Champion Player Bundle and Worlds 2026 Edition drawing.",
+    "published": "2026-11-06T17:00:00.000Z",
+    "html": "<p>The League of Legends World Championship has just begun, and we’ve got new esports-themed bundles to celebrate. Here’s what to know about the drawing for the <i>T1 2025 Worlds Champion Player Bundle</i> and the <i>Riftbound x Worlds 2026 Edition.</i></p><p>Both products will be available as part of a single online drawing. When it opens, you can enter for the chance to purchase one or both products from the Riot Games Merch store. If you are selected from drawing, you’ll be notified via email, and you’ll have a 24-hour window to complete your purchase.</p><ul><li>Drawing registration opens: November 13, 9:00 AM PT</li><li>Drawing registration closes: November 16, 9:00 AM PT</li><li>Emails to first round of selectees: November 17</li></ul><p>Fulfillment of online purchases will begin in mid-December.</p><p>These products will also be available at on-site merch stores for Worlds Quarterfinals (Allen, Texas), Semifinals (Allen, Texas), and Worlds Fan Fest (New York City, New York) throughout November, while supplies last. Scroll down for details on each bundle’s contents and pricing.</p><h2><i>T1 2025 Worlds Champion Player Bundle</i></h2><p>The <i>T1 2025 Worlds Champion Player Bundle</i> honors the 2025 winners with Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. (These are the same cards as in the <i>T1 2025 Worlds Champion Signature Edition</i>, with different Alt Arts.) Play or collect them—with limited-edition accessories—and celebrate their place in League history.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/74f003439be52d41236c41b5cc06550cb6257bc5-1327x1220.jpg\" width=\"1327\" height=\"1220\"></p><h3>Contents</h3><ul><li>5 collectible Champion cards, featuring official T1 Worlds 2025 skin splash art.<ul><li>Ambessa The Wolf, Xin Zhao The Vigilant, Galio Indefatigable, Miss Fortune Buccaneer, and Seraphine Not Alone.</li></ul></li><li>1 T1 Worlds Champion Deck Box.</li><li>1 T1 Worlds Champion Card Binder.</li><li>1 pack of T1 Worlds Champion Card Sleeves.</li><li>1 T1 Worlds Champion D12 Dice.<ul><li>Each bundle has a chance to contain a rare gold dice variant.</li></ul></li></ul><p><strong>Cost:</strong> $70.00 + shipping and handling.</p><p><strong>Languages: </strong>English, Chinese, Korean.</p><h2><i>Riftbound x Worlds 2026 Edition</i></h2><p>All things League collide in the <i>Riftbound x Worlds 2026 Edition.</i> Celebrate the peak of League of Legends competition with an Alt Art Yasuo promo card, 3 Battlefield promo cards with custom art of each North American host city, and Worlds-themed accessories.</p><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/c81340b874ad8ff22fe2d23481479649e8e09db3-2560x1440.jpg\" width=\"2560\" height=\"1440\"></p><h3>Contents</h3><ul><li>1 collectible Legend promo card, featuring new art exclusively for Worlds.<ul><li>Unforgiven (Yasuo).</li></ul></li><li>3 collectible Battlefield promo cards, featuring art of each Worlds 2026 host city.<ul><li>Los Angeles, Allen, and New York City.</li></ul></li><li>1 Worlds 2026 Deck Box.</li><li>1 pack of Worlds 2026 Foil Card Sleeves.</li></ul><p><strong>Cost:</strong> $80.00 + shipping and handling.</p><p><strong>Languages: </strong>English.</p><h1>The Drawing Experience&nbsp;</h1><p>Riftbound uses a drawing system for purchasing certain products from the Riot Merch Store. Here’s the details:</p><ul><li>During the registration window, you can throw your name in the ring for the opportunity to purchase product.</li><li>If your name is drawn, you’ll be sent a link to purchase a few days later via email. If you would like to purchase the products you selected, you’ll have a 24-hour window to do so.&nbsp;<ul><li>The selection process is entirely random, with multiple layers to check that the chosen account is real and not fraudulent.</li></ul></li><li>If you decide not to purchase, or the time window expires and you haven’t completed your purchase, someone new will be drawn and notified.</li><li>Players should ensure that riotgames.com emails are not being marked as spam or filtered into the trash.</li><li>Players should check that they have access to their account prior to the sign up period for the drawing. If not they can visit <a href=\"https://recovery.riotgames.com/\">Riot’s recovery platform</a> or submit a ticket to <a href=\"https://support-leagueoflegends.riotgames.com/hc/en/requests/new\">player support</a>.</li></ul><h4>What happens if my name is drawn?</h4><p>If your name is chosen in the drawing, you’ll be sent a link to a shopping cart with the products that your name was drawn for. The link to purchase will work for 24 hours. If you choose not to purchase, we will move on to the next person, chosen at random.&nbsp;</p><h4>What if I’m selected for multiple products?</h4><p>You are able to remove items from your shopping cart if you do not wish to purchase all products which you were drawn for. Removing an item from your cart is final and cannot be undone.</p><h4>What happens if someone is drawn but doesn’t purchase their product?</h4><p>If a player is chosen to purchase one or more products but decides not to, that player’s chance at the bundle will be done as soon as their purchase window expires.&nbsp;</p><p>Once a player’s purchase window expires, the stock will be returned to the store and the system will do a new drawing for the product that was not purchased. This drawing will only be drawn from among people who have not yet been selected for those products. These waves will continue until the stock on the Riot Merch store is depleted.</p><h4>How do I receive product?</h4><p>Once you’ve purchased the items you drew, they will begin fulfillment the day of the product’s wide release.&nbsp;</p><h4>How do I provide feedback or get help with any issues?</h4><p>If you have feedback or run into issues or have questions, reach out to our <a href=\"https://support-leagueoflegends.riotgames.com/hc/en-us/requests/new\">Player Support team.</a></p>",
+    "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/consumer_products_live/794ab83f812aea708173d416f0fdc1628f4bd958-2560x1440.png?accountingTag=RB"
+   },
+   "title": "T1 Worlds Champion Bundle Drawing Opens November 13",
+   "sum": "Riot is holding one online drawing for the T1 2025 Worlds Champion Player Bundle and the Riftbound x Worlds 2026 Edition. Registration runs November 13 to 16, 2026, and first selectee emails follow on November 17.",
    "sumBy": "claude",
-   "sumKey": "4ff9a8df9d012a63",
-   "title": "Riftbound T1 Worlds Bundle and Worlds 2026 Drawing",
    "dates": [
     {
      "what": "entries open",
@@ -459,11 +630,12 @@
      "from": "2026-11-16"
     },
     {
-     "what": "drawing",
-     "label": "First selectees emailed",
+     "what": "other",
+     "label": "First selectee emails sent",
      "from": "2026-11-17"
     }
-   ]
+   ],
+   "sumKey": "1c3ff8a48b2898b3"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid02DsDRzRzp83nLeZ6388WexKgiDkywRPyQ1R6wciyZMtWFgqkHyetiWoQpQVwyc6j3l",
@@ -701,7 +873,7 @@
    "url": "https://playriftbound.com/en-us/news/announcements/preparing-for-the-radiance-pre-rift/",
    "posted": "2026-10-12",
    "source": "Riftbound (official website)",
-   "credit": "Riot, on Facebook",
+   "credit": "Riot, on playriftbound.com",
    "text": "Get ready to play Riftbound's newest set at your local Pre-Rift. Hello Riftbounders! This Friday, October 16, stores will begin running their Radiance Pre-Rift events. Events begin on Friday, but the Pre-Rift window lasts for the week, so check the schedule at your lo…",
    "via": [
     "discord",
