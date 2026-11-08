@@ -37,12 +37,25 @@ body{-webkit-font-smoothing:antialiased;
 .fgrp{margin:0 0 12px}
 .fbody{padding:8px 8px 8px;min-height:200px}
 .fbody iframe{display:block;width:100%;border:0;background:transparent}
-/* the store-neutral line: muted small print directly under the form */
-.fbn{margin:0 4px 30px;font-size:13px;line-height:1.5;color:var(--muted)}
-#working,#shipped,#send{margin-top:22px}
-.ship{border-radius:22px;padding:4px 16px;list-style:none;margin:0}
-.ship li{padding:12px 0;font-size:15px;line-height:1.4;border-top:1px solid rgba(255,255,255,.07)}
-.ship li:first-child{border-top:0}
+#planned,#shipped,#send{margin-top:22px}
+#planned{margin-top:4px}
+/* PLANNED AND RECENTLY SHIPPED (plan 2 M8.7 block 2, Mako 2026-11-07): from data/changes.json,
+   kept by hand. Each line names its page beside the page's colour and icon (colour never alone),
+   so the page is easy to explore: Planned is one glass card of what is coming; Recently shipped
+   is the last three updates, a card each under its date, and All updates opens every one. */
+.chg{border-radius:22px;padding:2px 14px;margin:0 0 8px}
+.cr{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
+.cr + .cr{border-top:1px solid rgba(255,255,255,.07)}
+.ci{flex:0 0 auto;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
+.ci svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cm{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cpg{font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
+.ctt{font-family:var(--disp);font-size:15px;font-weight:600;line-height:1.3}
+.cds{font-size:13px;line-height:1.4;color:var(--muted)}
+.ctx{font-size:15px;line-height:1.4}
+.cdate{display:flex;align-items:baseline;gap:8px;padding:12px 0 2px;font-family:var(--disp);font-size:15px;font-weight:700}
+.cdate small{font-family:var(--text);font-size:12px;font-weight:400;color:var(--muted)}
+.callg{margin-top:0}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -52,30 +65,18 @@ body{-webkit-font-smoothing:antialiased;
 
 <main id="fb">
   <h2 class="sr">Feedback</h2>
-  <p class="lede">Something broken, wrong or missing? Tell us below.</p>
-
-  <!-- WORKING ON, THEN RECENTLY SHIPPED, THEN THE FORM (plan 2 M8.7 block 2, Mako 2026-11-07: before testers).
-       Both lists are plain markup, kept current by hand at every block that ships something a player would
-       notice (records: RULE -- keep the feedback page's Working on and Recently shipped current). -->
-  <section id="working">
-    <div class="shead"><h2>Working on</h2></div>
-    <ul class="ship glass">
-      <li>Moving your collection over from Collectr.</li>
-      <li>Keeping open raffles and entry deadlines at the top of News.</li>
-      <li>A pass over every page for consistency, motion and colour.</li>
-      <li>Using RAVI with no connection.</li>
-    </ul>
+  <!-- PLANNED, RECENTLY SHIPPED, THEN THE FORM (plan 2 M8.7 block 2, Mako 2026-11-07: before testers; no
+       lede). Both come from data/changes.json, kept by hand at every block that ships something a player
+       would notice (records: RULE -- keep the feedback page's Planned and Recently shipped current). -->
+  <section id="planned" hidden>
+    <div class="shead"><h2>Planned</h2><span class="sp"></span><span class="cnt" id="pcnt"></span></div>
+    <div class="chg glass" id="plist"></div>
   </section>
 
-  <section id="shipped">
+  <section id="shipped" hidden>
     <div class="shead"><h2>Recently shipped</h2></div>
-    <ul class="ship glass">
-      <li>News: Riot's posts in plain words, each with a short summary, read without leaving the app.</li>
-      <li>Sort and Filters when you search for cards on Decks and Collection.</li>
-      <li>A first-time setup, and How to play with Riot's own cards and symbols on New here.</li>
-      <li>Each legend's top-cut decklists and most-played cards on the Tier list.</li>
-      <li>The Trade board: who near you has the cards you want, and who wants yours.</li>
-    </ul>
+    <div id="slist"></div>
+    <div class="doors callg" data-k="deeper"><button type="button" class="door btn glass" id="sall"><span class="t">All updates</span><span class="sp"></span><small id="scnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
   </section>
 
   <section id="send">
@@ -85,7 +86,6 @@ body{-webkit-font-smoothing:antialiased;
     <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
   </div>
   </div>
-    <p class="fbn">For a shop's own events, prices or stock, ask the shop.</p>
   </section>
 
   <section class="sup glass" id="support"></section>
@@ -111,22 +111,66 @@ body{-webkit-font-smoothing:antialiased;
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
+<section class="panel frost" id="pall" aria-hidden="true" aria-label="All updates">
+  <div class="phead"><div class="ht"><h4 class="ttl">All updates</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody" id="alist"></div>
+</section>
 
 <script>
 (function(){
-  // One menu on this page, the Go to list. While it is open the page is
+  // Two menus on this page: Go to and All updates, one at a time. While one is open the page is
   // locked at the root (html.lock in app.css); the body is never pinned.
-  var pnav = document.getElementById("pnav"), scrim = document.getElementById("scrim"), open = false;
-  function set(on){
-    open = on;
-    if (on) { pnav.classList.add("show"); scrim.classList.add("show"); document.documentElement.classList.add("lock"); }
-    else { pnav.classList.remove("show"); scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
-    pnav.setAttribute("aria-hidden", on ? "false" : "true");
+  var scrim = document.getElementById("scrim"), OPENP = null;
+  function el(id){ return document.getElementById(id); }
+  function show(p){
+    if(OPENP && OPENP !== p){ OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    if(p){
+      p.classList.add("show"); p.setAttribute("aria-hidden", "false"); scrim.classList.add("show"); document.documentElement.classList.add("lock");
+      var b = p.querySelector(".pbody"); if(b) b.scrollTop = 0;
+    } else { scrim.classList.remove("show"); document.documentElement.classList.remove("lock"); }
+    window.RAVI_EDGES && window.RAVI_EDGES();
   }
-  document.getElementById("tabnav").addEventListener("click", function(){ set(!open); });
-  window.RAVI_GOTO(document.getElementById("pnavgoto"), "feedback", "../");
-  document.getElementById("pnhere").addEventListener("click", function(){ set(false); });
-  scrim.addEventListener("click", function(){ set(false); });
+  el("tabnav").addEventListener("click", function(){ show(OPENP === el("pnav") ? null : el("pnav")); });
+  window.RAVI_GOTO(el("pnavgoto"), "feedback", "../");
+  el("pnhere").addEventListener("click", function(){ show(null); });
+  scrim.addEventListener("click", function(){ show(null); });
+  document.addEventListener("click", function(ev){ if(ev.target.closest("[data-close]")) show(null); });
+
+  // ---- PLANNED AND RECENTLY SHIPPED, from data/changes.json ----
+  function esc(t){ return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  var PG = {};
+  (window.RAVI_PAGES || []).forEach(function(p){ PG[p.id] = p; });
+  // a line's page: its name, colour and icon; the whole app wears white and the hub's icon
+  function page(id){
+    if(id === "hub") return { name: "Hub", rgb: "240,240,245", icon: window.RAVI_ICON("hub") };
+    var p = PG[id];
+    return p ? { name: p.name, rgb: p.rgb, icon: p.icon } : { name: "Whole app", rgb: "240,240,245", icon: window.RAVI_ICON("hub") };
+  }
+  function lit(rgb){ return rgb.split(",").map(function(c){ return Math.round(+c + (255 - +c) * .40); }).join(","); }
+  function line(it, planned){
+    var g = page(it.page);
+    return '<div class="cr" style="--c:' + g.rgb + ';--cl:' + lit(g.rgb) + '"><span class="ci" aria-hidden="true">' + g.icon + '</span><span class="cm">'
+      + '<span class="cpg">' + esc(g.name) + '</span>'
+      + (planned ? '<span class="ctt">' + esc(it.t) + '</span>' + (it.d ? '<span class="cds">' + esc(it.d) + '</span>' : '') : '<span class="ctx">' + esc(it.t) + '</span>')
+      + '</span></div>';
+  }
+  function update(u){
+    var when = window.RAVI_DATE(new Date(u.date + "T12:00:00"));
+    return '<div class="chg glass"><div class="cdate">' + esc(u.v ? "Version " + u.v : when) + (u.v ? '<small>' + esc(when) + '</small>' : '') + '</div>'
+      + u.items.map(function(it){ return line(it, false); }).join("") + '</div>';
+  }
+  fetch("../data/changes.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
+    var pl = Array.isArray(d.planned) ? d.planned : [], sh = Array.isArray(d.shipped) ? d.shipped.filter(function(u){ return u && u.date && Array.isArray(u.items) && u.items.length; }) : [];
+    if(pl.length){ el("plist").innerHTML = pl.map(function(it){ return line(it, true); }).join(""); el("pcnt").textContent = pl.length; el("planned").hidden = false; }
+    if(sh.length){
+      el("slist").innerHTML = sh.slice(0, 3).map(update).join("");
+      el("alist").innerHTML = sh.map(update).join("");
+      el("scnt").textContent = sh.length;
+      el("shipped").hidden = false;
+    }
+  }).catch(function(){});
+  el("sall").addEventListener("click", function(){ show(el("pall")); });
 })();
 </script>
 <script>
