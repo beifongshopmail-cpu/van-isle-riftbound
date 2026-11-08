@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117525525836462377@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261114T120000
-DTEND;TZID=America/Vancouver:20261114T150000
+DTSTART;TZID=America/Vancouver:20261114T130000
+DTEND;TZID=America/Vancouver:20261114T160000
 SUMMARY:North Park Picture Framing and Collectables Nexus Nights
 LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
 DESCRIPTION:Nexus Nights\nNorth Park Picture Framing and Collectables\, Vic

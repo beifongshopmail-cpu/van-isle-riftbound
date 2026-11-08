@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117577631626909304@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270313T120000
+DTEND;TZID=America/Vancouver:20270313T150000
+SUMMARY:North Park Picture Framing and Collectables Legacy Nexus Cup
+LOCATION:1046 Mason St #4\, Victoria\, BC V8T 1A3\, Canada
+DESCRIPTION:Event\nNorth Park Picture Framing and Collectables\, Victoria\n
+ 28 of 28 spots left\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/
+ events/117577631626909304
+URL:https://playriftbound.com/en-US/events/117577631626909304
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
