@@ -102,8 +102,13 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 .ntile .nh{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 /* HAPPENING NOW (plan 2 M8.7 block 4, Mako's yes 2026-11-08): a pinned post's status in words under
    its headline, bold, bone (never colour alone), as the App Store's in-app events say Happening now */
-.nnow{font-family:var(--disp);font-size:13px;font-weight:700;line-height:1.3;color:var(--bone);white-space:normal}
-.ntile .nnow{padding:0 4px}
+.nnow{align-self:flex-start;display:inline-block;max-width:100%;font-family:var(--disp);font-size:12px;font-weight:700;line-height:1.3;
+  color:var(--ink);background:var(--bone);padding:2px 8px;border-radius:999px;white-space:normal}
+/* time left, darker as it runs out, the words always saying it (Mako 2026-11-08 09:07; never green
+   against red, his blind pair): bone with more than two days, gold within two, garnet on the day */
+.nnow.soon{background:rgb(255,200,40)}
+.nnow.today{background:rgb(200,35,70);color:var(--bone)}
+.ntile .nnow{margin:0 4px}
 .new{display:inline-block;vertical-align:1px;font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
 /* A POST'S MENU: RAVI's summary, Riot's picture, Riot's words; the head in the kind's colour as a
@@ -340,7 +345,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     var ds = Array.isArray(it.dates) ? it.dates.filter(function(x){ return x && ymdOk(x.from); }) : [], i, x;
     for(i = 0; i < ds.length; i++){
       x = ds[i];
-      if(x.what === "drawing" && x.from <= TODAY && (ymdOk(x.to) ? x.to : x.from) >= TODAY) return { s: "Drawing today. Check your email.", end: TODAY, key: "d" + x.from };
+      if(x.what === "drawing" && x.from <= TODAY && (ymdOk(x.to) ? x.to : x.from) >= TODAY) return { s: "Drawing today. Check your email.", end: TODAY, key: "d" + x.from, u: "today" };
     }
     var close = null, open = null;
     ds.forEach(function(y){
@@ -351,7 +356,13 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     var from = open ? open.from : it.posted;
     if(!ymdOk(from) || from > TODAY || from > close.from) return null;
     var t = clock(close.label);
-    return { s: close.from === TODAY ? "Last day to enter" + (t ? ", " + t : "") : "Entries close " + day(close.from) + (t ? ", " + t : ""), end: close.from, key: "c" + close.from };
+    return { s: close.from === TODAY ? "Last day to enter" + (t ? ", " + t : "") : "Entries close " + day(close.from) + (t ? ", " + t : ""), end: close.from, key: "c" + close.from, u: urgency(close.from) };
+  }
+  // how close the end is: "today", "soon" (one or two days left) or ""
+  function urgency(end){
+    var a = Date.UTC(+TODAY.slice(0, 4), +TODAY.slice(5, 7) - 1, +TODAY.slice(8)), b = Date.UTC(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8));
+    var n = Math.round((b - a) / 864e5);
+    return n <= 0 ? "today" : n <= 2 ? "soon" : "";
   }
   // the pinned posts, soonest end first (a drawing today first), the newer post of a pair
   function pinned(all){
@@ -362,11 +373,11 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
       var b = best[h.key];
       if(!b || (it.posted || "") > (b.it.posted || "")) best[h.key] = { it: it, h: h };
     });
-    Object.keys(best).forEach(function(k){ out.push(best[k]); NOW[best[k].it.id] = best[k].h.s; });
+    Object.keys(best).forEach(function(k){ out.push(best[k]); NOW[best[k].it.id] = best[k].h; });
     out.sort(function(a, b){ return a.h.end < b.h.end ? -1 : a.h.end > b.h.end ? 1 : ((b.it.posted || "") < (a.it.posted || "") ? -1 : 1); });
     return out.map(function(x){ return x.it; });
   }
-  function nowLine(it){ return NOW[it.id] ? '<span class="nnow">' + esc(NOW[it.id]) + '</span>' : ""; }
+  function nowLine(it){ var h = NOW[it.id]; return h ? '<span class="nnow' + (h.u ? " " + h.u : "") + '">' + esc(h.s) + '</span>' : ""; }
 
   // a post is shown when it has words: its summary, Riot's text or its article
   function shown(it){ return !!(it && it.id && (it.sum || it.text || it.art)); }
@@ -381,17 +392,17 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   function card(it, badge){
     var k = KIND[kindOf(it)], s = sub(it), wrap = '<div class="doors nc" style="--tint:rgba(' + k.rgb + ',var(--cg));--c:' + k.rgb + ';--cl:' + lit(k.rgb) + '">';
     if(VIEW === "grid"){
-      return wrap + '<button type="button" class="ntile btn glass ncb" data-id="' + esc(it.id) + '" data-k="deeper">' + picture(it, "ngpic")
+      return wrap + '<button type="button" class="ntile btn glass ncb" data-id="' + esc(it.id) + '" data-k="deeper">' + nowLine(it) + picture(it, "ngpic")
         + '<span class="nl1"><span class="ty">' + esc(k.label) + '</span><span class="when">' + esc(day(it.posted)) + '</span>'
         + (badge ? '<span class="new">NEW</span>' : '') + CVR + '</span>'
-        + '<span class="nh">' + esc(head(it)) + '</span>' + nowLine(it) + '</button></div>';
+        + '<span class="nh">' + esc(head(it)) + '</span></button></div>';
     }
     return wrap
       + '<button type="button" class="door btn glass rec ncb" data-id="' + esc(it.id) + '" data-k="deeper">'
       + picture(it, "nthumb")
-      + '<span class="nt"><span class="nl1"><span class="ty">' + esc(k.label) + '</span><span class="when">' + esc(day(it.posted)) + '</span>'
+      + '<span class="nt">' + nowLine(it) + '<span class="nl1"><span class="ty">' + esc(k.label) + '</span><span class="when">' + esc(day(it.posted)) + '</span>'
       + (badge ? '<span class="new">NEW</span>' : '') + '</span>'
-      + '<span class="nh">' + esc(head(it)) + '</span>' + nowLine(it)
+      + '<span class="nh">' + esc(head(it)) + '</span>'
       + (s ? '<span class="ns">' + esc(s) + '</span>' : '') + '</span>' + CVR + '</button></div>';
   }
   function views(){
