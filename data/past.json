@@ -3,6 +3,39 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117497230052513843",
+   "name": "Nexus Night's at Colossal Cards & Collectables Courtenay",
+   "type": "nexus",
+   "start": "2026-11-07T17:00:00-07:00",
+   "day": "2026-11-07",
+   "venue": "Colossal Cards & Collectables",
+   "store": "Colossal Courtenay",
+   "region": "island",
+   "sid": 902
+  },
+  {
+   "id": "rb117525519536771441",
+   "name": "North Park Picture Framing and Collectables Nexus Nights",
+   "type": "nexus",
+   "start": "2026-11-07T13:00:00-07:00",
+   "day": "2026-11-07",
+   "venue": "North Park Picture Framing and Collectables",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
+   "id": "rb117555776676143574",
+   "name": "Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-07T10:30:00-07:00",
+   "day": "2026-11-07",
+   "venue": "Elite4 Games",
+   "store": "Elite4",
+   "region": "victoria",
+   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895"
+  },
+  {
    "id": "rb117525460412948679",
    "name": "North Park Picture Framing and Collectables Open Play",
    "type": "open",

@@ -1,21 +1,21 @@
 {
- "generated_at": "2026-11-08T06:58:03.089Z",
- "generated_local": "2026-11-07T23:58:03-07:00",
- "window_start": "2026-11-07T07:00:00.000Z",
+ "generated_at": "2026-11-08T18:14:51.959Z",
+ "generated_local": "2026-11-08T11:14:51-07:00",
+ "window_start": "2026-11-08T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 56,
-   "added": 55
+   "returned": 53,
+   "added": 53
   },
   {
    "name": "Courtenay",
    "region": "island",
    "source": "playriftbound",
-   "returned": 9,
-   "added": 9
+   "returned": 8,
+   "added": 8
   },
   {
    "name": "Campbell River",
@@ -47,8 +47,8 @@
   }
  ],
  "totals": {
-  "fetched": 70,
-  "unique": 69,
+  "fetched": 66,
+  "unique": 66,
   "prev_unique": 69,
   "recent": [
    {
@@ -70,6 +70,10 @@
    {
     "d": "2026-11-07",
     "n": 69
+   },
+   {
+    "d": "2026-11-08",
+    "n": 66
    }
   ]
  },
@@ -81,78 +85,6 @@
  },
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117555776676143574",
-   "name": "Nexus Night",
-   "type": "nexus",
-   "start": "2026-11-07T10:30:00-07:00",
-   "end": null,
-   "day": "2026-11-07",
-   "time": "10:30 AM",
-   "venue": "Elite4 Games",
-   "city": "Victoria",
-   "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 8,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "store": "Elite4",
-   "swiss": 3,
-   "cut": false
-  },
-  {
-   "id": "rb117525519536771441",
-   "name": "North Park Picture Framing and Collectables Nexus Nights",
-   "type": "nexus",
-   "start": "2026-11-07T13:00:00-07:00",
-   "end": null,
-   "day": "2026-11-07",
-   "time": "1:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 8,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 18437,
-   "store": "North Park Framing",
-   "swiss": 5,
-   "cut": false
-  },
-  {
-   "id": "rb117497230052513843",
-   "name": "Nexus Night's at Colossal Cards & Collectables Courtenay",
-   "type": "nexus",
-   "start": "2026-11-07T17:00:00-07:00",
-   "end": null,
-   "day": "2026-11-07",
-   "time": "5:00 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
-   "region": "island",
-   "cap": 48,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 902,
-   "store": "Colossal Courtenay",
-   "swiss": 4,
-   "cut": false
-  },
   {
    "id": "rb117568101204024672",
    "name": "sunday morning Nexus \"night\"",
@@ -166,7 +98,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 6,
+   "reg": 7,
    "cents": 600,
    "currency": "CAD",
    "updated": null,
