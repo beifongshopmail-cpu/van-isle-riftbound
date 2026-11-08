@@ -34,12 +34,12 @@ body{-webkit-font-smoothing:antialiased;
    those are set in Tally, not here. */
 /* ONE WAY TO THE FORM (plan 2 M5, Mako's yes 2026-11-02): the form shows on arrival in its
    group; no Send feedback fold row, and the bar no longer links out to Tally's own page */
-.fgrp{margin:20px 0 12px}
+.fgrp{margin:0 0 12px}
 .fbody{padding:8px 8px 8px;min-height:200px}
 .fbody iframe{display:block;width:100%;border:0;background:transparent}
 /* the store-neutral line: muted small print directly under the form */
 .fbn{margin:0 4px 30px;font-size:13px;line-height:1.5;color:var(--muted)}
-.lead{margin:-6px 4px 10px;font-size:12px;color:var(--muted)}
+#working,#shipped,#send{margin-top:22px}
 .ship{border-radius:22px;padding:4px 16px;list-style:none;margin:0}
 .ship li{padding:12px 0;font-size:15px;line-height:1.4;border-top:1px solid rgba(255,255,255,.07)}
 .ship li:first-child{border-top:0}
@@ -52,27 +52,40 @@ body{-webkit-font-smoothing:antialiased;
 
 <main id="fb">
   <h2 class="sr">Feedback</h2>
-  <p class="lede">Something broken, wrong or missing? Tell us here.</p>
+  <p class="lede">Something broken, wrong or missing? Tell us below.</p>
 
+  <!-- WORKING ON, THEN RECENTLY SHIPPED, THEN THE FORM (plan 2 M8.7 block 2, Mako 2026-11-07: before testers).
+       Both lists are plain markup, kept current by hand at every block that ships something a player would
+       notice (records: RULE -- keep the feedback page's Working on and Recently shipped current). -->
+  <section id="working">
+    <div class="shead"><h2>Working on</h2></div>
+    <ul class="ship glass">
+      <li>Moving your collection over from Collectr.</li>
+      <li>Keeping open raffles and entry deadlines at the top of News.</li>
+      <li>A pass over every page for consistency, motion and colour.</li>
+      <li>Using RAVI with no connection.</li>
+    </ul>
+  </section>
+
+  <section id="shipped">
+    <div class="shead"><h2>Recently shipped</h2></div>
+    <ul class="ship glass">
+      <li>News: Riot's posts in plain words, each with a short summary, read without leaving the app.</li>
+      <li>Sort and Filters when you search for cards on Decks and Collection.</li>
+      <li>A first-time setup, and How to play with Riot's own cards and symbols on New here.</li>
+      <li>Each legend's top-cut decklists and most-played cards on the Tier list.</li>
+      <li>The Trade board: who near you has the cards you want, and who wants yours.</li>
+    </ul>
+  </section>
+
+  <section id="send">
+    <div class="shead"><h2>Send feedback</h2></div>
 <div class="doors fgrp">
   <div class="fbody" id="fform">
     <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
   </div>
   </div>
-
-  <p class="fbn">For a shop's own events, prices or stock, ask the shop.</p>
-
-  <!-- M7 C5 (Mako 2026-11-04): Recently shipped is hidden until RAVI has users (its updates are paused till then) -->
-  <section id="shipped" hidden>
-    <div class="shead"><h2>Recently shipped</h2></div>
-    <p class="lead">Some of what came out of feedback like this.</p>
-    <ul class="ship glass">
-      <li>See how far a card's price has moved, over a day, a week, a month, a year or all time.</li>
-      <li>Card art on the counter and the trade calculator, with a full-screen view on tap.</li>
-      <li>Saved trades, kept at the numbers they were agreed at, with a receipt image you can send.</li>
-      <li>Percent-of-market rates per side, so the calculator can match how you actually trade.</li>
-      <li>Match history on the counter, with legends and who went first.</li>
-    </ul>
+    <p class="fbn">For a shop's own events, prices or stock, ask the shop.</p>
   </section>
 
   <section class="sup glass" id="support"></section>
