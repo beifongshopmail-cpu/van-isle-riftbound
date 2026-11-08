@@ -1,8 +1,10 @@
 # RAVI -- standing rules for Claude
 
-This repo is RAVI (Van Isle Riftbound), a free static web app on GitHub Pages.
-From 2026-10-13 one claude.ai chat, on either of Mako's accounts, does a
-whole block: design with Mako, build, test, push, record. There is no relay
+This repo is RAVI (Rift App, Van Isle; the repo keeps the old name Van Isle
+Riftbound), a free web app at https://ravi.tools on GitHub Pages, with its
+server in server/live. One claude.ai chat, on either of Mako's accounts, does
+a whole block (several while the chat stays quick; Mako 2026-11-02): design
+with Mako, build, test, push, record. There is no relay
 and no PC step. The method in full: mako-records
 ravi/rule/how-a-build-runs-from-2026-10-04-agent-pushes-from-2026-10-07-ch.md.
 Design rules: STYLE.md. These rules hold in every session.
