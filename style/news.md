@@ -12,3 +12,4 @@ Read with STYLE.md (the core) before touching this page. A class this page defin
 
 Page-local classes (not in app.css; not Kit parts):
 - news/index.html: .dvrow .dvseg .dvsort .empty .extl .hit .ico17 .mty .mv .nc .ncb .new .ngpic .ngrid .nph .ntile .wkbox .wksep .nh .nl1 .nnow .npic .ns .nsum .nt .nthumb .nwatch .plate .rlab .rsrc .rtx .srow .ty .when .wkact .wkl
+- .nboot (plan 2 M8.7 motion trial, 2026-11-08): holds News' loading blocks (pages.js RAVI_SKEL) between the plate and This week while data/feed.json comes, removed once it has (or failed); only while the motion trial is on, until Mako picks.

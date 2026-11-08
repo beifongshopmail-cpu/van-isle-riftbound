@@ -32,6 +32,8 @@ body{-webkit-font-smoothing:antialiased;
 #dk,#hmain{max-width:480px;margin:0 auto;padding:0 12px}
 #dkfoot{max-width:480px;margin:0 auto;padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 .boot{padding:28px 16px 0;font-size:15px;color:var(--muted);text-align:center}
+#boot:has(.skel){max-width:480px;margin:0 auto;padding:0 12px;text-align:left}
+#boot .skel{padding-top:0}   /* the loading blocks (plan 2 M8.7 motion) */
 
 /* ---- THE DECKS LIST ---- */
 /* its sticky plate (refinement, Mako 2026-10-18): Search decks, then New deck and Import on
@@ -555,7 +557,8 @@ body{-webkit-font-smoothing:antialiased;
     </footer>
   </div>
 </div>
-<div class="boot" id="boot">Loading the cards</div>
+<div class="boot" id="boot"></div>
+<script>document.getElementById("boot").innerHTML = RAVI_SKEL(["plate:field,track,pair", "head", "card:3:76"], "Loading the cards");</script>
 
 <!-- the card browser -->
 <section class="brw" id="brw" hidden aria-label="Add cards">

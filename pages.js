@@ -168,6 +168,186 @@ window.RAVI_PAGES = [
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
 ];
 
+// THE MOTION TRIAL (plan 2 M8.7 motion block, 2026-11-08). The test copy in an Artifact could not run
+// page-to-page motion (its pages do not count as one site there), so the trial runs in the real app,
+// dormant: nothing below changes anything unless this phone holds ravi.try.motion.v1. Five quick taps
+// on the hub's badge turn it on (and reload); a yellow Try pill then sits top left on every page, its
+// panel switching Pages (rise, fade, slide, none), Hub (open, page), Blocks (pulse, still) and Slow data
+// (each data file waits 1.6s, so the loading blocks show), and End trial turning it off. Comes out when
+// Mako has picked: his picks become the app's, for everyone.
+window.RAVI_TRY = (function(){
+  var K = "ravi.try.motion.v1", D = { pm: "rise", hm: "open", sk: "pulse", slow: "on" }, c, k;
+  try { c = JSON.parse(localStorage.getItem(K) || "null"); } catch (e) { c = null; }
+  if (!c || typeof c !== "object") { return null; }
+  for (k in D) { if (!c[k]) { c[k] = D[k]; } }
+  return c;
+})();
+(function(){
+  if (typeof document === "undefined") { return; }   // pages.js read outside a page (rb-tools' checks)
+  var K = "ravi.try.motion.v1", c = window.RAVI_TRY, doc = document.documentElement;
+  function save(v){ try { if (v) { localStorage.setItem(K, JSON.stringify(v)); } else { localStorage.removeItem(K); } } catch (e) {} }
+  function apply(){ doc.setAttribute("data-pm", c.pm); doc.setAttribute("data-hm", c.hm); doc.setAttribute("data-sk", c.sk); }
+  function ready(f){ if (document.body) { f(); } else { document.addEventListener("DOMContentLoaded", f); } }
+  // off: only the hub's five taps listen
+  ready(function(){
+    var b = document.querySelector(".hubname"), n = 0, t = 0;
+    if (!b) { return; }
+    b.addEventListener("click", function(){
+      var now = Date.now();
+      n = now - t < 700 ? n + 1 : 1; t = now;
+      if (n >= 5) { n = 0; save(c ? null : { pm: "rise", hm: "open", sk: "pulse", slow: "on" }); location.reload(); }
+    });
+  });
+  if (!c) { return; }
+  var st = document.createElement("style");
+  st.textContent = "@view-transition{navigation:auto}";
+  document.head.appendChild(st);
+  apply();
+  var f = window.fetch;
+  window.fetch = function(u){
+    var a = arguments, s = String(u && u.url || u);
+    if (c.slow === "on" && /\.json(\?|$)/.test(s)) { return new Promise(function(r){ setTimeout(r, 1600); }).then(function(){ return f.apply(window, a); }); }
+    return f.apply(window, a);
+  };
+  var ROWS = [["pm", "Pages", ["rise", "fade", "slide", "none"]], ["hm", "Hub", ["open", "page"]], ["sk", "Blocks", ["pulse", "still"]], ["slow", "Slow data", ["on", "off"]]];
+  var Y = "rgb(255,200,40)";
+  ready(function(){
+    var b = document.createElement("button"), p = document.createElement("div");
+    b.type = "button"; b.textContent = "Try"; b.setAttribute("data-k", "do");
+    b.style.cssText = "position:fixed;z-index:9999;top:calc(env(safe-area-inset-top,0px) + 8px);left:10px;height:30px;padding:0 12px;border:0;border-radius:999px;background:" + Y + ";color:var(--ink);font:700 13px var(--text);view-transition-name:ravi-try";
+    p.hidden = true;
+    p.style.cssText = "position:fixed;z-index:9999;top:calc(env(safe-area-inset-top,0px) + 46px);left:10px;right:10px;max-width:420px;padding:12px;border-radius:20px;background:var(--plate-solid);border:2px solid " + Y + ";color:var(--bone);font:13px var(--text);box-shadow:0 10px 30px rgba(0,0,0,.6)";
+    function draw(){
+      var x = "";
+      ROWS.forEach(function(r){
+        x += '<div style="margin:0 0 10px"><div style="font-weight:700;margin:0 0 6px">' + r[1] + '</div><div style="display:flex;gap:6px">';
+        r[2].forEach(function(v){
+          var on = c[r[0]] === v;
+          x += '<button type="button" data-k="' + r[0] + '" data-v="' + v + '" style="flex:1;height:36px;border-radius:999px;border:2px solid ' + (on ? Y : "var(--hi)") + ';background:' + (on ? Y : "transparent") + ';color:' + (on ? "var(--ink)" : "var(--bone)") + ';font:700 13px var(--text)">' + (on ? "✓ " : "") + v + '</button>';
+        });
+        x += '</div></div>';
+      });
+      x += '<button type="button" data-end="1" style="width:100%;height:36px;border-radius:999px;border:2px solid var(--hi);background:transparent;color:var(--bone);font:700 13px var(--text)">End trial</button>';
+      x += '<div style="color:var(--muted);margin:8px 2px 0">On this phone only. Slow data takes effect on the next page you open.</div>';
+      p.innerHTML = x;
+    }
+    draw();
+    p.addEventListener("click", function(e){
+      var t = e.target.closest("button");
+      if (!t) { return; }
+      if (t.getAttribute("data-end")) { save(null); location.reload(); return; }
+      c[t.getAttribute("data-k")] = t.getAttribute("data-v"); save(c); apply(); draw();
+    });
+    b.addEventListener("click", function(){ p.hidden = !p.hidden; });
+    document.body.appendChild(b); document.body.appendChild(p);
+  });
+})();
+
+// PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08: "Motion for switching between pages").
+// The browser's own cross-document view transitions (app.css @view-transition; Safari 18.2+, no
+// script library). This part only tells the next page where you came from, so its CSS can pick the
+// motion: data-vt on <html> is "fwd" or "back" between pages (by their order in RAVI_PAGES; a return
+// through history is always back), "open"
+// from the hub (the page opens out of the block you tapped, whose box rides along as --vt-t/r/b/l)
+// and "close" back to the hub (the page shrinks into its block, if this launch opened it from one).
+// A tap on a same-site link writes {from, to, rect, at} to sessionStorage; leaving any other way
+// (Back, a script) writes "from" when the page hides. The new page reads it in its head, before its
+// first paint, and again on a return from the back-forward cache. Without support, nothing changes.
+(function(){
+  if (!window.RAVI_TRY || typeof document === "undefined") { return; }   // the motion trial only, until Mako picks
+  var KEY = "ravi.vt.v1", BLK = "ravi.vt.blk.v1";
+  var doc = document.documentElement;
+  function idOf(u){
+    var m;
+    try { m = new URL(u, location.href).pathname.replace(/index\.html$/, "").match(/([^\/]+)\/$/); } catch (e) { return ""; }
+    var pages = window.RAVI_PAGES, i, seg = m ? m[1] + "/" : "";
+    for (i = 0; i < pages.length; i++) { if (pages[i].path === seg) { return pages[i].id; } }
+    return "hub";
+  }
+  function order(id){
+    var pages = window.RAVI_PAGES, i;
+    for (i = 0; i < pages.length; i++) { if (pages[i].id === id) { return i; } }
+    return -1;
+  }
+  function read(k){ try { return JSON.parse(sessionStorage.getItem(k) || "null"); } catch (e) { return null; } }
+  function write(k, v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function px(n){ return Math.max(0, Math.round(n)) + "px"; }
+  function arrive(){
+    var me = idOf(location.href), m = read(KEY), dir = "", r = null, blk;
+    doc.removeAttribute("data-vt");
+    if (!m || !m.from || Date.now() - (m.at || 0) > 8000 || m.from === me) { return; }
+    if (m.from === "hub") {
+      dir = "open"; r = m.rect;
+      if (r) { blk = read(BLK) || {}; blk[me] = r; write(BLK, blk); }
+    } else if (me === "hub") {
+      dir = "close"; r = (read(BLK) || {})[m.from] || null;
+    } else {
+      dir = order(me) >= order(m.from) ? "fwd" : "back";
+      // a return through history (Back, a swipe) moves as back, whatever the order
+      var act = window.navigation && window.navigation.activation, nt = "";
+      if (act && act.navigationType === "traverse" && act.from && act.entry) { dir = act.from.index > act.entry.index ? "back" : "fwd"; }
+      else { try { nt = performance.getEntriesByType("navigation")[0].type; } catch (e) {} if (nt === "back_forward") { dir = "back"; } }
+    }
+    if ((dir === "open" || dir === "close") && !r) { dir = "fade"; }
+    if (r) {
+      doc.style.setProperty("--vt-t", px(r.t)); doc.style.setProperty("--vt-l", px(r.l));
+      doc.style.setProperty("--vt-r", px(innerWidth - r.l - r.w)); doc.style.setProperty("--vt-b", px(innerHeight - r.t - r.h));
+    }
+    doc.setAttribute("data-vt", dir);
+  }
+  arrive();
+  addEventListener("pageshow", function(e){ if (e.persisted) { arrive(); } });
+  document.addEventListener("click", function(e){
+    var a = e.target.closest && e.target.closest("a[href]"), h, b, from;
+    if (!a || a.target === "_blank" || e.defaultPrevented) { return; }
+    h = a.getAttribute("href");
+    try { if (new URL(h, location.href).origin !== location.origin) { return; } } catch (x) { return; }
+    from = idOf(location.href);
+    b = a.getBoundingClientRect();
+    write(KEY, { from: from, to: idOf(a.href), at: Date.now(), rect: from === "hub" ? { t: b.top, l: b.left, w: b.width, h: b.height } : null });
+  }, true);
+  function leave(){
+    var m = read(KEY), me = idOf(location.href);
+    if (!m || m.from !== me || Date.now() - (m.at || 0) > 8000) { write(KEY, { from: me, at: Date.now() }); }
+  }
+  addEventListener("pageswap", leave);
+  addEventListener("pagehide", leave);
+})();
+
+// LOADING BLOCKS (plan 2 M8.7 motion block, Mako 2026-11-08: "the 'blank' blocks that WILL make up
+// the page be there as the page loads"; IN TRIAL). RAVI_SKEL(parts) returns the page's shape in
+// placeholder blocks, built from the Kit's surfaces (app.css LOADING BLOCKS), for a page to show
+// while its data comes. Parts, top to bottom:
+//   "plate:<field|track|pair>,..."  the sticky plate, one track-high block per entry (pair: two halves)
+//   "big"   a large number          "head"  a section head          "lede:<n>"  n lines of text
+//   "card:<n>:<height>[:pic]"       n glass cards, a square picture on the left with :pic
+//   "rows:<n>"                      a group of n rows              "tiles:<n>"  n card pictures, three a row
+// The blocks stay hidden for the first .15s, so a quick load never flashes them. Hidden from
+// screen readers, which hear "Loading" once. Outside the motion trial it returns the page's old
+// loading words (text) unchanged.
+window.RAVI_SKEL = function(parts, text){
+  if (!window.RAVI_TRY) { return String(text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;"); }   // the motion trial only, until Mako picks
+  var h = '<div class="skel" aria-hidden="true">', i, k, p, n, ln = '<i class="sk skl"></i><i class="sk skl skl2"></i>';
+  for (i = 0; i < parts.length; i++) {
+    p = parts[i].split(":"); n = Math.max(1, +p[1] || 1);
+    if (p[0] === "plate") {
+      h += '<div class="skplate">';
+      (p[1] || "field").split(",").forEach(function(x){ h += x === "pair" ? '<span class="skpair"><i class="sk skp"></i><i class="sk skp"></i></span>' : '<i class="sk skp' + (x === "track" ? ' skt' : '') + '"></i>'; });
+      h += '</div>';
+    } else if (p[0] === "big") { h += '<i class="sk skbig"></i>';
+    } else if (p[0] === "head") { h += '<i class="sk skhead"></i>';
+    } else if (p[0] === "lede") { for (k = 0; k < n; k++) { h += '<i class="sk skl skled' + (k === n - 1 ? ' skl2' : '') + '"></i>'; }
+    } else if (p[0] === "card") {
+      for (k = 0; k < n; k++) { h += '<span class="skc" style="height:' + (+p[2] || 72) + 'px">' + (p[3] === "pic" ? '<i class="sk skpic"></i>' : '') + '<span class="sklines">' + ln + '</span></span>'; }
+    } else if (p[0] === "rows") {
+      h += '<span class="skrows">'; for (k = 0; k < n; k++) { h += '<span class="skrow"><i class="sk skl"></i></span>'; } h += '</span>';
+    } else if (p[0] === "tiles") {
+      h += '<span class="sktiles">'; for (k = 0; k < n; k++) { h += '<i class="sk sktile"></i>'; } h += '</span>';
+    }
+  }
+  return h + '</div><span class="sr">Loading</span>';
+};
+
 // THE HUB PICKS (M15, Mako 2026-10-26). The hub holds eight blocks, so its icon stays true: seven
 // are the viewer's picks, set in App settings, and the eighth is always All pages, a tray with
 // every page. The picks live on this phone (vir.hub.blocks.v1, a list of page ids). No key: the

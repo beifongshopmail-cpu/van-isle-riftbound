@@ -136,6 +136,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 .empty{margin:6px 4px 0;font-size:13px;color:var(--muted)}
 .ngrid .empty{grid-column:1 / -1}
 .foot a{color:var(--bone)}
+.nboot .skel{padding-top:22px}   /* the loading blocks line up with This week (plan 2 M8.7 motion) */
 </style>
 </head>
 <body>
@@ -154,6 +155,8 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     <div class="dvrow"><div class="seg dvseg" id="vseg" role="group" aria-label="Posts show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="false"></button><button type="button" data-v="list" aria-label="List" aria-pressed="true"></button></div><span class="sp"></span><button type="button" class="dvsort glass" id="kchip" data-k="do" aria-pressed="false">Kinds</button></div>
   </div>
 
+  <div id="nboot" class="nboot"></div>
+  <script>document.getElementById("nboot").innerHTML = RAVI_SKEL(["rows:1", "head", "card:4:104:pic"]);</script>
   <div id="home">
     <section id="snow" hidden>
       <div class="shead"><h2>Happening now</h2><span class="sp"></span><span class="cnt" id="hcnt"></span></div>
@@ -698,12 +701,13 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   fetch("../data/feed.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
     if(!d || !Array.isArray(d.items)) throw new Error("shape");
     D = d;
+    el("nboot").remove();
     D.items.forEach(function(it){ if(it && it.id) ITEM[it.id] = it; });
     seenStart();
     render();
     index();
     if(el("q").value.trim()) search();
-  }).catch(function(){ el("loadfail").hidden = false; });
+  }).catch(function(){ var b = el("nboot"); if(b) b.remove(); el("loadfail").hidden = false; });
   Promise.all([
     fetch("../data/prices.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(prices).catch(function(){}),
     fetch("../data/tier.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(legends).catch(function(){})
