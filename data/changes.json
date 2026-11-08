@@ -2,11 +2,6 @@
   "note": "Feedback's Planned and Recently shipped (plan 2 M8.7 block 2, Mako 2026-11-07). Kept by hand at every block that ships something a player would notice and at every milestone close-out (records: RULE -- keep the feedback page's Planned and Recently shipped current). Each line is a short title (t, a few words, what the page shows) and its detail (d, a sentence, shown on a tap). page is a RAVI_PAGES id, or app for the whole app. A version field (v) joins each update once testers start.",
   "planned": [
     {
-      "page": "collection",
-      "t": "Import from Collectr",
-      "d": "Bring your Collectr collection over, no paid CSV export needed."
-    },
-    {
       "page": "news",
       "t": "Raffles and deadlines pinned",
       "d": "Open raffles and entry deadlines stay at the top of News while they are open."
