@@ -411,7 +411,7 @@ const ASK = "You write for RAVI, a free community app for the Riftbound trading 
   "{\"title\": a plain headline of at most 8 words; " +
   "\"summary\": one or two short, plain sentences, under 40 words, saying what is happening and when, if the post says; " +
   "\"dates\": the dates in the post a player could act on, each {\"what\": one of \"entries open\", \"entries close\", \"drawing\", \"event\", \"release\", \"deadline\", \"other\", " +
-  "\"label\": at most 6 words, \"from\": \"YYYY-MM-DD\", \"to\": \"YYYY-MM-DD\" or null}, or [] when there are none}. " +
+  "\"label\": at most 6 words, \"from\": \"YYYY-MM-DD\", \"to\": \"YYYY-MM-DD\" or null}, at most 6 of them, the soonest first, or [] when there are none}. " +
   "Use only facts in the post; work out relative dates (tomorrow, next week) from its published day. No hashtags, emoji, quotes or hype.";
 const WHAT = ["entries open", "entries close", "drawing", "event", "release", "deadline", "other"];
 
