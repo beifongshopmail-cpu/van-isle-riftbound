@@ -53,17 +53,22 @@ body{-webkit-font-smoothing:antialiased;
 .dvsort.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .dvsort:active{transform:scale(.96)}
 mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
-/* THIS WEEK: two glass cards; you read their lists (no taps). The legends card ends with the Tier
-   list under the in-card line, as an event card's open row sits under its line (STYLE 3, .evact). */
-.wk{border-radius:22px;padding:12px 14px;margin:0 0 8px}
-.wk .lb{margin:0 0 4px;color:var(--muted);font-size:12px}
+/* THIS WEEK: one glass row that opens in place, as Collection's Movers (Mako 2026-11-07): closed,
+   unless what it shows changed since the last visit; a hairline under its head, the price moves, a
+   line, the top legends with the Tier list under the last line. Its lists you read (no taps). */
+.wkbox{margin:0}
+#wktog .chev{flex:0 0 auto;margin-left:6px;color:var(--muted)}
+#wkbody{position:relative;padding:0 14px 12px}
+#wkbody::before{content:"";position:absolute;top:0;left:16px;right:0;height:1px;background:rgba(255,255,255,.08)}
+#wkbody .lb{margin:0;padding:12px 2px 4px;color:var(--muted);font-size:12px}
+.wksep{height:1px;background:rgba(255,255,255,.07);margin-top:8px}
 .wkl{list-style:none;margin:0;padding:0}
 .wkl li{display:flex;align-items:center;gap:8px;min-height:32px;font-size:15px}
 .wkl .t{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wkl small{flex:0 0 auto;font-weight:600;font-size:12px;color:var(--muted)}
 .wkl .mv{flex:0 0 auto;display:inline-flex;align-items:center;gap:2px;font-weight:600;font-size:13px}
 .mv svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.wkact{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+.wkact{margin-top:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
 /* A POST: its own card in its kind's colour (Mako 2026-11-07: colour like Rules): a one-row press
    group (.doors, a glass card: the page sets only its margin) tinted as Rules tints its sections,
    its row a record (.door.rec) that opens the post's menu. Riot's picture on the left; the kind
@@ -142,15 +147,19 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 
   <div id="home">
     <section id="week" hidden>
-      <div class="shead"><h2>This week</h2></div>
-      <div class="wk glass" id="wkprices" hidden>
-        <p class="lb">Biggest price moves, last 7 days</p>
-        <ul class="wkl" id="wkp"></ul>
-      </div>
-      <div class="wk glass" id="wklegends" hidden>
-        <p class="lb">Top legends, last <span id="wkdays">30</span> days</p>
-        <ul class="wkl" id="wkt"></ul>
-        <div class="wkact"><a class="pact btn glass" href="../tier/" data-k="do"><span class="ico17" id="wkico"></span>Tier list</a></div>
+      <div class="doors wkbox" data-k="open"><button type="button" class="door btn glass" id="wktog" aria-expanded="false" aria-controls="wkbody"><span class="t">This week</span><span class="sp"></span><small id="wkcnt"></small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+        <div id="wkbody" hidden>
+          <div id="wkprices" hidden>
+            <p class="lb">Biggest price moves, last 7 days</p>
+            <ul class="wkl" id="wkp"></ul>
+          </div>
+          <div class="wksep" id="wksep" hidden></div>
+          <div id="wklegends" hidden>
+            <p class="lb">Top legends, last <span id="wkdays">30</span> days</p>
+            <ul class="wkl" id="wkt"></ul>
+            <div class="wkact"><a class="pact btn glass" href="../tier/" data-k="do"><span class="ico17" id="wkico"></span>Tier list</a></div>
+          </div>
+        </div>
       </div>
     </section>
     <section id="snew" hidden>
@@ -524,7 +533,9 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     }).join("");
     el("wkprices").hidden = false;
     el("week").hidden = false;
+    el("wksep").hidden = el("wklegends").hidden;
     el("stamp").innerHTML = window.RAVI_STAMP(P) || "";
+    WEEK.p = out.map(function(m){ return m.n + (m.pct >= 0 ? "+" : "-"); }).join("|");
   }
   // The top legends: the Tier list's own maths (tier/tier.js) on TopDeck.gg's results.
   function legends(T){
@@ -541,7 +552,30 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     el("wkico").innerHTML = window.RAVI_ICON("tier");
     el("wklegends").hidden = false;
     el("week").hidden = false;
+    el("wksep").hidden = el("wkprices").hidden;
+    WEEK.t = r.map(function(x){ return x.l + ":" + x.tier; }).join("|");
   }
+  // OPEN WHEN IT CHANGED (Mako 2026-11-07): closed on a visit, unless the three moves (which cards,
+  // which way) or the three legends (and their tiers) differ from what this phone last showed
+  // (vir.news.week.v1). A first visit is the baseline: closed.
+  var WEEK = { p: "", t: "" }, WEEKK = "vir.news.week.v1";
+  function weekOpen(on){
+    el("wktog").setAttribute("aria-expanded", on ? "true" : "false");
+    el("wkbody").hidden = !on;
+  }
+  function weekSettle(){
+    if(el("week").hidden) return;
+    var now = WEEK.p + "#" + WEEK.t, was = null;
+    try{ was = localStorage.getItem(WEEKK); localStorage.setItem(WEEKK, now); }catch(e){}
+    var changed = was !== null && was !== now;
+    el("wkcnt").textContent = changed ? "Changed" : "";
+    weekOpen(changed);
+  }
+  el("wktog").addEventListener("click", function(){
+    var on = el("wkbody").hidden;
+    weekOpen(on);
+    if(on){ var b = el("wkbody"); b.classList.remove("reveal"); void b.offsetWidth; b.classList.add("reveal"); }
+  });
 
   // ---- menus: one at a time ----
   var OPENP = null;
@@ -582,8 +616,10 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     index();
     if(el("q").value.trim()) search();
   }).catch(function(){ el("loadfail").hidden = false; });
-  fetch("../data/prices.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(prices).catch(function(){});
-  fetch("../data/tier.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(legends).catch(function(){});
+  Promise.all([
+    fetch("../data/prices.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(prices).catch(function(){}),
+    fetch("../data/tier.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(legends).catch(function(){})
+  ]).then(weekSettle);
 })();
 </script>
 <script>
