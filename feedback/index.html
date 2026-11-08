@@ -53,12 +53,13 @@ body{-webkit-font-smoothing:antialiased;
 .door.rec.cr{flex-direction:row;align-items:center;gap:12px}   /* one line on a phone; a long title wraps rather than clips (the chevron sits as every record's) */
 .cr .t{white-space:normal}
 .cr .chev{position:absolute;top:calc(50% - 8px);right:16px;color:var(--muted)}   /* where every record's chevron sits (app.css .door.rec .cvr) */
-/* a row's detail opens under it, in place (Mako 2026-11-07 20:24, as Movers opens): the page's name
-   lit in its colour and when, then the line in a sentence; lined up with the title */
-.cx{padding:0 16px 12px 60px}
-.cpg{margin:0 0 2px;font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
+/* a row's detail opens under it, in place, as Rules' entries (Mako 2026-11-07 20:24 and 20:37): no
+   hairline between the row and its detail; the sentence lined up under the title, then the page's name
+   lit in its colour and when, as small print */
+.cx{padding:0 16px 14px 60px}
+.cpg{margin:6px 0 0;font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
 .cpg small{font-family:var(--text);font-size:12px;font-weight:400;color:var(--muted)}
-.cds{margin:0;font-size:15px;line-height:1.4;color:var(--bone)}
+.cds{margin:0;font-size:15px;line-height:1.4;color:var(--muted)}
 .callg{margin-top:8px}
 .foot a{color:var(--bone)}
 </style>
@@ -158,8 +159,8 @@ body{-webkit-font-smoothing:antialiased;
     var g = page(it.page), id = "cx" + (NX++);
     return '<button type="button" class="door btn glass rec cr" data-k="open" aria-expanded="false" aria-controls="' + id + '" style="--c:' + g.rgb + ';--cl:' + lit(g.rgb) + '">'
       + '<span class="ci" aria-hidden="true">' + g.icon + '</span><span class="t">' + esc(it.t) + '</span>' + CHEV + '</button>'
-      + '<div class="cx" id="' + id + '" style="--cl:' + lit(g.rgb) + '" hidden><p class="cpg">' + esc(g.name) + ' <small>' + esc(when || "Planned") + '</small></p>'
-      + '<p class="cds sel">' + esc(it.d || it.t) + '</p></div>';
+      + '<div class="cx" id="' + id + '" style="--cl:' + lit(g.rgb) + '" hidden><p class="cds sel">' + esc(it.d || it.t) + '</p>'
+      + '<p class="cpg">' + esc(g.name) + ' <small>' + esc(when || "Planned") + '</small></p></div>';
   }
   function update(u){
     var when = window.RAVI_DATE(new Date(u.date + "T12:00:00"));

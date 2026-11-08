@@ -389,6 +389,9 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 /* the hairline between rows, in either group */
 /* a hairline under a row only when a shown row follows it (a hidden last row drew one under Game settings' Event: Mako 2026-11-05) */
 .pick > :not(:last-child):has(~ :not([hidden])),.doors > :not(:last-child):has(~ :not([hidden])){background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 100%;background-repeat:no-repeat}
+/* a row that is open and the body under it read as one: no hairline between them; the hairline goes
+   under the body (Mako 2026-11-07, Feedback's rows; the same for Rules' entries) */
+.doors > .door[aria-expanded="true"]:has(+ :not([hidden])){background-image:none}
 /* .door.act: the same row (left .t, .sp, grey small on the right) for a
    plain action, data-k="do", never deeper -- no .cvr. STYLE.md, Control
    kinds: in a stack of rows an action is this, never a centred .pact; a
