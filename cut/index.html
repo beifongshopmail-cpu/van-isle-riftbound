@@ -56,6 +56,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .vd.ties{background:rgba(255,200,40,.24)}
 .vd.out{background:rgba(255,255,255,.06);color:var(--muted)}
 .fmore{margin:10px 4px 0;font-size:12px;color:var(--muted)}
+/* the safe line leads Your finishes (plan 2 M8.7 E1): body text, bone */
+.fsafe{margin:0 4px 12px;font-size:15px;line-height:1.4}
+/* How it's worked out: rows that open their words in place (plan 2 M8.7 B3, as Feedback's rows) */
+.hwb{padding:0 16px 14px}
+.hwb p{margin:0;font-size:15px;line-height:1.4;color:var(--muted)}
 /* the event menu's rows carry two lines */
 #evl button{flex-direction:column;align-items:flex-start;text-align:left;justify-content:center;height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px;gap:2px}
 #evl button.on{padding-right:44px}
@@ -64,8 +69,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
    is trimmed only when even the short name is too long; the chevron always shows */
 #evbtn .t,#evbtn .cvr{flex-shrink:0}
 #evname{min-width:0;overflow:hidden;text-overflow:ellipsis}
-#phow .pbody p{margin:0 0 10px;font-size:15px;line-height:1.4}
-#phow .pbody p:last-child{margin-bottom:0}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -73,7 +76,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
 <main id="tc">
   <h2 class="sr">Top cut</h2>
-  <p class="lede">Will your record make the top cut, and can you draw in? Every finish still open to you, worst case and likely.</p>
 
   <section class="csec glass" id="sev">
     <div class="shead"><h2>The event</h2></div>
@@ -121,12 +123,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
      slot, as the Tier list's How it's counted, instead of a standing note under Your finishes. -->
 <section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's worked out">
   <div class="phead"><h4 class="ttl">How it's worked out</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <p>Worst case: the other tables' last two rounds go the way that puts the most players level with you or ahead.</p>
-    <p>Likely: every other match is played out and the player ahead wins it.</p>
-    <p>A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1.</p>
-    <p>Pairings are modelled, not the store's, so take it as a guide.</p>
-  </div>
+  <div class="pbody"><div class="doors glass" data-k="open">
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw1" data-k="open"><span class="t">Worst case</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw1" hidden><p>The other tables' last two rounds go the way that puts the most players level with you or ahead.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw2" data-k="open"><span class="t">Likely</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw2" hidden><p>Every other match is played out and the player ahead wins it.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw3" data-k="open"><span class="t">Tiebreakers</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw3" hidden><p>A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">A guide</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw4" hidden><p>Pairings are modelled, not the store's, so take it as a guide.</p></div>
+  </div></div>
 </section>
 <script>
 (function(){
@@ -157,6 +163,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var phow = $("phow");
   phow.querySelector("[data-close]").addEventListener("click", hide);
   $("tabhow").addEventListener("click", function(){ if (openP === phow) { hide(); } else { show(phow); } });
+  phow.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".door[aria-controls]") : null;
+    if (!b) { return; }
+    var x = $(b.getAttribute("aria-controls")), on = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", on ? "true" : "false");
+    if (x) { x.hidden = !on; if (on) { x.classList.remove("reveal"); void x.offsetWidth; x.classList.add("reveal"); } }
+  });
 
   // THE STATE, kept on this phone (vir.cut.v1) and rebuilt through cut.js's clean on load.
   // rTouched and kTouched: the rounds or cut no longer follow the player count (set by hand, or
@@ -280,12 +293,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // THE EVENT MENU: today's and later events from the feed, then No event (as the Game page)
   function listEvents(){
     var t = today(), h = "", i;
-    var list = evs.filter(function(e){ return e.day >= t; });
+    // events with a cut only: Learn-to-Play and Open Play have none (as the calendar card's Top cut)
+    var list = evs.filter(function(e){ return e.day >= t && e.type !== "learn" && e.type !== "open"; });
     for (i = 0; i < list.length; i++) {
       var e = list[i], on = st.ev === e.id;
       var who = e.reg !== null ? e.reg + (e.cap ? " of " + e.cap : "") + " registered" : "";
       h += '<button type="button" data-ev="' + esc(e.id) + '"' + (on ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '><span class="t">' + esc(e.name) + '</span><small>' +
-        esc([window.RAVI_DATE(e.day, true) + (e.time ? ", " + window.RAVI_TIME(e.time) : ""), e.venue, who].filter(Boolean).join(" \u00b7 ")) + '</small></button>';
+        esc([window.RAVI_DATE(e.day, true) + (e.time ? ", " + window.RAVI_TIME(e.time) : ""), e.store || e.venue, who].filter(Boolean).join(" \u00b7 ")) + '</small></button>';
     }
     if (!list.length) { h += '<button type="button" disabled aria-pressed="false">No events from today on</button>'; }
     h += '<button type="button" data-ev=""' + (!st.ev ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>No event</button>';
@@ -352,7 +366,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     $("recnote").textContent = rec.n ? "From the Game page: " + rec.n + (rec.n === 1 ? " match" : " matches") + " tagged to this event (" + rec.w + "-" + rec.l + "-" + rec.d + "). The steppers change it here only." : "";
     }
     var out = $("fin");
-    if (!st.k) { out.innerHTML = '<p class="cnote">No top cut: pick one above to see your finishes.</p>'; return; }
+    if (!st.k) { out.innerHTML = '<p class="cnote">No top cut, so no finishes to work out.</p>'; return; }
     var s = C.scenarios(st), h = '<div class="fh"><span>Finish</span><span>Worst case</span><span>Likely</span></div><div class="flist">', shown = 0, rest = 0;
     for (i = 0; i < s.rows.length; i++) {
       var r = s.rows[i];
@@ -362,7 +376,19 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     h += '</div>';
     if (rest) { h += '<p class="fmore">Every finish below these is out.</p>'; }
-    out.innerHTML = h;
+    out.innerHTML = safeLine(s) + h;
+  }
+
+  // THE SAFE LINE (plan 2 M8.7 E1; Cards Realm and Riftcount lead with it): the lowest finish that,
+  // with every finish above it, is In in the worst case; and whether drawing every round left is
+  function rec(f){ return f.w + "-" + f.l + "-" + f.d; }
+  function safeLine(s){
+    var safe = null, i, draw = null;
+    for (i = 0; i < s.rows.length; i++) { if (s.rows[i].worst.verdict === "in") { safe = i; } else { break; } }
+    for (i = 0; i < s.rows.length; i++) { if (s.left && s.rows[i].d === s.left) { draw = s.rows[i]; } }
+    var t = safe === null ? "No finish is safe in the worst case." : "Safe in the worst case: " + rec(s.rows[safe].final) + (safe > 0 ? " or better." : ".");
+    if (draw && draw.worst.verdict === "in") { t += " You can draw in."; }
+    return '<p class="fsafe">' + esc(t) + '</p>';
   }
 
   // ?ev=<id> from the calendar's event card or the Game page picks that event

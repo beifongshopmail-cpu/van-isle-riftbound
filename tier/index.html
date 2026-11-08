@@ -38,7 +38,17 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 .tnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 /* the search, then the board */
+/* the search stays at the top (plan 2 M8.7 B2, as News' and Rules'): a sticky plate parked 10
+   above --top-clear, plate frost, clear */
 .tctl{margin-top:14px}
+.srow{position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
+.plate{border-radius:24px;padding:10px;
+  background:var(--plate-solid);
+  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+/* How it's counted: rows that open their words in place (plan 2 M8.7 B3, as Feedback's rows) */
+.hwb{padding:0 16px 14px}
+.hwb p{margin:0;font-size:15px;line-height:1.4;color:var(--muted)}
 .tscope{margin-top:10px}
 #lhead{margin-top:14px}
 #lhead .tnote{margin:0 4px 10px}
@@ -108,8 +118,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .nrow.ncard > span:nth-child(2){min-width:0}
 .nrow.ncard b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lmore{margin-top:10px}
-#phow .pbody p{margin:0 0 10px;font-size:15px;line-height:1.4}
-#phow .pbody p:last-child{margin-bottom:0}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -117,8 +125,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
 <main id="tl">
   <h2 class="sr">Tier list</h2>
-  <p class="lede">Which legends are winning right now: how often each is played, and how often it reaches the top cut.</p>
-  <div class="tctl">
+  <div class="tctl srow plate glass">
     <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="tq" placeholder="Search legends" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search legends" data-k="type"><button type="button" class="fbtn fx glass" id="tqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
     <div class="seg tscope" id="tscope" role="group" aria-label="Results from" data-k="pick"><button type="button" data-sc="global" aria-pressed="true">Global</button><button type="button" data-sc="local" aria-pressed="false">Local</button></div>
   </div>
@@ -177,15 +184,21 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </section>
 <section class="panel frost" id="phow" aria-hidden="true" aria-label="How it's counted">
   <div class="phead"><h4 class="ttl">How it's counted</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
-    <p>Every morning RAVI reads the last 30 days of Riftbound Constructed events of 16 players or more from TopDeck.gg, and keeps only each finish's legend. Player names are never kept.</p>
-    <p>Played: a legend's share of every deck. Top cut: its share of every top-cut spot (the cut the event played; an event that stopped after Swiss counts a top 8 from 17 players, a top 4 below).</p>
-    <p>Conversion: top cut divided by played. 1.00x is average; 2.00x makes the top cut twice as often as its play share predicts. A legend with few decks is pulled toward 1.00x, so a lucky handful cannot top the list.</p>
-    <p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p>
-    <p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the player's own pick when they add it, else the one most picks name. Picks from saved accounts whose past picks matched the players' own count a little more, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p>
-    <p>Top-cut lists and Most played cards: the same events' decklists, read from TopDeck.gg. A legend's menu shows its top-cut lists, best placing first, and the cards most of its lists run. A list is kept without its player's name.</p>
-    <p>Legends and decks only: RAVI never ranks players.</p>
+  <div class="pbody"><div class="doors glass" data-k="open">
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw1" data-k="open"><span class="t">The data</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw1" hidden><p>Every morning RAVI reads the last 30 days of Riftbound Constructed events of 16 players or more from TopDeck.gg, and keeps only each finish's legend. Player names are never kept.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw2" data-k="open"><span class="t">Played and Top cut</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw2" hidden><p>Played: a legend's share of every deck. Top cut: its share of every top-cut spot (the cut the event played; an event that stopped after Swiss counts a top 8 from 17 players, a top 4 below).</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw3" data-k="open"><span class="t">Conversion</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw3" hidden><p>Conversion: top cut divided by played. 1.00x is average; 2.00x makes the top cut twice as often as its play share predicts. A legend with few decks is pulled toward 1.00x, so a lucky handful cannot top the list.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">Tiers</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw4" hidden><p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw5" data-k="open"><span class="t">Local</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw5" hidden><p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the player's own pick when they add it, else the one most picks name. Picks from saved accounts whose past picks matched the players' own count a little more, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw6" data-k="open"><span class="t">Lists and cards</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw6" hidden><p>Top-cut lists and Most played cards: the same events' decklists, read from TopDeck.gg. A legend's menu shows its top-cut lists, best placing first, and the cards most of its lists run. A list is kept without its player's name.</p></div>
   </div>
+  <p class="pnote">Legends and decks only: RAVI never ranks players.</p></div>
 </section>
 <script>
 (function(){
@@ -236,6 +249,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   Array.prototype.forEach.call(document.querySelectorAll(".panel [data-close]"), function(b){ b.addEventListener("click", hide); });
   Array.prototype.forEach.call(document.querySelectorAll(".panel [data-back]"), function(b){ b.addEventListener("click", back); });
   $("tabhow").addEventListener("click", function(){ if (OPENP === phow) { hide(); } else { openPanel(phow); } });
+  phow.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".door[aria-controls]") : null;
+    if (!b) { return; }
+    var x = $(b.getAttribute("aria-controls")), on = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", on ? "true" : "false");
+    if (x) { x.hidden = !on; if (on) { x.classList.remove("reveal"); void x.offsetWidth; x.classList.add("reveal"); } }
+  });
 
   // THE LEGENDS RAVI KNOWS (cards/legends.js, from Riot's gallery). A name in the data that is not
   // one of these is dropped, so the page only ever shows Riot's own names and art.
@@ -540,7 +560,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var r = T.compute(evs);
     if (!r.legends.length) {
       sum.textContent = "";
-      box.innerHTML = "<p class=\"tempty glass\">No decks added for " + esc(name) + " yet. Tap Add decks to fill in an event you played or watched.</p>";
+      box.innerHTML = "<p class=\"tempty glass\">No decks added for " + esc(name) + " yet.</p>";
       return;
     }
     var foot = plural(r.events, "event", "events") + " in " + name + " in the last " + LOCAL_DAYS + " days, added by players.";

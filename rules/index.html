@@ -66,17 +66,27 @@ body{-webkit-font-smoothing:antialiased;
 .rtx .rpic{display:inline-block;margin:0 0 8px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--muted)}
 .rsrc{margin:14px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)} /* menu small print, as app.css .pnote */
 .rsrc a{color:var(--bone)}
-.rnote{margin:0 0 12px;padding:12px 16px;border-radius:22px;background:var(--recess);font-size:13px;line-height:1.45;color:var(--muted)}
+.rnote{margin:0 0 12px;border-radius:22px;background:var(--recess);font-size:13px;line-height:1.45;color:var(--muted)}
 .rnote p{margin:0}
 .empty{margin:6px 4px 0;font-size:13px;color:var(--muted)}
 .foot a{color:var(--bone)}
 /* a row that leaves the app (Riot's PDFs) carries the out-arrow (.extl), never the deeper chevron */
-/* THE CHIPS (plan 2 M5): under the search, inside its plate, as Decks' tag chips: kind, then set,
-   one of each; a chosen chip is bone; again clears it. Scrolls sideways inside the plate. */
-.bchips{display:flex;gap:6px;margin:10px -10px 0;padding:0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.bchips::-webkit-scrollbar{display:none}
+/* ONE FILTERS CHIP (plan 2 M8.7 B1; STYLE: three filters or more fold into one chip, as Decks'):
+   under the search, inside its plate; it counts what is on and opens Kind and Set as rows */
+.bchips{display:flex;gap:6px;margin:10px 0 0}
 .fchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
+.fchip .n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--ink);color:var(--bone);font-size:12px}
+.fchip svg{width:14px;height:14px}
+/* AN ERRATUM SHOWS WHAT CHANGED (plan 2 M8.7 F1): the new text's changed words bold and underlined,
+   never colour alone; the old text folds under a quiet row */
+mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.rold{display:flex;align-items:center;gap:6px;width:100%;min-height:var(--sz-row);padding:0;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--muted);background:none;text-align:left}
+.rold .chev{width:16px;height:16px}
+/* RIOT'S NOTE (plan 2 M8.7 F2): Riot's warning as one row that opens to Riot's words */
+.rnrow{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--sz-row);padding:0 16px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--muted);background:none;text-align:left}
+.rnrow .sp{flex:1}
+.rnote .rntx{padding:0 16px 12px}
 /* A MATCHED WORD (plan 2 M5): bold and lit, so it never rests on colour alone */
 mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
 .rtx.old mark.hit{color:var(--bone)}
@@ -89,7 +99,6 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 
 <main id="rl">
   <h2 class="sr">Rules</h2>
-  <p class="lede">Riot's official errata, FAQs and rulings, word for word.</p>
 
   <div class="srow plate glass">
     <div class="sf">
@@ -97,7 +106,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
       <input id="q" type="search" placeholder="Search cards and rulings" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
       <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
-    <div class="bchips" id="rchips" role="group" aria-label="Narrow by kind and set"></div>
+    <div class="bchips" id="rchips"></div>
   </div>
 
   <section id="res" hidden>
@@ -141,6 +150,15 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 ]);</script>
 
 <div class="scrim" id="scrim"></div>
+<section class="panel frost" id="pfls" aria-hidden="true" aria-label="Filters">
+  <div class="phead"><h4 class="ttl">Filters</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="flsrows" data-k="deeper"></div></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="flsall" data-k="do">Show all</button></div>
+</section>
+<section class="panel frost" id="pfl" aria-hidden="true" aria-label="Filter">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="flttl">Kind</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="flpick" data-k="pick"></div></div>
+</section>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
@@ -225,7 +243,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   function body(it){
     var url = (SRC[it.source] || {}).url || "";
     if(it.kind === "errata"){
-      return '<p class="rlab">New text</p>' + rtx(it["new"], url) + (it.old ? '<p class="rlab">Old text</p>' + rtx(it.old, url, "old") : "");
+      return '<p class="rlab">New text</p>' + rtx(it["new"], url) + (it.old ? '<button type="button" class="rold" data-act="rold" aria-expanded="false" data-k="open">Old text' + CHEV + '</button><div hidden>' + rtx(it.old, url, "old") + '</div>' : "");
     }
     return rtx(it.a || it.html, url);
   }
@@ -238,12 +256,43 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   function toggle(btn){
     var b = btn.nextElementSibling, open = btn.getAttribute("aria-expanded") === "true";
     if(open){ btn.setAttribute("aria-expanded", "false"); b.hidden = true; b.innerHTML = ""; return; }
-    b.innerHTML = body(ITEM[btn.getAttribute("data-id")]);
+    var it0 = ITEM[btn.getAttribute("data-id")];
+    b.innerHTML = body(it0);
+    if(it0.kind === "errata" && it0.old) changed(b.querySelector(".rtx:not(.old)"), strip(it0.old));
     if(btn.closest("#reslist")) mark(b);
     btn.setAttribute("aria-expanded", "true");
     b.hidden = false;
     b.querySelectorAll("a").forEach(function(a){ a.target = "_blank"; a.rel = "noopener"; });
     b.classList.remove("reveal"); void b.offsetWidth; b.classList.add("reveal");
+  }
+
+  // WHAT CHANGED (plan 2 M8.7 F1): the new text's words that are not in the old text, by the
+  // longest common run of words; marked bold and underlined in place, Riot's words untouched
+  function changed(root, oldText){
+    if(!root) return;
+    var RE = /[A-Za-z0-9\u2019'\[\]]+/g, a = (oldText.match(RE) || []).map(norm), tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, b = [], i, j;
+    while((n = tw.nextNode())) nodes.push(n);
+    nodes.forEach(function(t){ (t.nodeValue.match(RE) || []).forEach(function(w){ b.push(norm(w)); }); });
+    if(!a.length || !b.length || a.length * b.length > 400000) return;
+    var L = [], keep = {};
+    for(i = 0; i <= a.length; i++){ L.push(new Uint16Array(b.length + 1)); }
+    for(i = a.length - 1; i >= 0; i--) for(j = b.length - 1; j >= 0; j--) L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    for(i = 0, j = 0; i < a.length && j < b.length;){ if(a[i] === b[j]){ keep[j] = 1; i++; j++; } else if(L[i + 1][j] >= L[i][j + 1]) i++; else j++; }
+    var k = 0;
+    nodes.forEach(function(t){
+      var txt = t.nodeValue, m, last = 0, frag = null; RE.lastIndex = 0;
+      while((m = RE.exec(txt))){
+        var hit = !keep[k]; k++;
+        if(!hit) continue;
+        frag = frag || document.createDocumentFragment();
+        if(m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+        var mk = document.createElement("mark"); mk.className = "chg"; mk.textContent = m[0]; frag.appendChild(mk);
+        last = m.index + m[0].length;
+      }
+      if(!frag) return;
+      if(last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
   }
 
   // ---- menus: one on screen, a stack behind it (as on the trade page) ----
@@ -263,8 +312,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     OPENP = p || null;
     var xs = document.querySelectorAll(".phead [data-close]"), i;
     for(i = 0; i < xs.length; i++){ xs[i].hidden = STACK.length > 1 && xs[i].closest(".panel") === p; }
-    var bk = el("part").querySelector(".back");
-    bk.hidden = !(STACK.length > 1 && p === el("part"));
+    document.querySelectorAll(".panel .back").forEach(function(bk){ bk.hidden = !(STACK.length > 1 && bk.closest(".panel") === p); });
     if(p){
       document.documentElement.classList.add("lock");
       p.classList.add("show"); p.classList.remove("fromr", "froml");
@@ -288,7 +336,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     el("part").style.setProperty("--tint", kc(s.kind));
     el("arttl").textContent = s.kind === "hub" ? s.title : cap(s.set) + (s.kind === "errata" ? " errata" : " FAQ");
     el("artcnt").textContent = list.length;
-    if(s.notice) h += '<div class="rnote">' + clean(s.notice, s.url) + '</div>';
+    if(s.notice) h += '<div class="rnote"><button type="button" class="rnrow" data-act="rnote" aria-expanded="false" data-k="open"><span>Riot\'s note</span><span class="sp"></span>' + CHEV + '</button><div class="rntx" hidden>' + clean(s.notice, s.url) + '</div></div>';
     for(i = 0; i < list.length; i++){
       var it = list[i], g = it.kind === "errata" ? (it.group || "") : (it.group || it.section || "");
       if(i === 0 || g !== group){
@@ -441,16 +489,29 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     });
   }
   function kindOf(it){ return it.kind === "errata" ? "errata" : "faq"; }
-  function chips(){
-    var h = "", sets = [], seen = {};
+  var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+  var KINDS = [["errata", "Errata"], ["faq", "FAQs"]], FL = "k";
+  function sets(){
+    var out = [], seen = {};
     D.sources.slice().sort(function(a, b){ return String(a.published || "").localeCompare(String(b.published || "")); }).forEach(function(s){
-      if(s.set && (s.kind === "errata" || s.kind === "faq") && !seen[s.set]){ seen[s.set] = 1; sets.push(s.set); }
+      if(s.set && (s.kind === "errata" || s.kind === "faq") && !seen[s.set]){ seen[s.set] = 1; out.push(s.set); }
     });
-    [["k", "errata", "Errata"], ["k", "faq", "FAQs"]].concat(sets.map(function(x){ return ["s", x, cap(x)]; })).forEach(function(c){
-      var on = c[0] === "k" ? FK === c[1] : FS === c[1];
-      h += '<button type="button" class="fchip btn glass' + (on ? " on" : "") + '" data-k="do" data-chip="' + c[0] + '" data-v="' + esc(c[1]) + '" aria-pressed="' + on + '">' + esc(c[2]) + '</button>';
-    });
-    el("rchips").innerHTML = h;
+    return out;
+  }
+  function chips(){
+    var n = (FK ? 1 : 0) + (FS ? 1 : 0);
+    el("rchips").innerHTML = '<button type="button" class="fchip btn glass' + (n ? " on" : "") + '" data-act="fls" data-k="do" data-fills="pfls" aria-label="Filters' + (n ? ", " + n + " on" : "") + '">Filters' + (n ? '<span class="n">' + n + '</span>' : DOWN) + '</button>';
+  }
+  function fillFls(){
+    var kv = FK ? (FK === "errata" ? "Errata" : "FAQs") : "Any", sv = FS ? cap(FS) : "Any", cv = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+    el("flsrows").innerHTML = '<button type="button" class="door" data-act="fl" data-f="k"><span class="t">Kind</span><span class="sp"></span><small>' + esc(kv) + '</small>' + cv + '</button>'
+      + '<button type="button" class="door" data-act="fl" data-f="s"><span class="t">Set</span><span class="sp"></span><small>' + esc(sv) + '</small>' + cv + '</button>';
+    el("pfls").querySelector('[data-act="flsall"]').disabled = !(FK || FS);
+  }
+  function fillFl(){
+    var opts = FL === "k" ? KINDS : sets().map(function(x){ return [x, cap(x)]; }), cur = FL === "k" ? FK : FS;
+    el("flttl").textContent = FL === "k" ? "Kind" : "Set";
+    el("flpick").innerHTML = [["", "Any"]].concat(opts).map(function(o){ var on = cur === o[0]; return '<button type="button" data-act="flpick" data-v="' + esc(o[0]) + '"' + (on ? ' class="on"' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>'; }).join("");
   }
   function search(){
     var q = el("q").value.trim(), on = !!(q || FK || FS);
@@ -500,7 +561,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   document.addEventListener("click", function(ev){
     var t = ev.target.closest("[data-act],[data-close],.door.rec[aria-expanded]");
     if(!t) return;
-    if(t.hasAttribute("aria-expanded")){ toggle(t); return; }
+    if(t.matches(".door.rec[aria-expanded]")){ toggle(t); return; }
     if(t.hasAttribute("data-close")){ openPanel(null); return; }
     var a = t.getAttribute("data-act");
     if(a === "back"){ back(); return; }
@@ -510,19 +571,18 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
       return;
     }
     if(a === "legal"){ fillLegal(ITEM[t.getAttribute("data-id")]); openPanel(el("part")); return; }
+    if(a === "fls"){ fillFls(); openPanel(OPENP === el("pfls") ? null : el("pfls")); return; }
+    if(a === "fl"){ FL = t.getAttribute("data-f"); fillFl(); deeper(el("pfl")); return; }
+    if(a === "flpick"){ var v = t.getAttribute("data-v"); if(FL === "k") FK = v; else FS = v; chips(); search(); fillFls(); back(); return; }
+    if(a === "flsall"){ FK = ""; FS = ""; chips(); search(); openPanel(null); return; }
+    if(a === "rold"){ var o = t.nextElementSibling, on = t.getAttribute("aria-expanded") !== "true"; t.setAttribute("aria-expanded", on ? "true" : "false"); o.hidden = !on; if(on){ o.classList.remove("reveal"); void o.offsetWidth; o.classList.add("reveal"); } return; }
+    if(a === "rnote"){ var nb = t.nextElementSibling, nn = t.getAttribute("aria-expanded") !== "true"; t.setAttribute("aria-expanded", nn ? "true" : "false"); nb.hidden = !nn; return; }
   });
   el("scrim").addEventListener("click", function(){ openPanel(null); });
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
   window.RAVI_GOTO(el("pnavgoto"), "rules", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
   el("q").addEventListener("input", search);
-  el("rchips").addEventListener("click", function(ev){
-    var c = ev.target.closest(".fchip");
-    if(!c) return;
-    var v = c.getAttribute("data-v");
-    if(c.getAttribute("data-chip") === "k") FK = FK === v ? "" : v; else FS = FS === v ? "" : v;
-    chips(); search();
-  });
   el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
 
   fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ D = d; boot(); })
