@@ -134,7 +134,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <button type="button" class="pact btn glass" id="ladd" data-k="do" aria-haspopup="true" aria-controls="padd">Add decks</button>
   </div>
   <div id="tiers"></div>
-  <p class="tnote" id="tsum">Loading the results.</p>
+  <p class="tnote" id="tsum">Loading the results</p>
 
   <footer class="foot">
     <p>Global results from <a href="https://topdeck.gg" target="_blank" rel="noopener">TopDeck.gg</a>: Riftbound Constructed events of 16 players or more. Local decks are added by players, on trust; placings come from Riot's event pages.</p>
@@ -333,7 +333,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var IC_CVR = "<svg class=\"cvr\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"/></svg>";
   function listsHTML(name){
     if (COUNTS || SCOPE !== "global") { return ""; }
-    if (LISTS === undefined) { return "<p class=\"lb lsh\">Top-cut lists</p><p class=\"pmsg\">Loading the lists.</p>"; }
+    if (LISTS === undefined) { return "<p class=\"lb lsh\">Top-cut lists</p><p class=\"pmsg\">Loading the lists</p>"; }
     if (!LISTS) { return ""; }
     var champ = nameParts(name)[0], h = "", tops = LISTS.by[name] || [], cards = LISTS.cards[name], more = LMORE[name] || {};
     if (tops.length) {
@@ -465,7 +465,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawGlobal(){
     var box = $("tiers"), sum = $("tsum"), c = GLOBAL;
     COUNTS = false;
-    if (c === undefined) { sum.textContent = "Loading the results."; box.innerHTML = ""; return; }
+    if (c === undefined) { sum.textContent = "Loading the results"; box.innerHTML = ""; return; }
     if (!c || !T) { sum.textContent = "The results could not be read. Try again later."; box.innerHTML = ""; return; }
     var r = T.compute(c.events);
     if (!r.legends.length) {
@@ -547,7 +547,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     $("larea").textContent = "Decks players add for " + name + "'s recent events.";
     COUNTS = false;
     if (LSTATE !== "ready") {
-      sum.textContent = LSTATE === "failed" ? "The local results could not be read. Try again later." : "Loading the local results.";
+      sum.textContent = LSTATE === "failed" ? "The local results could not be read. Try again later." : "Loading the local results";
       box.innerHTML = "";
       return;
     }
@@ -653,7 +653,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawAddList(){
     var box = $("addlist"), a = area(), now = Date.now();
     $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + AREA[a] + ".";
-    if (LSTATE !== "ready") { box.innerHTML = "<p class=\"pmsg\">" + (LSTATE === "failed" ? "The events could not be read. Try again later." : "Loading the events.") + "</p>"; return; }
+    if (LSTATE !== "ready") { box.innerHTML = "<p class=\"pmsg\">" + (LSTATE === "failed" ? "The events could not be read. Try again later." : "Loading the events") + "</p>"; return; }
     var list = EVS.filter(function(e){ return inArea(e, a) && openable(e, now); });
     if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(AREA[a]) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
     var mine = picks();

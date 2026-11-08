@@ -108,7 +108,7 @@ body{-webkit-font-smoothing:antialiased;
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"feedback"},
-  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"edit", a:[["class", "tab"], ["id", "tabsend"], ["aria-label", "Send feedback"], ["data-k", "slot"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 
@@ -172,6 +172,11 @@ body{-webkit-font-smoothing:antialiased;
     var x = el(b.getAttribute("aria-controls")), on = b.getAttribute("aria-expanded") !== "true";
     b.setAttribute("aria-expanded", on ? "true" : "false");
     if(x){ x.hidden = !on; if(on){ x.classList.remove("reveal"); void x.offsetWidth; x.classList.add("reveal"); } }
+  });
+  // the bar's third slot (plan 2 M8.7 D1): Send feedback, the form two screens down under the lists
+  el("tabsend").addEventListener("click", function(){
+    var t = el("send"), rm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.pageYOffset - 60), behavior: rm ? "auto" : "smooth" });
   });
   fetch("../data/changes.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
     var pl = Array.isArray(d.planned) ? d.planned : [], sh = Array.isArray(d.shipped) ? d.shipped.filter(function(u){ return u && u.date && Array.isArray(u.items) && u.items.length; }) : [];

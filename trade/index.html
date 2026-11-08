@@ -229,7 +229,7 @@ a{color:inherit;text-decoration:none}
   <section class="plate glass" id="plate">
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
-      <input id="q" type="search" placeholder="Search cards by name or number" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+      <input id="q" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
       <button type="button" class="fbtn fx glass" id="qx" data-act="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
     <div class="trow">
@@ -406,7 +406,7 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   // The same, inside a sentence.
   function nmIn(n, names){
     var s = (names || NAMES)[n];
-    return s ? String(s) : (n === 1 ? "yours" : "theirs");
+    return s ? String(s) : (n === 1 ? "Yours" : "Theirs");
   }
 
   var TOASTT = 0;
@@ -826,7 +826,7 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   // plate: down from the top one, up from the lower.
   function rows(n, role){
     var a = sides[n], dest = (n === 1) ? 2 : 1, h = "", k, it, c, unit, at, op;
-    if(!a.length) return '<div class="sempty">Nothing here yet.' + (role === "A" ? " Search above to add cards." : "") + '</div>';
+    if(!a.length) return '<div class="sempty">Nothing here yet.</div>';
     for(k = 0; k < a.length; k++){
       it = a[k];
       c = byId.get(it.i);

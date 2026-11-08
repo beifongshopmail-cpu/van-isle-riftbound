@@ -699,7 +699,7 @@
   // ---- Signed-in devices: this phone, then each other one, signed out one at a time or all at once ----
   function renderDevices() {
     var list = $("acdevlist"), here = $("acdevhere"), all = $("acdevallw");
-    list.innerHTML = ""; here.textContent = "Loading..."; all.hidden = true; say("acdevmsg", "");
+    list.innerHTML = ""; here.textContent = "Loading your devices"; all.hidden = true; say("acdevmsg", "");
     A.devices(function (err, j) {
       if (err) { here.textContent = ""; return say("acdevmsg", err); }
       var ds = j && j.devices || [], others = ds.filter(function (d) { return !d.here; }), mine = ds.filter(function (d) { return d.here; })[0];
@@ -1139,7 +1139,7 @@
   // ---- Disputes (Mako's account only) ----
   function renderDisputes() {
     var list = $("acdisplist");
-    list.innerHTML = '<p class="pnote">Loading...</p>';
+    list.innerHTML = '<p class="pnote">Loading the disputes</p>';
     say("acdispmsg", "");
     A.disputes(function (err, j) {
       if (err) { list.innerHTML = ""; return say("acdispmsg", err); }
@@ -1177,7 +1177,7 @@
     doff: ["Take decks down", "Makes every deck they share private to others, links too."], don: ["Put decks back", "Shows the decks they share again."] };
   function renderReports() {
     var list = $("acreplist");
-    list.innerHTML = '<p class="pnote">Loading...</p>';
+    list.innerHTML = '<p class="pnote">Loading the reports</p>';
     say("acrepmsg", "");
     A.adminReports(function (err, j) {
       if (err) { list.innerHTML = ""; return say("acrepmsg", err); }
@@ -1350,7 +1350,7 @@
       showWork();
       return;
     }
-    if (!pics) { note.textContent = "Loading every card..."; loadPics(function (L) { if (!L) { note.textContent = "The cards could not load. Try again with a connection."; return; } drawCards(); }); return; }
+    if (!pics) { note.textContent = "Loading every card"; loadPics(function (L) { if (!L) { note.textContent = "The cards could not load. Try again with a connection."; return; } drawCards(); }); return; }
     var first = [], rest = [];
     pics.forEach(function (r) { var n = r[0].toLowerCase(), at = n.indexOf(q); if (at === 0) first.push(r); else if (at > 0) rest.push(r); });
     var hits = first.concat(rest), shown = hits.slice(0, PICMAX);

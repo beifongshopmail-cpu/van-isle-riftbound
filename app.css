@@ -578,6 +578,10 @@ html.gate body > :not(#ravigate){display:none!important}
   background-color:var(--glass);background-size:190% auto;background-position:50% 20%;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transform-origin:50% 50%;-webkit-tap-highlight-color:transparent}
 .acpic:active{transform:scale(.96)}
+/* BACK (plan 2 M8.7 A1): a page reached by a link inside another page carries a round glass Back in
+   the wordmark row's top left, level with your picture, 18 in; pages.js adds it. */
+.rvback{position:absolute;top:calc(env(safe-area-inset-top,0px) + 25px);left:18px;z-index:5}
+.rvback svg{width:18px;height:18px}
 .acpic.acart{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 .acpic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .acpic.me svg,.acav.me svg{fill:currentColor;stroke:none}
@@ -662,11 +666,12 @@ html.gate body > :not(#ravigate){display:none!important}
    The copy's blocks are the hub's own (index.html .blk: size, corner, padding, arc, icon and name;
    Mako 2026-11-03: they must look the same). The menu's body spans the panel's width, which is the
    hub plate's width on every phone, so the copy stands 7 in (8 less the panel's 1px rim) as the hub's grid does
-   and every block comes out the hub's size. Behind it, the hub plate's curved top in --recess.
+   and every block comes out the hub's size. Behind it, the hub's own rune texture, no plate (plan 2 M8.7 G1;
+   Mako 2026-11-08: it still drew the plate the hub lost in plan 2 M8).
    Blocks are dragged (pointer events; touch-action none, so a drag never scrolls the menu) or
    tapped one then another. */
 .hlg{display:flex;flex-wrap:wrap;justify-content:center;row-gap:18px;column-gap:12px;margin:0 -16px;padding:34px 7px 22px;
-  border-radius:50% 50% 0 0 / 40px 40px 0 0;background:var(--recess)}
+  border-radius:22px;background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
 .hlg > .hlb{width:calc((100% - 24px) / 3)}
 .hlg > .hlb:nth-child(2),.hlg > .hlb:nth-child(5){top:-14px}
 .hlg > .hlb:nth-child(3n+1):nth-last-child(2),.hlg > .hlb:nth-child(3n+1):nth-last-child(2) + .hlb{margin:0 5px}

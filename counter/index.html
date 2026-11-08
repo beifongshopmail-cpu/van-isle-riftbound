@@ -330,8 +330,9 @@
   /* the top group: Pause clock only while the clock is on, never in New match */
   #pnew #pcardc{display:none}
   #fcards{margin-bottom:0}
-  /* Go to and End game | New match are separate groups: 14 between them (STYLE.md 4, Mako 2026-10-12) */
-  #pgame .fpair{margin-top:14px}
+  /* Go to is the menu's first row (plan 2 M8.7 A2), 14 above the next group */
+  .pgo{margin-bottom:14px}
+  #pnew .pgo{display:none}
   .pdot{width:12px;height:12px;border-radius:999px;flex:0 0 auto;display:block}
   .pnm{font-family:var(--disp);font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .plegh{font-family:var(--text);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:9ch}
@@ -467,6 +468,9 @@
 <section class="panel frost" id="pgame" aria-hidden="true" aria-label="Game settings">
   <div class="phead"><h4 class="ttl">Game settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
+    <!-- GO TO, one row deeper (plan 2 M8.7 A2): the Game page's strip has no Go to slot, and its
+         thirteen tiles in the foot left the settings less than half the menu -->
+    <div class="doors pgo" data-k="deeper"><button type="button" class="door" id="gotobtn" aria-haspopup="true" aria-controls="pgoto"><span class="t">Go to</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>
     <div data-slot>
         <div id="shared">
           <div class="pcards doors" id="mcards">
@@ -510,7 +514,7 @@
       </div>
     </div>
   </div>
-  <div class="pfoot"><div class="goto" id="pgamegoto"></div><div class="two fpair"><button type="button" class="pact btn glass" id="endbtn" data-k="do">End game</button><button type="button" class="pact btn glass" id="reset" data-k="do">New match</button></div></div>
+  <div class="pfoot"><div class="two fpair"><button type="button" class="pact btn glass" id="endbtn" data-k="do">End game</button><button type="button" class="pact btn glass" id="reset" data-k="do">New match</button></div></div>
 </section>
 
 <!-- NEW MATCH: the old sheet's pre face. One deeper from Game, or its own menu from the banner -->
@@ -540,6 +544,10 @@
 </section>
 
 <!-- EVENT: one deeper from the Event row in #shared -->
+<section class="panel frost" id="pgoto" aria-hidden="true" aria-label="Go to">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Go to</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="goto" id="pgamegoto"></div></div>
+</section>
 <section class="panel frost" id="pevt" aria-hidden="true" aria-label="Event">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Event</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="pick" id="evlist" data-k="pick"></div></div>
@@ -1625,7 +1633,7 @@
   function logHTML(list, nm){
     var out = "";
     if (list.length <= 1) {
-      out = "<li class=\"empty\">No points yet. Tap Conquer, Hold or Other when someone scores.</li>";
+      out = "<li class=\"empty\">No points yet.</li>";
     }
     for (var i = list.length - 1; i >= 0; i--) {
       var e = list[i];
@@ -1682,7 +1690,7 @@
 
   function stamp(ms){
     var d = new Date(ms);
-    return MON[d.getMonth()].toUpperCase() + " " + d.getDate();
+    return MON[d.getMonth()] + " " + d.getDate();
   }
 
   // Each player's time in one game, walked forward once in stream order:
@@ -2956,6 +2964,7 @@
     stopTimer();
   });
   document.getElementById("endbtn").addEventListener("click", function(){ pendOpen(); });
+  document.getElementById("gotobtn").addEventListener("click", function(){ deeper(document.getElementById("pgoto")); });
   document.getElementById("evlist").addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("button") : null;
     if(!b) return;

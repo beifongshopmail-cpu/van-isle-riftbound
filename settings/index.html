@@ -45,7 +45,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #pme .pact{margin-top:6px}
 #pme .stmenote{margin:0 2px 10px}
 #pme .lb{margin:14px 2px 6px}
-#pme #sttest{margin-top:0}
+#pme #sttest{margin-top:14px} /* its own group, with no label over it (plan 2 M8.7 C9) */
 .panel .pick+.pnote{margin-top:10px}
 .stmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
@@ -132,7 +132,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <div class="ridt"><div class="nf tall"><span class="acat">#</span><input type="text" id="stmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
     <button type="button" class="pact btn glass" id="stmeok" data-k="do">Save</button>
     <p class="stmsg" id="stmemsg" aria-live="polite"></p>
-    <p class="lb">Try it</p>
     <button type="button" class="pact btn glass" id="sttest" data-k="do">Send a test alert</button>
     <p class="stmsg" id="sttestmsg" aria-live="polite"></p>
   </div>

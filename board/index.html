@@ -186,6 +186,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ovd .fv{font-family:var(--disp);font-weight:700;font-size:17px;white-space:nowrap}
 :root{--yc:#5DA5EE;--tc:#EE5F9C} /* the offer's sides: yours is your colour (pages.js RAVI_SIDES_PAINT, plan 2 M8) */
 .ovd .f1 .fk{color:var(--yc)} .ovd .f2 .fk{color:var(--tc)}
+.nrow .ny{color:var(--yc)} .nrow .nt{color:var(--tc)} /* a player's menu writes the sides as the verdict does (plan 2 M8.7 C6) */
 .ovd .mid{flex:0 0 112px;display:flex;flex-direction:column;align-items:center;text-align:center}
 .ovd .mid .k{font-size:12px;color:var(--muted)}
 .ovd .mid .v{margin-top:2px;font-family:var(--disp);font-weight:800;font-size:20px;line-height:1.05} /* M7 D1: on the top rung (Mako 2026-11-04) */
@@ -205,7 +206,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="hsort" id="bhead" hidden><p id="bcount"></p><button type="button" class="dvsort glass" id="bsort" data-fills="psort" data-k="do"></button></div>
   <p class="bnote" id="bme"></p><div id="bmesave"></div>
   <div id="blist"></div>
-  <p class="bnote" id="bsum">Loading the board.</p>
+  <p class="bnote" id="bsum">Loading the board</p>
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
@@ -436,6 +437,9 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   }
   var BOTH = '<span class="bboth">Both ways</span>';
   function saveRow(l){ return window.RAVI_SAVEROW ? window.RAVI_SAVEROW(l) : ""; } // M7 C2: the way there, not directions
+  // no home area yet: the row that goes there (plan 2 M8.7 A4: a way somewhere is a row, never directions)
+  function areaRow(){ return '<div class="doors acsaverow" data-k="deeper"><button type="button" class="door btn glass" data-act="setarea"><span class="t">Set your home area</span><span class="sp"></span><small>Players near you first</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>'; }
+  document.addEventListener("click", function(e){ var t = e.target.closest ? e.target.closest('[data-act="setarea"]') : null; if (t && window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN("acprof"); } });
 var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
 
   // ---- STATE ----
@@ -586,7 +590,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     if (shared.binders) { bits.push((bits.length ? "and " : "Matched against ") + (shared.binders === 1 ? "your For trade binder" : "your " + shared.binders + " For trade binders")); }
     var s = bits.length ? bits.join(" ") + "." : "";
     if (!DATA.saved) { s += (s ? " " : "") + "Others can't see your cards until you save your account."; }
-    else if (!DATA.me.area) { s += (s ? " " : "") + "Set your home area on your profile to see players near you first."; }
+
     if (DATA.me.pich) { s = "Your picture is hidden from other players for now, after reports." + (s ? " " + s : ""); }
     return s;
   }
@@ -597,10 +601,10 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var Rs = window.RAVI_SORT, so = SORTS[sk()], sd = Rs.dir(SORT.o, so[1]);
     $("bsort").innerHTML = Rs.chip(esc(so[0]), sd);
     $("bsort").setAttribute("aria-label", Rs.label(so[0], sd));
-    if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board."; $("bsum").hidden = false; $("bme").textContent = ""; $("bhead").hidden = true; return; }
+    if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board"; $("bsum").hidden = false; $("bme").textContent = ""; $("bhead").hidden = true; return; }
     $("bme").textContent = meLine();
     $("bme").hidden = !$("bme").textContent;
-    $("bmesave").innerHTML = DATA.saved || DATA.me.off ? "" : saveRow();
+    $("bmesave").innerHTML = DATA.me.off ? "" : (!DATA.saved ? saveRow() : (!DATA.me.area ? areaRow() : ""));
     HEADN = "";
     $("bsum").textContent = VIEW === "cards" ? drawBrowse() : VIEW === "players" ? drawPlayers() : drawMatches();
     $("bsum").hidden = !$("bsum").textContent;
@@ -642,8 +646,8 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     if (t.has.length || t.wants.length) {
       var th = total(t.has), yo = total(t.wants);
       th = th == null ? null : th * f.pct / 100; yo = yo == null ? null : yo * myPct() / 100;
-      h += '<div class="nrows"><div class="nrow"><div><b>Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div>'
-        + '<div class="nrow"><div><b>Theirs</b><small>' + plural(cardsN(t.has), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(th) + '</span></div></div>';
+      h += '<div class="nrows"><div class="nrow"><div><b class="ny">Yours</b><small>' + plural(cardsN(t.wants), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(yo) + '</span></div>'
+        + '<div class="nrow"><div><b class="nt">Theirs</b><small>' + plural(cardsN(t.has), "card", "cards") + '</small></div><span class="sp"></span><span class="v">' + money(th) + '</span></div></div>';
       h += '<button type="button" class="pact btn glass" id="bprice" data-k="do">Price this trade</button><p class="bmsg" id="bpricemsg" hidden></p>';
     }
     var ow = offerWith(WHO);
@@ -680,6 +684,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     o.s1 = lines(t.wants); o.s2 = lines(t.has); o.n1 = ""; o.n2 = nameOf(f).replace(/^@/, "").slice(0, 16); o.side = 2; o.p1 = myPct(); o.p2 = f.pct || 100;
     if (o.cur !== "USD" && o.cur !== "CAD") { o.cur = CUR; }
     try { localStorage.setItem("vir.trade.v1", JSON.stringify(o)); } catch (e) {}
+    if (window.RAVI_BACK_MARK) { window.RAVI_BACK_MARK("../trade/"); }
     location.href = "../trade/";
   }
 
@@ -914,7 +919,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var any = false;
     groups.forEach(function(g){ if (g[1].length) { any = true; h += '<p class="bh3">' + esc(g[0]) + '</p><div class="doors" data-k="deeper">' + g[1].map(offerRow).join("") + '</div>'; } });
     if (!any && OFFLOADED) { h += '<p class="bmsg">No offers yet. Open a player on the board and tap Make an offer.</p>'; }
-    if (!any && !OFFLOADED && !OFFERR) { h += '<p class="bmsg">Loading your offers.</p>'; }
+    if (!any && !OFFLOADED && !OFFERR) { h += '<p class="bmsg">Loading your offers</p>'; }
     h += '<p class="pnote">Offers last 7 days. RAVI never handles money.</p>';
     $("poffb").innerHTML = h;
   }
@@ -1345,7 +1350,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   function blkCount(){ var n = LOADED ? DATA.me.blocked : 0, e = $("bblkn"); if (e) { e.textContent = n ? String(n) : ""; } }
   function drawBlk(){
     var h = "";
-    if (!BLKLOADED) { h = '<p class="bmsg">' + esc(BLKERR || "Loading.") + '</p>'; }
+    if (!BLKLOADED) { h = '<p class="bmsg">' + esc(BLKERR || "Loading the blocked players") + '</p>'; }
     else if (!BLK.length) { h = '<p class="bmsg">Nobody blocked. Block a player from their menu: Report or block.</p>'; }
     else {
       h = '<div class="doors" data-k="do">' + BLK.map(function(f){

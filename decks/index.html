@@ -555,7 +555,7 @@ body{-webkit-font-smoothing:antialiased;
     </footer>
   </div>
 </div>
-<div class="boot" id="boot">Loading cards</div>
+<div class="boot" id="boot">Loading the cards</div>
 
 <!-- the card browser -->
 <section class="brw" id="brw" hidden aria-label="Add cards">
@@ -643,7 +643,7 @@ body{-webkit-font-smoothing:antialiased;
 
 <section class="panel frost" id="pdsort" aria-hidden="true" aria-label="Sort decks">
   <div class="phead"><h4 class="ttl">Sort decks</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="dsortpick" data-k="pick"></div><p class="pnote" id="dsortnote" style="margin-top:10px">My order is the order you arrange: tap the pencil on this screen, then drag a deck by its handle.</p></div>
+  <div class="pbody"><div class="pick" id="dsortpick" data-k="pick"></div><p class="pnote" id="dsortnote" style="margin-top:10px">My order is the order you arrange in Edit.</p></div>
 </section>
 
 <section class="panel frost" id="ptags" aria-hidden="true" aria-label="Tags">
@@ -652,7 +652,7 @@ body{-webkit-font-smoothing:antialiased;
     <p class="tgfor" id="tgfor"></p>
     <div class="pick" id="tgpick" data-k="pick"></div>
     <div class="row" style="margin-top:12px"><div class="nf"><input id="tgnew" type="text" maxlength="24" placeholder="New tag" autocomplete="off" autocapitalize="sentences" enterkeyhint="done" aria-label="New tag" data-k="type"><button type="button" class="fbtn glass" data-act="tgadd" id="tgaddb" disabled data-k="do">Add</button></div></div>
-    <p class="pnote" id="tgnote" style="margin-top:10px">Tag a deck as anything you like: a format, an event, for memories. The tags above your decks show only the decks with that tag.</p>
+    <p class="pnote" id="tgnote" style="margin-top:10px">Tag a deck as anything you like: a format, an event, for memories. A tag shows only its decks.</p>
   </div>
 </section>
 
@@ -670,8 +670,9 @@ body{-webkit-font-smoothing:antialiased;
 <section class="panel frost" id="psort" aria-hidden="true" aria-label="Sort and group">
   <div class="phead"><h4 class="ttl">Sort and group</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
-    <div class="row"><p class="lb">Sort by</p><div class="seg" id="ssort" role="group" aria-label="Sort by" data-k="pick"><button type="button" data-v="energy">Energy</button><button type="button" data-v="power">Power</button><button type="button" data-v="name">Name</button><button type="button" data-v="price">Price</button></div></div>
-    <div class="row"><p class="lb">Group by</p><div class="seg" id="sgroup" role="group" aria-label="Group by" data-k="pick"><button type="button" data-v="type">Type</button><button type="button" data-v="energy">Energy</button><button type="button" data-v="domain">Domain</button><button type="button" data-v="none">None</button></div></div>
+    <!-- rows, as every sort menu (plan 2 M8.7 B7; RAVI_SORT: the arrow on the chosen row, again flips it) -->
+    <div class="row"><p class="lb">Sort by</p><div class="pick" id="ssort" data-k="pick"></div></div>
+    <div class="row"><p class="lb">Group by</p><div class="pick" id="sgroup" data-k="pick"></div></div>
   </div>
 </section>
 
@@ -1038,7 +1039,7 @@ body{-webkit-font-smoothing:antialiased;
     pubChips();
     el("hqx").disabled = !PUB.q;
     if(PUB.err && !PUB.rows.length) h = '<p class="hnone">' + esc(PUB.err) + '</p>';
-    else if(!PUB.loaded || (PUB.loading && !PUB.rows.length)) h = '<p class="hnone">Loading public decks</p>';
+    else if(!PUB.loaded || (PUB.loading && !PUB.rows.length)) h = '<p class="hnone">Loading the public decks</p>';
     else if(!PUB.rows.length) h = '<p class="hnone">' + (any ? "No public deck matches. Try another word, or Show all." : "No public decks yet. Share one of yours: open it, then Deck settings, Who sees it.") + '</p>';
     PUB.rows.forEach(function(r){ h += pubRow(r); });
     paint(el("hlist"), h);
@@ -1421,7 +1422,7 @@ body{-webkit-font-smoothing:antialiased;
     var L = C(d.legend), r = X.sum(d.runes), h = "";
     h += '<div class="lrhd"><div class="shead"><h2>Legend</h2></div><div class="shead"><h2>Runes</h2><span class="sp"></span><span class="cnt">' + r + '/12</span></div></div><div class="lrow" id="lrow">';
     if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + badges(L, d.legend, "low") + '</div>';
-    else h += '<div class="lcell">' + (EDIT ? '<button type="button" class="addt btn glass" data-act="badd" data-sec="legend" data-k="do">' + IC.plus + '<span>Legend</span></button>' : '<div class="lcard none">No Legend yet. Tap Edit to build this deck.</div>') + '</div>';
+    else h += '<div class="lcell">' + (EDIT ? '<button type="button" class="addt btn glass" data-act="badd" data-sec="legend" data-k="do">' + IC.plus + '<span>Legend</span></button>' : '<div class="lcard none">No Legend yet.</div>') + '</div>';
     var rcodes = Object.keys(d.runes).filter(function(c){ return d.runes[c] > 0; }), have = {};
     rcodes.forEach(function(c){ doms(C(c)).forEach(function(x){ have[x] = 1; }); });
     if(L) doms(L).forEach(function(dm){ if(!have[dm]){ var b = baseRune(dm); if(b) rcodes.push(b); } });
@@ -1499,7 +1500,7 @@ body{-webkit-font-smoothing:antialiased;
     if(probs.length) h += checkHTML(d, probs);
     h += legendRunesHTML(d);
     h += bfHTML(d);
-    h += sectionHTML("main", d, "Main deck", m + "/40", "No cards yet. Tap Edit, then Add cards.");
+    h += sectionHTML("main", d, "Main deck", m + "/40", "No cards yet.");
     h += sectionHTML("side", d, "Side deck", s + "/10", "Cards to swap in between games. Up to 10.");
     if(SET.maybe) h += sectionHTML("maybe", d, "Considering", X.sum(d.maybe), "Cards you are thinking about. They count toward nothing.");
     if(!probs.length) h += checkHTML(d, probs);
@@ -1868,10 +1869,9 @@ body{-webkit-font-smoothing:antialiased;
     function b(attr, val, on, label){ return '<button type="button" ' + attr + '="' + val + '" aria-pressed="' + on + '">' + label + '</button>'; }
     var vv = v || SET.view, ss = s || SET.sort;
     h += '<div class="row"><p class="lb">Show as</p><div class="seg" role="group" aria-label="Show as" data-k="pick">' + b("data-sv", "list", vv === "list", "List") + b("data-sv", "grid", vv === "grid", "Grid") + b("data-sv", "text", vv === "text", "Text") + '</div></div>';
-    if(SEC !== "bf") h += '<div class="row"><p class="lb">Sort by</p><div class="seg" role="group" aria-label="Sort by" data-k="pick">' + b("data-ss", "energy", ss === "energy", "Energy") + b("data-ss", "name", ss === "name", "Name") + b("data-ss", "price", ss === "price", "Price") + '</div></div>';
+    if(SEC !== "bf") h += '<div class="row"><p class="lb">Sort by</p><div class="pick" data-k="pick">' + sortRows("data-ss", ["energy", "name", "price"], ss) + '</div></div>';
     if (v || s) h += '<p class="pnote">This section shows its own way.</p>';
     el("secbody").innerHTML = h;
-    var sseg = el("secbody").querySelector('[aria-label="Sort by"]'); if(sseg) segSort(sseg, ss);
     el("psec").querySelector('[data-act="ssame"]').disabled = !(v || s);
   }
 
@@ -1925,8 +1925,6 @@ body{-webkit-font-smoothing:antialiased;
   // each sort: its key, its name, its natural way; choosing it again flips it (RAVI_SORT; plan 2 M8)
   var SORTS = [["energy", "Energy", "up"], ["power", "Power", "up"], ["name", "Name", "up"], ["number", "Set and number", "up"], ["price", "Price", "down"]];
   function sortOf(v){ var k = window.RAVI_SORT.key(v); return SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; }
-  // a sort track (Sort and group, a section's own menu): the chosen word carries its arrow
-  function segSort(box, v){ var R = window.RAVI_SORT, k = R.key(v); box.querySelectorAll("button").forEach(function(b){ var bv = b.getAttribute("data-v") || b.getAttribute("data-ss"), s = sortOf(bv), on = bv === k, d = R.dir(v, s[2]); b.setAttribute("aria-pressed", on ? "true" : "false"); b.innerHTML = esc(s[1]) + (on ? R.arrow(d) : ""); if(on) b.setAttribute("aria-label", s[1] + ", " + R.words(d)); else b.removeAttribute("aria-label"); }); }
   function brDefaults(sec){
     var d = deck(), L = C(d.legend);
     BR.sec = sec; BR.q = ""; BR.n = 120; BR.f = { dom: [], type: [], energy: [], set: [] };
@@ -2179,7 +2177,7 @@ body{-webkit-font-smoothing:antialiased;
   function imgName(){ var d = deck(); return ((d && d.name) || "deck").replace(/[^A-Za-z0-9 _-]+/g, "").trim().replace(/\s+/g, "-") || "deck"; }
   function fillImg(){
     var w = el("ximgw"); w.classList.add("busy"); el("ximg").removeAttribute("src");
-    el("xnote").textContent = "Drawing the picture.";
+    el("xnote").textContent = "Drawing the picture";
     deckImage(function(b){
       w.classList.remove("busy"); if(XF !== "img") return;
       if(b){ el("ximg").src = XIMG.url; el("xnote").textContent = XNOTE.img; }
@@ -2245,7 +2243,12 @@ body{-webkit-font-smoothing:antialiased;
 
   // ---- settings menu ----
   function pressSeg(box, attr, val){ box.querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute(attr) === String(val) ? "true" : "false"); }); }
-  function fillSort(){ pressSeg(el("sgroup"), "data-v", SET.group); segSort(el("ssort"), SET.sort); }
+  var GROUPS = [["type", "Type"], ["energy", "Energy"], ["domain", "Domain"], ["none", "None"]];
+  function sortRows(attr, keys, cur){ var R = window.RAVI_SORT, k = R.key(cur); return keys.map(function(key){ var s0 = sortOf(key), on = key === k; return R.row(attr + '="' + key + '"', esc(s0[1]), on, on ? R.dir(cur, s0[2]) : ""); }).join(""); }
+  function fillSort(){
+    el("ssort").innerHTML = sortRows("data-v", ["energy", "power", "name", "price"], SET.sort);
+    el("sgroup").innerHTML = GROUPS.map(function(g){ var on = SET.group === g[0]; return '<button type="button" data-v="' + g[0] + '" aria-pressed="' + on + '"' + (on ? ' class="on"' : '') + '>' + g[1] + '</button>'; }).join("");
+  }
   function fillSet(){
     var d = deck();
     var ro = isRO();
@@ -2325,7 +2328,7 @@ body{-webkit-font-smoothing:antialiased;
       el("dsortnote").textContent = "Shared puts the newest first. Copies counts each player once.";
       return;
     }
-    el("dsortnote").textContent = "My order is the order you arrange: tap the pencil on this screen, then drag a deck by its handle.";
+    el("dsortnote").textContent = "My order is the order you arrange in Edit.";
     var R = window.RAVI_SORT; el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = R.key(SET.dsort) === x[0]; return R.row('data-act="dsset" data-v="' + x[0] + '"', x[1], on, on && x[2] ? R.dir(SET.dsort, x[2]) : ""); }).join("");
   }
   document.addEventListener("touchmove", function(ev){

@@ -9,6 +9,7 @@ Collection (collection/index.html)
 - Movers in Grid (plan 2 M8.5; Mako's phone yes 2026-11-07): Gains and Losses are each the page's grid (.cgrid) three across inside Movers' glass block, a touch smaller than the grid below, wrapping to a second row; never sliding sideways. List keeps rows.
 - Collection is the whole: every binder and the cards in no binder; the Wishlist never counts. A tap under Collection adds into no binder; minus only takes from what the view itself holds. Grid by default (the count pill at the picture's foot, the price of one, the total past one copy); List without glass.
 - The browser: the same three-row plate (close and the binder pill, the search, then Decks' chip row: Set and a chip for what the pill holds, In this binder, Owned or On Wishlist; M7 B7); Sets is a menu (each set with its day, held and worth; Organized Play promos; Other promos; sealed in its set); a tap on a picture adds one; minus (the bin at one) and plus on the picture.
+- An empty Collection offers Add cards, Add a deck and Import from Collectr as one glass group of action rows (.doors .door.act; plan 2 M8.7 B6).
 - Collection: a tile and a List row word a total the same way, "$x for 3"; Edit binders is reached only from the binder pill's menu. (Mako's yes 2026-10-25)
 
 Page-local classes (not in app.css; not Kit parts):

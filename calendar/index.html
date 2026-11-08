@@ -57,6 +57,7 @@ a{color:inherit;text-decoration:none}
    below that was the bug rather than a fix. */
 .stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 18px);height:0;z-index:10}
 .hold{height:0;transition:height .28s var(--ease)}
+#foldmark{height:1px;margin-top:-1px} /* the line the month folds at (plan 2 M8.7 A3) */
 .card{
   position:relative;width:calc(100% - 24px);
   max-width:456px;margin:0 auto;
@@ -320,7 +321,7 @@ a{color:inherit;text-decoration:none}
   <div class="weeks" id="weeks"><div id="weeksInner"></div></div>
 </section>
 </div>
-<div class="hold" id="hold"></div>
+<div class="hold" id="hold"></div><div id="foldmark" aria-hidden="true"></div>
 
 <main class="body" id="main">
   <div class="shead">
@@ -402,7 +403,9 @@ a{color:inherit;text-decoration:none}
     <div class="lme glass" id="plme" hidden><div class="lmt" id="plmt"></div><div class="lms" id="plms"></div></div>
     <div class="lfind" id="plfind" hidden>
       <p class="lb">Your Riot name, to find your table</p>
-      <div class="nf"><input type="text" id="plmein" placeholder="Name#TAG" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" data-k="type"><button type="button" class="fbtn glass" id="plmeok" data-k="do">Find me</button></div>
+      <!-- the Riot ID in its two parts, as Profile and App settings take it (plan 2 M8.7 B8) -->
+      <div class="rid"><div class="ridn"><div class="nf tall"><input type="text" id="plmein" placeholder="Riot name" maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Your Riot name" data-k="type"></div></div><div class="ridt"><div class="nf tall"><span class="acat">#</span><input type="text" id="plmetag" placeholder="tag" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Your Riot tag" data-k="type"></div></div></div>
+      <button type="button" class="pact btn glass" id="plmeok" data-k="do">Find me</button>
     </div>
     <div class="seg lseg" role="group" aria-label="Show" id="plview" data-k="pick"><button type="button" data-v="p" aria-pressed="true">Pairings</button><button type="button" data-v="s" aria-pressed="false">Standings</button></div>
     <div class="seg lseg" role="group" aria-label="Round" id="plrounds" data-k="pick"></div>
@@ -1110,6 +1113,7 @@ a{color:inherit;text-decoration:none}
 
     main.style.paddingBottom = "calc(" + (tabs.offsetHeight + 36) + "px + env(safe-area-inset-bottom,0px))";
     apply(true);
+    watchFold();
   }
 
   /* apply(now) draws whichever state the calendar is in. now=true jumps
@@ -1165,14 +1169,45 @@ a{color:inherit;text-decoration:none}
     if (!tween){ void hold.offsetHeight; hold.style.transition = ""; }
   }
 
-  mtog.addEventListener("click", function(){
+  function toggle(){
     if (!M.weeks) measure();
     var y = window.pageYOffset || document.documentElement.scrollTop || 0;
     shut = !shut;
     apply(false);
     if (y <= M.pin) setHold(true);
     else setHold(false);
+  }
+  mtog.addEventListener("click", function(){
+    // a tap is the player's own choice: an auto fold stops until the page is back at the top
+    if (autoShut && shut) { userOpen = true; }
+    autoShut = false;
+    toggle();
   });
+
+  /* THE MONTH FOLDS WHILE THE LIST SCROLLS (plan 2 M8.7 A3, as Fantastical): once the agenda's top
+     passes under the card, the card folds to the chosen day's week, the same move as the chevron;
+     back at the top of the page it opens again. STILL NO SCROLL LISTENER: two IntersectionObservers
+     tell the browser's own scroll to us once per crossing, and the fold is the chevron's own path
+     (the spacer, above the screen, changes in one frame). A tap on the chevron wins until the page
+     is back at the top. */
+  var autoShut = false, userOpen = false, foldIO = null, topIO = null;
+  function watchFold(){
+    if (!("IntersectionObserver" in window) || !M.card) return;
+    var line = Math.round((parseFloat(getComputedStyle(stick).top) || 0) + M.card);
+    if (foldIO) foldIO.disconnect();
+    foldIO = new IntersectionObserver(function(es){
+      var e = es[es.length - 1];
+      if (!e.isIntersecting && e.boundingClientRect.top < line && !shut && !userOpen) { autoShut = true; toggle(); }
+    }, { rootMargin: "-" + line + "px 0px 0px 0px" });
+    foldIO.observe(document.getElementById("foldmark"));
+    if (!topIO) {
+      topIO = new IntersectionObserver(function(es){
+        var e = es[es.length - 1];
+        if (e.isIntersecting) { userOpen = false; if (autoShut && shut) { autoShut = false; toggle(); } }
+      });
+      topIO.observe(document.querySelector(".wmrow"));
+    }
+  }
   window.addEventListener("resize", function(){ measure(); });
 
 
@@ -1432,7 +1467,7 @@ a{color:inherit;text-decoration:none}
     } else {
       meBox.hidden = true; find.hidden = false;
       var inp = document.getElementById("plmein");
-      if (mine && document.activeElement !== inp && !inp.value) inp.value = L.nameText(mine);
+      if (mine && document.activeElement !== inp && !inp.value) fillMe(L.nameText(mine));
     }
     // the round track
     var rbox = document.getElementById("plrounds");
@@ -1487,7 +1522,7 @@ a{color:inherit;text-decoration:none}
     var on = L.alertOn(LV.id), mine = L.me();
     b.textContent = L.isDemo(LV.id) ? "Send a test alert" : on ? "Alerts on: tap to stop" : "Alert me when I'm paired";
     b.disabled = !on && !mine;
-    var msg = alNote || (!on && !mine ? "Save your Riot name above to get alerts." : "");
+    var msg = alNote || (!on && !mine ? "Alerts need your Riot name." : "");
     n.textContent = msg; n.hidden = !show || !msg;
   }
   document.getElementById("plalert").addEventListener("click", function(){
@@ -1523,14 +1558,16 @@ a{color:inherit;text-decoration:none}
     LV.round = +b.getAttribute("data-n"); liveRender();
   });
   function claimedRiot(){ var A = window.RAVI_ACCT, v = A && A.signedIn && A.signedIn() && A.view ? A.view() : null; return !!(v && v.riot); }
-  document.getElementById("plme").addEventListener("click", function(){ if (claimedRiot() && window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN("acprof"); return; } /* M7 C3: a claimed Riot ID changes in Profile */ LV.editing = true; liveRender(); var i = document.getElementById("plmein"); i.value = window.RAVI_LIVE.nameText(window.RAVI_LIVE.me()); i.focus(); });
+  document.getElementById("plme").addEventListener("click", function(){ if (claimedRiot() && window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN("acprof"); return; } /* M7 C3: a claimed Riot ID changes in Profile */ LV.editing = true; liveRender(); fillMe(window.RAVI_LIVE.nameText(window.RAVI_LIVE.me())); document.getElementById("plmein").focus(); });
+  function fillMe(t){ var p = String(t || "").split("#"); document.getElementById("plmein").value = p[0] || ""; document.getElementById("plmetag").value = p.length > 1 ? p.slice(1).join("#") : ""; }
   function saveMe(){
-    var i = document.getElementById("plmein");
-    window.RAVI_LIVE.setMe(i.value);
-    LV.editing = false; i.blur(); liveRender();
+    var i = document.getElementById("plmein"), g = document.getElementById("plmetag"), n = i.value.trim(), t = g.value.trim().replace(/^#/, "");
+    window.RAVI_LIVE.setMe(n ? n + (t ? "#" + t : "") : "");
+    LV.editing = false; i.blur(); g.blur(); liveRender();
   }
   document.getElementById("plmeok").addEventListener("click", saveMe);
-  document.getElementById("plmein").addEventListener("keydown", function(e){ if (e.key === "Enter") saveMe(); });
+  document.getElementById("plmein").addEventListener("keydown", function(e){ if (e.key === "Enter") document.getElementById("plmetag").focus(); });
+  document.getElementById("plmetag").addEventListener("keydown", function(e){ if (e.key === "Enter") saveMe(); });
   document.getElementById("plme").setAttribute("role", "button");
   document.getElementById("plme").setAttribute("data-k", "do");
 

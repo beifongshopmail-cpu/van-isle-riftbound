@@ -137,7 +137,7 @@ body{-webkit-font-smoothing:antialiased;
 .dvrow .sp{flex:1}
 .dvsort.on{background:var(--glass-press)}
 .dvsort:active{transform:scale(.96)}
-.first .pact + .pact{margin-top:8px}
+.first .doors{margin-top:4px}
 /* THE CARD BROWSER: full screen, as Decks' (the same bend of every-overlay-is-a-menu) */
 .brw{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .bhead{position:sticky;top:calc(var(--top-clear) - 10px);margin-top:calc(var(--top-clear) - 10px);z-index:2;padding:0 12px}
@@ -213,7 +213,7 @@ input[type="file"]{display:none}
 
 <main id="cl">
   <h2 class="sr">Collection</h2>
-  <p class="boot" id="boot">Loading prices...</p>
+  <p class="boot" id="boot">Loading prices</p>
   <div id="app" hidden>
     <!-- THE PLATE (round 3, Mako 2026-10-25: as Decks', one sticky block): which portfolio, its search,
          and how its cards show -->
@@ -222,7 +222,7 @@ input[type="file"]{display:none}
       <div class="sf psf" id="hsf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="hq" type="search" placeholder="Search your collection" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-        <button type="button" class="fbtn fx glass" id="hqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <button type="button" class="fbtn fx glass" id="hqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
       </div>
       <div class="dvrow" id="hview"></div>
     </div></div>
@@ -250,9 +250,8 @@ input[type="file"]{display:none}
     <section id="first" class="first" hidden>
       <div class="shead"><h2 id="firstttl">Start your collection</h2></div>
       <p class="cempty" id="firsttx"></p>
-      <button type="button" class="pact btn glass" data-act="browse" data-k="do">Add cards</button>
-      <button type="button" class="pact btn glass" data-act="decks" data-k="do">Add a deck</button>
-      <button type="button" class="pact btn glass" data-act="import" data-k="do">Import from Collectr</button>
+      <!-- a stack of actions is one glass group of rows (plan 2 M8.7 B6; STYLE 5, .door.act) -->
+      <div class="doors glass" data-k="do"><button type="button" class="door act" data-act="browse"><span class="t">Add cards</span></button><button type="button" class="door act" data-act="decks"><span class="t">Add a deck</span></button><button type="button" class="door act" data-act="import"><span class="t">Import from Collectr</span></button></div>
     </section>
   </div>
   <p class="boot" id="loadfail" hidden>The prices could not be loaded. Check your connection and open the page again.</p>
@@ -286,7 +285,7 @@ input[type="file"]{display:none}
     <div class="sf psf">
         <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
         <input id="bq" type="search" placeholder="Search cards and products" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
-        <button type="button" class="fbtn fx glass" id="bqx" hidden data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+        <button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
     <div class="bopts" id="bopts"></div>
   </div></div>
@@ -823,7 +822,7 @@ input[type="file"]{display:none}
     box.innerHTML = list.slice(0, LIMIT).map(function(x){ return grid ? tileHtml(x) : rowHtml(x, many); }).join("");
     el("hnone").hidden = !!list.length;
     HMANY = many;
-    el("hqx").hidden = !q;
+    el("hqx").disabled = !q;
     segs(); selPaint();
     if(list.length > LIMIT) requestAnimationFrame(hPump);
   }
@@ -1098,7 +1097,7 @@ input[type="file"]{display:none}
     BR.list = brList();
     el("bgrid").innerHTML = BR.list.length ? BR.list.slice(0, BR.lim).map(brTile).join("") : '<p class="bnone">Nothing matches. Try another word, or All.</p>';
     el("bgrid").className = BR.list.length ? "cgrid" : "";
-    el("bqx").hidden = !BR.q;
+    el("bqx").disabled = !BR.q;
     brOpts(); brNote();
     if(!keep) el("brw").scrollTop = 0;
     if(BR.list.length > BR.lim) requestAnimationFrame(brPump);
