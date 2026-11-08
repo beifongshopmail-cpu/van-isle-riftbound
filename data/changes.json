@@ -3,11 +3,6 @@
   "planned": [
     {
       "page": "news",
-      "t": "Raffles and deadlines pinned",
-      "d": "Open raffles and entry deadlines stay at the top of News while they are open."
-    },
-    {
-      "page": "news",
       "t": "Local stores' news",
       "d": "Riftbound news from the island's stores, every store alike."
     },
@@ -38,6 +33,16 @@
     }
   ],
   "shipped": [
+    {
+      "date": "2026-11-08",
+      "items": [
+        {
+          "page": "news",
+          "t": "Open drawings pinned",
+          "d": "Riot's drawings stay at the top of News while entries are open, and come back on drawing day to remind you to check your email."
+        }
+      ]
+    },
     {
       "date": "2026-11-07",
       "items": [
