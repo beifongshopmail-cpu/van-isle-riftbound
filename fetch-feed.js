@@ -9,9 +9,15 @@
 //    Riot's own pages and accounts (RIOT below) and the day they were posted.
 //    A post reaches the channel either FOLLOWED (a crosspost, flag 2) or
 //    FORWARDED by hand (message_snapshots); both are read.
-// 2. Muse's daily files in Mako's private records repo
-//    (mako-records/ravi/muse/facebook/YYYY-MM-DD.json): Riot's official
-//    Facebook posts, kept word for word and credited.
+// 2. Muse's daily digest in the public repo beifongshopmail-cpu/ravi-news
+//    (<YYYY-MM-DD>.json at its root; moved there from mako-records on
+//    2026-11-08, Mako). Riot's official posts on its site, Facebook,
+//    Instagram, YouTube and X, kept word for word and credited to the place
+//    each was posted. One announcement is one entry: its canonical address in
+//    url, every platform's address in links. Each entry carries a tier:
+//    official entries are News; local and community entries are left out
+//    until RAVI has a place for them (plan 2 M9, local stores' news). An
+//    entry without a tier (before 2026-11-08) is official.
 //
 // Riot's short links (riot.com/...) are followed one step, as RAVI, to the
 // page they stand for, so a short link on Facebook and the full address on
@@ -20,7 +26,7 @@
 //
 // The same Riot link seen in both places becomes one item. Nothing is ever
 // rewritten. Every run re-reads the last 100 Discord messages and the last
-// 30 Muse files and merges them into the file, so there is no saved
+// 30 digest files and merges them into the file, so there is no saved
 // position: a quiet run produces the same file and leaves nothing to commit.
 //
 // RAVI names itself honestly: Discord gets the user agent form Discord asks
@@ -45,8 +51,10 @@
 //   the run. At most SUMS_PER_RUN calls and ARTS_PER_RUN pages per run.
 //
 // FAILURE: a missing key, or Discord or GitHub refusing a read, fails the
-// run and the last file stays. A Muse file that is not valid JSON in the
+// run and the last file stays. A digest file that is not valid JSON in the
 // agreed shape is skipped with a WARN line; the rest of the run goes on.
+// The digest is public, so it needs no key; GITHUB_TOKEN, when the workflow
+// passes it, only lifts GitHub's limit on unsigned reads.
 
 const fs = require("fs");
 const path = require("path");
@@ -55,8 +63,7 @@ const { RB } = require("./config");
 const RULES = require("./fetch-rules");
 
 const CHANNEL = "1558738517679415407"; // #riot-feed in Mako's RAVI feed server
-const RECORDS = "beifongshopmail-cpu/mako-records";
-const MUSE_DIR = "ravi/muse/facebook";
+const DIGEST = "beifongshopmail-cpu/ravi-news";   // Muse's daily digest, public (Mako 2026-11-08)
 const MUSE_FILES = 30;
 const DISCORD_UA = "DiscordBot (https://github.com/beifongshopmail-cpu/van-isle-riftbound, 1.0) VanIsleRiftbound/1.0";
 
@@ -84,9 +91,11 @@ const RIOT = [
   { host: "instagram.com", path: "/playriftbound" },
   { host: "x.com", path: "/playriftbound" },
   { host: "twitter.com", path: "/playriftbound" },
-  { host: "youtube.com", path: "/@playriftbound" }
+  { host: "youtube.com", path: "/@playriftbound" },
+  { host: "youtube.com", path: "/@riftbound" }   // the handle Riot links (ravi-news SOURCES.md, 2026-11-08)
 ];
-const KINDS = ["event", "announcement", "rules", "product", "market"];
+const KINDS = ["event", "announcement", "rules", "product", "market", "reveal"];
+const TIERS = ["official", "community", "local"];
 
 // ---- links ----
 
@@ -188,15 +197,34 @@ function checkMuse(d) {
     const p = d.posts[i];
     if (!p || typeof p.url !== "string" || typeof p.text !== "string" || typeof p.source !== "string") { return "post " + i + " lacks source, url or text"; }
     if (KINDS.indexOf(p.kind) === -1) { return "post " + i + " has kind " + JSON.stringify(p.kind); }
+    if (p.tier !== undefined && TIERS.indexOf(p.tier) === -1) { return "post " + i + " has tier " + JSON.stringify(p.tier); }
+    if (p.links !== undefined && (!Array.isArray(p.links) || p.links.some(function (l) { return typeof l !== "string"; }))) { return "post " + i + " has links that are not addresses"; }
   }
   return "";
 }
 
+// where a post was posted, in words, from its address
+function placeOf(u) {
+  const n = norm(u);
+  if (!n) { return "the web"; }
+  const h = new URL(n).hostname;
+  if (h === "facebook.com" || h === "fb.watch") { return "Facebook"; }
+  if (h === "instagram.com") { return "Instagram"; }
+  if (h === "youtube.com" || h === "youtu.be") { return "YouTube"; }
+  if (h === "x.com" || h === "twitter.com") { return "X"; }
+  if (h === "twitch.tv") { return "Twitch"; }
+  return h;
+}
+
+// Official entries only (an entry without a tier is official). The id keeps
+// its "fb:" prefix for every digest post, whatever the platform: it means
+// "a post Muse read" (merge and foldRepeats key on it), and the items News
+// already holds keep their ids.
 function itemsFromMuse(d) {
-  return d.posts.map(function (p) {
+  return d.posts.filter(function (p) { return !p.tier || p.tier === "official"; }).map(function (p) {
     const url = norm(p.url) || p.url;
-    const links = linksOf(p.text).filter(isRiot).map(norm).filter(function (u, i, a) { return u && a.indexOf(u) === i && u !== url; });
-    const it = { id: "fb:" + url, kind: p.kind, url: url, posted: p.posted || d.run, source: p.source, credit: "Riot, on Facebook", text: p.text, via: ["muse"] };
+    const links = (p.links || []).concat(linksOf(p.text).filter(isRiot)).map(norm).filter(function (u, i, a) { return u && a.indexOf(u) === i && u !== url; });
+    const it = { id: "fb:" + url, kind: p.kind, url: url, posted: p.posted || d.run, source: p.source, credit: "Riot, on " + placeOf(url), text: p.text, via: ["muse"] };
     if (links.length) { it.links = links; }
     return it;
   });
@@ -293,10 +321,13 @@ function daysApart(a, b) {
 }
 
 // Muse posts with the same words posted within a week are one post: the first
-// reading keeps its place and takes the others' sources and links.
+// reading keeps its place and takes the others' sources and links. On the
+// same day, a reading News already shows (it has its summary) is the first,
+// so a post Facebook gives a new address keeps its id and summary (the
+// digest move, 2026-11-08).
 function foldRepeats(items) {
   const out = [];
-  items.slice().sort(function (a, b) { return (a.posted || "").localeCompare(b.posted || "") || a.id.localeCompare(b.id); }).forEach(function (it) {
+  items.slice().sort(function (a, b) { return (a.posted || "").localeCompare(b.posted || "") || (b.sum ? 1 : 0) - (a.sum ? 1 : 0) || a.id.localeCompare(b.id); }).forEach(function (it) {
     const k = it.id.indexOf("fb:") === 0 ? wordsKey(it.text) : "";
     const home = k.length >= 30 ? out.filter(function (o) { return o.id.indexOf("fb:") === 0 && wordsKey(o.text) === k && daysApart(o.posted, it.posted) <= 7; })[0] : null;
     if (!home) { out.push(it); return; }
@@ -323,7 +354,7 @@ function articleOf(it) {
 }
 
 function isVideo(u) {
-  return /^https:\/\/(facebook\.com\/reel\/|facebook\.com\/[^/]+\/videos\/|youtube\.com\/|youtu\.be\/)/.test(norm(u) || "");
+  return /^https:\/\/(facebook\.com\/reel\/|facebook\.com\/[^/]+\/videos\/|instagram\.com\/reels?\/|youtube\.com\/|youtu\.be\/)/.test(norm(u) || "");
 }
 
 // Riot's page data -> { url, title, desc, pic, published, html }, the words
@@ -466,14 +497,15 @@ async function readDiscord(token) {
 }
 
 async function readMuse(token) {
-  const h = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "User-Agent": RB.ua, "X-GitHub-Api-Version": "2022-11-28" };
-  const list = await get(GITHUB + "/repos/" + RECORDS + "/contents/" + MUSE_DIR, h);
+  const h = { "Accept": "application/vnd.github+json", "User-Agent": RB.ua, "X-GitHub-Api-Version": "2022-11-28" };
+  if (token) { h.Authorization = "Bearer " + token; }
+  const list = await get(GITHUB + "/repos/" + DIGEST + "/contents", h);
   const names = list.filter(function (f) { return f.type === "file" && /^\d{4}-\d{2}-\d{2}\.json$/.test(f.name); })
     .map(function (f) { return f.name; }).sort().slice(-MUSE_FILES);
   const items = [];
   let warn = 0;
   for (const name of names) {
-    const f = await get(GITHUB + "/repos/" + RECORDS + "/contents/" + MUSE_DIR + "/" + name, h);
+    const f = await get(GITHUB + "/repos/" + DIGEST + "/contents/" + name, h);
     let d = null;
     try { d = JSON.parse(Buffer.from(f.content || "", "base64").toString("utf8")); } catch (e) {}
     const bad = d ? checkMuse(d) : "not valid JSON";
@@ -484,8 +516,8 @@ async function readMuse(token) {
 }
 
 async function main() {
-  const dt = process.env.DISCORD_TOKEN, rt = process.env.RECORDS_TOKEN;
-  if (!dt || !rt) { throw new Error("missing key: " + [!dt ? "DISCORD_TOKEN" : "", !rt ? "RECORDS_TOKEN" : ""].filter(Boolean).join(" and ")); }
+  const dt = process.env.DISCORD_TOKEN, gt = process.env.GITHUB_TOKEN || "";
+  if (!dt) { throw new Error("missing key: DISCORD_TOKEN"); }
 
   const msgs = await readDiscord(dt);
   const shapes = { followed: 0, forwarded: 0, plain: 0 };
@@ -493,7 +525,7 @@ async function main() {
   const fromDiscord = itemsFromDiscord(msgs);
   console.log("discord: " + msgs.length + " messages (followed " + shapes.followed + ", forwarded " + shapes.forwarded + ", plain " + shapes.plain + "); Riot links kept " + fromDiscord.length);
 
-  const muse = await readMuse(rt);
+  const muse = await readMuse(gt);
   console.log("muse: " + muse.files + " files, " + muse.items.length + " posts" + (muse.warn ? ", " + muse.warn + " skipped" : ""));
 
   const cache = {};
@@ -513,7 +545,7 @@ async function main() {
 
   if (prev && JSON.stringify(prev.items) === JSON.stringify(items)) { console.log("no change; nothing written"); return; }
   const today = TODAY || day(new Date().toISOString());
-  const out = { updated: today, note: "Riot's own posts. Facebook text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).", items: items };
+  const out = { updated: today, note: "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).", items: items };
   fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 1) + "\n");
   console.log("wrote " + items.length + " items (" + fresh.length + " new" + (rules ? ", rules among them" : "") + ")");
@@ -526,5 +558,5 @@ if (require.main === module) {
   });
 }
 
-module.exports = { linksOf, norm, isRiot, kindOf, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL,
+module.exports = { linksOf, norm, isRiot, kindOf, placeOf, DIGEST, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL,
   wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, readReply, MODEL };

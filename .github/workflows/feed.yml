@@ -12,7 +12,9 @@ name: refresh feed
 # of waiting for its next turn.
 #
 # Keys: DISCORD_TOKEN (the RAVI scanner bot, reads #riot-feed),
-# RECORDS_TOKEN (read-only on mako-records, reads Muse's files) and
+# GITHUB_TOKEN (the run's own; Muse's digest, beifongshopmail-cpu/ravi-news,
+# is public, so this only lifts GitHub's limit on unsigned reads; the
+# records key's job ended when the digest moved there, 2026-11-08) and
 # ANTHROPIC_API_KEY (Claude writes each post's summary; without it the
 # summary is Riot's first sentence and the run still passes). A missing
 # key or a refused read fails the run and GitHub emails the owner; the
@@ -45,11 +47,11 @@ jobs:
       - name: Fixture checks
         run: node test-feed.js
 
-      - name: Read the Discord channel and Muse's files
+      - name: Read the Discord channel and Muse's digest
         id: read
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-          RECORDS_TOKEN: ${{ secrets.RECORDS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node fetch-feed.js
 

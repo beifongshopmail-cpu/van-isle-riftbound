@@ -68,6 +68,18 @@ check("Muse: posts kept word for word and credited, with their Riot links", func
     via: ["muse"], links: ["https://riot.com/4hPddsy"] }]);
 });
 
+check("digest (ravi-news, 2026-11-08): tier and reveal pass, local left out, links and credit kept", function () {
+  const d = { run: "2026-11-08", posts: [
+    { source: "Riftbound", url: "https://www.instagram.com/p/DfX2L-YgTqu/", posted: "2026-11-05", tier: "official", kind: "reveal", text: "swipe for a Mech surprise",
+      links: ["https://www.instagram.com/p/DfX2L-YgTqu/", "https://www.facebook.com/playriftbound/posts/pfbid0R"] },
+    { source: "Skyhaven", url: "https://facebook.com/groups/1289633928950754/permalink/1", posted: "2026-11-07", tier: "local", kind: "event", text: "Nexus Night" }] };
+  assert.strictEqual(ff.checkMuse(d), "");
+  assert.ok(ff.checkMuse({ run: "2026-11-08", posts: [{ source: "x", url: "u", text: "t", kind: "event", tier: "rumour" }] }));
+  assert.deepStrictEqual(ff.itemsFromMuse(d), [{ id: "fb:https://instagram.com/p/DfX2L-YgTqu", kind: "reveal", url: "https://instagram.com/p/DfX2L-YgTqu",
+    posted: "2026-11-05", source: "Riftbound", credit: "Riot, on Instagram", text: "swipe for a Mech surprise", via: ["muse"],
+    links: ["https://facebook.com/playriftbound/posts/pfbid0R"] }]);
+});
+
 check("merge: the same Riot post from both places is one item, newest first", function () {
   const d = ff.itemsFromDiscord([forwarded, plain]);
   const m = ff.itemsFromMuse({ run: "2026-10-10", posts: [{ source: "Riftbound", url: "https://www.facebook.com/playriftbound/posts/pfbid0X",

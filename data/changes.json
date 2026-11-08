@@ -38,6 +38,11 @@
       "items": [
         {
           "page": "news",
+          "t": "Card reveals and more of Riot's posts",
+          "d": "Riot's card reveals, and its posts on Instagram and YouTube, now come to News."
+        },
+        {
+          "page": "news",
           "t": "Open drawings pinned",
           "d": "Riot's drawings stay at the top of News while entries are open, and come back on drawing day to remind you to check your email."
         }

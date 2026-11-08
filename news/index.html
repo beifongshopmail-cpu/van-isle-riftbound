@@ -19,7 +19,7 @@
 <script src="../tier/tier.js"></script>
 <style>
 /* The News page (plan 2 M8.7 block 1, Mako 2026-11-07). Riot's posts from data/feed.json
-   (fetch-feed.js: Riot's Facebook posts through Muse, Riot's own articles read from
+   (fetch-feed.js: Riot's official posts through Muse's daily digest, ravi-news; Riot's own articles read from
    playriftbound.com), each with RAVI's headline and summary (Claude), read without leaving the
    app; and This week: the biggest price moves (data/prices.json) and the top legends
    (data/tier.json through tier/tier.js). Nothing here rewrites Riot's words; only the headline and
@@ -193,7 +193,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   <footer class="foot">
     <p id="stamp"></p>
     <p>Market price is a public benchmark, not an offer from any store.</p>
-    <p>News by Riot Games, word for word from Riot's Facebook page and playriftbound.com. Each headline and summary is RAVI's, written by Claude.</p>
+    <p>News by Riot Games, word for word from Riot's own site and accounts. Each headline and summary is RAVI's, written by Claude.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -236,16 +236,17 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     event:        { label: "Event",        rgb: "255,200,40" },    // the Events page's gold
     product:      { label: "Product",      rgb: "220,90,30" },     // Collection's rust
     announcement: { label: "Announcement", rgb: "30,205,230" },    // New here's sky
-    market:       { label: "Market",       rgb: "134,143,162" }    // Slate
+    market:       { label: "Market",       rgb: "134,143,162" },   // Slate
+    reveal:       { label: "Reveal",       rgb: "80,230,170" }     // Decks' mint: card reveals (the digest, 2026-11-08; as built, not chosen)
   };
-  var ORDER = ["rules", "event", "product", "announcement", "market"];
+  var ORDER = ["rules", "event", "product", "reveal", "announcement", "market"];
   var IV = {
     // the view chips, as Collection's and Decks' (plan 2 M8 round 5): Phosphor's squares-four, bold (MIT), and List
     grid: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM200,36H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,60H160V60h36Zm-96,40H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96Zm104-60H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,200,136Zm-4,60H160V160h36Z" fill="currentColor" stroke="none"/></svg>',
     list: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM100,136H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96ZM148,42H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,90H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,142H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,190H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24Z" fill="currentColor" stroke="none"/></svg>'
   };
   // the stand-in's icon: the page the kind belongs with
-  var KICON = { rules: "rules", event: "events", product: "collection", announcement: "whatsnew", market: "trade" };
+  var KICON = { rules: "rules", event: "events", product: "collection", reveal: "decks", announcement: "whatsnew", market: "trade" };
   var VIEWK = "vir.news.view.v1", VIEW = "list";
   try{ if(localStorage.getItem(VIEWK) === "grid") VIEW = "grid"; }catch(e){}
   var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
@@ -268,6 +269,13 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     TITLE:1, XMP:1, NOEMBED:1, NOFRAMES:1, PLAINTEXT:1, LINK:1, META:1, BASE:1, FORM:1 };
   function riotPic(u){ return /^https:\/\/cmsassets\.rgpub\.io\/[^\s"<>`]+$/i.test(String(u || "")); }
   function web(u){ return /^https:\/\/[^\s"<>`]+$/i.test(String(u || "")); }
+  // where a post was posted, in words (fetch-feed.js placeOf says the same in its credit)
+  function place(u){
+    var h = (/^https:\/\/(?:www\.|m\.)?([^\/]+)/i.exec(String(u || "")) || [])[1] || "";
+    h = h.toLowerCase();
+    return /(^|\.)facebook\.com$|^fb\.watch$/.test(h) ? "Facebook" : h === "instagram.com" ? "Instagram" : /(^|\.)youtube\.com$|^youtu\.be$/.test(h) ? "YouTube"
+      : h === "x.com" || h === "twitter.com" ? "X" : h === "twitch.tv" ? "Twitch" : h;
+  }
   function clean(html){
     var b = PARSE.parseFromString("<!doctype html><body>" + (html || "") + "</body>", "text/html").body;
     function walk(n){
@@ -570,7 +578,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   // ---- A POST'S MENU: RAVI's summary, then Riot's own words (the Facebook post, then its
   // article), then where it came from. Only a video leaves the app, to be watched. ----
   function fill(it){
-    var a = it.art, k = KIND[kindOf(it)], h = "", fb = it.id.indexOf("fb:") === 0;
+    var a = it.art, k = KIND[kindOf(it)], h = "", fb = it.id.indexOf("fb:") === 0, at = place(it.url), riot = at === "playriftbound.com";
     var m = el("ppost");
     m.style.setProperty("--c", k.rgb); m.style.setProperty("--cl", lit(k.rgb)); m.style.setProperty("--tint", "rgba(" + k.rgb + ",var(--cg))");
     el("pttl").textContent = head(it);
@@ -579,9 +587,11 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     if(pic(it)) h += '<img class="npic" src="' + esc(pic(it)) + '" alt="">';
     if(it.text) h += '<p class="rlab">Riot\'s post</p><div class="rtx sel">' + plain(it.text) + '</div>';
     if(a) h += '<p class="rlab">' + (it.text ? "Riot's article: " + esc(a.title) : "Riot's article") + '</p><div class="rtx sel">' + clean(a.html) + '</div>';
-    h += '<p class="rsrc">' + (fb ? "Riot, on Facebook" : "Riot, on playriftbound.com") + '.' + (a && fb ? ' The article is from playriftbound.com.' : '') + '</p>';
-    if(it.video && web(it.url)){
-      h += '<a class="pact btn glass nwatch" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do">Watch on ' + (/youtu/.test(it.url) ? "YouTube" : "Facebook") + ' ' + OUT + '</a>';
+    h += '<p class="rsrc">' + esc(fb ? "Riot, on " + at : "Riot, on playriftbound.com") + '.' + (a && fb && !riot ? ' The article is from playriftbound.com.' : '') + '</p>';
+    // the one way out: a video to watch, or a reveal whose card is in the picture Riot posted
+    // (the digest, 2026-11-08: a reveal is its picture, which RAVI does not copy)
+    if(web(it.url) && !riot && (it.video || kindOf(it) === "reveal")){
+      h += '<a class="pact btn glass nwatch" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do">' + (it.video ? "Watch on " : "See it on ") + esc(at) + ' ' + OUT + '</a>';
     }
     el("pbody").innerHTML = h;
     mark(el("pbody"));
