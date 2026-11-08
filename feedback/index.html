@@ -40,22 +40,21 @@ body{-webkit-font-smoothing:antialiased;
 #planned,#shipped,#send{margin-top:22px}
 #planned{margin-top:4px}
 /* PLANNED AND RECENTLY SHIPPED (plan 2 M8.7 block 2, Mako 2026-11-07): from data/changes.json,
-   kept by hand. Each line names its page beside the page's colour and icon (colour never alone),
-   so the page is easy to explore: Planned is one glass card of what is coming; Recently shipped
-   is the last three updates, a card each under its date, and All updates opens every one. */
-.chg{border-radius:22px;padding:2px 14px;margin:0 0 8px}
-.cr{display:flex;align-items:flex-start;gap:12px;padding:12px 0}
-.cr + .cr{border-top:1px solid rgba(255,255,255,.07)}
+   kept by hand. Every line is one short title on one row, beside its page's icon chip in the page's
+   colour (the icon's shape carries it, never the colour alone); a tap opens the line's detail and its
+   page's name (Mako: less wall of text, still telling enough). Recently shipped shows the three newest
+   updates, a group each under its date; All updates opens every one. */
+.cdl{margin:14px 4px 6px;font-size:12px;font-weight:600;color:var(--muted)}
+#alist .doors{margin:0 0 14px}
+.cdl:first-child{margin-top:0}
+.cdl small{font-weight:400}
 .ci{flex:0 0 auto;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
 .ci svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cm{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
-.cpg{font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
-.ctt{font-family:var(--disp);font-size:15px;font-weight:600;line-height:1.3}
-.cds{font-size:13px;line-height:1.4;color:var(--muted)}
-.ctx{font-size:15px;line-height:1.4}
-.cdate{display:flex;align-items:baseline;gap:8px;padding:12px 0 2px;font-family:var(--disp);font-size:15px;font-weight:700}
-.cdate small{font-family:var(--text);font-size:12px;font-weight:400;color:var(--muted)}
-.callg{margin-top:0}
+.door.rec.cr{flex-direction:row;align-items:center;gap:12px}   /* one line on a phone; a long title wraps rather than clips (the chevron sits as every record's) */
+.cr .t{white-space:normal}
+.cpg{display:flex;align-items:center;gap:10px;margin:0 0 10px;font-family:var(--disp);font-size:13px;font-weight:700;color:rgb(var(--cl))}
+.cds{margin:0;font-size:15px;line-height:1.4;color:var(--bone)}
+.callg{margin-top:8px}
 .foot a{color:var(--bone)}
 </style>
 </head>
@@ -70,7 +69,7 @@ body{-webkit-font-smoothing:antialiased;
        would notice (records: RULE -- keep the feedback page's Planned and Recently shipped current). -->
   <section id="planned" hidden>
     <div class="shead"><h2>Planned</h2><span class="sp"></span><span class="cnt" id="pcnt"></span></div>
-    <div class="chg glass" id="plist"></div>
+    <div class="doors" id="plist" data-k="deeper"></div>
   </section>
 
   <section id="shipped" hidden>
@@ -111,6 +110,10 @@ body{-webkit-font-smoothing:antialiased;
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
 </section>
+<section class="panel frost" id="pitem" aria-hidden="true" aria-label="Detail">
+  <div class="phead"><div class="ht"><h4 class="ttl" id="ittl">Detail</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody" id="ibody"></div>
+</section>
 <section class="panel frost" id="pall" aria-hidden="true" aria-label="All updates">
   <div class="phead"><div class="ht"><h4 class="ttl">All updates</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
   <div class="pbody" id="alist"></div>
@@ -148,21 +151,33 @@ body{-webkit-font-smoothing:antialiased;
     return p ? { name: p.name, rgb: p.rgb, icon: p.icon } : { name: "Whole app", rgb: "240,240,245", icon: window.RAVI_ICON("hub") };
   }
   function lit(rgb){ return rgb.split(",").map(function(c){ return Math.round(+c + (255 - +c) * .40); }).join(","); }
-  function line(it, planned){
-    var g = page(it.page);
-    return '<div class="cr" style="--c:' + g.rgb + ';--cl:' + lit(g.rgb) + '"><span class="ci" aria-hidden="true">' + g.icon + '</span><span class="cm">'
-      + '<span class="cpg">' + esc(g.name) + '</span>'
-      + (planned ? '<span class="ctt">' + esc(it.t) + '</span>' + (it.d ? '<span class="cds">' + esc(it.d) + '</span>' : '') : '<span class="ctx">' + esc(it.t) + '</span>')
-      + '</span></div>';
+  var LINES = [], CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
+  function line(it, when){
+    var g = page(it.page), n = LINES.push({ it: it, g: g, when: when }) - 1;
+    return '<button type="button" class="door btn glass rec cr" data-n="' + n + '" data-k="deeper" style="--c:' + g.rgb + ';--cl:' + lit(g.rgb) + '">'
+      + '<span class="ci" aria-hidden="true">' + g.icon + '</span><span class="t">' + esc(it.t) + '</span>' + CVR + '</button>';
   }
   function update(u){
     var when = window.RAVI_DATE(new Date(u.date + "T12:00:00"));
-    return '<div class="chg glass"><div class="cdate">' + esc(u.v ? "Version " + u.v : when) + (u.v ? '<small>' + esc(when) + '</small>' : '') + '</div>'
-      + u.items.map(function(it){ return line(it, false); }).join("") + '</div>';
+    return '<p class="lb cdl">' + esc(u.v ? "Version " + u.v : when) + (u.v ? ' <small>' + esc(when) + '</small>' : '') + '</p>'
+      + '<div class="doors" data-k="deeper">' + u.items.map(function(it){ return line(it, when); }).join("") + '</div>';
   }
+  // a line's detail: its page beside its colour and icon, the line in a sentence, when it shipped
+  function detail(x){
+    var m = el("pitem");
+    m.style.setProperty("--c", x.g.rgb); m.style.setProperty("--cl", lit(x.g.rgb));
+    el("ittl").textContent = x.it.t;
+    el("ibody").innerHTML = '<p class="cpg"><span class="ci" aria-hidden="true">' + x.g.icon + '</span>' + esc(x.g.name) + (x.when ? ', ' + esc(x.when) : ', planned') + '</p>'
+      + '<p class="cds sel">' + esc(x.it.d || x.it.t) + '</p>';
+    show(m);
+  }
+  document.addEventListener("click", function(ev){
+    var b = ev.target.closest(".cr[data-n]"); if(!b) return;
+    var x = LINES[+b.getAttribute("data-n")]; if(x) detail(x);
+  });
   fetch("../data/changes.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
     var pl = Array.isArray(d.planned) ? d.planned : [], sh = Array.isArray(d.shipped) ? d.shipped.filter(function(u){ return u && u.date && Array.isArray(u.items) && u.items.length; }) : [];
-    if(pl.length){ el("plist").innerHTML = pl.map(function(it){ return line(it, true); }).join(""); el("pcnt").textContent = pl.length; el("planned").hidden = false; }
+    if(pl.length){ el("plist").innerHTML = pl.map(function(it){ return line(it, ""); }).join(""); el("pcnt").textContent = pl.length; el("planned").hidden = false; }
     if(sh.length){
       el("slist").innerHTML = sh.slice(0, 3).map(update).join("");
       el("alist").innerHTML = sh.map(update).join("");
