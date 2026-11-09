@@ -52,8 +52,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 /* a verdict: its word and its mark carry it; the tint only helps */
 .vd{display:flex;align-items:center;justify-content:center;gap:4px;height:28px;border-radius:999px;font-family:var(--disp);font-weight:600;font-size:12px;color:var(--bone)}
 .vd svg{width:12px;height:12px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.vd.in{background:rgba(80,230,170,.24)}
-.vd.ties{background:rgba(255,200,40,.24)}
+.vd.in{background:rgba(var(--h-mint),.24)}
+.vd.ties{background:rgba(var(--h-gold),.24)}
 .vd.out{background:rgba(255,255,255,.06);color:var(--muted)}
 .fmore{margin:10px 4px 0;font-size:12px;color:var(--muted)}
 /* the safe line leads Your finishes (plan 2 M8.7 E1): body text, bone */
@@ -73,7 +73,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 /* THE COLOUR TRIAL (plan 2 M8.7; Mako 2026-11-09 10:13: Top cut 'feels blank'): a section that is one
    thing wears its colour, as Events' cards and Rules' sections: The event Events' gold, Your record your
    own colour; Your finishes mixes outcomes, so it stays plain and its pills carry the colour. */
-:where(html.cnew) #sev{--sc:255,200,40}
+:where(html.cnew) #sev{--sc:var(--h-gold)}
 :where(html.cnew) #srec{--sc:var(--ycr,93,165,238)}
 :where(html.cnew) :is(#sev,#srec){--tint:transparent;--muted:#DCDEE2;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
 </style>

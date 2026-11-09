@@ -162,13 +162,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
    kind's rust, Signing up for events Events' gold, What to bring Game's crimson, The rules Rules' jade,
    Setup your own colour, Getting around App settings'; a list that mixes things (Kinds of events, The
    pages) keeps its colour small: marks, and a coloured page chip on each row (.npc, as Feedback's). */
-:where(html.cnew) #try{--sc:0,190,140}
-:where(html.cnew) #deck{--sc:220,90,30}
-:where(html.cnew) #signup{--sc:255,200,40}
-:where(html.cnew) #bring{--sc:200,35,70}
-:where(html.cnew) #rules{--sc:0,190,140}
+:where(html.cnew) #try{--sc:var(--h-jade)}
+:where(html.cnew) #deck{--sc:var(--h-rust)}
+:where(html.cnew) #signup{--sc:var(--h-gold)}
+:where(html.cnew) #bring{--sc:var(--h-garnet)}
+:where(html.cnew) #rules{--sc:var(--h-jade)}
 :where(html.cnew) #setup{--sc:var(--ycr,93,165,238)}
-:where(html.cnew) #around{--sc:205,220,240}
+:where(html.cnew) #around{--sc:var(--h-ice)}
 :where(html.cnew) :is(#try,#deck,#signup,#bring,#rules,#setup,#around){--tint:transparent;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
 .npc{display:none}
 :where(html.cnew) #pages .door.rec{padding-left:60px}
@@ -191,7 +191,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   <p class="lb nprt">How to play</p>
 
-  <section class="nsec glass cg" id="hdeck" style="--c:200,35,70">
+  <section class="nsec glass cg" id="hdeck" data-hue="garnet">
     <div class="shead"><h2>Your deck</h2></div>
     <p class="ntx">A Legend, its Chosen Champion, a Main deck of 40 cards, 12 runes and 3 battlefields.</p>
     <div class="nfig ndk">
@@ -218,7 +218,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hboard" style="--c:255,150,40">
+  <section class="nsec glass cg" id="hboard" data-hue="tangerine">
     <div class="shead"><h2>The board</h2></div>
     <p class="ntx">Each player plays on a mat like this. The battlefields are where points are scored.</p>
     <div class="nfig nbd" role="img" aria-label="A player's mat: a top row of Battlefield Zone, Legend Zone and Champion Zone; a middle row of Base: Units and Gears and Main Deck; a bottom row of Rune Deck, Base: Runes and Trash">
@@ -242,7 +242,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hsetup" style="--c:255,200,40">
+  <section class="nsec glass cg" id="hsetup" data-hue="gold">
     <div class="shead"><h2>Setting up</h2></div>
     <p class="ntx">Pick your battlefield, shuffle, draw 4. You may swap up to 2.</p>
     <ol class="nst">
@@ -270,7 +270,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hturn" style="--c:170,210,60">
+  <section class="nsec glass cg" id="hturn" data-hue="lime">
     <div class="shead"><h2>A turn</h2></div>
     <p class="ntx">A, B, C, D, then your actions, then the end.</p>
     <ol class="nst">
@@ -298,7 +298,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hrunes" style="--c:80,230,170">
+  <section class="nsec glass cg" id="hrunes" data-hue="mint">
     <div class="shead"><h2>Runes</h2></div>
     <p class="ntx">Runes pay for cards. Exhaust a rune for 1 Energy. Recycle a rune for 1 Power of its domain.</p>
     <div class="nfig nrn">
@@ -329,7 +329,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hmove" style="--c:30,205,230">
+  <section class="nsec glass cg" id="hmove" data-hue="sky">
     <div class="shead"><h2>Units and moving</h2></div>
     <p class="ntx">A unit arrives exhausted at your base. Once ready, it exhausts to move to a battlefield or back.</p>
     <div class="nfig nmv" role="img" aria-label="Flame Chompers, a unit at your base, can move to either battlefield and back; only Ganking moves from one battlefield to the other">
@@ -357,7 +357,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hfight" style="--c:115,80,240">
+  <section class="nsec glass cg" id="hfight" data-hue="violet">
     <div class="shead"><h2>Fights</h2></div>
     <p class="ntx">Move onto a battlefield the other player controls and you fight. Each side deals its total Might as damage.</p>
     <div class="nfig ncb" role="img" aria-label="Example: your Flame Chompers, 3 Might, and Mystic Poro, 2 Might, attack their Kinkou Monk, 4 Might. Kinkou Monk and Flame Chompers are killed; Mystic Poro is left, so you conquer">
@@ -389,7 +389,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     </div>
   </section>
 
-  <section class="nsec glass cg" id="hscore" style="--c:215,90,230">
+  <section class="nsec glass cg" id="hscore" data-hue="orchid">
     <div class="shead"><h2>Scoring</h2></div>
     <p class="ntx">Score 1 when you conquer a battlefield and 1 when you hold one as your turn starts. 8 points wins.</p>
     <div class="nfig ntk">
@@ -450,11 +450,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <!-- Riot's event kinds change in the coming months (Mako 2026-10-27): NEXT -- New here: event kinds change soon -->
     <div class="shead"><h2>Kinds of events</h2></div>
     <!-- each kind with its calendar mark, in the app's order (plan 2 M8.7 C8; STYLE 4, Event types) -->
-    <p class="ntx nkd"><span class="nkm" style="--c:115,80,240" aria-hidden="true"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg></span><span><b>Open Play:</b> casual games at the store.</span></p>
-    <p class="ntx nkd"><span class="nkm" style="--c:0,190,140" aria-hidden="true"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span><b>Learn-to-Play:</b> learn the game. No rounds, not a tournament.</span></p>
-    <p class="ntx nkd"><span class="nkm" style="--c:255,200,40" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1.6 10.9 10.2 1.1 10.2z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span><b>Nexus Nights:</b> the weekly store night. The store picks the format, and players get a promo pack while they last.</span></p>
-    <p class="ntx nkd"><span class="nkm" style="--c:200,35,70" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1.2 10.8 6 6 10.8 1.2 6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span><b>Summoner Skirmish:</b> competitive. Your own deck, best of 3, Swiss rounds and sometimes a top cut. Winners earn a bye at a Regional Qualifier.</span></p>
-    <p class="ntx nkd"><span class="nkm" style="--c:205,220,240" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1.3 10.6 4.6 8.85 10.1 3.15 10.1 1.4 4.6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span><b>Pre-Rift:</b> a new set a week before release. You build a deck at the event from a kit (Sealed), so no deck is needed.</span></p>
+    <p class="ntx nkd"><span class="nkm" data-hue="violet" aria-hidden="true"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="currentColor"/></svg></span><span><b>Open Play:</b> casual games at the store.</span></p>
+    <p class="ntx nkd"><span class="nkm" data-hue="jade" aria-hidden="true"><svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span><b>Learn-to-Play:</b> learn the game. No rounds, not a tournament.</span></p>
+    <p class="ntx nkd"><span class="nkm" data-hue="gold" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1.6 10.9 10.2 1.1 10.2z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span><b>Nexus Nights:</b> the weekly store night. The store picks the format, and players get a promo pack while they last.</span></p>
+    <p class="ntx nkd"><span class="nkm" data-hue="garnet" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1.2 10.8 6 6 10.8 1.2 6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span><b>Summoner Skirmish:</b> competitive. Your own deck, best of 3, Swiss rounds and sometimes a top cut. Winners earn a bye at a Regional Qualifier.</span></p>
+    <p class="ntx nkd"><span class="nkm" data-hue="ice" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M6 1.3 10.6 4.6 8.85 10.1 3.15 10.1 1.4 4.6z" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span><b>Pre-Rift:</b> a new set a week before release. You build a deck at the event from a kit (Sealed), so no deck is needed.</span></p>
   </section>
 
   <section class="nsec glass" id="bring">

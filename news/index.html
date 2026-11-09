@@ -106,8 +106,8 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   color:var(--ink);background:var(--bone);padding:2px 8px;border-radius:999px;white-space:normal}
 /* time left, darker as it runs out, the words always saying it (Mako 2026-11-08 09:07; never green
    against red, his blind pair): bone with more than two days, gold within two, garnet on the day */
-.nnow.soon{background:rgb(255,200,40)}
-.nnow.today{background:rgb(200,35,70);color:var(--bone)}
+.nnow.soon{background:rgb(var(--h-gold))}
+.nnow.today{background:rgb(var(--h-garnet));color:var(--bone)}
 .ntile .nnow{margin:0 4px}
 .new{display:inline-block;vertical-align:1px;font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
@@ -242,12 +242,12 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   // the page it belongs with, and its name always sits beside the colour. A new kind (local stores,
   // later) takes its own palette colour.
   var KIND = {
-    rules:        { label: "Rules",        rgb: "0,190,140" },     // the Rules page's jade
-    event:        { label: "Event",        rgb: "255,200,40" },    // the Events page's gold
-    product:      { label: "Product",      rgb: "220,90,30" },     // Collection's rust
-    announcement: { label: "Announcement", rgb: "30,205,230" },    // New here's sky
-    market:       { label: "Market",       rgb: "134,143,162" },   // Slate
-    reveal:       { label: "Reveal",       rgb: "80,230,170" }     // Decks' mint: card reveals (the digest, 2026-11-08; as built, not chosen)
+    rules:        { label: "Rules",        rgb: window.RAVI_HUE("jade") },     // the Rules page's jade
+    event:        { label: "Event",        rgb: window.RAVI_HUE("gold") },    // the Events page's gold
+    product:      { label: "Product",      rgb: window.RAVI_HUE("rust") },     // Collection's rust
+    announcement: { label: "Announcement", rgb: window.RAVI_HUE("sky") },    // New here's sky
+    market:       { label: "Market",       rgb: window.RAVI_HUE("slate") },   // Slate
+    reveal:       { label: "Reveal",       rgb: window.RAVI_HUE("mint") }     // Decks' mint: card reveals (the digest, 2026-11-08; as built, not chosen)
   };
   var ORDER = ["rules", "event", "product", "reveal", "announcement", "market"];
   var IV = {

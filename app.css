@@ -813,6 +813,23 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .hlghost{position:fixed;z-index:60;margin:0;pointer-events:none;transition:none;filter:brightness(1.15);box-shadow:0 14px 30px rgba(0,0,0,.55)}
 .hlhold{opacity:.35}
 
+/* THE COLOUR TABLE (plan 2 M8.7; pages.js THE COLOUR TABLE sets --h-<name> on html from its table):
+   markup names a colour by its hue, data-hue="garnet", and gets it as --c, the coloured glass's colour */
+[data-hue="gold"]{--c:var(--h-gold)}
+[data-hue="garnet"]{--c:var(--h-garnet)}
+[data-hue="violet"]{--c:var(--h-violet)}
+[data-hue="tangerine"]{--c:var(--h-tangerine)}
+[data-hue="jade"]{--c:var(--h-jade)}
+[data-hue="mint"]{--c:var(--h-mint)}
+[data-hue="rust"]{--c:var(--h-rust)}
+[data-hue="sky"]{--c:var(--h-sky)}
+[data-hue="lime"]{--c:var(--h-lime)}
+[data-hue="orchid"]{--c:var(--h-orchid)}
+[data-hue="lilac"]{--c:var(--h-lilac)}
+[data-hue="slate"]{--c:var(--h-slate)}
+[data-hue="ice"]{--c:var(--h-ice)}
+[data-hue="stone"]{--c:var(--h-stone)}
+[data-hue="white"]{--c:var(--h-white)}
 /* THE COLOUR TRIAL (plan 2 M8.7 colour pass; pages.js THE COLOUR TRIAL; Mako 2026-11-09). Round 2
    (Mako 09:45): chrome stays dark (the sticky plates' grey, the calendar's own darker glass, the bar);
    colour lives in the content, carried by what each thing is, as on Events and Rules; the coloured
@@ -833,9 +850,8 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 :where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),.10)}
 :where(html.cnew) .trow[data-tier] .tlet{--tint:rgb(var(--tc));background:rgb(var(--tc));color:var(--ink)}   /* --tint: inside the row it is drawn flat from it */
 :where(html.cnew) .trow[data-tier] .tlet small{color:rgba(8,9,10,.72)}
-/* the switch: above the bar, on every page with one but the hub and the Game page */
+/* the palette switch: above the bar, on every page with one but the hub and the Game page */
 .ctry{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 10px);z-index:21;
-  display:flex;align-items:center;gap:10px;padding:4px 4px 4px 14px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.ctry > span{font-family:var(--disp);font-weight:600;font-size:12px;color:var(--muted);white-space:nowrap}
-.ctry .seg{width:150px}
+  display:flex;align-items:center;padding:4px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.ctry .seg{width:300px}
 html:has(.ctry) .foot{margin-bottom:56px}

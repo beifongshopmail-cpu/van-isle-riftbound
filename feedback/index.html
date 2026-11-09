@@ -148,9 +148,9 @@ body{-webkit-font-smoothing:antialiased;
   (window.RAVI_PAGES || []).forEach(function(p){ PG[p.id] = p; });
   // a line's page: its name, colour and icon; the whole app wears white and the hub's icon
   function page(id){
-    if(id === "hub") return { name: "Hub", rgb: "240,240,245", icon: window.RAVI_ICON("hub") };
+    if(id === "hub") return { name: "Hub", rgb: window.RAVI_HUE("white"), icon: window.RAVI_ICON("hub") };
     var p = PG[id];
-    return p ? { name: p.name, rgb: p.rgb, icon: p.icon } : { name: "Whole app", rgb: "240,240,245", icon: window.RAVI_ICON("hub") };
+    return p ? { name: p.name, rgb: p.rgb, icon: p.icon } : { name: "Whole app", rgb: window.RAVI_HUE("white"), icon: window.RAVI_ICON("hub") };
   }
   function lit(rgb){ return rgb.split(",").map(function(c){ return Math.round(+c + (255 - +c) * .40); }).join(","); }
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg>', NX = 0;

@@ -149,24 +149,65 @@ window.RAVI_TOTOP = function(scroller, on){
   return { update: update };
 };
 
+// THE COLOUR TABLE (plan 2 M8.7 colour pass, 2026-11-09). Every colour that means something is named
+// here once, by its hue, and every page, kind and section takes its colour from this table by name:
+// the page colours (RAVI_PAGES), the event kinds (Events), News' kinds, Rules' sections, New here's
+// How to play and sections, Top cut's outcomes. CSS reads them as --h-<name> ("r,g,b", so
+// rgba(var(--h-gold),.3) works); script reads RAVI_HUE(name); static markup names one with
+// data-hue="<name>", which gives it --c (app.css THE COLOUR TABLE). Not in the table: the players' colours
+// (RAVI_PLAYER_COLOURS, a set of their own), Riot's domain and keyword colours (Riot's printing), the
+// tier list's colours (the ones every tier list uses), the alarm (--over) and the caution amber.
+window.RAVI_HUES = {
+  gold: "255,200,40", garnet: "200,35,70", violet: "115,80,240", tangerine: "255,150,40",
+  jade: "0,190,140", mint: "80,230,170", rust: "220,90,30", sky: "30,205,230",
+  lime: "170,210,60", orchid: "215,90,230", lilac: "170,140,255",
+  slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245"
+};
+// THE PALETTE SWITCH (the colour trial, Mako's standing ask 2026-11-09: proven palettes whenever the
+// palette changes). Each palette swaps the eleven hues for its own nearest colour, family for family;
+// the three greys and White stay. Measured with rb-tools design/colour/palettes.py (OKLab, Machado 2009).
+// apple: iOS's dark system colours (Flutter's CupertinoColors darkColor values; Apple's teal left out,
+//   its current value unconfirmed, so lime takes brown). tailwind: Tailwind's 400 step, one lightness
+//   for every hue. safe: Okabe and Ito (2008) with Paul Tol's bright and light schemes (2021), made for
+//   colourblind eyes. Kept per phone (ravi.try.pal.v1); automated checks see today's colours.
+window.RAVI_PALETTES = {
+  today: { name: "Today" },
+  apple: { name: "Apple", hues: { gold: "255,214,10", tangerine: "255,159,10", rust: "255,69,58", garnet: "255,55,95", violet: "94,92,230", orchid: "191,90,242", lilac: "10,132,255", jade: "48,209,88", mint: "99,230,226", lime: "172,142,104", sky: "100,210,255" } },
+  tailwind: { name: "Tailwind", hues: { gold: "251,191,36", tangerine: "251,146,60", rust: "248,113,113", garnet: "251,113,133", violet: "129,140,248", lilac: "167,139,250", orchid: "232,121,249", jade: "52,211,153", mint: "45,212,191", lime: "163,230,53", sky: "34,211,238" } },
+  safe: { name: "Safe", hues: { gold: "240,228,66", tangerine: "230,159,0", rust: "213,94,0", garnet: "238,102,119", violet: "0,114,178", lilac: "255,170,187", orchid: "204,121,167", jade: "0,158,115", mint: "68,187,153", lime: "187,204,51", sky: "102,204,238" } }
+};
+window.RAVI_PAL_KEY = "ravi.try.pal.v1";
+window.RAVI_PAL = "today";
+(function(){
+  var k = null, bot = false, pal, n, h = window.RAVI_HUES;
+  try { bot = !!navigator.webdriver; k = localStorage.getItem(window.RAVI_PAL_KEY); } catch (e) {}
+  if (!bot && k && window.RAVI_PALETTES[k]) { window.RAVI_PAL = k; }
+  pal = window.RAVI_PALETTES[window.RAVI_PAL].hues || {};
+  for (n in pal) { if (pal.hasOwnProperty(n)) { h[n] = pal[n]; } }
+  if (typeof document === "undefined" || !document.documentElement) { return; }
+  for (n in h) { if (h.hasOwnProperty(n)) { document.documentElement.style.setProperty("--h-" + n, h[n]); } }
+})();
+window.RAVI_HUE = function(name){ return window.RAVI_HUES[name] || window.RAVI_HUES.white; };
+
 // The hub's page list. Add a line here to add a page to the hub.
 // A line with an empty path is a dead placeholder. Replace one to add a page.
 // icon is a getter so each use gets its own mask ids (see THE ICONS above).
 window.RAVI_PAGES = [
-  {id:"calendar", name:"Events", path:"calendar/", get icon(){ return window.RAVI_ICON("events"); }, rgb:"255,200,40"},
-  {id:"counter", name:"Game", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, rgb:"200,35,70"},
-  {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, rgb:"115,80,240"},
-  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, rgb:"255,150,40"}, // Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
-  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, rgb:"134,143,162", glass:true}, // Slate (plan 2 M8, Mako 2026-11-04: a dull colour; was Cobalt, too close to Trade)
-  {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, rgb:"0,190,140", glass:true},
-  {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, rgb:"80,230,170"},
-  {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, rgb:"220,90,30"},
-  {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, rgb:"30,205,230", glass:true}, // Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)
-  {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, rgb:"170,210,60"},
-  {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, rgb:"215,90,230"},
-  {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, rgb:"170,140,255"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
-  {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, rgb:"205,220,240", glass:true}
+  {id:"calendar", name:"Events", path:"calendar/", get icon(){ return window.RAVI_ICON("events"); }, hue:"gold"},
+  {id:"counter", name:"Game", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, hue:"garnet"},
+  {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, hue:"violet"},
+  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
+  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, hue:"slate", glass:true}, // Slate (plan 2 M8, Mako 2026-11-04: a dull colour; was Cobalt, too close to Trade)
+  {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, hue:"jade", glass:true},
+  {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},
+  {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
+  {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, hue:"sky", glass:true}, // Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)
+  {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, hue:"lime"},
+  {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, hue:"orchid"},
+  {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, hue:"lilac"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
+  {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, hue:"ice", glass:true}
 ];
+(function(){ var l = window.RAVI_PAGES, i; for (i = 0; i < l.length; i++) { if (l[i].hue) { l[i].rgb = window.RAVI_HUE(l[i].hue); } } })();   // each page's colour, from the colour table
 
 // PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08: "Motion for switching between pages").
 // The browser's own cross-document view transitions (app.css @view-transition; Safari 18.2+, no
@@ -384,10 +425,9 @@ window.RAVI_HUB_SAVE = function(ids){
 // list's tier colours. Round 2 (Mako 09:45): no wash on the plates (chrome stays dark, the four coloured pages keep
 // their glass); content coloured by what it is (Feedback's lines); the Tier list in the usual tier
 // colours. html.cnew carries it (app.css THE COLOUR TRIAL); the switch above the bar (Today | New) flips
-// it live on any page, kept per phone (ravi.try.colour.v1), New for a phone that never chose. Never on
+// it live on any page (now the palette switch, ravi.try.pal.v1). Never on
 // the hub (no page colour) or the Game page (function before colour); automated checks
 // (navigator.webdriver) see the app without it. Goes when Mako decides.
-window.RAVI_CTRY_KEY = "ravi.try.colour.v1";
 (function(){
   if (typeof document === "undefined" || typeof location === "undefined") { return; }
   var m = /\/([a-z]+)\/(index\.html)?$/.exec(location.pathname), pages = window.RAVI_PAGES, i, c, r, pg = null, doc = document.documentElement;
@@ -401,23 +441,24 @@ window.RAVI_CTRY_KEY = "ravi.try.colour.v1";
   st.setProperty("--on-pc", "rgba(" + pg.rgb + ",.54)");
   st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
   if (pg.glass) { st.setProperty("--tint", "rgba(" + pg.rgb + ",var(--cg))"); doc.classList.add("paged"); }
-  function apply(on){ doc.classList.toggle("cnew", on); }
-  var bot = false, saved = null;
-  try { bot = !!navigator.webdriver; saved = localStorage.getItem(window.RAVI_CTRY_KEY); } catch (e) {}
-  var can = !bot && pg.id !== "counter";
-  apply(can && saved !== "today");
-  if (!can) { return; }
+  // where colour goes is settled (Mako 2026-11-09 11:59: the five rules, on for everyone in the trial);
+  // the pill now switches the whole app's palette (THE PALETTE SWITCH, under THE COLOUR TABLE): the
+  // choice is kept and the page reloads in it, so every page, kind and section reads the new table
+  var bot = false;
+  try { bot = !!navigator.webdriver; } catch (e) {}
+  doc.classList.toggle("cnew", !bot && pg.id !== "counter");
+  if (bot || pg.id === "counter") { return; }
   function sw(){
     if (document.querySelector(".ctry") || !document.querySelector(".bar")) { return; }
-    var d = document.createElement("div"), on = doc.classList.contains("cnew");
-    d.className = "ctry frost"; d.setAttribute("role", "group"); d.setAttribute("aria-label", "Colour trial");
-    d.innerHTML = '<span>Colour trial</span><div class="seg"><button type="button" data-c="today" aria-pressed="' + !on + '">Today</button><button type="button" data-c="new" aria-pressed="' + on + '">New</button></div>';
+    var d = document.createElement("div"), h = "", k, P = window.RAVI_PALETTES;
+    for (k in P) { if (P.hasOwnProperty(k)) { h += '<button type="button" data-p="' + k + '" aria-pressed="' + (k === window.RAVI_PAL) + '">' + P[k].name + '</button>'; } }
+    d.className = "ctry frost"; d.setAttribute("role", "group"); d.setAttribute("aria-label", "Palette");
+    d.innerHTML = '<div class="seg" data-k="pick">' + h + '</div>';
     d.addEventListener("click", function(e){
-      var b = e.target.closest("button[data-c]"); if (!b) { return; }
-      var nw = b.getAttribute("data-c") === "new";
-      try { localStorage.setItem(window.RAVI_CTRY_KEY, nw ? "new" : "today"); } catch (er) {}
-      apply(nw);
-      Array.prototype.forEach.call(d.querySelectorAll("button[data-c]"), function(x){ x.setAttribute("aria-pressed", String(x === b)); });
+      var b = e.target.closest("button[data-p]"); if (!b || b.getAttribute("data-p") === window.RAVI_PAL) { return; }
+      try { localStorage.setItem(window.RAVI_PAL_KEY, b.getAttribute("data-p")); } catch (er) {}
+      Array.prototype.forEach.call(d.querySelectorAll("button[data-p]"), function(x){ x.setAttribute("aria-pressed", String(x === b)); });
+      setTimeout(function(){ location.reload(); }, 260);
     });
     document.body.appendChild(d);
   }
