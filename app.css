@@ -812,28 +812,35 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .hlghost{position:fixed;z-index:60;margin:0;pointer-events:none;transition:none;filter:brightness(1.15);box-shadow:0 14px 30px rgba(0,0,0,.55)}
 .hlhold{opacity:.35}
 
-/* THE COLOUR TRIAL (plan 2 M8.7 colour pass; pages.js THE COLOUR TRIAL; Mako 2026-11-09). Colour gets
-   fixed jobs, the same on every page (Apple's one tint for what acts; Material 3's colour roles). Each
-   rule weighs no more than the rule it changes (:where), so colour that means something on a page
-   (Trade's sides, Decks' domains, an event's kind) still wins. Off: html without .cnew, as today. */
-/* 1. the page colour marks what is on and what acts */
+/* THE COLOUR TRIAL (plan 2 M8.7 colour pass; pages.js THE COLOUR TRIAL; Mako 2026-11-09). Round 2
+   (Mako 09:45): chrome stays dark (the sticky plates' grey, the calendar's own darker glass, the bar);
+   colour lives in the content, carried by what each thing is, as on Events and Rules; the coloured
+   pills and buttons stay. Each rule weighs no more than the rule it changes (:where), so colour that
+   means something on a page (Trade's sides, Decks' domains, an event's kind) still wins. Off: html
+   without .cnew, as today. */
+/* 1. the page colour marks what is on and what acts (kept from round 1, Mako: "pretty nice") */
 :where(html.cnew) .seg:where(:not(.swatch)) button[aria-pressed="true"],:where(html.cnew) .seg:where(:not(.swatch)) button.on{background:var(--on-pc);color:var(--on-ink)}
 :where(html.cnew) .seg.multi button[aria-pressed="true"]{background:var(--on-pc);color:var(--on-ink)}
 :where(html.cnew) .pick button.on::after,:where(html.cnew) .pick a.on::after{background:var(--on-ink)}
 :where(html.cnew) .pact.btn.glass:where(:not(.panel *)){--tint:rgba(var(--page),var(--cg));--muted:#DCDEE2}
 :where(html.cnew) .door.act{color:var(--on-ink)}
 html.cnew .foot a{color:var(--on-ink)}
-/* 2. a light wash of the page colour on every sticky plate (the calendar's month card included) */
-/*    (its own fill, so the parts inside it stay as they are) */
-html.cnew{--plate-glass:linear-gradient(rgba(var(--page),.16),rgba(var(--page),.16)),rgba(42,44,48,.62);--plate-solid:linear-gradient(rgba(var(--page),.16),rgba(var(--page),.16)),rgba(42,44,48,.94)}
-:where(html.cnew) .card#card{background:linear-gradient(rgba(var(--page),.16),rgba(var(--page),.16)),var(--glass)}
-/* 3. ranked content: one hue stepping down, the page's own (the Tier list, S strongest; sequential, never a rainbow) */
-:where(html.cnew) .trow{--muted:#DCDEE2}
-:where(html.cnew) .trow[data-tier="S"]{--tint:rgba(var(--page),.40)}
-:where(html.cnew) .trow[data-tier="A"]{--tint:rgba(var(--page),.31)}
-:where(html.cnew) .trow[data-tier="B"]{--tint:rgba(var(--page),.23)}
-:where(html.cnew) .trow[data-tier="C"]{--tint:rgba(var(--page),.16)}
-:where(html.cnew) .trow[data-tier="R"]{--tint:rgba(var(--page),.10)}
+/* 2. content coloured by what it is: Feedback's lines wear the colour of the page each is about, as
+   News' posts wear their kind's (the row and its opened detail, coloured glass at .22) */
+:where(html.cnew) .doors > .door.cr,:where(html.cnew) .doors > .cr + .cx{background:linear-gradient(rgba(var(--c),.22),rgba(var(--c),.22));--muted:#DCDEE2}
+:where(html.cnew) .doors > .door.cr:active{background:linear-gradient(rgba(var(--c),.32),rgba(var(--c),.32))}
+:where(html.cnew) .doors > .door.cr + .cx + .door.cr{box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+/* 3. the Tier list in the tier-list colours everyone knows (TierMaker's defaults, as VerseDB documents
+   them: S #FF7F7F, A #FFBF7F, B #FFDF7F, C #FFFF7F; Rogue, off the ladder, in their blue #7FBFFF): the
+   letter block solid in its colour with dark ink, the row a faint wash of it */
+:where(html.cnew) .trow[data-tier="S"]{--tc:255,127,127}
+:where(html.cnew) .trow[data-tier="A"]{--tc:255,191,127}
+:where(html.cnew) .trow[data-tier="B"]{--tc:255,223,127}
+:where(html.cnew) .trow[data-tier="C"]{--tc:255,255,127}
+:where(html.cnew) .trow[data-tier="R"]{--tc:127,191,255}
+:where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),.10)}
+:where(html.cnew) .trow[data-tier] .tlet{--tint:rgb(var(--tc));background:rgb(var(--tc));color:var(--ink)}   /* --tint: inside the row it is drawn flat from it */
+:where(html.cnew) .trow[data-tier] .tlet small{color:rgba(8,9,10,.72)}
 /* the switch: above the bar, on every page with one but the hub and the Game page */
 .ctry{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 10px);z-index:21;
   display:flex;align-items:center;gap:10px;padding:4px 4px 4px 14px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.5)}

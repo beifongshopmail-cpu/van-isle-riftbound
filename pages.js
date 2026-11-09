@@ -380,7 +380,9 @@ window.RAVI_HUB_SAVE = function(ids){
 // carries a light wash of the page colour, in place of four pages tinting all their glass; (3) colour
 // that means something stays in the content and wins (events, News kinds, Rules sections, players,
 // domains), and ranked content gets one hue stepping down (the Tier list's tiers); (4) the rest stays
-// neutral. html.cnew carries it (app.css THE COLOUR TRIAL); the switch above the bar (Today | New) flips
+// neutral. Round 2 (Mako 09:45): no wash on the plates (chrome stays dark, the four coloured pages keep
+// their glass); content coloured by what it is (Feedback's lines); the Tier list in the usual tier
+// colours. html.cnew carries it (app.css THE COLOUR TRIAL); the switch above the bar (Today | New) flips
 // it live on any page, kept per phone (ravi.try.colour.v1), New for a phone that never chose. Never on
 // the hub (no page colour) or the Game page (function before colour); automated checks
 // (navigator.webdriver) see the app without it. Goes when Mako decides.
@@ -397,11 +399,8 @@ window.RAVI_CTRY_KEY = "ravi.try.colour.v1";
   st.setProperty("--page", pg.rgb);
   st.setProperty("--on-pc", "rgba(" + pg.rgb + ",.54)");
   st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
-  function apply(on){
-    doc.classList.toggle("cnew", on);
-    if (pg.glass && !on) { st.setProperty("--tint", "rgba(" + pg.rgb + ",var(--cg))"); doc.classList.add("paged"); }
-    else if (pg.glass) { st.removeProperty("--tint"); doc.classList.remove("paged"); }
-  }
+  if (pg.glass) { st.setProperty("--tint", "rgba(" + pg.rgb + ",var(--cg))"); doc.classList.add("paged"); }
+  function apply(on){ doc.classList.toggle("cnew", on); }
   var bot = false, saved = null;
   try { bot = !!navigator.webdriver; saved = localStorage.getItem(window.RAVI_CTRY_KEY); } catch (e) {}
   var can = !bot && pg.id !== "counter";

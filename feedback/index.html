@@ -159,7 +159,7 @@ body{-webkit-font-smoothing:antialiased;
     var g = page(it.page), id = "cx" + (NX++);
     return '<button type="button" class="door btn glass rec cr" data-k="open" aria-expanded="false" aria-controls="' + id + '" style="--c:' + g.rgb + ';--cl:' + lit(g.rgb) + '">'
       + '<span class="ci" aria-hidden="true">' + g.icon + '</span><span class="t">' + esc(it.t) + '</span>' + CHEV + '</button>'
-      + '<div class="cx" id="' + id + '" style="--cl:' + lit(g.rgb) + '" hidden><p class="cds sel">' + esc(it.d || it.t) + '</p>'
+      + '<div class="cx" id="' + id + '" style="--c:' + g.rgb + ';--cl:' + lit(g.rgb) + '" hidden><p class="cds sel">' + esc(it.d || it.t) + '</p>'
       + '<p class="cpg">' + esc(g.name) + ' <small>' + esc(when || "Planned") + '</small></p></div>';
   }
   function update(u){
