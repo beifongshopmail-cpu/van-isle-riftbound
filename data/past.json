@@ -3,6 +3,28 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117454297833145987",
+   "name": "Skyhaven Sunday Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-08T17:00:00-07:00",
+   "day": "2026-11-08",
+   "venue": "Skyhaven Games",
+   "store": "Skyhaven",
+   "region": "victoria",
+   "sid": 4294
+  },
+  {
+   "id": "rb117568101204024672",
+   "name": "sunday morning Nexus \"night\"",
+   "type": "nexus",
+   "start": "2026-11-08T11:30:00-07:00",
+   "day": "2026-11-08",
+   "venue": "Everything Games",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
    "id": "rb117497230052513843",
    "name": "Nexus Night's at Colossal Cards & Collectables Courtenay",
    "type": "nexus",
@@ -384,17 +406,6 @@
    "store": "North Park Framing",
    "region": "victoria",
    "sid": 18437
-  },
-  {
-   "id": "rb117407214390961434",
-   "name": "Skyhaven Games Casual // L2P",
-   "type": "learn",
-   "start": "2026-10-09T18:00:00-07:00",
-   "day": "2026-10-09",
-   "venue": "Skyhaven Games",
-   "store": "Skyhaven",
-   "region": "victoria",
-   "sid": 4294
   }
  ]
 }

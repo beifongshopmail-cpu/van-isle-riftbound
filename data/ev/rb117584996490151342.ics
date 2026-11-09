@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117584996490151342@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20270127T180000
+DTEND;TZID=America/Vancouver:20270127T210000
+SUMMARY:Gauntlet Games Legacy Pre-Rift 2
+LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
+DESCRIPTION:Pre-Rift\nGauntlet Games\, Victoria\n28 of 28 spots left\nFree\
+ nSign up: https://playriftbound.com/en-US/events/117584996490151342
+URL:https://playriftbound.com/en-US/events/117584996490151342
+CATEGORIES:Pre-Rift
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

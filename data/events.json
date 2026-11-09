@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-08T18:14:51.959Z",
- "generated_local": "2026-11-08T11:14:51-07:00",
- "window_start": "2026-11-08T07:00:00.000Z",
+ "generated_at": "2026-11-09T07:42:38.144Z",
+ "generated_local": "2026-11-09T00:42:38-07:00",
+ "window_start": "2026-11-09T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -49,7 +49,7 @@
  "totals": {
   "fetched": 66,
   "unique": 66,
-  "prev_unique": 69,
+  "prev_unique": 66,
   "recent": [
    {
     "d": "2026-11-03",
@@ -74,6 +74,10 @@
    {
     "d": "2026-11-08",
     "n": 66
+   },
+   {
+    "d": "2026-11-09",
+    "n": 66
    }
   ]
  },
@@ -85,54 +89,6 @@
  },
  "old_feed_error": null,
  "events": [
-  {
-   "id": "rb117568101204024672",
-   "name": "sunday morning Nexus \"night\"",
-   "type": "nexus",
-   "start": "2026-11-08T11:30:00-07:00",
-   "end": null,
-   "day": "2026-11-08",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 7,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 16866,
-   "store": "Everything Games",
-   "swiss": 3,
-   "cut": false
-  },
-  {
-   "id": "rb117454297833145987",
-   "name": "Skyhaven Sunday Nexus Night",
-   "type": "nexus",
-   "start": "2026-11-08T17:00:00-07:00",
-   "end": null,
-   "day": "2026-11-08",
-   "time": "5:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 4294,
-   "store": "Skyhaven",
-   "swiss": 3,
-   "cut": false
-  },
   {
    "id": "rb117560608744223758",
    "name": "Gauntlet Games Nexus Night",
@@ -410,7 +366,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 2,
+   "reg": 3,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -1262,6 +1218,30 @@
    "cut": false
   },
   {
+   "id": "rb117584991387629475",
+   "name": "Gauntlet Games Legacy Pre-Rift 1",
+   "type": "prerift",
+   "start": "2027-01-23T17:00:00-07:00",
+   "end": null,
+   "day": "2027-01-23",
+   "time": "5:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
+   "swiss": 3,
+   "cut": false
+  },
+  {
    "id": "rb117521153341296541",
    "name": "Legacy Pre-Rift at Colossal Cards & Collectables Courtenay",
    "type": "prerift",
@@ -1474,6 +1454,30 @@
    "wins": null,
    "sid": 4294,
    "store": "Skyhaven",
+   "swiss": 3,
+   "cut": false
+  },
+  {
+   "id": "rb117584996490151342",
+   "name": "Gauntlet Games Legacy Pre-Rift 2",
+   "type": "prerift",
+   "start": "2027-01-27T18:00:00-07:00",
+   "end": null,
+   "day": "2027-01-27",
+   "time": "6:00 PM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 28,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
    "swiss": 3,
    "cut": false
   },
