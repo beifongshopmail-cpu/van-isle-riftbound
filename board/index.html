@@ -206,7 +206,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="hsort" id="bhead" hidden><p id="bcount"></p><button type="button" class="dvsort glass" id="bsort" data-fills="psort" data-k="do"></button></div>
   <p class="bnote" id="bme"></p><div id="bmesave"></div>
   <div id="blist"></div>
-  <p class="bnote" id="bsum">Loading the board</p>
+  <p class="bnote" id="bsum" hidden></p>
+  <script>document.getElementById("blist").innerHTML = RAVI_SKEL(["sort", "player:2"]);</script>
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
@@ -601,7 +602,10 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var Rs = window.RAVI_SORT, so = SORTS[sk()], sd = Rs.dir(SORT.o, so[1]);
     $("bsort").innerHTML = Rs.chip(esc(so[0]), sd);
     $("bsort").setAttribute("aria-label", Rs.label(so[0], sd));
-    if (!LOADED) { $("blist").innerHTML = ""; $("bsum").textContent = ERR || "Loading the board"; $("bsum").hidden = false; $("bme").textContent = ""; $("bhead").hidden = true; return; }
+    if (!LOADED) {   // the loading blocks while the board comes (plan 2 M8.7 motion polish), its words if it failed
+      if (ERR) { $("blist").innerHTML = ""; } else if (!$("blist").querySelector(".skel")) { $("blist").innerHTML = window.RAVI_SKEL(["sort", "player:2"]); }
+      $("bsum").textContent = ERR || ""; $("bsum").hidden = !ERR; $("bme").textContent = ""; $("bhead").hidden = true; return;
+    }
     $("bme").textContent = meLine();
     $("bme").hidden = !$("bme").textContent;
     $("bmesave").innerHTML = DATA.me.off ? "" : (!DATA.saved ? saveRow() : (!DATA.me.area ? areaRow() : ""));

@@ -37,6 +37,10 @@ a{color:inherit;text-decoration:none}
 .tail{padding-bottom:calc(var(--barH) + 44px + env(safe-area-inset-bottom,0px))}
 .boot{padding:28px 4px 0 4px;font-size:15px;color:var(--muted)}
 .boot.bad{color:var(--bone)}
+#boot:has(.skel){padding:0}   /* the loading blocks (plan 2 M8.7 motion polish) */
+#boot .skel{padding-top:0}
+#boot .skc + .skc{margin-top:4px}
+#boot .skring{align-items:flex-start;padding-top:2px}   /* the ring sits 2 below the plate, as loaded */
 
 /* THE CONTROL PLATE: the calendar card's construction. A zero-height sticky
    holder parks it; a fixed spacer holds its resting height; it grows over
@@ -279,6 +283,10 @@ a{color:inherit;text-decoration:none}
 
 <div class="tail">
   <div class="boot" id="boot">Loading prices</div>
+  <script>
+  /* the loading blocks (plan 2 M8.7 motion polish): the plate, the ring and the two sides, measured against the loaded page at 402 */
+  document.getElementById("boot").innerHTML = RAVI_SKEL(["plate:field,trackbtn", "ring:176:188", "card:1:99", "card:1:60"]);
+  </script>
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
     <p>Market price is a public benchmark, not an offer from any store.</p>

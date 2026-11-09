@@ -35,6 +35,21 @@
       hoff.disabled = !(PICK && PICK.hub);
     }
     function saveHub(list){ window.RAVI_HUB_SAVE(list.slice(0, window.RAVI_HUB_MAX)); if (o.onSave) { o.onSave(); } drawHub(); }
+    // a tap that moves blocks lets them glide to their new places, as the drag does (plan 2 M8.7 motion
+    // polish): each block moves from where it was, by its centre and its size, .3s on the settle curve
+    function glide(list){
+      var was = {};
+      q(".hlb[data-id]").forEach(function(b){ was[b.getAttribute("data-id")] = b.getBoundingClientRect(); });
+      saveHub(list);
+      if (still()) { return; }
+      q(".hlb[data-id]").forEach(function(b){
+        var r0 = was[b.getAttribute("data-id")], r = b.getBoundingClientRect();
+        if (!r0 || !b.animate || !r.width) { return; }
+        var dx = r0.left + r0.width / 2 - (r.left + r.width / 2), dy = r0.top + r0.height / 2 - (r.top + r.height / 2), k = r0.width / r.width;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && Math.abs(k - 1) < .01) { return; }
+        b.animate([{ transform: "translate(" + Math.round(dx) + "px," + Math.round(dy) + "px) scale(" + k.toFixed(3) + ")" }, { transform: "none" }], { duration: 300, easing: "cubic-bezier(.22,.72,.2,1)" });
+      });
+    }
     // tap one, then another: two on the hub swap; a page from below takes a hub block's place;
     // a page from below and an empty place adds it; the same block again puts it down
     function tapHub(el){
@@ -50,11 +65,11 @@
       else if (!a.hub && inHub && id) { list[bi] = a.id; }
       else if (!a.hub && empty) { list.push(a.id); }
       else { PICK = { id: id, hub: false }; marks(); return; }
-      saveHub(list);
+      glide(list);
     }
     hl.addEventListener("click", function(e){ if (noClick) { noClick = false; return; } var el = e.target.closest(".hlb"); if (el) { tapHub(el); } });
     hs.addEventListener("click", function(e){ if (noClick) { noClick = false; return; } var el = e.target.closest(".hlb"); if (el) { tapHub(el); } });
-    hoff.addEventListener("click", function(){ if (PICK && PICK.hub) { var list = ORDER.filter(function(x){ return x !== PICK.id; }); PICK = null; saveHub(list); } });
+    hoff.addEventListener("click", function(){ if (PICK && PICK.hub) { var list = ORDER.filter(function(x){ return x !== PICK.id; }); PICK = null; glide(list); } });
     // the drag (rebuilt after Mako's phone check, 2026-11-03: it was glitchy): a copy of the block
     // follows the finger (fixed, no transition), its place dims in the grid. Where it would go is
     // read from the places' boxes as they were when the drag began, never from a moving box, so a

@@ -256,7 +256,10 @@ window.RAVI_PAGES = [
 //   "ntiles:<n>"                    News' grid: n tiles two a row, a 16:9 picture over two lines
 //   "block:<height>"                one glass block (a chart)      "track"  a full-width track
 //   "sort"                          a lede with a glass pill at its right (a sort)
-//   "rows:<n>"                      a group of n rows              "tiles:<n>"  n card pictures, three a row
+//   "rows:<n>[:<rgb>]"              a group of n rows (tinted)     "tiles:<n>"  n card pictures, three a row
+//   "ring:<d>:<h>"                  Trade's ring, a d circle centred in h   "tier:<n>"  n tier cards, letter and three pictures
+//   "player:<n>"                    n Trade board player cards: picture and name, a shelf of cards
+//   plate entry "trackbtn"          a track with a round button at its end (Trade's sides and Undo)
 // The blocks stay hidden for the first .15s, so a quick load never flashes them. Hidden from
 // screen readers, which hear "Loading" once.
 window.RAVI_SKEL = function(parts){
@@ -265,7 +268,7 @@ window.RAVI_SKEL = function(parts){
     p = parts[i].split(":"); n = Math.max(1, +p[1] || 1);
     if (p[0] === "plate") {
       h += '<div class="skplate">';
-      (p[1] || "field").split(",").forEach(function(x){ h += x === "pair" ? '<span class="skpair"><i class="sk skp"></i><i class="sk skp"></i></span>' : '<i class="sk skp' + (x === "track" ? ' skt' : '') + '"></i>'; });
+      (p[1] || "field").split(",").forEach(function(x){ h += x === "pair" ? '<span class="skpair"><i class="sk skp"></i><i class="sk skp"></i></span>' : x === "trackbtn" ? '<span class="skpair skbtn"><i class="sk skp skt"></i><i class="sk skp"></i></span>' : '<i class="sk skp' + (x === "track" ? ' skt' : '') + '"></i>'; });
       h += '</div>';
     } else if (p[0] === "big") { h += '<i class="sk skbig"></i>';
     } else if (p[0] === "head") { h += '<i class="sk skhead"></i>';
@@ -278,7 +281,13 @@ window.RAVI_SKEL = function(parts){
     } else if (p[0] === "track") { h += '<i class="sk skp skt skw"></i>';
     } else if (p[0] === "sort") { h += '<span class="sksort"><i class="sk skl"></i><i class="sk skpill"></i></span>';
     } else if (p[0] === "rows") {
-      h += '<span class="skrows">'; for (k = 0; k < n; k++) { h += '<span class="skrow"><i class="sk skl"></i></span>'; } h += '</span>';
+      h += '<span class="skrows"' + (p[2] ? ' style="--c:' + p[2] + '"' : '') + '>'; for (k = 0; k < n; k++) { h += '<span class="skrow"><i class="sk skl"></i></span>'; } h += '</span>';
+    } else if (p[0] === "ring") {
+      h += '<span class="skring" style="height:' + (+p[2] || 188) + 'px"><i class="sk skcirc" style="width:' + (+p[1] || 176) + 'px"></i></span>';
+    } else if (p[0] === "tier") {
+      for (k = 0; k < n; k++) { h += '<span class="skc sktier"><i class="sk sktc"></i><i class="sk skcard"></i><i class="sk skcard"></i><i class="sk skcard"></i></span>'; }
+    } else if (p[0] === "player") {
+      for (k = 0; k < n; k++) { h += '<span class="skc skpl"><span class="skwho"><i class="sk skav"></i><span class="sklines">' + ln + '</span></span><i class="sk skl skled"></i><span class="skshelf"><i class="sk skbc"></i><i class="sk skbc"></i><i class="sk skbc"></i><i class="sk skbc"></i></span></span>'; }
     } else if (p[0] === "tiles") {
       h += '<span class="sktiles">'; for (k = 0; k < n; k++) { h += '<i class="sk sktile"></i>'; } h += '</span>';
     }
@@ -615,6 +624,130 @@ window.RAVI_BAR = function(nav, slots){
     }
   }
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function(){ setTimeout(boot, 0); }); } else { setTimeout(boot, 0); }
+})();
+
+// ROWS FOLD OPEN AND SHUT (plan 2 M8.7 motion polish; Mako 2026-11-08 10:41: "anywhere else there
+// should or could be a bit more polish on the motion"). Content a tap opens in place used to fade in
+// while everything under it jumped down in one frame, and snapped shut on close. Now its height moves
+// too, as iPhone Settings' disclosure rows do: it unfolds in .28s on the settle curve (the chevron
+// turns in .28s beside it) and folds shut in .2s, pushing and pulling what is under it. One watcher,
+// no page code: a body whose hidden flips within half a second of a tap, and whose control is an open
+// kind (data-k open, aria-expanded) naming it by aria-controls or standing before it, folds. A body
+// the page builds or a menu opens on its own never moves; nor one reaching above the screen (STYLE
+// section 8: never tween a height above the screen). Pages keep their own state at once (hidden is
+// set as before); while it folds shut the body is only still drawn, inert. Reduced motion: none.
+(function(){
+  if (typeof document === "undefined" || !window.MutationObserver || !window.Element || !Element.prototype.animate) { return; }
+  var tap = 0, mo;
+  document.addEventListener("click", function(){ tap = Date.now(); }, true);
+  function still(){ return document.documentElement.classList.contains("rm") || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function control(el){
+    var c = null, s, k;
+    if (el.id) { try { c = document.querySelector('[aria-controls~="' + (window.CSS && CSS.escape ? CSS.escape(el.id) : el.id) + '"][aria-expanded]'); } catch (e) {} }
+    for (s = el.previousElementSibling; !c && s; s = s.previousElementSibling) { if (s.hasAttribute("aria-expanded")) { c = s; } }
+    if (!c) { return null; }
+    k = c.getAttribute("data-k") || (c.closest("[data-k]") || { getAttribute: function(){ return ""; } }).getAttribute("data-k");
+    return k === "open" ? c : null;
+  }
+  function clean(el){
+    ["height", "padding-top", "padding-bottom", "border-top-width", "border-bottom-width", "margin-top", "margin-bottom", "overflow", "display"].forEach(function(x){ el.style.removeProperty(x); });
+    if (el.__foldInert) { el.inert = false; el.__foldInert = false; }
+    el.__fold = null;
+  }
+  function fold(el, open){
+    var cs = getComputedStyle(el), r = el.getBoundingClientRect(), shut, full, a;
+    if (cs.display === "none" || cs.display.indexOf("inline") === 0 || cs.display.indexOf("table") === 0 || !r.height || r.top < 0) { clean(el); return; }
+    shut = { height: "0px", paddingTop: "0px", paddingBottom: "0px", borderTopWidth: "0px", borderBottomWidth: "0px", marginTop: "0px", marginBottom: "0px", opacity: 0 };
+    full = { height: (cs.boxSizing === "border-box" ? r.height : r.height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - parseFloat(cs.borderTopWidth) - parseFloat(cs.borderBottomWidth)) + "px",
+      paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, borderTopWidth: cs.borderTopWidth, borderBottomWidth: cs.borderBottomWidth, marginTop: cs.marginTop, marginBottom: cs.marginBottom, opacity: 1 };
+    el.style.overflow = "hidden";
+    a = el.animate(open ? [shut, full] : [full, shut], open ? { duration: 280, easing: "cubic-bezier(.22,.72,.2,1)" } : { duration: 200, easing: "cubic-bezier(.4,0,.2,1)" });
+    el.__fold = a;
+    a.onfinish = a.oncancel = function(){ if (el.__fold === a) { clean(el); } };
+  }
+  function seen(list){
+    if (Date.now() - tap > 500 || still()) { return; }
+    var fresh = [];
+    list.forEach(function(m){ if (m.type === "childList") { Array.prototype.forEach.call(m.addedNodes, function(n){ if (n.nodeType === 1) { fresh.push(n); } }); } });
+    list.forEach(function(m){
+      if (m.type !== "attributes") { return; }
+      var el = m.target, was = m.oldValue !== null, is = el.hasAttribute("hidden"), d;
+      if (was === is || !el.isConnected || el.classList.contains("panel") || fresh.some(function(n){ return n.contains(el); }) || !control(el)) { return; }
+      if (el.__fold) { el.__fold.cancel(); }
+      if (!is) { fold(el, true); return; }
+      // folding shut: draw it a moment longer, as it was, while the page already counts it closed
+      el.hidden = false; d = getComputedStyle(el).display; el.hidden = true; mo.takeRecords();
+      if (d === "none") { return; }
+      el.style.setProperty("display", d, "important");
+      if (!el.inert) { el.inert = true; el.__foldInert = true; }
+      fold(el, false);
+    });
+  }
+  mo = new MutationObserver(seen);
+  mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ["hidden"], attributeOldValue: true });
+})();
+
+// SCREENS INSIDE A PAGE MOVE AS PAGES DO (plan 2 M8.7 motion polish, 2026-11-08). Page to page zooms
+// (PAGE TO PAGE above); a screen a page swaps in itself cut in one frame. Three helpers, motion only,
+// each leaving the page's own state as it was set:
+//   RAVI_GROW(el[, from])     a full-screen view just shown (Decks' and Collection's card browser)
+//                             zooms out of what was tapped (from, else the control tapped this half
+//                             second) over .44s on the settle curve, fading in over .2s; with nothing
+//                             to zoom from it grows from .92.
+//   RAVI_SHRINK(el[, inner])  call it just before the page hides el: el stays drawn, inert, while it
+//                             (or its inner part, a card picture) shrinks to .92 and fades in .2s.
+//   RAVI_SCREEN(kind, rect, update)  a screen swapped inside the page (Decks' list and one deck), by
+//                             the browser's same-page view transition and app.css PAGE TO PAGE:
+//                             "zoom" grows the new screen out of rect (the block tapped), "close"
+//                             zooms the old one back into rect(), a function read after the update.
+//                             Without support, or with reduced motion, update() runs at once.
+(function(){
+  if (typeof document === "undefined") { return; }
+  var last = null;
+  document.addEventListener("click", function(e){
+    var c = e.target && e.target.closest ? e.target.closest("button, a, [role=button], [data-act]") : null;
+    last = c ? { el: c, at: Date.now() } : null;
+  }, true);
+  function still(){ return document.documentElement.classList.contains("rm") || !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function settle(el){ ["display", "transform-origin"].forEach(function(x){ el.style.removeProperty(x); }); if (el.__shInert) { el.inert = false; el.__shInert = false; } }
+  window.RAVI_GROW = function(el, from){
+    if (!el || !el.animate || still()) { return; }
+    if (!from && last && Date.now() - last.at < 500 && document.contains(last.el)) { from = last.el; }
+    var r = el.getBoundingClientRect(), f = from && from.getBoundingClientRect ? from.getBoundingClientRect() : null, t;
+    if (f && f.width && r.width) {
+      t = "translate(" + Math.round(f.left + f.width / 2 - (r.left + r.width / 2)) + "px," + Math.round(f.top + f.height / 2 - (r.top + r.height / 2)) + "px) scale(" + Math.max(.2, Math.min(1, f.width / r.width)).toFixed(3) + ")";
+    } else { t = "scale(.92)"; }
+    el.animate([{ transform: t }, { transform: "none" }], { duration: 440, easing: "cubic-bezier(.05,.7,.1,1)" });
+    el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "linear" });
+  };
+  window.RAVI_SHRINK = function(el, inner){
+    if (!el || !el.animate || still()) { return; }
+    var d = getComputedStyle(el).display, part = inner || el;
+    if (d === "none") { return; }
+    el.style.setProperty("display", d, "important");
+    if (!el.inert) { el.inert = true; el.__shInert = true; }
+    if (part !== el) { part.animate([{ transform: "none" }, { transform: "scale(.92)" }], { duration: 200, easing: "cubic-bezier(.3,0,.8,.15)" }); }
+    var a = el.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: part === el ? "scale(.92)" : "none" }], { duration: 200, easing: "cubic-bezier(.3,0,.8,.15)" });
+    a.onfinish = a.oncancel = function(){ settle(el); };
+  };
+  window.RAVI_SCREEN = function(kind, rect, update){
+    var doc = document.documentElement;
+    if (!document.startViewTransition || still()) { update(); return; }
+    function vars(r){
+      if (!r || !r.width) { return false; }
+      doc.style.setProperty("--vt-dx", Math.round(r.left + r.width / 2 - innerWidth / 2) + "px");
+      doc.style.setProperty("--vt-dy", Math.round(r.top + r.height / 2 - innerHeight / 2) + "px");
+      doc.style.setProperty("--vt-s", Math.max(.2, Math.min(1, r.width / innerWidth)).toFixed(3));
+      return true;
+    }
+    var first = kind === "zoom" && rect ? { left: rect.left, top: rect.top, width: rect.width, height: rect.height } : null;
+    var vt = document.startViewTransition(function(){
+      update();
+      var ok = kind === "zoom" ? vars(first) : vars(typeof rect === "function" ? rect() : rect);
+      doc.setAttribute("data-vt", ok ? kind : (kind === "zoom" ? "fwd" : "back"));
+    });
+    vt.finished.then(function(){ doc.removeAttribute("data-vt"); }, function(){ doc.removeAttribute("data-vt"); });
+  };
 })();
 
 // MENU STATE. Two things every page's menus share, kept here so a page only needs markup.

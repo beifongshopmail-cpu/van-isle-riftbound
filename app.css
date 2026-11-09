@@ -547,6 +547,20 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 .sksort{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0}
 .sksort .skl{width:40%;margin-left:4px}
 .skel .skpill{width:118px;height:var(--sz-track);background:var(--glass);box-shadow:var(--glass-base)}
+/* the parts added in the motion polish (plan 2 M8.7, 2026-11-08), each measured against its loaded page at 402 */
+.skpair.skbtn{grid-template-columns:1fr 46px}
+.skpair.skbtn .skp:last-child{border-radius:20px;background:var(--glass);box-shadow:var(--glass-base)}
+.skrows[style]{background:linear-gradient(rgba(var(--c),var(--cg)),rgba(var(--c),var(--cg))),var(--glass)}
+.skring{display:flex;align-items:center;justify-content:center}
+.skel .skcirc{aspect-ratio:1;border-radius:50%;background:var(--recess);box-shadow:var(--glass-base)}
+.sktier{height:119px;align-items:flex-start;gap:8px;padding:10px 10px 0}
+.skel .sktc{width:52px;height:99px;border-radius:16px;margin-right:2px;background:var(--recess)}
+.skel .skcard{width:56px;height:78px;border-radius:5px;background:var(--recess)}
+.skpl{flex-direction:column;align-items:stretch;gap:10px;padding:8px 14px 14px}
+.skwho{display:flex;align-items:center;gap:10px;height:var(--sz-row)}
+.skel .skav{width:36px;height:36px;flex:none}
+.skshelf{display:flex;gap:8px;overflow:hidden}
+.skel .skbc{flex:0 0 72px;height:100px;border-radius:6px;background:var(--recess)}
 
 /* PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08). The browser's own cross-document view
    transitions; pages.js PAGE TO PAGE sets html[data-vt]. One version for everyone, modelled on the
@@ -585,10 +599,8 @@ html[data-vt="close"]::view-transition-old(ravi-bar){animation:vt-fade-out .12s 
 
 /* App settings' Reduce motion (pages.js adds html.rm): the same, for RAVI alone (plan 2 M6) */
 html.rm *,html.rm *::before,html.rm *::after{transition:none!important;animation:none!important}
-/* PAGE TO PAGE: no motion (STYLE.md, Motion). Pages switch instantly, as
-   the tabs of an iPhone tab bar do, so the bar never changes between them.
-   A cross-page fade was tried in M6 and dropped: the phone does not draw
-   the bar's blur into the fade, so the bar went see-through each time. */
+/* (Page to page moves since plan 2 M8.7: PAGE TO PAGE above. The bar is its own view-transition
+   group and holds still, so its blur is never faded, which is what sank M6's cross-page fade.) */
 /* CONTENT A TAP OPENS eases in under the row that opened it (STYLE.md,
    Motion): the page script adds .reveal after the tap, never on a render,
    so a re-render never replays it. The height changes in one frame. */

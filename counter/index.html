@@ -669,8 +669,11 @@
   function spotClose(){
     var pic = document.getElementById("spotpic");
     var sh = document.getElementById("spotsheet");
-    if (sh) { sh.classList.remove("open"); }
-    if (pic) { pic.removeAttribute("src"); }
+    if (!sh || !sh.classList.contains("open")) { return; }
+    // the picture shrinks away as it grew in (plan 2 M8.7 motion polish); its file goes once it has
+    if (window.RAVI_SHRINK) { window.RAVI_SHRINK(sh, pic); }
+    sh.classList.remove("open");
+    if (pic) { setTimeout(function(){ if (!sh.classList.contains("open")) { pic.removeAttribute("src"); } }, 240); }
   }
   var spotEl = document.getElementById("spotsheet");
   if (spotEl) { spotEl.addEventListener("click", function(){ spotClose(); }); }

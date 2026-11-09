@@ -29,6 +29,8 @@ body{-webkit-font-smoothing:antialiased;
 #rl{max-width:480px;margin:0 auto;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 #home > section,#res{margin-top:22px}
+#rchips > .skel,#home .doors > .skel{padding:0;gap:0}   /* the loading blocks (plan 2 M8.7 motion polish) */
+#rchips .skpill{width:88px}
 /* THE SEARCH STAYS AT THE TOP (M11 sweep, 2026-10-24): it sits in a sticky plate, as Trade's
    and Decks', parked 10 above --top-clear so its words start on it; plate frost, clear. */
 .srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
@@ -129,6 +131,12 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
       <div class="doors" id="faqs" data-k="deeper" style="--tint:rgba(255,200,40,var(--cg))"></div>
     </section>
   </div>
+  <script>/* the loading blocks (plan 2 M8.7 motion polish): the Filters chip and each section's rows, until the rules come */
+  (function(){
+    function rows(n){ return '<span class="skel">' + new Array(n + 1).join('<span class="skrow"><i class="sk skl"></i></span>') + '</span>'; }
+    document.getElementById("rchips").innerHTML = '<span class="skel"><i class="sk skpill"></i></span>';
+    document.getElementById("docs").innerHTML = rows(4); document.getElementById("errata").innerHTML = rows(5); document.getElementById("faqs").innerHTML = rows(4);
+  })();</script>
   <p class="empty" id="loadfail" hidden>The rules could not be loaded. Check your connection and open the page again.</p>
 
   <footer class="foot">
@@ -255,7 +263,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   var ITEM = {};
   function toggle(btn){
     var b = btn.nextElementSibling, open = btn.getAttribute("aria-expanded") === "true";
-    if(open){ btn.setAttribute("aria-expanded", "false"); b.hidden = true; b.innerHTML = ""; return; }
+    if(open){ btn.setAttribute("aria-expanded", "false"); b.hidden = true; return; }   // its words stay while it folds shut (pages.js); the next open rebuilds them
     var it0 = ITEM[btn.getAttribute("data-id")];
     b.innerHTML = body(it0);
     if(it0.kind === "errata" && it0.old) changed(b.querySelector(".rtx:not(.old)"), strip(it0.old));

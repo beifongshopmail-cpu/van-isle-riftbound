@@ -57,6 +57,11 @@ a{color:inherit;text-decoration:none}
    below that was the bug rather than a fix. */
 .stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 18px);height:0;z-index:10}
 .hold{height:0;transition:height .28s var(--ease)}
+/* the loading blocks (plan 2 M8.7 motion polish): the days as track-grey circles, pulsing as RAVI_SKEL's do;
+   the spacer holds the card's loaded height until measure() writes its own */
+.cell.skday{background:var(--track);animation:sk-show .24s .15s both,sk-pulse 1.6s ease-in-out .4s infinite}
+#stick:has(.skday) + .hold{height:365px}
+#list > .skel{padding-top:0}
 #foldmark{height:1px;margin-top:-1px} /* the line the month folds at (plan 2 M8.7 A3) */
 .card{
   position:relative;width:calc(100% - 24px);
@@ -319,6 +324,8 @@ a{color:inherit;text-decoration:none}
   <script>if (window.RAVI_WEEK && window.RAVI_WEEK()) { document.getElementById("dow").innerHTML = "<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>"; }</script>
 
   <div class="weeks" id="weeks"><div id="weeksInner"></div></div>
+  <script>/* the loading blocks (plan 2 M8.7 motion polish): five weeks of days, then event cards, until the feed comes */
+  document.getElementById("weeksInner").innerHTML = new Array(6).join('<div class="week">' + new Array(8).join('<i class="cell skday"></i>') + '</div>');</script>
 </section>
 </div>
 <div class="hold" id="hold"></div><div id="foldmark" aria-hidden="true"></div>
@@ -331,6 +338,7 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div id="list"></div>
+  <script>document.getElementById("list").innerHTML = RAVI_SKEL(["card:4:83"]);</script>
 
   <footer class="foot">
     <p id="stamp">&nbsp;</p>
@@ -357,7 +365,7 @@ a{color:inherit;text-decoration:none}
 <section class="panel frost" id="psub" aria-hidden="true" aria-label="Follow">
   <div class="phead">
     <h4 class="ttl">Follow</h4>
-    <button type="button" class="circ btn glass" id="psinfo" aria-label="How following works" aria-expanded="false" data-k="open"></button>
+    <button type="button" class="circ btn glass" id="psinfo" aria-label="How following works" aria-expanded="false" aria-controls="finfo" data-k="open"></button>
     <button type="button" class="circ btn glass" id="psclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <div class="pbody">
@@ -1732,6 +1740,7 @@ a{color:inherit;text-decoration:none}
     try{ lq = new URLSearchParams(location.search).get("live"); }catch(e){}
     if (lq && window.RAVI_LIVE.tid(lq)) liveOpen("rb" + window.RAVI_LIVE.tid(lq));
   }).catch(function(){
+    weeksInner.innerHTML = ""; listEl.innerHTML = "";   // the loading blocks go
     var f = document.createElement("div");
     f.className = "fail glass";
     f.innerHTML = "The event feed did not load. Try the " +

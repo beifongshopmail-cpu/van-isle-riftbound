@@ -37,6 +37,21 @@
       "date": "2026-11-08",
       "items": [
         {
+          "page": "app",
+          "t": "Smoother motion",
+          "d": "Pages and decks zoom open from what you tap, menus grow from their button, and rows unfold in place."
+        },
+        {
+          "page": "app",
+          "t": "Pages show their shape while loading",
+          "d": "While a page waits for its data, it shows grey blocks in its own layout instead of a loading line."
+        },
+        {
+          "page": "app",
+          "t": "Back on more pages",
+          "d": "Any page you reach from another page has Back, and it walks back along your path."
+        },
+        {
           "page": "news",
           "t": "Card reveals and more of Riot's posts",
           "d": "Riot's card reveals, and its posts on Instagram and YouTube, now come to News."

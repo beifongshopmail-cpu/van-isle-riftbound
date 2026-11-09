@@ -2054,8 +2054,10 @@ body{-webkit-font-smoothing:antialiased;
     el("brw").hidden = false;
     document.documentElement.classList.add("lock", "brwon");
     brRender();
+    window.RAVI_GROW(el("brw"));   // out of the control that opened it (plan 2 M8.7 motion polish)
   }
   function brClose(){
+    window.RAVI_SHRINK(el("brw"));
     el("brw").hidden = true;
     document.documentElement.classList.remove("brwon");
     if(!OPENP) document.documentElement.classList.remove("lock");
@@ -2307,7 +2309,11 @@ body{-webkit-font-smoothing:antialiased;
   var TOASTT = 0;
   function toast(m){ var t = el("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(TOASTT); TOASTT = setTimeout(function(){ t.classList.remove("show"); }, 1600); }
   function spotOpen(code){ var x = C(code); if(!x || !x.h) return; el("spotpic").src = art(x, true); el("spotsheet").classList.add("open"); }
-  function spotClose(){ el("spotsheet").classList.remove("open"); el("spotpic").removeAttribute("src"); }
+  function spotClose(){   // the card shrinks away as it grew in (plan 2 M8.7 motion polish); its picture goes once it has
+    var sh = el("spotsheet"); if(!sh.classList.contains("open")) return;
+    window.RAVI_SHRINK(sh, el("spotpic")); sh.classList.remove("open");
+    setTimeout(function(){ if(!sh.classList.contains("open")) el("spotpic").removeAttribute("src"); }, 240);
+  }
 
   // A LONG PRESS SHOWS THE FULL CARD (Runes' gesture): 450ms held without moving; the tap
   // that would follow it is swallowed.
@@ -2484,9 +2490,10 @@ body{-webkit-font-smoothing:antialiased;
     }
     if(a === "hdraw"){ HAND = X.draw(HAND); renderHand(); return; }
     if(a === "hview"){ spotOpen(t.getAttribute("data-code")); return; }
-    if(a === "home"){ go("home"); return; }
+    // the list and one deck move as pages do (plan 2 M8.7 motion polish): a deck zooms out of its block, and back into it
+    if(a === "home"){ var hid = CURID; window.RAVI_SCREEN("close", function(){ var b = document.querySelector('.dcard[data-id="' + hid + '"]'); return b ? b.getBoundingClientRect() : null; }, function(){ go("home"); }); return; }
     if(a === "open" && EDIT && SCREEN === "home") return;
-    if(a === "open"){ go("deck", t.getAttribute("data-id")); return; }
+    if(a === "open"){ var oid = t.getAttribute("data-id"); window.RAVI_SCREEN("zoom", t.getBoundingClientRect(), function(){ go("deck", oid); }); return; }
     if(a === "new"){ var nd = fresh(); DECKS.unshift(nd); save(); go("deck", nd.id); EDIT = true; render(); toast("New deck: tap Legend to start"); return; }
     if(a === "imp"){ el("ires").textContent = ""; openPanel(el("pimp")); return; }
     if(a === "idone"){ doImport(); return; }

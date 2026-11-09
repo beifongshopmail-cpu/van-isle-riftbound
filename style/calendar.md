@@ -13,5 +13,6 @@ Calendar (calendar/index.html)
 - NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
 
 Page-local classes (not in app.css; not Kit parts):
+- calendar/index.html, the loading blocks (plan 2 M8.7 motion polish): .skday, the month's days as track-grey circles while the feed comes; the event list takes RAVI_SKEL cards
 - calendar/index.html: .cell .dots .ev .evact .evgoi .evhead .evlb .evlive .evpill .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .lvl .mk .mrow .spots .stick .tyrow; the Live menu #plive: .lalnote .lclk .lempty .levn .lfind .lgrp .lhd .lme .lms .lmt .ln .lp .lrow .lseg .lsmall .lst .lt .me .mine .nm .omw .pts .rs .sv .wld .won
 - calendar/index.html, listed in M7 from the style-lint baseline (2026-11-04): .body .box .d .dow .empty .evgo .evgonote .evinfo .fail .fon .l3 .left .low .m .mono .n .name .new .out .over .price .sname .stown .today .ty .venue .week .weeks .when .y
