@@ -3,45 +3,52 @@
  "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).",
  "items": [
   {
+   "id": "fb:https://youtube.com/watch",
+   "kind": "event",
+   "url": "https://youtube.com/watch",
+   "posted": "2026-11-08",
+   "source": "Riftbound",
+   "credit": "Riot, on YouTube",
+   "text": "Riftbound Regional Championship Europe - Day 3 (Top 8)",
+   "via": [
+    "muse"
+   ],
+   "video": true,
+   "sum": "The Riftbound Regional Championship Europe has reached Day 3, the Top 8 stage. The post gives no dates or times for this stage.",
+   "sumBy": "claude",
+   "sumKey": "3be624be45a3c784",
+   "title": "Riftbound Regional Championship Europe Day 3 Top 8",
+   "links": [
+    "https://twitch.tv/videos/2922937997"
+   ]
+  },
+  {
    "id": "fb:https://facebook.com/reel/958435193703586",
    "kind": "product",
    "url": "https://facebook.com/reel/958435193703586",
    "posted": "2026-11-07",
    "source": "Riftbound",
    "credit": "Riot, on Facebook",
-   "text": "T1 are back in Riftbound. This time, with the T1 2025 Worlds Champion Player bundle that honors the winners with Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. Play or collect them, and celebrate their place in League history! Register for the drawing starting November 13 at 9 AM…",
+   "text": "T1 are back in Riftbound. This time, with the T1 2025 Worlds Champion Player bundle that honors the winners with Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. Play or collect them, and celebrate their place in League history! Register for the drawing starting November 13 at 9 AM PST.",
    "via": [
     "muse"
    ],
    "video": true,
-   "title": "T1 2025 Worlds Champion Player Bundle Drawing",
-   "sum": "T1 returns to Riftbound with a 2025 Worlds Champion Player bundle, featuring Champion cards chosen by Doran, Oner, Faker, Gumayusi, and Keria. Drawing registration starts November 13 at 9 AM.",
+   "title": "T1 Worlds 2025 Champion bundle drawing announced",
+   "sum": "T1 is releasing a 2025 Worlds Champion Player bundle with Champion cards chosen by five T1 players. Drawing registration starts November 13 at 9 AM PST.",
    "sumBy": "claude",
    "dates": [
     {
-     "what": "entries open",
-     "label": "Drawing registration opens, 9 AM",
+     "what": "drawing",
+     "label": "Drawing registration starts 9 AM PST",
      "from": "2026-11-13"
     }
    ],
-   "sumKey": "35a956111aee6f24"
-  },
-  {
-   "id": "fb:https://youtube.com/watch",
-   "kind": "event",
-   "url": "https://youtube.com/watch",
-   "posted": "2026-11-07",
-   "source": "Riftbound",
-   "credit": "Riot, on YouTube",
-   "text": "Riftbound Regional Championship Europe - Day 2 (Rounds 7-12)",
-   "via": [
-    "muse"
-   ],
-   "video": true,
-   "sum": "Riot Games posted about Day 2 of the Riftbound Regional Championship Europe, covering Rounds 7 to 12. The post does not give a date or time for Day 2.",
-   "sumBy": "claude",
-   "sumKey": "0b5d52d0fbc1be9a",
-   "title": "Riftbound Regional Championship Europe Day 2 Rounds 7-12"
+   "sumKey": "f9b6fdd5a52a45f0",
+   "links": [
+    "https://instagram.com/reel/DfdJ7aFCJ-l",
+    "https://x.com/playriftbound/status/2119181290675015711"
+   ]
   },
   {
    "id": "fb:https://facebook.com/reel/1352248946866083",
@@ -372,10 +379,45 @@
     "html": "<p><i>Last Updated: October 26, 2026</i></p><p>As we head into the final stretch of 2026, there's still plenty to look forward to. From&nbsp;<i>Radiance&nbsp;</i>and the final Regional Qualifiers to our first-ever set of Regional Championships, the rest of the year is packed with opportunities to play, compete, and celebrate Riftbound with communities around the world.&nbsp;</p><p>We're also ready to start looking beyond this year. While there are still a few surprises we're keeping under wraps. Today we're sharing our release schedule for the first two sets of 2027, including&nbsp;<i>Legacy</i>,&nbsp;<i>Proving Grounds</i>, <i>2nd Edition</i>, and&nbsp;<i>The Reckoning</i>, along with some key events and milestones.&nbsp;</p><p>As always, this roadmap is a snapshot of what's ahead. We'll continue updating it as more details are finalized, but for now, here's what the months ahead have in store for The Rift.</p><p><i>Note: All dates below are local to the event’s location.</i></p><h2>2026 Showdown Series Schedule</h2><table><tbody><tr><td><strong>Date</strong></td><td><strong>Organizer</strong></td><td><strong>Venue</strong></td><td><strong>City</strong></td><td><strong>Information Link</strong></td></tr><tr><td>October 30, 2026</td><td>CoolStuffInc</td><td>Hyatt Regency Orlando</td><td>Orlando, FL, USA</td><td><a href=\"https://coolstuffevents.com/\">LINK</a></td></tr><tr><td>November 21-22, 2026</td><td>Gen G</td><td>TBD</td><td>Los Angeles, CA</td><td><a href=\"https://www.eventbrite.com/e/geng-la-showdown-series-tickets-2003172970278?aff=oddtdtcreator\">LINK</a></td></tr></tbody></table><h4>2027 Regionals Schedule</h4><table><tbody><tr><td><strong>Set</strong></td><td><strong>Dates</strong></td><td><strong>City</strong></td><td><strong>Venue</strong></td><td><strong>Hashtag</strong></td></tr><tr><td><i>Legacy</i></td><td>February 5-7, 2027</td><td>Madrid, Spain</td><td>IFEMA Madrid</td><td>#RBRMadrid</td></tr><tr><td><i>Legacy</i></td><td>February 12-14, 2027</td><td>Philadelphia, USA</td><td>Pennsylvania Convention Center</td><td>#RBRPhiladelphia</td></tr><tr><td><i>Legacy</i></td><td>March 5-7, 2027</td><td>Auckland, New Zealand</td><td>Auckland Showgrounds</td><td>#RBRAuckland</td></tr><tr><td><i>The Reckoning</i></td><td>May 14-16, 2027</td><td>Louisville, USA</td><td>Kentucky Exposition Center&nbsp;</td><td>#RBRLouisville</td></tr><tr><td><i>The Reckoning</i></td><td>May 21-23, 2027</td><td>Dusseldorf, Germany</td><td>Dusseldorf Congress</td><td>#RBRDusseldorf</td></tr><tr><td><i>The Reckoning</i></td><td>June 25-27, 2027</td><td>Lyon, France</td><td>Eurexpo Lyon</td><td>#RBRLyon</td></tr></tbody></table><h4>2027 Continentals Schedule</h4><table><tbody><tr><td><strong>Set</strong></td><td><strong>Dates</strong></td><td><strong>City</strong></td><td><strong>Venue</strong></td><td><strong>Hashtag</strong></td></tr><tr><td><i><strong>Legacy</strong></i></td><td>March 26-28, 2027</td><td>Dallas, USA</td><td>Kay Bailey Convention Center</td><td>#RBCDallas</td></tr><tr><td><i><strong>The Reckoning</strong></i></td><td>June 11-13, 2027</td><td>Melbourne, Australia</td><td>Melbourne Showgrounds</td><td>#RBCMelbourne</td></tr><tr><td><strong>Set 8</strong></td><td>August 13-15, 2027</td><td>London, England</td><td>Excel</td><td>#RBCLondon</td></tr><tr><td><strong>Set 9</strong></td><td>December 10-12, 2027</td><td>Toronto, Canada</td><td>EnerCare Center&nbsp;</td><td>#RBCToronto</td></tr></tbody></table><h3>October</h3><ul><li><strong>28-Nov 1 - Lucca Comic and Games</strong> (Lucca, Italy)</li><li><strong>30-Nov 1 - Showdown Series: CoolStuffCon Orlando </strong>(Orlando, FL, USA) -&nbsp;<a href=\"https://coolstuffevents.com/orlando-2026/\">More info</a></li></ul><h3>November</h3><ul><li><strong>6-8th - European Regional Championship</strong> (Stuttgart, Germany) -&nbsp;<a href=\"https://playriftbound.com/en-us/news/announcements/august-2026-state-of-the-game\">As announced yesterday</a>, Riftbound’s first Regional Championship will be in Europe!</li><li><strong>9th - </strong><i><strong>Radiance’s </strong></i><strong>first Summoner Skirmish window opens</strong></li><li><strong>13-15th - TwitchCon</strong> (San Diego, CA, USA)</li><li><strong>21-22 - Gen.G Riftbound Showdown Series</strong> (Los Angeles, CA, USA)</li><li><strong>27-29th - Dreamhack Stockholm</strong></li><li><strong>28-29th - Toulouse Game Show</strong></li></ul><h3>December</h3><ul><li><strong>4-6th - PAX Unplugged</strong></li><li><strong>11-13th - Convergence Fest &amp; North American Regional Championship</strong> (Las Vegas, NV, USA) - Riftbound + Team Fight Tactics is sure to be a fantastic time. Learn more about&nbsp;<a href=\"https://convergencefest.riotgames.com/\">Convergence Fest</a> and the&nbsp;<a href=\"https://playriftbound.com/en-us/news/announcements/august-2026-state-of-the-game\">North American RC</a>.</li><li><strong>14th -</strong> <i><strong>Radiance</strong></i><strong>’s second Summoner Skirmish window opens</strong></li></ul><h2>2027</h2><p>To learn more about the Legacy, The Reckoning, and Proving Grounds, 2nd Edition, check out Monday’s article about&nbsp;<a href=\"https://playriftbound.com/en-us/news/announcements/products-and-sets-into-2027\">Riftbound’s 2027 Set Line-up</a>.</p><h4>January</h4><ul><li><strong>22-28th - Legacy Pre-Rift events</strong></li><li><strong>29th - Legacy launch</strong></li></ul><h4>February</h4><ul><li><strong>5-7th - Legacy Regional #1 </strong>(Madrid, Spain)</li><li><strong>12-14th - Legacy Regional #2 </strong>(Philadelphia, USA)</li><li><strong>TBD</strong> - Our first State of the Game of 2027 will happen in February</li><li><strong>19th - Proving Grounds, 2nd Edition launch</strong></li></ul><h4>March</h4><ul><li><strong>5-7th - Legacy Regional #3 </strong>(Auckland, New Zealand)&nbsp;</li><li><strong>26-28th - Legacy Continental</strong> (Dallas, USA)</li></ul><h4>April</h4><ul><li><strong>TBD</strong></li></ul><h4>May</h4><ul><li><strong>14-16th - Reckoning Regional #1 </strong>(Louisville, USA)</li><li><strong>21-23th - Reckoning Regional #2</strong> (Dusseldorf, Germany)</li></ul><h4>June</h4><ul><li><strong>11-13th - Reckoning Continental </strong>(Melbourne, Australia)</li><li><strong>23-29th - The Reckoning Pre-Rift events</strong>&nbsp;</li><li><strong>25-27th - Reckoning Regional #3</strong> (Lyon, France)</li><li><strong>30th - The Reckoning launches&nbsp;</strong></li></ul><h4>July</h4><ul><li><strong>TBD</strong></li></ul><h4>August</h4><ul><li><strong>13-15th - Set 8 Continental </strong>(London, England)&nbsp;</li></ul><h4>September</h4><ul><li><strong>TBD</strong></li></ul><h4>October</h4><ul><li><strong>TBD</strong></li></ul><h4>November</h4><ul><li><strong>TBD</strong></li></ul><h4>December</h4><ul><li><strong>10-12th - Set 9 Continental </strong>(Toronto, Canada)</li></ul><h3>Attention: Casters &amp; Cosplayers</h3><p>As noted in the&nbsp;<a href=\"https://playriftbound.com/en-us/news/announcements/riftbounds-creators-in-2027\">Creator Updates article</a>, we’d love to hear from&nbsp;<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSdWrcOkeuKIGzzTWBFvEL6KSLHbyOcGxnLxC3Evf59lkQRAzQ/viewform?usp=publish-editor\">Casters</a> and&nbsp;<a href=\"https://docs.google.com/forms/d/e/1FAIpQLSc6NHDAjNna5esALYAU2210w0fWXzgcixod-nLGj2A52WrASA/viewform?usp=publish-editor\">Cosplayers</a> who are interested in being considered for future Riftbound events.</p>",
     "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/b309f9a6ad1eaffdd7cf54d53530c804dfb48d5d-1920x1080.jpg?accountingTag=RB"
    },
-   "sum": "2026 isn’t over yet, and there’s even more on the horizon.",
-   "sumBy": "first",
+   "sum": "Riot has published its Riftbound roadmap for the rest of 2026 and the first 2027 sets. It includes the first Regional Championships, the Legacy launch on January 29 and Proving Grounds, 2nd Edition on February 19.",
+   "sumBy": "claude",
    "sumKey": "d1d1a1d6628db2cc",
-   "title": "Riftbound Roadmap 2026-2027"
+   "title": "Riftbound roadmap: 2026 events and 2027 set launches",
+   "dates": [
+    {
+     "what": "event",
+     "label": "Showdown Series CoolStuffCon Orlando",
+     "from": "2026-10-30",
+     "to": "2026-11-01"
+    },
+    {
+     "what": "event",
+     "label": "European Regional Championship, Stuttgart",
+     "from": "2026-11-06",
+     "to": "2026-11-08"
+    },
+    {
+     "what": "other",
+     "label": "Radiance first Summoner Skirmish window opens",
+     "from": "2026-11-09"
+    },
+    {
+     "what": "event",
+     "label": "Convergence Fest and North American Regional Championship",
+     "from": "2026-12-11",
+     "to": "2026-12-13"
+    },
+    {
+     "what": "release",
+     "label": "Legacy set launches",
+     "from": "2027-01-29"
+    },
+    {
+     "what": "release",
+     "label": "Proving Grounds, 2nd Edition launches",
+     "from": "2027-02-19"
+    }
+   ]
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0mDZi2DaYqBvLsxMnwoWTJREa1hfUJhArFLNrzC4rz8vvr3erbtwoHsC3skhuX59l",
