@@ -85,13 +85,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .tstrip.fr{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent)}
 .tstrip.fl{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px);mask-image:linear-gradient(90deg,transparent,#000 24px)}
 .tstrip.fl.fr{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
-.tleg{flex:0 0 56px;width:56px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;margin:0;scroll-snap-align:start;
+.tleg{flex:0 0 68px;width:68px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;margin:0;scroll-snap-align:start;
   border:0;background:none;color:inherit;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.tleg img,.tleg .tph{display:block;width:56px;height:78px;border-radius:5px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
-.tleg span{display:block;width:100%;font-size:12px;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tleg img,.tleg .tph{display:block;width:68px;height:95px;border-radius:5px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
 .tleg:active{transform:scale(.96)}
 .tnone{align-self:center;font-size:13px;color:var(--muted);padding:0 4px}
-.trow .tstrip{align-items:center}   /* the cards and their names sit centred beside the letter block (Mako 2026-11-09) */
+.trow .tstrip{align-items:center}   /* the cards sit centred beside the letter block (Mako 2026-11-09); no name under a card, the card shows it (13:17) */
 .trow.empty .tstrip{align-items:center;align-content:center}
 .tempty{margin-top:14px;border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
 /* a tier's menu: every card in it, best conversion first, the conversion under each */
@@ -100,10 +99,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .tgrid .tleg img,.tgrid .tleg .tph{width:100%;height:auto;aspect-ratio:744/1039} /* size-exempt: a whole legend card */
 .tgrid .tleg em{font-style:normal;font-family:var(--disp);font-weight:600;font-size:12px;color:var(--muted)}
 /* the legend menu: its card and words, then its numbers in a sunken group you only read */
-.lgtop{display:flex;gap:14px;align-items:center;margin-bottom:14px}
-.lgtop img,.lgtop .tph{flex:0 0 auto;width:104px;height:145px;border-radius:7px;background:var(--track);object-fit:contain} /* size-exempt: a whole legend card */
-.lgtx{min-width:0}
-.lgtx .full{font-size:12px;color:var(--muted);margin:0 0 6px}
+/* a legend's menu is laid out as Decks' card menu (Mako 2026-11-09 13:17): Name, Title as the menu's title, the whole card centred 150 wide */
+.lgtop{width:150px;margin:0 auto 12px}
+.lgtop img,.lgtop .tph{display:block;width:150px;height:auto;aspect-ratio:744/1039;border-radius:10px;background:var(--recess);object-fit:cover} /* size-exempt: a whole legend card */
+.lgtx{margin:0 0 14px}
 .lgtx .tier{font-family:var(--disp);font-weight:700;font-size:17px;margin:0 0 6px}
 .lgtx .say{font-size:15px;line-height:1.4;margin:0}
 .nrows{background:var(--recess);border-radius:22px;overflow:hidden}
@@ -379,17 +378,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function drawLegend(name){
     var x = BY[name];
     if (!x || !R) { return false; }
-    var p = nameParts(x.l);
-    $("plegt").textContent = p[0];
-    var top = "<div class=\"lgtop\">" + card(artOf(KNOWN[x.l], true)) + "<div class=\"lgtx\"><p class=\"full\">" + esc(p[1]) + "</p>";
+    $("plegt").textContent = x.l;
+    var top = "<div class=\"lgtop\">" + card(artOf(KNOWN[x.l], true)) + "</div><div class=\"lgtx\">";
     if (COUNTS) {
-      $("plegb").innerHTML = top + "<p class=\"tier\">" + esc(R.place) + "</p><p class=\"say\">Counts only, until " + LOCAL_TIERS + " decks are in.</p></div></div>" +
+      $("plegb").innerHTML = top + "<p class=\"tier\">" + esc(R.place) + "</p><p class=\"say\">Counts only, until " + LOCAL_TIERS + " decks are in.</p></div>" +
         "<div class=\"nrows\">" +
         "<div class=\"nrow\"><span><b>Played</b><small>" + esc("of " + plural(R.entries, "deck", "decks") + " added") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + num(x.f) + "</span></div>" +
         "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc("of " + plural(R.tops, "top-cut spot", "top-cut spots") + " filled") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + num(x.t) + "</span></div>" +
         "</div><p class=\"tnote\">" + esc(R.foot) + "</p>";
     } else {
-      $("plegb").innerHTML = top + "<p class=\"tier\">" + esc(TNAME[x.tier]) + "</p><p class=\"say\">" + esc(say(x)) + "</p></div></div>" +
+      $("plegb").innerHTML = top + "<p class=\"tier\">" + esc(TNAME[x.tier]) + "</p><p class=\"say\">" + esc(say(x)) + "</p></div>" +
         "<div class=\"nrows\">" +
         "<div class=\"nrow\"><span><b>Played</b><small>" + esc(num(x.f) + " of " + num(R.entries) + " decks") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.fs) + "</span></div>" +
         "<div class=\"nrow\"><span><b>Top cut</b><small>" + esc(num(x.t) + " of " + num(R.tops) + " top-cut spots") + "</small></span><span class=\"sp\"></span><span class=\"v\">" + pct1(x.ts) + "</span></div>" +
@@ -434,10 +432,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   $("tq").addEventListener("input", filter);
   $("tqx").addEventListener("click", function(){ $("tq").value = ""; filter(); $("tq").focus(); });
 
+  // a whole card, no name under it: the card shows its name, the label says it (Mako 2026-11-09 13:17)
   function tileHTML(x, tierName, under){
-    var p = nameParts(x.l);
     return "<button type=\"button\" class=\"tleg\" data-k=\"card\" data-l=\"" + esc(x.l) + "\" aria-label=\"" + esc(x.l + ", " + tierName) + "\" aria-haspopup=\"true\" aria-controls=\"pleg\">" +
-      card(artOf(KNOWN[x.l], false)) + "<span>" + esc(p[0]) + "</span>" + (under || "") + "</button>";
+      card(artOf(KNOWN[x.l], false)) + (under || "") + "</button>";
   }
 
   // the five shelves from computed results
