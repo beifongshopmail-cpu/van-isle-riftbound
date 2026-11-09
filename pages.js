@@ -372,25 +372,56 @@ window.RAVI_HUB_SAVE = function(ids){
 // tint, at --cg), --on-pc / --on-ink (the bar's you-are-here pill and its icon) and the class
 // paged (app.css lifts grey text on tinted glass so it stays readable). The hub sets
 // nothing: its plate stays clear and each block carries its own colour.
+// THE COLOUR TRIAL (plan 2 M8.7 colour pass, Mako 2026-11-09 08:47: "good to build as described and
+// I'll check it out"). Colour gets fixed jobs, the same on every page, after Apple's one tint for what
+// you can act on and Material 3's colour roles: (1) the page colour marks what is on or what acts: a
+// track's chosen option and a ticked row wear the bar pill's recipe (--on-pc, --on-ink), a full-width
+// action is coloured glass, an action row and a link read in the page's tint; (2) every sticky plate
+// carries a light wash of the page colour, in place of four pages tinting all their glass; (3) colour
+// that means something stays in the content and wins (events, News kinds, Rules sections, players,
+// domains), and ranked content gets one hue stepping down (the Tier list's tiers); (4) the rest stays
+// neutral. html.cnew carries it (app.css THE COLOUR TRIAL); the switch above the bar (Today | New) flips
+// it live on any page, kept per phone (ravi.try.colour.v1), New for a phone that never chose. Never on
+// the hub (no page colour) or the Game page (function before colour); automated checks
+// (navigator.webdriver) see the app without it. Goes when Mako decides.
+window.RAVI_CTRY_KEY = "ravi.try.colour.v1";
 (function(){
   if (typeof document === "undefined" || typeof location === "undefined") { return; }
-  var m = /\/([a-z]+)\/(index\.html)?$/.exec(location.pathname), pages = window.RAVI_PAGES, i, c, r;
+  var m = /\/([a-z]+)\/(index\.html)?$/.exec(location.pathname), pages = window.RAVI_PAGES, i, c, r, pg = null, doc = document.documentElement;
   if (!m) { return; }
-  for (i = 0; i < pages.length; i++) {
-    if (pages[i].path === m[1] + "/" && pages[i].rgb) {
-      c = pages[i].rgb.split(",");
-      for (r = []; r.length < 3;) { r.push(Math.round(+c[r.length] + (255 - +c[r.length]) * .62)); }
-      var st = document.documentElement.style;
-      st.setProperty("--page", pages[i].rgb);
-      st.setProperty("--on-pc", "rgba(" + pages[i].rgb + ",.54)");
-      st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
-      if (pages[i].glass) {
-        st.setProperty("--tint", "rgba(" + pages[i].rgb + ",var(--cg))");
-        document.documentElement.classList.add("paged");
-      }
-      return;
-    }
+  for (i = 0; i < pages.length; i++) { if (pages[i].path === m[1] + "/" && pages[i].rgb) { pg = pages[i]; } }
+  if (!pg) { return; }
+  c = pg.rgb.split(",");
+  for (r = []; r.length < 3;) { r.push(Math.round(+c[r.length] + (255 - +c[r.length]) * .62)); }
+  var st = doc.style;
+  st.setProperty("--page", pg.rgb);
+  st.setProperty("--on-pc", "rgba(" + pg.rgb + ",.54)");
+  st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
+  function apply(on){
+    doc.classList.toggle("cnew", on);
+    if (pg.glass && !on) { st.setProperty("--tint", "rgba(" + pg.rgb + ",var(--cg))"); doc.classList.add("paged"); }
+    else if (pg.glass) { st.removeProperty("--tint"); doc.classList.remove("paged"); }
   }
+  var bot = false, saved = null;
+  try { bot = !!navigator.webdriver; saved = localStorage.getItem(window.RAVI_CTRY_KEY); } catch (e) {}
+  var can = !bot && pg.id !== "counter";
+  apply(can && saved !== "today");
+  if (!can) { return; }
+  function sw(){
+    if (document.querySelector(".ctry") || !document.querySelector(".bar")) { return; }
+    var d = document.createElement("div"), on = doc.classList.contains("cnew");
+    d.className = "ctry frost"; d.setAttribute("role", "group"); d.setAttribute("aria-label", "Colour trial");
+    d.innerHTML = '<span>Colour trial</span><div class="seg"><button type="button" data-c="today" aria-pressed="' + !on + '">Today</button><button type="button" data-c="new" aria-pressed="' + on + '">New</button></div>';
+    d.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-c]"); if (!b) { return; }
+      var nw = b.getAttribute("data-c") === "new";
+      try { localStorage.setItem(window.RAVI_CTRY_KEY, nw ? "new" : "today"); } catch (er) {}
+      apply(nw);
+      Array.prototype.forEach.call(d.querySelectorAll("button[data-c]"), function(x){ x.setAttribute("aria-pressed", String(x === b)); });
+    });
+    document.body.appendChild(d);
+  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", sw); } else { sw(); }
 })();
 
 // THE GO TO TILES. One function, shared by the calendar, trade and
