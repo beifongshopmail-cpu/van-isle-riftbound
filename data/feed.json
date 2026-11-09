@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-08",
+ "updated": "2026-11-09",
  "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).",
  "items": [
   {
@@ -591,10 +591,32 @@
     "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/consumer_products_live/794ab83f812aea708173d416f0fdc1628f4bd958-2560x1440.png?accountingTag=RB"
    },
    "video": true,
-   "title": "Riftbound T1 Player Bundle and Worlds 2026 Drawing",
-   "sum": "The Riftbound x K/DA: Couture Collection pulls back the curtain on a new stage for K/DA—the tabletop.",
-   "sumBy": "first",
-   "sumKey": "793ef69be010ea44"
+   "title": "Riftbound K/DA Couture and Worlds 2026 Drawings",
+   "sum": "Riot announced a K/DA Couture Collection drawing starting October 27. A separate T1 Worlds and Worlds 2026 bundle drawing runs November 13 to 16.",
+   "sumBy": "claude",
+   "sumKey": "793ef69be010ea44",
+   "dates": [
+    {
+     "what": "entries open",
+     "label": "K/DA Couture drawing registration opens 9am PT",
+     "from": "2026-10-27"
+    },
+    {
+     "what": "entries open",
+     "label": "T1 and Worlds 2026 drawing registration opens 9am PT",
+     "from": "2026-11-13"
+    },
+    {
+     "what": "entries close",
+     "label": "T1 and Worlds 2026 drawing registration closes 9am PT",
+     "from": "2026-11-16"
+    },
+    {
+     "what": "drawing",
+     "label": "First round selectees emailed",
+     "from": "2026-11-17"
+    }
+   ]
   },
   {
    "id": "fb:https://playriftbound.com/en-us/news/announcements/product-drawing-faq/",
