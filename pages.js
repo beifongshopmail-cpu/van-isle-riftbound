@@ -876,33 +876,44 @@ window.RAVI_BAR = function(nav, slots){
   }, { passive: false });
 })();
 
-// BACK (plan 2 M8.7 A1; Mako's yes 2026-11-08 to the sweep's finding): a page reached by a link
-// inside another page (an event's Top cut, a Tier list list opening in Decks, New here's rows, the
-// Trade board's Open Collection) shows a round Back in the wordmark row's top left, level with your
-// picture; it returns where you were (history, so the scroll comes back too). A page reached from
-// the bar, Go to or the hub shows none, as iOS: a screen you were sent to has Back, a tab never.
-// RAVI_BACK_MARK(url) marks a move made from script (the Trade board's Price this trade).
+// BACK (plan 2 M8.7 A1; Mako's yes 2026-11-08 to the sweep's finding; widened 20:33: "the back button
+// should be around more ... a bit weird having it only pop up after specifically a page links to
+// another page but not when you use go to"). A round Back sits in the wordmark row's top left, level
+// with your picture, on any page you reached from another page: by a link inside it (an event's Top
+// cut, New here's rows, the Trade board's Open Collection) or by Go to. It returns where you were
+// (history, so the scroll comes back too), and keeps going back step by step along your trail. The
+// hub is home: a page opened from the hub shows none, and going to the hub starts the trail again.
+// The trail is a list in sessionStorage of {from, to} moves; RAVI_BACK_MARK(url) adds a move made
+// from script (the Trade board's Price this trade).
 (function(){
-  var KEY = "ravi.back.v1";
+  if (typeof document === "undefined") { return; }
+  var KEY = "ravi.back.v2";
   function path(u){ try { return new URL(u, location.href).pathname.replace(/index\.html$/, ""); } catch (e) { return ""; } }
   function ours(u){ try { var x = new URL(u, location.href); return x.origin === location.origin && x.pathname !== location.pathname; } catch (e) { return false; } }
-  window.RAVI_BACK_MARK = function(u){ try { sessionStorage.setItem(KEY, JSON.stringify({ to: path(u) })); } catch (e) {} };
+  function hub(u){ var p = path(u), pages = window.RAVI_PAGES || [], i; for (i = 0; i < pages.length; i++) { if (new RegExp("/" + pages[i].path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$").test(p)) { return false; } } return true; }
+  function trail(){ try { var t = JSON.parse(sessionStorage.getItem(KEY) || "[]"); return Array.isArray(t) ? t : []; } catch (e) { return []; } }
+  function keep(t){ try { if (t.length) { sessionStorage.setItem(KEY, JSON.stringify(t.slice(-30))); } else { sessionStorage.removeItem(KEY); } } catch (e) {} }
+  window.RAVI_BACK_MARK = function(u){
+    if (hub(u) || hub(location.href)) { keep([]); return; }   // to or from home: the trail starts again
+    var t = trail();
+    t.push({ from: path(location.href), to: path(u) }); keep(t);
+  };
   document.addEventListener("click", function(e){
     var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
     if (!a || a.target === "_blank" || !ours(a.href)) return;
-    if (a.closest(".bar, .goto, .panel.tray, #grid, .hubname")) { try { sessionStorage.removeItem(KEY); } catch (er) {} return; }
     window.RAVI_BACK_MARK(a.href);
   }, true);
   function boot(){
-    var row = document.querySelector(".wmrow"), m = null;
+    var row = document.querySelector(".wmrow"), t = trail(), top = t[t.length - 1], old;
     if (!row) return;
-    try { m = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch (e) {}
-    if (!m || m.to !== path(location.href) || history.length < 2) return;
+    old = row.querySelector(".rvback"); if (old) { old.remove(); }
+    if (!top || top.to !== path(location.href) || history.length < 2) return;
     var b = document.createElement("button");
     b.type = "button"; b.className = "circ btn glass rvback"; b.setAttribute("aria-label", "Back"); b.setAttribute("data-k", "do");
     b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>';
-    b.addEventListener("click", function(){ try { sessionStorage.removeItem(KEY); } catch (e) {} history.back(); });
+    b.addEventListener("click", function(){ var x = trail(); x.pop(); keep(x); history.back(); });
     row.appendChild(b);
   }
+  addEventListener("pageshow", function(e){ if (e.persisted) { boot(); } });
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
 })();
