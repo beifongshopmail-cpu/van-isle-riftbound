@@ -549,35 +549,37 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 .skel .skpill{width:118px;height:var(--sz-track);background:var(--glass);box-shadow:var(--glass-base)}
 
 /* PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08). The browser's own cross-document view
-   transitions; pages.js PAGE TO PAGE sets html[data-vt]. One version for everyone (17:26: page to page
-   good, the hub's open too quick to read, "a touch less snappy, a touch more flowy", no switches).
+   transitions; pages.js PAGE TO PAGE sets html[data-vt]. One version for everyone, modelled on the
+   hub's zoom (18:44: the hub's open and close "perfect"; page to page "a bit more akin to that").
    Measured against proven apps: iOS's push is about .35s, Material's whole-screen moves .3 to .5s on
    an emphasized curve (fast start, long settle). Only transform and opacity move, so the phone's
    graphics chip draws every frame.
-   - Between pages: the new page rises 20px into place over .34s on the settle curve while it fades in
-     over .2s; the old one fades out in .12s. The bar holds still; only its icons cross-fade.
-   - From the hub: the page zooms out of the block you tapped (from the block's centre and width) over
-     .44s, fading in over its first .2s, while the hub sinks back a little and dims.
-   - Back to the hub: the page zooms back into its block over .34s, fading over its last .2s, while the
-     hub comes forward. With no block to go to (the page came by Go to), it rises as between pages. */
+   - open (from the hub) and zoom (a Go to tile or a link): the page zooms out of what was tapped (from
+     its centre and width) over .44s, fading in over its first .2s, while the page behind sinks to .94
+     and dims. From the hub the bar comes in after; between pages it holds still.
+   - fwd (nothing to zoom from): the page grows from .92 in the middle, the same .44s.
+   - close (back to the hub): the page zooms back into its block over .34s, fading over its last .2s,
+     while the hub comes forward. back (history, or the hub with no block): the page shrinks to .92
+     and fades while the one under it comes forward, .34s. */
 @view-transition{navigation:auto}
 .bar{view-transition-name:ravi-bar}
 ::view-transition-group(ravi-bar){animation:none}
 ::view-transition-old(ravi-bar),::view-transition-new(ravi-bar){animation-duration:.2s}
 @keyframes vt-fade-in{from{opacity:0}}
 @keyframes vt-fade-out{to{opacity:0}}
-@keyframes vt-rise{from{transform:translateY(20px)}}
 @keyframes vt-zoom-in{from{transform:translate(var(--vt-dx),var(--vt-dy)) scale(var(--vt-s))}}
 @keyframes vt-zoom-out{to{transform:translate(var(--vt-dx),var(--vt-dy)) scale(var(--vt-s))}}
+@keyframes vt-grow{from{transform:scale(.92)}}
+@keyframes vt-shrink{to{transform:scale(.92)}}
 @keyframes vt-sink{to{transform:scale(.94);opacity:.45}}
 @keyframes vt-lift{from{transform:scale(.94);opacity:.45}}
-::view-transition-old(root){animation:vt-fade-out .12s linear both}
-::view-transition-new(root){animation:vt-rise .34s cubic-bezier(.05,.7,.1,1) both,vt-fade-in .2s linear both}
-html[data-vt="open"]::view-transition-old(root){animation:vt-sink .44s cubic-bezier(.2,0,0,1) both}
-html[data-vt="open"]::view-transition-new(root){animation:vt-zoom-in .44s cubic-bezier(.05,.7,.1,1) both,vt-fade-in .2s linear both}
+::view-transition-old(root){animation:vt-sink .44s cubic-bezier(.2,0,0,1) both}
+::view-transition-new(root){animation:vt-grow .44s cubic-bezier(.05,.7,.1,1) both,vt-fade-in .2s linear both}
+html[data-vt="open"]::view-transition-new(root),html[data-vt="zoom"]::view-transition-new(root){animation:vt-zoom-in .44s cubic-bezier(.05,.7,.1,1) both,vt-fade-in .2s linear both}
 html[data-vt="open"]::view-transition-new(ravi-bar){animation:vt-fade-in .2s .22s both}
 html[data-vt="close"]::view-transition-old(root){z-index:2;animation:vt-zoom-out .34s cubic-bezier(.3,0,.8,.15) both,vt-fade-out .2s .14s linear both}
-html[data-vt="close"]::view-transition-new(root){animation:vt-lift .34s cubic-bezier(.05,.7,.1,1) both}
+html[data-vt="back"]::view-transition-old(root){z-index:2;animation:vt-shrink .34s cubic-bezier(.3,0,.8,.15) both,vt-fade-out .2s .14s linear both}
+html[data-vt="close"]::view-transition-new(root),html[data-vt="back"]::view-transition-new(root){animation:vt-lift .34s cubic-bezier(.05,.7,.1,1) both}
 html[data-vt="close"]::view-transition-old(ravi-bar){animation:vt-fade-out .12s both}
 @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 

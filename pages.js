@@ -171,8 +171,9 @@ window.RAVI_PAGES = [
 // PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08: "Motion for switching between pages").
 // The browser's own cross-document view transitions (app.css @view-transition; Safari 18.2+, no
 // script library). This part only tells the next page where you came from, so its CSS can pick the
-// motion: data-vt on <html> is "fwd" or "back" between pages (by their order in RAVI_PAGES; a return
-// through history is always back), "open" from the hub (the page zooms out of the block you tapped:
+// motion: data-vt on <html> is "zoom" between pages when a tile or link was tapped (the page zooms out
+// of it, as from the hub), "fwd" when nothing was (it grows from the middle), "back" on a return
+// through history (it shrinks away), "open" from the hub (the page zooms out of the block you tapped:
 // its centre's offset from the screen's rides along as --vt-dx/--vt-dy, its width over the screen's as
 // --vt-s) and "close" back to the hub (the page zooms back into its block, if this launch opened it).
 // Mako 2026-11-08 17:26 on the trial: page to page good; the hub's open "so choppy/quick that it
@@ -193,30 +194,30 @@ window.RAVI_PAGES = [
     for (i = 0; i < pages.length; i++) { if (pages[i].path === seg) { return pages[i].id; } }
     return "hub";
   }
-  function order(id){
-    var pages = window.RAVI_PAGES, i;
-    for (i = 0; i < pages.length; i++) { if (pages[i].id === id) { return i; } }
-    return -1;
-  }
   function read(k){ try { return JSON.parse(sessionStorage.getItem(k) || "null"); } catch (e) { return null; } }
   function write(k, v){ try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function arrive(){
     var me = idOf(location.href), m = read(KEY), dir = "", r = null, blk;
     doc.removeAttribute("data-vt");
     if (!m || !m.from || Date.now() - (m.at || 0) > 8000 || m.from === me) { return; }
-    if (m.from === "hub") {
+    // a return through history (Back, a swipe) moves as back
+    var act = window.navigation && window.navigation.activation, nt = "", hist = false;
+    if (act && act.navigationType === "traverse") { hist = true; }
+    else { try { nt = performance.getEntriesByType("navigation")[0].type; } catch (e) {} hist = nt === "back_forward"; }
+    if (m.from === "hub" && !hist) {
       dir = "open"; r = m.rect;
       if (r) { blk = read(BLK) || {}; blk[me] = r; write(BLK, blk); }
     } else if (me === "hub") {
       dir = "close"; r = (read(BLK) || {})[m.from] || null;
+      if (!r) { dir = "back"; }
+    } else if (hist) {
+      dir = "back";
     } else {
-      dir = order(me) >= order(m.from) ? "fwd" : "back";
-      // a return through history (Back, a swipe) moves as back, whatever the order
-      var act = window.navigation && window.navigation.activation, nt = "";
-      if (act && act.navigationType === "traverse" && act.from && act.entry) { dir = act.from.index > act.entry.index ? "back" : "fwd"; }
-      else { try { nt = performance.getEntriesByType("navigation")[0].type; } catch (e) {} if (nt === "back_forward") { dir = "back"; } }
+      // page to page (Mako 2026-11-08 18:44: the hub's zoom is "perfect", page to page should be
+      // "a bit more akin to that"): out of what was tapped (a Go to tile, a link), else from the middle
+      dir = m.rect ? "zoom" : "fwd"; r = m.rect;
     }
-    if ((dir === "open" || dir === "close") && !r) { dir = "fade"; }
+    if (dir === "open" && !r) { dir = "fwd"; }
     if (r) {
       doc.style.setProperty("--vt-dx", Math.round(r.l + r.w / 2 - innerWidth / 2) + "px");
       doc.style.setProperty("--vt-dy", Math.round(r.t + r.h / 2 - innerHeight / 2) + "px");
@@ -233,7 +234,7 @@ window.RAVI_PAGES = [
     try { if (new URL(h, location.href).origin !== location.origin) { return; } } catch (x) { return; }
     from = idOf(location.href);
     b = a.getBoundingClientRect();
-    write(KEY, { from: from, to: idOf(a.href), at: Date.now(), rect: from === "hub" ? { t: b.top, l: b.left, w: b.width, h: b.height } : null });
+    write(KEY, { from: from, to: idOf(a.href), at: Date.now(), rect: b.width && !a.closest(".bar") ? { t: b.top, l: b.left, w: b.width, h: b.height } : null });
   }, true);
   function leave(){
     var m = read(KEY), me = idOf(location.href);
@@ -557,6 +558,64 @@ window.RAVI_BAR = function(nav, slots){
   }
   nav.insertAdjacentHTML("beforeend", h);
 };
+
+// MENUS OPEN FROM WHAT YOU TAPPED (plan 2 M8.7 motion block; NEXT -- menus that open from their
+// control, Mako 2026-10-30; built 2026-11-08 18:44 on his word "feel free to handle the menu changes in
+// that pass"). The account menu's grow-and-shrink (account.js), for every menu: a menu that opens from
+// nothing within half a second of a tap on a control outside it grows out of that control (from .2,
+// its corner nearest the control first) in .34s on the settle curve, and shrinks back into it in .2s
+// when it closes to nothing. A deeper menu (it slides in from a side), a switch from one menu to
+// another, a menu a page opens by itself, and the account menus keep their own motion. Transform and
+// opacity only; reduced motion turns it off. Each page's own open and close code is untouched: this
+// watches the menus' class.
+(function(){
+  if (typeof document === "undefined" || !window.Element || !Element.prototype.animate) { return; }
+  var last = null, ORIG = typeof WeakMap === "function" ? new WeakMap() : null;
+  document.addEventListener("click", function(e){
+    var c = e.target && e.target.closest ? e.target.closest("button, a, [role=button], [data-act]") : null;
+    last = c && !c.closest(".panel") ? { el: c, at: Date.now() } : null;
+  }, true);
+  function still(){ return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }
+  function other(p){ var a = document.querySelectorAll(".panel.show"), i; for (i = 0; i < a.length; i++) { if (a[i] !== p) { return true; } } return false; }
+  function side(p){ return /(^| )(fromr|froml|tol|tor)( |$)/.test(p.className); }
+  function play(p, open){
+    var o = ORIG && ORIG.get(p);
+    if (!o) { return; }
+    p.style.transformOrigin = o;
+    p.style.transition = "none";
+    var a = p.animate(open ? [{ transform: "scale(.2)", opacity: 0 }, { transform: "none", opacity: 1 }]
+                          : [{ transform: "none", opacity: 1 }, { transform: "scale(.2)", opacity: 0 }],
+      open ? { duration: 340, easing: "cubic-bezier(.05,.7,.1,1)" } : { duration: 200, easing: "cubic-bezier(.3,0,.8,.15)" });
+    var done = function(){ p.style.transition = ""; p.style.transformOrigin = ""; };
+    a.onfinish = done; a.oncancel = done;
+  }
+  var mo = new MutationObserver(function(list){
+    list.forEach(function(m){
+      var p = m.target, was = /(^| )show( |$)/.test(m.oldValue || ""), is = p.classList.contains("show");
+      if (was === is || p.classList.contains("acct") || still()) { return; }
+      if (is) {
+        if (ORIG) { ORIG.delete(p); }
+        if (!last || Date.now() - last.at > 500 || !document.contains(last.el) || side(p) || other(p) || !ORIG) { return; }
+        var r = last.el.getBoundingClientRect();   // the menu's resting box: a fixed menu's offsets, untouched by its motion
+        if (!r.width) { return; }
+        ORIG.set(p, Math.round(r.left + r.width / 2 - p.offsetLeft) + "px " + Math.round(r.top + r.height / 2 - p.offsetTop) + "px");
+        play(p, true);
+      } else if (!other(p) && !side(p)) {
+        play(p, false);
+      }
+    });
+  });
+  function boot(){
+    var a = document.querySelectorAll(".panel"), i;
+    for (i = 0; i < a.length; i++) { mo.observe(a[i], { attributes: true, attributeFilter: ["class"], attributeOldValue: true }); }
+    var w = window.RAVI_WATCH;   // menus added later (RAVI_WATCH) join too
+    if (w && !w.__grow) {
+      window.RAVI_WATCH = function(list){ for (var k = 0; k < list.length; k++) { mo.observe(list[k], { attributes: true, attributeFilter: ["class"], attributeOldValue: true }); } return w(list); };
+      window.RAVI_WATCH.__grow = true;
+    }
+  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function(){ setTimeout(boot, 0); }); } else { setTimeout(boot, 0); }
+})();
 
 // MENU STATE. Two things every page's menus share, kept here so a page only needs markup.
 // (1) A bar slot with data-fills="<menu id>" is on (its icon filled) while that menu, or a
