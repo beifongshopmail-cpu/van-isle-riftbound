@@ -163,29 +163,63 @@ window.RAVI_HUES = {
   lime: "170,210,60", orchid: "215,90,230", lilac: "170,140,255",
   slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245"
 };
-// THE PALETTE SWITCH (the colour trial, Mako's standing ask 2026-11-09: proven palettes whenever the
-// palette changes). Each palette swaps the eleven hues for its own nearest colour, family for family;
-// the three greys and White stay. Measured with rb-tools design/colour/palettes.py (OKLab, Machado 2009).
-// apple: iOS's dark system colours (Flutter's CupertinoColors darkColor values; Apple's teal left out,
-//   its current value unconfirmed, so lime takes brown). tailwind: Tailwind's 400 step, one lightness
-//   for every hue. safe: Okabe and Ito (2008) with Paul Tol's bright and light schemes (2021), made for
-//   colourblind eyes. Kept per phone (ravi.try.pal.v1); automated checks see today's colours.
+// THE PALETTE SWITCH (the colour trial). Mako 2026-11-09 14:47: every colour so far is a placeholder,
+// chosen with no reason behind it; explore completely different combinations. Six whole-app directions,
+// each built from one idea (he chose to see all six, 14:51). A palette may set the meaning hues (hues),
+// its own page colours by page id (pages; a page not named takes its hue), and app tokens (vars: the
+// ground and the plates). The three greys and White stay unless a palette names them.
+//  runes: Riftbound's six rune colours (Riot's, as Decks draws them); each page takes the rune whose
+//    theme fits it (Order: Events, Settings; Fury: Game, Top cut; Chaos: Trade, Trade board; Body:
+//    Decks, Collection; Mind: Rules, News, Tier list; Calm: New here, Feedback).
+//  kinds: colour says what kind of page it is: one warm for playing, one cool for cards, a quiet
+//    neutral for reading; meanings (event kinds, sections) in Tableau 10, a set made for categories.
+//  accent: one accent everywhere (gold), the rest dark and neutral, meanings in quieter tones (the
+//    Apple, Linear, Things way: the content is the colour).
+//  neon: every colour on the badge's own blue-to-pink line, with one warm amber for events and
+//    alerts, on a deep indigo ground.
+//  zaun: Piltover and Zaun (Arcane): brass, gold and copper against acid teal, chem green and shimmer
+//    pink, on a deep blue-black ground.
+//  muted: dusty earth tones (ochre, clay, sage, slate blue, plum) on a warm charcoal ground.
+// Kept per phone (ravi.try.pal.v1); automated checks see today's colours.
 window.RAVI_PALETTES = {
   today: { name: "Today" },
-  apple: { name: "Apple", hues: { gold: "255,214,10", tangerine: "255,159,10", rust: "255,69,58", garnet: "255,55,95", violet: "94,92,230", orchid: "191,90,242", lilac: "10,132,255", jade: "48,209,88", mint: "99,230,226", lime: "172,142,104", sky: "100,210,255" } },
-  tailwind: { name: "Tailwind", hues: { gold: "251,191,36", tangerine: "251,146,60", rust: "248,113,113", garnet: "251,113,133", violet: "129,140,248", lilac: "167,139,250", orchid: "232,121,249", jade: "52,211,153", mint: "45,212,191", lime: "163,230,53", sky: "34,211,238" } },
-  safe: { name: "Safe", hues: { gold: "240,228,66", tangerine: "230,159,0", rust: "213,94,0", garnet: "238,102,119", violet: "0,114,178", lilac: "255,170,187", orchid: "204,121,167", jade: "0,158,115", mint: "68,187,153", lime: "187,204,51", sky: "102,204,238" } }
+  runes: { name: "Runes",
+    hues: { gold: "210,180,0", garnet: "223,22,32", violet: "106,64,148", tangerine: "232,118,0", jade: "72,140,56", mint: "120,190,90", rust: "190,95,20", sky: "15,111,166", lime: "160,180,40", orchid: "150,95,200", lilac: "60,150,210" },
+    pages: { calendar: "210,180,0", settings: "210,180,0", counter: "223,22,32", cut: "223,22,32", trade: "106,64,148", board: "106,64,148", decks: "232,118,0", collection: "232,118,0", rules: "15,111,166", news: "15,111,166", tier: "15,111,166", start: "72,140,56", feedback: "72,140,56" } },
+  kinds: { name: "Kinds",
+    hues: { gold: "237,201,72", garnet: "225,87,89", violet: "78,121,167", tangerine: "242,142,43", jade: "89,161,79", mint: "118,183,178", rust: "156,117,95", sky: "118,183,178", lime: "237,201,72", orchid: "176,122,161", lilac: "255,157,167" },
+    pages: { calendar: "255,140,90", counter: "255,140,90", cut: "255,140,90", tier: "255,140,90", decks: "70,190,210", collection: "70,190,210", trade: "70,190,210", board: "70,190,210", rules: "160,165,180", news: "160,165,180", start: "160,165,180", feedback: "160,165,180", settings: "160,165,180" } },
+  accent: { name: "Accent",
+    hues: { gold: "214,182,110", garnet: "196,110,110", violet: "128,128,196", tangerine: "214,150,100", jade: "112,170,144", mint: "130,186,166", rust: "186,128,96", sky: "120,164,196", lime: "170,180,110", orchid: "170,124,184", lilac: "150,140,200" },
+    pages: { calendar: "255,190,70", counter: "255,190,70", trade: "255,190,70", board: "255,190,70", feedback: "255,190,70", rules: "255,190,70", decks: "255,190,70", collection: "255,190,70", start: "255,190,70", cut: "255,190,70", tier: "255,190,70", news: "255,190,70", settings: "255,190,70" },
+    vars: { "--ground": "#0B0B0C" } },
+  neon: { name: "Neon",
+    hues: { gold: "255,180,60", garnet: "238,70,140", violet: "120,110,250", tangerine: "255,150,80", jade: "80,150,245", mint: "120,200,255", rust: "220,90,190", sky: "100,140,250", lime: "255,200,100", orchid: "190,95,235", lilac: "160,110,245" },
+    pages: { calendar: "255,180,60", counter: "238,70,140", trade: "150,105,245", board: "220,90,190", feedback: "130,120,200", rules: "100,140,250", decks: "120,110,250", collection: "190,95,235", start: "93,165,238", cut: "238,95,156", tier: "170,100,240", news: "110,125,250", settings: "170,160,230" },
+    vars: { "--ground": "#0A0914", "--plate-glass": "rgba(40,36,62,.62)", "--plate-solid": "rgba(40,36,62,.94)", "--frost": "rgba(34,30,52,.22)", "--frost-solid": "rgba(34,30,52,.94)" } },
+  zaun: { name: "Zaun",
+    hues: { gold: "232,184,92", garnet: "214,48,140", violet: "90,170,255", tangerine: "210,120,60", jade: "30,210,170", mint: "150,225,80", rust: "170,90,50", sky: "90,200,255", lime: "150,225,80", orchid: "170,80,220", lilac: "140,120,200" },
+    vars: { "--ground": "#070B11", "--plate-glass": "rgba(30,40,50,.62)", "--plate-solid": "rgba(30,40,50,.94)", "--frost": "rgba(26,34,44,.22)", "--frost-solid": "rgba(26,34,44,.94)" } },
+  muted: { name: "Muted",
+    hues: { gold: "214,170,90", garnet: "196,92,82", violet: "120,118,190", tangerine: "222,140,92", jade: "120,170,130", mint: "130,190,170", rust: "184,104,72", sky: "120,160,200", lime: "160,170,90", orchid: "170,110,160", lilac: "160,145,200" },
+    vars: { "--ground": "#141211", "--plate-glass": "rgba(48,44,40,.62)", "--plate-solid": "rgba(48,44,40,.94)", "--frost": "rgba(44,40,36,.22)", "--frost-solid": "rgba(44,40,36,.94)" } }
 };
 window.RAVI_PAL_KEY = "ravi.try.pal.v1";
 window.RAVI_PAL = "today";
+window.RAVI_PAGE_RGB = {};
 (function(){
-  var k = null, bot = false, pal, n, h = window.RAVI_HUES;
+  var k = null, bot = false, pal, n, h = window.RAVI_HUES, de;
   try { bot = !!navigator.webdriver; k = localStorage.getItem(window.RAVI_PAL_KEY); } catch (e) {}
   if (!bot && k && window.RAVI_PALETTES[k]) { window.RAVI_PAL = k; }
-  pal = window.RAVI_PALETTES[window.RAVI_PAL].hues || {};
-  for (n in pal) { if (pal.hasOwnProperty(n)) { h[n] = pal[n]; } }
+  pal = window.RAVI_PALETTES[window.RAVI_PAL];
+  for (n in (pal.hues || {})) { if (pal.hues.hasOwnProperty(n)) { h[n] = pal.hues[n]; } }
+  window.RAVI_PAGE_RGB = pal.pages || {};
   if (typeof document === "undefined" || !document.documentElement) { return; }
-  for (n in h) { if (h.hasOwnProperty(n)) { document.documentElement.style.setProperty("--h-" + n, h[n]); } }
+  de = document.documentElement;
+  for (n in h) { if (h.hasOwnProperty(n)) { de.style.setProperty("--h-" + n, h[n]); } }
+  for (n in (pal.vars || {})) { if (pal.vars.hasOwnProperty(n)) { de.style.setProperty(n, pal.vars[n]); } }
+  var tc = pal.vars && pal.vars["--ground"], m = tc && document.querySelector('meta[name="theme-color"]');
+  if (m) { m.setAttribute("content", tc); }
 })();
 window.RAVI_HUE = function(name){ return window.RAVI_HUES[name] || window.RAVI_HUES.white; };
 
@@ -207,7 +241,7 @@ window.RAVI_PAGES = [
   {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, hue:"lilac"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, hue:"ice", glass:true}
 ];
-(function(){ var l = window.RAVI_PAGES, i; for (i = 0; i < l.length; i++) { if (l[i].hue) { l[i].rgb = window.RAVI_HUE(l[i].hue); } } })();   // each page's colour, from the colour table
+(function(){ var l = window.RAVI_PAGES, i; for (i = 0; i < l.length; i++) { if (l[i].hue) { l[i].rgb = window.RAVI_PAGE_RGB[l[i].id] || window.RAVI_HUE(l[i].hue); } } })();   // each page's colour, from the colour table
 
 // PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08: "Motion for switching between pages").
 // The browser's own cross-document view transitions (app.css @view-transition; Safari 18.2+, no
@@ -448,17 +482,18 @@ window.RAVI_HUB_SAVE = function(ids){
   try { bot = !!navigator.webdriver; } catch (e) {}
   doc.classList.toggle("cnew", !bot && pg.id !== "counter");
   if (bot || pg.id === "counter") { return; }
+  // seven palettes do not fit one track at 402: the pill steps through them (back, the name, next)
   function sw(){
     if (document.querySelector(".ctry") || !document.querySelector(".bar")) { return; }
-    var d = document.createElement("div"), h = "", k, P = window.RAVI_PALETTES;
-    for (k in P) { if (P.hasOwnProperty(k)) { h += '<button type="button" data-p="' + k + '" aria-pressed="' + (k === window.RAVI_PAL) + '">' + P[k].name + '</button>'; } }
+    var d = document.createElement("div"), keys = Object.keys(window.RAVI_PALETTES), at = keys.indexOf(window.RAVI_PAL);
+    function btn(dir, path, label){ return '<button type="button" class="circ btn glass" data-step="' + dir + '" aria-label="' + label + '" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg></button>'; }
     d.className = "ctry frost"; d.setAttribute("role", "group"); d.setAttribute("aria-label", "Palette");
-    d.innerHTML = '<div class="seg" data-k="pick">' + h + '</div>';
+    d.innerHTML = btn(-1, "M15 6l-6 6 6 6", "Previous palette") + '<span class="ctn"><small>Palette ' + (at + 1) + ' of ' + keys.length + '</small>' + window.RAVI_PALETTES[window.RAVI_PAL].name + '</span>' + btn(1, "M9 6l6 6-6 6", "Next palette");
     d.addEventListener("click", function(e){
-      var b = e.target.closest("button[data-p]"); if (!b || b.getAttribute("data-p") === window.RAVI_PAL) { return; }
-      try { localStorage.setItem(window.RAVI_PAL_KEY, b.getAttribute("data-p")); } catch (er) {}
-      Array.prototype.forEach.call(d.querySelectorAll("button[data-p]"), function(x){ x.setAttribute("aria-pressed", String(x === b)); });
-      setTimeout(function(){ location.reload(); }, 260);
+      var b = e.target.closest("button[data-step]"); if (!b) { return; }
+      var k = keys[(at + +b.getAttribute("data-step") + keys.length) % keys.length];
+      try { localStorage.setItem(window.RAVI_PAL_KEY, k); } catch (er) {}
+      location.reload();
     });
     document.body.appendChild(d);
   }
