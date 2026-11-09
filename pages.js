@@ -380,7 +380,8 @@ window.RAVI_HUB_SAVE = function(ids){
 // carries a light wash of the page colour, in place of four pages tinting all their glass; (3) colour
 // that means something stays in the content and wins (events, News kinds, Rules sections, players,
 // domains), and ranked content gets one hue stepping down (the Tier list's tiers); (4) the rest stays
-// neutral. Round 2 (Mako 09:45): no wash on the plates (chrome stays dark, the four coloured pages keep
+// neutral. Round 3 (Mako 10:02): (1) and Feedback's coloured lines are out; New is Today plus the Tier
+// list's tier colours. Round 2 (Mako 09:45): no wash on the plates (chrome stays dark, the four coloured pages keep
 // their glass); content coloured by what it is (Feedback's lines); the Tier list in the usual tier
 // colours. html.cnew carries it (app.css THE COLOUR TRIAL); the switch above the bar (Today | New) flips
 // it live on any page, kept per phone (ravi.try.colour.v1), New for a phone that never chose. Never on
