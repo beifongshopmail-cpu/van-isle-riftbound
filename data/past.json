@@ -395,17 +395,6 @@
    "store": "Skyhaven",
    "region": "victoria",
    "sid": 4294
-  },
-  {
-   "id": "rb117213852100443736",
-   "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
-   "type": "nexus",
-   "start": "2026-10-10T12:00:00-07:00",
-   "day": "2026-10-10",
-   "venue": "North Park Picture Framing and Collectables",
-   "store": "North Park Framing",
-   "region": "victoria",
-   "sid": 18437
   }
  ]
 }

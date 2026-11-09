@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-09T07:42:38.144Z",
- "generated_local": "2026-11-09T00:42:38-07:00",
+ "generated_at": "2026-11-09T22:53:50.697Z",
+ "generated_local": "2026-11-09T15:53:50-07:00",
  "window_start": "2026-11-09T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 53,
-   "added": 53
+   "returned": 55,
+   "added": 55
   },
   {
    "name": "Courtenay",
@@ -47,8 +47,8 @@
   }
  ],
  "totals": {
-  "fetched": 66,
-  "unique": 66,
+  "fetched": 68,
+  "unique": 68,
   "prev_unique": 66,
   "recent": [
    {
@@ -77,14 +77,18 @@
    },
    {
     "d": "2026-11-09",
-    "n": 66
+    "n": 68
    }
   ]
  },
  "unknown_templates": {
   "NEXUS_CUP": {
-   "count": 7,
+   "count": 8,
    "sample_name": "Legacy Nexus Cup"
+  },
+  "CHALLENGE_SERIES": {
+   "count": 1,
+   "sample_name": "Gauntlet Games Legacy Challenge Series"
   }
  },
  "old_feed_error": null,
@@ -141,10 +145,10 @@
    "id": "rb117454327448500237",
    "name": "Skyhaven Friday Learn to Play",
    "type": "learn",
-   "start": "2026-11-13T17:00:00-07:00",
+   "start": "2026-11-13T19:00:00-07:00",
    "end": null,
    "day": "2026-11-13",
-   "time": "5:00 PM",
+   "time": "7:00 PM",
    "venue": "Skyhaven Games",
    "city": "Victoria",
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
@@ -285,10 +289,10 @@
    "id": "rb117073785007006396",
    "name": "Radiance Skirmish #1",
    "type": "skirmish",
-   "start": "2026-11-15T17:00:00-07:00",
+   "start": "2026-11-15T18:00:00-07:00",
    "end": null,
    "day": "2026-11-15",
-   "time": "5:00 PM",
+   "time": "6:00 PM",
    "venue": "Skyhaven Games",
    "city": "Victoria",
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
@@ -786,30 +790,6 @@
    "cut": false
   },
   {
-   "id": "rb117089949356892554",
-   "name": "Radiance Summoner Skirmish II @ Colossal Cards & Collectables Courtenay",
-   "type": "skirmish",
-   "start": "2026-12-12T16:00:00-07:00",
-   "end": null,
-   "day": "2026-12-12",
-   "time": "4:00 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
-   "region": "island",
-   "cap": 16,
-   "reg": 3,
-   "cents": 1500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 902,
-   "store": "Colossal Courtenay",
-   "swiss": 4,
-   "cut": false
-  },
-  {
    "id": "rb117454321388311216",
    "name": "Skyhaven Sunday Nexus Night",
    "type": "nexus",
@@ -902,6 +882,30 @@
    "wins": null,
    "sid": 21894,
    "store": "AJ's",
+   "swiss": 4,
+   "cut": false
+  },
+  {
+   "id": "rb117089949356892554",
+   "name": "Radiance Summoner Skirmish II @ Colossal Cards & Collectables Courtenay",
+   "type": "skirmish",
+   "start": "2026-12-19T16:00:00-07:00",
+   "end": null,
+   "day": "2026-12-19",
+   "time": "4:00 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Courtenay",
+   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
+   "region": "island",
+   "cap": 32,
+   "reg": 3,
+   "cents": 1000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 902,
+   "store": "Colossal Courtenay",
    "swiss": 4,
    "cut": false
   },
@@ -1602,6 +1606,30 @@
    "cut": true
   },
   {
+   "id": "rb117588153864541188",
+   "name": "Gauntlet Games Legacy Nexus Cup",
+   "type": "other",
+   "start": "2027-02-27T11:00:00-07:00",
+   "end": null,
+   "day": "2027-02-27",
+   "time": "11:00 AM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 0,
+   "cents": 1500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
+   "swiss": 5,
+   "cut": true
+  },
+  {
    "id": "rb117520594838845121",
    "name": "Skyhaven Legacy Nexus Cup",
    "type": "other",
@@ -1670,6 +1698,30 @@
    "wins": null,
    "sid": 18437,
    "store": "North Park Framing",
+   "swiss": 5,
+   "cut": true
+  },
+  {
+   "id": "rb117588162386359218",
+   "name": "Gauntlet Games Legacy Challenge Series",
+   "type": "other",
+   "start": "2027-03-27T11:00:00-07:00",
+   "end": null,
+   "day": "2027-03-27",
+   "time": "11:00 AM",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "region": "victoria",
+   "cap": 32,
+   "reg": 0,
+   "cents": 2000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 2069,
+   "store": "Gauntlet",
    "swiss": 5,
    "cut": true
   }
