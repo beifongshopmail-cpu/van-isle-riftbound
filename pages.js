@@ -164,45 +164,45 @@ window.RAVI_HUES = {
   slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245"
 };
 // THE PALETTE SWITCH (the colour trial). Mako 2026-11-09 14:47: every colour so far is a placeholder,
-// chosen with no reason behind it; explore completely different combinations. Six whole-app directions,
-// each built from one idea (he chose to see all six, 14:51). A palette may set the meaning hues (hues),
-// its own page colours by page id (pages; a page not named takes its hue), and app tokens (vars: the
-// ground and the plates). The three greys and White stay unless a palette names them.
+// chosen with no reason behind it; explore completely different combinations. Round 2 (16:29): Today,
+// Runes and Neon are his favourites (Neon's colours to improve); the ground stays black in every
+// palette; Kinds was a good idea, too dull, and pages in a family should still differ (shade). A palette
+// may set the meaning hues (hues) and its own page colours by page id (pages; a page not named takes
+// its hue). Values from OKLCH (lightness, chroma, hue), so a family's shades step evenly.
 //  runes: Riftbound's six rune colours (Riot's, as Decks draws them); each page takes the rune whose
 //    theme fits it (Order: Events, Settings; Fury: Game, Top cut; Chaos: Trade, Trade board; Body:
 //    Decks, Collection; Mind: Rules, News, Tier list; Calm: New here, Feedback).
-//  kinds: colour says what kind of page it is: one warm for playing, one cool for cards, a quiet
-//    neutral for reading; meanings (event kinds, sections) in Tableau 10, a set made for categories.
-//  accent: one accent everywhere (gold), the rest dark and neutral, meanings in quieter tones (the
-//    Apple, Linear, Things way: the content is the colour).
-//  neon: every colour on the badge's own blue-to-pink line, with one warm amber for events and
-//    alerts, on a deep indigo ground.
-//  zaun: Piltover and Zaun (Arcane): brass, gold and copper against acid teal, chem green and shimmer
-//    pink, on a deep blue-black ground.
-//  muted: dusty earth tones (ochre, clay, sage, slate blue, plum) on a warm charcoal ground.
+//  neon: the badge's line from its blue to its pink through violet and magenta, vivid, lightness
+//    stepping so hub neighbours differ; amber for events and alerts.
+//  families: Kinds round 2: warm for playing, blue for cards, green for reading, each page its own
+//    shade; meanings keep today's colours.
+//  lit: the rune colours lifted to glow on black; pages sharing a rune differ in shade.
+//  synth: synthwave's sunset: hot pink, magenta, purple, electric cyan, orange, sun yellow.
+//  jewels: the gem tones cards are printed in: ruby, sapphire, emerald, amethyst, topaz, citrine.
+//  aurora: the northern lights: green, teal, blue, violet, magenta.
 // Kept per phone (ravi.try.pal.v1); automated checks see today's colours.
 window.RAVI_PALETTES = {
   today: { name: "Today" },
   runes: { name: "Runes",
     hues: { gold: "210,180,0", garnet: "223,22,32", violet: "106,64,148", tangerine: "232,118,0", jade: "72,140,56", mint: "120,190,90", rust: "190,95,20", sky: "15,111,166", lime: "160,180,40", orchid: "150,95,200", lilac: "60,150,210" },
     pages: { calendar: "210,180,0", settings: "210,180,0", counter: "223,22,32", cut: "223,22,32", trade: "106,64,148", board: "106,64,148", decks: "232,118,0", collection: "232,118,0", rules: "15,111,166", news: "15,111,166", tier: "15,111,166", start: "72,140,56", feedback: "72,140,56" } },
-  kinds: { name: "Kinds",
-    hues: { gold: "237,201,72", garnet: "225,87,89", violet: "78,121,167", tangerine: "242,142,43", jade: "89,161,79", mint: "118,183,178", rust: "156,117,95", sky: "118,183,178", lime: "237,201,72", orchid: "176,122,161", lilac: "255,157,167" },
-    pages: { calendar: "255,140,90", counter: "255,140,90", cut: "255,140,90", tier: "255,140,90", decks: "70,190,210", collection: "70,190,210", trade: "70,190,210", board: "70,190,210", rules: "160,165,180", news: "160,165,180", start: "160,165,180", feedback: "160,165,180", settings: "160,165,180" } },
-  accent: { name: "Accent",
-    hues: { gold: "214,182,110", garnet: "196,110,110", violet: "128,128,196", tangerine: "214,150,100", jade: "112,170,144", mint: "130,186,166", rust: "186,128,96", sky: "120,164,196", lime: "170,180,110", orchid: "170,124,184", lilac: "150,140,200" },
-    pages: { calendar: "255,190,70", counter: "255,190,70", trade: "255,190,70", board: "255,190,70", feedback: "255,190,70", rules: "255,190,70", decks: "255,190,70", collection: "255,190,70", start: "255,190,70", cut: "255,190,70", tier: "255,190,70", news: "255,190,70", settings: "255,190,70" },
-    vars: { "--ground": "#0B0B0C" } },
   neon: { name: "Neon",
-    hues: { gold: "255,180,60", garnet: "238,70,140", violet: "120,110,250", tangerine: "255,150,80", jade: "80,150,245", mint: "120,200,255", rust: "220,90,190", sky: "100,140,250", lime: "255,200,100", orchid: "190,95,235", lilac: "160,110,245" },
-    pages: { calendar: "255,180,60", counter: "238,70,140", trade: "150,105,245", board: "220,90,190", feedback: "130,120,200", rules: "100,140,250", decks: "120,110,250", collection: "190,95,235", start: "93,165,238", cut: "238,95,156", tier: "170,100,240", news: "110,125,250", settings: "170,160,230" },
-    vars: { "--ground": "#0A0914", "--plate-glass": "rgba(40,36,62,.62)", "--plate-solid": "rgba(40,36,62,.94)", "--frost": "rgba(34,30,52,.22)", "--frost-solid": "rgba(34,30,52,.94)" } },
-  zaun: { name: "Zaun",
-    hues: { gold: "232,184,92", garnet: "214,48,140", violet: "90,170,255", tangerine: "210,120,60", jade: "30,210,170", mint: "150,225,80", rust: "170,90,50", sky: "90,200,255", lime: "150,225,80", orchid: "170,80,220", lilac: "140,120,200" },
-    vars: { "--ground": "#070B11", "--plate-glass": "rgba(30,40,50,.62)", "--plate-solid": "rgba(30,40,50,.94)", "--frost": "rgba(26,34,44,.22)", "--frost-solid": "rgba(26,34,44,.94)" } },
-  muted: { name: "Muted",
-    hues: { gold: "214,170,90", garnet: "196,92,82", violet: "120,118,190", tangerine: "222,140,92", jade: "120,170,130", mint: "130,190,170", rust: "184,104,72", sky: "120,160,200", lime: "160,170,90", orchid: "170,110,160", lilac: "160,145,200" },
-    vars: { "--ground": "#141211", "--plate-glass": "rgba(48,44,40,.62)", "--plate-solid": "rgba(48,44,40,.94)", "--frost": "rgba(44,40,36,.22)", "--frost-solid": "rgba(44,40,36,.94)" } }
+    hues: { gold: "255,185,58", garnet: "249,37,112", violet: "148,95,249", tangerine: "255,140,63", jade: "65,217,248", mint: "121,229,235", rust: "207,80,235", sky: "74,179,255", lime: "244,214,96", orchid: "203,102,255", lilac: "168,175,255" },
+    pages: { calendar: "255,185,58", counter: "255,48,118", trade: "148,95,249", board: "243,99,218", decks: "74,179,255", collection: "207,80,235", rules: "65,217,248", start: "114,147,255", cut: "255,108,188", tier: "203,102,255", news: "168,175,255", feedback: "163,156,212", settings: "210,213,242" } },
+  families: { name: "Families",
+    pages: { calendar: "255,201,33", counter: "238,53,51", cut: "255,143,11", tier: "255,103,40", decks: "42,213,229", collection: "49,156,252", trade: "121,101,240", board: "37,186,242", rules: "36,194,125", news: "174,230,89", start: "90,230,198", feedback: "106,163,108", settings: "200,232,205" } },
+  lit: { name: "Runes lit",
+    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "131,228,153", rust: "227,105,39", sky: "63,175,243", lime: "206,221,70", orchid: "197,122,230", lilac: "177,183,253" },
+    pages: { calendar: "251,213,48", settings: "216,189,81", counter: "249,53,52", cut: "255,117,80", trade: "147,94,223", board: "191,124,236", decks: "255,145,39", collection: "233,113,37", rules: "33,147,224", news: "82,181,244", tier: "129,207,252", start: "113,202,93", feedback: "96,165,99" } },
+  synth: { name: "Synthwave",
+    hues: { gold: "249,224,63", garnet: "251,43,154", violet: "142,61,232", tangerine: "255,127,22", jade: "27,229,238", mint: "55,216,201", rust: "213,40,206", sky: "12,193,253", lime: "213,228,63", orchid: "190,81,233", lilac: "152,157,255" },
+    pages: { calendar: "249,224,63", counter: "251,43,154", trade: "142,61,232", board: "255,127,22", feedback: "174,150,218", rules: "27,229,238", decks: "55,216,201", collection: "213,40,206", start: "12,193,253", cut: "255,82,99", tier: "190,81,233", news: "152,157,255", settings: "220,209,244" } },
+  jewels: { name: "Jewels",
+    hues: { gold: "247,205,58", garnet: "211,30,67", violet: "134,84,204", tangerine: "245,153,38", jade: "0,168,101", mint: "96,219,212", rust: "215,89,40", sky: "61,126,222", lime: "177,221,84", orchid: "219,77,167", lilac: "164,151,234" },
+    pages: { calendar: "247,205,58", counter: "211,30,67", trade: "134,84,204", board: "245,153,38", feedback: "125,147,183", rules: "0,168,101", decks: "96,219,212", collection: "215,89,40", start: "61,126,222", cut: "177,221,84", tier: "219,77,167", news: "38,183,211", settings: "190,212,235" } },
+  aurora: { name: "Aurora",
+    hues: { gold: "208,238,95", garnet: "232,73,176", violet: "136,107,238", tangerine: "245,151,64", jade: "65,220,165", mint: "124,231,130", rust: "217,97,210", sky: "68,214,214", lime: "162,241,113", orchid: "169,100,235", lilac: "96,170,243" },
+    pages: { calendar: "162,241,113", counter: "232,73,176", trade: "136,107,238", board: "227,119,251", feedback: "112,167,194", rules: "65,220,165", decks: "124,231,130", collection: "217,97,210", start: "68,214,214", cut: "208,238,95", tier: "169,100,235", news: "96,170,243", settings: "178,227,223" } }
 };
 window.RAVI_PAL_KEY = "ravi.try.pal.v1";
 window.RAVI_PAL = "today";
@@ -217,9 +217,6 @@ window.RAVI_PAGE_RGB = {};
   if (typeof document === "undefined" || !document.documentElement) { return; }
   de = document.documentElement;
   for (n in h) { if (h.hasOwnProperty(n)) { de.style.setProperty("--h-" + n, h[n]); } }
-  for (n in (pal.vars || {})) { if (pal.vars.hasOwnProperty(n)) { de.style.setProperty(n, pal.vars[n]); } }
-  var tc = pal.vars && pal.vars["--ground"], m = tc && document.querySelector('meta[name="theme-color"]');
-  if (m) { m.setAttribute("content", tc); }
 })();
 window.RAVI_HUE = function(name){ return window.RAVI_HUES[name] || window.RAVI_HUES.white; };
 

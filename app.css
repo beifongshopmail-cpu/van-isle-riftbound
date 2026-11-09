@@ -847,7 +847,7 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 :where(html.cnew) .trow[data-tier="B"]{--tc:255,223,127}
 :where(html.cnew) .trow[data-tier="C"]{--tc:255,255,127}
 :where(html.cnew) .trow[data-tier="R"]{--tc:127,191,255}
-:where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),.10)}
+:where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),var(--cg))}   /* the row is coloured glass in its tier's colour (Mako 2026-11-09 16:29) */
 :where(html.cnew) .trow[data-tier] .tlet{--tint:rgb(var(--tc));background:rgb(var(--tc));color:var(--ink)}   /* --tint: inside the row it is drawn flat from it */
 :where(html.cnew) .trow[data-tier] .tlet small{color:rgba(8,9,10,.72)}
 /* the palette switch: above the bar, on every page with one but the hub and the Game page */
