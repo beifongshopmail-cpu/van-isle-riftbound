@@ -482,12 +482,17 @@ window.RAVI_HUB_SAVE = function(ids){
   try { bot = !!navigator.webdriver; } catch (e) {}
   doc.classList.toggle("cnew", !bot && pg.id !== "counter");
   if (bot || pg.id === "counter") { return; }
+  function sw(){ window.RAVI_PAL_PILL(false); }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", sw); } else { sw(); }
+})();
+
+// THE PALETTE PILL (the colour trial): back, Palette n of 7, next; above the bar, or at the hub's foot
   // seven palettes do not fit one track at 402: the pill steps through them (back, the name, next)
-  function sw(){
-    if (document.querySelector(".ctry") || !document.querySelector(".bar")) { return; }
+window.RAVI_PAL_PILL = function(hub){
+    if (document.querySelector(".ctry") || (!hub && !document.querySelector(".bar"))) { return; }
     var d = document.createElement("div"), keys = Object.keys(window.RAVI_PALETTES), at = keys.indexOf(window.RAVI_PAL);
     function btn(dir, path, label){ return '<button type="button" class="circ btn glass" data-step="' + dir + '" aria-label="' + label + '" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg></button>'; }
-    d.className = "ctry frost"; d.setAttribute("role", "group"); d.setAttribute("aria-label", "Palette");
+    d.className = "ctry frost" + (hub ? " hub" : ""); d.setAttribute("role", "group"); d.setAttribute("aria-label", "Palette");
     d.innerHTML = btn(-1, "M15 6l-6 6 6 6", "Previous palette") + '<span class="ctn"><small>Palette ' + (at + 1) + ' of ' + keys.length + '</small>' + window.RAVI_PALETTES[window.RAVI_PAL].name + '</span>' + btn(1, "M9 6l6 6-6 6", "Next palette");
     d.addEventListener("click", function(e){
       var b = e.target.closest("button[data-step]"); if (!b) { return; }
@@ -496,8 +501,14 @@ window.RAVI_HUB_SAVE = function(ids){
       location.reload();
     });
     document.body.appendChild(d);
-  }
-  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", sw); } else { sw(); }
+  };
+(function(){
+  if (typeof document === "undefined" || typeof location === "undefined") { return; }
+  if (!/^\/(index\.html)?$/.test(location.pathname)) { return; }
+  var bot = false; try { bot = !!navigator.webdriver; } catch (e) {}
+  if (bot) { return; }
+  function go(){ window.RAVI_PAL_PILL(true); }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", go); } else { go(); }
 })();
 
 // THE GO TO TILES. One function, shared by the calendar, trade and
