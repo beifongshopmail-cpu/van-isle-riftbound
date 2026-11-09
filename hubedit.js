@@ -15,16 +15,17 @@
     var ORDER = [], PICK = null, D = null, noClick = false;
     function pageOf(id){ for (var i = 0; i < PAGES().length; i++) { if (PAGES()[i].id === id && PAGES()[i].path) { return PAGES()[i]; } } return null; }
     function tint(rgb){ var c = rgb.split(","), o = []; for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .62)); } return o.join(","); }
-    function blk(p, sm){ return '<button type="button" class="hlb glass cg' + (sm ? ' hlsm' : '') + '" data-id="' + p.id + '" style="--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></button>'; }
+    // the hub's own block (app.css THE HUB BLOCK: .blk, .bi, .bn), the same on the hub copy and the shelf (plan 2 M8.7, Mako 2026-11-08)
+    function blk(p){ return '<button type="button" class="blk hlb glass cg" data-id="' + p.id + '" style="--cl:' + p.rgb + ';--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></button>'; }
     function drawHub(){
       ORDER = window.RAVI_HUB_PICKS();
       var h = "", e;
       ORDER.forEach(function(id){ var p = pageOf(id); if (p) { h += blk(p); } });
-      for (e = ORDER.length; e < window.RAVI_HUB_MAX; e++) { h += '<div class="hlb hle" aria-label="An empty place"></div>'; }
-      h += '<div class="hlb glass hla" aria-label="All pages, always last">' + window.RAVI_ICON("allpages") + '<span>All pages</span></div>';
+      for (e = ORDER.length; e < window.RAVI_HUB_MAX; e++) { h += '<div class="blk hlb hle" aria-label="An empty place"></div>'; }
+      h += '<div class="blk allp hlb glass hla" aria-label="All pages, always last"><span class="bi">' + window.RAVI_ICON("allpages") + '</span><span class="bn">All pages</span></div>';
       hl.innerHTML = h;
       var sh = "";
-      PAGES().forEach(function(p){ if (p.path && ORDER.indexOf(p.id) < 0) { sh += blk(p, true); } });
+      PAGES().forEach(function(p){ if (p.path && ORDER.indexOf(p.id) < 0) { sh += blk(p); } });
       hs.innerHTML = sh;
       PICK = null; marks();
     }

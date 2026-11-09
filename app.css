@@ -121,15 +121,17 @@ html.paged .glass,html.paged .doors{--muted:#DCDEE2}
    inside a glass surface, a menu or a plate is flat: a light fill (--flat), no rim light, no base glow,
    no frost of its own; the same shape, size and press shade. A coloured surface inside one keeps its
    colour, flat. A chosen part (.on) keeps its own fill (a filter chip's bone, Select's press shade), flat.
-   Rows in a group (.doors > .door) are already flat inside it. (Consistency pass, Mako 2026-11-05.) */
+   Rows in a group (.doors > .door) are already flat inside it. (Consistency pass, Mako 2026-11-05.)
+   One exception: a hub block (.blk) is the hub's own glass wherever it is drawn, Hub layout's menu
+   included (plan 2 M8.7, Mako 2026-11-08: the copy must be the real thing). */
 :root{--flat:rgba(255,255,255,.08)}
-:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors):not(.cg):not(.doors > .door):not(.on){background:linear-gradient(var(--tint),var(--tint)),var(--flat);box-shadow:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors):not(.cg):not(.doors > .door):not(.on):where(:not(.blk)){background:linear-gradient(var(--tint),var(--tint)),var(--flat);box-shadow:none}
 :is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors).on:not(.cg):not(.doors > .door){box-shadow:none}
-:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg):not(.doors > .door)::before{content:none}
-:is(.panel,.plate,.card,.glass,.doors,.cg) .cg{box-shadow:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg):not(.doors > .door):where(:not(.blk))::before{content:none}
+:is(.panel,.plate,.card,.glass,.doors,.cg) .cg:where(:not(.blk)){box-shadow:none}
 :is(.panel,.plate,.card,.glass,.doors,.cg) .btn.glass:not(.doors > .door):not(.on):active{background:linear-gradient(var(--tint),var(--tint)),var(--glass-press)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  :root :is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg){-webkit-backdrop-filter:none;backdrop-filter:none}
+  :root :is(.panel,.plate,.card,.glass,.doors,.cg) :is(.glass,.doors,.cg):where(:not(.blk)){-webkit-backdrop-filter:none;backdrop-filter:none}
 }
 .glass::before,.doors::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
@@ -667,7 +669,11 @@ html.gate body > :not(#ravigate){display:none!important}
 .acpic:active{transform:scale(.96)}
 /* BACK (plan 2 M8.7 A1): a page reached by a link inside another page carries a round glass Back in
    the wordmark row's top left, level with your picture, 18 in; pages.js adds it. */
-.rvback{position:absolute;top:calc(env(safe-area-inset-top,0px) + 25px);left:18px;z-index:5}
+.rvback{position:absolute;top:calc(env(safe-area-inset-top,0px) + 25px);left:18px;z-index:5;--tint:transparent}   /* plain glass, never the page's colour (Mako 2026-11-08) */
+/* ONE BACK AT A TIME (Mako 2026-11-08: two Backs on a deck were easy to mix up): while the page shows a
+   Back of its own (data-ownback, e.g. Decks' Back to your decks), this one stands aside; the trail it
+   walks is kept, so it is there again once the page's own Back is gone */
+html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .rvback svg{width:18px;height:18px}
 .acpic.acart{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
 .acpic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -747,11 +753,43 @@ html.gate body > :not(#ravigate){display:none!important}
 .ridt{flex:0 0 136px;min-width:0} /* a 5-letter tag at 16 with room to spare: its input stays wider than 88 */
 .rid .nf input{min-width:0;width:0} /* grows to fill its field (flex:1); an input never claims its default width here */
 
+/* THE HUB BLOCK (moved from index.html in plan 2 M8.7, Mako 2026-11-08: Hub layout's blocks "aren't like
+   the actual ones ... Can we not just copy-paste the real ones"): one copy, drawn by the hub (nav#grid)
+   and by Hub layout (hubedit.js), so the two can never drift. .blk is the block, .bi its icon, .bn its
+   name; --cl the page colour, --ci its tint; .blk.allp is All pages, plain glass. */
+.blk{width:calc((100% - 24px) / 3);aspect-ratio:1/1;border-radius:20px;padding:11px;
+  display:flex;flex-direction:column;justify-content:space-between;color:var(--bone);
+  text-decoration:none;transition:transform .16s ease,filter .16s ease;
+  /* coloured glass (app.css .cg): the block's colour at --cg in the glass, frosted, see-through */
+  background:linear-gradient(rgba(var(--cl),var(--cg)),rgba(var(--cl),var(--cg))),var(--glass);
+  /* the drop shadow is the calendar card's; it lifts the block off the plate */
+  box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.45);
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.blk:active{transform:scale(.97);filter:brightness(1.2);transition-duration:.08s}
+/* THE BLOCK'S FACE: the icon centred in the space above the name, tinted
+   toward the block's own colour and a little see-through, so icon and
+   name sit in the glass; the name centred along the bottom. The icon is
+   drawn solid and faded as one piece (opacity on the svg, not a
+   see-through colour), so the colour never stacks where two lines meet. */
+.blk .bi{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0;color:rgb(var(--ci,237,234,227))}
+.blk .bi svg{width:min(60px, calc(33.33vw - 69.6px));height:min(60px, calc(33.33vw - 69.6px));stroke-width:1.5;--sw:1.5;opacity:.82} /* 60, or less where a narrow phone makes the block too small to hold it */
+.blk .bi svg:has(.icb) .ico{display:none}
+.blk .bi svg .icb{display:inline}
+.blk .bn{margin:0 -7px;font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* M13: "Collection" is the longest name, 77.7 wide in a 76 block at 375; a phone narrower than 390
+   draws the names a touch tighter so it fits whole (402, Mako's phone, is unchanged) */
+@media (max-width:389px){.blk .bn{letter-spacing:-.02em}}
+.blk.allp{border:0;font:inherit;cursor:pointer;background:var(--frost-solid)}
+/* frosted like the coloured blocks (app.css .cg), so every block is one glass (Mako 2026-10-31) */
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .blk.allp{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
+}
+
 /* HUB LAYOUT (plan 2 M6, Mako 2026-11-03; shared by App settings and the first-time setup from
    block 6, hubedit.js): a copy of the hub's grid, All pages fixed last, empty
-   places dashed; under it the pages not on the hub, three across.
-   The copy's blocks are the hub's own (index.html .blk: size, corner, padding, arc, icon and name;
-   Mako 2026-11-03: they must look the same). The menu's body spans the panel's width, which is the
+   places dashed; under it the pages not on the hub, three across, the same blocks.
+   The copy's blocks ARE the hub's (app.css THE HUB BLOCK; Mako 2026-11-03: they must look the same;
+   2026-11-08: copy the real ones), glass and all, and the shelf's are the same at the same size. The menu's body spans the panel's width, which is the
    hub plate's width on every phone, so the copy stands 7 in (8 less the panel's 1px rim) as the hub's grid does
    and every block comes out the hub's size. Behind it, the hub's own rune texture, no plate (plan 2 M8.7 G1;
    Mako 2026-11-08: it still drew the plate the hub lost in plan 2 M8).
@@ -759,28 +797,15 @@ html.gate body > :not(#ravigate){display:none!important}
    tapped one then another. */
 .hlg{display:flex;flex-wrap:wrap;justify-content:center;row-gap:18px;column-gap:12px;margin:0 -16px;padding:34px 7px 22px;
   border-radius:22px;background:var(--ground) url(img/hub-runes.webp) center top/cover no-repeat}
-.hlg > .hlb{width:calc((100% - 24px) / 3)}
 .hlg > .hlb:nth-child(2),.hlg > .hlb:nth-child(5){top:-14px}
 .hlg > .hlb:nth-child(3n+1):nth-last-child(2),.hlg > .hlb:nth-child(3n+1):nth-last-child(2) + .hlb{margin:0 5px}
-.hls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;border-radius:22px;background:var(--recess);min-height:64px}
-.hlb{position:relative;box-sizing:border-box;aspect-ratio:1/1;border:0;border-radius:20px;padding:11px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-  box-shadow:inset 0 -10px 18px -14px rgba(255,255,255,.16),0 8px 24px rgba(0,0,0,.45);
-  color:rgb(var(--ci,237,234,227));font:inherit;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
-.hlb svg{flex:0 0 auto;margin:auto 0;width:min(60px, calc(33.33vw - 69.6px));height:min(60px, calc(33.33vw - 69.6px));stroke-width:1.5;--sw:1.5;opacity:.82} /* the hub's 60, or less on a narrow phone, as index.html .blk .bi svg */
-.hlb svg:has(.icb) .ico{display:none}
-.hlb svg .icb{display:inline}
-.hlb span{max-width:100%;font-family:var(--disp);font-weight:700;font-size:15px;text-align:center;color:rgba(var(--ci,237,234,227),.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media (max-width:389px){.hlb span{letter-spacing:-.02em}}
-/* the shelf's blocks stay small: a page's hub icon at 24 over its name at 12 */
-.hlsm{border-radius:16px;padding:6px 4px;justify-content:center;gap:4px;box-shadow:var(--glass-base)}
-.hlsm svg{flex:1 1 auto;margin:0;min-height:0;width:24px;height:auto;max-height:24px} /* size-exempt: a page's hub icon in the shelf */
-.hlsm span{font-size:12px;line-height:1.2;letter-spacing:0}
+/* the shelf: the same blocks at the same size, rows of three from the left, in a sunken well (a drop place) */
+.hls{display:flex;flex-wrap:wrap;justify-content:flex-start;row-gap:12px;column-gap:12px;margin:0 -16px;padding:12px 7px;border-radius:22px;background:var(--recess);min-height:64px}
+/* the editor's part of a block: a button with no frame of its own, held for a drag (pointer events;
+   touch-action none, so a drag never scrolls the menu) */
+.hlb{position:relative;border:0;font:inherit;touch-action:none;-webkit-tap-highlight-color:transparent}
 .hle{border:1.5px dashed var(--faint);background:none;box-shadow:none}
-/* All pages: plain glass, frosted, no page colour (index.html .blk.allp), never the Settings tint */
-.hla{--tint:transparent;color:var(--bone);background:var(--frost-solid)} /* never the Settings tint, inside Hub layout's menu too */
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
-  .hla{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
-}
+.hla{--tint:transparent} /* never the Settings tint, inside Hub layout's menu too */
 .hlb.picked,.hlb.over{box-shadow:inset 0 0 0 2px var(--bone),inset 0 0 0 4px var(--ground)}
 .hls.over{box-shadow:inset 0 0 0 2px var(--bone)}
 /* the drag: a copy follows the finger, fixed and with no transition; the block's place dims */

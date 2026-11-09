@@ -9,12 +9,12 @@ Hub (index.html)
 - No plate (plan 2 M8, Mako's yes 2026-11-04, one layer of glass): .low holds the grid with no glass and no frost; the blocks float over the texture, each frosted (blur 20 saturate 160%, as .cg), All pages too. html and body never rubber-band (overscroll-behavior none). The dark frosted plate with a curved top (2026-10-31) is retired; NEXT -- refine the hub now its plate is gone.
 - The glow (Mako 2026-10-31): .sheen, first in the body, adds img/hub-runes-glow.png (each symbol lit in its domain colour, black elsewhere) with plus-lighter at .25 (Mako 2026-11-01; was .17) through a mask on .sheen::before in cq units of .sheen, so the black between the coins is never lit. Modes on html[data-glow]: rings (wide band, three centres, 30 s) on the first hub of a session; later hubs pick rings 40%, waves 40% (a wave with a fainter echo from seven centres, 84 s) or twinkle 20% (ten lights over five coins each, 5 to 9 symbols lit at once). A centre or coin changes only while its light is 0. Off for reduced motion. CSS from rb-tools design/hub-texture/glow.py. [T]
 
-The hub block (index.html)
-- .blk (rendered from RAVI_PAGES into nav#grid.grid): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 60 centred above the name .bn (Poppins 700 15). Link with data-k="do".
+The hub block (app.css THE HUB BLOCK since plan 2 M8.7: one copy, drawn by the hub and by Hub layout, Mako 2026-11-08)
+- .blk (rendered from RAVI_PAGES into nav#grid.grid, and by hubedit.js): three per row, square, corner 20, padding 11. Colour from --cl (page rgb) and --ci (tint). Icon .bi 60 centred above the name .bn (Poppins 700 15). Link with data-k="do".
     <a class="blk glass" href="calendar/" style="--cl:255,176,32;--ci:...;" data-k="do"><span class="bi">icon</span><span class="bn">Events</span></a>
 - .blk.allp: All pages, a button in plain glass (no page colour), the nine-dot icon; it opens the All pages tray (#pall, the Go to tiles for every page, App settings last), sitting where a bar's tray would.
 - The hub: eight blocks, so the hub icon (the 3-3-2 grid) stays true. Seven are the viewer's picks, in the viewer's order (App settings, Hub layout; RAVI_HUB_PICKS in pages.js; plan 2 M6, Mako 2026-11-03); All pages is always the eighth and last. Default picks: Events, Game, Trade, Rules, Decks, Collection, New here (App settings until 2026-10-27; it is always in All pages). A new page needs no hub slot: it is in All pages at once and can be picked. (Mako 2026-10-26) On a phone narrower than 390, block names track -.02em so Collection fits whole (Mako's yes 2026-10-25). The grid (.low, no plate) under the badge (.hubname, 88); hub footer .hubfoot (12 muted, Riot notice).
 
 Page-local classes (not in app.css; not Kit parts):
-- index.html (hub): .blk .blk.allp .bi .bn .hubfoot .low, the All pages tray #pall
+- index.html (hub): .hubfoot .low, the All pages tray #pall (.blk, .blk.allp, .bi, .bn are app.css)
 - index.html (hub), listed in M7 from the style-lint baseline (2026-11-04): .ilet .rbb .rbglint .rbt
