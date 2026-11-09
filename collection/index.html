@@ -215,7 +215,15 @@ input[type="file"]{display:none}
 <main id="cl">
   <h2 class="sr">Collection</h2>
   <p class="boot" id="boot"></p>
-  <script>document.getElementById("boot").innerHTML = RAVI_SKEL(["plate:field", "big", "head", "lede:3", "rows:3"], "Loading prices");</script>
+  <script>
+  /* the loading blocks, shaped from this phone's collection (plan 2 M8.7): with cards, the plate's three
+     rows, the value, its chart, the range, Movers and card tiles; empty, the start of a collection */
+  (function(){
+    var has = false;
+    try { var c = JSON.parse(localStorage.getItem("vir.coll.v1")); has = !!c && ((Array.isArray(c.ports) && c.ports.some(function(p){ return p && Array.isArray(p.items) && p.items.length; })) || (Array.isArray(c.loose) && c.loose.length > 0)); } catch (e) {}
+    document.getElementById("boot").innerHTML = RAVI_SKEL(has ? ["plate:field,field,field", "big", "lede:1", "block:172", "track", "rows:1", "tiles:6"] : ["plate:field", "big", "head", "lede:3", "rows:3"]);
+  })();
+  </script>
   <div id="app" hidden>
     <!-- THE PLATE (round 3, Mako 2026-10-25: as Decks', one sticky block): which portfolio, its search,
          and how its cards show -->

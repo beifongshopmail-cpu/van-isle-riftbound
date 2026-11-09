@@ -156,7 +156,14 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   </div>
 
   <div id="nboot" class="nboot"></div>
-  <script>document.getElementById("nboot").innerHTML = RAVI_SKEL(["rows:1", "head", "card:4:104:pic"]);</script>
+  <script>
+  /* the loading blocks in this phone's view, grid or list (Mako 2026-11-08 17:26; plan 2 M8.7) */
+  (function(){
+    var g = false;
+    try { g = localStorage.getItem("vir.news.view.v1") === "grid"; } catch (e) {}
+    document.getElementById("nboot").innerHTML = RAVI_SKEL(["rows:1", "head", g ? "ntiles:6" : "card:4:104:pic"]);
+  })();
+  </script>
   <div id="home">
     <section id="snow" hidden>
       <div class="shead"><h2>Happening now</h2><span class="sp"></span><span class="cnt" id="hcnt"></span></div>

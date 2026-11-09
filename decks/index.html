@@ -558,7 +558,15 @@ body{-webkit-font-smoothing:antialiased;
   </div>
 </div>
 <div class="boot" id="boot"></div>
-<script>document.getElementById("boot").innerHTML = RAVI_SKEL(["plate:field,track,pair", "head", "card:3:76"], "Loading the cards");</script>
+<script>
+/* the loading blocks, shaped from this phone's decks (plan 2 M8.7): a block per deck, up to six, or the
+   two lines of "No decks yet" */
+(function(){
+  var n = 0;
+  try { var d = JSON.parse(localStorage.getItem("vir.decks.v1")); n = d && Array.isArray(d.decks) ? d.decks.filter(function(x){ return x && x.id; }).length : 0; } catch (e) {}
+  document.getElementById("boot").innerHTML = RAVI_SKEL(["plate:field,track,pair"].concat(n ? ["sort", "card:" + Math.min(n, 6) + ":95:deck"] : ["lede:2:mid"]));
+})();
+</script>
 
 <!-- the card browser -->
 <section class="brw" id="brw" hidden aria-label="Add cards">

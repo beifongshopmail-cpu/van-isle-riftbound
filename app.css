@@ -508,8 +508,7 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 @keyframes fln{0%{background:rgba(237,234,227,.85);color:var(--ink)}100%{}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-/* LOADING BLOCKS (plan 2 M8.7 motion block, Mako 2026-11-08; IN TRIAL: the test copy switches
-   html[data-sk] between pulse and still). The page's shape while its data comes (pages.js RAVI_SKEL):
+/* LOADING BLOCKS (plan 2 M8.7 motion block, Mako 2026-11-08). The page's shape while its data comes (pages.js RAVI_SKEL):
    the plate's surface and its recessed fields, glass cards and row groups, text as rounded track-grey
    lines. Hidden for .15s, then eased in, so a quick load never shows them; they pulse slowly
    while they wait. */
@@ -536,47 +535,50 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 @keyframes sk-show{from{opacity:0}}
 @keyframes sk-pulse{50%{opacity:.45}}
 .skel > *{animation:sk-pulse 1.6s ease-in-out .4s infinite}
-html[data-sk="still"] .skel > *{animation:none}
+.skel .skdeck{width:54px;height:75px;border-radius:5px}
+.skgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sktl{display:flex;flex-direction:column;gap:10px;padding:8px 8px 14px;border-radius:22px;background:var(--glass);box-shadow:var(--glass-base)}
+.sktl .skl{margin:0 4px}
+.skel .sk169{aspect-ratio:16/9;border-radius:14px;background:var(--recess)}
+.skel .skw{width:100%}
+.skel .skled.skmid{align-self:center;width:84%}
+.skel .skled.skmid:first-of-type{margin-top:22px}
+.skel .skled.skmid.skl2{width:56%}
+.sksort{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:2px 0}
+.sksort .skl{width:40%;margin-left:4px}
+.skel .skpill{width:118px;height:var(--sz-track);background:var(--glass);box-shadow:var(--glass-base)}
 
-/* PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08; IN TRIAL, not chosen: the test copy
-   switches html[data-pm] between rise, fade, slide and none, and html[data-hm] between open and the
-   page motion). The browser's own cross-document view transitions; pages.js sets html[data-vt]: fwd or
-   back between pages, open from the hub out of the tapped block, close back into it, fade otherwise.
-   The bar holds still while the page under it changes; only its icons cross-fade. */
-/* @view-transition{navigation:auto} is added by pages.js THE MOTION TRIAL while the trial is on */
+/* PAGE TO PAGE (plan 2 M8.7 motion block, Mako 2026-11-08). The browser's own cross-document view
+   transitions; pages.js PAGE TO PAGE sets html[data-vt]. One version for everyone (17:26: page to page
+   good, the hub's open too quick to read, "a touch less snappy, a touch more flowy", no switches).
+   Measured against proven apps: iOS's push is about .35s, Material's whole-screen moves .3 to .5s on
+   an emphasized curve (fast start, long settle). Only transform and opacity move, so the phone's
+   graphics chip draws every frame.
+   - Between pages: the new page rises 20px into place over .34s on the settle curve while it fades in
+     over .2s; the old one fades out in .12s. The bar holds still; only its icons cross-fade.
+   - From the hub: the page zooms out of the block you tapped (from the block's centre and width) over
+     .44s, fading in over its first .2s, while the hub sinks back a little and dims.
+   - Back to the hub: the page zooms back into its block over .34s, fading over its last .2s, while the
+     hub comes forward. With no block to go to (the page came by Go to), it rises as between pages. */
+@view-transition{navigation:auto}
 .bar{view-transition-name:ravi-bar}
 ::view-transition-group(ravi-bar){animation:none}
 ::view-transition-old(ravi-bar),::view-transition-new(ravi-bar){animation-duration:.2s}
-::view-transition-old(root),::view-transition-new(root){animation-duration:.28s;animation-timing-function:var(--ease)}
 @keyframes vt-fade-in{from{opacity:0}}
 @keyframes vt-fade-out{to{opacity:0}}
-@keyframes vt-rise-in{from{opacity:0;transform:translateY(14px)}}
-@keyframes vt-from-r{from{opacity:0;transform:translateX(56px)}}
-@keyframes vt-to-l{to{opacity:0;transform:translateX(-56px)}}
-@keyframes vt-from-l{from{opacity:0;transform:translateX(-56px)}}
-@keyframes vt-to-r{to{opacity:0;transform:translateX(56px)}}
-@keyframes vt-open{from{clip-path:inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round 24px);opacity:.35}}
-@keyframes vt-close{to{clip-path:inset(var(--vt-t) var(--vt-r) var(--vt-b) var(--vt-l) round 24px);opacity:0}}
-@keyframes vt-dim{to{opacity:.55}}
-@keyframes vt-hold{to{opacity:1}}
-/* between pages: rise (the default), fade, slide or none */
-::view-transition-old(root){animation-name:vt-fade-out;animation-duration:.16s}
-::view-transition-new(root){animation-name:vt-rise-in}
-html[data-pm="fade"]::view-transition-old(root){animation-name:vt-fade-out;animation-duration:.22s}
-html[data-pm="fade"]::view-transition-new(root){animation-name:vt-fade-in;animation-duration:.22s}
-html[data-pm="slide"][data-vt="fwd"]::view-transition-old(root){animation-name:vt-to-l;animation-duration:.3s}
-html[data-pm="slide"][data-vt="fwd"]::view-transition-new(root){animation-name:vt-from-r;animation-duration:.3s}
-html[data-pm="slide"][data-vt="back"]::view-transition-old(root){animation-name:vt-to-r;animation-duration:.3s}
-html[data-pm="slide"][data-vt="back"]::view-transition-new(root){animation-name:vt-from-l;animation-duration:.3s}
-/* the hub: the page opens out of the block you tapped and closes back into it */
-html[data-vt="open"]:not([data-hm="page"])::view-transition-old(root){animation:vt-dim .36s var(--ease) both}
-html[data-vt="open"]:not([data-hm="page"])::view-transition-new(root){animation:vt-open .36s var(--ease) both}
-html[data-vt="open"]:not([data-hm="page"])::view-transition-new(ravi-bar){animation:vt-fade-in .2s .16s both}
-html[data-vt="close"]:not([data-hm="page"])::view-transition-old(root){z-index:2;animation:vt-close .3s var(--ease) both}
-html[data-vt="close"]:not([data-hm="page"])::view-transition-new(root){animation:vt-hold .3s both}
-html[data-vt="close"]:not([data-hm="page"])::view-transition-old(ravi-bar){animation:vt-fade-out .12s both}
-/* none: pages switch at once, as before */
-html[data-pm="none"]::view-transition-group(*),html[data-pm="none"]::view-transition-old(*),html[data-pm="none"]::view-transition-new(*){animation:none}
+@keyframes vt-rise{from{transform:translateY(20px)}}
+@keyframes vt-zoom-in{from{transform:translate(var(--vt-dx),var(--vt-dy)) scale(var(--vt-s))}}
+@keyframes vt-zoom-out{to{transform:translate(var(--vt-dx),var(--vt-dy)) scale(var(--vt-s))}}
+@keyframes vt-sink{to{transform:scale(.94);opacity:.45}}
+@keyframes vt-lift{from{transform:scale(.94);opacity:.45}}
+::view-transition-old(root){animation:vt-fade-out .12s linear both}
+::view-transition-new(root){animation:vt-rise .34s cubic-bezier(.05,.7,.1,1) both,vt-fade-in .2s linear both}
+html[data-vt="open"]::view-transition-old(root){animation:vt-sink .44s cubic-bezier(.2,0,0,1) both}
+html[data-vt="open"]::view-transition-new(root){animation:vt-zoom-in .44s cubic-bezier(.05,.7,.1,1) both,vt-fade-in .2s linear both}
+html[data-vt="open"]::view-transition-new(ravi-bar){animation:vt-fade-in .2s .22s both}
+html[data-vt="close"]::view-transition-old(root){z-index:2;animation:vt-zoom-out .34s cubic-bezier(.3,0,.8,.15) both,vt-fade-out .2s .14s linear both}
+html[data-vt="close"]::view-transition-new(root){animation:vt-lift .34s cubic-bezier(.05,.7,.1,1) both}
+html[data-vt="close"]::view-transition-old(ravi-bar){animation:vt-fade-out .12s both}
 @media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
 
 /* App settings' Reduce motion (pages.js adds html.rm): the same, for RAVI alone (plan 2 M6) */
