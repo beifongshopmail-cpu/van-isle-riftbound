@@ -156,6 +156,24 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .ndom{list-style:none;margin:2px 0 12px;padding:0;display:flex;justify-content:space-between}
 .ndom li{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--text);font-size:12px;color:var(--muted)}
 .ndom img{width:28px;height:28px} /* size-exempt: Riot's domain symbol */
+/* THE COLOUR TRIAL (plan 2 M8.7; pages.js and app.css THE COLOUR TRIAL; Mako 2026-11-09 10:13: New to
+   RAVI 'a bit monotonous', closer to New to Riftbound): each section wears the colour of what it is
+   about, as How to play's do: Try it first the Learn-to-Play kind's jade, Your first deck the Product
+   kind's rust, Signing up for events Events' gold, What to bring Game's crimson, The rules Rules' jade,
+   Setup your own colour, Getting around App settings'; a list that mixes things (Kinds of events, The
+   pages) keeps its colour small: marks, and a coloured page chip on each row (.npc, as Feedback's). */
+:where(html.cnew) #try{--sc:0,190,140}
+:where(html.cnew) #deck{--sc:220,90,30}
+:where(html.cnew) #signup{--sc:255,200,40}
+:where(html.cnew) #bring{--sc:200,35,70}
+:where(html.cnew) #rules{--sc:0,190,140}
+:where(html.cnew) #setup{--sc:var(--ycr,93,165,238)}
+:where(html.cnew) #around{--sc:205,220,240}
+:where(html.cnew) :is(#try,#deck,#signup,#bring,#rules,#setup,#around){--tint:transparent;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
+.npc{display:none}
+:where(html.cnew) #pages .door.rec{padding-left:60px}
+:where(html.cnew) .npc{display:grid;position:absolute;left:16px;top:calc(50% - 16px);width:32px;height:32px;border-radius:10px;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
+.npc svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -605,6 +623,18 @@ document.getElementById("nsetup").addEventListener("click", function(){ if (wind
     }
     lastT = now; lastX = tch.clientX; lastY = tch.clientY;
   }, {passive:false});
+})();
+</script>
+<script>
+/* the colour trial: The pages' rows each get their page's chip (shown only while New is on), and your colour for Setup */
+(function(){
+  Array.prototype.forEach.call(document.querySelectorAll("#pages .door.rec"), function(a){
+    var m = /\.\.\/([a-z]+)\//.exec(a.getAttribute("href") || ""), p = m && (window.RAVI_PAGES || []).filter(function(x){ return x.path === m[1] + "/"; })[0];
+    if (!p || !p.rgb) { return; }
+    var c = document.createElement("span"); c.className = "npc"; c.setAttribute("aria-hidden", "true"); c.style.setProperty("--c", p.rgb); c.innerHTML = p.icon;
+    a.insertBefore(c, a.firstChild);
+  });
+  if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); }
 })();
 </script>
 </body>

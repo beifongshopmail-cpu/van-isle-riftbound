@@ -20,5 +20,6 @@ New here (start/index.html)
 
 Page-local classes (not in app.css; not Kit parts):
 - start/index.html: .nkd .nkm .nsec .ntx .gsel .guide (two guides on one track: New to Riftbound, New to RAVI; #ravi opens the second)
+- start/index.html, the colour trial (plan 2 M8.7): .npc (a page's coloured chip on The pages' rows, shown while New is on)
 - start/index.html, plan 2 M8: .nkw (a keyword as the cards print it; data-kc r crimson, g lime, else teal)
 - start/index.html, How to play (plan 2 M6 block 5): .nprt .nfo .nmore .nqs .nqh .nfig .nst .nmk .nrw .nz .nb .nzt .nzy .nsl .nbd .ndk .ncd .nland .nlay .nstk .nrn .nrj .nrp .nrs .nrr .nx .nad .nrd .nmv .nmc .nmu .nmg .nmb .nah .nar .ncb .ncs .nus .nu .ncn .ncr .ndots .nlast .ntk .nsy .ndom

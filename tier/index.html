@@ -77,6 +77,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .tlet b{font-family:var(--disp);font-weight:800;font-size:20px;line-height:1}
 .tlet small{font-size:12px;color:var(--muted);line-height:1.2;text-align:center}
 .tlet.off{opacity:.4;pointer-events:none}
+.trow.empty .tlet{min-height:48px}   /* an empty tier is a slim row: its letter and one line (plan 2 M8.7 polish); 48, a tile, not a 44 row control */
+:where(html.cnew) .trow[data-tier] .tlet.off{opacity:1}   /* the colour trial: an empty tier keeps its colour */
 .tstrip{flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;
   scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .tstrip::-webkit-scrollbar{display:none}
@@ -447,7 +449,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var cnt = rows.length + (rows.length === 1 ? " legend" : " legends");
       h += "<section class=\"trow glass" + (rows.length ? "" : " empty") + "\" data-tier=\"" + t[0] + "\" aria-label=\"" + esc(t[1]) + "\">" +
         "<button type=\"button\" class=\"tlet glass" + (rows.length ? "" : " off") + "\" data-t=\"" + t[0] + "\" data-k=\"do\" aria-haspopup=\"true\" aria-controls=\"ptier\" aria-label=\"" + esc(t[1] + ", " + cnt + ". Show all") + "\"" + (rows.length ? "" : " disabled") + ">" +
-        "<b>" + t[0] + "</b><small>" + rows.length + "<br>" + (rows.length === 1 ? "legend" : "legends") + "</small></button><div class=\"tstrip\">";
+        "<b>" + t[0] + "</b></button><div class=\"tstrip\">";   // the letter alone, as any tier list draws it (plan 2 M8.7, Mako 10:13); the count is in its label
       rows.forEach(function(x){ h += tileHTML(x, t[1]); });
       h += rows.length ? "<p class=\"tnone nomatch\" hidden>No match</p>" : "<p class=\"tnone\">No legend here right now</p>";
       h += "</div></section>";

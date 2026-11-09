@@ -70,6 +70,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #evbtn .t,#evbtn .cvr{flex-shrink:0}
 #evname{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .foot a{color:var(--bone)}
+/* THE COLOUR TRIAL (plan 2 M8.7; Mako 2026-11-09 10:13: Top cut 'feels blank'): a section that is one
+   thing wears its colour, as Events' cards and Rules' sections: The event Events' gold, Your record your
+   own colour; Your finishes mixes outcomes, so it stays plain and its pills carry the colour. */
+:where(html.cnew) #sev{--sc:255,200,40}
+:where(html.cnew) #srec{--sc:var(--ycr,93,165,238)}
+:where(html.cnew) :is(#sev,#srec){--tint:transparent;--muted:#DCDEE2;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
 </style>
 </head>
 <body>
@@ -453,5 +459,6 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }, {passive:false});
 })();
 </script>
+<script>if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } /* your colour, for the colour trial's Your record */</script>
 </body>
 </html>
