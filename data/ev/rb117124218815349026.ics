@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117124218815349026@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261219T160000
+DTEND;TZID=America/Vancouver:20261219T190000
+SUMMARY:RAD skirmish 2
+LOCATION:2220 Bowen Rd\, Nanaimo\, BC V9S 1H9\, Canada
+DESCRIPTION:Summoner Skirmish\nSports Card Alley\, Nanaimo\n8 of 16 spots l
+ eft\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/events/117124218
+ 815349026
+URL:https://playriftbound.com/en-US/events/117124218815349026
+CATEGORIES:Summoner Skirmish
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
