@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-10T20:41:01.858Z",
- "generated_local": "2026-11-10T13:41:01-07:00",
+ "generated_at": "2026-11-10T20:46:54.794Z",
+ "generated_local": "2026-11-10T13:46:54-07:00",
  "window_start": "2026-11-10T07:00:00.000Z",
  "anchors": [
   {
@@ -161,7 +161,7 @@
  "totals": {
   "fetched": 78,
   "unique": 81,
-  "prev_unique": 71,
+  "prev_unique": 81,
   "recent": [
    {
     "d": "2026-11-03",
@@ -431,7 +431,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
-   "store": null,
+   "store": "Sports Card Alley",
    "swiss": 4,
    "cut": false
   },
@@ -479,7 +479,7 @@
    "round": null,
    "wins": null,
    "sid": "01a0310f-8c3a-78f3-a379-1c67b942326c",
-   "store": null,
+   "store": "Card Corner",
    "swiss": 4,
    "cut": false
   },
@@ -722,7 +722,7 @@
    "round": null,
    "wins": null,
    "sid": "01a0310f-8c3a-78f3-a379-1c67b942326c",
-   "store": null,
+   "store": "Card Corner",
    "swiss": 4,
    "cut": false
   },
@@ -893,7 +893,7 @@
    "round": null,
    "wins": null,
    "sid": "01a0310f-8c3a-78f3-a379-1c67b942326c",
-   "store": null,
+   "store": "Card Corner",
    "swiss": 4,
    "cut": false
   },
@@ -989,7 +989,7 @@
    "round": null,
    "wins": null,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
-   "store": null,
+   "store": "Fort Game Cafe",
    "swiss": 4,
    "cut": false
   },
@@ -1253,7 +1253,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
-   "store": null,
+   "store": "Sports Card Alley",
    "swiss": 4,
    "cut": false
   },
@@ -1397,7 +1397,7 @@
    "round": null,
    "wins": null,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
-   "store": null,
+   "store": "Fort Game Cafe",
    "swiss": 4,
    "cut": false
   },
@@ -1493,7 +1493,7 @@
    "round": null,
    "wins": null,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
-   "store": null,
+   "store": "Fort Game Cafe",
    "swiss": 4,
    "cut": false
   },
@@ -1582,7 +1582,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 3,
+   "reg": 4,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1613,7 +1613,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
-   "store": null,
+   "store": "Sports Card Alley",
    "swiss": 4,
    "cut": false
   },
@@ -2021,7 +2021,7 @@
    "round": null,
    "wins": null,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
-   "store": null,
+   "store": "Sports Card Alley",
    "swiss": 4,
    "cut": false
   },

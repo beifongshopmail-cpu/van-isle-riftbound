@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117185651823198962@van-isle-riftbound
-DTSTAMP:20261110T204101Z
+DTSTAMP:20261110T204654Z
 DTSTART:20261205T190000Z
 DTEND:20261205T220000Z
 SUMMARY:Skirmish at The Fort
 LOCATION:250 Jubilee St\, Duncan\, BC V9L 1W8\, Canada
 DESCRIPTION:Summoner Skirmish\nThe Fort Game Cafe\, Duncan\n13 of 16 spots 
- left\, checked Nov 10\, 1:41 PM\n$20.00 CAD\nSign up: https://playriftboun
+ left\, checked Nov 10\, 1:46 PM\n$20.00 CAD\nSign up: https://playriftboun
  d.com/en-US/events/117185651823198962
 URL:https://playriftbound.com/en-US/events/117185651823198962
 CATEGORIES:Summoner Skirmish
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117186764306510911@van-isle-riftbound
-DTSTAMP:20261110T204101Z
+DTSTAMP:20261110T204654Z
 DTSTART:20270109T010000Z
 DTEND:20270109T040000Z
 SUMMARY:Skirmish 2 at The Fort
 LOCATION:250 Jubilee St\, Duncan\, BC V9L 1W8\, Canada
 DESCRIPTION:Summoner Skirmish\nThe Fort Game Cafe\, Duncan\n15 of 16 spots 
- left\, checked Nov 10\, 1:41 PM\n$20.00 CAD\nSign up: https://playriftboun
+ left\, checked Nov 10\, 1:46 PM\n$20.00 CAD\nSign up: https://playriftboun
  d.com/en-US/events/117186764306510911
 URL:https://playriftbound.com/en-US/events/117186764306510911
 CATEGORIES:Summoner Skirmish
@@ -41,13 +41,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117565911904865167@van-isle-riftbound
-DTSTAMP:20261110T204101Z
+DTSTAMP:20261110T204654Z
 DTSTART:20270123T000000Z
 DTEND:20270123T030000Z
 SUMMARY:Legacy Pre-Rift
 LOCATION:250 Jubilee St\, Duncan\, BC V9L 1W8\, Canada
 DESCRIPTION:Pre-Rift\nThe Fort Game Cafe\, Duncan\n16 of 16 spots left\, ch
- ecked Nov 10\, 1:41 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-
+ ecked Nov 10\, 1:46 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-
  US/events/117565911904865167
 URL:https://playriftbound.com/en-US/events/117565911904865167
 CATEGORIES:Pre-Rift
