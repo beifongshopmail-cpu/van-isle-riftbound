@@ -112,6 +112,39 @@ window.RAVI_ICON = (function(){
 // ONE SORT, EVERY PAGE (plan 2 M8, Mako 2026-11-05). A sort is stored as its key, with "-" on the end
 // when the player flipped it ("price-"). Each sort has a natural way (up or down); choosing it again in
 // its menu flips it, unless it is fixed (My order; Public decks, which the server orders).
+// KEYWORDS and the colour Riot prints each tag in (plan 2 M8.7 F3): sampled from the printed cards by
+// rb-tools design/colour/keywords.py (288 cards paired, 2026-11-09). t teal, r crimson, g lime, n grey.
+// A keyword not listed here is left as Riot wrote it.
+window.RAVI_KW = (function(){
+  var m = {}, sets = {
+    t: "Accelerate Action Ambush Deploy Flow Hidden Legion Quick-Draw Reaction Repeat Show_Off",
+    r: "Assault Backline Disarm Shield Tank",
+    g: "Deathknell Deflect Empowered Ganking Hunt Level Temporary",
+    n: "Add Buff Burn Empower Equip Mighty Predict Stun Vision Weaponmaster" }, k;
+  for (k in sets) { sets[k].split(" ").forEach(function(w){ m[w.replace("_", " ").toLowerCase()] = k; }); }
+  return m;
+})();
+// draws every [Keyword] (and [Keyword 2]) in root's text as its tag, the word kept; Riot's other brackets stay
+window.RAVI_KW_TAGS = function(root){
+  if (!root) { return; }
+  var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, RE = /\[([A-Za-z][A-Za-z\- ]{1,13}?)((?: \d+)?)\]/g;
+  while ((n = tw.nextNode())) { if (n.nodeValue.indexOf("[") >= 0 && !(n.parentNode.closest && n.parentNode.closest(".nkw"))) { nodes.push(n); } }
+  nodes.forEach(function(t){
+    var txt = t.nodeValue, m, last = 0, frag = null, kc, sp; RE.lastIndex = 0;
+    while ((m = RE.exec(txt))) {
+      kc = window.RAVI_KW[m[1].toLowerCase()];
+      if (!kc) { continue; }
+      frag = frag || document.createDocumentFragment();
+      if (m.index > last) { frag.appendChild(document.createTextNode(txt.slice(last, m.index))); }
+      sp = document.createElement("span"); sp.className = "nkw"; if (kc !== "t") { sp.setAttribute("data-kc", kc); }
+      sp.textContent = m[1] + m[2]; frag.appendChild(sp);
+      last = m.index + m[0].length;
+    }
+    if (!frag) { return; }
+    if (last < txt.length) { frag.appendChild(document.createTextNode(txt.slice(last))); }
+    t.parentNode.replaceChild(frag, t);
+  });
+};
 window.RAVI_SORT = {
   key: function(v){ return String(v || "").replace(/-$/, ""); },
   flip: function(v){ return /-$/.test(String(v || "")); },

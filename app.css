@@ -846,6 +846,18 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 [data-hue="ice"]{--c:var(--h-ice)}
 [data-hue="stone"]{--c:var(--h-stone)}
 [data-hue="white"]{--c:var(--h-white)}
+/* KEYWORDS as the cards print them (plan 2 M8, Mako 2026-11-03; every keyword sampled in M8.7 F3): a
+   slanted tag in the colour Riot prints it, the word in capitals, on the Guide and in Riot's rules text.
+   Riot prints four: teal, crimson, lime (dark letters) and grey; which keyword wears which is pages.js
+   RAVI_KW, read off the card images by rb-tools design/colour/keywords.py. The word is always there. */
+:root{--kwt:14,116,94;--kwr:204,44,104;--kwg:146,176,44;--kwn:113,113,113}
+.nkw{display:inline-block;position:relative;isolation:isolate;margin:0 3px;padding:0 6px;font-family:var(--disp);font-weight:700;font-size:12px;
+  line-height:18px;letter-spacing:.04em;text-transform:uppercase;color:var(--bone);vertical-align:1px;white-space:nowrap}
+.nkw::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:2px;background:rgb(var(--kwt));transform:skewX(-14deg)}
+.nkw[data-kc="r"]::before{background:rgb(var(--kwr))}
+.nkw[data-kc="g"]{color:var(--ink)}
+.nkw[data-kc="g"]::before{background:rgb(var(--kwg))}
+.nkw[data-kc="n"]::before{background:rgb(var(--kwn))}
 /* WHERE COLOUR GOES (plan 2 M8.7 colour pass; pages.js WHERE COLOUR GOES; Mako's yes 2026-11-09).
    Chrome stays dark; colour lives in the content, carried by what each thing is. Each rule weighs no
    more than the rule it changes (:where), so colour that means something on a page still wins. */
