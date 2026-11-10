@@ -689,6 +689,21 @@ function reply(obj, status) {
   return new Response(JSON.stringify(obj), { status: status || 200, headers: { "Content-Type": "application/json; charset=utf-8" } });
 }
 function dayOf(t) { return new Date(t).toISOString().slice(0, 10); }
+// The connection a day's allowance is counted for (plan 2 M8.7 C1). One IPv6 home or phone
+// connection is handed a whole /64 network, billions of addresses, so IPv6 is counted by its
+// network (the first four groups), an IPv4-mapped address as its IPv4, IPv4 as it is.
+export function netOf(ip) {
+  const t = String(ip || "").trim().toLowerCase();
+  if (t.indexOf(":") === -1) return t;
+  const v4 = /^(?:::ffff:|(?:0+:){5}ffff:)(\d+\.\d+\.\d+\.\d+)$/.exec(t);
+  if (v4) return v4[1];
+  const halves = t.split("%")[0].split("::");
+  if (halves.length > 2) return t;
+  const head = halves[0] ? halves[0].split(":") : [], tail = halves.length === 2 && halves[1] ? halves[1].split(":") : [];
+  const groups = halves.length === 2 ? head.concat(new Array(Math.max(0, 8 - head.length - tail.length)).fill("0"), tail) : head;
+  if (groups.length !== 8 || !groups.every(function (g) { return /^[0-9a-f]{1,4}$/.test(g); })) return t;
+  return groups.slice(0, 4).map(function (g) { return g.replace(/^0+(?=.)/, ""); }).join(":") + "::/64";
+}
 
 export function makeAccounts() {
   return class Accounts {
@@ -722,7 +737,7 @@ export function makeAccounts() {
     }
     // a day's allowance per connection; true while there is some left
     async spend(what, ip) {
-      const day = dayOf(this.now()), key = what + ":" + (await sha(String(ip || "") + "|" + day));
+      const day = dayOf(this.now()), key = what + ":" + (await sha(netOf(ip) + "|" + day));
       const c = this.db.used(key, day);
       if (c >= LIMITS[what]) return false;
       this.db.use(key, day, c + 1);
@@ -730,7 +745,7 @@ export function makeAccounts() {
     }
     // up to n of a day's allowance per connection; how many were granted
     async spendUpTo(what, ip, n) {
-      const day = dayOf(this.now()), key = what + ":" + (await sha(String(ip || "") + "|" + day));
+      const day = dayOf(this.now()), key = what + ":" + (await sha(netOf(ip) + "|" + day));
       const c = this.db.used(key, day), got = Math.max(0, Math.min(n, LIMITS[what] - c));
       if (got) this.db.use(key, day, c + got);
       return got;

@@ -441,7 +441,13 @@ async function claudeSum(input, key) {
   });
   if (res.status !== 200) { throw new Error("HTTP " + res.status); }
   const d = await res.json();
-  if (d.stop_reason && d.stop_reason !== "end_turn") { throw new Error("stopped: " + d.stop_reason); }
+  // a reply cut off at the cap is not a summary: say how it began, so the log shows why (plan 2
+  // M8.7 C2: three long posts still stop at the cap on every run, six dates or not; the cap stays
+  // until the log shows what fills it)
+  if (d.stop_reason && d.stop_reason !== "end_turn") {
+    const began = (d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" ").slice(0, 120);
+    throw new Error("stopped: " + d.stop_reason + (began ? "; the reply began: " + began : ""));
+  }
   return readReply((d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" "));
 }
 
