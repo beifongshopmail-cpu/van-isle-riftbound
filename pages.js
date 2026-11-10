@@ -205,20 +205,18 @@ window.RAVI_PALETTES = {
       order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
     pages: { calendar: "251,213,48", settings: "216,189,81", counter: "249,53,52", cut: "255,117,80", trade: "147,94,223", board: "191,124,236", decks: "255,145,39", collection: "233,113,37", rules: "33,147,224", news: "82,181,244", tier: "129,207,252", start: "113,202,93", feedback: "96,165,99" } },
   // Runes lit, grown (Mako 2026-11-09 17:21: the winner, but six colours cannot name thirteen pages:
-  // 'at least 14 somewhat-distinct colours'). The six lit rune colours stay as they are; eight more
-  // fill the gaps between their hues as evenly as the gaps allow (even hue spacing in OKLCH, one hue
-  // family each: lime, mint, teal, cyan, indigo, orchid, pink, rose), each at the lightness and chroma
-  // that put it farthest from its neighbours while staying as vivid as the runes (rb-tools
-  // design/colour/grow.py, round B; the worst pair of the fourteen stands .103 apart in OKLab). Every
-  // page its own colour, kept near its rune where one fits: lime by Order, rose by Fury, orchid by
-  // Chaos, indigo and cyan by Mind, mint by Calm. Teal 79,252,236 is the fourteenth, unused; in
-  // reserve: deep mint 2,160,94 and burnt orange 201,104,17 (News' Product wears it for now). Orchid
-  // and rose were then taken at the most colour their hues hold (235,100,238 and 254,92,139): the pale
-  // ones the search first chose turn dusty inside the hub's glass; every pair still stands .103 apart.
+  // 'at least 14 somewhat-distinct colours'). The six lit rune colours stay as they are. Round 1 added
+  // eight vivid hues between them; Mako 17:51: still too similar on the hub, not an even spread (three
+  // crowd the blue-greens, three the pinks). Round 2, as the proven maximum-contrast sets do past ten
+  // colours (Kelly 1965; Boynton 1989): spread across pale, deep and muted as well as hue. Each added
+  // colour is the one farthest from all the others as the hub's glass draws it (.30 over the ground),
+  // no two sharing a hue (rb-tools design/colour/wide.py, HGAP 20): near-white, orchid, aqua,
+  // raspberry, royal blue, olive, sage, and deep teal 28,110,128 in reserve. Worst pair in the hub's
+  // glass .056 (round 1: .040), bare .152 (round 1: .103). Chat's values, as built, not chosen.
   lit14: { name: "Runes lit 14",
-    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "11,247,157", rust: "201,104,17", sky: "63,175,243", lime: "194,244,51", orchid: "235,100,238", lilac: "66,127,247",
+    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "67,248,242", rust: "172,19,119", sky: "63,175,243", lime: "105,116,3", orchid: "250,144,248", lilac: "21,77,233",
       order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
-    pages: { calendar: "251,213,48", counter: "249,53,52", trade: "153,100,229", decks: "255,145,39", rules: "63,175,243", start: "113,202,93", settings: "194,244,51", cut: "254,92,139", board: "235,100,238", collection: "216,54,176", tier: "66,127,247", news: "26,219,249", feedback: "11,247,157" } },
+    pages: { calendar: "251,213,48", counter: "249,53,52", trade: "153,100,229", decks: "255,145,39", rules: "63,175,243", start: "113,202,93", settings: "254,230,252", collection: "172,19,119", feedback: "91,159,134", news: "67,248,242", tier: "21,77,233", board: "250,144,248", cut: "105,116,3" } },
   synth: { name: "Synthwave",
     hues: { gold: "249,224,63", garnet: "251,43,154", violet: "142,61,232", tangerine: "255,127,22", jade: "27,229,238", mint: "55,216,201", rust: "213,40,206", sky: "12,193,253", lime: "213,228,63", orchid: "190,81,233", lilac: "152,157,255" },
     pages: { calendar: "249,224,63", counter: "251,43,154", trade: "142,61,232", board: "255,127,22", feedback: "174,150,218", rules: "27,229,238", decks: "55,216,201", collection: "213,40,206", start: "12,193,253", cut: "255,82,99", tier: "190,81,233", news: "152,157,255", settings: "220,209,244" } },
