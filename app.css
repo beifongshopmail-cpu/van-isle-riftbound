@@ -400,6 +400,13 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
    kinds: in a stack of rows an action is this, never a centred .pact; a
    .pact is only for standing alone or in a menu foot. */
 .door.act .cvr{display:none}
+/* a check row in a press group: an on/off setting that lives among rows that open menus (App settings'
+   Trade offers and Share my legend; Mako 2026-11-09: no sunken pills straight on the ground). The list's check. */
+.door.chk{position:relative}
+.door.chk.on{padding-right:44px}
+.door.chk.on::after{content:"";position:absolute;right:16px;top:calc(50% - 9px);width:18px;height:18px;background:var(--bone);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 10 18 20 6'/%3E%3C/svg%3E") center/contain no-repeat}
 .cvr{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 .pact .cvr{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2} /* a row chevron in a pill keeps its row size */
 .pact .extl{width:16px;height:16px;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none} /* the out-arrow on a pill that leaves the app (the support plate) */
@@ -692,6 +699,11 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .panel.acct.tol:not(.show){transform:translateX(-32px)}
 .panel.acct.tor:not(.show){transform:translateX(32px)}
 .panel.acct{--tint:transparent}   /* the account and setup menus are the app's, never the page's colour (Mako 2026-11-09: on Rules, Feedback and New here they took it) */
+/* every menu is the app's, plain glass: a page's colour never reaches its menus. A menu that shows a page's
+   own content (a Rules article, a News post) sets its colour itself, and even there the controls stay plain:
+   the X, Back and any button (Mako 2026-11-09: App settings' menus, Rules' X) */
+.panel{--tint:transparent}
+.panel :is(.btn,.circ):not(.door){--tint:transparent}
 .panel.acct .phead{min-height:56px;padding-right:68px;box-sizing:border-box}
 .acn{display:flex;flex-direction:column;gap:2px;min-width:0}
 .acn b{font-family:var(--disp);font-weight:700;font-size:17px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -835,13 +847,15 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
    Chrome stays dark; colour lives in the content, carried by what each thing is. Each rule weighs no
    more than the rule it changes (:where), so colour that means something on a page still wins. */
 /* the Tier list in the tier-list colours everyone knows (TierMaker's defaults, as VerseDB documents
-   them: S #FF7F7F, A #FFBF7F, B #FFDF7F, C #FFFF7F; Rogue, off the ladder, in their blue #7FBFFF): the
-   letter block solid in its colour with dark ink, the row a faint wash of it */
-:where(html.cnew) .trow[data-tier="S"]{--tc:255,127,127}
-:where(html.cnew) .trow[data-tier="A"]{--tc:255,191,127}
-:where(html.cnew) .trow[data-tier="B"]{--tc:255,223,127}
-:where(html.cnew) .trow[data-tier="C"]{--tc:255,255,127}
-:where(html.cnew) .trow[data-tier="R"]{--tc:127,191,255}
+   them: S red, A orange, B yellow, C a yellow-green, Rogue, off the ladder, in their blue), taken at the
+   palette's own strength: the lit rune colours, so a tier glows on black as a hub block does (their pastels
+   went muddy as glass; Mako 2026-11-09 'cheap'). The letter block solid in its colour with dark ink, the row
+   coloured glass in it */
+:where(html.cnew) .trow[data-tier="S"]{--tc:var(--h-fury)}
+:where(html.cnew) .trow[data-tier="A"]{--tc:var(--h-body)}
+:where(html.cnew) .trow[data-tier="B"]{--tc:var(--h-order)}
+:where(html.cnew) .trow[data-tier="C"]{--tc:var(--h-calm)}
+:where(html.cnew) .trow[data-tier="R"]{--tc:var(--h-mind)}
 :where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),var(--cg))}   /* the row is coloured glass in its tier's colour (Mako 2026-11-09 16:29) */
 :where(html.cnew) .trow[data-tier] .tlet{--tint:rgb(var(--tc));background:rgb(var(--tc));color:var(--ink)}   /* --tint: inside the row it is drawn flat from it */
 :where(html.cnew) .trow[data-tier] .tlet small{color:rgba(8,9,10,.72)}

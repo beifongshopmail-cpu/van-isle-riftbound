@@ -74,8 +74,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lb stlb">Alerts</p>
   <div class="doors stgrp" id="stalert" data-k="deeper">
       <button type="button" class="door" data-st="pme"><span class="t">Live event pairings</span><span class="sp"></span><small id="pmev"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door chk" id="stoffer" data-st="poffer" aria-pressed="false" data-k="pick"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small></button>
   </div>
-  <div class="pick stgrp" id="stalert2" data-k="pick"><button type="button" id="stoffer" data-st="poffer" aria-pressed="false"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small></button></div>
   <p class="stmsg" id="stoffermsg" aria-live="polite"></p>
   <p class="lb stlb">Hub</p>
   <div class="doors stgrp" id="sthubg" data-k="deeper">
@@ -83,7 +83,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <button type="button" class="door" data-st="popen"><span class="t">Open the app to</span><span class="sp"></span><small id="popenv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
   <p class="lb stlb">Tier list</p>
-  <div class="pick stgrp" id="sttier" data-k="pick"><button type="button" id="stauto" data-st="plocal" aria-pressed="true" class="on"><span class="t">Share my legend</span></button></div>
+  <div class="doors stgrp" id="sttier" data-k="pick"><button type="button" class="door chk on" id="stauto" data-st="plocal" aria-pressed="true" data-k="pick"><span class="t">Share my legend</span></button></div>
   <p class="lb stlb">Display</p>
   <div class="doors stgrp" id="stdisp" data-k="deeper">
       <button type="button" class="door" data-st="pmotion"><span class="t">Motion</span><span class="sp"></span><small id="pmotionv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
@@ -203,7 +203,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   scrim.addEventListener("click", function(){ show(null); });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape" && shown) { show(null); } });
   document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", function(){ show(null); }); });
-  document.querySelectorAll(".doors [data-st]").forEach(function(b){ b.addEventListener("click", function(){ show(document.getElementById(b.getAttribute("data-st"))); }); });
+  document.querySelectorAll(".doors [data-st]:not(.chk)").forEach(function(b){ b.addEventListener("click", function(){ show(document.getElementById(b.getAttribute("data-st"))); }); });
 })();
 </script>
 <script>
@@ -306,7 +306,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function find(){
     var q = stq.value.toLowerCase().replace(/[^a-z0-9#\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
     stqx.disabled = !stq.value;
-    ["stalert", "stalert2", "sthubg", "sttier", "stdisp"].forEach(function(g){
+    ["stalert", "sthubg", "sttier", "stdisp"].forEach(function(g){
       var grp = document.getElementById(g), left = 0;
       grp.querySelectorAll("[data-st]").forEach(function(b){
         var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);

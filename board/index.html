@@ -60,6 +60,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bempty{border-radius:22px;padding:16px;font-size:15px;line-height:1.4}
 .bempty p{margin:0}
 .bempty .pact{margin-top:14px}
+/* Matches with nothing to match yet: the two sides of a match, each a coloured tile that goes to Collection */
+.bstart{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bside{display:flex;flex-direction:column;gap:6px;border-radius:22px;padding:14px;min-height:132px;box-sizing:border-box;--tint:transparent;--muted:#DCDEE2}
+.bside:active{transform:scale(.97);filter:brightness(1.2)}
+.bside b{font-family:var(--disp);font-weight:700;font-size:17px;line-height:1.2}
+.bside span{font-size:15px;line-height:1.4;color:var(--muted);flex:1}
+.bside i{font-style:normal;font-family:var(--disp);font-weight:600;font-size:13px;display:flex;align-items:center;gap:4px}
+.bside i .cvr{width:16px;height:16px;flex:none}
+.bsay{text-align:center}
 /* a player's card: their picture and name (opens the trade), then a shelf per direction */
 .bt{border-radius:22px;padding:4px 0 12px;min-width:0}
 .bwho{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--sz-row);padding:6px 14px;margin:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -506,8 +515,11 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     list.sort(function(a, b){ return b.t.two - a.t.two || near(b.t) - near(a.t) || sg() * (sk() === "name" ? whoCmp(a.t, b.t) : b.s - a.s) || a.n - b.n; });
     list = list.map(function(x){ return x.t; });
     if (!DATA.me.have && !DATA.me.want) {
-      $("blist").innerHTML = '<div class="bempty glass"><p>Put cards on your Wishlist and mark a binder For trade, and the board finds the players who have what you want and want what you have.</p>'
-        + '<a class="pact btn glass" href="../collection/" data-k="do">Open Collection</a></div>';
+      // nothing to match yet: the two halves of a match as the two sides, each the way to fill it (Mako 2026-11-09)
+      $("blist").innerHTML = '<div class="bstart">'
+        + '<a class="bside cg glass" href="../collection/" style="--c:var(--ycr)" data-k="do"><b>You want</b><span>Put cards on your Wishlist</span><i>Add cards' + CVR + '</i></a>'
+        + '<a class="bside cg glass" href="../collection/" style="--c:var(--tcr)" data-k="do"><b>You have</b><span>Mark a binder For trade</span><i>Pick a binder' + CVR + '</i></a></div>'
+        + '<p class="bnote bsay">The Exchange finds players who have what you want and want what you have.</p>';
       return "";
     }
     if (!list.length) {
