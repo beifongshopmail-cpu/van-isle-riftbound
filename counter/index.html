@@ -2641,7 +2641,8 @@
   // cards/runes/ and referenced here as ../cards/runes/. A legend with no domains renders nothing rather than a placeholder.
   // Each rune is drawn as coloured glass: the domain's colour (the fill of Riot's own rune file)
   // as a disc, with Riot's white glyph on it through the #rglyph filter at the top of the page.
-  var RUNE_RGB = {body:"232,118,0", calm:"72,140,56", chaos:"106,64,148", fury:"223,22,32", mind:"15,111,166", order:"210,180,0"};
+  var RUNE_RGB = {};   // the domains' colours, from the colour table (pages.js RAVI_RUNE)
+  ["body", "calm", "chaos", "fury", "mind", "order"].forEach(function(d){ RUNE_RGB[d] = window.RAVI_RUNE(d); });
   function lgaDom(nm, cls){
     if (typeof VIR_LEGENDS === "undefined" || !nm) { return ""; }
     var e = lgaFind(nm);

@@ -16,7 +16,11 @@
   "use strict";
 
   var W = 1080, PAD = 40, GAP = 12;
-  var RGB = { body: "232,118,0", calm: "72,140,56", chaos: "106,64,148", fury: "223,22,32", mind: "15,111,166", order: "210,180,0", colorless: "240,240,245" };
+  // the domains' colours come from the colour table (pages.js RAVI_RUNE), read when a picture is
+  // planned so the picture wears the app's palette; outside a page (a test) a domain has no colour
+  var DOMS = ["body", "calm", "chaos", "fury", "mind", "order", "colorless"], RGB = {};
+  function hues() { DOMS.forEach(function (d) { RGB[d] = root.RAVI_RUNE ? root.RAVI_RUNE(d) : "90,90,100"; }); }
+  hues();
   var C = { ground: "#0B0B0E", panel: "#17171C", bone: "#EFEBE3", muted: "#A3A3AD", ink: "#111114" };
   var DISP = "Poppins, system-ui, sans-serif", TEXT = "Nunito, system-ui, sans-serif";
   var RATIO = 1039 / 744;
@@ -48,6 +52,7 @@
     var side = group(d.side).sort(function (a, b) { var ae = typeof a.x.e === "number" ? a.x.e : 99, be = typeof b.x.e === "number" ? b.x.e : 99; return ae - be || a.f.localeCompare(b.f); });
     var bf = (d.bf || []).map(function (c) { var x = X.card(I, c); return x ? { c: c, x: x, f: X.full(I, x), n: 1 } : null; }).filter(Boolean);
     var sh = X.share ? X.share(I, d) : {};
+    hues();
     var doms = L ? (L.d || []).filter(function (v) { return RGB[v]; }) : [];
     return {
       legend: L ? { x: L, f: X.full(I, L) } : null, champ: champ ? { x: X.card(I, champ), f: X.full(I, X.card(I, champ)) } : null,

@@ -161,7 +161,16 @@ window.RAVI_HUES = {
   gold: "255,200,40", garnet: "200,35,70", violet: "115,80,240", tangerine: "255,150,40",
   jade: "0,190,140", mint: "80,230,170", rust: "220,90,30", sky: "30,205,230",
   lime: "170,210,60", orchid: "215,90,230", lilac: "170,140,255",
-  slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245"
+  slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245",
+  // Riftbound's six domains, as Riot prints the runes (one copy: Decks, the deck image and the Game
+  // page's legend picker read RAVI_RUNE; a palette may relight them, as Runes lit does)
+  body: "232,118,0", calm: "72,140,56", chaos: "106,64,148", fury: "223,22,32", mind: "15,111,166", order: "210,180,0"
+};
+// A domain's colour, by its name as the card data spells it; a card with no domain is the table's white.
+window.RAVI_RUNE = function(d){
+  d = String(d || "").toLowerCase();
+  if (d === "colorless") { return window.RAVI_HUES.white; }
+  return /^(body|calm|chaos|fury|mind|order)$/.test(d) ? window.RAVI_HUES[d] : "128,128,128";
 };
 // THE PALETTE SWITCH (the colour trial). Mako 2026-11-09 14:47: every colour so far is a placeholder,
 // chosen with no reason behind it; explore completely different combinations. Round 2 (16:29): Today,
@@ -192,8 +201,24 @@ window.RAVI_PALETTES = {
   families: { name: "Families",
     pages: { calendar: "255,201,33", counter: "238,53,51", cut: "255,143,11", tier: "255,103,40", decks: "42,213,229", collection: "49,156,252", trade: "121,101,240", board: "37,186,242", rules: "36,194,125", news: "174,230,89", start: "90,230,198", feedback: "106,163,108", settings: "200,232,205" } },
   lit: { name: "Runes lit",
-    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "131,228,153", rust: "227,105,39", sky: "63,175,243", lime: "206,221,70", orchid: "197,122,230", lilac: "177,183,253" },
+    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "131,228,153", rust: "227,105,39", sky: "63,175,243", lime: "206,221,70", orchid: "197,122,230", lilac: "177,183,253",
+      order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
     pages: { calendar: "251,213,48", settings: "216,189,81", counter: "249,53,52", cut: "255,117,80", trade: "147,94,223", board: "191,124,236", decks: "255,145,39", collection: "233,113,37", rules: "33,147,224", news: "82,181,244", tier: "129,207,252", start: "113,202,93", feedback: "96,165,99" } },
+  // Runes lit, grown (Mako 2026-11-09 17:21: the winner, but six colours cannot name thirteen pages:
+  // 'at least 14 somewhat-distinct colours'). The six lit rune colours stay as they are; eight more
+  // fill the gaps between their hues as evenly as the gaps allow (even hue spacing in OKLCH, one hue
+  // family each: lime, mint, teal, cyan, indigo, orchid, pink, rose), each at the lightness and chroma
+  // that put it farthest from its neighbours while staying as vivid as the runes (rb-tools
+  // design/colour/grow.py, round B; the worst pair of the fourteen stands .103 apart in OKLab). Every
+  // page its own colour, kept near its rune where one fits: lime by Order, rose by Fury, orchid by
+  // Chaos, indigo and cyan by Mind, mint by Calm. Teal 79,252,236 is the fourteenth, unused; in
+  // reserve: deep mint 2,160,94 and burnt orange 201,104,17 (News' Product wears it for now). Orchid
+  // and rose were then taken at the most colour their hues hold (235,100,238 and 254,92,139): the pale
+  // ones the search first chose turn dusty inside the hub's glass; every pair still stands .103 apart.
+  lit14: { name: "Runes lit 14",
+    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "11,247,157", rust: "201,104,17", sky: "63,175,243", lime: "194,244,51", orchid: "235,100,238", lilac: "66,127,247",
+      order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
+    pages: { calendar: "251,213,48", counter: "249,53,52", trade: "153,100,229", decks: "255,145,39", rules: "63,175,243", start: "113,202,93", settings: "194,244,51", cut: "254,92,139", board: "235,100,238", collection: "216,54,176", tier: "66,127,247", news: "26,219,249", feedback: "11,247,157" } },
   synth: { name: "Synthwave",
     hues: { gold: "249,224,63", garnet: "251,43,154", violet: "142,61,232", tangerine: "255,127,22", jade: "27,229,238", mint: "55,216,201", rust: "213,40,206", sky: "12,193,253", lime: "213,228,63", orchid: "190,81,233", lilac: "152,157,255" },
     pages: { calendar: "249,224,63", counter: "251,43,154", trade: "142,61,232", board: "255,127,22", feedback: "174,150,218", rules: "27,229,238", decks: "55,216,201", collection: "213,40,206", start: "12,193,253", cut: "255,82,99", tier: "190,81,233", news: "152,157,255", settings: "220,209,244" } },
