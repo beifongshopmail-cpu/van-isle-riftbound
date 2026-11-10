@@ -175,6 +175,9 @@ a{color:inherit;text-decoration:none}
 .ev .name{display:block;font-size:15px;font-weight:600;margin:4px 0 2px 0;line-height:1.3}
 .ev .venue{flex:1;color:var(--muted)}
 .ev .price{font-weight:700}
+/* A STORE'S OWN POST (plan 2 M8.7): an event read from a store's post, not from PlayRiftbound,
+   says so in words on its venue line; a quiet flat tag, never a fill (a fill means chosen). */
+.ev .evsrc{flex:none;white-space:nowrap;font-weight:600;color:var(--bone);background:var(--flat);padding:1px 7px;border-radius:999px}
 .ev .new{
   display:inline-block;vertical-align:2px;margin-left:8px;
   font-size:12px;font-weight:700;letter-spacing:.06em;
@@ -862,6 +865,11 @@ a{color:inherit;text-decoration:none}
       vn.className = "venue";
       vn.textContent = (ev.venue || "") + (ev.city ? ", " + ev.city : "");
       l3.appendChild(vn);
+      if (ev.src === "store"){
+        var sr = document.createElement("span");
+        sr.className = "evsrc"; sr.textContent = "Not on PlayRiftbound";
+        l3.appendChild(sr);
+      }
       var pz = money(ev);
       if (pz){
         var pe = document.createElement("span");
@@ -897,6 +905,14 @@ a{color:inherit;text-decoration:none}
         gs.textContent = "The store's usual time. PlayRiftbound shows " + ev.riot + ".";
         ad.appendChild(gs);
       }
+      // a store's own post (fetch-events.js, store-posted events): nobody signs up through
+      // RAVI or PlayRiftbound, and a night can be called off late
+      if (ev.src === "store"){
+        var ps = document.createElement("span");
+        ps.className = "evend evpostnote";
+        ps.textContent = "From the store's own post. Check with the store before you go.";
+        ad.appendChild(ps);
+      }
       info.appendChild(ad);
       var btns = document.createElement("span");
       btns.className = "evbtns";
@@ -914,7 +930,8 @@ a{color:inherit;text-decoration:none}
       if (!ev.sim && !ev.visit) iconLink(btns, "evadd", calUrl(ev.id), "Add this event to your calendar", CALPLUS, "Calendar");
       // the top-cut calculator for this event (M15), in the app: every kind but Learn-to-Play and
       // Open Play, which have no cut; not the test event, which is not in the feed
-      if (!ev.sim && ev.type !== "learn" && ev.type !== "open"){
+      // nor an event from a store's own post: RAVI knows nothing of its rounds
+      if (!ev.sim && ev.type !== "learn" && ev.type !== "open" && ev.src !== "store"){
         var cl = document.createElement("a");
         cl.className = "evpill btn glass evcut";
         cl.href = "../cut/?ev=" + encodeURIComponent(String(ev.id));
@@ -922,7 +939,9 @@ a{color:inherit;text-decoration:none}
         cl.innerHTML = TROPHY + '<span class="evlb">Top cut</span>';
         btns.appendChild(cl);
       }
-      iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT, "Website");
+      // a store's own post opens that post, when the digest has its link (https only)
+      if (ev.src === "store"){ if (/^https:\/\//.test(String(ev.url || ""))) iconLink(btns, "evlink evpost", ev.url, "Open the store's post", OUT, "Post"); }
+      else iconLink(btns, "evlink", eventUrl(ev.id), "Open the event page", OUT, "Website");
       info.appendChild(btns);
       act.appendChild(info);
       var gn = document.createElement("p");

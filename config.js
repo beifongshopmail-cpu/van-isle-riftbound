@@ -61,4 +61,18 @@ const RB = {
 // when either side of the comparison is under this.
 const DROP_FLOOR = 20;
 
-module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR, RB };
+// STORE-POSTED EVENTS (plan 2 M8.7, Mako 2026-11-10): a store's own posts, read from Banh
+// Mi's daily digest (public repo beifongshopmail-cpu/ravi-news, store_events). The towns
+// inside the three searches above, by lower-case name -> region; an event in any other
+// town is left out. A night must be confirmed by a digest run within DAYS days.
+const STORE_POSTS = {
+  base: "https://raw.githubusercontent.com/beifongshopmail-cpu/ravi-news/main/",
+  days: 7,
+  cities: {
+    "victoria": "victoria", "saanich": "victoria", "oak bay": "victoria", "esquimalt": "victoria",
+    "view royal": "victoria", "colwood": "victoria", "langford": "victoria",
+    "courtenay": "island", "comox": "island", "cumberland": "island", "campbell river": "island"
+  }
+};
+
+module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR, RB, STORE_POSTS };

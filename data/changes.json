@@ -67,6 +67,11 @@
       "date": "2026-11-10",
       "items": [
         {
+          "page": "calendar",
+          "t": "Events from stores' own posts",
+          "d": "A night a store posts on its own page but not on PlayRiftbound now shows on Events, marked Not on PlayRiftbound, with a link to the post."
+        },
+        {
           "page": "trade",
           "t": "Trade is now Appraise",
           "d": "The page that prices a trade is named Appraise, so it reads apart from Exchange, where you find people to trade with."

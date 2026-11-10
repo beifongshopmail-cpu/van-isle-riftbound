@@ -85,37 +85,40 @@ function reportDrop(payload, outDir) {
   return file;
 }
 
-// A store with no short name in STORE_SHORT (fetch-events.js): its events show the full venue name,
-// which works but reads long. One body naming each such store once (plan 2 M5).
+// A NEW STORE (plan 2 M5; both sources from plan 2 M8.7): a store with no short name in STORE_SHORT
+// (fetch-events.js) is one the app has not met, from PlayRiftbound or from a store's own post. Its
+// events still publish under the full venue name. One body naming each such store once, with where
+// it came from; the issue stays open until the store gets its short name.
 function reportStores(payload, outDir) {
   const seen = {}, rows = [];
+  function cell(v) { return String(v == null ? "" : v).replace(/\|/g, "\\|"); }
   for (const e of payload.events || []) {
     if (!e || e.store) continue;
     const k = String(e.sid) + "|" + e.venue;
     if (seen[k]) continue;
     seen[k] = 1;
-    rows.push("| " + String(e.venue || "").replace(/\|/g, "\\|") + " | " + String(e.city || "").replace(/\|/g, "\\|") + " | " + String(e.sid) + " |");
+    rows.push("| " + cell(e.venue) + " | " + cell(e.city) + " | " + cell(e.sid) + " | " + (e.src === "store" ? "the store's own post" : "PlayRiftbound") + " |");
   }
   if (!rows.length) {
     console.log("store names: every store has a short name");
     return null;
   }
   const lines = [];
-  lines.push("The feed has events at a store with no short name.");
+  lines.push("A store new to RAVI has events on the calendar.");
   lines.push("");
-  lines.push("Its events still publish, with the full venue name on the cards.");
+  lines.push("Its events publish already, with the full venue name on the cards.");
   lines.push("");
-  lines.push("| venue | city | store id |");
-  lines.push("| --- | --- | --- |");
+  lines.push("| venue | city | store id | first seen in |");
+  lines.push("| --- | --- | --- | --- |");
   for (const r of rows) lines.push(r);
   lines.push("");
-  lines.push("To fix: add each store id to STORE_SHORT in fetch-events.js with a");
+  lines.push("To finish: add each store id to STORE_SHORT in fetch-events.js with a");
   lines.push("short name, then close this issue.");
   lines.push("");
   lines.push("Feed generated at " + payload.generated_at + ".");
   const file = path.join(outDir, "anomaly-stores.md");
   fs.writeFileSync(file, lines.join("\n") + "\n", "utf8");
-  console.log("store names: " + rows.length + " without a short name, wrote " + file);
+  console.log("store names: " + rows.length + " new, wrote " + file);
   return file;
 }
 

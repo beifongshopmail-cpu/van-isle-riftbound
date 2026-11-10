@@ -2,7 +2,8 @@
 
 const fs = require("fs");
 const path = require("path");
-const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, RB } = require("./config");
+const crypto = require("crypto");
+const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, RB, STORE_POSTS } = require("./config");
 const { writeFeeds, writeEventFiles, writeStoreFeeds } = require("./ics");
 
 // Store id -> a short display name. Keys are the same store ids sid uses.
@@ -16,7 +17,9 @@ const STORE_SHORT = {
   "18437": "North Park Framing",
   "4294": "Skyhaven",
   // a PlayRiftbound store with no old id is keyed by its PlayRiftbound organizer id (plan 2 M5)
-  "019fb060-927e-7709-b9cb-32c53ec8c895": "Elite4"
+  "019fb060-927e-7709-b9cb-32c53ec8c895": "Elite4",
+  // a store known only from its own posts is keyed by the id storeSid gives it (plan 2 M8.7)
+  "st-rottys-creations-victoria": "Rotty's"
 };
 
 // PlayRiftbound stores -> the old feed's store id and display name, keyed by
@@ -384,6 +387,156 @@ async function withConfig(events, prevEvents, read, max) {
   return stat;
 }
 
+// ---- STORE-POSTED EVENTS (plan 2 M8.7, Mako 2026-11-10) ----
+// Some stores run Riftbound nights they never list on PlayRiftbound (Rotty's Creations,
+// Tuesdays). Banh Mi's daily digest lists every upcoming event each local store's own pages
+// show that day (store_events, one entry per date, re-listed on every run). Those reach the
+// calendar for every store alike, marked src "store" with the post's link, under three rules:
+// - CONFIRMED: only a digest run within STORE_POSTS.days days counts, so a night was seen on
+//   the store's page at most that long ago, and the events drop off by themselves if the
+//   digest stops. An entry that is cancelled, past, undated, untimed, online or outside the
+//   island's towns is left out.
+// - THE STORE'S OWN LISTING WINS: an entry is dropped when PlayRiftbound (or the old feed) has
+//   an event at that store that day.
+// - NO STORE LIST: a store is matched to RB_STORES by a normalised name and city; any other
+//   store gets a stable id from its name and city, so Follow and the store filter work.
+function storeNorm(name) {
+  return String(name || "").toLowerCase().replace(/&/g, " and ").replace(/\bltd\b\.?/g, " ")
+    .replace(/['’]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+}
+const RB_NORM = {};
+for (const k of Object.keys(RB_STORES)) {
+  const at = k.lastIndexOf("|");
+  RB_NORM[storeNorm(k.slice(0, at)) + "|" + k.slice(at + 1)] = RB_STORES[k];
+}
+function storeSid(name, city) {
+  return "st-" + (storeNorm(name) + " " + String(city || "").toLowerCase()).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+// A store's time as written -> { start: "17:00", end: "20:00" or null }, or null when it
+// is not a clock time. '5:00 PM', '5:00-8:00 PM', '5-8 PM', '11:00 AM - 2:00 PM'.
+function storeTime(text) {
+  const m = /^\s*(\d{1,2})(?::(\d\d))?\s*([ap]m)?\s*(?:(?:-|–|to)\s*(\d{1,2})(?::(\d\d))?\s*([ap]m)?)?\s*$/i.exec(String(text || ""));
+  if (!m) return null;
+  const two = m[4] !== undefined;
+  const ap2 = two && m[6] ? m[6].toLowerCase() : null;
+  let ap1 = m[3] ? m[3].toLowerCase() : ap2;
+  if (!ap1) return null;
+  function mins(h, mm, ap) {
+    h = Number(h); mm = Number(mm || 0);
+    if (h < 1 || h > 12 || mm > 59) return null;
+    return ((h % 12) + (ap === "pm" ? 12 : 0)) * 60 + mm;
+  }
+  function hhmm(n) { return String(Math.floor(n / 60)).padStart(2, "0") + ":" + String(n % 60).padStart(2, "0"); }
+  let a = mins(m[1], m[2], ap1);
+  if (a === null) return null;
+  if (!two) return { start: hhmm(a), end: null };
+  const b = mins(m[4], m[5], ap2 || ap1);
+  if (b === null) return null;
+  // '11-2 PM': the start took the end's PM and landed after it, so it is the morning
+  if (!m[3] && a >= b) { a = mins(m[1], m[2], "am"); }
+  if (a === null || a >= b) return null;
+  return { start: hhmm(a), end: hhmm(b) };
+}
+// A wall-clock day and time in TZ -> a Date.
+function localDate(day, hm) {
+  const guess = Date.UTC(Number(day.slice(0, 4)), Number(day.slice(5, 7)) - 1, Number(day.slice(8, 10)), Number(hm.slice(0, 2)), Number(hm.slice(3, 5)), 0);
+  return new Date(guess - offsetMinutes(new Date(guess), TZ) * 60000);
+}
+function daysBetween(a, b) { return Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 86400000); }
+function isDay(s) { return typeof s === "string" && /^\d{4}-\d\d-\d\d$/.test(s) && isFinite(Date.parse(s + "T12:00:00Z")); }
+function storeWho(ev) { return (ev.sid !== null && ev.sid !== undefined) ? "s" + ev.sid : "v" + storeNorm(ev.venue) + "|" + String(ev.city || "").toLowerCase(); }
+function storeCents(fee) {
+  const m = /\$\s*(\d{1,4})(?:\.(\d\d))?/.exec(String(fee || ""));
+  return m ? Number(m[1]) * 100 + Number(m[2] || 0) : 0;
+}
+// digest: one daily file ({ run, store_events }); existing: the events already in this run
+// (PlayRiftbound and the old feed); today: YYYY-MM-DD in TZ. Returns the events to add.
+function storeEvents(digest, existing, today) {
+  const list = digest && Array.isArray(digest.store_events) ? digest.store_events : [];
+  const run = digest && isDay(digest.run) ? digest.run : null;
+  if (!run || !isDay(today)) return [];
+  const age = daysBetween(run, today);
+  if (age < 0 || age > STORE_POSTS.days) return [];
+  const taken = new Set();
+  for (const e of existing || []) if (e && e.day) taken.add(storeWho(e) + "|" + e.day);
+  const out = [], ids = new Set();
+  for (const x of list) {
+    if (!x || typeof x !== "object" || x.cancelled === true) continue;
+    const name = String(x.name || "").replace(/\s+/g, " ").trim().slice(0, 120);
+    const store = String(x.store || "").replace(/\s+/g, " ").replace(/ Ltd\.?$/i, "").trim().slice(0, 80);
+    const city = String(x.city || "").replace(/\s+/g, " ").trim().slice(0, 40);
+    const format = String(x.format || "");
+    const region = STORE_POSTS.cities[city.toLowerCase()];
+    if (!name || !store || !region || !isDay(x.date) || x.date < today) continue;
+    if (/\bonline\b/i.test(name) || /\bonline\b/i.test(format)) continue;
+    const t = storeTime(x.time);
+    if (!t) continue;
+    const known = RB_NORM[storeNorm(store) + "|" + city.toLowerCase()] || null;
+    const sid = known ? known.sid : storeSid(store, city);
+    if (taken.has("s" + sid + "|" + x.date) || taken.has("v" + storeNorm(store) + "|" + city.toLowerCase() + "|" + x.date)) continue;
+    const id = "st" + String(BigInt("0x" + crypto.createHash("sha256").update(storeNorm(store) + "|" + city.toLowerCase() + "|" + x.date + "|" + name.toLowerCase()).digest("hex").slice(0, 12)) % 1000000000000n).padStart(12, "0");
+    if (ids.has(id)) continue;
+    ids.add(id);
+    const start = localDate(x.date, t.start);
+    let url = null;
+    try { const u = new URL(String(x.url || "")); if (u.protocol === "https:") url = u.href.slice(0, 500); } catch (err) { url = null; }
+    out.push({
+      id: id,
+      name: name,
+      type: /\b(casual|open)\b/i.test(format) ? "open" : "other",
+      start: localIso(start),
+      end: t.end ? localIso(localDate(x.date, t.end)) : null,
+      day: x.date,
+      time: timeLabel(start),
+      venue: known ? known.venue : store,
+      city: city,
+      address: "",
+      region: region,
+      cap: null,
+      reg: 0,
+      cents: storeCents(x.fee),
+      currency: "CAD",
+      updated: null,
+      round: null,
+      wins: null,
+      sid: sid,
+      store: STORE_SHORT[String(sid)] || null,
+      src: "store",
+      url: url,
+      conf: run
+    });
+  }
+  return out;
+}
+// The digest could not be read this run: last run's store events stay while their
+// confirming run is within the days allowed, still under the store's-listing-wins rule.
+function carryStore(prevEvents, existing, today) {
+  const taken = new Set();
+  for (const e of existing || []) if (e && e.day) taken.add(storeWho(e) + "|" + e.day);
+  return (Array.isArray(prevEvents) ? prevEvents : []).filter(function (e) {
+    if (!e || e.src !== "store" || !isDay(e.conf) || !isDay(e.day) || e.day < today) return false;
+    const age = daysBetween(e.conf, today);
+    return age >= 0 && age <= STORE_POSTS.days && !taken.has(storeWho(e) + "|" + e.day);
+  });
+}
+// The newest daily file within the days allowed, or null when there is none. A missing
+// day is normal (404); anything else throws, and main carries last run's events instead.
+async function readDigest(today) {
+  const base = process.env.EVENTS_DIGEST_BASE || STORE_POSTS.base;
+  for (let back = 0; back <= STORE_POSTS.days; back++) {
+    const day = new Date(Date.parse(today + "T12:00:00Z") - back * 86400000).toISOString().slice(0, 10);
+    const res = await fetch(base + day + ".json", { headers: { "Accept": "application/json", "User-Agent": RB.ua } });
+    if (res.status === 404) continue;
+    if (!res.ok) throw new Error("digest " + day + ": HTTP " + res.status);
+    let body;
+    try { body = JSON.parse(await res.text()); } catch (err) { continue; } // a broken day: try the one before
+    if (!body || typeof body !== "object") continue;
+    if (!isDay(body.run) || body.run > day) body.run = day;
+    return body;
+  }
+  return null;
+}
+
 // ---- shaping ----
 
 function shape(raw, region) {
@@ -591,6 +744,26 @@ async function main() {
   for (const ev of moved) console.log(`usual time: ${ev.venue} ${ev.day} ${ev.riot} -> ${ev.time} (${ev.id})`);
   console.log(`usual time: ${moved.length} events shown at their store's usual time`);
 
+  // the stores' own posts (plan 2 M8.7): never fatal; a failed read keeps last run's
+  const todayK = dayKey(new Date());
+  const storePosts = { run: null, listed: 0, added: 0, error: null };
+  let posted = [];
+  try {
+    const digest = await readDigest(todayK);
+    if (digest) {
+      storePosts.run = digest.run;
+      storePosts.listed = Array.isArray(digest.store_events) ? digest.store_events.length : 0;
+      posted = storeEvents(digest, Array.from(byId.values()), todayK);
+    }
+  } catch (err) {
+    storePosts.error = err.message;
+    const prev0 = readJson(OUT_FILE);
+    posted = carryStore(prev0 && prev0.events, Array.from(byId.values()), todayK);
+    console.log("store posts not read (" + err.message + "); kept " + posted.length + " from the last run");
+  }
+  for (const ev of posted) { if (!byId.has(ev.id)) { byId.set(ev.id, ev); storePosts.added += 1; } }
+  console.log(`store posts: digest ${storePosts.run || "none"}, ${storePosts.listed} listed, ${storePosts.added} added`);
+
   const events = Array.from(byId.values()).sort(function (a, b) {
     if (a.start !== b.start) return a.start < b.start ? -1 : 1;
     return a.venue < b.venue ? -1 : a.venue > b.venue ? 1 : 0;
@@ -617,6 +790,7 @@ async function main() {
       recent: recentCounts(prevFile && prevFile.totals && prevFile.totals.recent, events.length, new Date()) },
     unknown_templates: unknown,
     old_feed_error: oldError,
+    store_posts: storePosts,
     events: events
   };
 
@@ -673,4 +847,4 @@ function recentCounts(prev, n, now) {
   return Object.keys(by).sort().map(function (d) { return { d: d, n: by[d] }; });
 }
 
-module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig };
+module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest };

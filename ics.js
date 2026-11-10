@@ -28,7 +28,9 @@ function safeId(id) {
 // An event's own page, the same rule as the calendar page's eventUrl:
 // PlayRiftbound ids ("rb" + its number) open on playriftbound.com; the old
 // locator's numeric ids keep the locator.
-function eventUrl(id) {
+// An event from a store's own post (src "store") opens that post; with no link it has no page.
+function eventUrl(id, ev) {
+  if (ev && ev.src === "store") return /^https:\/\/[^\s]+$/.test(String(ev.url || "")) ? String(ev.url) : "";
   const s = safeId(id);
   return /^rb\d+$/.test(s) ? "https://playriftbound.com/en-US/events/" + s.slice(2)
     : "https://locator.riftbound.uvsgames.com/events/" + s;
@@ -96,6 +98,12 @@ function describe(ev, checked) {
   bits.push(ev.venue + (ev.city ? ", " + ev.city : ""));
   if (ev.guess && ev.riot) bits.push("Starts at the store's usual time; PlayRiftbound shows " + ev.riot);
   if (ev.cap != null) bits.push(Math.max(0, ev.cap - (ev.reg || 0)) + " of " + ev.cap + " spots left" + (checked ? ", checked " + checked : ""));
+  if (ev.src === "store") {
+    if (ev.cents) bits.push("$" + (ev.cents / 100).toFixed(2) + " " + ev.currency);
+    bits.push("From the store's own post, not on PlayRiftbound. Check with the store before you go.");
+    if (eventUrl(ev.id, ev)) bits.push("The post: " + eventUrl(ev.id, ev));
+    return bits.join("\n");
+  }
   bits.push(ev.cents ? "$" + (ev.cents / 100).toFixed(2) + " " + ev.currency : "Free");
   bits.push("Sign up: " + eventUrl(ev.id));
   return bits.join("\n");
@@ -138,7 +146,7 @@ function buildFeed(name, events, stamp, checked) {
     lines.push("SUMMARY:" + esc(ev.name));
     lines.push("LOCATION:" + esc(ev.address || ev.venue));
     lines.push("DESCRIPTION:" + esc(describe(ev, name === null ? null : checked)));
-    lines.push("URL:" + eventUrl(ev.id));
+    if (eventUrl(ev.id, ev)) lines.push("URL:" + eventUrl(ev.id, ev));
     lines.push("CATEGORIES:" + esc(LABELS[ev.type] || LABELS.other));
     lines.push("STATUS:CONFIRMED");
     lines.push("TRANSP:OPAQUE");
