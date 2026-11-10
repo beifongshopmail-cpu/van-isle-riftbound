@@ -62,16 +62,26 @@ const RB = {
 const DROP_FLOOR = 20;
 
 // STORE-POSTED EVENTS (plan 2 M8.7, Mako 2026-11-10): a store's own posts, read from Banh
-// Mi's daily digest (public repo beifongshopmail-cpu/ravi-news, store_events). The towns
-// inside the three searches above, by lower-case name -> region; an event in any other
-// town is left out. A night must be confirmed by a digest run within DAYS days.
+// Mi's daily digest (public repo beifongshopmail-cpu/ravi-news, store_events). Every town
+// on the island, by lower-case name -> region (Mako 2026-11-10: every island event should
+// be listed; Greater Victoria is the Capital Region's towns, the rest is the island); an
+// event in any other town is left out. A night must be confirmed by a digest run within
+// DAYS days. The PlayRiftbound searches above still cover three areas only.
 const STORE_POSTS = {
   base: "https://raw.githubusercontent.com/beifongshopmail-cpu/ravi-news/main/",
   days: 7,
   cities: {
     "victoria": "victoria", "saanich": "victoria", "oak bay": "victoria", "esquimalt": "victoria",
-    "view royal": "victoria", "colwood": "victoria", "langford": "victoria",
-    "courtenay": "island", "comox": "island", "cumberland": "island", "campbell river": "island"
+    "view royal": "victoria", "colwood": "victoria", "langford": "victoria", "sidney": "victoria",
+    "north saanich": "victoria", "central saanich": "victoria", "saanichton": "victoria",
+    "brentwood bay": "victoria", "sooke": "victoria", "metchosin": "victoria", "highlands": "victoria",
+    "courtenay": "island", "comox": "island", "cumberland": "island", "campbell river": "island",
+    "nanaimo": "island", "lantzville": "island", "ladysmith": "island", "chemainus": "island",
+    "duncan": "island", "north cowichan": "island", "lake cowichan": "island", "mill bay": "island",
+    "cobble hill": "island", "shawnigan lake": "island", "parksville": "island",
+    "qualicum beach": "island", "port alberni": "island", "tofino": "island", "ucluelet": "island",
+    "port hardy": "island", "port mcneill": "island", "salt spring island": "island",
+    "gabriola": "island", "gabriola island": "island"
   }
 };
 

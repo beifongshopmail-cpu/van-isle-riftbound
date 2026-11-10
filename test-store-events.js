@@ -102,6 +102,15 @@ check("store events: a new store gets a stable id, its region from its city, and
   assert.strictEqual(fe.storeEvents(digest(), rb(), "2026-11-10").filter(function (e) { return e.name === "Thursday league"; })[0].id, n.id, "the same id on every run");
 });
 
+check("store events: every island town counts, in its area", function () {
+  const d = digest();
+  d.store_events = [["Nanaimo", "island"], ["Duncan", "island"], ["Sidney", "victoria"], ["Port Alberni", "island"], ["Vancouver", null]].map(function (c, i) {
+    return { cancelled: false, city: c[0], date: "2026-11-1" + (2 + i), fee: "", format: "casual play", name: "Night " + i, store: "Store " + i, time: "6:00 PM", url: POST };
+  });
+  const out = fe.storeEvents(d, [], "2026-11-10");
+  assert.deepStrictEqual(out.map(function (e) { return e.city + ":" + e.region; }), ["Nanaimo:island", "Duncan:island", "Sidney:victoria", "Port Alberni:island"]);
+});
+
 check("store events: a digest older than 7 days gives nothing", function () {
   assert.strictEqual(fe.storeEvents(digest(), rb(), "2026-11-17").length, 2, "7 days on, the Nov 17 and Nov 19 nights still show");
   assert.strictEqual(fe.storeEvents(digest(), rb(), "2026-11-18").length, 0, "8 days on, nothing");

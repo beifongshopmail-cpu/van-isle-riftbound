@@ -176,8 +176,13 @@ a{color:inherit;text-decoration:none}
 .ev .venue{flex:1;color:var(--muted)}
 .ev .price{font-weight:700}
 /* A STORE'S OWN POST (plan 2 M8.7): an event read from a store's post, not from PlayRiftbound,
-   says so in words on its venue line; a quiet flat tag, never a fill (a fill means chosen). */
-.ev .evsrc{flex:none;white-space:nowrap;font-weight:600;color:var(--bone);background:var(--flat);padding:1px 7px;border-radius:999px}
+   says so in words at the top right of its card, where the spots count would be; a quiet flat tag, never a fill (a fill means chosen). */
+.ev .evsrc{flex:none;white-space:nowrap;font-weight:600;letter-spacing:-.02em;color:var(--bone);background:var(--flat);padding:1px 6px;border-radius:999px}
+.ev .l1:has(.evsrc) .sp{display:none}
+.ev .l1 .evsrc{margin-left:auto}
+.ev .l1:has(.evsrc) .ty,.ev .l1:has(.evsrc) .when{white-space:nowrap}
+.ev .l3 .evsrc{display:none}
+@media (max-width:389px){.ev .l1 .evsrc{display:none}.ev .l3 .evsrc{display:inline-block}} /* a narrow phone has no room on the top line: the tag sits on the venue line instead */
 .ev .new{
   display:inline-block;vertical-align:2px;margin-left:8px;
   font-size:12px;font-weight:700;letter-spacing:.06em;
@@ -844,6 +849,12 @@ a{color:inherit;text-decoration:none}
         s1.textContent = left + " of " + ev.cap;
         l1.appendChild(s1);
       }
+      // a store's own post has no sign-up count: its tag takes that place (Mako 2026-11-10)
+      if (ev.src === "store"){
+        var sr = document.createElement("span");
+        sr.className = "evsrc"; sr.textContent = "Not on PlayRiftbound";
+        l1.appendChild(sr);
+      }
       head.appendChild(l1);
 
       var nm = document.createElement("span");
@@ -865,11 +876,7 @@ a{color:inherit;text-decoration:none}
       vn.className = "venue";
       vn.textContent = (ev.venue || "") + (ev.city ? ", " + ev.city : "");
       l3.appendChild(vn);
-      if (ev.src === "store"){
-        var sr = document.createElement("span");
-        sr.className = "evsrc"; sr.textContent = "Not on PlayRiftbound";
-        l3.appendChild(sr);
-      }
+      if (ev.src === "store") l3.appendChild(l1.querySelector(".evsrc").cloneNode(true)); // the narrow phone's copy (CSS shows one)
       var pz = money(ev);
       if (pz){
         var pe = document.createElement("span");
