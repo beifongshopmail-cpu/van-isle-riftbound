@@ -399,6 +399,10 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
   <div class="row">
+    <p class="lb">Towns</p>
+    <div class="pick" id="twlist" data-k="pick"></div>
+  </div>
+  <div class="row">
     <p class="lb">Event types</p>
     <div class="pick" id="tylist" data-k="pick"></div>
   </div>
@@ -556,7 +560,11 @@ a{color:inherit;text-decoration:none}
   for (var tk in TYPES){ if (TYPES.hasOwnProperty(tk)) TYPES[tk].lit = lighten(TYPES[tk].rgb, .40); }
 
   var EVENTS = [], META = null;
-  var scope = "victoria", selected = null, cursor = null, hidden = {}, hiddenStores = {};
+  var scope = "victoria", selected = null, cursor = null, hidden = {}, hiddenStores = {}, hiddenTowns = {};
+  // TOWNS (Mako 2026-11-10): the whole island is searched, so each town in the chosen area is its
+  // own on/off row, as Event types and Stores are. Keyed by the town's name in lower case.
+  function townKeyOf(ev){ return String(ev.city || "").trim().toLowerCase(); }
+  function off(ev){ return !!(hidden[ev.type] || hiddenStores[storeKeyOf(ev)] || hiddenTowns[townKeyOf(ev)]); }
   var locked = false;
 
   // Restored before first render, in try/catch; bad or missing data falls
@@ -581,14 +589,20 @@ a{color:inherit;text-decoration:none}
           if (typeof o.stores[i] === "string") hiddenStores[o.stores[i]] = true;
         }
       }
+      if (o.towns && o.towns.length){
+        for (i = 0; i < o.towns.length; i++){
+          if (typeof o.towns[i] === "string") hiddenTowns[o.towns[i]] = true;
+        }
+      }
     }catch(e){}
   }
   function saveFilters(){
     try{
-      var types = [], stores = [], k;
+      var types = [], stores = [], towns = [], k;
       for (k in hidden){ if (hidden.hasOwnProperty(k) && hidden[k]) types.push(k); }
       for (k in hiddenStores){ if (hiddenStores.hasOwnProperty(k) && hiddenStores[k]) stores.push(k); }
-      localStorage.setItem(FKEY, JSON.stringify({scope:scope, types:types, stores:stores}));
+      for (k in hiddenTowns){ if (hiddenTowns.hasOwnProperty(k) && hiddenTowns[k]) towns.push(k); }
+      localStorage.setItem(FKEY, JSON.stringify({scope:scope, types:types, stores:stores, towns:towns}));
     }catch(e){}
   }
   loadFilters();
@@ -670,7 +684,7 @@ a{color:inherit;text-decoration:none}
     var t = todayKey(), out = [];
     for (var i = 0; i < EVENTS.length; i++){
       var e = EVENTS[i];
-      if (e.day >= t && inScope(e) && !hidden[e.type] && !hiddenStores[storeKeyOf(e)]) out.push(e);
+      if (e.day >= t && inScope(e) && !off(e)) out.push(e);
     }
     out.sort(function(a,b){
       if (a.day !== b.day) return a.day < b.day ? -1 : 1;
@@ -1001,6 +1015,37 @@ a{color:inherit;text-decoration:none}
     }
   }
 
+  /* towns: one row per town among events in the current area, A to Z, each with its count;
+     a town never seen before has no entry in hiddenTowns, so it reads as shown */
+  function renderTowns(){
+    var t = todayKey(), counts = {}, names = {};
+    for (var i = 0; i < EVENTS.length; i++){
+      var e = EVENTS[i], k = townKeyOf(e);
+      if (!k || e.day < t || !inScope(e)) continue;
+      counts[k] = (counts[k] || 0) + 1;
+      if (!names[k]) names[k] = String(e.city).trim();
+    }
+    var keys = Object.keys(names).sort();
+    var box = document.getElementById("twlist");
+    box.innerHTML = "";
+    for (var s = 0; s < keys.length; s++){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tyrow";
+      b.setAttribute("data-town", keys[s]);
+      b.setAttribute("aria-pressed", hiddenTowns[keys[s]] ? "false" : "true");
+      var l = document.createElement("span");
+      l.className = "lab"; l.textContent = names[keys[s]];
+      b.appendChild(l);
+      var n = document.createElement("span");
+      n.className = "n mono"; n.textContent = String(counts[keys[s]] || 0);
+      b.appendChild(n);
+      b.insertAdjacentHTML("beforeend",
+        '<span class="box"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>');
+      box.appendChild(b);
+    }
+  }
+
   /* stores: a recessed track like Event types, copied verbatim, one row
      per store among events in the current area. A store never seen
      before has no entry in hiddenStores, so it reads as shown. */
@@ -1043,7 +1088,7 @@ a{color:inherit;text-decoration:none}
     var t = todayKey(), n = 0;
     for (var i = 0; i < EVENTS.length; i++){
       var e = EVENTS[i];
-      if (e.day >= t && inScope(e) && inWindow(e) && (hidden[e.type] || hiddenStores[storeKeyOf(e)])) n++;
+      if (e.day >= t && inScope(e) && inWindow(e) && off(e)) n++;
     }
     return n;
   }
@@ -1246,7 +1291,7 @@ a{color:inherit;text-decoration:none}
 
 
   function refresh(remeasure){
-    renderMonth(); renderList(); renderTypes(); renderStores();
+    renderMonth(); renderList(); renderTowns(); renderTypes(); renderStores();
     measure();
   }
 
@@ -1715,6 +1760,17 @@ a{color:inherit;text-decoration:none}
     saveFilters();
   });
 
+  document.getElementById("twlist").addEventListener("click", function(e){
+    var el = e.target;
+    while (el && el !== this && !(el.getAttribute && el.getAttribute("data-town"))) el = el.parentNode;
+    if (!el || el === this) return;
+    var k = el.getAttribute("data-town");
+    hiddenTowns[k] = !hiddenTowns[k];
+    el.setAttribute("aria-pressed", hiddenTowns[k] ? "false" : "true");
+    renderMonth(); renderList(); renderTowns();
+    saveFilters();
+  });
+
   document.getElementById("stlist").addEventListener("click", function(e){
     var el = e.target;
     while (el && el !== this && !(el.getAttribute && el.getAttribute("data-store"))) el = el.parentNode;
@@ -1735,7 +1791,7 @@ a{color:inherit;text-decoration:none}
         sc[j].setAttribute("aria-pressed", sc[j] === this ? "true" : "false");
       }
       selected = null;
-      renderSub(); renderMonth(); renderList(); renderTypes(); renderStores();
+      renderSub(); renderMonth(); renderList(); renderTowns(); renderTypes(); renderStores();
       saveFilters();
     };
   }
@@ -1757,7 +1813,7 @@ a{color:inherit;text-decoration:none}
     var first = visible()[0];
     if (first){ var p = parseKey(first.day); cursor = {y:p.y, m:p.m}; }
     else { var d = new Date(); cursor = {y:d.getFullYear(), m:d.getMonth()}; }
-    renderMonth(); renderList(); renderTypes(); renderStores(); renderSub(); renderStamp();
+    renderMonth(); renderList(); renderTowns(); renderTypes(); renderStores(); renderSub(); renderStamp();
     requestAnimationFrame(measure);
     liveScan();
     setInterval(liveScan, 60000);

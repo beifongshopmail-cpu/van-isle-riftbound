@@ -18,6 +18,10 @@ const STORE_SHORT = {
   "4294": "Skyhaven",
   // a PlayRiftbound store with no old id is keyed by its PlayRiftbound organizer id (plan 2 M5)
   "019fb060-927e-7709-b9cb-32c53ec8c895": "Elite4",
+  // the rest of the island, searched from 2026-11-10
+  "019fb060-93e6-7a79-a82a-fc4762d7e46e": "Sports Card Alley",
+  "01a0310f-8c3a-78f3-a379-1c67b942326c": "Card Corner",
+  "01a02b42-28ed-7be5-a65a-49431ed2f88f": "Fort Game Cafe",
   // a store known only from its own posts is keyed by the id storeSid gives it (plan 2 M8.7)
   "st-rottys-creations-victoria": "Rotty's"
 };
