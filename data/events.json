@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-10T20:46:54.794Z",
- "generated_local": "2026-11-10T13:46:54-07:00",
+ "generated_at": "2026-11-10T21:26:33.212Z",
+ "generated_local": "2026-11-10T14:26:33-07:00",
  "window_start": "2026-11-10T07:00:00.000Z",
  "anchors": [
   {
@@ -1582,7 +1582,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 4,
+   "reg": 5,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
