@@ -67,6 +67,11 @@
       "date": "2026-11-10",
       "items": [
         {
+          "page": "trade",
+          "t": "Trade is now Appraise",
+          "d": "The page that prices a trade is named Appraise, so it reads apart from Exchange, where you find people to trade with."
+        },
+        {
           "page": "news",
           "t": "News tidied",
           "d": "A post's whole headline shows in its menu, a story Riot posted twice is one post, and Rules and Event posts wear their pages' colours."

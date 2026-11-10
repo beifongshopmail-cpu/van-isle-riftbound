@@ -251,7 +251,7 @@ window.RAVI_PAGES = [
   {id:"counter", name:"Tracker", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, hue:"garnet"}, // Tracker (Mako 2026-11-09: Game renamed),
   {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, hue:"lime"},
   {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, hue:"orchid"},
-  {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, hue:"violet"},
+  {id:"trade", name:"Appraise", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, hue:"violet"}, // Appraise (Mako 2026-11-10: Trade renamed; the id, folder and storage keys keep trade)
   {id:"board", name:"Exchange", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Exchange (Mako 2026-11-09: Trade board renamed); Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},

@@ -696,7 +696,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var busy = cur && ((Array.isArray(cur.s1) && cur.s1.length) || (Array.isArray(cur.s2) && cur.s2.length));
     if (busy && !(ARMED && Date.now() - ARMED < 3000)) {
       ARMED = Date.now(); b.classList.add("armed"); b.textContent = "Sure? Tap again";
-      $("bpricemsg").hidden = false; $("bpricemsg").textContent = "This replaces the trade in progress on the Trade page.";
+      $("bpricemsg").hidden = false; $("bpricemsg").textContent = "This replaces the trade in progress on the Appraise page.";
       setTimeout(function(){ if (Date.now() - ARMED >= 3000) { b.classList.remove("armed"); b.textContent = "Price this trade"; $("bpricemsg").hidden = true; } }, 3100);
       return;
     }
