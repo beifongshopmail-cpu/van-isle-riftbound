@@ -1,8 +1,8 @@
-# RAVI style notes: New here
+# RAVI style notes: Guide
 
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
-New here (start/index.html)
+Guide (start/index.html)
 - New to RAVI opens with What RAVI is, then Setup: one line and Set up RAVI (.pact, #nsetup: a lone action), which runs the first-time setup again (account.js RAVI_SETUP.open; plan 2 M6 block 6).
 - Two guides on one track (.gsel: New to Riftbound, New to RAVI; #ravi opens the second; vir.start.guide.v1 keeps the last one).
 - New to Riftbound runs: What Riftbound is, then How to play, then At the store (Try it first, Your first deck, Signing up, Kinds of events, What to bring, The rules). No opening line over the guide track (plan 2 M8.7 B5). At the store's cards keep their first lines and link row; the rest folds under More as How to play's (plan 2 M8.7 B4). Kinds of events gives each kind its calendar mark (.nkd .nkm, 12, its colour lifted .40 toward white) in the app's order (M8.7 C8). Every link to Events reads Find events (C7). New to RAVI waits for its own guided tour (Mako 2026-11-08: NEXT -- a guided tour of RAVI). How to play and At the store are labels over their cards (.lb.nprt, muted). (plan 2 M6 block 5; Mako's yes 2026-11-03)
