@@ -69,6 +69,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bside i{font-style:normal;font-family:var(--disp);font-weight:600;font-size:13px;display:flex;align-items:center;gap:4px}
 .bside i .cvr{width:16px;height:16px;flex:none}
 .bsay{text-align:center}
+.bsee{margin-top:14px}
 /* a player's card: their picture and name (opens the trade), then a shelf per direction */
 .bt{border-radius:22px;padding:4px 0 12px;min-width:0}
 .bwho{display:flex;align-items:center;gap:10px;width:100%;min-height:var(--sz-row);padding:6px 14px;margin:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -514,16 +515,19 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var list = DATA.traders.filter(traderHits).map(function(t, n){ return { t: t, n: n, s: cardsScore(t.has.concat(t.wants)) }; });
     list.sort(function(a, b){ return b.t.two - a.t.two || near(b.t) - near(a.t) || sg() * (sk() === "name" ? whoCmp(a.t, b.t) : b.s - a.s) || a.n - b.n; });
     list = list.map(function(x){ return x.t; });
-    if (!DATA.me.have && !DATA.me.want) {
-      // nothing to match yet: the two halves of a match as the two sides, each the way to fill it (Mako 2026-11-09)
-      $("blist").innerHTML = '<div class="bstart">'
-        + '<a class="bside cg glass" href="../collection/" style="--c:var(--ycr)" data-k="do"><b>You want</b><span>Put cards on your Wishlist</span><i>Add cards' + CVR + '</i></a>'
-        + '<a class="bside cg glass" href="../collection/" style="--c:var(--tcr)" data-k="do"><b>You have</b><span>Mark a binder For trade</span><i>Pick a binder' + CVR + '</i></a></div>'
-        + '<p class="bnote bsay">The Exchange finds players who have what you want and want what you have.</p>';
+    if (!list.length && Q) {
+      $("blist").innerHTML = '<div class="bempty glass"><p>No player or card matches your search.</p></div>';
       return "";
     }
     if (!list.length) {
-      $("blist").innerHTML = '<div class="bempty glass"><p>' + (Q ? "No player or card matches your search." : "No matches yet. Players shows everyone sharing cards for trade.") + '</p></div>';
+      // no match yet: the two halves of a match as the two sides, each saying where it stands and the way
+      // to fill it; then the way to everyone sharing (Mako 2026-11-09: appealing while empty)
+      var w = DATA.me.want, hv = DATA.me.have;
+      $("blist").innerHTML = '<div class="bstart">'
+        + '<a class="bside cg glass" href="../collection/" style="--c:var(--ycr)" data-k="do"><b>You want</b><span>' + (w ? plural(w, "card", "cards") + " on your Wishlist" : "Put cards on your Wishlist") + '</span><i>' + (w ? "Add more" : "Add cards") + CVR + '</i></a>'
+        + '<a class="bside cg glass" href="../collection/" style="--c:var(--tcr)" data-k="do"><b>You have</b><span>' + (hv ? plural(hv, "card", "cards") + " for trade" : "Mark a binder For trade") + '</span><i>' + (hv ? "Add more" : "Pick a binder") + CVR + '</i></a></div>'
+        + '<p class="bnote bsay">' + (w || hv ? "No matches yet. " : "") + 'The Exchange finds players who have what you want and want what you have.</p>'
+        + '<button type="button" class="pact btn glass bsee" data-see="players" data-k="do">See all players</button>';
       return "";
     }
     $("blist").innerHTML = list.map(function(t){
@@ -1292,6 +1296,8 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
 
   // ---- TAPS ----
   document.addEventListener("click", function(ev){
+    var see = ev.target.closest("[data-see]");
+    if (see) { var sb = $("bview").querySelector('button[data-v="' + see.getAttribute("data-see") + '"]'); if (sb) { sb.click(); } return; }
     var t = ev.target.closest("#bview > button,.bwho,[data-c],.door[data-who],#bprice,#bmake,#bqx");
     if (!t) { return; }
     if (t.id === "bqx") { $("bq").value = ""; Q = ""; t.disabled = true; draw(); return; }

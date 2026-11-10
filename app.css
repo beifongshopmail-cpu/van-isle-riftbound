@@ -703,6 +703,9 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
    own content (a Rules article, a News post) sets its colour itself, and even there the controls stay plain:
    the X, Back and any button (Mako 2026-11-09: App settings' menus, Rules' X) */
 .panel{--tint:transparent}
+/* a menu wears the sticky plates' grey, so it reads as a menu over dark content too (Mako 2026-11-09 22:54) */
+.panel.frost{background:var(--plate-solid)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.panel.frost{background:var(--plate-glass)}}
 .panel :is(.btn,.circ):not(.door){--tint:transparent}
 .panel.acct .phead{min-height:56px;padding-right:68px;box-sizing:border-box}
 .acn{display:flex;flex-direction:column;gap:2px;min-width:0}
