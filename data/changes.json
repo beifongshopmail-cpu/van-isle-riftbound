@@ -8,6 +8,11 @@
     },
     {
       "page": "app",
+      "t": "A Cards page",
+      "d": "Every card in one place: its text, printings, price, legality and rulings."
+    },
+    {
+      "page": "app",
       "t": "Use RAVI offline",
       "d": "The app opens and works with no connection."
     },
@@ -30,9 +35,54 @@
       "page": "app",
       "t": "RAVI on the App Store",
       "d": "Install it from the store as well as from the web."
+    },
+    {
+      "page": "counter",
+      "t": "Tracker for 2v2 and more players",
+      "d": "Keep score for two against two and for three or four players."
+    },
+    {
+      "page": "collection",
+      "t": "Price alerts on your Wishlist",
+      "d": "An alert when a card on your Wishlist moves in price."
+    },
+    {
+      "page": "calendar",
+      "t": "New event alerts",
+      "d": "An alert when a store you follow posts a new event."
+    },
+    {
+      "page": "app",
+      "t": "A Stores page",
+      "d": "Each store's address, hours and next events, every store alike."
+    },
+    {
+      "page": "app",
+      "t": "Privacy and terms",
+      "d": "One plain page on what RAVI keeps and the terms of using it."
     }
   ],
   "shipped": [
+    {
+      "date": "2026-11-10",
+      "items": [
+        {
+          "page": "news",
+          "t": "News tidied",
+          "d": "A post's whole headline shows in its menu, a story Riot posted twice is one post, and Rules and Event posts wear their pages' colours."
+        },
+        {
+          "page": "tier",
+          "t": "Tier list search shows only matches",
+          "d": "Tiers with no match fold away while you search."
+        },
+        {
+          "page": "collection",
+          "t": "Build a deck from Collection",
+          "d": "Add a deck now offers a way to Decks when you have none."
+        }
+      ]
+    },
     {
       "date": "2026-11-09",
       "items": [
