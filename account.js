@@ -485,8 +485,8 @@
       acsu4: suHead("Your hub", 4) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
         '<p class="pnote">Drag a block to move it, or down here to take it off. Or tap one, then another.</p>' +
         '<button type="button" class="pact btn glass acgap" id="acsuhuboff" data-k="do" disabled>Take off the hub</button></div>' + suFoot(4),
-      acsu5: suHead("All set", 0) + '<div class="pbody"><p class="pnote">New here has guides to Riftbound and to RAVI, and runs this setup again.</p>' +
-        '<div class="doors acgap" data-k="deeper"><a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">New here</span><span class="sp"></span>' + CV + '</a></div></div>' +
+      acsu5: suHead("All set", 0) + '<div class="pbody"><p class="pnote">The Guide covers Riftbound and RAVI, and runs this setup again.</p>' +
+        '<div class="doors acgap" data-k="deeper"><a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">Guide</span><span class="sp"></span>' + CV + '</a></div></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsudone" data-k="do">Done</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Trade board shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',

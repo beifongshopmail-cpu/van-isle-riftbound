@@ -22,9 +22,10 @@
   --ground:#08090A;            /* near-void. Chosen over #121316 and #17191C */
   --bone:#EDEAE3; --ink:#121316; --muted:#A4A7AD; --faint:#4A4E55; --track:#2A2D32; --hi:#34383E;
   /* identity colours: players, event types, over-time */
-  --p1:#5DA5EE; --p2:#EE5F9C;                               /* player 1 and Yours blue, player 2 and Theirs pink */
-  --p1t:rgba(93,165,238,.14); --p2t:rgba(238,95,156,.14);   /* score-button stain ("light") */
-  --p1r:rgba(93,165,238,.50); --p2r:rgba(238,95,156,.50);   /* score-button press */
+  --p1:#5989F6; --p2:#FE5C8B;                               /* player 1 and Yours blue, player 2 and Theirs pink (pages.js RAVI_PLAYER_COLOURS) */
+  --p1t:rgba(89,137,246,.14); --p2t:rgba(254,92,139,.14);   /* score-button stain ("light") */
+  --p1r:rgba(89,137,246,.50); --p2r:rgba(254,92,139,.50);   /* score-button press */
+  --rb1:#5DA5EE; --rb2:#EE5F9C;                             /* the badge's own blue and pink (RA, VI, its rim): the brand, not the players */
   --over:#E5484D;
   /* THE GLASS RECIPE ("specular"): near-clear body, light caught along the top curve fading
      down the sides, a faint return at the base, a soft glow inside the base. No full outline. */
@@ -319,10 +320,10 @@ html.lock,html.lock body{overflow:hidden}
 .rbg::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--rim-light);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
 .rbs{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible;z-index:1}
-.rbl .c1{fill:var(--p1)}
+.rbl .c1{fill:var(--rb1)}
 /* the name is a picture: holding it never selects its hidden words (Mako's shot 2026-11-01: a blue box) */
 .wm,.hubname,.gwname{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.rbl .c2{fill:var(--p2)}
+.rbl .c2{fill:var(--rb2)}
 
 /* THE WORDMARK ROW. App chrome, not a title block: one thin row carrying
    the badge and nothing else, scrolling away with the page. The badge (36)

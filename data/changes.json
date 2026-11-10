@@ -34,6 +34,26 @@
   ],
   "shipped": [
     {
+      "date": "2026-11-09",
+      "items": [
+        {
+          "page": "app",
+          "t": "Pages sorted into groups",
+          "d": "Go to lists pages in six groups: playing, competitive, trading, your cards, learning, and about the app."
+        },
+        {
+          "page": "app",
+          "t": "New page names",
+          "d": "Game is now Tracker and New here is now Guide."
+        },
+        {
+          "page": "app",
+          "t": "Player colours refreshed",
+          "d": "Your colour, the Tracker's sides and Trade's sides use new colours that match the app's palette."
+        }
+      ]
+    },
+    {
       "date": "2026-11-08",
       "items": [
         {

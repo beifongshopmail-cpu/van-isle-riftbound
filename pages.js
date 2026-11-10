@@ -212,11 +212,17 @@ window.RAVI_PALETTES = {
   // colour is the one farthest from all the others as the hub's glass draws it (.30 over the ground),
   // no two sharing a hue (rb-tools design/colour/wide.py, HGAP 20): near-white, orchid, aqua,
   // raspberry, royal blue, olive, sage, and deep teal 28,110,128 in reserve. Worst pair in the hub's
-  // glass .056 (round 1: .040), bare .152 (round 1: .103). Chat's values, as built, not chosen.
+  // glass .056 (round 1: .040), bare .152 (round 1: .103). Round 3, by group (Mako 2026-11-09 20:02):
+  // each group a rune and a family of its colours, Mako's picks: Playing (Chaos) Events purple,
+  // Tracker orchid; Competitive (Fury) Top cut red, Tier list raspberry; Trading (Order) Trade yellow,
+  // Trade board mustard; Your cards (Body) Collection orange, Decks near-white (so a deck's own
+  // domains lead); Learning (Mind) Rules sky blue, News royal blue, Guide pale blue; About and info
+  // (Calm) App settings green, Feedback sage. Chat measured and moved three (Trade gold to yellow,
+  // Trade board burnt orange to mustard, Guide indigo to pale blue); worst pair in glass .056.
   lit14: { name: "Runes lit 14",
     hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "67,248,242", rust: "172,19,119", sky: "63,175,243", lime: "105,116,3", orchid: "250,144,248", lilac: "21,77,233",
       order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
-    pages: { calendar: "251,213,48", counter: "249,53,52", trade: "153,100,229", decks: "255,145,39", rules: "63,175,243", start: "113,202,93", settings: "254,230,252", collection: "172,19,119", feedback: "91,159,134", news: "67,248,242", tier: "21,77,233", board: "250,144,248", cut: "105,116,3" } },
+    pages: { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" } },
   synth: { name: "Synthwave",
     hues: { gold: "249,224,63", garnet: "251,43,154", violet: "142,61,232", tangerine: "255,127,22", jade: "27,229,238", mint: "55,216,201", rust: "213,40,206", sky: "12,193,253", lime: "213,228,63", orchid: "190,81,233", lilac: "152,157,255" },
     pages: { calendar: "249,224,63", counter: "251,43,154", trade: "142,61,232", board: "255,127,22", feedback: "174,150,218", rules: "27,229,238", decks: "55,216,201", collection: "213,40,206", start: "12,193,253", cut: "255,82,99", tier: "190,81,233", news: "152,157,255", settings: "220,209,244" } },
@@ -243,22 +249,25 @@ window.RAVI_PAGE_RGB = {};
 })();
 window.RAVI_HUE = function(name){ return window.RAVI_HUES[name] || window.RAVI_HUES.white; };
 
-// The hub's page list. Add a line here to add a page to the hub.
+// The hub's page list, in Go to's order: the six groups, each a rune (Mako 2026-11-09): Playing
+// (Events, Tracker), Competitive (Top cut, Tier list), Trading (Trade, Trade board), Your cards
+// (Collection, Decks), Learning (Rules, News, Guide), About and info (Feedback, App settings).
+// Add a line here to add a page to the hub.
 // A line with an empty path is a dead placeholder. Replace one to add a page.
 // icon is a getter so each use gets its own mask ids (see THE ICONS above).
 window.RAVI_PAGES = [
   {id:"calendar", name:"Events", path:"calendar/", get icon(){ return window.RAVI_ICON("events"); }, hue:"gold"},
-  {id:"counter", name:"Game", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, hue:"garnet"},
-  {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, hue:"violet"},
-  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
-  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, hue:"slate", glass:true}, // Slate (plan 2 M8, Mako 2026-11-04: a dull colour; was Cobalt, too close to Trade)
-  {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, hue:"jade", glass:true},
-  {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},
-  {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
-  {id:"start", name:"New here", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, hue:"sky", glass:true}, // Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)
+  {id:"counter", name:"Tracker", path:"counter/", get icon(){ return window.RAVI_ICON("game"); }, hue:"garnet"}, // Tracker (Mako 2026-11-09: Game renamed),
   {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, hue:"lime"},
   {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, hue:"orchid"},
+  {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, hue:"violet"},
+  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
+  {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
+  {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},
+  {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, hue:"jade", glass:true},
   {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, hue:"lilac"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
+  {id:"start", name:"Guide", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, hue:"sky", glass:true}, // Guide (Mako 2026-11-09: New here renamed); Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)
+  {id:"feedback", name:"Feedback", path:"feedback/", get icon(){ return window.RAVI_ICON("feedback"); }, hue:"slate", glass:true}, // Slate (plan 2 M8, Mako 2026-11-04: a dull colour; was Cobalt, too close to Trade)
   {id:"settings", name:"Settings", path:"settings/", get icon(){ return window.RAVI_ICON("settings"); }, hue:"ice", glass:true}
 ];
 (function(){ var l = window.RAVI_PAGES, i; for (i = 0; i < l.length; i++) { if (l[i].hue) { l[i].rgb = window.RAVI_PAGE_RGB[l[i].id] || window.RAVI_HUE(l[i].hue); } } })();   // each page's colour, from the colour table
@@ -397,16 +406,19 @@ window.RAVI_SKEL = function(parts){
 // ids of pages with a path count, once each, the first seven; anything that is not a list falls
 // back to the default. RAVI_HUB_PICKS() returns the ids in page order, whatever order was saved.
 // THE PLAYER COLOURS (plan 2 M8 block 2): your colour on your Profile, the counter's swatches, a
-// player's card on the Trade board. Eight from the palette that read as text on the ground (contrast
-// 6 or more); blue and pink first, the counter's defaults. Keys match the server's COLOURS.
+// player's card on the Trade board. Eight that read as text on the ground (contrast 6 or more); blue
+// and pink first, the counter's defaults. Keys match the server's COLOURS and never change (a saved
+// pick keeps its key); names and values follow the palette (Mako 2026-11-09: the pickers match the
+// Runes lit palette): yellow, orange, green and aqua are its colours; blue moved off Rules' sky blue
+// (.10 apart in OKLab, STYLE section 4), pink to the palette's rose, purple lifted to read as text.
 window.RAVI_PLAYER_COLOURS = [
-  {k:"blue", name:"Blue", rgb:"93,165,238", hex:"#5DA5EE"},
-  {k:"pink", name:"Pink", rgb:"238,95,156", hex:"#EE5F9C"},
-  {k:"gold", name:"Gold", rgb:"255,200,40", hex:"#FFC828"},
-  {k:"tangerine", name:"Tangerine", rgb:"255,150,40", hex:"#FF9628"},
-  {k:"lime", name:"Lime", rgb:"170,210,60", hex:"#AAD23C"},
-  {k:"mint", name:"Mint", rgb:"80,230,170", hex:"#50E6AA"},
-  {k:"orchid", name:"Orchid", rgb:"215,90,230", hex:"#D75AE6"},
+  {k:"blue", name:"Blue", rgb:"89,137,246", hex:"#5989F6"},
+  {k:"pink", name:"Pink", rgb:"254,92,139", hex:"#FE5C8B"},
+  {k:"gold", name:"Yellow", rgb:"255,232,21", hex:"#FFE815"},
+  {k:"tangerine", name:"Orange", rgb:"255,145,39", hex:"#FF9127"},
+  {k:"lime", name:"Green", rgb:"113,202,93", hex:"#71CA5D"},
+  {k:"mint", name:"Aqua", rgb:"67,248,242", hex:"#43F8F2"},
+  {k:"orchid", name:"Purple", rgb:"183,102,253", hex:"#B766FD"},
   {k:"white", name:"White", rgb:"240,240,245", hex:"#F0F0F5"}
 ];
 // one colour by its key (null when it is not one); RAVI_MY_COLOUR(): your own, from your account
@@ -439,7 +451,9 @@ window.RAVI_HUB_KEY = "vir.hub.blocks.v1";
 window.RAVI_HUB_MAX = 7;
 // New here took App settings' default place (2026-10-27): a newcomer sees it first; App settings
 // stays in All pages and can be picked back.
-window.RAVI_HUB_DEFAULT = ["calendar", "counter", "trade", "rules", "decks", "collection", "start"];
+// The default seven follow Go to's groups (Mako 2026-11-09): Events, Tracker, Trade, Collection, Decks,
+// Rules, Guide.
+window.RAVI_HUB_DEFAULT = ["calendar", "counter", "trade", "collection", "decks", "rules", "start"];
 window.RAVI_HUB_PICKS = function(){
   var pages = window.RAVI_PAGES || [], raw = null, list, want = {}, out = [], i;
   try { raw = localStorage.getItem(window.RAVI_HUB_KEY); } catch (e) {}

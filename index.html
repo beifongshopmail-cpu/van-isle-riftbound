@@ -406,7 +406,7 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
    intro, the drawn rim fading out. Off for reduced motion (no .flow). */
 @property --rf{syntax:"<angle>";inherits:false;initial-value:0deg}
 .rb.flow::after{content:"";position:absolute;inset:9% 4%;border-radius:999px;padding:2.5px;z-index:1;pointer-events:none;
-  background:conic-gradient(from calc(var(--rf) + 315deg),var(--p1) 0deg,rgba(93,165,238,.35) 90deg,rgba(238,95,156,.35) 90deg,var(--p2) 180deg,rgba(238,95,156,.35) 270deg,rgba(93,165,238,.35) 270deg,var(--p1) 360deg);
+  background:conic-gradient(from calc(var(--rf) + 315deg),var(--rb1) 0deg,rgba(93,165,238,.35) 90deg,rgba(238,95,156,.35) 90deg,var(--rb2) 180deg,rgba(238,95,156,.35) 270deg,rgba(93,165,238,.35) 270deg,var(--rb1) 360deg);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
   animation:rbflow 8s linear infinite,rbin .4s ease-out both}
 .rb.flow .rbt,.rb.flow .rbb{animation:rbout .4s ease-out both}

@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="RAVI">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
-<title>Point Counter - RAVI</title>
+<title>Tracker - RAVI</title>
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
@@ -456,7 +456,7 @@
 <script>RAVI_BAR(document.getElementById("strip"), [
   {tag:"button", icon:"undo", a:[["class", "ic"], ["id", "undo"], ["aria-label", "Undo"], ["data-k", "slot"]]},
   {tag:"button", icon:"log", a:[["class", "ic"], ["id", "logbtn"], ["aria-label", "Log"], ["data-k", "slot"]]},
-  {tag:"button", icon:"gear", a:[["class", "ic"], ["id", "setupbtn"], ["aria-label", "Game settings"], ["data-k", "slot"], ["data-fills", "pgame"]]}
+  {tag:"button", icon:"gear", a:[["class", "ic"], ["id", "setupbtn"], ["aria-label", "Tracker settings"], ["data-k", "slot"], ["data-fills", "pgame"]]}
 ]);</script>
 
 <input type="file" id="impfile" accept="application/json,.json" style="display:none">
@@ -465,8 +465,8 @@
 <!-- GAME SETTINGS: the old setup sheet's live face, as a menu. No section
      labels: three groups (clock, timer and event; the players; what shows
      on the field), then Go to, End game and New match held in the foot. -->
-<section class="panel frost" id="pgame" aria-hidden="true" aria-label="Game settings">
-  <div class="phead"><h4 class="ttl">Game settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pgame" aria-hidden="true" aria-label="Tracker settings">
+  <div class="phead"><h4 class="ttl">Tracker settings</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <!-- GO TO, one row deeper (plan 2 M8.7 A2): the Game page's strip has no Go to slot, and its
          thirteen tiles in the foot left the settings less than half the menu -->
@@ -1042,7 +1042,7 @@
   // made against (set keeps that colour's key, "" for none): change it on Profile and both sides
   // follow it again (Mako's phone check 2026-11-04).
   var SWATCH = (window.RAVI_PLAYER_COLOURS || []).map(function(c){ return c.hex; });
-  if (SWATCH.length < 2) { SWATCH = ["#5DA5EE","#EE5F9C"]; }
+  if (SWATCH.length < 2) { SWATCH = ["#5989F6","#FE5C8B"]; }
   var players = { 1:{ name:"", legend:"", art:"", colour:SWATCH[0], set:false },
                   2:{ name:"", legend:"", art:"", colour:SWATCH[1], set:false } };
   function myKey(){ var m = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null; return m ? m.k : ""; }

@@ -74,7 +74,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
    thing wears its colour, as Events' cards and Rules' sections: The event Events' gold, Your record your
    own colour; Your finishes mixes outcomes, so it stays plain and its pills carry the colour. */
 :where(html.cnew) #sev{--sc:var(--h-gold)}
-:where(html.cnew) #srec{--sc:var(--ycr,93,165,238)}
+:where(html.cnew) #srec{--sc:var(--ycr,89,137,246)}
 :where(html.cnew) :is(#sev,#srec){--tint:transparent;--muted:#DCDEE2;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
 </style>
 </head>
@@ -103,7 +103,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   </section>
 
   <footer class="foot">
-    <p>Players, Swiss rounds and whether there is a top cut from the event on PlayRiftbound; your record from the matches you tagged to it on the Game page.</p>
+    <p>Players, Swiss rounds and whether there is a top cut from the event on PlayRiftbound; your record from the matches you tagged to it on the Tracker.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -369,7 +369,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       $("recnote").textContent = "From the event page: your record " + liveInfo.rec.w + "-" + liveInfo.rec.l + "-" + liveInfo.rec.d + " after " + liveInfo.rec.rounds + (liveInfo.rec.rounds === 1 ? " round" : " rounds") + ". The steppers change it here only.";
     } else {
     $("recnote").hidden = !rec.n;
-    $("recnote").textContent = rec.n ? "From the Game page: " + rec.n + (rec.n === 1 ? " match" : " matches") + " tagged to this event (" + rec.w + "-" + rec.l + "-" + rec.d + "). The steppers change it here only." : "";
+    $("recnote").textContent = rec.n ? "From the Tracker: " + rec.n + (rec.n === 1 ? " match" : " matches") + " tagged to this event (" + rec.w + "-" + rec.l + "-" + rec.d + "). The steppers change it here only." : "";
     }
     var out = $("fin");
     if (!st.k) { out.innerHTML = '<p class="cnote">No top cut, so no finishes to work out.</p>'; return; }
