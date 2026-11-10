@@ -813,6 +813,8 @@ input[type="file"]{display:none}
     el("firsttx").textContent = SET.view === "wish"
       ? "Cards you want go here."
       : "Add cards and sealed product while browsing every one, add a whole deck, or bring your collection over from Collectr.";
+    // Collectr brings in cards you own, so the Wishlist's empty state leaves that row out (M8.7 A7)
+    var fimp = document.querySelector("#first [data-act=import]"); if(fimp) fimp.hidden = SET.view === "wish";
     el("hsf").hidden = empty; el("hview").hidden = empty;
     if(empty){ selEnd(); return; }
     // while searching, the results sit right under the plate: the value, the bars and Movers step aside
@@ -1177,7 +1179,7 @@ input[type="file"]{display:none}
     el("decklist").innerHTML = ds.length ? ds.map(function(d){
       var r = deckCards(d), n = 0; Object.keys(r.cards).forEach(function(k){ n += r.cards[k]; });
       return '<button type="button" class="door btn glass act" data-act="adddeck" data-id="' + esc(d.id) + '"><span class="t">' + esc(d.name || "Untitled deck") + '</span><span class="sp"></span><small>' + n + (n === 1 ? " card" : " cards") + '</small></button>';
-    }).join("") : '<p class="cempty" style="padding:12px 16px">No decks yet. Build one on the Decks page.</p>';
+    }).join("") : '<a class="door btn glass" href="../decks/" data-k="deeper"><span class="t">Build a deck</span><span class="sp"></span><small>No decks yet</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a>';
     el("decknote").textContent = "Adds every card of the deck to " + targetName() + ".";
   }
 

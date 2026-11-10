@@ -605,7 +605,8 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     var shared = shareState();
     if (DATA.me.want) { bits.push("Matched against your Wishlist (" + plural(DATA.me.want, "card", "cards") + ")"); }
     if (shared.binders) { bits.push((bits.length ? "and " : "Matched against ") + (shared.binders === 1 ? "your For trade binder" : "your " + shared.binders + " For trade binders")); }
-    var s = bits.length ? bits.join(" ") + "." : "";
+    // the Matched line is about Matches; Players and All cards match nothing (M8.7 A4)
+    var s = bits.length && VIEW === "match" ? bits.join(" ") + "." : "";
     if (!DATA.saved) { s += (s ? " " : "") + "Others can't see your cards until you save your account."; }
 
     if (DATA.me.pich) { s = "Your picture is hidden from other players for now, after reports." + (s ? " " + s : ""); }

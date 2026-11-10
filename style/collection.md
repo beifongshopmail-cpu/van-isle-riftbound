@@ -12,6 +12,7 @@ Collection (collection/index.html)
 - An empty Collection offers Add cards, Add a deck and Import from Collectr as one glass group of action rows (.doors .door.act; plan 2 M8.7 B6).
 - Collection: a tile and a List row word a total the same way, "$x for 3"; Edit binders is reached only from the binder pill's menu. (Mako's yes 2026-10-25)
 
+- Empty states (plan 2 M8.7 A6, A7; Mako's yes 2026-11-10): Add a deck with no decks is one row, Build a deck (No decks yet at its right), that goes to Decks; the empty Wishlist leaves Import from Collectr out, since Collectr brings in owned cards.
 Page-local classes (not in app.css; not Kit parts):
 - collection/index.html: .armed .art .bhead .bin1 .bopts .boot .bsr .brw .camt .cards .cchg .cempty .cend .cgrid .chip .chw .ck .cmid .cmv .cnm .cnote .cpic .crow .cseg .csub .ctile .cval .dvrow .dvseg .dvsort .fchip .first .hchg .hfacts .hgain .hnow .hpic .hrow .isum .lpm .lq .lsteps .more .mvbox .mvh .mvsep .owd .plate .psf .rot .sel .selp .stk .stp .tcap .tnm .toast .tpr .ttot
 - collection/index.html, listed in M7 from the style-lint baseline (2026-11-04): .bbody .bin .bnone .bnote .brwon .cbox .dot .land .lbl .mk .n .none .plain .selon .sq .u .unit .v .w

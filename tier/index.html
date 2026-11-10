@@ -413,7 +413,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   // SEARCH: by any part of a legend's name, case and punctuation ignored
   function norm(v){ return String(v).toLowerCase().replace(/[^a-z0-9]/g, ""); }
   function filter(){
-    var q = norm($("tq").value);
+    var q = norm($("tq").value), total = 0;
     $("tqx").disabled = !$("tq").value;
     Array.prototype.forEach.call(document.querySelectorAll("#tiers .trow, #tiers .tlist"), function(row){
       var tiles = row.querySelectorAll(".tleg"), shown = 0, i;
@@ -422,11 +422,15 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         tiles[i].hidden = !hit;
         if (hit) { shown++; }
       }
-      var nm = row.querySelector(".tnone.nomatch");
-      if (nm) { nm.hidden = !(tiles.length && !shown); }
+      // a tier with nothing to show folds away while searching (M8.7 A2); one line says so when none match
+      row.hidden = !!q && !shown;
+      total += shown;
       var st = row.querySelector(".tstrip");
       if (st) { st.scrollLeft = 0; }
     });
+    var none = $("tqnone");
+    if (!none) { none = document.createElement("p"); none.id = "tqnone"; none.className = "tempty glass"; none.textContent = "No legend matches."; $("tiers").parentNode.insertBefore(none, $("tiers").nextSibling); }
+    none.hidden = !(q && !total && document.querySelector("#tiers .trow, #tiers .tlist"));
     fades();
   }
   $("tq").addEventListener("input", filter);
@@ -450,7 +454,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
         "<button type=\"button\" class=\"tlet glass" + (rows.length ? "" : " off") + "\" data-t=\"" + t[0] + "\" data-k=\"do\" aria-haspopup=\"true\" aria-controls=\"ptier\" aria-label=\"" + esc(t[1] + ", " + cnt + ". Show all") + "\"" + (rows.length ? "" : " disabled") + ">" +
         "<b>" + t[0] + "</b></button><div class=\"tstrip\">";   // the letter alone, as any tier list draws it (plan 2 M8.7, Mako 10:13); the count is in its label
       rows.forEach(function(x){ h += tileHTML(x, t[1]); });
-      h += rows.length ? "<p class=\"tnone nomatch\" hidden>No match</p>" : "<p class=\"tnone\">No legend here right now</p>";
+      h += rows.length ? "" : "<p class=\"tnone\">No legend here right now</p>";
       h += "</div></section>";
     });
     box.innerHTML = h;
@@ -580,7 +584,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     use({ entries: r.entries, tops: r.tops, events: r.events, legends: by }, foot, name);
     box.innerHTML = "<div class=\"tlist\"><div class=\"tgrid\">" + by.map(function(x){
       return tileHTML(x, plural(x.f, "deck", "decks"), "<em class=\"tc\">" + esc(plural(x.f, "deck", "decks")) + "</em>");
-    }).join("") + "</div><p class=\"tnone nomatch\" hidden>No match</p></div>";
+    }).join("") + "</div></div>";
     filter();
   }
 

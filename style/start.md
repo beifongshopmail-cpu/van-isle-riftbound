@@ -18,6 +18,7 @@ New here (start/index.html)
 
 - How to play's eight cards each wear a palette colour as coloured glass, walking the hues: Your deck Garnet, The board Tangerine, Setting up Gold, A turn Lime, Runes Mint, Units and moving Sky, Fights Tanzanite, Scoring Orchid (plan 2 M8; Mako 2026-11-03). Keywords in the guide's own words are drawn as the cards print them (.nkw): a slanted tag in Riot's colour (sampled from the card images: teal --kwt 14,116,94 for Accelerate, Action, Reaction; crimson --kwr 204,44,104 for Tank, Assault; lime --kwg 146,176,44 for Ganking, with ink text), the word in capitals, Poppins 700 12. Riot's quoted rules keep their own text.
 
+- New to RAVI's page list has every page but itself and App settings, News after Rules (plan 2 M8.7 A3, Mako's yes 2026-11-10).
 Page-local classes (not in app.css; not Kit parts):
 - start/index.html: .nkd .nkm .nsec .ntx .gsel .guide (two guides on one track: New to Riftbound, New to RAVI; #ravi opens the second)
 - start/index.html, the colour trial (plan 2 M8.7): .npc (a page's coloured chip on The pages' rows, shown while New is on)

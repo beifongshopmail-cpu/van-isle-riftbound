@@ -12,6 +12,7 @@ Calendar (calendar/index.html)
 - Live's Riot name is two fields (.rid: Riot name, # tag) with Find me under them, as Profile (plan 2 M8.7 B8); with no name the foot's line reads 'Alerts need your Riot name.'
 - NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
 
+- The Settings slot's menu is titled Events settings, the page's name (plan 2 M8.7 A5, Mako's yes 2026-11-10; code and older notes say Calendar settings).
 Page-local classes (not in app.css; not Kit parts):
 - calendar/index.html, the loading blocks (plan 2 M8.7 motion polish): .skday, the month's days as track-grey circles while the feed comes; the event list takes RAVI_SKEL cards
 - calendar/index.html: .cell .dots .ev .evact .evgoi .evhead .evlb .evlive .evpill .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .lvl .mk .mrow .spots .stick .tyrow; the Live menu #plive: .lalnote .lclk .lempty .levn .lfind .lgrp .lhd .lme .lms .lmt .ln .lp .lrow .lseg .lsmall .lst .lt .me .mine .nm .omw .pts .rs .sv .wld .won

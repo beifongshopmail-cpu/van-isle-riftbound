@@ -130,6 +130,9 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 .rtx td,.rtx th{vertical-align:top;text-align:left;padding:6px;border:1px solid rgba(255,255,255,.08)}
 .rtx a{color:var(--bone);text-decoration:underline;text-underline-offset:2px}
 .rtx img{display:block;max-width:100%;height:auto;border-radius:14px;margin:0 0 8px} /* size-exempt: Riot's pictures in its article */
+/* a post's headline is read whole in its menu: it wraps, and the X stays at the top (M8.7 A1) */
+#ppost .phead{align-items:flex-start}
+#ppost .phead .ht h4{white-space:normal;overflow:visible;line-height:1.25}
 .rsrc{margin:14px 2px 0;font-size:12px;line-height:1.5;color:var(--muted)} /* menu small print, as app.css .pnote */
 .nwatch{margin-top:12px}
 .extl{width:16px;height:16px;flex:0 0 auto;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
@@ -242,10 +245,10 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   // the page it belongs with, and its name always sits beside the colour. A new kind (local stores,
   // later) takes its own palette colour.
   var KIND = {
-    rules:        { label: "Rules",        rgb: window.RAVI_HUE("jade") },     // the Rules page's jade
-    event:        { label: "Event",        rgb: window.RAVI_HUE("gold") },    // the Events page's gold
+    rules:        { label: "Rules",        rgb: window.RAVI_HUE("sky") },      // the Rules page's blue (M8.7 A9: a kind named for a page wears that page's colour)
+    event:        { label: "Event",        rgb: window.RAVI_HUE("violet") },  // the Events page's purple (M8.7 A9)
     product:      { label: "Product",      rgb: window.RAVI_HUE("tangerine") }, // Collection's orange (2026-11-09)
-    announcement: { label: "Announcement", rgb: window.RAVI_HUE("sky") },    // New here's sky
+    announcement: { label: "Announcement", rgb: window.RAVI_HUE("gold") },   // gold (M8.7 A9: Rules took the blue)
     market:       { label: "Market",       rgb: window.RAVI_HUE("slate") },   // Slate
     reveal:       { label: "Reveal",       rgb: window.RAVI_HUE("mint") }     // Decks' mint: card reveals (the digest, 2026-11-08; as built, not chosen)
   };
@@ -399,6 +402,31 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 
   // a post is shown when it has words: its summary, Riot's text or its article
   function shown(it){ return !!(it && it.id && (it.sum || it.text || it.art)); }
+  // ONE STORY, ONE POST (M8.7 A8): Riot often posts a story on its site and again on a social
+  // account, and the summary gives both the same headline. Posts with one headline within a week
+  // fold into one: the one with Riot's article, else the newest, keeps its place; it takes the
+  // other's post text if it has none, and its source line names every place Riot posted it.
+  function fold(items){
+    var by = {}, out = [];
+    items.forEach(function(it){
+      var t = it && it.title ? String(it.title).trim().toLowerCase() : "", g = t && by[t], k;
+      if(g) for(k = 0; k < g.length; k++){
+        var o = g[k], gap = Math.abs(Date.parse(o.posted || "") - Date.parse(it.posted || ""));
+        if(!(gap > 7 * 864e5)){
+          var keep = o, drop = it;
+          if((!o.art && it.art) || (!o.art === !it.art && String(it.posted || "") > String(o.posted || ""))){ keep = it; drop = o; }
+          keep.also = (keep.also || []).concat(drop.url ? [drop.url] : [], drop.also || []);
+          if(!keep.text && drop.text) keep.text = drop.text;
+          if(!keep.dates && drop.dates) keep.dates = drop.dates;
+          g[k] = keep; out[out.indexOf(o)] = keep;
+          return;
+        }
+      }
+      if(t) (by[t] = by[t] || []).push(it);
+      out.push(it);
+    });
+    return out;
+  }
   function head(it){ return it.title || (it.art && it.art.title) || it.sum || it.text || ""; }
   function sub(it){ var h = head(it); return it.sum && it.sum !== h ? it.sum : ""; }
   function pic(it){ return it.art && riotPic(it.art.pic) ? it.art.pic : ""; }
@@ -597,7 +625,9 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     if(pic(it)) h += '<img class="npic" src="' + esc(pic(it)) + '" alt="">';
     if(it.text) h += '<p class="rlab">Riot\'s post</p><div class="rtx sel">' + plain(it.text) + '</div>';
     if(a) h += '<p class="rlab">' + (it.text ? "Riot's article: " + esc(a.title) : "Riot's article") + '</p><div class="rtx sel">' + clean(a.html) + '</div>';
-    h += '<p class="rsrc">' + esc(fb ? "Riot, on " + at : "Riot, on playriftbound.com") + '.' + (a && fb && !riot ? ' The article is from playriftbound.com.' : '') + '</p>';
+    var ats = [fb ? at : "playriftbound.com"];
+    (it.also || []).forEach(function(u){ var p = place(u); if(p && ats.indexOf(p) === -1) ats.push(p); });
+    h += '<p class="rsrc">' + esc("Riot, on " + (ats.length > 2 ? ats.slice(0, -1).join(", ") + " and " + ats[ats.length - 1] : ats.join(" and "))) + '.' + (a && fb && !riot ? ' The article is from playriftbound.com.' : '') + '</p>';
     // the one way out: a video to watch, or a reveal whose card is in the picture Riot posted
     // (the digest, 2026-11-08: a reveal is its picture, which RAVI does not copy)
     if(web(it.url) && !riot && (it.video || kindOf(it) === "reveal")){
@@ -708,6 +738,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   fetch("../data/feed.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
     if(!d || !Array.isArray(d.items)) throw new Error("shape");
     D = d;
+    D.items = fold(D.items);
     el("nboot").remove();
     D.items.forEach(function(it){ if(it && it.id) ITEM[it.id] = it; });
     seenStart();
