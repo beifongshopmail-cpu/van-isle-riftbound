@@ -3,13 +3,41 @@
 // Riftbound Gaming Network locator API (public, no auth).
 const API_BASE = "https://api.cloudflare.riftbound.uvsgames.com/hydraproxy/api/v2/events/";
 
-// One entry per search origin. Order is load-bearing: an event within
-// range of two anchors is attributed to whichever appears first here.
+// One entry per search origin: the whole island (Mako 2026-11-10: every island event should be
+// listed; before that, Victoria, Courtenay and Campbell River only). Each search is a circle, so
+// each is kept small enough that the mainland and the American islands stay outside it. An
+// event found by two searches is kept once. An event's area comes from its town (TOWNS below);
+// the search's region is only for a town not listed there.
 const ANCHORS = [
   { name: "Victoria",       region: "victoria", lat: 48.4335190525,  lng: -123.4028759261, miles: 10 },
+  { name: "Sidney",         region: "victoria", lat: 48.6506,        lng: -123.3986,       miles: 6 },
+  { name: "Sooke",          region: "victoria", lat: 48.3740,        lng: -123.7276,       miles: 8 },
+  { name: "Duncan",         region: "island",   lat: 48.7787,        lng: -123.7079,       miles: 15 },
+  { name: "Nanaimo",        region: "island",   lat: 49.1659,        lng: -123.9401,       miles: 20 },
+  { name: "Parksville",     region: "island",   lat: 49.3193,        lng: -124.3136,       miles: 12 },
+  { name: "Port Alberni",   region: "island",   lat: 49.2339,        lng: -124.8055,       miles: 10 },
   { name: "Courtenay",      region: "island",   lat: 49.6877,        lng: -124.9936,       miles: 10 },
-  { name: "Campbell River", region: "island",   lat: 50.0244,        lng: -125.2475,       miles: 10 }
+  { name: "Campbell River", region: "island",   lat: 50.0244,        lng: -125.2475,       miles: 10 },
+  { name: "Tofino",         region: "island",   lat: 49.1530,        lng: -125.9066,       miles: 25 },
+  { name: "Port Hardy",     region: "island",   lat: 50.7213,        lng: -127.4969,       miles: 25 }
 ];
+
+// Every town on the island, by lower-case name -> its area: Greater Victoria is the Capital
+// Region's towns, the rest is the island. A town not listed keeps its search's area and is
+// named in the run's summary and an issue (report-anomalies.js), to be added here.
+const TOWNS = {
+  "victoria": "victoria", "saanich": "victoria", "oak bay": "victoria", "esquimalt": "victoria",
+  "view royal": "victoria", "colwood": "victoria", "langford": "victoria", "sidney": "victoria",
+  "north saanich": "victoria", "central saanich": "victoria", "saanichton": "victoria",
+  "brentwood bay": "victoria", "sooke": "victoria", "metchosin": "victoria", "highlands": "victoria",
+  "courtenay": "island", "comox": "island", "cumberland": "island", "campbell river": "island",
+  "nanaimo": "island", "lantzville": "island", "ladysmith": "island", "chemainus": "island",
+  "duncan": "island", "north cowichan": "island", "lake cowichan": "island", "mill bay": "island",
+  "cobble hill": "island", "shawnigan lake": "island", "parksville": "island",
+  "qualicum beach": "island", "port alberni": "island", "tofino": "island", "ucluelet": "island",
+  "port hardy": "island", "port mcneill": "island", "salt spring island": "island",
+  "gabriola": "island", "gabriola island": "island"
+};
 
 // event_configuration_template UUID -> our category key.
 // Two Summoner Skirmish templates deliberately collapse to one key.
@@ -62,27 +90,13 @@ const RB = {
 const DROP_FLOOR = 20;
 
 // STORE-POSTED EVENTS (plan 2 M8.7, Mako 2026-11-10): a store's own posts, read from Banh
-// Mi's daily digest (public repo beifongshopmail-cpu/ravi-news, store_events). Every town
-// on the island, by lower-case name -> region (Mako 2026-11-10: every island event should
-// be listed; Greater Victoria is the Capital Region's towns, the rest is the island); an
-// event in any other town is left out. A night must be confirmed by a digest run within
-// DAYS days. The PlayRiftbound searches above still cover three areas only.
+// Mi's daily digest (public repo beifongshopmail-cpu/ravi-news, store_events). A post counts
+// from any island town (TOWNS); an event in any other town is left out. A night must be
+// confirmed by a digest run within DAYS days.
 const STORE_POSTS = {
   base: "https://raw.githubusercontent.com/beifongshopmail-cpu/ravi-news/main/",
   days: 7,
-  cities: {
-    "victoria": "victoria", "saanich": "victoria", "oak bay": "victoria", "esquimalt": "victoria",
-    "view royal": "victoria", "colwood": "victoria", "langford": "victoria", "sidney": "victoria",
-    "north saanich": "victoria", "central saanich": "victoria", "saanichton": "victoria",
-    "brentwood bay": "victoria", "sooke": "victoria", "metchosin": "victoria", "highlands": "victoria",
-    "courtenay": "island", "comox": "island", "cumberland": "island", "campbell river": "island",
-    "nanaimo": "island", "lantzville": "island", "ladysmith": "island", "chemainus": "island",
-    "duncan": "island", "north cowichan": "island", "lake cowichan": "island", "mill bay": "island",
-    "cobble hill": "island", "shawnigan lake": "island", "parksville": "island",
-    "qualicum beach": "island", "port alberni": "island", "tofino": "island", "ucluelet": "island",
-    "port hardy": "island", "port mcneill": "island", "salt spring island": "island",
-    "gabriola": "island", "gabriola island": "island"
-  }
+  cities: TOWNS
 };
 
-module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR, RB, STORE_POSTS };
+module.exports = { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, DROP_FRACTION, DROP_FLOOR, RB, STORE_POSTS, TOWNS };

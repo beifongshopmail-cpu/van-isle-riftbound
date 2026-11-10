@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, RB, STORE_POSTS } = require("./config");
+const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, RB, STORE_POSTS, TOWNS } = require("./config");
 const { writeFeeds, writeEventFiles, writeStoreFeeds } = require("./ics");
 
 // Store id -> a short display name. Keys are the same store ids sid uses.
@@ -560,7 +560,7 @@ function shape(raw, region) {
     venue: String(store.name || "").replace(/ Ltd\.?$/, "").trim(),
     city: store.city || "",
     address: store.full_address || "",
-    region: region,
+    region: TOWNS[String(store.city || "").trim().toLowerCase()] || region,
     cap: raw.capacity == null ? null : raw.capacity,
     reg: raw.registered_user_count || 0,
     cents: raw.cost_in_cents || 0,
@@ -599,7 +599,7 @@ function shapeRb(node, region) {
     venue: known ? known.venue : name,
     city: city,
     address: addr.formattedAddress || "",
-    region: region,
+    region: TOWNS[city.toLowerCase()] || region,
     cap: (typeof c.participantCapacity === "number") ? c.participantCapacity : null,
     reg: reg,
     cents: (fee && typeof fee.minorUnits === "number") ? fee.minorUnits : 0,
@@ -610,6 +610,17 @@ function shapeRb(node, region) {
     sid: known ? known.sid : (org.id || null),
     store: STORE_SHORT[String(known ? known.sid : org.id)] || null
   };
+}
+
+// The towns in this run that TOWNS (config.js) does not list, A to Z: each kept its search's
+// area, and is named in the summary and an issue so it can be added.
+function otherTowns(events) {
+  const seen = new Set();
+  for (const ev of events || []) {
+    const c = String((ev && ev.city) || "").trim();
+    if (c && !TOWNS[c.toLowerCase()]) seen.add(c);
+  }
+  return Array.from(seen).sort();
 }
 
 // One event per store and start time. PlayRiftbound is read first, so its
@@ -791,6 +802,7 @@ async function main() {
     unknown_templates: unknown,
     old_feed_error: oldError,
     store_posts: storePosts,
+    other_towns: otherTowns(events),
     events: events
   };
 
@@ -847,4 +859,4 @@ function recentCounts(prev, n, now) {
   return Object.keys(by).sort().map(function (d) { return { d: d, n: by[d] }; });
 }
 
-module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest };
+module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest, otherTowns };

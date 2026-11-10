@@ -122,16 +122,43 @@ function reportStores(payload, outDir) {
   return file;
 }
 
+// A town the island's list does not have (config.js TOWNS; the whole island is searched from
+// 2026-11-10). Its events publish under their search's area; a town off the island means a
+// search reaches too far.
+function reportTowns(payload, outDir) {
+  const towns = Array.isArray(payload.other_towns) ? payload.other_towns : [];
+  if (!towns.length) {
+    console.log("towns: every event's town is on the island's list");
+    return null;
+  }
+  const lines = [];
+  lines.push("The feed has events in a town that is not on the island's list.");
+  lines.push("");
+  for (const t of towns) lines.push("- " + String(t).replace(/[\r\n]/g, " "));
+  lines.push("");
+  lines.push("Its events publish already, under the area of the search that found them.");
+  lines.push("To finish: if the town is on the island, add it to TOWNS in config.js with its");
+  lines.push("area; if it is not, shrink the search that reaches it (ANCHORS). Then close");
+  lines.push("this issue.");
+  lines.push("");
+  lines.push("Feed generated at " + payload.generated_at + ".");
+  const file = path.join(outDir, "anomaly-towns.md");
+  fs.writeFileSync(file, lines.join("\n") + "\n", "utf8");
+  console.log("towns: " + towns.length + " not on the list, wrote " + file);
+  return file;
+}
+
 function main() {
   const outDir = process.env.RUNNER_TEMP || os.tmpdir();
   const payload = JSON.parse(fs.readFileSync(DATA, "utf8"));
   reportUnknown(payload, outDir);
   reportDrop(payload, outDir);
   reportStores(payload, outDir);
+  reportTowns(payload, outDir);
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { reportUnknown, reportDrop, reportStores };
+module.exports = { reportUnknown, reportDrop, reportStores, reportTowns };

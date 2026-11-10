@@ -51,6 +51,7 @@ jobs:
           }
           const sp = d.store_posts || {};
           lines.push('| store posts (digest ' + (sp.run || 'none') + ') | ' + (sp.added || 0) + ' of ' + (sp.listed || 0) + (sp.error ? ', not read: ' + sp.error : '') + ' |');
+          lines.push('| towns not on the list | ' + ((d.other_towns || []).join(', ') || 'none') + ' |');
           const uk = Object.keys(d.unknown_templates);
           lines.push('| unknown templates | ' + uk.length + ' |');
           if (uk.length) {
@@ -118,4 +119,16 @@ jobs:
             fi
           else
             echo "every store has a short name"
+          fi
+          TOWNBODY="$RUNNER_TEMP/anomaly-towns.md"
+          if [ -f "$TOWNBODY" ]; then
+            gh label create new-town --color 71CA5D --description "An event's town is not on the island's list" 2>/dev/null || true
+            OPENTOWN=$(gh issue list --label new-town --state open --json number --jq "length")
+            if [ "$OPENTOWN" = "0" ]; then
+              gh issue create --title "A town is not on the island's list" --label new-town --body-file "$TOWNBODY"
+            else
+              echo "a new-town issue is already open; not opening another"
+            fi
+          else
+            echo "every town is on the list"
           fi

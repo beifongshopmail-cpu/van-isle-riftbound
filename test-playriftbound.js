@@ -182,6 +182,29 @@ check("the same event from both feeds has one key", function () {
   assert.notStrictEqual(fe.eventKey(a), fe.eventKey(later));
 });
 
+check("the whole island is searched: every town with a store is inside a search (Mako 2026-11-10)", function () {
+  const { ANCHORS, TOWNS } = require("./config");
+  ["Victoria", "Sidney", "Sooke", "Duncan", "Nanaimo", "Parksville", "Port Alberni", "Courtenay", "Campbell River", "Tofino", "Port Hardy"].forEach(function (n) {
+    assert.ok(ANCHORS.some(function (a) { return a.name === n; }), "a search around " + n);
+  });
+  ANCHORS.forEach(function (a) {
+    assert.ok(a.region === "victoria" || a.region === "island", a.name + " region");
+    assert.ok(a.miles > 0 && a.miles <= 25, a.name + " reaches " + a.miles + " miles: the mainland must stay out");
+    assert.strictEqual(TOWNS[a.name.toLowerCase()], a.region, a.name + " is a town of its own area");
+  });
+  assert.strictEqual(ANCHORS[0].name, "Victoria", "Victoria is read first");
+});
+
+check("an event's area comes from its town, not from the search that found it", function () {
+  const sid = fe.shapeRb(node(function (n) { n.organizer.name = "A Sidney Store"; n.organizer.physicalAddress.city = "Sidney"; }), "island");
+  assert.strictEqual(sid.region, "victoria", "Sidney is Greater Victoria whichever search found it");
+  const nan = fe.shapeRb(node(function (n) { n.organizer.name = "A Nanaimo Store"; n.organizer.physicalAddress.city = "Nanaimo"; }), "victoria");
+  assert.strictEqual(nan.region, "island");
+  const odd = fe.shapeRb(node(function (n) { n.organizer.name = "Elsewhere"; n.organizer.physicalAddress.city = "Somewhere New"; }), "island");
+  assert.strictEqual(odd.region, "island", "a town not listed keeps its search's area");
+  assert.deepStrictEqual(fe.otherTowns([sid, nan, odd]), ["Somewhere New"]);
+});
+
 if (failures) {
   console.log("PLAYRIFTBOUND FIXTURE FAILURES: " + failures);
   process.exit(1);
