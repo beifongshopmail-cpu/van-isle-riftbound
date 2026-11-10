@@ -481,7 +481,7 @@
         '<div class="ridt"><div class="nf tall"><span class="acat">#</span><input type="text" id="acsurt" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
         '<button type="button" class="pact btn glass acgap" id="acsuclaim" data-k="do">Claim</button></div>' +
         '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2, "t"),
-      acsut: suHead("Your towns", 3) + '<div class="pbody"><div class="pick" id="acsutowns" data-k="pick" aria-label="Towns"></div><p class="pnote" id="acsutnote"></p></div>' + suFoot("t", 3),
+      acsut: suHead("Your areas", 3) + '<div class="pbody"><div class="pick" id="acsutowns" data-k="pick" aria-label="Areas"></div><p class="pnote" id="acsutnote"></p></div>' + suFoot("t", 3),
       acsu3: suHead("Alerts", 4) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" aria-pressed="false">Trade offers</button></div>' +
         '<p class="pnote" id="acsu3note"></p><p class="pnote">Live event pairings: at a live event, tap Alert me when I\'m paired.</p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3, 4),
       acsu4: suHead("Your hub", 5) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
@@ -504,7 +504,7 @@
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", acsec: "Sign-in and security", ackeys: "Passkeys", ackey: "Passkey", acdev: "Devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Recovery code", aclink: "Another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsut: "Your towns", acnotm: "Notices", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", acsec: "Sign-in and security", ackeys: "Passkeys", ackey: "Passkey", acdev: "Devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Recovery code", aclink: "Another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsut: "Your areas", acnotm: "Notices", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -1028,14 +1028,14 @@
     }
   }
   // YOUR TOWNS (Mako 2026-11-10): the towns Events lists, set on first use. The same choice as
-  // Events settings' Towns and kept in the same place (vir.cal.filters.v1, towns: the ones off).
+  // Events settings' Areas (each a town) and kept in the same place (vir.cal.filters.v1, towns: the ones off).
   var SU_FKEY = "vir.cal.filters.v1", suTownsSet = false;
   function suFilters() { var o = null; try { o = JSON.parse(root.localStorage.getItem(SU_FKEY) || "null"); } catch (e) {} return o && typeof o === "object" ? o : {}; }
   function suTowns() {
     var box = $("acsutowns"), note = $("acsutnote");
     suNext("t", suTownsSet);
     if (box.children.length) return;
-    note.textContent = "Loading towns";
+    note.textContent = "Loading areas";
     fetch(REL + "data/events.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); }).then(function (j) {
       var counts = {}, names = {}, f = suFilters(), offs = {};
       (Array.isArray(f.towns) ? f.towns : []).forEach(function (k) { if (typeof k === "string") offs[k] = true; });
@@ -1055,8 +1055,8 @@
         b.querySelector("small").textContent = String(counts[k]);
         box.appendChild(b);
       });
-      note.textContent = box.children.length ? "Events lists the towns you leave on." : "No events to show.";
-    }).catch(function () { note.textContent = "Towns need a connection. Set them later in Events settings."; });
+      note.textContent = box.children.length ? "Events lists the areas you leave on." : "No events to show.";
+    }).catch(function () { note.textContent = "Areas need a connection. Set them later in Events settings."; });
   }
   function suTownTap(b) {
     var on = b.getAttribute("aria-pressed") !== "true";
