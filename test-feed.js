@@ -91,5 +91,25 @@ check("merge: the same Riot post from both places is one item, newest first", fu
   assert.deepStrictEqual(ff.merge(out, d.concat(m)), out);
 });
 
+check("a summary cut off at the cap keeps its headline, summary and the dates that arrived whole (plan 2 M8.7 C2)", function () {
+  const cut = '{"title": "Riftbound 2026 Drawings and Bundles Coming Soon", "summary": "Riot is holding online drawings for the K/DA bundle. Entries open November 12.", "dates": [' +
+    '{"what": "entries open", "label": "K/DA drawing opens", "from": "2026-11-12", "to": null}, ' +
+    '{"what": "entries close", "label": "K/DA drawing closes", "from": "2026-11-16", "to": null}, ' +
+    '{"what": "drawing", "label": "Winners dra';
+  const r = ff.readPartial(cut);
+  assert.strictEqual(r.title, "Riftbound 2026 Drawings and Bundles Coming Soon");
+  assert.strictEqual(r.sum, "Riot is holding online drawings for the K/DA bundle. Entries open November 12.");
+  assert.deepStrictEqual(r.dates, [{ what: "entries open", label: "K/DA drawing opens", from: "2026-11-12" }, { what: "entries close", label: "K/DA drawing closes", from: "2026-11-16" }]);
+  const many = '{"title": "T", "summary": "S with a \\"quote\\" inside.", "dates": [' +
+    [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) { return '{"what": "event", "label": "E' + n + '", "from": "2026-12-0' + n + '", "to": null}'; }).join(", ") + ', {"what": "ev';
+  const m = ff.readPartial(many);
+  assert.strictEqual(m.sum, 'S with a "quote" inside.');
+  assert.strictEqual(m.dates.length, 6, "six dates at most, the soonest first");
+  assert.strictEqual(m.dates[5].from, "2026-12-06");
+  assert.throws(function () { ff.readPartial('{"title": "Only a headline", "summary": "Cut off bef'); }, /no title or summary/);
+  assert.throws(function () { ff.readPartial("Sorry, I cannot"); });
+  assert.deepStrictEqual(ff.readPartial('{"title": "A", "summary": "B.", "dates": []}'), ff.readReply('{"title": "A", "summary": "B.", "dates": []}'), "a whole reply reads the same");
+});
+
 console.log(failures ? failures + " FAILED" : "all feed checks passed");
 process.exit(failures ? 1 : 0);

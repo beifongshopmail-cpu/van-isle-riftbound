@@ -432,6 +432,28 @@ function readReply(t) {
   return { title: title, sum: sum, dates: dates };
 }
 
+// A reply cut off at the cap (plan 2 M8.7 C2; the log of 2026-11-10: a long roadmap post's reply
+// began with its whole headline and summary, then listed more dates than the cap holds). The
+// headline and summary come first, so they are whole; the dates are the soonest first, so the
+// ones that arrived whole are the ones wanted. Anything less than a whole headline and summary
+// throws, as readReply does.
+function readPartial(t) {
+  const str = function (name) {
+    const m = new RegExp('"' + name + '"\\s*:\\s*("(?:[^"\\\\]|\\\\.)*")').exec(t);
+    if (!m) { return ""; }
+    try { return JSON.parse(m[1]); } catch (e) { return ""; }
+  };
+  const dates = [];
+  const at = t.search(/"dates"\s*:\s*\[/);
+  if (at !== -1) {
+    const re = /\{[^{}]*\}/g;
+    re.lastIndex = at;
+    let m;
+    while ((m = re.exec(t))) { try { dates.push(JSON.parse(m[0])); } catch (e) { /* a broken entry: skip it */ } }
+  }
+  return readReply(JSON.stringify({ title: str("title"), summary: str("summary"), dates: dates }));
+}
+
 async function claudeSum(input, key) {
   const res = await fetch(CLAUDE + "/v1/messages", {
     method: "POST",
@@ -445,7 +467,13 @@ async function claudeSum(input, key) {
   // M8.7 C2: three long posts still stop at the cap on every run, six dates or not; the cap stays
   // until the log shows what fills it)
   if (d.stop_reason && d.stop_reason !== "end_turn") {
-    const began = (d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" ").slice(0, 120);
+    const all = (d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" ");
+    // cut off at the cap: the headline, the summary and the dates that arrived whole are kept
+    if (d.stop_reason === "max_tokens") {
+      try { const part = readPartial(all); console.log("summary cut off at the cap: kept its headline, summary and " + part.dates.length + " dates"); return part; }
+      catch (e) { /* not even a whole summary: fall back below */ }
+    }
+    const began = all.slice(0, 120);
     throw new Error("stopped: " + d.stop_reason + (began ? "; the reply began: " + began : ""));
   }
   return readReply((d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" "));
@@ -565,4 +593,4 @@ if (require.main === module) {
 }
 
 module.exports = { linksOf, norm, isRiot, kindOf, placeOf, DIGEST, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL,
-  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, readReply, MODEL };
+  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, readReply, readPartial, MODEL };
