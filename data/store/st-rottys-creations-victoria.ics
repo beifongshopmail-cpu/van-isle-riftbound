@@ -1,0 +1,63 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:RAVI - Rotty's Creations\, Victoria
+X-WR-TIMEZONE:America/Vancouver
+X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each 
+ event's own page.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:st262685341092@van-isle-riftbound
+DTSTAMP:20261110T184926Z
+DTSTART:20261111T000000Z
+DTEND:20261111T030000Z
+SUMMARY:Riftbound casual play
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12Cjk
+ fqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+URL:https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12C
+ jkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st496098811572@van-isle-riftbound
+DTSTAMP:20261110T184926Z
+DTSTART:20261118T000000Z
+DTEND:20261118T030000Z
+SUMMARY:Riftbound casual play
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12Cjk
+ fqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+URL:https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12C
+ jkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st272621717112@van-isle-riftbound
+DTSTAMP:20261110T184926Z
+DTSTART:20261125T000000Z
+DTEND:20261125T030000Z
+SUMMARY:Riftbound casual play
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12Cjk
+ fqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+URL:https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12C
+ jkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

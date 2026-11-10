@@ -11,14 +11,14 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117089941548488590@van-isle-riftbound
-DTSTAMP:20261110T080321Z
+DTSTAMP:20261110T184926Z
 DTSTART:20261114T173000Z
 DTEND:20261114T203000Z
 SUMMARY:Radiance Summoner Skirmish I
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n8 of 16 spots left\
- , checked Nov 10\, 1:03 AM\n$20.00 CAD\nSign up: https://playriftbound.com
- /en-US/events/117089941548488590
+ , checked Nov 10\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbound.co
+ m/en-US/events/117089941548488590
 URL:https://playriftbound.com/en-US/events/117089941548488590
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED
@@ -26,14 +26,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117089949895350173@van-isle-riftbound
-DTSTAMP:20261110T080321Z
+DTSTAMP:20261110T184926Z
 DTSTART:20261212T183000Z
 DTEND:20261212T213000Z
 SUMMARY:Radiance Summoner Skirmish II
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Summoner Skirmish\nElite4 Games\, Victoria\n13 of 16 spots left
- \, checked Nov 10\, 1:03 AM\n$20.00 CAD\nSign up: https://playriftbound.co
- m/en-US/events/117089949895350173
+ \, checked Nov 10\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbound.c
+ om/en-US/events/117089949895350173
 URL:https://playriftbound.com/en-US/events/117089949895350173
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED
@@ -41,14 +41,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520759300703415@van-isle-riftbound
-DTSTAMP:20261110T080321Z
+DTSTAMP:20261110T184926Z
 DTSTART:20270123T000000Z
 DTEND:20270123T030000Z
 SUMMARY:Legacy Pre-Rift #1
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n9 of 18 spots left\, checked
-  Nov 10\, 1:03 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/ev
- ents/117520759300703415
+  Nov 10\, 11:49 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
+ vents/117520759300703415
 URL:https://playriftbound.com/en-US/events/117520759300703415
 CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
@@ -56,14 +56,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520785658195785@van-isle-riftbound
-DTSTAMP:20261110T080321Z
+DTSTAMP:20261110T184926Z
 DTSTART:20270124T173000Z
 DTEND:20270124T203000Z
 SUMMARY:Legacy Pre-Rift #2
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n10 of 18 spots left\, checke
- d Nov 10\, 1:03 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
- vents/117520785658195785
+ d Nov 10\, 11:49 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
+ events/117520785658195785
 URL:https://playriftbound.com/en-US/events/117520785658195785
 CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
@@ -71,14 +71,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117520791840455365@van-isle-riftbound
-DTSTAMP:20261110T080321Z
+DTSTAMP:20261110T184926Z
 DTSTART:20270124T210000Z
 DTEND:20270125T000000Z
 SUMMARY:Legacy Pre-Rift #3
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Pre-Rift\nElite4 Games\, Victoria\n10 of 18 spots left\, checke
- d Nov 10\, 1:03 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/e
- vents/117520791840455365
+ d Nov 10\, 11:49 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-US/
+ events/117520791840455365
 URL:https://playriftbound.com/en-US/events/117520791840455365
 CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
@@ -86,14 +86,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117560152232916078@van-isle-riftbound
-DTSTAMP:20261110T080321Z
+DTSTAMP:20261110T184926Z
 DTSTART:20270213T173000Z
 DTEND:20270213T203000Z
 SUMMARY:Legacy Nexus Cup
 LOCATION:2770 Leigh Rd\, Front Unit # 136\, Victoria\, BC V9B 4G2\, Canada
 DESCRIPTION:Event\nElite4 Games\, Victoria\n16 of 16 spots left\, checked N
- ov 10\, 1:03 AM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/even
- ts/117560152232916078
+ ov 10\, 11:49 AM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/eve
+ nts/117560152232916078
 URL:https://playriftbound.com/en-US/events/117560152232916078
 CATEGORIES:Event
 STATUS:CONFIRMED

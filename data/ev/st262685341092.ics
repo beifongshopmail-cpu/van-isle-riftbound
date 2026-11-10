@@ -1,0 +1,23 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:st262685341092@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261110T170000
+DTEND;TZID=America/Vancouver:20261110T200000
+SUMMARY:Riftbound casual play
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12Cjk
+ fqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+URL:https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12C
+ jkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

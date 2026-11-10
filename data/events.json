@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-10T08:03:21.358Z",
- "generated_local": "2026-11-10T01:03:21-07:00",
+ "generated_at": "2026-11-10T18:49:26.430Z",
+ "generated_local": "2026-11-10T11:49:26-07:00",
  "window_start": "2026-11-10T07:00:00.000Z",
  "anchors": [
   {
@@ -48,7 +48,7 @@
  ],
  "totals": {
   "fetched": 68,
-  "unique": 68,
+  "unique": 71,
   "prev_unique": 68,
   "recent": [
    {
@@ -81,7 +81,7 @@
    },
    {
     "d": "2026-11-10",
-    "n": 68
+    "n": 71
    }
   ]
  },
@@ -96,7 +96,40 @@
   }
  },
  "old_feed_error": null,
+ "store_posts": {
+  "run": "2026-11-10",
+  "listed": 6,
+  "added": 3,
+  "error": null
+ },
  "events": [
+  {
+   "id": "st262685341092",
+   "name": "Riftbound casual play",
+   "type": "open",
+   "start": "2026-11-10T17:00:00-07:00",
+   "end": "2026-11-10T20:00:00-07:00",
+   "day": "2026-11-10",
+   "time": "5:00 PM",
+   "venue": "Rotty's Creations",
+   "city": "Victoria",
+   "address": "",
+   "region": "victoria",
+   "cap": null,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": "st-rottys-creations-victoria",
+   "store": "Rotty's",
+   "src": "store",
+   "url": "https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12CjkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/",
+   "conf": "2026-11-10",
+   "swiss": null,
+   "cut": null
+  },
   {
    "id": "rb117560608744223758",
    "name": "Gauntlet Games Nexus Night",
@@ -314,6 +347,33 @@
    "cut": false
   },
   {
+   "id": "st496098811572",
+   "name": "Riftbound casual play",
+   "type": "open",
+   "start": "2026-11-17T17:00:00-07:00",
+   "end": "2026-11-17T20:00:00-07:00",
+   "day": "2026-11-17",
+   "time": "5:00 PM",
+   "venue": "Rotty's Creations",
+   "city": "Victoria",
+   "address": "",
+   "region": "victoria",
+   "cap": null,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": "st-rottys-creations-victoria",
+   "store": "Rotty's",
+   "src": "store",
+   "url": "https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12CjkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/",
+   "conf": "2026-11-10",
+   "swiss": null,
+   "cut": null
+  },
+  {
    "id": "rb117560610583491608",
    "name": "Gauntlet Games Nexus Night",
    "type": "nexus",
@@ -504,6 +564,33 @@
    "store": "Skyhaven",
    "swiss": 3,
    "cut": false
+  },
+  {
+   "id": "st272621717112",
+   "name": "Riftbound casual play",
+   "type": "open",
+   "start": "2026-11-24T17:00:00-07:00",
+   "end": "2026-11-24T20:00:00-07:00",
+   "day": "2026-11-24",
+   "time": "5:00 PM",
+   "venue": "Rotty's Creations",
+   "city": "Victoria",
+   "address": "",
+   "region": "victoria",
+   "cap": null,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": "st-rottys-creations-victoria",
+   "store": "Rotty's",
+   "src": "store",
+   "url": "https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12CjkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/",
+   "conf": "2026-11-10",
+   "swiss": null,
+   "cut": null
   },
   {
    "id": "rb117560611882439366",
