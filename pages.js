@@ -124,20 +124,33 @@ window.RAVI_KW = (function(){
   for (k in sets) { sets[k].split(" ").forEach(function(w){ m[w.replace("_", " ").toLowerCase()] = k; }); }
   return m;
 })();
-// draws every [Keyword] (and [Keyword 2]) in root's text as its tag, the word kept; Riot's other brackets stay
-window.RAVI_KW_TAGS = function(root){
+// Riot's own symbols for the bracket tokens whose meaning Riot's glyph set names (fetch-glyphs.js): Might,
+// Exhaust, Power of any domain, Energy 0 to 8. Files in cards/glyphs, Riot's, unchanged. [C], [S], [R] and
+// [>] are not drawn: what each stands for is not settled.
+window.RAVI_SYM = { M: ["might", "Might"], E: ["exhaust", "Exhaust"], A: ["rune_rainbow", "Power of any domain"] };
+// draws every [Keyword] (and [Keyword 2]) in root's text as its tag, the word kept, and every symbol
+// above as Riot's glyph (its name as the picture's words); Riot's other brackets stay. rel: the way to
+// the app's root ("../" from a page folder)
+window.RAVI_KW_TAGS = function(root, rel){
   if (!root) { return; }
-  var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, RE = /\[([A-Za-z][A-Za-z\- ]{1,13}?)((?: \d+)?)\]/g;
+  var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, RE = /\[(?:([A-Za-z][A-Za-z\- ]{1,13}?)((?: \d+)?)|([MEA]|[0-8]))\]/g;
+  rel = typeof rel === "string" ? rel : "../";
   while ((n = tw.nextNode())) { if (n.nodeValue.indexOf("[") >= 0 && !(n.parentNode.closest && n.parentNode.closest(".nkw"))) { nodes.push(n); } }
   nodes.forEach(function(t){
     var txt = t.nodeValue, m, last = 0, frag = null, kc, sp; RE.lastIndex = 0;
     while ((m = RE.exec(txt))) {
-      kc = window.RAVI_KW[m[1].toLowerCase()];
+      kc = m[3] ? "sym" : window.RAVI_KW[m[1].toLowerCase()];
       if (!kc) { continue; }
       frag = frag || document.createDocumentFragment();
       if (m.index > last) { frag.appendChild(document.createTextNode(txt.slice(last, m.index))); }
-      sp = document.createElement("span"); sp.className = "nkw"; if (kc !== "t") { sp.setAttribute("data-kc", kc); }
-      sp.textContent = m[1] + m[2]; frag.appendChild(sp);
+      if (m[3]) {
+        var sy = window.RAVI_SYM[m[3]] || ["energy_" + m[3], m[3] + " Energy"];
+        sp = document.createElement("img"); sp.className = "ksy"; sp.src = rel + "cards/glyphs/" + sy[0] + ".svg"; sp.alt = sy[1]; sp.width = 24; sp.height = 24;
+      } else {
+        sp = document.createElement("span"); sp.className = "nkw"; if (kc !== "t") { sp.setAttribute("data-kc", kc); }
+        sp.textContent = m[1] + m[2];
+      }
+      frag.appendChild(sp);
       last = m.index + m[0].length;
     }
     if (!frag) { return; }

@@ -858,6 +858,7 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .nkw[data-kc="g"]{color:var(--ink)}
 .nkw[data-kc="g"]::before{background:rgb(var(--kwg))}
 .nkw[data-kc="n"]::before{background:rgb(var(--kwn))}
+.ksy{width:20px;height:20px;vertical-align:-4px;margin:0 1px} /* size-exempt: Riot's symbol inline in text (as the Guide's .nsy) */
 /* WHERE COLOUR GOES (plan 2 M8.7 colour pass; pages.js WHERE COLOUR GOES; Mako's yes 2026-11-09).
    Chrome stays dark; colour lives in the content, carried by what each thing is. Each rule weighs no
    more than the rule it changes (:where), so colour that means something on a page still wins. */

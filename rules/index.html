@@ -267,7 +267,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     var it0 = ITEM[btn.getAttribute("data-id")];
     b.innerHTML = body(it0);
     if(it0.kind === "errata" && it0.old) changed(b.querySelector(".rtx:not(.old)"), strip(it0.old));
-    b.querySelectorAll(".rtx").forEach(window.RAVI_KW_TAGS);   // keywords as the cards print them (plan 2 M8.7 F3)
+    b.querySelectorAll(".rtx").forEach(function(x){ window.RAVI_KW_TAGS(x); });   // keywords as the cards print them (plan 2 M8.7 F3)
     if(btn.closest("#reslist")) mark(b);
     btn.setAttribute("aria-expanded", "true");
     b.hidden = false;
@@ -358,6 +358,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     if(open) h += '</div></div>';
     h += '<p class="rsrc">' + esc(s.title) + (s.published ? ', published ' + day(s.published) : '') + '. <a href="' + esc(web(s.url)) + '" target="_blank" rel="noopener">Read it on playriftbound.com</a></p>';
     el("artbody").innerHTML = h;
+    el("artbody").querySelectorAll(".door .t").forEach(function(x){ window.RAVI_KW_TAGS(x); });   // a question that names a keyword or a symbol
   }
   function fillLegal(it){
     var s = SRC[it.source];
@@ -365,7 +366,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     el("arttl").textContent = it.title;
     el("artcnt").textContent = "";
     el("artbody").innerHTML = rtx(it.html, s.url) + '<p class="rsrc">From Riot\'s Rules Hub. <a href="' + esc(web(s.url)) + '" target="_blank" rel="noopener">Open it on playriftbound.com</a></p>';
-    el("artbody").querySelectorAll(".rtx").forEach(window.RAVI_KW_TAGS);
+    el("artbody").querySelectorAll(".rtx").forEach(function(x){ window.RAVI_KW_TAGS(x); });
   }
 
   // ---- the page ----
