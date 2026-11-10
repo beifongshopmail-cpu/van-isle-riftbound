@@ -1,357 +1,357 @@
 {
- "note": "Feedback's Planned and Recently shipped (plan 2 M8.7 block 2, Mako 2026-11-07). Kept by hand at every block that ships something a player would notice and at every milestone close-out (records: RULE -- keep the feedback page's Planned and Recently shipped current). Each line is a short title (t, a few words, what the page shows) and its detail (d, a sentence, shown on a tap). page is a RAVI_PAGES id, or app for the whole app. A version field (v) joins each update once testers start.",
- "planned": [
-  {
-   "page": "news",
-   "t": "Local stores' news",
-   "d": "Riftbound news from the island's stores, every store alike."
-  },
-  {
-   "page": "app",
-   "t": "A Cards page",
-   "d": "Every card in one place: its text, printings, price, legality and rulings."
-  },
-  {
-   "page": "app",
-   "t": "Use RAVI offline",
-   "d": "The app opens and works with no connection."
-  },
-  {
-   "page": "calendar",
-   "t": "Events beyond the island",
-   "d": "Pick any area, not only Vancouver Island."
-  },
-  {
-   "page": "rules",
-   "t": "Ask a rules judge",
-   "d": "Ask a rules question in plain words and get an answer from Riot's own rules."
-  },
-  {
-   "page": "decks",
-   "t": "Likes on public decks",
-   "d": "Like the decks you rate and see what others like."
-  },
-  {
-   "page": "app",
-   "t": "RAVI on the App Store",
-   "d": "Install it from the store as well as from the web."
-  },
-  {
-   "page": "counter",
-   "t": "Tracker for 2v2 and more players",
-   "d": "Keep score for two against two and for three or four players."
-  },
-  {
-   "page": "collection",
-   "t": "Price alerts on your Wishlist",
-   "d": "An alert when a card on your Wishlist moves in price."
-  },
-  {
-   "page": "calendar",
-   "t": "New event alerts",
-   "d": "An alert when a store you follow posts a new event."
-  },
-  {
-   "page": "app",
-   "t": "A Stores page",
-   "d": "Each store's address, hours and next events, every store alike."
-  },
-  {
-   "page": "app",
-   "t": "Privacy and terms",
-   "d": "One plain page on what RAVI keeps and the terms of using it."
-  }
- ],
- "shipped": [
-  {
-   "date": "2026-11-10",
-   "items": [
+  "note": "Feedback's Planned and Recently shipped (plan 2 M8.7 block 2, Mako 2026-11-07). Kept by hand at every block that ships something a player would notice and at every milestone close-out (records: RULE -- keep the feedback page's Planned and Recently shipped current). Each line is a short title (t, a few words, what the page shows) and its detail (d, a sentence, shown on a tap). page is a RAVI_PAGES id, or app for the whole app. A version field (v) joins each update once testers start.",
+  "planned": [
     {
-     "page": "calendar",
-     "t": "Events across the whole island",
-     "d": "Events now lists Nanaimo, Duncan, Port Alberni and every other island town with a store, and Events settings lets you turn each town on or off."
+      "page": "news",
+      "t": "Local stores' news",
+      "d": "Riftbound news from the island's stores, every store alike."
     },
     {
-     "page": "calendar",
-     "t": "Events from stores' own posts",
-     "d": "A night a store posts on its own page but not on PlayRiftbound now shows on Events, marked Not on PlayRiftbound, with a link to the post."
+      "page": "app",
+      "t": "A Cards page",
+      "d": "Every card in one place: its text, printings, price, legality and rulings."
     },
     {
-     "page": "trade",
-     "t": "Trade is now Appraise",
-     "d": "The page that prices a trade is named Appraise, so it reads apart from Exchange, where you find people to trade with."
+      "page": "app",
+      "t": "Use RAVI offline",
+      "d": "The app opens and works with no connection."
     },
     {
-     "page": "news",
-     "t": "News tidied",
-     "d": "A post's whole headline shows in its menu, a story Riot posted twice is one post, and Rules and Event posts wear their pages' colours."
+      "page": "calendar",
+      "t": "Events beyond the island",
+      "d": "Pick any area, not only Vancouver Island."
     },
     {
-     "page": "tier",
-     "t": "Tier list search shows only matches",
-     "d": "Tiers with no match fold away while you search."
+      "page": "rules",
+      "t": "Ask a rules judge",
+      "d": "Ask a rules question in plain words and get an answer from Riot's own rules."
     },
     {
-     "page": "collection",
-     "t": "Build a deck from Collection",
-     "d": "Add a deck now offers a way to Decks when you have none."
+      "page": "decks",
+      "t": "Likes on public decks",
+      "d": "Like the decks you rate and see what others like."
+    },
+    {
+      "page": "app",
+      "t": "RAVI on the App Store",
+      "d": "Install it from the store as well as from the web."
+    },
+    {
+      "page": "counter",
+      "t": "Tracker for 2v2 and more players",
+      "d": "Keep score for two against two and for three or four players."
+    },
+    {
+      "page": "collection",
+      "t": "Price alerts on your Wishlist",
+      "d": "An alert when a card on your Wishlist moves in price."
+    },
+    {
+      "page": "calendar",
+      "t": "New event alerts",
+      "d": "An alert when a store you follow posts a new event."
+    },
+    {
+      "page": "app",
+      "t": "A Stores page",
+      "d": "Each store's address, hours and next events, every store alike."
+    },
+    {
+      "page": "app",
+      "t": "Privacy and terms",
+      "d": "One plain page on what RAVI keeps and the terms of using it."
     }
-   ]
-  },
-  {
-   "date": "2026-11-09",
-   "items": [
+  ],
+  "shipped": [
     {
-     "page": "app",
-     "t": "New colours",
-     "d": "Every page has its own colour, grouped by Riftbound's runes, and the domains glow brighter."
+      "date": "2026-11-10",
+      "items": [
+        {
+          "page": "calendar",
+          "t": "Events across the whole island",
+          "d": "Events now lists Nanaimo, Duncan, Port Alberni and every other island town with a store, and Events settings lets you turn each town on or off."
+        },
+        {
+          "page": "calendar",
+          "t": "Events from stores' own posts",
+          "d": "A night a store posts on its own page but not on PlayRiftbound now shows on Events, marked Not on PlayRiftbound, with a link to the post."
+        },
+        {
+          "page": "trade",
+          "t": "Trade is now Appraise",
+          "d": "The page that prices a trade is named Appraise, so it reads apart from Exchange, where you find people to trade with."
+        },
+        {
+          "page": "news",
+          "t": "News tidied",
+          "d": "A post's whole headline shows in its menu, a story Riot posted twice is one post, and Rules and Event posts wear their pages' colours."
+        },
+        {
+          "page": "tier",
+          "t": "Tier list search shows only matches",
+          "d": "Tiers with no match fold away while you search."
+        },
+        {
+          "page": "collection",
+          "t": "Build a deck from Collection",
+          "d": "Add a deck now offers a way to Decks when you have none."
+        }
+      ]
     },
     {
-     "page": "app",
-     "t": "Pages sorted into groups",
-     "d": "Go to lists pages in six groups: playing, competitive, trading, your cards, learning, and about the app."
+      "date": "2026-11-09",
+      "items": [
+        {
+          "page": "app",
+          "t": "New colours",
+          "d": "Every page has its own colour, grouped by Riftbound's runes, and the domains glow brighter."
+        },
+        {
+          "page": "app",
+          "t": "Pages sorted into groups",
+          "d": "Go to lists pages in six groups: playing, competitive, trading, your cards, learning, and about the app."
+        },
+        {
+          "page": "app",
+          "t": "New page names",
+          "d": "Game is now Tracker, New here is now Guide, and Trade board is now Exchange."
+        },
+        {
+          "page": "app",
+          "t": "Player colours refreshed",
+          "d": "Your colour, the Tracker's sides and Trade's sides use new colours that match the app's palette."
+        }
+      ]
     },
     {
-     "page": "app",
-     "t": "New page names",
-     "d": "Game is now Tracker, New here is now Guide, and Trade board is now Exchange."
+      "date": "2026-11-08",
+      "items": [
+        {
+          "page": "app",
+          "t": "Smoother motion",
+          "d": "Pages and decks zoom open from what you tap, menus grow from their button, and rows unfold in place."
+        },
+        {
+          "page": "app",
+          "t": "Pages show their shape while loading",
+          "d": "While a page waits for its data, it shows grey blocks in its own layout instead of a loading line."
+        },
+        {
+          "page": "app",
+          "t": "Back on more pages",
+          "d": "Any page you reach from another page has Back, and it walks back along your path."
+        },
+        {
+          "page": "news",
+          "t": "Card reveals and more of Riot's posts",
+          "d": "Riot's card reveals, and its posts on Instagram and YouTube, now come to News."
+        },
+        {
+          "page": "news",
+          "t": "Open drawings pinned",
+          "d": "Riot's drawings stay at the top of News while entries are open, and come back on drawing day to remind you to check your email."
+        }
+      ]
     },
     {
-     "page": "app",
-     "t": "Player colours refreshed",
-     "d": "Your colour, the Tracker's sides and Trade's sides use new colours that match the app's palette."
+      "date": "2026-11-07",
+      "items": [
+        {
+          "page": "news",
+          "t": "The News page",
+          "d": "Riot's posts in plain words, each with a headline and a short summary, read without leaving the app."
+        },
+        {
+          "page": "feedback",
+          "t": "Planned and updates here",
+          "d": "Planned and Recently shipped on this page."
+        },
+        {
+          "page": "decks",
+          "t": "Sort and Filters in card search",
+          "d": "Sort and Filters when you search for cards."
+        },
+        {
+          "page": "collection",
+          "t": "Movers grid, Sort and Filters",
+          "d": "Movers as a grid, and Sort and Filters in the card browser."
+        }
+      ]
+    },
+    {
+      "date": "2026-11-06",
+      "items": [
+        {
+          "page": "app",
+          "t": "New icons and colours",
+          "d": "A new icon set and refined page colours across the app."
+        },
+        {
+          "page": "counter",
+          "t": "New player colours",
+          "d": "Player colours from the app's palette."
+        },
+        {
+          "page": "app",
+          "t": "Tap a card to zoom",
+          "d": "Tap a card's picture in any menu to see it full size."
+        }
+      ]
+    },
+    {
+      "date": "2026-11-03",
+      "items": [
+        {
+          "page": "start",
+          "t": "Setup and How to play",
+          "d": "A first-time setup, and How to play with Riot's own cards and symbols."
+        },
+        {
+          "page": "settings",
+          "t": "App settings redone",
+          "d": "App settings laid out like the iPhone's own Settings."
+        },
+        {
+          "page": "calendar",
+          "t": "Live open play events",
+          "d": "Live open play and learn-to-play events, and a warning before you follow a calendar twice."
+        }
+      ]
+    },
+    {
+      "date": "2026-11-02",
+      "items": [
+        {
+          "page": "board",
+          "t": "The Trade board",
+          "d": "Who near you has the cards you want, and who wants yours, with offers and reports."
+        },
+        {
+          "page": "tier",
+          "t": "Pro decklists per legend",
+          "d": "Each legend's top-cut decklists and most-played cards."
+        },
+        {
+          "page": "decks",
+          "t": "Folders, tags, deck images",
+          "d": "Folders and tags, popular lists per legend, and a deck image to share."
+        },
+        {
+          "page": "calendar",
+          "t": "Event times fixed",
+          "d": "Event times fixed after the clocks changed."
+        }
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "items": [
+        {
+          "page": "app",
+          "t": "Accounts and sync",
+          "d": "Accounts with passkeys: your decks, collection and matches on every device, with a profile and your Riot ID."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-30",
+      "items": [
+        {
+          "page": "tier",
+          "t": "The Tier list",
+          "d": "Legends ranked by top cuts, worldwide or local, with the decks behind them."
+        },
+        {
+          "page": "cut",
+          "t": "Rounds read from the event",
+          "d": "Rounds and the cut read from the event."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-29",
+      "items": [
+        {
+          "page": "counter",
+          "t": "Live event data",
+          "d": "Live event data: your pairing, the round clock and alerts when the next round is posted."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-28",
+      "items": [
+        {
+          "page": "app",
+          "t": "RAVI at ravi.tools",
+          "d": "RAVI moved to ravi.tools."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-27",
+      "items": [
+        {
+          "page": "start",
+          "t": "The New here page",
+          "d": "A place to start for new players."
+        },
+        {
+          "page": "cut",
+          "t": "The Top cut calculator",
+          "d": "What record makes the cut."
+        },
+        {
+          "page": "hub",
+          "t": "Pick your hub's blocks",
+          "d": "Pick the blocks on your hub."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-26",
+      "items": [
+        {
+          "page": "collection",
+          "t": "The Collection page",
+          "d": "Your cards and what they are worth over time."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-24",
+      "items": [
+        {
+          "page": "decks",
+          "t": "The Decks page",
+          "d": "Build, import and share decks."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "items": [
+        {
+          "page": "calendar",
+          "t": "Follow a store's events",
+          "d": "Follow a store's events in your calendar app."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "items": [
+        {
+          "page": "rules",
+          "t": "The Rules page",
+          "d": "Riot's rules, errata and FAQs, word for word."
+        },
+        {
+          "page": "calendar",
+          "t": "PlayRiftbound events",
+          "d": "Events from PlayRiftbound, and the Pre-Rift event type."
+        }
+      ]
     }
-   ]
-  },
-  {
-   "date": "2026-11-08",
-   "items": [
-    {
-     "page": "app",
-     "t": "Smoother motion",
-     "d": "Pages and decks zoom open from what you tap, menus grow from their button, and rows unfold in place."
-    },
-    {
-     "page": "app",
-     "t": "Pages show their shape while loading",
-     "d": "While a page waits for its data, it shows grey blocks in its own layout instead of a loading line."
-    },
-    {
-     "page": "app",
-     "t": "Back on more pages",
-     "d": "Any page you reach from another page has Back, and it walks back along your path."
-    },
-    {
-     "page": "news",
-     "t": "Card reveals and more of Riot's posts",
-     "d": "Riot's card reveals, and its posts on Instagram and YouTube, now come to News."
-    },
-    {
-     "page": "news",
-     "t": "Open drawings pinned",
-     "d": "Riot's drawings stay at the top of News while entries are open, and come back on drawing day to remind you to check your email."
-    }
-   ]
-  },
-  {
-   "date": "2026-11-07",
-   "items": [
-    {
-     "page": "news",
-     "t": "The News page",
-     "d": "Riot's posts in plain words, each with a headline and a short summary, read without leaving the app."
-    },
-    {
-     "page": "feedback",
-     "t": "Planned and updates here",
-     "d": "Planned and Recently shipped on this page."
-    },
-    {
-     "page": "decks",
-     "t": "Sort and Filters in card search",
-     "d": "Sort and Filters when you search for cards."
-    },
-    {
-     "page": "collection",
-     "t": "Movers grid, Sort and Filters",
-     "d": "Movers as a grid, and Sort and Filters in the card browser."
-    }
-   ]
-  },
-  {
-   "date": "2026-11-06",
-   "items": [
-    {
-     "page": "app",
-     "t": "New icons and colours",
-     "d": "A new icon set and refined page colours across the app."
-    },
-    {
-     "page": "counter",
-     "t": "New player colours",
-     "d": "Player colours from the app's palette."
-    },
-    {
-     "page": "app",
-     "t": "Tap a card to zoom",
-     "d": "Tap a card's picture in any menu to see it full size."
-    }
-   ]
-  },
-  {
-   "date": "2026-11-03",
-   "items": [
-    {
-     "page": "start",
-     "t": "Setup and How to play",
-     "d": "A first-time setup, and How to play with Riot's own cards and symbols."
-    },
-    {
-     "page": "settings",
-     "t": "App settings redone",
-     "d": "App settings laid out like the iPhone's own Settings."
-    },
-    {
-     "page": "calendar",
-     "t": "Live open play events",
-     "d": "Live open play and learn-to-play events, and a warning before you follow a calendar twice."
-    }
-   ]
-  },
-  {
-   "date": "2026-11-02",
-   "items": [
-    {
-     "page": "board",
-     "t": "The Trade board",
-     "d": "Who near you has the cards you want, and who wants yours, with offers and reports."
-    },
-    {
-     "page": "tier",
-     "t": "Pro decklists per legend",
-     "d": "Each legend's top-cut decklists and most-played cards."
-    },
-    {
-     "page": "decks",
-     "t": "Folders, tags, deck images",
-     "d": "Folders and tags, popular lists per legend, and a deck image to share."
-    },
-    {
-     "page": "calendar",
-     "t": "Event times fixed",
-     "d": "Event times fixed after the clocks changed."
-    }
-   ]
-  },
-  {
-   "date": "2026-11-01",
-   "items": [
-    {
-     "page": "app",
-     "t": "Accounts and sync",
-     "d": "Accounts with passkeys: your decks, collection and matches on every device, with a profile and your Riot ID."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-30",
-   "items": [
-    {
-     "page": "tier",
-     "t": "The Tier list",
-     "d": "Legends ranked by top cuts, worldwide or local, with the decks behind them."
-    },
-    {
-     "page": "cut",
-     "t": "Rounds read from the event",
-     "d": "Rounds and the cut read from the event."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-29",
-   "items": [
-    {
-     "page": "counter",
-     "t": "Live event data",
-     "d": "Live event data: your pairing, the round clock and alerts when the next round is posted."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-28",
-   "items": [
-    {
-     "page": "app",
-     "t": "RAVI at ravi.tools",
-     "d": "RAVI moved to ravi.tools."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-27",
-   "items": [
-    {
-     "page": "start",
-     "t": "The New here page",
-     "d": "A place to start for new players."
-    },
-    {
-     "page": "cut",
-     "t": "The Top cut calculator",
-     "d": "What record makes the cut."
-    },
-    {
-     "page": "hub",
-     "t": "Pick your hub's blocks",
-     "d": "Pick the blocks on your hub."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-26",
-   "items": [
-    {
-     "page": "collection",
-     "t": "The Collection page",
-     "d": "Your cards and what they are worth over time."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-24",
-   "items": [
-    {
-     "page": "decks",
-     "t": "The Decks page",
-     "d": "Build, import and share decks."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-17",
-   "items": [
-    {
-     "page": "calendar",
-     "t": "Follow a store's events",
-     "d": "Follow a store's events in your calendar app."
-    }
-   ]
-  },
-  {
-   "date": "2026-10-11",
-   "items": [
-    {
-     "page": "rules",
-     "t": "The Rules page",
-     "d": "Riot's rules, errata and FAQs, word for word."
-    },
-    {
-     "page": "calendar",
-     "t": "PlayRiftbound events",
-     "d": "Events from PlayRiftbound, and the Pre-Rift event type."
-    }
-   ]
-  }
- ]
+  ]
 }
