@@ -158,13 +158,15 @@ window.RAVI_TOTOP = function(scroller, on){
 // (RAVI_PLAYER_COLOURS, a set of their own), Riot's domain and keyword colours (Riot's printing), the
 // tier list's colours (the ones every tier list uses), the alarm (--over) and the caution amber.
 window.RAVI_HUES = {
-  gold: "255,200,40", garnet: "200,35,70", violet: "115,80,240", tangerine: "255,150,40",
-  jade: "0,190,140", mint: "80,230,170", rust: "220,90,30", sky: "30,205,230",
-  lime: "170,210,60", orchid: "215,90,230", lilac: "170,140,255",
+  // Runes lit 14, the app's palette (Mako 2026-11-09 20:54: 'implement the new colours'): the meaning
+  // colours (event kinds, News' kinds, Rules' sections, Guide's sections, Top cut's outcomes) and the
+  // six domains, Riot's rune colours lifted to glow on the black ground
+  gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39",
+  jade: "113,202,93", mint: "67,248,242", rust: "172,19,119", sky: "63,175,243",
+  lime: "105,116,3", orchid: "250,144,248", lilac: "21,77,233",
   slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245",
-  // Riftbound's six domains, as Riot prints the runes (one copy: Decks, the deck image and the Game
-  // page's legend picker read RAVI_RUNE; a palette may relight them, as Runes lit does)
-  body: "232,118,0", calm: "72,140,56", chaos: "106,64,148", fury: "223,22,32", mind: "15,111,166", order: "210,180,0"
+  // Riftbound's six domains (one copy: Decks, the deck image and the Tracker's runes read RAVI_RUNE)
+  body: "255,145,39", calm: "113,202,93", chaos: "153,100,229", fury: "249,53,52", mind: "63,175,243", order: "251,213,48"
 };
 // A domain's colour, by its name as the card data spells it; a card with no domain is the table's white.
 window.RAVI_RUNE = function(d){
@@ -172,77 +174,18 @@ window.RAVI_RUNE = function(d){
   if (d === "colorless") { return window.RAVI_HUES.white; }
   return /^(body|calm|chaos|fury|mind|order)$/.test(d) ? window.RAVI_HUES[d] : "128,128,128";
 };
-// THE PALETTE SWITCH (the colour trial). Mako 2026-11-09 14:47: every colour so far is a placeholder,
-// chosen with no reason behind it; explore completely different combinations. Round 2 (16:29): Today,
-// Runes and Neon are his favourites (Neon's colours to improve); the ground stays black in every
-// palette; Kinds was a good idea, too dull, and pages in a family should still differ (shade). A palette
-// may set the meaning hues (hues) and its own page colours by page id (pages; a page not named takes
-// its hue). Values from OKLCH (lightness, chroma, hue), so a family's shades step evenly.
-//  runes: Riftbound's six rune colours (Riot's, as Decks draws them); each page takes the rune whose
-//    theme fits it (Order: Events, Settings; Fury: Game, Top cut; Chaos: Trade, Trade board; Body:
-//    Decks, Collection; Mind: Rules, News, Tier list; Calm: New here, Feedback).
-//  neon: the badge's line from its blue to its pink through violet and magenta, vivid, lightness
-//    stepping so hub neighbours differ; amber for events and alerts.
-//  families: Kinds round 2: warm for playing, blue for cards, green for reading, each page its own
-//    shade; meanings keep today's colours.
-//  lit: the rune colours lifted to glow on black; pages sharing a rune differ in shade.
-//  synth: synthwave's sunset: hot pink, magenta, purple, electric cyan, orange, sun yellow.
-//  jewels: the gem tones cards are printed in: ruby, sapphire, emerald, amethyst, topaz, citrine.
-//  aurora: the northern lights: green, teal, blue, violet, magenta.
-// Kept per phone (ravi.try.pal.v1); automated checks see today's colours.
-window.RAVI_PALETTES = {
-  today: { name: "Today" },
-  runes: { name: "Runes",
-    hues: { gold: "210,180,0", garnet: "223,22,32", violet: "106,64,148", tangerine: "232,118,0", jade: "72,140,56", mint: "120,190,90", rust: "190,95,20", sky: "15,111,166", lime: "160,180,40", orchid: "150,95,200", lilac: "60,150,210" },
-    pages: { calendar: "210,180,0", settings: "210,180,0", counter: "223,22,32", cut: "223,22,32", trade: "106,64,148", board: "106,64,148", decks: "232,118,0", collection: "232,118,0", rules: "15,111,166", news: "15,111,166", tier: "15,111,166", start: "72,140,56", feedback: "72,140,56" } },
-  neon: { name: "Neon",
-    hues: { gold: "255,185,58", garnet: "249,37,112", violet: "148,95,249", tangerine: "255,140,63", jade: "65,217,248", mint: "121,229,235", rust: "207,80,235", sky: "74,179,255", lime: "244,214,96", orchid: "203,102,255", lilac: "168,175,255" },
-    pages: { calendar: "255,185,58", counter: "255,48,118", trade: "148,95,249", board: "243,99,218", decks: "74,179,255", collection: "207,80,235", rules: "65,217,248", start: "114,147,255", cut: "255,108,188", tier: "203,102,255", news: "168,175,255", feedback: "163,156,212", settings: "210,213,242" } },
-  families: { name: "Families",
-    pages: { calendar: "255,201,33", counter: "238,53,51", cut: "255,143,11", tier: "255,103,40", decks: "42,213,229", collection: "49,156,252", trade: "121,101,240", board: "37,186,242", rules: "36,194,125", news: "174,230,89", start: "90,230,198", feedback: "106,163,108", settings: "200,232,205" } },
-  lit: { name: "Runes lit",
-    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "131,228,153", rust: "227,105,39", sky: "63,175,243", lime: "206,221,70", orchid: "197,122,230", lilac: "177,183,253",
-      order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
-    pages: { calendar: "251,213,48", settings: "216,189,81", counter: "249,53,52", cut: "255,117,80", trade: "147,94,223", board: "191,124,236", decks: "255,145,39", collection: "233,113,37", rules: "33,147,224", news: "82,181,244", tier: "129,207,252", start: "113,202,93", feedback: "96,165,99" } },
-  // Runes lit, grown (Mako 2026-11-09 17:21: the winner, but six colours cannot name thirteen pages:
-  // 'at least 14 somewhat-distinct colours'). The six lit rune colours stay as they are. Round 1 added
-  // eight vivid hues between them; Mako 17:51: still too similar on the hub, not an even spread (three
-  // crowd the blue-greens, three the pinks). Round 2, as the proven maximum-contrast sets do past ten
-  // colours (Kelly 1965; Boynton 1989): spread across pale, deep and muted as well as hue. Each added
-  // colour is the one farthest from all the others as the hub's glass draws it (.30 over the ground),
-  // no two sharing a hue (rb-tools design/colour/wide.py, HGAP 20): near-white, orchid, aqua,
-  // raspberry, royal blue, olive, sage, and deep teal 28,110,128 in reserve. Worst pair in the hub's
-  // glass .056 (round 1: .040), bare .152 (round 1: .103). Round 3, by group (Mako 2026-11-09 20:02):
-  // each group a rune and a family of its colours, Mako's picks: Playing (Chaos) Events purple,
-  // Tracker orchid; Competitive (Fury) Top cut red, Tier list raspberry; Trading (Order) Trade yellow,
-  // Trade board mustard; Your cards (Body) Collection orange, Decks near-white (so a deck's own
-  // domains lead); Learning (Mind) Rules sky blue, News royal blue, Guide pale blue; About and info
-  // (Calm) App settings green, Feedback sage. Chat measured and moved three (Trade gold to yellow,
-  // Trade board burnt orange to mustard, Guide indigo to pale blue); worst pair in glass .056.
-  lit14: { name: "Runes lit 14",
-    hues: { gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39", jade: "113,202,93", mint: "67,248,242", rust: "172,19,119", sky: "63,175,243", lime: "105,116,3", orchid: "250,144,248", lilac: "21,77,233",
-      order: "251,213,48", fury: "249,53,52", chaos: "153,100,229", body: "255,145,39", calm: "113,202,93", mind: "63,175,243" },
-    pages: { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" } },
-  synth: { name: "Synthwave",
-    hues: { gold: "249,224,63", garnet: "251,43,154", violet: "142,61,232", tangerine: "255,127,22", jade: "27,229,238", mint: "55,216,201", rust: "213,40,206", sky: "12,193,253", lime: "213,228,63", orchid: "190,81,233", lilac: "152,157,255" },
-    pages: { calendar: "249,224,63", counter: "251,43,154", trade: "142,61,232", board: "255,127,22", feedback: "174,150,218", rules: "27,229,238", decks: "55,216,201", collection: "213,40,206", start: "12,193,253", cut: "255,82,99", tier: "190,81,233", news: "152,157,255", settings: "220,209,244" } },
-  jewels: { name: "Jewels",
-    hues: { gold: "247,205,58", garnet: "211,30,67", violet: "134,84,204", tangerine: "245,153,38", jade: "0,168,101", mint: "96,219,212", rust: "215,89,40", sky: "61,126,222", lime: "177,221,84", orchid: "219,77,167", lilac: "164,151,234" },
-    pages: { calendar: "247,205,58", counter: "211,30,67", trade: "134,84,204", board: "245,153,38", feedback: "125,147,183", rules: "0,168,101", decks: "96,219,212", collection: "215,89,40", start: "61,126,222", cut: "177,221,84", tier: "219,77,167", news: "38,183,211", settings: "190,212,235" } },
-  aurora: { name: "Aurora",
-    hues: { gold: "208,238,95", garnet: "232,73,176", violet: "136,107,238", tangerine: "245,151,64", jade: "65,220,165", mint: "124,231,130", rust: "217,97,210", sky: "68,214,214", lime: "162,241,113", orchid: "169,100,235", lilac: "96,170,243" },
-    pages: { calendar: "162,241,113", counter: "232,73,176", trade: "136,107,238", board: "227,119,251", feedback: "112,167,194", rules: "65,220,165", decks: "124,231,130", collection: "217,97,210", start: "68,214,214", cut: "208,238,95", tier: "169,100,235", news: "96,170,243", settings: "178,227,223" } }
-};
-window.RAVI_PAL_KEY = "ravi.try.pal.v1";
-window.RAVI_PAL = "today";
-window.RAVI_PAGE_RGB = {};
+// THE PAGE COLOURS (Mako 2026-11-09 20:02, built for real 20:54). Six groups, each a rune and a
+// family of its colours (prior art: maximum-contrast sets spread across lightness as well as hue,
+// Kelly 1965, Boynton 1989; measured in OKLab, rb-tools design/colour/wide.py and grow.py): Playing
+// (Chaos) Events purple, Tracker orchid; Competitive (Fury) Top cut red, Tier list raspberry; Trading
+// (Order) Trade yellow, Exchange mustard; Your cards (Body) Collection orange, Decks near-white (a
+// deck's own domains lead); Learning (Mind) Rules sky blue, News royal blue, Guide pale blue; About and
+// info (Calm) App settings green, Feedback sage. Every pair stands .10 or more apart (OKLab); in the
+// hub's glass the closest pair is .056. Deep teal 28,110,128 is spare. The palette trial (Today, Runes,
+// Neon and the rest, the pill) ended here; the explorations stay in rb-tools design/colour.
+window.RAVI_PAGE_RGB = { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" };
 (function(){
-  var k = null, bot = false, pal, n, h = window.RAVI_HUES, de;
-  try { bot = !!navigator.webdriver; k = localStorage.getItem(window.RAVI_PAL_KEY); } catch (e) {}
-  if (!bot && k && window.RAVI_PALETTES[k]) { window.RAVI_PAL = k; }
-  pal = window.RAVI_PALETTES[window.RAVI_PAL];
-  for (n in (pal.hues || {})) { if (pal.hues.hasOwnProperty(n)) { h[n] = pal.hues[n]; } }
-  window.RAVI_PAGE_RGB = pal.pages || {};
+  var n, h = window.RAVI_HUES, de;
   if (typeof document === "undefined" || !document.documentElement) { return; }
   de = document.documentElement;
   for (n in h) { if (h.hasOwnProperty(n)) { de.style.setProperty("--h-" + n, h[n]); } }
@@ -261,7 +204,7 @@ window.RAVI_PAGES = [
   {id:"cut", name:"Top cut", path:"cut/", get icon(){ return window.RAVI_ICON("cut"); }, hue:"lime"},
   {id:"tier", name:"Tier list", path:"tier/", get icon(){ return window.RAVI_ICON("tier"); }, hue:"orchid"},
   {id:"trade", name:"Trade", path:"trade/", get icon(){ return window.RAVI_ICON("trade"); }, hue:"violet"},
-  {id:"board", name:"Trade board", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
+  {id:"board", name:"Exchange", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Exchange (Mako 2026-11-09: Trade board renamed); Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},
   {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, hue:"jade", glass:true},
@@ -481,21 +424,13 @@ window.RAVI_HUB_SAVE = function(ids){
 // tint, at --cg), --on-pc / --on-ink (the bar's you-are-here pill and its icon) and the class
 // paged (app.css lifts grey text on tinted glass so it stays readable). The hub sets
 // nothing: its plate stays clear and each block carries its own colour.
-// THE COLOUR TRIAL (plan 2 M8.7 colour pass, Mako 2026-11-09 08:47: "good to build as described and
-// I'll check it out"). Colour gets fixed jobs, the same on every page, after Apple's one tint for what
-// you can act on and Material 3's colour roles: (1) the page colour marks what is on or what acts: a
-// track's chosen option and a ticked row wear the bar pill's recipe (--on-pc, --on-ink), a full-width
-// action is coloured glass, an action row and a link read in the page's tint; (2) every sticky plate
-// carries a light wash of the page colour, in place of four pages tinting all their glass; (3) colour
-// that means something stays in the content and wins (events, News kinds, Rules sections, players,
-// domains), and ranked content gets one hue stepping down (the Tier list's tiers); (4) the rest stays
-// neutral. Round 3 (Mako 10:02): (1) and Feedback's coloured lines are out; New is Today plus the Tier
-// list's tier colours. Round 2 (Mako 09:45): no wash on the plates (chrome stays dark, the four coloured pages keep
-// their glass); content coloured by what it is (Feedback's lines); the Tier list in the usual tier
-// colours. html.cnew carries it (app.css THE COLOUR TRIAL); the switch above the bar (Today | New) flips
-// it live on any page (now the palette switch, ravi.try.pal.v1). Never on
-// the hub (no page colour) or the Game page (function before colour); automated checks
-// (navigator.webdriver) see the app without it. Goes when Mako decides.
+// WHERE COLOUR GOES (plan 2 M8.7 colour pass; Mako's yes 2026-11-09 11:59, built for real 20:54):
+// (1) controls and chrome stay neutral; only the bar's pill wears the page colour; (2) a surface that is
+// one thing wears its colour all over (event cards, News posts, Rules sections, Guide's sections, deck
+// blocks, Trade's sides, player cards, hub blocks); (3) a list that mixes things keeps colour small, a
+// coloured chip per row, never mixed tints in one group; (4) ranked things use the familiar colours (the
+// tier list's); (5) colour never alone. html.cnew carries the page-level parts (app.css WHERE COLOUR
+// GOES); never on the hub (no page colour) or the Tracker (function before colour).
 (function(){
   if (typeof document === "undefined" || typeof location === "undefined") { return; }
   var m = /\/([a-z]+)\/(index\.html)?$/.exec(location.pathname), pages = window.RAVI_PAGES, i, c, r, pg = null, doc = document.documentElement;
@@ -509,40 +444,7 @@ window.RAVI_HUB_SAVE = function(ids){
   st.setProperty("--on-pc", "rgba(" + pg.rgb + ",.54)");
   st.setProperty("--on-ink", "rgb(" + r.join(",") + ")");
   if (pg.glass) { st.setProperty("--tint", "rgba(" + pg.rgb + ",var(--cg))"); doc.classList.add("paged"); }
-  // where colour goes is settled (Mako 2026-11-09 11:59: the five rules, on for everyone in the trial);
-  // the pill now switches the whole app's palette (THE PALETTE SWITCH, under THE COLOUR TABLE): the
-  // choice is kept and the page reloads in it, so every page, kind and section reads the new table
-  var bot = false;
-  try { bot = !!navigator.webdriver; } catch (e) {}
-  doc.classList.toggle("cnew", !bot && pg.id !== "counter");
-  if (bot || pg.id === "counter") { return; }
-  function sw(){ window.RAVI_PAL_PILL(false); }
-  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", sw); } else { sw(); }
-})();
-
-// THE PALETTE PILL (the colour trial): back, Palette n of 7, next; above the bar, or at the hub's foot
-  // seven palettes do not fit one track at 402: the pill steps through them (back, the name, next)
-window.RAVI_PAL_PILL = function(hub){
-    if (document.querySelector(".ctry") || (!hub && !document.querySelector(".bar"))) { return; }
-    var d = document.createElement("div"), keys = Object.keys(window.RAVI_PALETTES), at = keys.indexOf(window.RAVI_PAL);
-    function btn(dir, path, label){ return '<button type="button" class="circ btn glass" data-step="' + dir + '" aria-label="' + label + '" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg></button>'; }
-    d.className = "ctry frost" + (hub ? " hub" : ""); d.setAttribute("role", "group"); d.setAttribute("aria-label", "Palette");
-    d.innerHTML = btn(-1, "M15 6l-6 6 6 6", "Previous palette") + '<span class="ctn"><small>Palette ' + (at + 1) + ' of ' + keys.length + '</small>' + window.RAVI_PALETTES[window.RAVI_PAL].name + '</span>' + btn(1, "M9 6l6 6-6 6", "Next palette");
-    d.addEventListener("click", function(e){
-      var b = e.target.closest("button[data-step]"); if (!b) { return; }
-      var k = keys[(at + +b.getAttribute("data-step") + keys.length) % keys.length];
-      try { localStorage.setItem(window.RAVI_PAL_KEY, k); } catch (er) {}
-      location.reload();
-    });
-    document.body.appendChild(d);
-  };
-(function(){
-  if (typeof document === "undefined" || typeof location === "undefined") { return; }
-  if (!/^\/(index\.html)?$/.test(location.pathname)) { return; }
-  var bot = false; try { bot = !!navigator.webdriver; } catch (e) {}
-  if (bot) { return; }
-  function go(){ window.RAVI_PAL_PILL(true); }
-  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", go); } else { go(); }
+  doc.classList.toggle("cnew", pg.id !== "counter");
 })();
 
 // THE GO TO TILES. One function, shared by the calendar, trade and

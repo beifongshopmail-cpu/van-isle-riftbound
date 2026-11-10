@@ -343,7 +343,7 @@ input[type="file"]{display:none}
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="onettl">Binder</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <div class="nf tall"><input id="onename" type="text" maxlength="40" autocomplete="off" placeholder="Binder name" aria-label="Binder name" data-k="type"></div>
-    <div class="row" style="margin-top:14px"><p class="lb">Trade board</p><div class="pick" id="onetrade" data-k="pick"><button type="button" aria-pressed="false">For trade</button></div>
+    <div class="row" style="margin-top:14px"><p class="lb">Exchange</p><div class="pick" id="onetrade" data-k="pick"><button type="button" aria-pressed="false">For trade</button></div>
       <p class="pnote" id="onetradenote" style="margin-top:8px"></p><div id="onesave"></div></div>
     <p class="pnote" id="onenote"></p>
   </div>
@@ -981,7 +981,7 @@ input[type="file"]{display:none}
     if(!ONE) return;
     var b = el("onetrade").firstChild, on = ONE.trade === true, A = window.RAVI_ACCT, v = A && A.view && A.view();
     b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
-    el("onetradenote").textContent = "Others on the Trade board see its cards and counts. Never what you paid.";
+    el("onetradenote").textContent = "Others on the Exchange see its cards and counts. Never what you paid.";
     el("onesave").innerHTML = v && v.guest && window.RAVI_SAVEROW ? window.RAVI_SAVEROW() : ""; // M7 C2: the way there
   }
   // where a new card goes: the binder or Wishlist on show; under Collection, into no binder (round 5)

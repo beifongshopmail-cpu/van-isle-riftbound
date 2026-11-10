@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="RAVI">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
-<title>Trade board - RAVI</title>
+<title>Exchange - RAVI</title>
 <link rel="stylesheet" href="../fonts.css">
 <link rel="stylesheet" href="../app.css">
 <script src="../pages.js"></script>
@@ -18,7 +18,7 @@
 <script src="demand.js"></script>
 <style>
 /* Trade board (plan 2 M2 block 1, Mako 2026-11-01): who has the cards you want, and who wants
-   yours. You share a binder by marking it For trade (here in Trade board settings, or in the
+   yours. You share a binder by marking it For trade (here in Exchange settings, or in the
    binder's menu on Collection) and your Wishlist with Share your Wishlist; sync carries both to
    RAVI's server, which matches them (server/live/board.js). Matches lists the players, both-ways
    matches first, then those in your home area; each shows the cards on shelves, as the Tier list.
@@ -32,7 +32,7 @@
    demand (demand.js: value, how many players want it, special printings, a rising price).
    After block 1b (Mako 2026-11-01): Sort in the list head, as Decks' list of decks (most in demand,
    highest price or name; players near you always first; kept on this phone in vir.board.sort.v1,
-   never synced); How others see you in Trade board settings (your Players block and player menu,
+   never synced); How others see you in Exchange settings (your Players block and player menu,
    from this phone's Collection); the plate is class plate glass, as the other pages'. */
 html{background:var(--ground)}
 a{color:inherit;text-decoration:none}
@@ -198,7 +198,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 <body>
 <div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
 <main id="bd">
-  <h2 class="sr">Trade board</h2>
+  <h2 class="sr">Exchange</h2>
   <div class="bctl plate glass">
     <div class="sf"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg><input type="search" id="bq" placeholder="Search cards or players" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" aria-label="Search cards or players" data-k="type"><button type="button" class="fbtn fx glass" id="bqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
     <div class="seg bview" id="bview" role="group" aria-label="Show" data-k="pick"><button type="button" data-v="match" aria-pressed="true">Matches</button><button type="button" data-v="players" aria-pressed="false">Players</button><button type="button" data-v="cards" aria-pressed="false">All cards</button></div>
@@ -245,8 +245,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">How others see you</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody" id="pselfb"></div>
 </section>
-<section class="panel frost" id="pset" aria-hidden="true" aria-label="Trade board settings">
-  <div class="phead"><div class="ht"><h4 class="ttl">Trade board settings</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<section class="panel frost" id="pset" aria-hidden="true" aria-label="Exchange settings">
+  <div class="phead"><div class="ht"><h4 class="ttl">Exchange settings</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
     <p class="lb">What you share</p>
     <div class="pick" id="shpick" data-k="pick"></div>
@@ -584,7 +584,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   }
   function meLine(){
     if (!LOADED) { return ""; }
-    if (DATA.me.off) { return "Your account is off the Trade board: others don't see what you share, and you can't send offers. Ask about it in Feedback."; }
+    if (DATA.me.off) { return "Your account is off the Exchange: others don't see what you share, and you can't send offers. Ask about it in Feedback."; }
     var bits = [];
     var shared = shareState();
     if (DATA.me.want) { bits.push("Matched against your Wishlist (" + plural(DATA.me.want, "card", "cards") + ")"); }
@@ -718,7 +718,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     if (!selfSaved()) { h += '<p class="bmsg">No one can see this yet.</p>' + saveRow(); }
     h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<div class="doors" data-k="deeper" style="margin:0 0 14px"><a class="door btn glass" href="../calendar/"><span class="t">Your next event</span><span class="sp"></span><small>Pick one in Events</small>' + CVR + '</a></div>';
     if (!me.have.length && !me.want.length) {
-      h += '<p class="bmsg">You aren\'t sharing anything yet. Mark a binder For trade, or turn on Your Wishlist, in Trade board settings.</p>';
+      h += '<p class="bmsg">You aren\'t sharing anything yet. Mark a binder For trade, or turn on Your Wishlist, in Exchange settings.</p>';
       $("pselfb").innerHTML = h; return;
     }
     if (me.have.length) {
@@ -735,7 +735,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     h += nextRow(LOADED ? DATA.me.nx : null, "Your next event") || '<div class="doors" data-k="deeper" style="margin:0 0 14px"><a class="door btn glass" href="../calendar/"><span class="t">Your next event</span><span class="sp"></span><small>Pick one in Events</small>' + CVR + '</a></div>';
     if (me.have.length) { h += '<p class="bh3">For trade</p>' + grid(me.have, "self", "rest"); }
     if (me.want.length) { h += '<p class="bh3"' + (me.have.length ? ' style="margin-top:18px"' : '') + '>Wants</p>' + grid(me.want, "self", "wants"); }
-    h += '<p class="pnote">' + (me.want.length ? "Your Wishlist shows only to players who have its cards." : "Your Wishlist is private. Turn it on in Trade board settings to share it.") + '</p>';
+    h += '<p class="pnote">' + (me.want.length ? "Your Wishlist shows only to players who have its cards." : "Your Wishlist is private. Turn it on in Exchange settings to share it.") + '</p>';
     $("pwhob").innerHTML = h;
   }
 
@@ -1170,7 +1170,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
       + '<div class="tcap"><span class="tnm">' + esc(cname(x.i)) + '</span><div class="tpr"><b>' + money(u == null ? null : u * pct / 100) + '</b></div><span class="ttot">' + esc(cap) + '</span></div></div>';
   }
   function mkList(list, side){
-    if (!list.length) { return '<p class="bmsg">' + (side === "give" ? "Nothing in a For trade binder yet. Mark one in Trade board settings." : "Nothing of theirs is on the board right now.") + '</p>'; }
+    if (!list.length) { return '<p class="bmsg">' + (side === "give" ? "Nothing in a For trade binder yet. Mark one in Exchange settings." : "Nothing of theirs is on the board right now.") + '</p>'; }
     return '<div class="cgrid g4">' + list.slice().sort(function(a, b){ return b.m - a.m || byValue(a, b); }).map(function(x){ return mkTile(x, side); }).join("") + '</div>';
   }
   function drawMake(){

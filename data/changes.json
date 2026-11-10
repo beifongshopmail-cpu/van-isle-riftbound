@@ -38,13 +38,18 @@
       "items": [
         {
           "page": "app",
+          "t": "New colours",
+          "d": "Every page has its own colour, grouped by Riftbound's runes, and the domains glow brighter."
+        },
+        {
+          "page": "app",
           "t": "Pages sorted into groups",
           "d": "Go to lists pages in six groups: playing, competitive, trading, your cards, learning, and about the app."
         },
         {
           "page": "app",
           "t": "New page names",
-          "d": "Game is now Tracker and New here is now Guide."
+          "d": "Game is now Tracker, New here is now Guide, and Trade board is now Exchange."
         },
         {
           "page": "app",

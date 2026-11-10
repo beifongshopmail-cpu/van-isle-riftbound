@@ -434,7 +434,7 @@
         '<p class="lb">Home area</p><div class="doors" data-k="deeper"><button type="button" class="door" data-acgo="acarea"><span class="t" id="acareat">Not set</span><span class="sp"></span>' + CV + '</button></div>' +
         '<p class="lb">Your colour</p><div class="seg swatch" id="accols" role="group" aria-label="Your colour" data-k="pick"></div>' +
         '<p class="lb">About you</p><div class="nf"><input type="text" id="acabout" maxlength="80" placeholder="One line, shown on your profile" enterkeyhint="done" aria-label="About you" data-k="type"></div>' +
-        '<p class="pnote">On the Trade board others see your name, @username, area, colour and picture. Your Riot ID only after a trade is agreed.</p>' +
+        '<p class="pnote">On the Exchange others see your name, @username, area, colour and picture. Your Riot ID only after a trade is agreed.</p>' +
         '<p class="acmsg" id="acprofmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsave" data-k="do">Save</button></div>',
       acpicm: headTitle("Picture") + '<div class="pbody"><div class="acstage" id="acstage" data-pinch><span class="acav acadj" id="acadj" aria-label="Your picture: drag to move it, pinch to zoom"></span></div>' +
@@ -489,7 +489,7 @@
         '<div class="doors acgap" data-k="deeper"><a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">Guide</span><span class="sp"></span>' + CV + '</a></div></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsudone" data-k="do">Done</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
-      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Trade board shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
+      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Exchange shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
       acrepm: headTitle("Reports") + '<div class="pbody"><div id="acreplist"></div><p class="acmsg" id="acrepmsg" aria-live="polite"></p></div>',
       acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, Follow and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
@@ -1010,7 +1010,7 @@
     } else if (n === 3) {
       var saved = A.signedIn() && !A.isGuest(), on = !!(A.offerAlertsOn && A.offerAlertsOn()), b = $("acsuoffer");
       b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); b.disabled = !saved;
-      $("acsu3note").textContent = saved ? "An alert on this phone when someone on the Trade board sends you an offer." : "Trade offers come only to a saved account.";
+      $("acsu3note").textContent = saved ? "An alert on this phone when someone on the Exchange sends you an offer." : "Trade offers come only to a saved account.";
       say("acsu3msg", "");
       suNext(3, on);
     } else if (n === 4) {
@@ -1183,7 +1183,7 @@
       if (err) { list.innerHTML = ""; return say("acrepmsg", err); }
       list.innerHTML = "";
       var ps = (j && Array.isArray(j.players) ? j.players : []).filter(function (x) { return x && /^[0-9a-f]{24}$/.test(x.h); });
-      if (!ps.length) { var e = el("p", "pnote"); e.textContent = "No reports. Players report each other from the Trade board (Report or block) and from a shared deck."; list.appendChild(e); }
+      if (!ps.length) { var e = el("p", "pnote"); e.textContent = "No reports. Players report each other from the Exchange (Report or block) and from a shared deck."; list.appendChild(e); }
       ps.forEach(function (x) {
         function who(y) { return y && y.user ? "@" + y.user : (y && y.name ? y.name : "an account with no username"); }
         var head = el("div", "acrp"), av = el("span", "acav"), n = el("div", "acn");

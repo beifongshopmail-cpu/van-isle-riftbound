@@ -209,7 +209,7 @@ a{color:inherit;text-decoration:none}
 /* GOING (plan 2 M3 block 5): a saved account marks an event it will be at, a round icon button
    first in the row (Mako 2026-11-02: icons only, as the rest of the row). Pressed, the person's
    plus becomes a check and the button sits pressed, and a line under the row says in words that
-   traders on the Trade board see it. */
+   traders on the Exchange see it. */
 .evact .evbtns .evgo.on{background:var(--glass-press)}
 .evact .evbtns .evgo[hidden]{display:none}
 .evact .evgonote{margin:8px 2px 0;font-size:12px;line-height:1.4;color:var(--muted)}
@@ -1322,7 +1322,7 @@ a{color:inherit;text-decoration:none}
     b.classList.toggle("on", on);
     b.setAttribute("aria-label", on ? "Going: tap to undo" : "I'm going");
     b.setAttribute("aria-pressed", on ? "true" : "false");
-    n.textContent = err || (on ? "Traders on the Trade board see this as your next event." : "");
+    n.textContent = err || (on ? "Traders on the Exchange see this as your next event." : "");
     n.hidden = !show || !n.textContent;
   }
   function evById(id){ for (var i = 0; i < EVENTS.length; i++) if (String(EVENTS[i].id) === String(id)) return EVENTS[i]; return null; }

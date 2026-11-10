@@ -831,15 +831,9 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 [data-hue="ice"]{--c:var(--h-ice)}
 [data-hue="stone"]{--c:var(--h-stone)}
 [data-hue="white"]{--c:var(--h-white)}
-/* THE COLOUR TRIAL (plan 2 M8.7 colour pass; pages.js THE COLOUR TRIAL; Mako 2026-11-09). Round 2
-   (Mako 09:45): chrome stays dark (the sticky plates' grey, the calendar's own darker glass, the bar);
-   colour lives in the content, carried by what each thing is, as on Events and Rules; the coloured
-   pills and buttons stay. Each rule weighs no more than the rule it changes (:where), so colour that
-   means something on a page (Trade's sides, Decks' domains, an event's kind) still wins. Off: html
-   without .cnew, as today. */
-/* Round 3 (Mako 10:02): the chosen options, ticks, actions and links back to bone everywhere (page
-   colour on them read wrong beside a deck's domains or Trade's sides; the bar's pill keeps its colour);
-   Feedback's lines back to their coloured icon chips alone (one group in mixed tints read badly). */
+/* WHERE COLOUR GOES (plan 2 M8.7 colour pass; pages.js WHERE COLOUR GOES; Mako's yes 2026-11-09).
+   Chrome stays dark; colour lives in the content, carried by what each thing is. Each rule weighs no
+   more than the rule it changes (:where), so colour that means something on a page still wins. */
 /* the Tier list in the tier-list colours everyone knows (TierMaker's defaults, as VerseDB documents
    them: S #FF7F7F, A #FFBF7F, B #FFDF7F, C #FFFF7F; Rogue, off the ladder, in their blue #7FBFFF): the
    letter block solid in its colour with dark ink, the row a faint wash of it */
@@ -851,10 +845,3 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 :where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),var(--cg))}   /* the row is coloured glass in its tier's colour (Mako 2026-11-09 16:29) */
 :where(html.cnew) .trow[data-tier] .tlet{--tint:rgb(var(--tc));background:rgb(var(--tc));color:var(--ink)}   /* --tint: inside the row it is drawn flat from it */
 :where(html.cnew) .trow[data-tier] .tlet small{color:rgba(8,9,10,.72)}
-/* the palette switch: above the bar, on every page with one but the hub and the Game page */
-.ctry{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 10px);z-index:21;
-  display:flex;align-items:center;gap:6px;padding:4px;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.ctry.hub{bottom:calc(max(12px,env(safe-area-inset-bottom,0px)) + 76px)}   /* above the Riot credit */
-.ctry .ctn{width:120px;text-align:center;font-family:var(--disp);font-weight:600;font-size:15px;line-height:1.1;color:var(--bone)}
-.ctry .ctn small{display:block;font-size:12px;color:var(--muted)}
-html:has(.ctry) .foot{margin-bottom:56px}
