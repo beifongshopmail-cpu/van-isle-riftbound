@@ -38,9 +38,10 @@ Colour
 - --faint #4A4E55: out-of-range text, dim marks
 - --track #2A2D32: unchosen dots and tracks
 - --hi #34383E: a pressed row in a sunken surface
-- --p1 #5DA5EE: player 1 and Yours (blue)
-- --p2 #EE5F9C: player 2 and Theirs (pink)
-- --p1t, --p2t rgba(93,165,238,.14) and rgba(238,95,156,.14): side stain
+- --p1 #5989F6: player 1 and Yours (blue; Mako 2026-11-09: the player colours follow the palette, as built, not chosen)
+- --p2 #FE5C8B: player 2 and Theirs (pink)
+- --rb1 #5DA5EE, --rb2 #EE5F9C: the badge's own blue and pink (RA, VI, its rim and the hub's flowing rim): the brand, kept apart from the players
+- --p1t, --p2t rgba(89,137,246,.14) and rgba(254,92,139,.14): side stain
 - --p1r, --p2r the same two at .50: side pressed or armed
 - --over #E5484D: round timer past zero
 Glass and frost
@@ -141,7 +142,7 @@ Spacing
 - Nothing overflows sideways. [D]
 - A one-line row clips its text with an ellipsis; it never wraps.
 Colour
-- Players (plan 2 M8, Mako's phone yes 2026-11-04): the eight player colours (pages.js RAVI_PLAYER_COLOURS: Blue, Pink, Gold, Tangerine, Lime, Mint, Orchid, White) are the counter's swatches and the choices for Your colour on Profile. Yours, side 1 and P1 are your colour (blue with none); Theirs and side 2 are pink, or blue when yours is pink (RAVI_SIDES): the counter, the Trade page and an offer's verdict. A counter pick holds while your Profile colour stays the one it was made against. A player's picture (yours in the corner and on Profile, every player's on the Trade board) wears their colour as its 1 wide rim (.accol), their Trade board card and menu head are coloured glass in it, and their name always says who it is. [T]
+- Players (plan 2 M8, Mako's phone yes 2026-11-04): the eight player colours (pages.js RAVI_PLAYER_COLOURS: Blue, Pink, Yellow, Orange, Green, Aqua, Purple, White; renamed and recoloured to the palette 2026-11-09, Mako's ask, as built, not chosen; their keys stay) are the counter's swatches and the choices for Your colour on Profile. Yours, side 1 and P1 are your colour (blue with none); Theirs and side 2 are pink, or blue when yours is pink (RAVI_SIDES): the counter, the Trade page and an offer's verdict. A counter pick holds while your Profile colour stays the one it was made against. A player's picture (yours in the corner and on Profile, every player's on the Trade board) wears their colour as its 1 wide rim (.accol), their Trade board card and menu head are coloured glass in it, and their name always says who it is. [T]
 - The only alarm colour is --over (the counter's --over-deep #8C1F19 is its pressed shade). The calendar's amber #FFC24D on low spots is a caution, always with words.
 - Event types: each has a mark shape, a hue and its name in words on every card. Order everywhere: Open Play, Learn-to-Play, Nexus Nights, Summoner Skirmish, Pre-Rift, Other.
   - Open Play 115,80,240, circle (s-circle)
@@ -174,7 +175,7 @@ Page-local classes live in each page's notes (style/<page>.md, section 10), not 
 Page shell (feedback/index.html, settings/index.html)
 - Head: charset, viewport (width=device-width, initial-scale=1, viewport-fit=cover), theme-color #08090A, apple-mobile-web-app-capable yes, status-bar-style black-translucent, apple-mobile-web-app-title RAVI, manifest ../manifest.webmanifest, apple-touch-icon ../icons/apple-touch-icon.png, title "<Page> - RAVI", then fonts.css, app.css, pages.js, account.js (every page with the wordmark row, and the hub), the page's own style block (in that order).
 - Page style block starts: html{background:var(--ground)}, a{color:inherit;text-decoration:none}, body{-webkit-font-smoothing:antialiased;touch-action:manipulation}.
-- The badge (.rb; app.css THE BADGE; Mako's pick J, 2026-10-31): the RAVI wordmark. RAVI in Righteous outlines (OFL; p, n and a softened in the intro), RA --p1, VI --p2, tracking .02 em, at .8 of the pill's inner box; a pill of clear frosted glass (.rbg: white .025, blur 3, saturate 160%, the app's rim light, the glass base and drop shadow); a blue-to-pink rim inside it (inset 9% top and bottom, 4% left and right, 2.5 px, the 135deg gradient #5DA5EE to .35 at the middle to #EE5F9C). 2.4783 wide per tall; height --rbh: 36 on the wordmark row, 88 on the hub, 72 on the install screen. One inline SVG holds the rim and the letters; the name is .sr text for screen readers. Written into every page by rb-tools design/wordmark/badge.py, never by hand. No font file. Plain RAVI everywhere else.
+- The badge (.rb; app.css THE BADGE; Mako's pick J, 2026-10-31): the RAVI wordmark. RAVI in Righteous outlines (OFL; p, n and a softened in the intro), RA --rb1, VI --rb2, tracking .02 em, at .8 of the pill's inner box; a pill of clear frosted glass (.rbg: white .025, blur 3, saturate 160%, the app's rim light, the glass base and drop shadow); a blue-to-pink rim inside it (inset 9% top and bottom, 4% left and right, 2.5 px, the 135deg gradient #5DA5EE to .35 at the middle to #EE5F9C). 2.4783 wide per tall; height --rbh: 36 on the wordmark row, 88 on the hub, 72 on the install screen. One inline SVG holds the rim and the letters; the name is .sr text for screen readers. Written into every page by rb-tools design/wordmark/badge.py, never by hand. No font file. Plain RAVI everywhere else.
 - Wordmark row (.wmrow, .wm): chrome, one thin row, scrolls away. Padding safe-area top + 25 / 18 / 16 / 18, so the 36 badge's middle is level with your picture's. Its markup comes from badge.py:
     <div class="wmrow"><h1 class="wm"><span class="rb">...</span><span class="sr">RAVI</span></h1></div>
 - Main wrapper (page-local id, e.g. #fb): max-width 480, margin 0 auto, padding 0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px). The calendar's wrapper is .body (calendar/index.html) and the trade page's is #trd with .tail (trade/index.html), with the same idea; scrollbar-gutter stable and body min-height 100vh come from app.css.
