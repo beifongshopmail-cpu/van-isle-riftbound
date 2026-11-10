@@ -411,10 +411,11 @@
   }
 
   function headTitle(t) { return '<div class="phead"><div class="ht">' + BACK + '<h4 class="ttl">' + t + '</h4></div></div>'; }
-  // THE FIRST-TIME SETUP's menus (plan 2 M6 block 6): a step's head counts it (1 of 4); its foot
+  // THE FIRST-TIME SETUP's menus (plan 2 M6 block 6): a step's head counts it (1 of 5); its foot
   // goes on, Not now until the step is done, then Next
-  function suHead(t, n) { return '<div class="phead"><div class="ht">' + (n > 1 || !n ? BACK : '') + '<h4 class="ttl">' + t + '</h4>' + (n ? '<span class="cnt">' + n + ' of 4</span>' : '') + '</div></div>'; }
-  function suFoot(n) { return '<div class="pfoot"><button type="button" class="pact btn glass" id="acsunext' + n + '" data-sunext="' + (n + 1) + '" data-k="do">Not now</button></div>'; }
+  function suHead(t, n) { return '<div class="phead"><div class="ht">' + (n > 1 || !n ? BACK : '') + '<h4 class="ttl">' + t + '</h4>' + (n ? '<span class="cnt">' + n + ' of 5</span>' : '') + '</div></div>'; }
+  // n names the step's menu (acsu<n>), to the next one's: 1, 2, t (Your towns), 3, 4, then 5 (All set)
+  function suFoot(n, to) { return '<div class="pfoot"><button type="button" class="pact btn glass" id="acsunext' + n + '" data-sunext="' + to + '" data-k="do">Not now</button></div>'; }
   function build() {
     scrim = el("div", "scrim"); scrim.id = "acscrim";
     doc.body.appendChild(scrim);
@@ -475,21 +476,23 @@
         '<div class="aclkcam" id="acokcam" hidden><video id="acokvid" playsinline muted autoplay></video></div>' +
         '<p class="pnote" id="acokwho"></p><p class="acmsg" id="acokmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acokgo" data-k="do" disabled>Link</button></div>',
-      acsu1: suHead("Your account", 1) + '<div class="pbody" id="acsu1body"></div>' + suFoot(1),
+      acsu1: suHead("Your account", 1) + '<div class="pbody" id="acsu1body"></div>' + suFoot(1, 2),
       acsu2: suHead("Riot ID", 2) + '<div class="pbody"><div id="acsu2in"><div class="rid"><div class="ridn"><div class="nf tall"><input type="text" id="acsurn" maxlength="16" placeholder="Riot name" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="next" aria-label="Riot name" data-k="type"></div></div>' +
         '<div class="ridt"><div class="nf tall"><span class="acat">#</span><input type="text" id="acsurt" maxlength="5" placeholder="tag" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Riot tag" data-k="type"></div></div></div>' +
         '<button type="button" class="pact btn glass acgap" id="acsuclaim" data-k="do">Claim</button></div>' +
-        '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2),
-      acsu3: suHead("Alerts", 3) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" aria-pressed="false">Trade offers</button></div>' +
-        '<p class="pnote" id="acsu3note"></p><p class="pnote">Live event pairings: at a live event, tap Alert me when I\'m paired.</p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3),
-      acsu4: suHead("Your hub", 4) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
+        '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2, "t"),
+      acsut: suHead("Your towns", 3) + '<div class="pbody"><div class="pick" id="acsutowns" data-k="pick" aria-label="Towns"></div><p class="pnote" id="acsutnote"></p></div>' + suFoot("t", 3),
+      acsu3: suHead("Alerts", 4) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" aria-pressed="false">Trade offers</button></div>' +
+        '<p class="pnote" id="acsu3note"></p><p class="pnote">Live event pairings: at a live event, tap Alert me when I\'m paired.</p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3, 4),
+      acsu4: suHead("Your hub", 5) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
         '<p class="pnote">Drag a block to move it, or down here to take it off. Or tap one, then another.</p>' +
-        '<button type="button" class="pact btn glass acgap" id="acsuhuboff" data-k="do" disabled>Take off the hub</button></div>' + suFoot(4),
+        '<button type="button" class="pact btn glass acgap" id="acsuhuboff" data-k="do" disabled>Take off the hub</button></div>' + suFoot(4, 5),
       acsu5: suHead("All set", 0) + '<div class="pbody"><p class="pnote">The Guide covers Riftbound and RAVI, and runs this setup again.</p>' +
         '<div class="doors acgap" data-k="deeper"><a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">Guide</span><span class="sp"></span>' + CV + '</a></div></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsudone" data-k="do">Done</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Exchange shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
+      acnotm: headTitle("Notices") + '<div class="pbody"><div id="acnotlist"></div></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
       acrepm: headTitle("Reports") + '<div class="pbody"><div id="acreplist"></div><p class="acmsg" id="acrepmsg" aria-live="polite"></p></div>',
       acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, Follow and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
@@ -501,7 +504,7 @@
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acrecgo" data-k="do">Sign in</button></div>'
     };
-    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", acsec: "Sign-in and security", ackeys: "Passkeys", ackey: "Passkey", acdev: "Devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Recovery code", aclink: "Another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
+    var labels = { acm: "Your account", acprof: "Profile", acpicm: "Picture", acsec: "Sign-in and security", ackeys: "Passkeys", ackey: "Passkey", acdev: "Devices", acin: "Sign in", accode: "Recovery code", acdata: "Your data", acrec: "Recovery code", aclink: "Another phone", acok: "Link a new device", acarea: "Home area", acdispm: "Disputes", acrepm: "Reports", acsu1: "Your account", acsu2: "Riot ID", acsut: "Your towns", acnotm: "Notices", acsu3: "Alerts", acsu4: "Your hub", acsu5: "All set" };
     Object.keys(defs).forEach(function (id) {
       var p = el("section", "panel frost acct", defs[id]);
       p.id = id; p.setAttribute("aria-hidden", "true"); p.setAttribute("aria-label", labels[id]);
@@ -545,7 +548,8 @@
         '<button type="button" class="door" data-acgo="acsec"><span class="t">Sign-in and security</span><span class="sp"></span>' + CV + '</button>' +
         '<button type="button" class="door" data-acgo="acdata"><span class="t">Your data</span><span class="sp"></span>' + CV + '</button>' +
         (a && a.admin ? '<button type="button" class="door" data-acgo="acdispm"><span class="t">Disputes</span><span class="sp"></span>' + (a.disputes ? '<small>' + a.disputes + '</small>' : '') + CV + '</button>' : '') +
-        (a && a.admin ? '<button type="button" class="door" data-acgo="acrepm"><span class="t">Reports</span><span class="sp"></span>' + (a.reports ? '<small>' + a.reports + '</small>' : '') + CV + '</button>' : '') + '</div>' +
+        (a && a.admin ? '<button type="button" class="door" data-acgo="acrepm"><span class="t">Reports</span><span class="sp"></span>' + (a.reports ? '<small>' + a.reports + '</small>' : '') + CV + '</button>' : '') +
+        (a && a.admin ? '<button type="button" class="door" data-acgo="acnotm"><span class="t">Notices</span><span class="sp"></span>' + (noticeCount() ? '<small>' + noticeCount() + '</small>' : '') + CV + '</button>' : '') + '</div>' +
         '<div class="doors" data-k="do"><button type="button" class="door act" id="acout"><span class="t">Sign out</span></button></div>' +
         '<p class="acmsg" id="acmsg" aria-live="polite"></p>';
     }
@@ -665,6 +669,8 @@
       $("acsign").disabled = !A.supported();
     } else if (id === "accode") { codeInfo(); }
     else if (/^acsu[1-5]$/.test(id)) { suEnter(+id.slice(4)); }
+    else if (id === "acsut") { suEnter("t"); }
+    else if (id === "acnotm") { renderNotices(); }
     else if (id === "acdata") { say("acdatamsg", ""); prefetchData(); $("acnum").textContent = a && a.id ? "Account number: " + a.id : ""; }
     else if (id === "acrec") { $("acrecin").value = ""; say("acrecmsg", ""); }
     else if (id === "aclink") { linkShow(); }
@@ -980,8 +986,8 @@
   }
   // ---- THE FIRST-TIME SETUP (plan 2 M6 block 6, Mako's yes 2026-11-03) ----
   // Once, on the installed app's first hub, after the intro (index.html calls RAVI_SETUP.auto()),
-  // and again from New here (RAVI_SETUP.open()). Four steps and All set, in this menu's stack: save
-  // the account, the Riot ID, alerts, the hub. Each can wait (Not now); closing it counts as done,
+  // and again from New here (RAVI_SETUP.open()). Five steps and All set, in this menu's stack: save
+  // the account, the Riot ID, your towns (Mako 2026-11-10), alerts, the hub. Each can wait (Not now); closing it counts as done,
   // so it never comes back by itself (vir.setup.v1). Never behind the install screen or for a test tool.
   var SU_KEY = "vir.setup.v1", suOn = false, suHub = false, suEdit = null;
   function suSeen() { try { return root.localStorage.getItem(SU_KEY) === "1"; } catch (e) { return true; } }
@@ -1007,6 +1013,8 @@
       if (can) riotInto(a);
       say("acsu2msg", "");
       suNext(2, !!r);
+    } else if (n === "t") {
+      suTowns();
     } else if (n === 3) {
       var saved = A.signedIn() && !A.isGuest(), on = !!(A.offerAlertsOn && A.offerAlertsOn()), b = $("acsuoffer");
       b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); b.disabled = !saved;
@@ -1019,6 +1027,45 @@
       suNext(4, suHub);
     }
   }
+  // YOUR TOWNS (Mako 2026-11-10): the towns Events lists, set on first use. The same choice as
+  // Events settings' Towns and kept in the same place (vir.cal.filters.v1, towns: the ones off).
+  var SU_FKEY = "vir.cal.filters.v1", suTownsSet = false;
+  function suFilters() { var o = null; try { o = JSON.parse(root.localStorage.getItem(SU_FKEY) || "null"); } catch (e) {} return o && typeof o === "object" ? o : {}; }
+  function suTowns() {
+    var box = $("acsutowns"), note = $("acsutnote");
+    suNext("t", suTownsSet);
+    if (box.children.length) return;
+    note.textContent = "Loading towns";
+    fetch(REL + "data/events.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); }).then(function (j) {
+      var counts = {}, names = {}, f = suFilters(), offs = {};
+      (Array.isArray(f.towns) ? f.towns : []).forEach(function (k) { if (typeof k === "string") offs[k] = true; });
+      (j && Array.isArray(j.events) ? j.events : []).forEach(function (e) {
+        var k = String((e && e.city) || "").trim().toLowerCase();
+        if (!k) return;
+        counts[k] = (counts[k] || 0) + 1;
+        if (!names[k]) names[k] = String(e.city).trim();
+        // a phone that had saved Greater Victoria starts with the other towns off, as Events does
+        if (f.scope === "victoria" && !f.towns && e.region !== "victoria") offs[k] = true;
+      });
+      box.innerHTML = "";
+      Object.keys(names).sort().forEach(function (k) {
+        var b = el("button", offs[k] ? "" : "on", '<span class="t"></span><span class="sp"></span><small></small>');
+        b.type = "button"; b.setAttribute("data-sutown", k); b.setAttribute("aria-pressed", String(!offs[k]));
+        b.querySelector(".t").textContent = names[k];
+        b.querySelector("small").textContent = String(counts[k]);
+        box.appendChild(b);
+      });
+      note.textContent = box.children.length ? "Events lists the towns you leave on." : "No events to show.";
+    }).catch(function () { note.textContent = "Towns need a connection. Set them later in Events settings."; });
+  }
+  function suTownTap(b) {
+    var on = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", String(on)); b.classList.toggle("on", on);
+    var f = suFilters(), offs = [];
+    Array.prototype.forEach.call($("acsutowns").querySelectorAll("[data-sutown]"), function (x) { if (x.getAttribute("aria-pressed") !== "true") offs.push(x.getAttribute("data-sutown")); });
+    try { root.localStorage.setItem(SU_FKEY, JSON.stringify({ types: Array.isArray(f.types) ? f.types : [], stores: Array.isArray(f.stores) ? f.stores : [], towns: offs })); } catch (e) {}
+    suTownsSet = true; suNext("t", true);
+  }
   // the Riot ID fields start from what this phone already has (as Profile does)
   function riotInto(a) {
     var here = null;
@@ -1028,7 +1075,7 @@
   function suOpen() {
     if (!pic || !P.acsu1) return;
     if (stack.length) closeAll();
-    suMark(); suOn = true; suHub = false;
+    suMark(); suOn = true; suHub = false; suTownsSet = false;
     enter("acsu1");
     lift(true);
     stack = [P.acsu1];
@@ -1050,8 +1097,9 @@
   }
   function suWire() {
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-sunext],#acsusave,#acsuclaim,#acsuoffer,#acsudone,#acsunew") : null;
+      var t = e.target.closest ? e.target.closest("[data-sunext],[data-sutown],#acsusave,#acsuclaim,#acsuoffer,#acsudone,#acsunew") : null;
       if (!t || !suOn) return;
+      if (t.hasAttribute("data-sutown")) return suTownTap(t);
       if (t.hasAttribute("data-sunext")) return deeper("acsu" + t.getAttribute("data-sunext"));
       if (t.id === "acsudone") return closeAll();
       if (t.id === "acsunew") { suOn = false; return; } // the link goes on to New here
@@ -1167,6 +1215,45 @@
         list.appendChild(head); list.appendChild(note); list.appendChild(rows);
       });
     });
+  }
+
+  // ---- Notices (Mako's account only; Mako 2026-11-10): what the events refresh found that he
+  // should see soon: a town's first events, a town not on the island's list, a store with no
+  // short name. The refresh writes them to data/notices.json (fetch-events.js); the count on the
+  // row is the ones this phone has not opened (vir.notices.seen.v1), as Reports shows its count.
+  var NOT_KEY = "vir.notices.seen.v1", NOT = { items: null, asked: false };
+  function noticeSeen() { var o = null; try { o = JSON.parse(root.localStorage.getItem(NOT_KEY) || "[]"); } catch (e) {} return Array.isArray(o) ? o : []; }
+  function noticeCount() {
+    if (!NOT.items) { noticeLoad(); return 0; }
+    var seen = noticeSeen();
+    return NOT.items.filter(function (x) { return seen.indexOf(x.id) === -1; }).length;
+  }
+  function noticeLoad(cb) {
+    if (NOT.asked) { if (cb && NOT.items) cb(); return; }
+    NOT.asked = true;
+    fetch(REL + "data/notices.json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); }).then(function (j) {
+      NOT.items = (j && Array.isArray(j.items) ? j.items : []).filter(function (x) { return x && typeof x.id === "string" && typeof x.text === "string"; }).slice(0, 40);
+      if (cb) cb();
+      else if (stack.length && stack[stack.length - 1] === P.acm && noticeCount()) renderRoot();
+    }).catch(function () { NOT.asked = false; if (cb) cb(); });
+  }
+  function renderNotices() {
+    var list = $("acnotlist");
+    function draw() {
+      list.innerHTML = "";
+      var items = NOT.items || [], seen = noticeSeen();
+      if (!items.length) { var e = el("p", "pnote"); e.textContent = NOT.items ? "No notices. A new town or store on Events shows here." : "Notices need a connection."; list.appendChild(e); return; }
+      items.forEach(function (x) {
+        var d = el("div", "acnt" + (seen.indexOf(x.id) === -1 ? " new" : ""), "<p></p><span></span>");
+        d.querySelector("p").textContent = x.text;
+        d.querySelector("span").textContent = (seen.indexOf(x.id) === -1 ? "New \u00b7 " : "") + (/^\d{4}-\d\d-\d\d$/.test(String(x.at)) && root.RAVI_DATE ? root.RAVI_DATE(x.at) : String(x.at || ""));
+        list.appendChild(d);
+      });
+      try { root.localStorage.setItem(NOT_KEY, JSON.stringify(items.map(function (x) { return x.id; }))); } catch (e2) {}
+    }
+    if (NOT.items) return draw();
+    list.innerHTML = '<p class="pnote">Loading notices</p>';
+    NOT.asked = false; noticeLoad(draw);
   }
 
   // ---- Reports (Mako's account only; plan 2 M2 block 3): each reported player once, and his calls ----

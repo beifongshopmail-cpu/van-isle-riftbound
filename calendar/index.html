@@ -392,13 +392,6 @@ a{color:inherit;text-decoration:none}
   </div>
   <div class="pbody">
   <div class="row">
-    <p class="lb">Area</p>
-    <div class="seg" role="group" aria-label="Area" data-k="pick">
-      <button type="button" data-scope="victoria" aria-pressed="true">Greater Victoria</button>
-      <button type="button" data-scope="island" aria-pressed="false">Whole Island</button>
-    </div>
-  </div>
-  <div class="row">
     <p class="lb">Towns</p>
     <div class="pick" id="twlist" data-k="pick"></div>
   </div>
@@ -560,9 +553,13 @@ a{color:inherit;text-decoration:none}
   for (var tk in TYPES){ if (TYPES.hasOwnProperty(tk)) TYPES[tk].lit = lighten(TYPES[tk].rgb, .40); }
 
   var EVENTS = [], META = null;
-  var scope = "victoria", selected = null, cursor = null, hidden = {}, hiddenStores = {}, hiddenTowns = {};
-  // TOWNS (Mako 2026-11-10): the whole island is searched, so each town in the chosen area is its
-  // own on/off row, as Event types and Stores are. Keyed by the town's name in lower case.
+  var selected = null, cursor = null, hidden = {}, hiddenStores = {}, hiddenTowns = {};
+  // TOWNS (Mako 2026-11-10): the whole island is searched, and each town with events is its own
+  // on/off row, as Event types and Stores are; they are the only area choice (the Greater Victoria |
+  // Whole Island track is retired, Mako 14:09). Keyed by the town's name in lower case. A phone that
+  // had saved Greater Victoria keeps it: its Up Island towns start off (legacyVic, applied once the
+  // events are in).
+  var legacyVic = false;
   function townKeyOf(ev){ return String(ev.city || "").trim().toLowerCase(); }
   function off(ev){ return !!(hidden[ev.type] || hiddenStores[storeKeyOf(ev)] || hiddenTowns[townKeyOf(ev)]); }
   var locked = false;
@@ -577,7 +574,7 @@ a{color:inherit;text-decoration:none}
       if (!raw) return;
       var o = JSON.parse(raw);
       if (!o || typeof o !== "object") return;
-      if (o.scope === "victoria" || o.scope === "island") scope = o.scope;
+      legacyVic = o.scope === "victoria" && !o.towns;
       var i;
       if (o.types && o.types.length){
         for (i = 0; i < o.types.length; i++){
@@ -602,7 +599,7 @@ a{color:inherit;text-decoration:none}
       for (k in hidden){ if (hidden.hasOwnProperty(k) && hidden[k]) types.push(k); }
       for (k in hiddenStores){ if (hiddenStores.hasOwnProperty(k) && hiddenStores[k]) stores.push(k); }
       for (k in hiddenTowns){ if (hiddenTowns.hasOwnProperty(k) && hiddenTowns[k]) towns.push(k); }
-      localStorage.setItem(FKEY, JSON.stringify({scope:scope, types:types, stores:stores, towns:towns}));
+      localStorage.setItem(FKEY, JSON.stringify({types:types, stores:stores, towns:towns}));
     }catch(e){}
   }
   loadFilters();
@@ -674,7 +671,7 @@ a{color:inherit;text-decoration:none}
     return ids;
   }
 
-  function inScope(ev){ return scope === "island" ? true : ev.region === "victoria"; }
+  function inScope(ev){ return true; } // every island event; the towns choose (the area track is retired)
   // "s"+sid when the bot has written one, else a venue/city pair -- so a
   // store keys the same way before and after the bot starts sending sid.
   function storeKeyOf(ev){
@@ -1015,7 +1012,7 @@ a{color:inherit;text-decoration:none}
     }
   }
 
-  /* towns: one row per town among events in the current area, A to Z, each with its count;
+  /* towns: one row per town with events, A to Z, each with its count;
      a town never seen before has no entry in hiddenTowns, so it reads as shown */
   function renderTowns(){
     var t = todayKey(), counts = {}, names = {};
@@ -1782,20 +1779,6 @@ a{color:inherit;text-decoration:none}
     saveFilters();
   });
 
-  var sc = panel.querySelectorAll(".seg button");
-  for (var i = 0; i < sc.length; i++){
-    sc[i].setAttribute("aria-pressed", sc[i].getAttribute("data-scope") === scope ? "true" : "false");
-    sc[i].onclick = function(){
-      scope = this.getAttribute("data-scope");
-      for (var j = 0; j < sc.length; j++){
-        sc[j].setAttribute("aria-pressed", sc[j] === this ? "true" : "false");
-      }
-      selected = null;
-      renderSub(); renderMonth(); renderList(); renderTowns(); renderTypes(); renderStores();
-      saveFilters();
-    };
-  }
-
   // ?visit=<id> (the test switch): the event is read and kept before the list loads
   function loadEvents(){
   fetch("../data/events.json", {cache:"no-cache"}).then(function(r){
@@ -1804,6 +1787,10 @@ a{color:inherit;text-decoration:none}
   }).then(function(j){
     META = j;
     EVENTS = withSim(j.events || []);
+    if (legacyVic){
+      for (var lv0 = 0; lv0 < EVENTS.length; lv0++){ if (EVENTS[lv0].region !== "victoria" && townKeyOf(EVENTS[lv0])) hiddenTowns[townKeyOf(EVENTS[lv0])] = true; }
+      legacyVic = false; saveFilters();
+    }
     if (!seenSet()) seedSeen(visible());
     /* NEW means new since the last visit: badges stay while the page is open,
        and every listed event counts as seen once the page is left. */

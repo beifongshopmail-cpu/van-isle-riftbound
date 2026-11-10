@@ -198,7 +198,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">Tiers</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="hwb" id="hw4" hidden><p>S: 10% of decks or more and 1.20x or better. A: 6% and 1.05x. B: 4% and 0.90x. C: 1% and 0.70x. R, Rogue: everything else.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw5" data-k="open"><span class="t">Local</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw5" hidden><p>Local: the decks players add for finished events in your Events area. Placings come from Riot's final standings; each placing's legend is the player's own pick when they add it, else the one most picks name. Picks from saved accounts whose past picks matched the players' own count a little more, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p></div>
+    <div class="hwb" id="hw5" hidden><p>Local: the decks players add for finished events in the towns you have on in Events settings. Placings come from Riot's final standings; each placing's legend is the player's own pick when they add it, else the one most picks name. Picks from saved accounts whose past picks matched the players' own count a little more, and a placing two legends tie on is left out until another pick settles it. Counts only until 100 decks are in, then tiers, counted the same way.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw6" data-k="open"><span class="t">Lists and cards</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="hwb" id="hw6" hidden><p>Top-cut lists and Most played cards: the same events' decklists, read from TopDeck.gg. A legend's menu shows its top-cut lists, best placing first, and the cards most of its lists run. A list is kept without its player's name.</p></div>
   </div>
@@ -489,13 +489,20 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   // LOCAL (block 2): the decks players add for finished events in the viewer's Events area.
   var LOCAL_TIERS = 100, LOCAL_DAYS = 30, OPEN_DAYS = 14, DAY = 86400000;
-  var AREA = { victoria: "Greater Victoria", island: "Vancouver Island" };
+  // The Events area is the towns left on in Events settings (Mako 2026-11-10: the Greater Victoria |
+  // Whole Island track is retired). With none off it is the island; a phone whose saved Greater
+  // Victoria has not been carried over yet (it is, the next time Events opens) still reads as that.
   function area(){
-    var s = "victoria";
-    try { var o = JSON.parse(localStorage.getItem("vir.cal.filters.v1") || "null"); if (o && o.scope === "island") { s = "island"; } } catch (e) {}
-    return s;
+    var off = {}, n = 0, vic = false;
+    try {
+      var o = JSON.parse(localStorage.getItem("vir.cal.filters.v1") || "null");
+      if (o && Array.isArray(o.towns)) { o.towns.forEach(function(k){ if (typeof k === "string" && !off[k]) { off[k] = true; n++; } }); }
+      else if (o && o.scope === "victoria") { vic = true; }
+    } catch (e) {}
+    return { off: off, vic: vic, name: vic ? "Greater Victoria" : n ? "your towns" : "Vancouver Island" };
   }
-  function inArea(ev, a){ return a === "island" || ev.region === "victoria"; }
+  // an event with no town on record (finished before 2026-11-10) counts by its old area
+  function inArea(ev, a){ return a.vic ? ev.region === "victoria" : !(ev.city && a.off[ev.city]); }
   var EVS = null, EVBY = {}, COUNTED = {}, LSTATE = "idle"; // idle, loading, ready, failed
   function evId(v){ var m = /^rb(\d{6,24})$/.exec(String(v || "")); return m ? m[1] : null; }
   // past.json and today's started events, rebuilt from checked fields
@@ -507,7 +514,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (!id || seen[id] || !isFinite(t) || t > now || now - t > LOCAL_DAYS * DAY) { return; }
       seen[id] = 1;
       out.push({ id: id, t: t, name: typeof e.name === "string" ? e.name.slice(0, 120) : "Event", store: typeof e.store === "string" ? e.store.slice(0, 40) : "",
-        type: typeof e.type === "string" ? e.type : "other", region: e.region === "victoria" ? "victoria" : "island", day: typeof e.day === "string" ? e.day : "" });
+        type: typeof e.type === "string" ? e.type : "other", region: e.region === "victoria" ? "victoria" : "island", city: typeof e.city === "string" ? e.city.trim().toLowerCase().slice(0, 40) : "", day: typeof e.day === "string" ? e.day : "" });
     }
     ((past && past.events) || []).slice(0, 1000).forEach(add);
     ((cur && cur.events) || []).slice(0, 1000).forEach(add);
@@ -550,8 +557,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }).catch(function(){ LSTATE = "failed"; drawLocal(); });
   }
   function drawLocal(){
-    var box = $("tiers"), sum = $("tsum"), a = area(), name = AREA[a];
-    $("larea").textContent = "Decks players add for " + name + "'s recent events.";
+    var box = $("tiers"), sum = $("tsum"), a = area(), name = a.name;
+    $("larea").textContent = "Decks players add for recent events in " + name + ".";
     COUNTS = false;
     if (LSTATE !== "ready") {
       sum.textContent = LSTATE === "failed" ? "The local results could not be read. Try again later." : "";
@@ -659,10 +666,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   function drawAddList(){
     var box = $("addlist"), a = area(), now = Date.now();
-    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + AREA[a] + ".";
+    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + a.name + ".";
     if (LSTATE !== "ready") { box.innerHTML = "<p class=\"pmsg\">" + (LSTATE === "failed" ? "The events could not be read. Try again later." : "Loading the events") + "</p>"; return; }
     var list = EVS.filter(function(e){ return inArea(e, a) && openable(e, now); });
-    if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(AREA[a]) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
+    if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(a.name) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
     var mine = picks();
     box.innerHTML = "<div class=\"doors\" data-k=\"deeper\">" + list.map(function(e){
       var c = COUNTED[e.id], bits = [window.RAVI_WHEN(e.t), e.store].filter(Boolean);

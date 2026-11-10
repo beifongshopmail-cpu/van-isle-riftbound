@@ -205,6 +205,28 @@ check("an event's area comes from its town, not from the search that found it", 
   assert.deepStrictEqual(fe.otherTowns([sid, nan, odd]), ["Somewhere New"]);
 });
 
+check("notices: a town's first events, a town off the list and a store with no short name are each noted once (Mako 2026-11-10)", function () {
+  function e(city, venue, store, sid, src) { return { city: city, venue: venue, store: store, sid: sid, src: src || undefined }; }
+  const run1 = [e("Victoria", "Gauntlet Games", "Gauntlet", 2069), e("Nanaimo", "Sports Card Alley", "Sports Card Alley", "a1")];
+  const n1 = fe.buildNotices(null, run1, "2026-11-10");
+  assert.deepStrictEqual(n1.items, [], "the first run only learns the towns");
+  assert.deepStrictEqual(n1.towns, ["nanaimo", "victoria"]);
+  const run2 = run1.concat([e("Sidney", "A Sidney Store", null, "b2"), e("Sidney", "A Sidney Store", null, "b2"), e("Somewhere New", "Elsewhere", "Else", "c3"), e("Duncan", "A Post Store", null, "st-a-post-store-duncan", "store")]);
+  const n2 = fe.buildNotices(n1, run2, "2026-11-11");
+  assert.deepStrictEqual(n2.items.map(function (x) { return x.id; }).sort(), ["first:duncan", "first:sidney", "store:b2", "store:st-a-post-store-duncan", "town:somewhere new"]);
+  const by = {}; n2.items.forEach(function (x) { by[x.id] = x; });
+  assert.strictEqual(by["first:sidney"].text, "Sidney has its first events on RAVI (2).");
+  assert.ok(/^Events in Somewhere New, a town not on the island's list\./.test(by["town:somewhere new"].text));
+  assert.strictEqual(by["store:b2"].text, "A new store: A Sidney Store, Sidney, on PlayRiftbound. It needs a short name.");
+  assert.ok(/from its own post/.test(by["store:st-a-post-store-duncan"].text));
+  assert.ok(n2.items.every(function (x) { return x.at === "2026-11-11"; }));
+  const n3 = fe.buildNotices(n2, run2, "2026-11-12");
+  assert.deepStrictEqual(n3.items, n2.items, "nothing is noted twice");
+  const n4 = fe.buildNotices(n3, run1, "2027-02-01");
+  assert.deepStrictEqual(n4.items, [], "a notice lapses after 60 days");
+  assert.ok(n4.towns.indexOf("sidney") !== -1, "a town once seen is not new again");
+});
+
 if (failures) {
   console.log("PLAYRIFTBOUND FIXTURE FAILURES: " + failures);
   process.exit(1);

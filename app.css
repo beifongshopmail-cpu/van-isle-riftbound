@@ -725,6 +725,12 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .acsaverow{margin-top:10px} /* M7 C2: Save your account as a row, wherever a page needs a saved account (account.js RAVI_SAVEROW) */
 .acrp{display:flex;align-items:center;gap:12px;margin:18px 2px 0}
 .acrp:first-child{margin-top:4px}
+/* Notices (Mako's account; account.js): one found thing per block, its words then its day */
+.acnt{margin:14px 2px 0}
+.acnt:first-child{margin-top:4px}
+.acnt p{margin:0;font-size:15px;line-height:1.4;color:var(--muted)}
+.acnt.new p{color:var(--bone)}
+.acnt span{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:2px}
 .acrp .acav{width:48px;height:48px;flex:none} /* size-exempt: a reported player's picture in Mako's Reports queue, a picture not a control */
 .acrp .acav svg{width:24px;height:24px} /* size-exempt: the person drawn inside a 48 picture, a picture not a control */
 .panel.acct .lb{margin:14px 2px 6px}

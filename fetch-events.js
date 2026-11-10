@@ -45,6 +45,7 @@ const OUT_DIR = path.join(__dirname, "data");
 const OUT_FILE = path.join(OUT_DIR, "events.json");
 const PAST_FILE = path.join(OUT_DIR, "past.json");
 const SCHED_FILE = path.join(OUT_DIR, "sched.json");
+const NOTICE_FILE = path.join(OUT_DIR, "notices.json");
 const PAST_DAYS = 30;
 const PAST_MAX = 400;
 const PAGE_SIZE = 100;
@@ -627,6 +628,44 @@ function otherTowns(events) {
   return Array.from(seen).sort();
 }
 
+// NOTICES (Mako 2026-11-10): what a run found that Mako should see soon, kept in
+// data/notices.json for his account menu's Notices (account.js): a town's first events, a town
+// not on the island's list, a store with no short name. prev: last run's file ({ towns: every
+// town seen so far, items: newest first }), or null on the first run, which only learns the
+// towns. A notice is written once (by id) and kept NOTICE_DAYS days, 40 at most.
+const NOTICE_DAYS = 60;
+function buildNotices(prev, events, today) {
+  const first = !prev || !Array.isArray(prev.towns);
+  const towns = new Set(first ? [] : prev.towns.filter(function (t) { return typeof t === "string"; }));
+  const old = (prev && Array.isArray(prev.items) ? prev.items : []).filter(function (x) {
+    return x && typeof x.id === "string" && typeof x.text === "string" && isDay(x.at) && daysBetween(x.at, today) <= NOTICE_DAYS;
+  });
+  const have = new Set(old.map(function (x) { return x.id; }));
+  const fresh = [];
+  function add(id, text) { if (!have.has(id)) { have.add(id); fresh.push({ id: id, at: today, text: text.slice(0, 200) }); } }
+  const count = {}, name = {};
+  for (const ev of events || []) {
+    const k = String((ev && ev.city) || "").trim().toLowerCase();
+    if (!k) continue;
+    count[k] = (count[k] || 0) + 1;
+    if (!name[k]) name[k] = String(ev.city).trim();
+  }
+  for (const k of Object.keys(name).sort()) {
+    if (!TOWNS[k]) add("town:" + k, "Events in " + name[k] + ", a town not on the island's list. Add it to the list, or shrink the search that reaches it.");
+    else if (!first && !towns.has(k)) add("first:" + k, name[k] + " has its first events on RAVI (" + count[k] + ").");
+    towns.add(k);
+  }
+  const seenStore = new Set();
+  for (const ev of events || []) {
+    if (!ev || ev.store) continue;
+    const id = "store:" + String(ev.sid);
+    if (seenStore.has(id)) continue;
+    seenStore.add(id);
+    add(id, "A new store: " + ev.venue + (ev.city ? ", " + ev.city : "") + (ev.src === "store" ? ", from its own post" : ", on PlayRiftbound") + ". It needs a short name.");
+  }
+  return { v: 1, towns: Array.from(towns).sort(), items: fresh.concat(old).slice(0, 40) };
+}
+
 // One event per store and start time. PlayRiftbound is read first, so its
 // copy wins when the old feed still lists the same event.
 function eventKey(ev) {
@@ -662,7 +701,7 @@ function priorUnique(file) {
 // only today onward, so each run carries every PlayRiftbound event that has
 // left the window into data/past.json, newest first, for PAST_DAYS. Only the
 // fields the Tier list needs; never a player.
-const PAST_FIELDS = ["id", "name", "type", "start", "day", "venue", "store", "region", "sid"];
+const PAST_FIELDS = ["id", "name", "type", "start", "day", "venue", "city", "store", "region", "sid"]; // city from 2026-11-10: the Tier list's Local goes by town
 function pastShape(ev) {
   if (!ev || typeof ev !== "object" || !/^rb\d{6,24}$/.test(String(ev.id))) return null;
   if (typeof ev.start !== "string" || !isFinite(Date.parse(ev.start))) return null;
@@ -814,6 +853,10 @@ async function main() {
   fs.writeFileSync(OUT_FILE, JSON.stringify(payload, null, 1) + "\n", "utf8");
   fs.writeFileSync(PAST_FILE, JSON.stringify({ v: 1, days: PAST_DAYS, events: past }, null, 1) + "\n", "utf8");
   fs.writeFileSync(SCHED_FILE, JSON.stringify(sched, null, 1) + "\n", "utf8");
+  const prevNotices = readJson(NOTICE_FILE);
+  const notices = buildNotices(prevNotices, events, todayK);
+  fs.writeFileSync(NOTICE_FILE, JSON.stringify(notices, null, 1) + "\n", "utf8");
+  console.log(`notices: ${notices.items.length} kept, ${notices.items.length - (prevNotices && Array.isArray(prevNotices.items) ? prevNotices.items.filter(function (x) { return notices.items.some(function (y) { return y.id === x.id; }); }).length : 0)} new`);
   console.log(`wrote past.json (${past.length} finished events)`);
 
   const feeds = writeFeeds(OUT_DIR, events);
@@ -863,4 +906,4 @@ function recentCounts(prev, n, now) {
   return Object.keys(by).sort().map(function (d) { return { d: d, n: by[d] }; });
 }
 
-module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest, otherTowns };
+module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest, otherTowns, buildNotices };
