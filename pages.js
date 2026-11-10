@@ -125,15 +125,17 @@ window.RAVI_KW = (function(){
   return m;
 })();
 // Riot's own symbols for the bracket tokens whose meaning Riot's glyph set names (fetch-glyphs.js): Might,
-// Exhaust, Power of any domain, Energy 0 to 8. Files in cards/glyphs, Riot's, unchanged. [C], [S], [R] and
-// [>] are not drawn: what each stands for is not settled.
-window.RAVI_SYM = { M: ["might", "Might"], E: ["exhaust", "Exhaust"], A: ["rune_rainbow", "Power of any domain"] };
+// Exhaust, Power of any domain, Energy 0 to 8. Files in cards/glyphs, Riot's, unchanged. [C] (1 Power of the card's own
+// domain: the text alone does not say which card) and [>] (no symbol of its own; Mako 2026-11-09) stay as written.
+// [S] is Might too (Resonating Strike's errata writes +2 [S] where the printed card has Riot's Might glyph);
+// [R] is 1 Fury Power (Riot's Origins FAQ: "[4][R] (or 4 energy and 1 power of the fury/red domain)").
+window.RAVI_SYM = { M: ["glyphs/might", "Might"], S: ["glyphs/might", "Might"], E: ["glyphs/exhaust", "Exhaust"], A: ["glyphs/rune_rainbow", "Power of any domain"], R: ["runes/rune_fury", "Fury Power"] };
 // draws every [Keyword] (and [Keyword 2]) in root's text as its tag, the word kept, and every symbol
 // above as Riot's glyph (its name as the picture's words); Riot's other brackets stay. rel: the way to
 // the app's root ("../" from a page folder)
 window.RAVI_KW_TAGS = function(root, rel){
   if (!root) { return; }
-  var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, RE = /\[(?:([A-Za-z][A-Za-z\- ]{1,13}?)((?: \d+)?)|([MEA]|[0-8]))\]/g;
+  var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, RE = /\[(?:([A-Za-z][A-Za-z\- ]{1,13}?)((?: \d+)?)|([MSEAR]|[0-8]))\]/g;
   rel = typeof rel === "string" ? rel : "../";
   while ((n = tw.nextNode())) { if (n.nodeValue.indexOf("[") >= 0 && !(n.parentNode.closest && n.parentNode.closest(".nkw"))) { nodes.push(n); } }
   nodes.forEach(function(t){
@@ -144,8 +146,8 @@ window.RAVI_KW_TAGS = function(root, rel){
       frag = frag || document.createDocumentFragment();
       if (m.index > last) { frag.appendChild(document.createTextNode(txt.slice(last, m.index))); }
       if (m[3]) {
-        var sy = window.RAVI_SYM[m[3]] || ["energy_" + m[3], m[3] + " Energy"];
-        sp = document.createElement("img"); sp.className = "ksy"; sp.src = rel + "cards/glyphs/" + sy[0] + ".svg"; sp.alt = sy[1]; sp.width = 24; sp.height = 24;
+        var sy = window.RAVI_SYM[m[3]] || ["glyphs/energy_" + m[3], m[3] + " Energy"];
+        sp = document.createElement("img"); sp.className = "ksy"; sp.src = rel + "cards/" + sy[0] + ".svg"; sp.alt = sy[1]; sp.width = 24; sp.height = 24;
       } else {
         sp = document.createElement("span"); sp.className = "nkw"; if (kc !== "t") { sp.setAttribute("data-kc", kc); }
         sp.textContent = m[1] + m[2];
