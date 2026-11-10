@@ -162,7 +162,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 :where(html.cnew) #around{--sc:var(--h-jade)}   /* App settings' green */
 :where(html.cnew) :is(#try,#deck,#signup,#bring,#rules,#setup,#around){--tint:transparent;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
 .npc{display:none}
-:where(html.cnew) #pages .door.rec{padding-left:60px}
+:where(html.cnew) #pages .door.rec{padding-left:60px} /* size-exempt: room for the row's coloured chip (.npc), a list that mixes things keeps colour small (STYLE 4, Where colour goes 3; Mako's yes 2026-11-09) */
 :where(html.cnew) .npc{display:grid;position:absolute;left:16px;top:calc(50% - 16px);width:32px;height:32px;border-radius:10px;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
 .npc svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
