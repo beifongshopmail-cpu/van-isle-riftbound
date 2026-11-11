@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Every Riftbound card in one place: its text, printings, prices, legality and rulings.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Cards - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<script src="../account.js"></script>
+<script src="../decks/deck.js"></script>
+<style>
+/* The Cards page (plan 2 M9 block 3, Mako's yes to the design 2026-11-10). Every card in one place:
+   search first, then one card full screen: its picture, Riot's text, its numbers, whether it is
+   legal, every printing with its price and 7-day move, the errata and rulings that name it, and
+   Add to (a deck, a binder, the Wishlist). A front end only: cards/catalogue.json (fetch-cards.js),
+   data/prices.json (fetch-prices.js), data/rules.json (fetch-rules.js), read through decks/deck.js.
+   Prior art, patterns only: Scryfall and Piltover Archive (search first; a card page of text,
+   printings with prices, legality, rulings). The shared layer is app.css; this block holds only the
+   page's own rules. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;
+  /* THIS DOES NOT STOP DOUBLE-TAP ZOOM. The touchend guard at the end of
+     the page is the fix. */
+  touch-action:manipulation}
+#cd{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+#all{margin-top:22px}
+/* THE SEARCH STAYS AT THE TOP (as Rules' and News'): a sticky plate parked 10 above --top-clear,
+   plate frost, clear. Under the search, the view row as Collection's: Grid or List, then Sort and
+   one Filters chip (five filters fold into one chip, STYLE 5). */
+.srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}
+.plate{border-radius:24px;padding:10px;
+  background:var(--plate-solid);
+  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.dvrow{display:flex;align-items:center;gap:6px;margin-top:10px}
+.dvrow .sp{flex:1}
+.dvseg button{width:40px;padding:0;display:grid;place-items:center}
+.dvseg svg{width:18px;height:18px;fill:currentColor}
+.fchip{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
+.fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
+.fchip .n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--ink);color:var(--bone);font-size:12px}
+.fchip svg{flex:0 0 auto;width:14px;height:14px}
+/* THE CARDS: the Decks browser's grid, three across; the name and the price of one under each. A
+   picture's ground before it loads is --recess (STYLE 4). */
+.cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
+.ctile{position:relative;min-width:0}
+.cpic{position:relative;display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
+.cpic img,.art img,.mpic img{display:block;width:100%;height:100%;object-fit:cover}
+/* a battlefield lies landscape: in a portrait slot its picture is turned, as Decks' grid turns it */
+.cpic.rot img,.art.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
+.tnm{margin:6px 2px 0;font-family:var(--disp);font-size:13px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpr{margin:2px 2px 0;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* LIST: rows without glass, as Collection's List: the picture, the name, what it is, the price */
+.crow{position:relative;display:flex;align-items:center;gap:12px;width:100%;min-height:66px;padding:8px 0;border-radius:0;text-align:left;background:none;color:var(--bone);font:inherit}
+.crow + .crow{border-top:1px solid rgba(255,255,255,.07)}
+.crow:active{transform:none;background:rgba(255,255,255,.05)}
+.art{position:relative;display:block;flex:0 0 36px;width:36px;height:50px;border-radius:5px;overflow:hidden;background:var(--recess)} /* size-exempt: card art image */
+.cmid{flex:1;min-width:0}
+.cnm{display:block;font-family:var(--disp);font-size:15px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csub{display:block;margin-top:3px;font-family:var(--text);font-size:12px;font-weight:400;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.camt{flex:0 0 auto;font-family:var(--disp);font-size:15px;font-weight:700;white-space:nowrap}
+.empty{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
+.cpic,.crow,.mpic{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.foot a{color:var(--bone)}
+/* ONE CARD, FULL SCREEN (the bend STYLE 7 names for Decks' card browser; Mako's yes 2026-11-10): a
+   view over the page, its own scroller, with a sticky plate that wears the card's domain colours
+   as a deck's plate wears the deck's (STYLE 4, see-through chrome may wear its subject's colours). */
+.crd{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chead{position:sticky;top:calc(var(--top-clear) - 10px);margin-top:calc(var(--top-clear) - 10px);z-index:2;padding:0 12px}
+.chead .plate{max-width:456px;margin:0 auto}
+.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) 35%,rgba(var(--c2),.32) 65%),rgba(10,11,13,.94);--muted:#DCDEE2}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) 35%,rgba(var(--c2),.32) 65%),rgba(10,11,13,.5)}}
+.bsr{display:flex;align-items:center;gap:10px}
+.ctt{flex:1;min-width:0;height:var(--sz-track);display:flex;flex-direction:column;justify-content:center}
+.ctt .ttl{margin:0;font-size:17px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctt p{margin:0;font-size:12px;line-height:1.35;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbody{max-width:480px;margin:0 auto;padding:16px 12px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.cbody > .row:last-child{margin-bottom:0}
+/* the picture: a tap shows the full card (the counter's and Decks' viewer) */
+.mbox{position:relative;width:230px;max-width:100%;margin:0 auto 16px}
+.mbox.land{width:320px}
+.mpic{display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:12px;overflow:hidden;background:var(--recess)}
+.mpic.land{aspect-ratio:1039/744}
+/* Riot's words, as the Rules page sets them; keywords and symbols drawn by pages.js RAVI_KW_TAGS */
+.ctxt{border-radius:22px;padding:14px 16px}
+.rtx{font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
+.rtx.old{color:var(--muted)}
+.rtx p{margin:0 0 8px}
+.rtx > :last-child{margin-bottom:0}
+.rtx ul,.rtx ol{margin:0 0 8px;padding-left:20px}
+.rtx li{margin:0 0 4px}
+/* ITS NUMBERS: a glass card of rows you read: what it is called on the left, its value on the right */
+.facts{border-radius:22px;margin:0}
+.fk{display:flex;align-items:baseline;gap:12px;margin:0;padding:9px 16px}
+.fk + .fk{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.fk dt{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--muted)}
+.fk dd{flex:1;min-width:0;margin:0;font-size:15px;text-align:right;overflow-wrap:anywhere}
+.fk dd b{font-family:var(--disp);font-weight:700}
+/* EVERY PRINTING: a sunken list you pick in (the picture above follows the pick), as Decks' card
+   menu: its picture, its set and kind, its number, and each finish's price with its 7-day move, an
+   arrow and a percent, never a colour (STYLE 1) */
+.plist{border-radius:22px;background:var(--recess);overflow:hidden}
+.prow + .prow{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.prb{position:relative;display:flex;align-items:flex-start;gap:12px;width:100%;min-height:77px;padding:8px 44px 8px 16px;text-align:left;border-radius:0;background:none;color:var(--bone);font:inherit}
+.prb:active{background:var(--hi);transform:none}
+.prb .art{flex:0 0 44px;width:44px;height:61px} /* size-exempt: card art image */
+.pti{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding-top:2px}
+.pti small{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pchk{position:absolute;right:16px;top:calc(50% - 9px);width:18px;height:18px;fill:none;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.fin{display:flex;align-items:baseline;gap:8px;font-size:13px;line-height:1.5;white-space:nowrap}
+.fin b{font-family:var(--disp);font-weight:700}
+.fin i{font-style:normal;color:var(--muted)}
+.mv{display:inline-flex;align-items:center;gap:2px;font-weight:600}
+.mv svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* ERRATA AND RULINGS that name the card, from Rules: one press group, each row opening its words
+   in place; a list that mixes kinds keeps colour small (STYLE 4): the kind's word in its section's
+   colour, lit, always the word */
+.rul{white-space:normal}
+.rul .t{white-space:normal;overflow:visible}
+.rty{font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
+.door.rec .chev{position:absolute;right:16px;top:calc(50% - 8px);color:var(--muted)}
+.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
+.rbody{padding:2px 16px 14px}
+.rlab{margin:8px 0 4px;font-size:12px;font-weight:600;color:var(--muted)}
+.rlab:first-child{margin-top:0}
+/* the Add to menu: what each place already holds, in grey, at the row's right */
+.toast{position:fixed;left:50%;z-index:70;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
+  transform:translate(-50%,8px);max-width:calc(100% - 48px);padding:10px 16px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s var(--ease)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+/* THE FULL CARD STAYS A TAP-ANYWHERE IMAGE VIEWER, not a menu (the counter's, Decks') */
+.spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);border:0;padding:var(--top-clear) 14px max(14px,env(safe-area-inset-bottom));
+  font:inherit;color:inherit;-webkit-appearance:none;appearance:none}
+.spot:active{transform:none}
+.spot.open{display:flex}
+.spotpic{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+@media (prefers-reduced-motion: no-preference){ .spot.open .spotpic{animation:cardgrow .32s var(--ease) both} }
+@keyframes cardgrow{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
+
+<main id="cd">
+  <h2 class="sr">Cards</h2>
+
+  <div class="srow plate glass">
+    <div class="sf">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+      <input id="q" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
+      <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="dvrow"><div class="seg dvseg" id="vseg" role="group" aria-label="Cards show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="true"></button><button type="button" data-v="list" aria-label="List" aria-pressed="false"></button></div><span class="sp"></span><button type="button" class="fchip btn glass" id="sortb" data-act="sort" data-k="do"></button><button type="button" class="fchip btn glass" id="flsb" data-act="fls" data-k="do">Filters</button></div>
+  </div>
+
+  <div id="boot"></div>
+  <script>document.getElementById("boot").innerHTML = RAVI_SKEL(["head", "tiles:9"]);</script>
+
+  <section id="all" hidden>
+    <div class="shead"><h2 id="ah">All cards</h2><span class="sp"></span><span class="cnt" id="acnt"></span></div>
+    <div id="list"></div>
+    <div id="none" hidden><p class="empty">No card matches.</p><button type="button" class="pact btn glass" data-act="clear" data-k="do">Show all cards</button></div>
+  </section>
+  <p class="empty" id="loadfail" hidden>The cards could not be loaded. Check your connection and open the page again.</p>
+
+  <footer class="foot">
+    <p id="stamp"></p>
+    <p>Market price is a public benchmark, not an offer from any store.</p>
+    <p>Card text, pictures, errata and rulings are Riot Games', word for word.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
+  </footer>
+</main>
+
+<!-- ONE CARD, FULL SCREEN: a sticky plate (Close, the card's name, what it is), then the card -->
+<section class="crd" id="crd" hidden aria-label="Card">
+  <div class="chead"><div class="plate glass" id="cplate">
+    <div class="bsr">
+      <button type="button" class="circ trk btn glass" id="cclose" data-act="cclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+      <div class="ctt"><h3 class="ttl" id="cname"></h3><p id="csubt"></p></div>
+    </div>
+  </div></div>
+  <div class="cbody" id="cbody"></div>
+</section>
+
+<!-- THE STANDARD BAR: Hub, Go to, the third slot unused for now (dimmed), Settings (dimmed). -->
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"cards"},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
+]);</script>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+
+<section class="panel frost" id="psort" aria-hidden="true" aria-label="Sort">
+  <div class="phead"><div class="ht"><h4 class="ttl">Sort</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody"><div class="pick" id="sortpick" data-k="pick"></div></div>
+</section>
+
+<section class="panel frost" id="pfls" aria-hidden="true" aria-label="Filters">
+  <div class="phead"><div class="ht"><h4 class="ttl">Filters</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody"><div class="doors" id="flsrows" data-k="deeper"></div></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="flsall" data-k="do">Show all</button></div>
+</section>
+
+<section class="panel frost" id="pfl" aria-hidden="true" aria-label="Filter">
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="flttl">Filter</h4></div></div>
+  <div class="pbody"><div class="pick" id="flpick" data-k="pick"></div></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="flany" data-k="do">Any</button></div>
+</section>
+
+<section class="panel frost" id="padd" aria-hidden="true" aria-label="Add to">
+  <div class="phead"><div class="ht"><h4 class="ttl">Add to</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody" id="addbody"></div>
+</section>
+
+<button class="spot" id="spotsheet" type="button" aria-label="Close card" data-k="view"><img class="spotpic" id="spotpic" alt="" decoding="async"></button>
+<div class="toast frost" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var X = window.RAVI_DECK;
+  var SKEY = "vir.cards.set.v1", DKEY = "vir.decks.v1", CKEY = "vir.coll.v1";
+  var I = null, PX = null, BAN = null, RULES = [], LAB = {}, PR = {}, FX = 1.4, CUR = "CAD";
+  var CARDS = [];        // one entry per card, its base printing: { x, name, code, sets, rars, hay, text }
+  var SET = { view: "grid", sort: "name" };
+  var Q = "", F = { set: [], type: [], dom: [], rar: [], energy: [] }, LIM = 60, LEN = 0;
+  var CV = null;         // the open card: { e, rows, pi, fin, deep }
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
+  function C(code){ return I ? X.card(I, code) : null; }
+  function nm(x){ return X.full(I, x); }
+  function art(x, big){ return x && x.h ? "../cards/art/" + x.h + (big ? ".webp" : ".t.webp") : ""; }
+  function img(x, big){ var s = art(x, big); return s ? '<img src="' + s + '" alt="" loading="lazy" decoding="async" draggable="false">' : ""; }
+  function land(x){ return !!x && (x.t === "battlefield" || x.o === "landscape"); }
+  function doms(x){ return (x.d || []).filter(function(d){ return d !== "colorless"; }); }
+  function domWords(x){ var d = doms(x); return d.length ? d.map(cap).join(" and ") : ((x.d || []).length ? "Colorless" : ""); }
+  function typeWord(x){
+    var k = (x.k || []).filter(function(v){ return v === "champion" || v === "signature" || v === "token"; }).map(cap).join(" ");
+    return x.t ? (k ? k + " " + x.t : cap(x.t)) : "Card";
+  }
+  function money(usd){ return "$" + (CUR === "CAD" ? usd * FX : usd).toFixed(2); }
+  function banned(x){ return !!(BAN && x && X.isBanned(BAN, nm(x))); }
+  function key(s){ return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  var ARROW = { up: '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>', dn: '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("dn") + '"/></svg>' };
+  var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+  var CVR = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>';
+  var CHECK = '<svg class="pchk" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>';
+  var IV = {
+    // the view chips, as Collection's, Decks' and News' (plan 2 M8 round 5): Phosphor's squares-four, bold (MIT), and List
+    grid: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM200,36H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,60H160V60h36Zm-96,40H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96Zm104-60H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,200,136Zm-4,60H160V160h36Z" fill="currentColor" stroke="none"/></svg>',
+    list: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM100,136H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96ZM148,42H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,90H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,142H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,190H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24Z" fill="currentColor" stroke="none"/></svg>'
+  };
+
+  try{ var s0 = JSON.parse(localStorage.getItem(SKEY)); if(s0 && typeof s0 === "object"){ if(s0.view === "grid" || s0.view === "list") SET.view = s0.view; if(typeof s0.sort === "string") SET.sort = s0.sort; } }catch(e){}
+  // the currency the other price pages use on this phone (Appraise's choice, as Decks reads it)
+  try{ var t0 = JSON.parse(localStorage.getItem("vir.trade.v1")); if(t0 && (t0.cur === "USD" || t0.cur === "CAD")) CUR = t0.cur; }catch(e){}
+  function saveSet(){ try{ localStorage.setItem(SKEY, JSON.stringify(SET)); }catch(e){} }
+
+  // ---- THE LIST: every card once, its base printing; a search word must be in its name, number or
+  // tags, else in its text; name matches come first ----
+  var SORTS = [["name", "Name", "up"], ["energy", "Energy", "up"], ["price", "Price", "down"]];
+  function sortOf(v){ var k = window.RAVI_SORT.key(v); return SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; }
+  var SETORD = ["OGN", "OGS", "SFD", "UNL", "VEN", "RAD"];
+  var FILTERS = {
+    set: { title: "Set", opts: function(){ var L = LAB.sets || {}; return Object.keys(L).sort(function(a, b){ return (SETORD.indexOf(a) + 99) % 99 - (SETORD.indexOf(b) + 99) % 99; }).map(function(s){ return [s, L[s]]; }); } },
+    type: { title: "Type", opts: function(){ return [["unit", "Unit"], ["spell", "Spell"], ["gear", "Gear"], ["legend", "Legend"], ["battlefield", "Battlefield"], ["rune", "Rune"]]; } },
+    dom: { title: "Domain", opts: function(){ return X.DOMAINS.map(function(d){ return [d, cap(d)]; }).concat([["colorless", "Colorless"]]); } },
+    rar: { title: "Rarity", opts: function(){ return ["common", "uncommon", "rare", "epic", "showcase"].map(function(r){ return [r, cap(r)]; }); } },
+    energy: { title: "Energy", opts: function(){ var a = [], i; for(i = 0; i <= 8; i++) a.push([String(i), i + " energy"]); a.push(["9", "9 or more"]); return a; } }
+  };
+  var FKEYS = ["set", "type", "dom", "rar", "energy"];
+  function flCount(){ return FKEYS.reduce(function(n, k){ return n + F[k].length; }, 0); }
+  function flValue(k){
+    if(!F[k].length) return "Any";
+    return FILTERS[k].opts().filter(function(o){ return F[k].indexOf(o[0]) > -1; }).map(function(o){ return k === "energy" ? (o[0] === "9" ? "9+" : o[0]) : o[1]; }).join(", ");
+  }
+  function match(e){
+    var x = e.x, ds;
+    if(F.set.length && !F.set.some(function(s){ return e.sets[s]; })) return 0;
+    if(F.rar.length && !F.rar.some(function(r){ return e.rars[r]; })) return 0;
+    if(F.type.length && F.type.indexOf(x.t) < 0) return 0;
+    if(F.dom.length){ ds = doms(x); if(!ds.length) ds = (x.d || []).length ? ["colorless"] : []; if(!ds.some(function(v){ return F.dom.indexOf(v) > -1; })) return 0; }
+    if(F.energy.length){ var en = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(F.energy.indexOf(String(en)) < 0) return 0; }
+    var words = key(Q).split(" ").filter(Boolean);
+    if(!words.length) return 2;
+    if(words.every(function(w){ return e.hay.indexOf(w) > -1; })) return 2;
+    return words.every(function(w){ return e.hay.indexOf(w) > -1 || e.text.indexOf(w) > -1; }) ? 1 : 0;
+  }
+  function cmp(a, b){
+    var k = window.RAVI_SORT.key(SET.sort), r = 0;
+    if(k === "price"){ var pa = PR[a.code], pb = PR[b.code]; if((pa == null) !== (pb == null)) return pa == null ? 1 : -1; r = (pb || 0) - (pa || 0); }   // a card with no price sits last either way
+    if(k === "energy"){ var ea = typeof a.x.e === "number" ? a.x.e : 99, eb = typeof b.x.e === "number" ? b.x.e : 99; if((ea === 99) !== (eb === 99)) return ea === 99 ? 1 : -1; r = ea - eb; }
+    if(r) return window.RAVI_SORT.flip(SET.sort) ? -r : r;
+    r = a.name.localeCompare(b.name) || a.code.localeCompare(b.code);
+    return k === "name" && window.RAVI_SORT.flip(SET.sort) ? -r : r;
+  }
+  function found(){
+    var hits = [], rest = [];
+    CARDS.forEach(function(e){ var m = match(e); if(m === 2) hits.push(e); else if(m === 1) rest.push(e); });
+    return hits.sort(cmp).concat(rest.sort(cmp));
+  }
+  function subOf(x){ var b = [typeWord(x)], d = domWords(x); if(d) b.push(d); if(typeof x.e === "number") b.push(x.e + " energy"); return b.join(", "); }
+  function tile(e){
+    var x = e.x, p = PR[e.code], rot = land(x);
+    if(SET.view === "list") return '<button type="button" class="crow" data-code="' + esc(e.code) + '" data-k="card"><span class="art' + (rot ? " rot" : "") + '">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(e.name) + '</span><span class="csub">' + esc(subOf(x)) + '</span></span>' + (p != null ? '<span class="camt">' + money(p) + '</span>' : '') + '</button>';
+    return '<div class="ctile"><button type="button" class="cpic' + (rot ? " rot" : "") + '" data-code="' + esc(e.code) + '" data-k="card" aria-label="' + esc(e.name) + (p != null ? ", " + money(p) : "") + '">' + img(x) + '</button><p class="tnm">' + esc(e.name) + '</p><p class="tpr">' + (p != null ? money(p) : "&nbsp;") + '</p></div>';
+  }
+  var LAST = [];
+  function render(keep){
+    if(!I) return;
+    LAST = found(); LEN = LAST.length;
+    var h = "", any = Q.trim() || flCount();
+    LAST.slice(0, LIM).forEach(function(e){ h += tile(e); });
+    var box = el("list");
+    box.className = SET.view === "list" ? "" : "cgrid";
+    box.innerHTML = h;
+    el("ah").textContent = any ? "Results" : "All cards";
+    el("acnt").textContent = LEN ? String(LEN) : "";
+    el("none").hidden = !!LEN;
+    el("qx").disabled = !Q;
+    chips();
+    if(!keep) window.scrollTo(0, 0);
+    if(LEN > LIM) requestAnimationFrame(pump);
+  }
+  // ENDLESS SCROLL, as every card browser: the next 60 join the end while it is within a screen and a half
+  function pump(){
+    if(!(LEN > LIM) || !el("crd").hidden) return;
+    if(el("list").getBoundingClientRect().bottom - window.innerHeight > 1300) return;
+    var h = ""; LAST.slice(LIM, LIM + 60).forEach(function(e){ h += tile(e); });
+    LIM += 60;
+    el("list").insertAdjacentHTML("beforeend", h);
+    if(LEN > LIM) requestAnimationFrame(pump);
+  }
+  function chips(){
+    var R = window.RAVI_SORT, s = sortOf(SET.sort), d = R.dir(SET.sort, s[2]), n = flCount(), sb = el("sortb"), fb = el("flsb");
+    sb.innerHTML = R.chip('<span class="sr">Sort: </span>' + esc(s[1]), d);
+    sb.setAttribute("aria-label", R.label(s[1], d));
+    fb.classList.toggle("on", !!n);
+    fb.setAttribute("aria-label", "Filters" + (n ? ", " + n + " on" : ""));
+    fb.innerHTML = "Filters" + (n ? '<span class="n">' + n + '</span>' : DOWN);
+  }
+  function views(){
+    Array.prototype.forEach.call(el("vseg").querySelectorAll("button"), function(b){
+      var v = b.getAttribute("data-v"); b.innerHTML = IV[v]; b.setAttribute("aria-pressed", SET.view === v ? "true" : "false");
+    });
+  }
+
+  // ---- menus: a stack, as Decks' and Collection's ----
+  var OPENP = null, STACK = [];
+  function slideMenus(from, to, dir){
+    from.classList.remove("fromr", "froml", "tol", "tor");
+    from.classList.add(dir > 0 ? "tol" : "tor");
+    to.classList.remove("fromr", "froml", "tol", "tor");
+    to.classList.add(dir > 0 ? "fromr" : "froml");
+    void to.offsetWidth;
+    setTimeout(function(){ from.classList.remove("tol", "tor"); }, 360);
+  }
+  function show(p, keep, dir){
+    var sc = el("scrim"), b;
+    if(OPENP && p && OPENP !== p && dir) slideMenus(OPENP, p, dir);
+    if(OPENP && OPENP !== p){ OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    if(p){
+      document.documentElement.classList.add("lock");
+      p.classList.add("show"); p.classList.remove("fromr", "froml");
+      p.setAttribute("aria-hidden", "false");
+      b = p.querySelector(".pbody");
+      if(b && !keep) b.scrollTop = 0;
+      sc.classList.add("show");
+    } else {
+      if(el("crd").hidden) document.documentElement.classList.remove("lock");
+      sc.classList.remove("show");
+    }
+    window.RAVI_EDGES && window.RAVI_EDGES();
+  }
+  function openPanel(p){ STACK = p ? [p] : []; show(p); }
+  function deeper(p){ STACK.push(p); show(p, false, 1); }
+  function back(){ STACK.pop(); show(STACK.length ? STACK[STACK.length - 1] : null, true, -1); }
+  var TT = 0;
+  function toast(m){ var t = el("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(TT); TT = setTimeout(function(){ t.classList.remove("show"); }, 1800); }
+
+  function fillSort(){
+    var R = window.RAVI_SORT, h = "";
+    SORTS.forEach(function(s){ var on = R.key(SET.sort) === s[0]; h += R.row('data-act="sortpick" data-v="' + s[0] + '"', esc(s[1]), on, on ? R.dir(SET.sort, s[2]) : ""); });
+    el("sortpick").innerHTML = h;
+  }
+  function fillFls(){
+    var h = "";
+    FKEYS.forEach(function(k){ h += '<button type="button" class="door" data-act="fl" data-f="' + k + '"><span class="t">' + FILTERS[k].title + '</span><span class="sp"></span><small>' + esc(flValue(k)) + '</small>' + CVR + '</button>'; });
+    el("flsrows").innerHTML = h;
+    el("pfls").querySelector('[data-act="flsall"]').disabled = !flCount();
+  }
+  var FL = "";
+  function fillFl(){
+    var h = "";
+    el("flttl").textContent = FILTERS[FL].title;
+    FILTERS[FL].opts().forEach(function(o){ var on = F[FL].indexOf(o[0]) > -1; h += '<button type="button" data-act="flpick" data-v="' + esc(o[0]) + '"' + (on ? ' class="on"' : '') + ' aria-pressed="' + on + '">' + esc(o[1]) + '</button>'; });
+    el("flpick").innerHTML = h;
+    el("pfl").querySelector('[data-act="flany"]').disabled = !F[FL].length;
+  }
+
+  // ---- ONE CARD ----
+  // Riot's card text is Riot's HTML: keep its paragraphs, breaks and lists, drop everything else
+  var KEEP = { P: 1, BR: 1, UL: 1, OL: 1, LI: 1, B: 1, I: 1, EM: 1, STRONG: 1 };
+  function clean(html){
+    var b = new DOMParser().parseFromString("<!doctype html><body>" + (html || "") + "</body>", "text/html").body;
+    (function walk(n){
+      var c = n.firstChild, next;
+      while(c){
+        next = c.nextSibling;
+        if(c.nodeType === 1){
+          if(/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|TEMPLATE)$/.test(c.tagName)){ n.removeChild(c); c = next; continue; }
+          if(!KEEP[c.tagName]){ next = c.firstChild || next; while(c.firstChild) n.insertBefore(c.firstChild, c); n.removeChild(c); c = next; continue; }
+          while(c.attributes.length) c.removeAttribute(c.attributes[0].name);
+          walk(c);
+        } else if(c.nodeType !== 3){ n.removeChild(c); }
+        c = next;
+      }
+    })(b);
+    return b.innerHTML;
+  }
+  // Riot's card text names its symbols as :rb_might:, :rb_energy_2:, :rb_rune_fury:; each is drawn as
+  // Riot's own glyph, unchanged, at the text's height (app.css .ksy), its name as the picture's words
+  function syms(root){
+    if(!root) return;
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodes = [], n, RE = /:rb_([a-z]+)(?:_([a-z0-9]+))?:/g;
+    while((n = tw.nextNode())){ if(n.nodeValue.indexOf(":rb_") > -1) nodes.push(n); }
+    nodes.forEach(function(t){
+      var txt = t.nodeValue, m, last = 0, frag = document.createDocumentFragment(), im, file, words;
+      RE.lastIndex = 0;
+      while((m = RE.exec(txt))){
+        file = ""; words = "";
+        if(m[1] === "might"){ file = "glyphs/might"; words = "Might"; }
+        else if(m[1] === "exhaust"){ file = "glyphs/exhaust"; words = "Exhaust"; }
+        else if(m[1] === "rune" && m[2] === "rainbow"){ file = "glyphs/rune_rainbow"; words = "Power of any domain"; }
+        else if(m[1] === "rune" && X.DOMAINS.indexOf(m[2]) > -1){ file = "runes/rune_" + m[2]; words = cap(m[2]) + " Power"; }
+        else if(m[1] === "energy" && /^[0-8]$/.test(m[2] || "")){ file = "glyphs/energy_" + m[2]; words = m[2] + " Energy"; }
+        else if(m[1] === "energy" && /^\d+$/.test(m[2] || "")){ words = m[2] + " Energy"; }
+        else continue;
+        if(m.index > last) frag.appendChild(document.createTextNode(txt.slice(last, m.index)));
+        if(file){ im = document.createElement("img"); im.className = "ksy"; im.src = "../cards/" + file + ".svg"; im.alt = words; im.width = 24; im.height = 24; frag.appendChild(im); }
+        else frag.appendChild(document.createTextNode(words));
+        last = m.index + m[0].length;
+      }
+      if(!last) return;
+      if(last < txt.length) frag.appendChild(document.createTextNode(txt.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  function strip(html){ return String(html || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&#39;|&rsquo;|\u2019/g, "'").replace(/\s+/g, " ").trim(); }
+  // the errata, FAQs and rulings that name the card (data/rules.json): an erratum by its card list;
+  // a question or ruling when its words hold the card's whole name, as written
+  function names(x){
+    var a = [nm(x)];
+    if(x.t === "legend") a.push(x.n);
+    return a.map(function(n){ return n.replace(/\u2019/g, "'"); });
+  }
+  function holds(text, name){
+    var at = text.indexOf(name), before, after;
+    while(at > -1){
+      before = at ? text.charAt(at - 1) : " "; after = text.charAt(at + name.length) || " ";
+      if(!/[A-Za-z0-9]/.test(before) && !/[A-Za-z0-9]/.test(after) && !(after === "," && /^, [A-Z]/.test(text.slice(at + name.length)))) return true;   // 'Ahri' is not 'Ahri, Alluring'
+      at = text.indexOf(name, at + 1);
+    }
+    return false;
+  }
+  function rulesFor(x){
+    var ns = names(x), ks = ns.map(key), out = [];
+    RULES.forEach(function(it){
+      if(it.kind === "errata"){ if((it.cards || []).some(function(c){ return ks.indexOf(key(c)) > -1; })) out.push(it); return; }
+      if(it.kind !== "faq" && it.kind !== "ruling") return;
+      if(it._t == null) it._t = strip((it.q || "") + " " + (it.title || "") + " " + (it.a || "") + " " + (it.html || "")).replace(/\u2019/g, "'");
+      if(ns.some(function(n){ return holds(it._t, n); })) out.push(it);
+    });
+    var ord = { errata: 0, faq: 1, ruling: 2 };
+    return out.sort(function(a, b){ return ord[a.kind] - ord[b.kind] || String(b.changed || "").localeCompare(String(a.changed || "")); });
+  }
+  var SRC = {};
+  var RKIND = { errata: ["Errata", "garnet"], faq: ["FAQ", "gold"], ruling: ["Ruling", "gold"] };   // Rules' section colours (STYLE 4)
+  function lit(rgb){ return rgb.split(",").map(function(v){ return Math.round(+v + (255 - +v) * .4); }).join(","); }
+  function ruleRow(it, i){
+    var k = RKIND[it.kind], src = (SRC[it.source] || {}).title || "", t = it.kind === "errata" ? src : (it.q || it.title || src);
+    return '<button type="button" class="door rec rul" data-act="rule" data-i="' + i + '" aria-expanded="false" data-k="open"><span class="rty" style="--cl:' + lit(window.RAVI_HUE(k[1])) + '">' + k[0] + '</span><span class="t">' + esc(strip(t)) + '</span>' + CHEV + '</button><div class="rbody sel" hidden></div>';
+  }
+  function ruleBody(it){
+    if(it.kind === "errata") return '<p class="rlab">New text</p><div class="rtx">' + clean(it["new"]) + '</div>' + (it.old ? '<p class="rlab">Old text</p><div class="rtx old">' + clean(it.old) + '</div>' : '');
+    return '<div class="rtx">' + clean(it.a || it.html) + '</div>';
+  }
+  // a finish's 7-day move: the arrow and the percent (STYLE 1: an arrow, never a colour)
+  function move(id, fin){
+    var c = PX && PX.byId[id], old = c && c.a && c.a["7"] && c.a["7"][fin], now = c && c.p[fin], pct;
+    if(old == null || now == null || !old) return "";
+    pct = (now - old) / old * 100;
+    if(Math.abs(pct) < .5) return '<span class="mv" aria-label="No change in 7 days">0%</span>';
+    return '<span class="mv" aria-label="' + (pct > 0 ? "Up " : "Down ") + Math.abs(pct).toFixed(0) + ' percent in 7 days">' + ARROW[pct > 0 ? "up" : "dn"] + Math.abs(pct).toFixed(0) + '%</span>';
+  }
+  function shown(){ var r = CV.rows[CV.pi]; return (r && C(r.pic)) || CV.e.x; }
+  function printRow(r, i){
+    var px = C(r.pic), on = i === CV.pi, h = "";
+    h += '<div class="prow"><button type="button" class="prb" data-act="print" data-i="' + i + '" aria-pressed="' + on + '" data-k="pick"><span class="art' + (land(px) ? " rot" : "") + '">' + img(px) + '</span><span class="pti"><span class="cnm">' + esc((r.setName ? r.setName + ", " : "") + r.kind) + '</span><small>' + esc(r.set + " " + r.num) + '</small>';
+    if(r.fins.length) r.fins.forEach(function(f){ h += '<span class="fin"><i>' + esc(f.fin) + '</i><b>' + money(f.price) + '</b>' + move(f.id, f.fin) + '</span>'; });
+    else h += '<span class="fin"><i>No price yet</i></span>';
+    return h + '</span>' + (on ? CHECK : '') + '</button></div>';
+  }
+  function fact(k, v){ return v ? '<div class="fk"><dt>' + k + '</dt><dd>' + v + '</dd></div>' : ""; }
+  function fillCard(){
+    var e = CV.e, x = shown(), base = e.x, h = "", f = "", r = CV.rows[CV.pi], rules = rulesFor(base), wide = land(x);
+    el("cname").textContent = e.name;
+    el("csubt").textContent = [typeWord(base), domWords(base)].filter(Boolean).join(", ");
+    // the plate wears the card's domains, as a deck's plate wears the deck's
+    var ds = (base.d || []).length ? base.d : [], pl = el("cplate");
+    pl.classList.toggle("cg2", !!ds.length);
+    if(ds.length){ pl.style.setProperty("--c", window.RAVI_RUNE(ds[0])); pl.style.setProperty("--c2", window.RAVI_RUNE(ds[1] || ds[0])); }
+    h += '<div class="mbox' + (wide ? " land" : "") + '"><button type="button" class="mpic' + (wide ? " land" : "") + '" data-act="spot" aria-label="See the full card" data-k="card">' + img(x, true) + '</button></div>';
+    if(base.q || base.f) h += '<div class="row"><div class="ctxt glass"><div class="rtx sel" id="ctext">' + clean(base.q || "") + (base.f ? clean(base.f) : "") + '</div></div></div>';
+    f += fact("Type", esc(typeWord(base)));
+    f += fact("Domain", esc(domWords(base)));
+    if(typeof base.e === "number") f += fact("Energy", "<b>" + base.e + "</b>");
+    if(typeof base.w === "number" && base.w) f += fact("Power", "<b>" + base.w + "</b>");
+    if(typeof base.p === "number") f += fact("Might", "<b>" + base.p + "</b>");
+    if(typeof base.m === "number") f += fact("Might bonus", "<b>+" + base.m + "</b>");
+    if((base.g || []).length) f += fact("Tags", esc(base.g.join(", ")));
+    f += fact("Rarity", esc(cap(x.r)));
+    f += fact("Number", esc(String(x.c || "").replace("-", " ")));
+    if((x.a || []).length) f += fact("Artist", esc(x.a.join(", ")));
+    f += fact("Constructed", banned(base) ? "<b>Banned</b>" : (BAN ? "Legal" : ""));
+    h += '<div class="row"><dl class="facts glass">' + f + '</dl></div>';
+    h += '<div class="row"><p class="lb">Printings and 7-day price moves</p><div class="plist" id="prints">'; CV.rows.forEach(function(p, i){ h += printRow(p, i); }); h += '</div></div>';
+    if(rules.length){
+      h += '<div class="row"><p class="lb">Errata and rulings</p><div class="doors" id="rules">';
+      rules.slice(0, 30).forEach(function(it){ h += ruleRow(it, RULES.indexOf(it)); });
+      h += '</div></div>';
+    }
+    h += '<div class="row"><button type="button" class="pact btn glass" data-act="add" data-k="do">Add to</button></div>';
+    el("cbody").innerHTML = h;
+    window.RAVI_KW_TAGS(el("ctext"), "../"); syms(el("ctext"));
+  }
+  function openCard(code, deep){
+    var x = C(code); if(!x) return false;
+    var name = nm(x), e = CARDS.filter(function(c){ return c.name === name; })[0];
+    if(!e) return false;
+    CV = { e: e, rows: X.printingsOf(I, PX, e.x, LAB.sets || {}), pi: 0, fin: "", deep: !!deep };
+    CV.rows.forEach(function(r, i){ if(r.code === code) CV.pi = i; });
+    fillCard();
+    var b = el("cclose");
+    b.setAttribute("aria-label", deep ? "Back" : "Close");
+    b.innerHTML = deep ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+    el("crd").hidden = false; el("crd").scrollTop = 0;
+    document.documentElement.classList.add("lock");
+    if(!deep) window.RAVI_GROW(el("crd"));
+    return true;
+  }
+  function closeCard(){
+    if(!CV) return;
+    // reached from another page's card: Close is Back, to where you were
+    if(CV.deep && history.length > 1 && document.referrer && document.referrer.indexOf(location.origin) === 0){ history.back(); return; }
+    window.RAVI_SHRINK(el("crd"));
+    el("crd").hidden = true; CV = null;
+    if(!OPENP) document.documentElement.classList.remove("lock");
+    if(/[?&][cn]=/.test(location.search)){ try{ history.replaceState(null, "", location.pathname); }catch(e){} }
+    requestAnimationFrame(pump);
+  }
+  function spotOpen(){ var x = shown(); if(!x || !x.h) return; el("spotpic").src = art(x, true); el("spotsheet").classList.add("open"); }
+  function spotClose(){
+    var sh = el("spotsheet"); if(!sh.classList.contains("open")) return;
+    window.RAVI_SHRINK(sh, el("spotpic")); sh.classList.remove("open");
+    setTimeout(function(){ if(!sh.classList.contains("open")) el("spotpic").removeAttribute("src"); }, 240);
+  }
+
+  // ---- ADD TO: the Collection (no binder, a binder, the Wishlist) or a deck. Both live on this
+  // phone under the Collection's and Decks' own keys, written as those pages write them. ----
+  function collRead(){ try{ var c = JSON.parse(localStorage.getItem(CKEY)); if(c && Array.isArray(c.ports)){ c.wish = c.wish || []; c.loose = c.loose || []; return c; } }catch(e){} return { v: 1, ports: [], wish: [], loose: [], last: "" }; }
+  function decksRead(){ try{ var d = JSON.parse(localStorage.getItem(DKEY)); if(d && Array.isArray(d.decks)) return d; }catch(e){} return { decks: [], cur: "" }; }
+  // the product a place gets: the picked printing in the picked finish; a printing with no price
+  // of its own borrows the first one that has
+  function product(){
+    var r = CV.rows[CV.pi], fins = r && r.fins.length ? r.fins : ((CV.rows.filter(function(p){ return p.fins.length; })[0] || {}).fins || []);
+    if(!fins.length) return null;
+    return fins.filter(function(f){ return f.fin === CV.fin; })[0] || fins[0];
+  }
+  function finsNow(){ var r = CV.rows[CV.pi]; return r && r.fins.length ? r.fins : ((CV.rows.filter(function(p){ return p.fins.length; })[0] || {}).fins || []); }
+  function heldIn(list, p){ var n = 0; (list || []).forEach(function(h){ if(p && h.i === p.id && h.f === p.fin) n += h.q; }); return n; }
+  function deckCode(){ var r = CV.rows[CV.pi]; return (r && r.code) || X.codeOf(CV.e.x.c); }
+  function inDeck(d, code, sec){
+    if(sec === "legend") return d.legend === code ? 1 : 0;
+    if(sec === "bf") return (d.bf || []).indexOf(code) > -1 ? 1 : 0;
+    return ((d.main || {})[code] || 0) + ((d.side || {})[code] || 0);
+  }
+  // a deck can take it: a Main deck card always; a legend only where there is none; a battlefield
+  // while there are fewer than three; runes follow the legend and tokens are not deck cards
+  function deckTakes(d, code, sec){
+    if(!sec || sec === "runes") return false;
+    if(sec === "legend") return !d.legend;
+    if(sec === "bf") return (d.bf || []).length < 3 && (d.bf || []).indexOf(code) < 0;
+    return true;
+  }
+  function fillAdd(){
+    var p = product(), fins = finsNow(), c = collRead(), D = decksRead(), code = deckCode(), sec = X.sectionOf(C(code)), h = "";
+    if(fins.length > 1){
+      h += '<div class="row"><p class="lb">Finish</p><div class="seg" role="group" aria-label="Finish" data-k="pick">';
+      fins.forEach(function(f){ h += '<button type="button" data-act="fin" data-v="' + esc(f.fin) + '" aria-pressed="' + (p && f.fin === p.fin) + '">' + esc(f.fin) + '</button>'; });
+      h += '</div></div>';
+    }
+    function crow(to, label, list){ var n = heldIn(list, p); return '<button type="button" class="door act" data-act="addc" data-to="' + esc(to) + '"' + (p ? "" : " disabled") + ' data-k="do"><span class="t">' + esc(label) + '</span><span class="sp"></span><small>' + (n ? n : "") + '</small></button>'; }
+    h += '<div class="row"><p class="lb">Collection</p><div class="doors">' + crow("wish", "Wishlist", c.wish) + crow("loose", "No binder", c.loose);
+    c.ports.forEach(function(b){ h += crow(b.id, b.name || "Binder", b.items); });
+    h += '</div></div>';
+    h += '<div class="row"><p class="lb">Decks</p><div class="doors">';
+    if(!D.decks.length) h += '<a class="door" href="../decks/" data-k="deeper"><span class="t">Build a deck</span><span class="sp"></span><small>No decks yet</small>' + CVR + '</a>';
+    D.decks.forEach(function(d){
+      if(!d || !d.id) return;
+      var n = inDeck(d, code, sec), ok = deckTakes(d, code, sec);
+      h += '<button type="button" class="door act" data-act="addd" data-id="' + esc(d.id) + '"' + (ok ? "" : " disabled") + ' data-k="do"><span class="t">' + esc(d.name || "Deck") + '</span><span class="sp"></span><small>' + (n ? n : "") + '</small></button>';
+    });
+    h += '</div></div>';
+    el("addbody").innerHTML = h;
+  }
+  function addColl(to){
+    var p = product(); if(!p) return;
+    var c = collRead(), list = to === "wish" ? c.wish : (to === "loose" ? c.loose : ((c.ports.filter(function(b){ return b.id === to; })[0] || {}).items)), h = null;
+    if(!list) return;
+    var day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+    list.forEach(function(v){ if(v.i === p.id && v.f === p.fin) h = v; });
+    if(h) h.q += 1; else list.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), i: p.id, f: p.fin, q: 1, d: day, paid: null, pc: CUR, cond: "" });
+    if(to !== "wish" && to !== "loose") c.last = to;
+    try{ localStorage.setItem(CKEY, JSON.stringify(c)); }catch(e){}
+    var where = to === "wish" ? "the Wishlist" : (to === "loose" ? "your collection" : ((c.ports.filter(function(b){ return b.id === to; })[0] || {}).name || "the binder"));
+    fillAdd(); toast("Added to " + where);
+  }
+  function addDeck(id){
+    var D = decksRead(), d = D.decks.filter(function(v){ return v && v.id === id; })[0], code = deckCode(), sec = X.sectionOf(C(code));
+    if(!d || !deckTakes(d, code, sec)) return;
+    ["main", "side", "maybe", "runes"].forEach(function(k){ if(!d[k] || typeof d[k] !== "object") d[k] = {}; });
+    if(!Array.isArray(d.bf)) d.bf = [];
+    if(!X.add(I, d, code, "main")) return;
+    if(sec === "legend") X.fitRunes(I, d);
+    d.t = Date.now();
+    try{ localStorage.setItem(DKEY, JSON.stringify(D)); }catch(e){}
+    fillAdd(); toast("Added to " + (d.name || "the deck"));
+  }
+
+  // ---- taps ----
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-act],[data-close],.cpic[data-code],.crow"); if(!t) return;
+    if(t.hasAttribute("data-close")){ openPanel(null); return; }
+    if(t.classList.contains("cpic") || t.classList.contains("crow")){ openCard(t.getAttribute("data-code")); return; }
+    var a = t.getAttribute("data-act"), v = t.getAttribute("data-v");
+    if(a === "back"){ back(); return; }
+    if(a === "clear"){ Q = ""; el("q").value = ""; FKEYS.forEach(function(k){ F[k] = []; }); LIM = 60; render(); return; }
+    if(a === "sort"){ fillSort(); openPanel(el("psort")); return; }
+    if(a === "sortpick"){ var s = sortOf(v); SET.sort = window.RAVI_SORT.next(SET.sort, s[0]); saveSet(); LIM = 60; fillSort(); render(); return; }
+    if(a === "fls"){ fillFls(); openPanel(el("pfls")); return; }
+    if(a === "flsall"){ FKEYS.forEach(function(k){ F[k] = []; }); LIM = 60; fillFls(); render(); return; }
+    if(a === "fl"){ FL = t.getAttribute("data-f"); fillFl(); deeper(el("pfl")); return; }
+    if(a === "flpick"){ var at = F[FL].indexOf(v); if(at > -1) F[FL].splice(at, 1); else F[FL].push(v); LIM = 60; fillFl(); fillFls(); render(); return; }
+    if(a === "flany"){ F[FL] = []; LIM = 60; fillFl(); fillFls(); render(); return; }
+    if(a === "cclose"){ closeCard(); return; }
+    if(a === "spot"){ spotOpen(); return; }
+    if(a === "print"){
+      CV.pi = +t.getAttribute("data-i"); CV.fin = "";
+      var keepY = el("crd").scrollTop; fillCard(); el("crd").scrollTop = keepY; return;
+    }
+    if(a === "rule"){
+      var body = t.nextElementSibling, on = t.getAttribute("aria-expanded") !== "true", it = RULES[+t.getAttribute("data-i")];
+      if(on && !body.firstChild && it){ body.innerHTML = ruleBody(it); window.RAVI_KW_TAGS(body, "../"); syms(body); }
+      t.setAttribute("aria-expanded", on ? "true" : "false"); body.hidden = !on;
+      if(on){ body.classList.remove("reveal"); void body.offsetWidth; body.classList.add("reveal"); }
+      return;
+    }
+    if(a === "add"){ fillAdd(); openPanel(el("padd")); return; }
+    if(a === "fin"){ CV.fin = v; fillAdd(); return; }
+    if(a === "addc"){ addColl(t.getAttribute("data-to")); return; }
+    if(a === "addd"){ addDeck(t.getAttribute("data-id")); return; }
+  });
+  var QT = 0;
+  el("q").addEventListener("input", function(ev){ Q = ev.target.value; el("qx").disabled = !Q; clearTimeout(QT); QT = setTimeout(function(){ LIM = 60; render(); }, 120); });
+  el("qx").addEventListener("click", function(){ el("q").value = ""; Q = ""; LIM = 60; render(); el("q").focus(); });
+  el("vseg").addEventListener("click", function(ev){
+    var b = ev.target.closest("button[data-v]"); if(!b) return;
+    SET.view = b.getAttribute("data-v"); saveSet(); views(); render(true);
+  });
+  window.addEventListener("scroll", function(){ requestAnimationFrame(pump); }, { passive: true });
+  el("scrim").addEventListener("click", function(){ openPanel(null); });
+  el("spotsheet").addEventListener("click", spotClose);
+  el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
+  window.RAVI_TOTOP(null, function(){ return el("crd").hidden; });
+  window.RAVI_GOTO(el("pnavgoto"), "cards", "../");
+  el("pnhere").addEventListener("click", function(){ openPanel(null); });
+  views(); chips();
+
+  // ---- boot: the catalogue, then prices and the rules (both optional) ----
+  function pricesIn(P){
+    var bySet = {}; (P.sets || []).forEach(function(s){ bySet[s.g] = s.a; });
+    FX = (P.fx && P.fx.rate) || FX;
+    PX = X.priceIndex(P);
+    (P.cards || []).forEach(function(c){
+      var set = bySet[c.g]; if(!set || !c.c || !c.p) return;
+      var code = set + "-" + String(c.c).split("/")[0], v = c.p.Normal != null ? c.p.Normal : Math.min.apply(null, Object.keys(c.p).map(function(k){ return c.p[k]; }));
+      if(PR[code] == null || v < PR[code]) PR[code] = v;
+    });
+  }
+  // a card another page sent: ?c=<set-number> (Riot's code), else ?n=<its name>
+  function wanted(){
+    var c = /[?&]c=([^&]{1,40})/.exec(location.search), n = /[?&]n=([^&]{1,160})/.exec(location.search), v = "", x = null;
+    try{ if(c){ v = decodeURIComponent(c[1].replace(/\+/g, " ")); x = C(v) || C(v.replace(/^([A-Z]+)-0+(\d)/, "$1-$2")); } }catch(e){}
+    if(!x && c){ var m = /^([A-Za-z0-9]+)-0*([0-9]+)([a-z*]?)$/.exec(v); if(m){ I.list.some(function(y){ var p = /^([A-Za-z0-9]+)-0*([0-9]+)([a-z*]?)$/.exec(X.codeOf(y.c)); if(p && p[1] === m[1].toUpperCase() && p[2] === m[2] && p[3] === m[3]){ x = y; return true; } return false; }); } }
+    // the price feed writes 'Ahri - Alluring (Alternate Art)'; a name RAVI cannot place becomes the search
+    try{ if(!x && n){ var nm0 = decodeURIComponent(n[1].replace(/\+/g, " ")).replace(/(\s*\([^)]*\))+\s*$/, "").replace(/\s+-\s+/g, ", "), code = X.findName(I, nm0); x = code ? C(code) : null; if(!x){ Q = nm0; el("q").value = nm0; } } }catch(e){}
+    return x ? X.codeOf(x.c) : "";
+  }
+  fetch("../cards/catalogue.json").then(function(r){ return r.json(); }).then(function(cat){
+    I = X.prep(cat); LAB = cat.labels || {};
+    var by = {};
+    I.list.forEach(function(x){
+      var f = nm(x), r = X.rank(x), e = by[f];
+      if(!e){ e = by[f] = { x: x, r: r, name: f, sets: {}, rars: {}, codes: [] }; CARDS.push(e); }
+      if(r < e.r){ e.x = x; e.r = r; }
+      e.sets[x.s] = 1; if(x.r) e.rars[x.r] = 1; e.codes.push(X.codeOf(x.c));
+    });
+    CARDS.forEach(function(e){
+      e.code = X.codeOf(e.x.c);
+      e.hay = key(e.name + " " + e.codes.join(" ") + " " + (e.x.g || []).join(" ") + " " + (e.x.t || ""));
+      e.text = key((strip(e.x.q || "") + " " + strip(e.x.f || "")).replace(/:rb_[a-z0-9_]+:/g, " "));
+    });
+    el("boot").remove(); el("all").hidden = false;
+    var w = wanted();
+    render(true);
+    if(w) openCard(w, true);
+    fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(P){
+      pricesIn(P); var st = el("stamp"); if(st) st.innerHTML = window.RAVI_STAMP(P) || "&nbsp;";
+      render(true);
+      if(CV){ var keep = CV.rows[CV.pi] && CV.rows[CV.pi].code; CV.rows = X.printingsOf(I, PX, CV.e.x, LAB.sets || {}); CV.pi = 0; CV.rows.forEach(function(r, i){ if(r.code && r.code === keep) CV.pi = i; }); fillCard(); }
+    }).catch(function(){});
+    fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(R){
+      RULES = R.items || []; (R.sources || []).forEach(function(s){ SRC[s.id] = s; });
+      var it = RULES.filter(function(i){ return i.id === "hub#constructed-format-legality"; })[0];
+      if(it) BAN = X.bannedFrom(it.html);
+      if(CV){ var y = el("crd").scrollTop; fillCard(); el("crd").scrollTop = y; }
+    }).catch(function(){});
+  }).catch(function(){ el("boot").remove(); el("loadfail").hidden = false; });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap still starts the timer, so a quick tap on words after a control
+  // (a menu opened by its row) is held off too.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early; pages.js holds off page pinch-zoom
+  // (2026-11-02). Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    // A control's tap goes through at once, but starts the timer: a quick second tap on a menu's
+    // words or a gap after tapping the row that opened it is still a double-tap to iPhone
+    // (plan 2 M8 close-out, Mako 2026-11-04: tap-to-zoom in menus).
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+      return;
+    }
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>

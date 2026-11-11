@@ -8,11 +8,6 @@
     },
     {
       "page": "app",
-      "t": "A Cards page",
-      "d": "Every card in one place: its text, printings, price, legality and rulings."
-    },
-    {
-      "page": "app",
       "t": "Use RAVI offline",
       "d": "The app opens and works with no connection."
     },
@@ -56,6 +51,11 @@
     {
       "date": "2026-11-10",
       "items": [
+        {
+          "page": "cards",
+          "t": "The Cards page",
+          "d": "Every card in one place: search by name or text, then see a card's text, every printing with its price and 7-day move, whether it is legal, and the rulings that name it. Add it to a deck, a binder or your Wishlist."
+        },
         {
           "page": "decks",
           "t": "Likes on public decks",

@@ -143,6 +143,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bctx p{margin:0 0 4px;font-size:15px;line-height:1.4}
 .bctx p.m{font-size:13px;color:var(--muted)}
 .bh3{margin:14px 2px 8px;font-family:var(--disp);font-weight:700;font-size:15px}
+.tocard{margin:14px 0 0}
 .bh3:first-child{margin-top:0}
 .nrows{background:var(--recess);border-radius:22px;overflow:hidden;margin-top:14px}
 .nrow{display:flex;align-items:center;gap:8px;min-height:var(--sz-row);padding:7px 16px;box-sizing:border-box}
@@ -784,6 +785,8 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
       if (tf) { h += '<p class="bh3">Wants it</p><div class="doors" data-k="deeper">' + whoRow(tf, CARD.q) + '</div>'; }
     }
     if (wh.length) { h += '<p class="bh3">Has it for trade</p><div class="doors" data-k="deeper">' + wh.map(function(r){ var p = face(r.h); return p ? whoRow(p, r.q) : ""; }).join("") + '</div>'; }
+    // the card's own page: its text, every printing and price, its rulings (plan 2 M9 block 3); not for sealed product
+    if (c && !sealed(c)) { h += '<div class="row tocard"><a class="pact btn glass" href="../cards/?n=' + encodeURIComponent(c.n) + '" data-k="do">Open in Cards</a></div>'; }
     $("pcardb").innerHTML = h;
   }
   pcard.__redraw = drawCard;

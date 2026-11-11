@@ -201,6 +201,7 @@ body{-webkit-font-smoothing:antialiased;
 .bstack.menu{bottom:10px}
 /* in the card menu the pill sits on the card's foot */
 .mbox{position:relative;width:150px;margin:0 auto 12px}
+.tocard{margin:14px 0 0}
 .mbox .mpic{margin:0}
 
 .dprice{margin:6px 4px 0;font-size:12px;color:var(--muted)}
@@ -2191,6 +2192,8 @@ body{-webkit-font-smoothing:antialiased;
     if(typeof x.w === "number" && x.w) facts.push("Power " + x.w);
     if(SET.price && price(CARD.code) != null) facts.push(money(price(CARD.code)) + " market");
     h += '<p class="pnote">' + esc(facts.join(", ")) + '</p>';
+    // the card's own page: its text, every printing and price, its rulings (plan 2 M9 block 3)
+    h += '<div class="row tocard"><a class="pact btn glass" href="../cards/?c=' + encodeURIComponent(CARD.code) + '" data-k="do">Open in Cards</a></div>';
     paint(el("cbody"), h);
     paint(el("cfoot"), f);
     el("cfoot").hidden = !f;

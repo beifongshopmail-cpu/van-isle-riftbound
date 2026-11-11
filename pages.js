@@ -89,6 +89,9 @@ window.RAVI_ICON = (function(){
     // Add cards (plan 2 M8 round 3, Mako's pick A1 card-shaped): Material Symbols library_add (Apache-2.0) redrawn
     // on the app's line with Now's card proportions: a card with a plus over the edge of the one behind it
     add: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M4 6v14a2 2 0 0 0 2 2h11"/><rect width="13.5" height="17" x="7.5" y="2" rx="2"/><path d="M11.25 10.5h6M14.25 7.5v6"/></g><g class="icf"><path d="M4 6v14a2 2 0 0 0 2 2h11"/><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect width="13.5" height="17" x="7.5" y="2" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.25 10.5h6M14.25 7.5v6" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/></g></svg>',
+    // Cards (plan 2 M9 block 3, 2026-11-10): a card under a magnifier, drawn for RAVI on Lucide's construction
+    // (ISC: its search circle and handle); provisional until the next icon pass. The filled twin fills the card.
+    cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><mask id="@b" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" stroke="none"/><circle cx="15.5" cy="15.5" r="5.7" fill="#000" stroke="none"/></mask><g mask="url(#@b)"><rect x="3.5" y="2.5" width="13" height="17.5" rx="2"/></g><circle cx="15.5" cy="15.5" r="3.5"/><path d="M18.1 18.1 21 21"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><rect x="3.5" y="2.5" width="13" height="17.5" rx="2" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="15.5" cy="15.5" r="5.7" fill="#000" stroke="none"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/><circle cx="15.5" cy="15.5" r="3.5"/><path d="M18.1 18.1 21 21"/></g></svg>',
     // a menu head's explanation, opened in place (calendar Follow)
     // THE SORT ARROW (plan 2 M8, Mako 2026-11-05: an arrow and the sort's name, as Apple's Files and Mail
     // do): up for ascending (A to Z, low to high, oldest first), down for descending. RAVI_ARROW, Lucide (ISC) as
@@ -232,7 +235,7 @@ window.RAVI_RUNE = function(d){
 // info (Calm) App settings green, Feedback sage. Every pair stands .10 or more apart (OKLab); in the
 // hub's glass the closest pair is .056. Deep teal 28,110,128 is spare. The palette trial (Today, Runes,
 // Neon and the rest, the pill) ended here; the explorations stay in rb-tools design/colour.
-window.RAVI_PAGE_RGB = { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" };
+window.RAVI_PAGE_RGB = { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", cards: "164,60,51", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" };
 (function(){
   var n, h = window.RAVI_HUES, de;
   if (typeof document === "undefined" || !document.documentElement) { return; }
@@ -256,6 +259,7 @@ window.RAVI_PAGES = [
   {id:"board", name:"Exchange", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Exchange (Mako 2026-11-09: Trade board renamed); Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},
+  {id:"cards", name:"Cards", path:"cards/", get icon(){ return window.RAVI_ICON("cards"); }, hue:"rust"}, // Cards (plan 2 M9 block 3): every card in one place; Your cards (Body); clay 164,60,51 from RAVI_PAGE_RGB (Mako's yes 2026-11-10; measured, rb-tools design/colour/cards.py); not on the hub's default seven
   {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, hue:"jade", glass:true},
   {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, hue:"lilac"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
   {id:"start", name:"Guide", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, hue:"sky", glass:true}, // Guide (Mako 2026-11-09: New here renamed); Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)

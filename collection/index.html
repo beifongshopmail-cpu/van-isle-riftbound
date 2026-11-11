@@ -96,6 +96,7 @@ body{-webkit-font-smoothing:antialiased;
 .hpic.land img{width:100%;max-width:292px} /* size-exempt: a battlefield shown upright */
 /* A HOLDING AS A TILE (Grid, the default): its picture, the count pill at its foot, the name,
    the price of one with its move, and the total when there is more than one */
+.tocard{margin:14px 0 0}
 .cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
 .ctile{position:relative;min-width:0}
 .cpic{position:relative;display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
@@ -1204,6 +1205,8 @@ input[type="file"]{display:none}
       + '<div class="row"><p class="lb">Added</p><div class="nf"><input id="hdate" type="date" value="' + esc(h.d || "") + '" max="' + today() + '" data-k="type"></div></div>'
       + (sealed(c) ? '' : '<div class="row"><p class="lb">Condition</p><div class="seg" role="group" aria-label="Condition" id="hcond" data-k="pick">' + CONDS.map(function(k){ return '<button type="button" data-c="' + k[0] + '" aria-pressed="' + (condCode(h.cond) === k[0]) + '">' + k[0] + '</button>'; }).join("") + '</div></div>')
       + (S.ports.length && HPORT !== "wish" ? '<div class="row"><p class="lb">Binder</p><div class="pick" id="hport" data-k="pick">' + [["loose", "No binder"]].concat(S.ports.map(function(p){ return [p.id, p.name]; })).map(function(p){ return '<button type="button" data-v="' + esc(p[0]) + '"' + (p[0] === HPORT ? ' class="on"' : '') + '><span class="t">' + esc(p[1]) + '</span></button>'; }).join("") + '</div></div>' : '');
+    // the card's own page: its text, every printing and price, its rulings (plan 2 M9 block 3); not for sealed product
+    if(c && !sealed(c) && c.c && setOf(c).a) x += '<div class="row tocard"><a class="pact btn glass" href="../cards/?c=' + encodeURIComponent(setOf(c).a + "-" + String(c.c).split("/")[0]) + '&amp;n=' + encodeURIComponent(c.n) + '" data-k="do">Open in Cards</a></div>';
     el("hbody").innerHTML = x;
     el("hfoot").innerHTML = HPORT === "wish" ? '<button type="button" class="pact btn glass" data-act="wishown" data-k="do">I own it now</button>' : '';
     el("hfoot").hidden = HPORT !== "wish";
