@@ -235,7 +235,7 @@ window.RAVI_RUNE = function(d){
 // info (Calm) App settings green, Feedback sage. Every pair stands .10 or more apart (OKLab); in the
 // hub's glass the closest pair is .056. Deep teal 28,110,128 is spare. The palette trial (Today, Runes,
 // Neon and the rest, the pill) ended here; the explorations stay in rb-tools design/colour.
-window.RAVI_PAGE_RGB = { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", cards: "164,60,51", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" };
+window.RAVI_PAGE_RGB = { calendar: "153,100,229", counter: "250,144,248", cut: "249,53,52", tier: "172,19,119", trade: "255,232,21", board: "159,113,0", collection: "255,145,39", decks: "254,230,252", cards: "213,192,174", rules: "63,175,243", news: "21,77,233", start: "125,226,250", settings: "113,202,93", feedback: "91,159,134" };
 (function(){
   var n, h = window.RAVI_HUES, de;
   if (typeof document === "undefined" || !document.documentElement) { return; }
@@ -259,7 +259,7 @@ window.RAVI_PAGES = [
   {id:"board", name:"Exchange", path:"board/", get icon(){ return window.RAVI_ICON("board"); }, hue:"tangerine"}, // Exchange (Mako 2026-11-09: Trade board renamed); Tangerine (plan 2 M8, Mako's yes 2026-11-04; was Trade's violet)
   {id:"collection", name:"Collection", path:"collection/", get icon(){ return window.RAVI_ICON("collection"); }, hue:"rust"},
   {id:"decks", name:"Decks", path:"decks/", get icon(){ return window.RAVI_ICON("decks"); }, hue:"mint"},
-  {id:"cards", name:"Cards", path:"cards/", get icon(){ return window.RAVI_ICON("cards"); }, hue:"rust"}, // Cards (plan 2 M9 block 3): every card in one place; Your cards (Body); clay 164,60,51 from RAVI_PAGE_RGB (Mako's yes 2026-11-10; measured, rb-tools design/colour/cards.py); not on the hub's default seven
+  {id:"cards", name:"Cards", path:"cards/", get icon(){ return window.RAVI_ICON("cards"); }, hue:"rust"}, // Cards (plan 2 M9 block 3): every card in one place; Your cards (Body); parchment 213,192,174 from RAVI_PAGE_RGB (Mako 2026-11-11: closer to Decks' white, a neutral; Body's own hue drained, measured in rb-tools design/colour/cards.py; clay 164,60,51 before); not on the hub's default seven
   {id:"rules", name:"Rules", path:"rules/", get icon(){ return window.RAVI_ICON("rules"); }, hue:"jade", glass:true},
   {id:"news", name:"News", path:"news/", get icon(){ return window.RAVI_ICON("whatsnew"); }, hue:"lilac"}, // Lilac (plan 2 M8.7, as built, not chosen: the colour pass settles it); clear glass, its posts coloured by kind (as the calendar); the megaphone Rules' Latest wore
   {id:"start", name:"Guide", path:"start/", get icon(){ return window.RAVI_ICON("start"); }, hue:"sky", glass:true}, // Guide (Mako 2026-11-09: New here renamed); Sky, brightened (plan 2 M8: 70,185,235 sat on the players' blue)

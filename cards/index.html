@@ -35,15 +35,14 @@ body{-webkit-font-smoothing:antialiased;
   padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
 #all{margin-top:22px}
 /* THE SEARCH STAYS AT THE TOP (as Rules' and News'): a sticky plate parked 10 above --top-clear,
-   plate frost, clear. Under the search, the view row as Collection's: Grid or List, then Sort and
-   one Filters chip (five filters fold into one chip, STYLE 5). */
+   plate frost, clear. Under the search, Sort and one Filters chip, as Decks' browser (five filters
+   fold into one chip, STYLE 5). Grid or List sits at the right of the list's head, as Collection's. */
 .srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}
 .plate{border-radius:24px;padding:10px;
   background:var(--plate-solid);
   box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 .dvrow{display:flex;align-items:center;gap:6px;margin-top:10px}
-.dvrow .sp{flex:1}
 .dvseg button{width:40px;padding:0;display:grid;place-items:center}
 .dvseg svg{width:18px;height:18px;fill:currentColor}
 .fchip{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
@@ -72,24 +71,13 @@ body{-webkit-font-smoothing:antialiased;
 .empty{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
 .cpic,.crow,.mpic{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .foot a{color:var(--bone)}
-/* ONE CARD, FULL SCREEN (the bend STYLE 7 names for Decks' card browser; Mako's yes 2026-11-10): a
-   view over the page, its own scroller, with a sticky plate that wears the card's domain colours
-   as a deck's plate wears the deck's (STYLE 4, see-through chrome may wear its subject's colours). */
-.crd{position:fixed;inset:0;z-index:25;background:var(--ground);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-.chead{position:sticky;top:calc(var(--top-clear) - 10px);margin-top:calc(var(--top-clear) - 10px);z-index:2;padding:0 12px}
-.chead .plate{max-width:456px;margin:0 auto}
-.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) 35%,rgba(var(--c2),.32) 65%),rgba(10,11,13,.94);--muted:#DCDEE2}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) 35%,rgba(var(--c2),.32) 65%),rgba(10,11,13,.5)}}
-.bsr{display:flex;align-items:center;gap:10px}
-.ctt{flex:1;min-width:0;height:var(--sz-track);display:flex;flex-direction:column;justify-content:center}
-.ctt .ttl{margin:0;font-size:17px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctt p{margin:0;font-size:12px;line-height:1.35;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cbody{max-width:480px;margin:0 auto;padding:16px 12px calc(env(safe-area-inset-bottom,0px) + 28px)}
-.cbody > .row:last-child{margin-bottom:0}
+/* ONE CARD IS A MENU, as a card is everywhere else in RAVI (Decks', Collection's, the Exchange's card
+   menu; Mako 2026-11-11: the full-screen view felt unlike the rest): it opens from the card tapped,
+   its name in the head, Add to in the foot. */
 /* the picture: a tap shows the full card (the counter's and Decks' viewer) */
-.mbox{position:relative;width:230px;max-width:100%;margin:0 auto 16px}
-.mbox.land{width:320px}
-.mpic{display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:12px;overflow:hidden;background:var(--recess)}
+.mbox{position:relative;width:150px;margin:0 auto 14px}
+.mbox.land{width:230px}
+.mpic{display:block;width:100%;aspect-ratio:744/1039;padding:0;border-radius:8px;overflow:hidden;background:var(--recess)}
 .mpic.land{aspect-ratio:1039/744}
 /* Riot's words, as the Rules page sets them; keywords and symbols drawn by pages.js RAVI_KW_TAGS */
 .ctxt{border-radius:22px;padding:14px 16px}
@@ -162,14 +150,14 @@ body{-webkit-font-smoothing:antialiased;
       <input id="q" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
       <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
-    <div class="dvrow"><div class="seg dvseg" id="vseg" role="group" aria-label="Cards show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="true"></button><button type="button" data-v="list" aria-label="List" aria-pressed="false"></button></div><span class="sp"></span><button type="button" class="fchip btn glass" id="sortb" data-act="sort" data-k="do"></button><button type="button" class="fchip btn glass" id="flsb" data-act="fls" data-k="do">Filters</button></div>
+    <div class="dvrow"><button type="button" class="fchip btn glass" id="sortb" data-act="sort" data-k="do"></button><button type="button" class="fchip btn glass" id="flsb" data-act="fls" data-k="do">Filters</button></div>
   </div>
 
   <div id="boot"></div>
   <script>document.getElementById("boot").innerHTML = RAVI_SKEL(["head", "tiles:9"]);</script>
 
   <section id="all" hidden>
-    <div class="shead"><h2 id="ah">All cards</h2><span class="sp"></span><span class="cnt" id="acnt"></span></div>
+    <div class="shead"><h2 id="ah">All cards</h2><span class="cnt" id="acnt"></span><span class="sp"></span><div class="seg dvseg" id="vseg" role="group" aria-label="Cards show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="true"></button><button type="button" data-v="list" aria-label="List" aria-pressed="false"></button></div></div>
     <div id="list"></div>
     <div id="none" hidden><p class="empty">No card matches.</p><button type="button" class="pact btn glass" data-act="clear" data-k="do">Show all cards</button></div>
   </section>
@@ -185,17 +173,6 @@ body{-webkit-font-smoothing:antialiased;
     </p>
   </footer>
 </main>
-
-<!-- ONE CARD, FULL SCREEN: a sticky plate (Close, the card's name, what it is), then the card -->
-<section class="crd" id="crd" hidden aria-label="Card">
-  <div class="chead"><div class="plate glass" id="cplate">
-    <div class="bsr">
-      <button type="button" class="circ trk btn glass" id="cclose" data-act="cclose" aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
-      <div class="ctt"><h3 class="ttl" id="cname"></h3><p id="csubt"></p></div>
-    </div>
-  </div></div>
-  <div class="cbody" id="cbody"></div>
-</section>
 
 <!-- THE STANDARD BAR: Hub, Go to, the third slot unused for now (dimmed), Settings (dimmed). -->
 <nav class="bar frost" id="tabs"></nav>
@@ -228,8 +205,15 @@ body{-webkit-font-smoothing:antialiased;
   <div class="pfoot"><button type="button" class="pact btn glass" data-act="flany" data-k="do">Any</button></div>
 </section>
 
+<!-- ONE CARD: its name, then the picture, Riot's text, its numbers, printings and prices, errata and rulings; Add to in the foot -->
+<section class="panel frost" id="pcard" aria-hidden="true" aria-label="Card">
+  <div class="phead"><div class="ht"><h4 class="ttl" id="cname">Card</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody" id="cbody"></div>
+  <div class="pfoot"><button type="button" class="pact btn glass" data-act="add" data-k="do">Add to</button></div>
+</section>
+
 <section class="panel frost" id="padd" aria-hidden="true" aria-label="Add to">
-  <div class="phead"><div class="ht"><h4 class="ttl">Add to</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Add to</h4></div></div>
   <div class="pbody" id="addbody"></div>
 </section>
 
@@ -242,9 +226,9 @@ body{-webkit-font-smoothing:antialiased;
   var SKEY = "vir.cards.set.v1", DKEY = "vir.decks.v1", CKEY = "vir.coll.v1";
   var I = null, PX = null, BAN = null, RULES = [], LAB = {}, PR = {}, FX = 1.4, CUR = "CAD";
   var CARDS = [];        // one entry per card, its base printing: { x, name, code, sets, rars, hay, text }
-  var SET = { view: "grid", sort: "name" };
+  var SET = { view: "grid", sort: "number" };
   var Q = "", F = { set: [], type: [], dom: [], rar: [], energy: [] }, LIM = 60, LEN = 0;
-  var CV = null;         // the open card: { e, rows, pi, fin, deep }
+  var CV = null;         // the open card: { e, rows, pi, fin }
 
   function el(id){ return document.getElementById(id); }
   function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
@@ -281,7 +265,7 @@ body{-webkit-font-smoothing:antialiased;
 
   // ---- THE LIST: every card once, its base printing; a search word must be in its name, number or
   // tags, else in its text; name matches come first ----
-  var SORTS = [["name", "Name", "up"], ["energy", "Energy", "up"], ["price", "Price", "down"]];
+  var SORTS = [["number", "Set and number", "up"], ["name", "Name", "up"], ["energy", "Energy", "up"], ["price", "Price", "down"]];
   function sortOf(v){ var k = window.RAVI_SORT.key(v); return SORTS.filter(function(x){ return x[0] === k; })[0] || SORTS[0]; }
   var SETORD = ["OGN", "OGS", "SFD", "UNL", "VEN", "RAD"];
   var FILTERS = {
@@ -313,6 +297,8 @@ body{-webkit-font-smoothing:antialiased;
     var k = window.RAVI_SORT.key(SET.sort), r = 0;
     if(k === "price"){ var pa = PR[a.code], pb = PR[b.code]; if((pa == null) !== (pb == null)) return pa == null ? 1 : -1; r = (pb || 0) - (pa || 0); }   // a card with no price sits last either way
     if(k === "energy"){ var ea = typeof a.x.e === "number" ? a.x.e : 99, eb = typeof b.x.e === "number" ? b.x.e : 99; if((ea === 99) !== (eb === 99)) return ea === 99 ? 1 : -1; r = ea - eb; }
+    // Set and number, as Decks' browser and Collection: the sets in release order, then the number
+    if(k === "number") r = a.so - b.so || a.no - b.no || a.code.localeCompare(b.code);
     if(r) return window.RAVI_SORT.flip(SET.sort) ? -r : r;
     r = a.name.localeCompare(b.name) || a.code.localeCompare(b.code);
     return k === "name" && window.RAVI_SORT.flip(SET.sort) ? -r : r;
@@ -347,7 +333,7 @@ body{-webkit-font-smoothing:antialiased;
   }
   // ENDLESS SCROLL, as every card browser: the next 60 join the end while it is within a screen and a half
   function pump(){
-    if(!(LEN > LIM) || !el("crd").hidden) return;
+    if(!(LEN > LIM)) return;
     if(el("list").getBoundingClientRect().bottom - window.innerHeight > 1300) return;
     var h = ""; LAST.slice(LIM, LIM + 60).forEach(function(e){ h += tile(e); });
     LIM += 60;
@@ -391,7 +377,7 @@ body{-webkit-font-smoothing:antialiased;
       if(b && !keep) b.scrollTop = 0;
       sc.classList.add("show");
     } else {
-      if(el("crd").hidden) document.documentElement.classList.remove("lock");
+      document.documentElement.classList.remove("lock");
       sc.classList.remove("show");
     }
     window.RAVI_EDGES && window.RAVI_EDGES();
@@ -529,11 +515,6 @@ body{-webkit-font-smoothing:antialiased;
   function fillCard(){
     var e = CV.e, x = shown(), base = e.x, h = "", f = "", r = CV.rows[CV.pi], rules = rulesFor(base), wide = land(x);
     el("cname").textContent = e.name;
-    el("csubt").textContent = [typeWord(base), domWords(base)].filter(Boolean).join(", ");
-    // the plate wears the card's domains, as a deck's plate wears the deck's
-    var ds = (base.d || []).length ? base.d : [], pl = el("cplate");
-    pl.classList.toggle("cg2", !!ds.length);
-    if(ds.length){ pl.style.setProperty("--c", window.RAVI_RUNE(ds[0])); pl.style.setProperty("--c2", window.RAVI_RUNE(ds[1] || ds[0])); }
     h += '<div class="mbox' + (wide ? " land" : "") + '"><button type="button" class="mpic' + (wide ? " land" : "") + '" data-act="spot" aria-label="See the full card" data-k="card">' + img(x, true) + '</button></div>';
     if(base.q || base.f) h += '<div class="row"><div class="ctxt glass"><div class="rtx sel" id="ctext">' + clean(base.q || "") + (base.f ? clean(base.f) : "") + '</div></div></div>';
     f += fact("Type", esc(typeWord(base)));
@@ -554,34 +535,18 @@ body{-webkit-font-smoothing:antialiased;
       rules.slice(0, 30).forEach(function(it){ h += ruleRow(it, RULES.indexOf(it)); });
       h += '</div></div>';
     }
-    h += '<div class="row"><button type="button" class="pact btn glass" data-act="add" data-k="do">Add to</button></div>';
     el("cbody").innerHTML = h;
     window.RAVI_KW_TAGS(el("ctext"), "../"); syms(el("ctext"));
   }
-  function openCard(code, deep){
+  function openCard(code){
     var x = C(code); if(!x) return false;
     var name = nm(x), e = CARDS.filter(function(c){ return c.name === name; })[0];
     if(!e) return false;
-    CV = { e: e, rows: X.printingsOf(I, PX, e.x, LAB.sets || {}), pi: 0, fin: "", deep: !!deep };
+    CV = { e: e, rows: X.printingsOf(I, PX, e.x, LAB.sets || {}), pi: 0, fin: "" };
     CV.rows.forEach(function(r, i){ if(r.code === code) CV.pi = i; });
     fillCard();
-    var b = el("cclose");
-    b.setAttribute("aria-label", deep ? "Back" : "Close");
-    b.innerHTML = deep ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
-    el("crd").hidden = false; el("crd").scrollTop = 0;
-    document.documentElement.classList.add("lock");
-    if(!deep) window.RAVI_GROW(el("crd"));
+    openPanel(el("pcard"));
     return true;
-  }
-  function closeCard(){
-    if(!CV) return;
-    // reached from another page's card: Close is Back, to where you were
-    if(CV.deep && history.length > 1 && document.referrer && document.referrer.indexOf(location.origin) === 0){ history.back(); return; }
-    window.RAVI_SHRINK(el("crd"));
-    el("crd").hidden = true; CV = null;
-    if(!OPENP) document.documentElement.classList.remove("lock");
-    if(/[?&][cn]=/.test(location.search)){ try{ history.replaceState(null, "", location.pathname); }catch(e){} }
-    requestAnimationFrame(pump);
   }
   function spotOpen(){ var x = shown(); if(!x || !x.h) return; el("spotpic").src = art(x, true); el("spotsheet").classList.add("open"); }
   function spotClose(){
@@ -677,11 +642,10 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "fl"){ FL = t.getAttribute("data-f"); fillFl(); deeper(el("pfl")); return; }
     if(a === "flpick"){ var at = F[FL].indexOf(v); if(at > -1) F[FL].splice(at, 1); else F[FL].push(v); LIM = 60; fillFl(); fillFls(); render(); return; }
     if(a === "flany"){ F[FL] = []; LIM = 60; fillFl(); fillFls(); render(); return; }
-    if(a === "cclose"){ closeCard(); return; }
     if(a === "spot"){ spotOpen(); return; }
     if(a === "print"){
       CV.pi = +t.getAttribute("data-i"); CV.fin = "";
-      var keepY = el("crd").scrollTop; fillCard(); el("crd").scrollTop = keepY; return;
+      var keepY = el("cbody").scrollTop; fillCard(); el("cbody").scrollTop = keepY; return;
     }
     if(a === "rule"){
       var body = t.nextElementSibling, on = t.getAttribute("aria-expanded") !== "true", it = RULES[+t.getAttribute("data-i")];
@@ -690,7 +654,7 @@ body{-webkit-font-smoothing:antialiased;
       if(on){ body.classList.remove("reveal"); void body.offsetWidth; body.classList.add("reveal"); }
       return;
     }
-    if(a === "add"){ fillAdd(); openPanel(el("padd")); return; }
+    if(a === "add"){ fillAdd(); deeper(el("padd")); return; }
     if(a === "fin"){ CV.fin = v; fillAdd(); return; }
     if(a === "addc"){ addColl(t.getAttribute("data-to")); return; }
     if(a === "addd"){ addDeck(t.getAttribute("data-id")); return; }
@@ -706,7 +670,7 @@ body{-webkit-font-smoothing:antialiased;
   el("scrim").addEventListener("click", function(){ openPanel(null); });
   el("spotsheet").addEventListener("click", spotClose);
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
-  window.RAVI_TOTOP(null, function(){ return el("crd").hidden; });
+  window.RAVI_TOTOP();
   window.RAVI_GOTO(el("pnavgoto"), "cards", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
   views(); chips();
@@ -742,23 +706,24 @@ body{-webkit-font-smoothing:antialiased;
     });
     CARDS.forEach(function(e){
       e.code = X.codeOf(e.x.c);
+      e.so = (SETORD.indexOf(e.x.s) + 99) % 99; e.no = parseInt(String(e.code).split("-")[1], 10) || 0;
       e.hay = key(e.name + " " + e.codes.join(" ") + " " + (e.x.g || []).join(" ") + " " + (e.x.t || ""));
       e.text = key((strip(e.x.q || "") + " " + strip(e.x.f || "")).replace(/:rb_[a-z0-9_]+:/g, " "));
     });
     el("boot").remove(); el("all").hidden = false;
     var w = wanted();
     render(true);
-    if(w) openCard(w, true);
+    if(w){ openCard(w); try{ history.replaceState(null, "", location.pathname); }catch(e){} }
     fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(P){
       pricesIn(P); var st = el("stamp"); if(st) st.innerHTML = window.RAVI_STAMP(P) || "&nbsp;";
       render(true);
-      if(CV){ var keep = CV.rows[CV.pi] && CV.rows[CV.pi].code; CV.rows = X.printingsOf(I, PX, CV.e.x, LAB.sets || {}); CV.pi = 0; CV.rows.forEach(function(r, i){ if(r.code && r.code === keep) CV.pi = i; }); fillCard(); }
+      if(CV && OPENP === el("pcard")){ var keep = CV.rows[CV.pi] && CV.rows[CV.pi].code; CV.rows = X.printingsOf(I, PX, CV.e.x, LAB.sets || {}); CV.pi = 0; CV.rows.forEach(function(r, i){ if(r.code && r.code === keep) CV.pi = i; }); fillCard(); }
     }).catch(function(){});
     fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(R){
       RULES = R.items || []; (R.sources || []).forEach(function(s){ SRC[s.id] = s; });
       var it = RULES.filter(function(i){ return i.id === "hub#constructed-format-legality"; })[0];
       if(it) BAN = X.bannedFrom(it.html);
-      if(CV){ var y = el("crd").scrollTop; fillCard(); el("crd").scrollTop = y; }
+      if(CV && OPENP === el("pcard")){ var y = el("cbody").scrollTop; fillCard(); el("cbody").scrollTop = y; }
     }).catch(function(){});
   }).catch(function(){ el("boot").remove(); el("loadfail").hidden = false; });
 })();
