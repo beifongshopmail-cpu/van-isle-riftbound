@@ -1,4 +1,55 @@
 {
  "note": "What RAVI knows about a store beyond the events feed (plan 2 M9 block 4, the Stores page): its hours, phone and website, by store id (data/stores.json sid). Kept by hand, each store's entry from that store's own listing, with the day it was checked; a store with no entry shows none of them. hours: mon..sun, each a list of [open, close] in 24-hour island time, an empty list for closed, the key left out when not known. Store-neutral: every store that asks gets the same fields.",
- "stores": {}
+ "stores": {
+  "16866": {
+   "hours": {
+    "tue": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "wed": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "thu": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "fri": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "sat": [
+     [
+      "11:00",
+      "18:00"
+     ]
+    ],
+    "sun": [
+     [
+      "11:00",
+      "18:00"
+     ]
+    ]
+   },
+   "phone": "778-432-4263",
+   "web": "https://www.everythinggames.ca",
+   "checked": "2026-11-11",
+   "source": "everythinggames.ca/pages/about-us (Monday not listed there)"
+  },
+  "019fb060-927e-7709-b9cb-32c53ec8c895": {
+   "phone": "778-265-5727",
+   "web": "https://elite4games.com",
+   "checked": "2026-11-11",
+   "source": "elite4games.com footer (no hours listed there)"
+  }
+ }
 }
