@@ -1,5 +1,7 @@
 # RAVI style notes: the install screen (pages.js, app.css)
 
+Pattern: Own design
+
 Read with STYLE.md (the core) before touching the install screen. Lines moved verbatim from STYLE.md section 5 on 2026-11-03.
 
 The install screen (pages.js, app.css; signed off by Mako 2026-10-09)

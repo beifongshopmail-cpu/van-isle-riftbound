@@ -1,5 +1,7 @@
 # RAVI style notes: Exchange
 
+Pattern: Browse (reference page: Cards)
+
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 Exchange (board/index.html; plan 2 M2, 2026-11-01)

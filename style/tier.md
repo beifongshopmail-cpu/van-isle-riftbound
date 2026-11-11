@@ -1,5 +1,7 @@
 # RAVI style notes: Tier list
 
+Pattern: Own design
+
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 Tier list (tier/index.html; M17, 2026-10-28)

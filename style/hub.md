@@ -1,5 +1,7 @@
 # RAVI style notes: The hub
 
+Pattern: Own design
+
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 Hub (index.html)
@@ -14,6 +16,9 @@ The hub block (app.css THE HUB BLOCK since plan 2 M8.7: one copy, drawn by the h
     <a class="blk glass" href="calendar/" style="--cl:255,176,32;--ci:...;" data-k="do"><span class="bi">icon</span><span class="bn">Events</span></a>
 - .blk.allp: All pages, a button in plain glass (no page colour), the nine-dot icon; it opens the All pages tray (#pall, the Go to tiles for every page, App settings last), sitting where a bar's tray would.
 - The hub: eight blocks, so the hub icon (the 3-3-2 grid) stays true. Seven are the viewer's picks, in the viewer's order (App settings, Hub layout; RAVI_HUB_PICKS in pages.js; plan 2 M6, Mako 2026-11-03); All pages is always the eighth and last. Default picks, in Go to's group order (Mako 2026-11-09): Events, Tracker, Appraise, Collection, Decks, Rules, Guide (App settings until 2026-10-27; it is always in All pages). A new page needs no hub slot: it is in All pages at once and can be picked. (Mako 2026-10-26) On a phone narrower than 390, block names track -.02em so Collection fits whole (Mako's yes 2026-10-25). The grid (.low, no plate) under the badge (.hubname, 88); hub footer .hubfoot (12 muted, Riot notice).
+
+The launch intro (moved from STYLE.md section 8, 2026-11-11)
+- The launch intro: once per launch, the first time the hub shows (session flag ravi.intro.v1; off with ravi.intro.off.v1). 'Rift App' in blue over 'Van Isle' in pink, in the badge's own letters at their size, comes in and is read; the small letters fade while the four capitals travel into the badge; the glass opens out from behind them, the rim draws round from the left end both ways, meeting at the right, and the glass catches the light once. About 2.6s. The letters live inside the badge, so they move with it if the top area settles; at the end the badge is rebuilt from its markup. The hub's blocks rise in while the name is read. Any tap finishes it. No other page has one.
 
 Page-local classes (not in app.css; not Kit parts):
 - index.html (hub): .hubfoot .low, the All pages tray #pall (.blk, .blk.allp, .bi, .bn are app.css)

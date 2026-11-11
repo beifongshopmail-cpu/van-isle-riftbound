@@ -1,5 +1,7 @@
 # RAVI style notes: Decks
 
+Pattern: Tool
+
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 Decks (decks/index.html)
@@ -17,6 +19,8 @@ Decks (decks/index.html)
 - Sort and group (#psort) and a section's Sort by are rows (.pick), the arrow on the chosen sort, a second tap flips it, as every sort menu (plan 2 M8.7 B7).
 - Stats are tiles. A tapped tile opens in place to the full row with its chart, and Open all and Close all sit above them. (Mako's yes 2026-10-24)
 - A change updates the page in place; pictures that stay are never rebuilt (paint() in decks/index.html). (Mako's yes 2026-10-24)
+
+Bends (Browse parts, STYLE.md section 5): .plate (fixed under the wordmark, the page's width less 24, at most 456); .dvseg svg (its view icons are drawn as lines).
 
 Page-local classes (not in app.css; not Kit parts):
 - decks/index.html: .add .addt .art .aside .avg .bad .ban .bbody .bchips .bfa .bgrid .bhead .bin .bin1 .bmore .bnone .bnote .boot .brw .brwon .bsr .bstack .cbox .cg2 .cgrid .chart .chcol .chlab .cmid .cname .cnm .cols .cpic .cq .crb .crd .csb .ctile .ctx .cw .dcard .dcend .dchk .dcmid .dcname .dcnt .dcpic .dcrun .dcstat .dcsub .dgrip .dnone .dnote .dprice .dsec .dsub .dv .dvrow .dvseg .dvsort .dwrap .ed .epill .esf .fchip .gcell .ghost .gpic .gq .gsh .gstar .gstp .hacts .hc .hdrawn .hhd .hmark .hnone .hnote .hold .hrow .hsort .ires .kw .land .lcard .lcell .lift .low .lpm .lq .lrhd .lrow .lsteps .mban .mbox .menu .mpic .n .none .ochip .ochips .odds .okc .okmk .omull .open .otile .otiles .owh .pbar .pchk .pdrow .pfin .pfins .phd .plate .plist .pnone .pr .prb .pre .prow .pti .ptl .pv .pvrow .qrow .qrows .res .resw .rgl .rot .sall .sbtns .shut .sm .spot .spotpic .srow .star .stb .sth .stick .stile .stiles .stools .stp .tgfor .toast .tokrow .trio .two .vbadge .vw .wmk .xbox .ximg .z

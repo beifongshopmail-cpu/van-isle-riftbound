@@ -1,5 +1,7 @@
 # RAVI style notes: Cards
 
+Pattern: Browse (the reference page for Browse)
+
 Read with STYLE.md (the core) before touching this page. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 Cards (cards/index.html; plan 2 M9 block 3, design agreed with Mako 2026-11-10 19:17, built 2026-11-10; round 2 on his phone check 2026-11-11: a card is a menu, Set and number sorts first, the colour a neutral)
@@ -12,6 +14,8 @@ Cards (cards/index.html; plan 2 M9 block 3, design agreed with Mako 2026-11-10 1
 - Ways in: Decks' card menu, Collection's card menu and the Exchange's card menu each end with Open in Cards (.tocard, a .pact link), so nothing links out. ?c=<set-number> opens that printing's card, ?n=<name> a card by name (the price feed's names are read; one RAVI cannot place becomes the search). Reached that way the card's menu opens over the list, and closing it leaves the list.
 - Bar: Hub, Go to, the third slot dimmed (Soon), Settings dimmed. Go to: Your cards, after Collection and Decks. Not on the hub's default seven. The footer starts with the price source line (RAVI_STAMP) and the benchmark sentence, says whose words and pictures these are, and ends with Tell us.
 - Page colour: parchment 213,192,174 (Mako 2026-11-11: closer to what Decks uses, a white or a neutral, not the same). Body's own hue (H62, Collection's orange is H57) drained to a near-neutral, so the group reads orange, parchment, white; the farthest such neutral from every page colour and the players' (rb-tools design/colour/cards.py: .137 bare, .051 in the hub's glass). Clay 164,60,51 was the first build's (his pick over peach, 2026-11-10). Icon: a card under a magnifier, drawn for RAVI on Lucide's construction, provisional until the icon pass (plan 2 M9 block 9).
+
+Bends (Browse parts, STYLE.md section 5): .dvrow (6 apart, so Sort's longest name fits the plate at 360).
 
 Page-local classes (not in app.css; not Kit parts):
 - cards/index.html: .art .camt .cgrid .cmid .cnm .cpic .crow .csub .ctile .ctxt .dvrow .dvseg .empty .facts .fchip .fin .fk .land .mbox .mpic .mv .n .old .open .pchk .plate .plist .prb .prow .pti .rbody .rlab .rot .rtx .rty .rul .spot .spotpic .srow .tnm .toast .tpr

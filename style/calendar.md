@@ -1,5 +1,7 @@
 # RAVI style notes: Calendar
 
+Pattern: Own design
+
 Read with STYLE.md (the core) before touching this page. Lines moved verbatim from STYLE.md sections 5 and 10 on 2026-11-03. A class this page defines that app.css does not is listed under Page-local classes (rb-tools style-lint checks it).
 
 Calendar (calendar/index.html)
@@ -15,6 +17,9 @@ Calendar (calendar/index.html)
 - NEW on a card means new since the last visit: badges stay while the page is open; leaving it (pagehide, or the page hidden) marks every listed event seen (vir.seen.v3).
 
 - The Settings slot's menu is titled Events settings, the page's name (plan 2 M8.7 A5, Mako's yes 2026-11-10; code and older notes say Calendar settings).
+
+Bends (Browse parts, STYLE.md section 5): .tyrow .lab (min-width 0: a store's name over its town, cut with an ellipsis).
+
 Page-local classes (not in app.css; not Kit parts):
 - calendar/index.html, the loading blocks (plan 2 M8.7 motion polish): .skday, the month's days as track-grey circles while the feed comes; the event list takes RAVI_SKEL cards
 - calendar/index.html: .cell .dots .ev .evact .evgoi .evhead .evlb .evlive .evpill .fhead .finfo .fmk .fsub .hemi .hl .hr .l1 .lab .lvl .mk .mrow .spots .stick .tyrow; the Live menu #plive: .lalnote .lclk .lempty .levn .lfind .lgrp .lhd .lme .lms .lmt .ln .lp .lrow .lseg .lsmall .lst .lt .me .mine .nm .omw .pts .rs .sv .wld .won

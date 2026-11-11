@@ -33,13 +33,20 @@ Design rules: STYLE.md. These rules hold in every session.
 - Read STYLE.md in full (the core, under 500 lines) and style/<page>.md for
   every page the change touches. Every time, even for a small fix; never
   build a part from memory or from scratch.
+- Name the page's pattern first (STYLE.md section 0: Browse, Tool, Rows,
+  Guide or Own design) and build it as its reference page is built. A new
+  page copies its reference page part for part; anything the pattern does
+  not list, or a pattern bent, needs Mako's yes. Colour follows the ladder
+  (STYLE.md section 4): none by default, the page colour only on the bar's
+  pill, Go to and the hub, other colour only to tell kinds apart.
 - Build from the Kit (STYLE.md section 5): name the Kit parts the change uses
   before writing it. A part the Kit lacks uses Kit tokens and surfaces, and
   its class goes into that page's notes in the same commit.
 - A new page gets its style/<page>.md in the same commit as the page.
 - Run node style-lint.js (rb-tools, seconds) before the push. It fails on an
-  unlisted class, a typed colour or size, type off the rungs or a missing
-  guard script. Its baseline (style-baseline.json) only shrinks; never add
+  unlisted class, a typed colour or size, type off the rungs, a missing
+  guard script, notes with no pattern, or a Browse part reshaped without
+  its bend named in the notes. Its baseline (style-baseline.json) only shrinks; never add
   to it.
 
 ## Checks (rb-tools, private, branch master)
