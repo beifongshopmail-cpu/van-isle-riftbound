@@ -57,6 +57,17 @@ body{-webkit-font-smoothing:antialiased;
 .ronm b{display:block;font-family:var(--disp);font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ronm small{display:block;margin-top:2px;font-size:13px;color:var(--muted);line-height:1.4}
 .rocard .pact{margin-top:12px}
+.rocard .acsaverow{margin-top:12px}
+/* LIKES (plan 2 M9 block 2, Mako's go 2026-11-10). On a shared deck's card: a compact pill at the end of
+   the who row, a heart and the word, Like until tapped, then Liked with the heart filled (shape and
+   word, never colour). On a Public row: the heart and its count over Copied n. Lucide's heart (ISC). */
+.rolike{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;height:var(--sz-sm);padding:0 14px 0 12px;border-radius:18px;
+  font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone);white-space:nowrap}
+.rolike svg,.dcend .lk svg{flex:0 0 auto;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rolike[aria-pressed="true"] svg,.dcend .lk.lkon svg{fill:currentColor}
+.rolike:disabled{opacity:.4;pointer-events:none}
+.dcend .lk{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.dcend .lk.lkon{color:var(--bone)}
 .rocard .two .pact{margin-top:0}
 .dnote[readonly]{resize:none}
 #hmain .lede{margin-top:0}
@@ -503,7 +514,7 @@ body{-webkit-font-smoothing:antialiased;
           <input id="hq" type="search" placeholder="Search decks" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Search decks by name, Legend or card" data-k="type">
           <button type="button" class="fbtn fx glass" id="hqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         </div>
-        <div class="seg hv" id="hview" role="group" aria-label="Show" data-k="pick"><button type="button" data-hv="mine" aria-pressed="true">My decks</button><button type="button" data-hv="pub" aria-pressed="false">Public</button></div>
+        <div class="seg hv" id="hview" role="group" aria-label="Show" data-k="pick"><button type="button" data-hv="mine" aria-pressed="true">My decks</button><button type="button" data-hv="pub" aria-pressed="false">Public</button><button type="button" data-hv="liked" aria-pressed="false">Liked</button></div>
         <div class="hacts" id="hacts"><button type="button" class="pact btn glass" data-act="new" data-k="do">New deck</button><button type="button" class="pact btn glass" data-act="imp" data-k="do">Import</button></div>
         <div class="bchips" id="pchips" hidden></div>
       </section>
@@ -976,8 +987,11 @@ body{-webkit-font-smoothing:antialiased;
   var A = window.RAVI_ACCT || null;
   var SHAREMAX = 6, HV = "mine", PFF = "leg";
   // Public decks: the server orders them, newest shared or most copied first; they do not flip
-  var PSORTS = [["new", "Shared", "down"], ["copied", "Copies", "down"]];
-  var PUB = { q: "", leg: "", dom: [], sort: "new", h: "", hname: "", rows: [], total: 0, loaded: false, loading: false, err: "", seq: 0, qt: 0 };
+  var PSORTS = [["new", "Shared", "down"], ["copied", "Copies", "down"], ["liked", "Likes", "down"]];
+  function psort(){ return PSORTS.filter(function(x){ return x[0] === PUB.sort; })[0] || PSORTS[0]; }
+  // liked: the Liked view, the Public view narrowed to the decks this account likes (plan 2 M9 block 2)
+  var HEART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>';
+  var PUB = { liked: false, q: "", leg: "", dom: [], sort: "new", h: "", hname: "", rows: [], total: 0, loaded: false, loading: false, err: "", seq: 0, qt: 0 };
   var RO = null;   // { h, id, deck, who, copies, vis, vt, prev, sent }; a Tier list deck: { tier: "1st of 272 on Oct 31", h: "" }
   // no picture yet: the corner's person (plan 2 M8 round 3, P1: Phosphor user, filled, MIT)
   var PERSON = '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"/></svg>';
@@ -1002,6 +1016,7 @@ body{-webkit-font-smoothing:antialiased;
     var f = pubFilter(), seq = ++PUB.seq;
     if(!more){ PUB.rows = []; PUB.total = 0; }
     if(f && !f.length){ PUB.loaded = true; PUB.loading = false; PUB.err = ""; renderPub(); return; }
+    if(PUB.liked && A && A.signedIn() && !savedAcct()){ PUB.loaded = true; PUB.loading = false; PUB.err = ""; renderPub(); return; }
     if(!A || !A.signedIn()){
       PUB.err = "Public decks need RAVI's server. Check your connection, then open Decks again.";
       if(A && A.onChange && !PUB.wait){ PUB.wait = 1; A.onChange(function(){ if(A.signedIn() && HV === "pub" && !PUB.loaded) pubLoad(); }); }
@@ -1009,7 +1024,7 @@ body{-webkit-font-smoothing:antialiased;
     }
     var q = PUB.q.trim(), ql = q && q.charAt(0) !== "@" ? legends().filter(function(x){ return nm(x).toLowerCase().indexOf(q.toLowerCase()) > -1; }).map(function(x){ return X.codeOf(x.c); }) : [];
     PUB.loading = true;
-    A.decks({ q: q, ql: ql, f: f || "", sort: PUB.sort === "copied" ? "copied" : "", n: more ? PUB.rows.length : "", h: PUB.h }, function(err, j){
+    A.decks({ q: q, ql: ql, f: f || "", sort: PUB.sort === "new" ? "" : psort()[0], n: more ? PUB.rows.length : "", h: PUB.h, liked: PUB.liked ? 1 : "" }, function(err, j){
       if(seq !== PUB.seq) return;
       PUB.loading = false; PUB.loaded = true;
       if(err || !j || !Array.isArray(j.decks)){ PUB.err = err || "RAVI's server could not show public decks. Try again later."; renderPub(); return; }
@@ -1035,7 +1050,8 @@ body{-webkit-font-smoothing:antialiased;
     return '<div class="dwrap"><button type="button" class="dcard btn glass' + cg + '" data-act="popen" data-h="' + esc(r.h) + '" data-pid="' + esc(r.id) + '" data-k="do">'
       + '<span class="dcpic">' + (L ? img(L) : "") + '</span>' + (run ? '<span class="dcrun">' + run + '</span>' : '')
       + '<span class="dcmid"><span class="dcname">' + esc(r.name || "Untitled deck") + '</span><span class="dcsub">' + esc(by) + '</span></span>'
-      + '<span class="dcend">' + (r.copies ? '<span class="cp">Copied ' + r.copies + '</span>' : '') + '</span></button></div>';
+      + '<span class="dcend">' + (r.likes ? '<span class="lk' + (r.liked ? " lkon" : "") + '" aria-label="' + (r.likes === 1 ? "1 like" : r.likes + " likes") + (r.liked ? ", yours among them" : "") + '">' + HEART + r.likes + '</span>' : '')
+      + (r.copies ? '<span class="cp">Copied ' + r.copies + '</span>' : '') + '</span></button></div>';
   }
   function pubChips(){
     var h = "", n = PUB.dom.length;
@@ -1050,13 +1066,15 @@ body{-webkit-font-smoothing:antialiased;
     var h = "", any = PUB.q || PUB.leg || PUB.dom.length || PUB.h;
     pubChips();
     el("hqx").disabled = !PUB.q;
-    if(PUB.err && !PUB.rows.length) h = '<p class="hnone">' + esc(PUB.err) + '</p>';
+    if(PUB.liked && A && A.signedIn() && !savedAcct()) h = '<p class="hnone">Likes need a saved account.</p>' + (window.RAVI_SAVEROW ? window.RAVI_SAVEROW() : "");
+    else if(PUB.err && !PUB.rows.length) h = '<p class="hnone">' + esc(PUB.err) + '</p>';
     else if(!PUB.loaded || (PUB.loading && !PUB.rows.length)) h = '<p class="hnone">Loading the public decks</p>';
+    else if(!PUB.rows.length && PUB.liked) h = '<p class="hnone">' + (any ? "No deck you like matches." : "You have not liked a deck yet.") + '</p>';
     else if(!PUB.rows.length) h = '<p class="hnone">' + (any ? "No public deck matches. Try another word, or Show all." : "No public decks yet. Share one of yours: open it, then Deck settings, Who sees it.") + '</p>';
     PUB.rows.forEach(function(r){ h += pubRow(r); });
     paint(el("hlist"), h);
-    el("hlede").textContent = PUB.loaded && !PUB.err ? PUB.total + (PUB.total === 1 ? " public deck" : " public decks") + (any ? " match" + (PUB.total === 1 ? "es" : "") : "") : "";
-    hsortSet(PSORTS[PUB.sort === "copied" ? 1 : 0], "");
+    el("hlede").textContent = PUB.loaded && !PUB.err ? PUB.total + (PUB.liked ? (PUB.total === 1 ? " deck you like" : " decks you like") : PUB.total === 1 ? " public deck" : " public decks") + (any ? " match" + (PUB.total === 1 ? "es" : "") : "") : "";
+    hsortSet(psort(), "");
     if(PUB.rows.length < PUB.total) requestAnimationFrame(pubPump);
   }
   function fillPf(){
@@ -1086,7 +1104,7 @@ body{-webkit-font-smoothing:antialiased;
       ["main", "side", "maybe", "runes"].forEach(function(k){ d[k] = j.deck[k] && typeof j.deck[k] === "object" ? j.deck[k] : {}; });
       d.bf = Array.isArray(j.deck.bf) ? j.deck.bf : []; d.note = j.deck.note || ""; d.t = j.t || 0;
       d.id = "ro:" + j.h + "." + j.id;
-      RO = { h: j.h, id: j.id, deck: d, who: j.who || {}, copies: +j.copies || 0, vis: j.vis, vt: j.vt, prev: isRO() ? RO.prev : CURID, sent: false };
+      RO = { h: j.h, id: j.id, deck: d, who: j.who || {}, copies: +j.copies || 0, likes: +j.likes || 0, liked: !!j.liked, mine: !!j.mine, vis: j.vis, vt: j.vt, prev: isRO() ? RO.prev : CURID, sent: false };
       CURID = d.id; SCREEN = "deck"; VIEW = "deck"; HAND = null; ASIDE = []; EDIT = false;
       pressSeg(el("vw"), "data-vw", VIEW); openPanel(null); render(); window.scrollTo(0, 0);
     });
@@ -1120,12 +1138,17 @@ body{-webkit-font-smoothing:antialiased;
     else {
       if(w.name && w.user) bits.push("@" + w.user);
       bits.push((RO.vis === "pub" ? "Public, shared " : "Shared by link, ") + ago(RO.vt));
+      if(RO.likes) bits.push("Liked " + RO.likes + (RO.likes === 1 ? " time" : " times"));
       if(RO.copies) bits.push("Copied " + RO.copies + (RO.copies === 1 ? " time" : " times"));
     }
+    // Like: in the app, on someone else's deck; dim until the account is saved (its row says how)
+    var like = !RO.tier && !RO.mine && installed() && A && A.signedIn()
+      ? '<button type="button" class="rolike btn glass" data-act="rolike" data-k="do" aria-pressed="' + (RO.liked ? "true" : "false") + '"' + (savedAcct() ? "" : " disabled") + '>' + HEART + '<span>' + (RO.liked ? "Liked" : "Like") + '</span></button>' : "";
+    var saverow = like && !savedAcct() && window.RAVI_SAVEROW ? window.RAVI_SAVEROW() : "";
     var acts = installed()
       ? '<div class="two"><button type="button" class="pact btn glass" data-act="rocopy" data-k="do">Copy to my decks</button><button type="button" class="pact btn glass" data-act="rocode" data-k="do">Copy deck code</button></div>'
       : '<button type="button" class="pact btn glass" data-act="rocode" data-k="do">Copy deck code</button><p class="pnote" style="margin-top:8px">Paste it into Import on Decks in the RAVI app, or any deck builder.</p>';
-    return '<section class="dsec glass rocard"><div class="rowho"><span class="ropic" aria-hidden="true"' + st + '>' + inner + '</span><span class="ronm"><b>' + esc(RO.tier ? cap(RO.tier) : (w.name || whoWord(w))) + '</b><small>' + esc(bits.join(" · ")) + '</small></span></div>' + acts + '</section>';
+    return '<section class="dsec glass rocard"><div class="rowho"><span class="ropic" aria-hidden="true"' + st + '>' + inner + '</span><span class="ronm"><b>' + esc(RO.tier ? cap(RO.tier) : (w.name || whoWord(w))) + '</b><small>' + esc(bits.join(" · ")) + '</small></span>' + like + '</div>' + acts + saverow + '</section>';
   }
   function roCopy(){
     if(!RO) return;
@@ -1137,6 +1160,24 @@ body{-webkit-font-smoothing:antialiased;
     var prev = RO.prev; RO = null; CURID = prev || "";
     DECKS.unshift(nd); CURID = nd.id; save(true); go("deck", nd.id);
     toast("Copied to your decks");
+  }
+  // LIKE (plan 2 M9 block 2): the pill turns at once; the server's count follows, or the tap is undone
+  function roLike(){
+    if(!RO || !A || !RO.h || RO.mine || RO.busy) return;
+    var on = !RO.liked, h = RO.h, id = RO.id;
+    function set(liked, likes){
+      if(RO && RO.h === h && RO.id === id){ RO.liked = liked; RO.likes = likes; }
+      PUB.rows.forEach(function(r){ if(r.h === h && r.id === id){ r.liked = liked; r.likes = likes; } });
+      if(PUB.liked) PUB.loaded = false;   // the Liked view reads again when it is next shown
+      if(isRO() && SCREEN === "deck") render();
+    }
+    var was = RO.likes;
+    RO.busy = true; set(on, Math.max(0, was + (on ? 1 : -1)));
+    A.deckLike(h, id, on, function(err, j){
+      if(RO && RO.h === h && RO.id === id) RO.busy = false;
+      if(err || !j || !j.ok){ set(!on, was); toast(err || "That did not save. Try again."); return; }
+      set(!!j.liked, +j.likes || 0);
+    });
   }
   function fillRep(){
     var b = el("roreport"), ok = savedAcct();
@@ -1237,11 +1278,12 @@ body{-webkit-font-smoothing:antialiased;
     return all;   // mine: DECKS as kept
   }
   function renderHome(){
-    pressSeg(el("hview"), "data-hv", HV);
+    pressSeg(el("hview"), "data-hv", HV === "pub" && PUB.liked ? "liked" : HV);
     el("hacts").hidden = HV === "pub"; el("pchips").hidden = HV !== "pub";
     el("hq").placeholder = HV === "pub" ? "Search public decks" : "Search decks";
     el("hq").setAttribute("aria-label", HV === "pub" ? "Search public decks by name, Legend or @username" : "Search decks by name, Legend or card");
-    if(HV === "pub"){ el("htags").hidden = true; renderPub(); return; }
+    // a like taken back (or given) while a deck was open leaves the Liked view stale: it reads again
+    if(HV === "pub"){ el("htags").hidden = true; if(!PUB.loaded && !PUB.loading) pubLoad(); else renderPub(); return; }
     var h = "";
     var all = listOrder();
     var list = all.filter(function(d){ return (!HTAG || hasTag(d, HTAG)) && (X.matches(I, d, HQ) || (HQ && tagsOf(d).some(function(t){ return tagKey(t).indexOf(tagKey(HQ)) > -1; }))); });
@@ -2375,8 +2417,11 @@ body{-webkit-font-smoothing:antialiased;
     // a deck someone shares: nothing that changes it
     if(isRO() && /^(rinc|rdec|sinc|sdec|badd|cstep|pset|pfin|champ|lchange|cdrop|dup|del|vis|share)$/.test(a || "")) return;
     if(t.hasAttribute("data-hv")){
-      var nv = t.getAttribute("data-hv"); if(nv === HV) return;
-      HV = nv; EDIT = false; el("hq").value = HV === "pub" ? PUB.q : HQ;
+      var nv = t.getAttribute("data-hv"), lk = nv === "liked"; if(lk) nv = "pub";
+      if(nv === HV && (nv !== "pub" || lk === PUB.liked)) return;
+      // Liked is the Public view narrowed to the decks you like: it loads afresh each way
+      var turn = nv === "pub" && lk !== PUB.liked;
+      HV = nv; EDIT = false; if(turn){ PUB.liked = lk; PUB.loaded = false; } el("hq").value = HV === "pub" ? PUB.q : HQ;
       if(HV === "pub" && !PUB.loaded) pubLoad();
       render(); window.scrollTo(0, 0); return;
     }
@@ -2393,6 +2438,7 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "pfh"){ PUB.h = ""; PUB.hname = ""; pubLoad(); return; }
     if(a === "pfreset"){ PUB.leg = ""; PUB.dom = []; PUB.h = ""; PUB.hname = ""; pubLoad(); return; }
     if(a === "rocopy"){ roCopy(); return; }
+    if(a === "rolike"){ roLike(); return; }
     if(a === "rocode"){ if(RO) copyText(X.toCode(I, RO.deck)); return; }
     if(a === "roreport"){ roReport(); return; }
     if(a === "vis"){

@@ -93,7 +93,7 @@ export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page:
 // per connection per day, unless named per account. riot: Riot ID claims, so throwaway guests can't
 // sweep up popular Riot IDs; synccall and syncw: sync calls and items written, so one connection
 // can't spend the free plan's writes for everyone (the security check, Mako's yes 2026-10-31)
-export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100, decks: 3000, deck: 3000, copy: 600, linkstart: 60, linkwait: 4000, linkfind: 30 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3); decks, deck, copy: the Public view, one deck, copies (plan 2 M3) // per connection per day (guest: a store's wifi)
+export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp: 5, guest: 200, riot: 20, sync: SYNC.day, synccall: 6000, syncw: 20000, board: 1500, offers: 3000, offer: 300, offersend: 60, report: 10, block: 100, decks: 3000, deck: 3000, copy: 600, like: 600, linkstart: 60, linkwait: 4000, linkfind: 30 }; // offersend: per account (Trade board offers, plan 2 M2 block 2); report, block: per account (block 3); decks, deck, copy: the Public view, one deck, copies (plan 2 M3) // per connection per day (guest: a store's wifi)
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
@@ -431,6 +431,9 @@ function sqlStore(sql) {
   sql.exec("CREATE INDEX IF NOT EXISTS pdeck_vis ON pdeck (vis, vt)");
   sql.exec("CREATE TABLE IF NOT EXISTS pcopy (acct TEXT, id TEXT, by TEXT, PRIMARY KEY (acct, id, by))");
   sql.exec("CREATE INDEX IF NOT EXISTS pcopy_by ON pcopy (by)");
+  // likes on shared decks (plan 2 M9 block 2): one row per account that likes a deck
+  sql.exec("CREATE TABLE IF NOT EXISTS plike (acct TEXT, id TEXT, by TEXT, at INTEGER, PRIMARY KEY (acct, id, by))");
+  sql.exec("CREATE INDEX IF NOT EXISTS plike_by ON plike (by)");
   // block 5 (plan 2 M3): the events an account marked Going (the id and its start only), and its phones for offer alerts
   sql.exec("CREATE TABLE IF NOT EXISTS going (acct TEXT, ev TEXT, t INTEGER, PRIMARY KEY (acct, ev))");
   sql.exec("CREATE TABLE IF NOT EXISTS opush (endpoint TEXT PRIMARY KEY, acct TEXT, p256dh TEXT, auth TEXT, at INTEGER)");
@@ -486,7 +489,7 @@ function sqlStore(sql) {
     deckItems: (acct) => sql.exec("SELECT k, id, d FROM item WHERE acct = ? AND d IS NOT NULL AND k = 'vir.decks.v1'", acct).toArray(),
     putDecks: (acct, rows) => {
       const keep = new Set(rows.map((r) => r.id));
-      sql.exec("SELECT id FROM pdeck WHERE acct = ?", acct).toArray().forEach((x) => { if (!keep.has(x.id)) sql.exec("DELETE FROM pcopy WHERE acct = ? AND id = ?", acct, x.id); });
+      sql.exec("SELECT id FROM pdeck WHERE acct = ?", acct).toArray().forEach((x) => { if (!keep.has(x.id)) { sql.exec("DELETE FROM pcopy WHERE acct = ? AND id = ?", acct, x.id); sql.exec("DELETE FROM plike WHERE acct = ? AND id = ?", acct, x.id); } });
       sql.exec("DELETE FROM pdeck WHERE acct = ?", acct);
       rows.forEach((r) => sql.exec("INSERT INTO pdeck VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", acct, r.id, r.vis, r.vt, r.t, r.name, r.note, r.legend, r.d));
     },
@@ -496,6 +499,10 @@ function sqlStore(sql) {
     pubDeckCount: (acct) => one("SELECT COUNT(*) AS n FROM pdeck WHERE acct = ? AND vis = 'pub'", acct).n,
     copyCounts: () => sql.exec("SELECT acct, id, COUNT(*) AS n FROM pcopy GROUP BY acct, id").toArray(),
     putCopy: (acct, id, by) => sql.exec("INSERT OR IGNORE INTO pcopy VALUES (?, ?, ?)", acct, id, by),
+    likeCounts: () => sql.exec("SELECT acct, id, COUNT(*) AS n FROM plike GROUP BY acct, id").toArray(),
+    likesBy: (by) => sql.exec("SELECT acct, id, at FROM plike WHERE by = ? ORDER BY at DESC", by).toArray(),
+    putLike: (acct, id, by, at) => sql.exec("INSERT OR IGNORE INTO plike VALUES (?, ?, ?, ?)", acct, id, by, at),
+    delLike: (acct, id, by) => sql.exec("DELETE FROM plike WHERE acct = ? AND id = ? AND by = ?", acct, id, by),
     oldGuests: (cut, max) => sql.exec("SELECT id FROM acct WHERE guest = 1 AND made < ? AND NOT EXISTS (SELECT 1 FROM sess WHERE sess.acct = acct.id AND sess.last >= ?) AND NOT EXISTS (SELECT 1 FROM cred WHERE cred.acct = acct.id) LIMIT ?", cut, cut, max).toArray().map((x) => x.id),
     takeChal: (c) => { const x = one("SELECT c, kind, acct, uh, exp FROM chal WHERE c = ?", c); if (x) sql.exec("DELETE FROM chal WHERE c = ?", c); return x; },
     putChal: (x) => sql.exec("INSERT OR REPLACE INTO chal VALUES (?, ?, ?, ?, ?)", x.c, x.kind, x.acct, x.uh, x.exp),
@@ -527,6 +534,7 @@ function sqlStore(sql) {
       sql.exec("DELETE FROM modr WHERE acct = ?", id);
       sql.exec("DELETE FROM pdeck WHERE acct = ?", id);
       sql.exec("DELETE FROM pcopy WHERE acct = ? OR by = ?", id, id);
+      sql.exec("DELETE FROM plike WHERE acct = ? OR by = ?", id, id);
       sql.exec("DELETE FROM riot WHERE acct = ?", id);
       sql.exec("DELETE FROM disp WHERE acct = ?", id);
       sql.exec("DELETE FROM going WHERE acct = ?", id);
@@ -556,7 +564,7 @@ function sqlStore(sql) {
   };
 }
 export function memStore() {
-  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map(), pdeck: new Map(), pcopy: new Map(), going: new Map(), opush: new Map(), link: new Map() };
+  const T = { acct: new Map(), cred: new Map(), sess: new Map(), chal: new Map(), lim: new Map(), prof: new Map(), photo: new Map(), riot: new Map(), disp: new Map(), item: new Map(), board: new Map(), bh: new Map(), offer: new Map(), bset: new Map(), rep: new Map(), blk: new Map(), modr: new Map(), pdeck: new Map(), pcopy: new Map(), plike: new Map(), going: new Map(), opush: new Map(), link: new Map() };
   const rk = (by, who) => by + "\n" + who;
   const ik = (a, k, id) => a + "\n" + k + "\n" + id;
   function copy(x) { return x ? JSON.parse(JSON.stringify(x)) : null; }
@@ -614,7 +622,7 @@ export function memStore() {
     deckItems: (acct) => Array.from(T.item.values()).filter((x) => x.acct === acct && x.d !== null && x.k === "vir.decks.v1").map((x) => copy({ k: x.k, id: x.id, d: x.d })),
     putDecks: (acct, rows) => {
       const keep = new Set(rows.map((r) => r.id));
-      T.pdeck.forEach((r, k) => { if (r.acct === acct) { if (!keep.has(r.id)) T.pcopy.forEach((c, ck) => { if (c.acct === acct && c.id === r.id) T.pcopy.delete(ck); }); T.pdeck.delete(k); } });
+      T.pdeck.forEach((r, k) => { if (r.acct === acct) { if (!keep.has(r.id)) { T.pcopy.forEach((c, ck) => { if (c.acct === acct && c.id === r.id) T.pcopy.delete(ck); }); T.plike.forEach((c, ck) => { if (c.acct === acct && c.id === r.id) T.plike.delete(ck); }); } T.pdeck.delete(k); } });
       rows.forEach((r) => T.pdeck.set(acct + "\n" + r.id, copy(Object.assign({ acct: acct }, r))));
     },
     pdeck: (acct, id) => copy(T.pdeck.get(acct + "\n" + id) || null),
@@ -623,6 +631,10 @@ export function memStore() {
     pubDeckCount: (acct) => Array.from(T.pdeck.values()).filter((r) => r.acct === acct && r.vis === "pub").length,
     copyCounts: () => { const m = new Map(); T.pcopy.forEach((c) => { const k = c.acct + "\n" + c.id; m.set(k, (m.get(k) || 0) + 1); }); return Array.from(m.entries()).map(([k, n]) => ({ acct: k.split("\n")[0], id: k.split("\n")[1], n: n })); },
     putCopy: (acct, id, by) => T.pcopy.set(acct + "\n" + id + "\n" + by, { acct: acct, id: id, by: by }),
+    likeCounts: () => { const m = new Map(); T.plike.forEach((c) => { const k = c.acct + "\n" + c.id; m.set(k, (m.get(k) || 0) + 1); }); return Array.from(m.entries()).map(([k, n]) => ({ acct: k.split("\n")[0], id: k.split("\n")[1], n: n })); },
+    likesBy: (by) => Array.from(T.plike.values()).filter((c) => c.by === by).sort((a, b) => b.at - a.at).map((c) => ({ acct: c.acct, id: c.id, at: c.at })),
+    putLike: (acct, id, by, at) => { const k = acct + "\n" + id + "\n" + by; if (!T.plike.has(k)) T.plike.set(k, { acct: acct, id: id, by: by, at: at }); },
+    delLike: (acct, id, by) => T.plike.delete(acct + "\n" + id + "\n" + by),
     oldGuests: (cut, max) => Array.from(T.acct.values()).filter((a) => a.guest && a.made < cut &&
       !Array.from(T.sess.values()).some((s) => s.acct === a.id && s.last >= cut) && !Array.from(T.cred.values()).some((c) => c.acct === a.id)).slice(0, max).map((a) => a.id),
     takeChal: (c) => { const x = copy(T.chal.get(c)); T.chal.delete(c); return x; },
@@ -657,7 +669,7 @@ export function memStore() {
       T.board.delete(id); T.bh.forEach((a, h) => { if (a === id) T.bh.delete(h); });
       T.offer.forEach((o, k) => { if (o.a === id || o.b === id) T.offer.delete(k); }); T.bset.delete(id);
       ["rep", "blk"].forEach((t) => T[t].forEach((x, k) => { if (x.by === id || x.who === id) T[t].delete(k); })); T.modr.delete(id);
-      T.pdeck.forEach((r, k) => { if (r.acct === id) T.pdeck.delete(k); }); T.pcopy.forEach((c, k) => { if (c.acct === id || c.by === id) T.pcopy.delete(k); });
+      T.pdeck.forEach((r, k) => { if (r.acct === id) T.pdeck.delete(k); }); T.pcopy.forEach((c, k) => { if (c.acct === id || c.by === id) T.pcopy.delete(k); }); T.plike.forEach((c, k) => { if (c.acct === id || c.by === id) T.plike.delete(k); });
       T.prof.delete(id); T.photo.delete(id);
       T.riot.forEach((y, k) => { if (y.acct === id) T.riot.delete(k); });
       T.disp.forEach((y, k) => { if (y.acct === id) T.disp.delete(k); });
@@ -828,20 +840,24 @@ export function makeAccounts() {
     // what others see of a deck's owner: name, @username, picture (the board's face, without the board's settings)
     deckFace(acctId) { const f = this.face(acctId); return { name: f.name, user: f.user, pic: f.pic }; }
     copyMap() { const m = new Map(); this.db.copyCounts().forEach((x) => m.set(x.acct + "\n" + x.id, x.n)); return m; }
+    // LIKES (plan 2 M9 block 2): how many accounts like each deck; and the decks one account likes
+    likeMap() { const m = new Map(); this.db.likeCounts().forEach((x) => m.set(x.acct + "\n" + x.id, x.n)); return m; }
+    likedSet(by) { return new Set(by ? this.db.likesBy(by).map((x) => x.acct + "\n" + x.id) : []); }
     // the Public view (q: words; ql, f: legend codes; sort new or copied; n: how many to skip; h: one player's)
     async deckList(me, u) {
-      const apart = this.apart(me), faces = new Map(), cm = this.copyMap();
+      const apart = this.apart(me), faces = new Map(), cm = this.copyMap(), lm = this.likeMap(), mine = this.likedSet(me);
       const faceOf = (id) => { if (!faces.has(id)) faces.set(id, this.deckFace(id)); return faces.get(id); };
       let rows = this.db.pubDecks(DECKS.list).filter((r) => !apart.has(r.acct));
       const hq = u.searchParams.get("h");
       if (hq !== null) { const who = /^[0-9a-f]{24}$/.test(hq) ? this.db.byHandle(hq) : null; rows = rows.filter((r) => r.acct === who); }
-      const hit = deckSearch(rows, { q: u.searchParams.get("q") || "", ql: codesFrom(u.searchParams.get("ql")), f: codesFrom(u.searchParams.get("f")), sort: u.searchParams.get("sort") },
-        faceOf, (a, id) => cm.get(a + "\n" + id) || 0);
+      const hit = deckSearch(rows, { q: u.searchParams.get("q") || "", ql: codesFrom(u.searchParams.get("ql")), f: codesFrom(u.searchParams.get("f")), sort: u.searchParams.get("sort"),
+        only: u.searchParams.get("liked") === "1" ? mine : null },
+        faceOf, (a, id) => cm.get(a + "\n" + id) || 0, (a, id) => lm.get(a + "\n" + id) || 0);
       const skip = Math.max(0, Math.min(DECKS.list, parseInt(u.searchParams.get("n"), 10) || 0));
       const out = [], hs = new Map();
       for (const r of hit.slice(skip, skip + DECKS.page)) {
         if (!hs.has(r.acct)) hs.set(r.acct, await handleOf(r.acct));
-        out.push(Object.assign(deckRow(r, hs.get(r.acct), faceOf(r.acct), cm.get(r.acct + "\n" + r.id)), r.acct === me ? { mine: true } : {}));
+        out.push(Object.assign(deckRow(r, hs.get(r.acct), faceOf(r.acct), cm.get(r.acct + "\n" + r.id), lm.get(r.acct + "\n" + r.id)), r.acct === me ? { mine: true } : {}, mine.has(r.acct + "\n" + r.id) ? { liked: true } : {}));
       }
       return { v: 1, decks: out, total: hit.length, page: DECKS.page };
     }
@@ -1081,6 +1097,7 @@ export function makeAccounts() {
         reportsAboutYou: this.db.repsOf(a.id).map((x) => ({ reason: x.why, on: dayOf(x.at) })), // who sent them stays with RAVI
         sharedDecks: { what: "what others see of your shared decks (Link: anyone with its link; Public: on Decks' Public view too): the cards, name and note, with your name, @username and picture",
           shown: !a.guest && !this.decksOff(a.id), decks: this.db.pdecks(a.id).map((r) => { let c = null; try { c = JSON.parse(r.d); } catch (e) { c = null; } return { id: r.id, sees: r.vis === "pub" ? "public" : "link", name: r.name, note: r.note, cards: c, shared: dayOf(r.vt) }; }) },
+        decksYouLiked: this.db.likesBy(a.id).map((x) => { const r = this.db.pdeck(x.acct, x.id); return r ? { deck: r.name, by: this.who2(x.acct), on: dayOf(x.at) } : null; }).filter(Boolean),
         offTradeBoard: this.isOff(a.id), pictureHidden: this.picHidden(a.id), decksTakenDown: this.decksOff(a.id),
         synced: this.db.allItems(a.id).reduce((o, x) => { let d; try { d = JSON.parse(x.d); } catch (e) { d = x.d; } (o[x.k] = o[x.k] || {})[x.id] = d; return o; }, {}) };
     }
@@ -1177,6 +1194,7 @@ export function makeAccounts() {
           let cards = null; try { cards = JSON.parse(r.d); } catch (e) { cards = null; }
           const cm = this.copyMap();
           return reply({ v: 1, h: await handleOf(r.owner), id: r.id, vis: r.vis, t: r.t, vt: r.vt, copies: cm.get(r.owner + "\n" + r.id) || 0, mine: !!me && me.acct.id === r.owner,
+            likes: this.likeMap().get(r.owner + "\n" + r.id) || 0, liked: !!me && this.likedSet(me.acct.id).has(r.owner + "\n" + r.id),
             deck: Object.assign({ name: r.name, note: r.note }, cards), who: this.deckFace(r.owner) });
         }
         if (u.pathname === "/going") {
@@ -1470,6 +1488,16 @@ export function makeAccounts() {
         if (!r || this.blocked(me.acct.id, r.owner)) return reply({ error: "that deck isn't shared" }, 404);
         if (r.owner !== me.acct.id) this.db.putCopy(r.owner, r.id, me.acct.id);
         return reply({ ok: true, copies: this.copyMap().get(r.owner + "\n" + r.id) || 0 });
+      }
+      if (p === "/deck/like") {
+        // a like per saved account per deck, taken back with on: false; never your own; only the count is told
+        if (!(await this.spend("like", ip))) return reply({ error: "too many likes today; try again tomorrow" }, 429);
+        if (me.acct.guest) return reply({ error: "save your account to like decks" }, 403);
+        const r = this.deckAt(new URL("https://x/?h=" + encodeURIComponent(String(body.h || "")) + "&d=" + encodeURIComponent(String(body.d || ""))));
+        if (!r || this.blocked(me.acct.id, r.owner)) return reply({ error: "that deck isn't shared" }, 404);
+        if (r.owner === me.acct.id) return reply({ error: "that is your own deck" }, 400);
+        if (body.on === false) this.db.delLike(r.owner, r.id, me.acct.id); else this.db.putLike(r.owner, r.id, me.acct.id, now);
+        return reply({ ok: true, likes: this.likeMap().get(r.owner + "\n" + r.id) || 0, liked: body.on !== false });
       }
       if (p === "/report" || p === "/block") {
         if (!(await this.spend("offer", ip))) return reply({ error: "too many changes today; try again tomorrow" }, 429);

@@ -301,11 +301,13 @@
   // shared decks (plan 2 M3): the Public view (q, ql, f, sort, n, h), one deck by its link, a copy counted
   function decks(o, cb) {
     var q = [];
-    ["q", "ql", "f", "sort", "n", "h"].forEach(function (k) { if (o && o[k] !== undefined && o[k] !== "" && o[k] !== null) q.push(k + "=" + encodeURIComponent(Array.isArray(o[k]) ? o[k].join(",") : String(o[k]))); });
+    ["q", "ql", "f", "sort", "n", "h", "liked"].forEach(function (k) { if (o && o[k] !== undefined && o[k] !== "" && o[k] !== null) q.push(k + "=" + encodeURIComponent(Array.isArray(o[k]) ? o[k].join(",") : String(o[k]))); });
     call("GET", "/decks" + (q.length ? "?" + q.join("&") : ""), null, cb);
   }
   function deckGet(h, id, cb) { call("GET", "/deck?h=" + encodeURIComponent(h) + "&d=" + encodeURIComponent(id), null, cb); }
   function deckCopy(h, id, cb) { call("POST", "/deck/copy", { h: h, d: id }, cb || function () {}); }
+  // a like on a shared deck (plan 2 M9 block 2): on true likes it, false takes it back; the reply is the count
+  function deckLike(h, id, on, cb) { call("POST", "/deck/like", { h: h, d: id, on: !!on }, cb || function () {}); }
   // the name this account's shared decks go by in links: the server's handle (board.js handleOf),
   // worked out here from the account id the phone already holds; never the id itself
   function handle(cb) {
@@ -329,7 +331,7 @@
 
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
-    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall, decks: decks, deckGet: deckGet, deckCopy: deckCopy, handle: handle,
+    keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall, decks: decks, deckGet: deckGet, deckCopy: deckCopy, deckLike: deckLike, handle: handle,
     going: going, goingSet: goingSet, offerAlertsOn: offerAlertsOn, offerAlertStart: offerAlertStart, offerAlertStop: offerAlertStop,
     linkStart: linkStart, linkWait: linkWait, linkFind: linkFind, linkOk: linkOk,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,

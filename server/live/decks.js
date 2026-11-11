@@ -17,7 +17,11 @@
 // ON THE SERVER: table pdeck (acct, id, vis link or pub, vt when it was first shared, t its last edit,
 // name, note, legend, d the cards as checked JSON), rebuilt for an account whenever sync changes its
 // decks, when it is saved, and when Mako takes its decks down or puts them back; table pcopy (acct, id,
-// by), one row per account that copied a deck, so Most copied counts each account once. Every field
+// by), one row per account that copied a deck, so Most copied counts each account once; table plike
+// (acct, id, by, at), one row per saved account that likes a deck (plan 2 M9 block 2, Mako's go
+// 2026-11-10): a like per account per deck, taken back by a second tap, never your own deck. Only the
+// count is public: nobody is told who liked a deck, the owner included, and no player carries a total
+// (likes order decks, never players: RAVI ranks no one). Every field
 // is rebuilt from checked parts; the page escapes what it shows. A deck is named in links by its
 // owner's handle (board.js handleOf: 24 hex, never the account id) and the deck's own id.
 
@@ -77,19 +81,21 @@ export function rowsFrom(items, saved, off) {
 }
 
 // what a list row shows of a deck (no cards: the Public view's rows are light)
-export function rowOf(r, h, face, copies) {
-  return { h: h, id: r.id, vis: r.vis, name: r.name, legend: r.legend, t: r.t, vt: r.vt, copies: copies || 0,
+export function rowOf(r, h, face, copies, likes) {
+  return { h: h, id: r.id, vis: r.vis, name: r.name, legend: r.legend, t: r.t, vt: r.vt, copies: copies || 0, likes: likes || 0,
     who: { name: face.name, user: face.user, pic: face.pic } };
 }
 
 // The Public view. rows: every public deck [{ acct, id, ... }]; q: words typed (matched to the deck's
 // name and the player's name and @username); ql: legends whose names match the words (the phone
 // knows the cards, the server does not); f: the Legend and Domain filters as legend codes (empty: any);
-// sort: "new" (first shared, newest first) or "copied". Returns the matching rows in order.
-export function search(rows, opt, faceOf, copiesOf) {
+// sort: "new" (first shared, newest first), "copied" or "liked"; only: a Set of "acct\nid" to keep (the
+// decks this account liked), or null. Returns the matching rows in order.
+export function search(rows, opt, faceOf, copiesOf, likesOf) {
   const q = cleanText(opt.q || "", 60).toLowerCase().replace(/^@/, "");
   const ql = new Set((opt.ql || []).filter(code)), f = new Set((opt.f || []).filter(code));
   const hit = rows.filter((r) => {
+    if (opt.only && !opt.only.has(r.acct + "\n" + r.id)) return false;
     if (f.size && !f.has(r.legend)) return false;
     if (!q) return true;
     if (ql.has(r.legend)) return true;
@@ -97,7 +103,9 @@ export function search(rows, opt, faceOf, copiesOf) {
     return r.name.toLowerCase().indexOf(q) >= 0 || (w.user || "").toLowerCase().indexOf(q) === 0 || (w.name || "").toLowerCase().indexOf(q) >= 0;
   });
   const n = (r) => copiesOf(r.acct, r.id);
-  if (opt.sort === "copied") hit.sort((a, b) => n(b) - n(a) || b.vt - a.vt || (a.id < b.id ? -1 : 1));
+  const l = (r) => (likesOf ? likesOf(r.acct, r.id) : 0);
+  if (opt.sort === "liked") hit.sort((a, b) => l(b) - l(a) || b.vt - a.vt || (a.id < b.id ? -1 : 1));
+  else if (opt.sort === "copied") hit.sort((a, b) => n(b) - n(a) || b.vt - a.vt || (a.id < b.id ? -1 : 1));
   else hit.sort((a, b) => b.vt - a.vt || (a.id < b.id ? -1 : 1));
   return hit;
 }

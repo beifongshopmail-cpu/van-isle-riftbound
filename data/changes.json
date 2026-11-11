@@ -2,9 +2,9 @@
   "note": "Feedback's Planned and Recently shipped (plan 2 M8.7 block 2, Mako 2026-11-07). Kept by hand at every block that ships something a player would notice and at every milestone close-out (records: RULE -- keep the feedback page's Planned and Recently shipped current). Each line is a short title (t, a few words, what the page shows) and its detail (d, a sentence, shown on a tap). page is a RAVI_PAGES id, or app for the whole app. A version field (v) joins each update once testers start.",
   "planned": [
     {
-      "page": "decks",
-      "t": "Likes on public decks",
-      "d": "Like the decks you rate and see what others like."
+      "page": "counter",
+      "t": "Tracker for 2v2 and more players",
+      "d": "Keep score for two against two and for three or four players."
     },
     {
       "page": "app",
@@ -32,11 +32,6 @@
       "d": "Install it from the store as well as from the web."
     },
     {
-      "page": "counter",
-      "t": "Tracker for 2v2 and more players",
-      "d": "Keep score for two against two and for three or four players."
-    },
-    {
       "page": "collection",
       "t": "Price alerts on your Wishlist",
       "d": "An alert when a card on your Wishlist moves in price."
@@ -61,6 +56,11 @@
     {
       "date": "2026-11-10",
       "items": [
+        {
+          "page": "decks",
+          "t": "Likes on public decks",
+          "d": "Like a shared deck from its page, see how many like each deck on Public, sort by likes, and find the ones you liked under Liked. Only the count is shown, never who."
+        },
         {
           "page": "news",
           "t": "Local stores' news",
