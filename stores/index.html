@@ -36,26 +36,19 @@ body{-webkit-font-smoothing:antialiased;
    10 above --top-clear, plate frost, clear; Search stores, then Grid | List (vir.stores.view.v1,
    Grid first) */
 .srow{margin-top:14px;margin-bottom:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
-.plate{border-radius:24px;padding:10px;
-  background:var(--plate-solid);
-  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.dvrow{display:flex;align-items:center;gap:8px;margin-top:10px}
-.dvrow .sp{flex:1}
-.dvseg button{width:40px;padding:0;display:grid;place-items:center}
-.dvseg svg{width:18px;height:18px;fill:currentColor}
-/* A STORE IS ONE THING, SO IT WEARS ITS COLOUR ALL OVER (STYLE 4, where colour goes; Mako
-   2026-11-11 11:48): each store its own card, a one-row press group in the page colour's glass,
-   every store the same colour (store neutrality). No town heads: the town is on the card. */
+.dvrow{margin-top:10px}
+/* THE LIST (STYLE.md section 0, Browse): each store its own card, a one-row press group in plain
+   glass, every store the same shape (store neutrality). Colour only where it names a kind: the next
+   event's type, its mark and name (STYLE.md section 4, the ladder, step 2). The town is on the card. */
 .stc{margin:0 0 8px}
 .door.rec.stl{flex-direction:row;align-items:center;gap:12px}   /* the chevron sits on the right as every record's */
 .stt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
-/* the stand-in: the page colour with the store icon, as News' picture-less posts (.nph) */
-.sic{flex:0 0 auto;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
+/* the stand-in: the store icon on a picture's ground (--recess), no colour: a store has no kind */
+.sic{flex:0 0 auto;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--recess);color:var(--muted)}
 .sic svg{width:28px;height:28px}
-/* the town, lit in the card's colour, the word beside the colour; then open or closed, muted */
+/* the town, in grey words; then open or closed, muted */
 .stw{display:flex;align-items:center;gap:8px;max-width:100%;min-width:0;font-size:12px}
-.stw b{flex:0 0 auto;font-family:var(--disp);font-weight:700;color:rgb(var(--cl))}
+.stw b{flex:0 0 auto;font-family:var(--disp);font-weight:700;color:var(--muted)}
 .stw span{min-width:0;font-family:var(--text);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .snm{font-family:var(--disp);font-size:15px;font-weight:700;line-height:1.3;white-space:normal}
 /* the next event: its type's mark and name, as on Events' cards (STYLE 4: a mark shape, a hue and
@@ -81,9 +74,8 @@ body{-webkit-font-smoothing:antialiased;
 .smid .t{display:block;white-space:normal} /* a store's name in full, on two lines when long: a name is never cut */
 .snx{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .empty{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
-/* the store's menu wears the store's colour, as a News post's (a menu that shows the page's content
-   is coloured as the page codes it); its town first, lit, as a post's kind */
-.mtw{margin:0 2px 12px;font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
+/* the store's menu is plain (a store has no kind); its town first, in grey words */
+.mtw{margin:0 2px 12px;font-family:var(--disp);font-size:12px;font-weight:700;color:var(--muted)}
 .smid .t{display:flex;align-items:center;gap:6px}
 .swn{max-width:100%}
 .foot a{color:var(--bone)}
@@ -98,19 +90,11 @@ body{-webkit-font-smoothing:antialiased;
 .hk dd{flex:1;min-width:0;margin:0;font-size:15px;text-align:right}
 .hk.now dt,.hk.now dd{color:var(--bone);font-family:var(--disp);font-weight:700}
 .door.rec .chev{position:absolute;right:16px;top:calc(50% - 8px);color:var(--muted)}
-.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
 .rul{white-space:normal}
 .rul .t{white-space:normal;overflow:visible}
-.rbody{padding:2px 16px 14px}
 .rtx{font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
 .rlab{margin:8px 0 0;font-size:12px;font-weight:600;color:var(--muted)}
 /* AREAS, the Events page's own pick-many rows and its saved choice (STYLE 3, pick-many) */
-.tyrow .lab{flex:1;text-align:left}
-.tyrow .n{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
-.tyrow .box{width:18px;height:18px;flex:0 0 auto;display:flex}
-.tyrow .box svg{width:18px;height:18px;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.tyrow[aria-pressed="false"] .lab{color:var(--muted)}
-.tyrow[aria-pressed="false"] .box svg{visibility:hidden}
 </style>
 </head>
 <body>
@@ -134,11 +118,12 @@ body{-webkit-font-smoothing:antialiased;
   (function(){
     var l = false;
     try { l = localStorage.getItem("vir.stores.view.v1") === "list"; } catch (e) {}
-    document.getElementById("boot").innerHTML = RAVI_SKEL([l ? "card:6:84:pic" : "ntiles:6"]);
+    document.getElementById("boot").innerHTML = RAVI_SKEL(["head", l ? "card:6:84:pic" : "ntiles:6"]);
   })();
   </script>
+  <div class="shead" id="lhead" hidden><h2 id="lh">All stores</h2><span class="sp"></span><span class="cnt" id="lcnt"></span></div>
   <div id="towns" hidden></div>
-  <p class="empty" id="nomatch" hidden>No store matches.</p>
+  <div id="nomatch" hidden><p class="empty">No store matches.</p><button type="button" class="pact btn glass" data-act="showall" data-k="do">Show all stores</button></div>
   <div id="none" hidden><p class="empty">No stores in your areas.</p><button type="button" class="pact btn glass" data-act="allareas" data-k="do">Show every area</button></div>
   <p class="empty" id="loadfail" hidden>The stores could not be loaded. Check your connection and open the page again.</p>
 
@@ -199,7 +184,6 @@ body{-webkit-font-smoothing:antialiased;
   function tkey(e){ return TYPE[e.type] ? e.type : "other"; }
   function ml(e){ return ' style="--ml:' + lit(window.RAVI_HUE(THUE[tkey(e)])) + '"'; }
   function mark(e){ return '<span class="mk"><svg viewBox="0 0 12 12" aria-hidden="true">' + MARKS[TSHAPE[tkey(e)]] + '</svg></span>'; }
-  var PRGB = window.RAVI_PAGE_RGB.stores, PLIT = lit(PRGB);
   var VIEWK = "vir.stores.view.v1", VIEW = "grid", Q = "";
   try{ if(localStorage.getItem(VIEWK) === "list") VIEW = "list"; }catch(e){}
   var IV = {
@@ -305,8 +289,8 @@ body{-webkit-font-smoothing:antialiased;
     var inArea = STORES.filter(function(s){ var k = townKey(s); return k && !OFF[k]; }), list = inArea.filter(matches), t = el("towns");
     t.innerHTML = list.map(card).join("");
     t.classList.toggle("sgrid", VIEW === "grid");
-    t.style.setProperty("--tint", "rgba(" + PRGB + ",var(--cg))"); t.style.setProperty("--c", PRGB); t.style.setProperty("--cl", PLIT);
     t.hidden = !list.length;
+    el("lhead").hidden = !list.length; el("lh").textContent = Q ? "Results" : "All stores"; el("lcnt").textContent = list.length;
     el("nomatch").hidden = !(inArea.length && !list.length);
     el("none").hidden = !!inArea.length || !STORES.length;
   }
@@ -338,8 +322,6 @@ body{-webkit-font-smoothing:antialiased;
   function fillStore(s){
     var info = INFO[s.sid] || null, h = "", ad = street(s), evs = eventsOf(s), posts = postsOf(s), n = nowIsland(), st = stateOf(info), i, sp, rows = "";
     el("sname").textContent = s.name;
-    var m = el("pstore");
-    m.style.setProperty("--c", PRGB); m.style.setProperty("--cl", PLIT); m.style.setProperty("--tint", "rgba(" + PRGB + ",var(--cg))");
     h += '<p class="mtw">' + esc(s.city) + '</p>';
     h += '<div class="row"><p class="lb">Where</p>' + (ad ? '<p class="sadr sel">' + esc(ad) + '</p>' : '<p class="sadr">' + esc(s.city) + '</p>')
       + '<a class="pact btn glass" href="' + esc(maps(s)) + '" target="_blank" rel="noopener" data-k="do">Directions ' + OUT + '</a></div>';
@@ -406,6 +388,7 @@ body{-webkit-font-smoothing:antialiased;
     }
     var a = t.getAttribute("data-act");
     if(a === "store"){ openStore(t.getAttribute("data-sid")); return; }
+    if(a === "showall"){ el("q").value = ""; Q = ""; el("qx").disabled = true; render(); return; }
     if(a === "allareas"){ OFF = {}; saveOff(); renderAreas(); render(); return; }
     if(a === "post"){
       var body = t.nextElementSibling, on = t.getAttribute("aria-expanded") !== "true";
