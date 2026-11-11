@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-10T21:26:33.212Z",
- "generated_local": "2026-11-10T14:26:33-07:00",
- "window_start": "2026-11-10T07:00:00.000Z",
+ "generated_at": "2026-11-11T07:33:12.260Z",
+ "generated_local": "2026-11-11T00:33:12-07:00",
+ "window_start": "2026-11-11T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -160,7 +160,7 @@
  ],
  "totals": {
   "fetched": 78,
-  "unique": 81,
+  "unique": 80,
   "prev_unique": 81,
   "recent": [
    {
@@ -194,6 +194,10 @@
    {
     "d": "2026-11-10",
     "n": 81
+   },
+   {
+    "d": "2026-11-11",
+    "n": 80
    }
   ]
  },
@@ -211,38 +215,11 @@
  "store_posts": {
   "run": "2026-11-10",
   "listed": 6,
-  "added": 3,
+  "added": 2,
   "error": null
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "st262685341092",
-   "name": "Riftbound casual play",
-   "type": "open",
-   "start": "2026-11-10T17:00:00-07:00",
-   "end": "2026-11-10T20:00:00-07:00",
-   "day": "2026-11-10",
-   "time": "5:00 PM",
-   "venue": "Rotty's Creations",
-   "city": "Victoria",
-   "address": "",
-   "region": "victoria",
-   "cap": null,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": "st-rottys-creations-victoria",
-   "store": "Rotty's",
-   "src": "store",
-   "url": "https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12CjkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/",
-   "conf": "2026-11-10",
-   "swiss": null,
-   "cut": null
-  },
   {
    "id": "rb117560608744223758",
    "name": "Gauntlet Games Nexus Night",
@@ -982,7 +959,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 3,
+   "reg": 4,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -1246,7 +1223,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 8,
+   "reg": 9,
    "cents": 1500,
    "currency": "CAD",
    "updated": null,
@@ -1390,7 +1367,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -1582,7 +1559,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 5,
+   "reg": 6,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1606,7 +1583,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 2,
+   "reg": 4,
    "cents": 5000,
    "currency": "CAD",
    "updated": null,
