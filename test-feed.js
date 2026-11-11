@@ -94,7 +94,9 @@ check("local (plan 2 M9): a store's post by the store's name, standings never re
   l[0].sum = "A summary.";
   assert.strictEqual(ff.strip(l)[0].text, undefined);
   assert.deepStrictEqual(ff.readLocal('{"skip": true}'), { skip: true });
-  assert.deepStrictEqual(ff.readLocal('{"title": "A", "summary": "B."}'), { title: "A", sum: "B." });
+  assert.deepStrictEqual(ff.readLocal('{"title": "A", "summary": "B.", "until": null}'), { title: "A", sum: "B." });
+  assert.deepStrictEqual(ff.readLocal('{"title": "A", "summary": "B.", "until": "2026-11-15"}'), { title: "A", sum: "B.", until: "2026-11-15" });
+  assert.deepStrictEqual(ff.readLocal('{"title": "A", "summary": "B.", "until": "soon"}'), { title: "A", sum: "B." });
   assert.throws(function () { ff.readLocal('{"title": "A"}'); });
 });
 

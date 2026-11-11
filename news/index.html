@@ -51,6 +51,16 @@ body{-webkit-font-smoothing:antialiased;
   font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--bone)}
 .dvsort svg{flex:0 0 auto;width:14px;height:14px}
 .dvsort.on{background:var(--bone);color:var(--ink);box-shadow:none}
+/* THE KINDS MENU: a pick-many list, as Events settings' Areas (the calendar's .tyrow, STYLE 5): several
+   kinds can be on at once, so each row carries its own check (.box) and its count (.n) */
+.tyrow .lab{flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tyrow .n{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.tyrow .box{width:18px;height:18px;flex:0 0 auto;display:flex}
+.tyrow .box svg{width:18px;height:18px;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.tyrow[aria-pressed="false"] .lab{color:var(--muted)}
+.tyrow[aria-pressed="false"] .box svg{visibility:hidden}
+/* every kind turned off: what is missing, and its own button (STYLE 4, Words) */
+.kempty .pact{margin-top:10px}
 .dvsort:active{transform:scale(.96)}
 mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
 /* THIS WEEK: one glass row that opens in place, as Collection's Movers (Mako 2026-11-07): closed,
@@ -201,6 +211,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     <div class="shead"><h2 id="rh">Results</h2><span class="sp"></span><span class="cnt" id="rcnt"></span></div>
     <div id="rlist"></div>
   </section>
+  <div class="kempty" id="koff" hidden><p class="empty">Every kind is turned off.</p><button type="button" class="pact btn glass" id="kall" data-k="do">Show all kinds</button></div>
   <p class="empty" id="loadfail" hidden>The news could not be loaded. Check your connection and open the page again.</p>
 
   <footer class="foot">
@@ -404,7 +415,20 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   function nowLine(it){ var h = NOW[it.id]; return h ? '<span class="nnow' + (h.u ? " " + h.u : "") + '">' + esc(h.s) + '</span>' : ""; }
 
   // a post is shown when it has words: its summary, Riot's text or its article
-  function shown(it){ return !!(it && it.id && (it.sum || it.text || it.art)); }
+  function shown(it){ return !!(it && it.id && (it.sum || it.text || it.art)) && !gone(it); }
+  // A LOCAL STORE'S POST DROPS AFTER A WEEK (Mako 2026-11-10), unless it plainly pertains to a date:
+  // then it stays through that day (until, from the scanner). Riot's posts stay.
+  function gone(it){
+    if(it.kind !== "local" || !ymdOk(it.posted)) return false;
+    var d = new Date(Date.UTC(+it.posted.slice(0, 4), +it.posted.slice(5, 7) - 1, +it.posted.slice(8)) + 7 * 864e5).toISOString().slice(0, 10);
+    if(ymdOk(it.until) && it.until > d) d = it.until;
+    return TODAY > d;
+  }
+  // THE KINDS THAT ARE ON (Mako 2026-11-10: as Events' Areas, as many on as you like): every kind is
+  // on until turned off; the ones off are kept on this phone
+  var KOFFK = "vir.news.kinds.v1", KOFF = {};
+  try{ (JSON.parse(localStorage.getItem(KOFFK) || "[]") || []).forEach(function(k){ KOFF[k] = 1; }); }catch(e){ KOFF = {}; }
+  function kindOn(it){ return !KOFF[kindOf(it)]; }
   // ONE STORY, ONE POST (M8.7 A8): Riot often posts a story on its site and again on a social
   // account, and the summary gives both the same headline. Posts with one headline within a week
   // fold into one: the one with Riot's article, else the newest, keeps its place; it takes the
@@ -468,7 +492,9 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     if(D){ render(); if(!el("res").hidden) search(); }
   });
   function render(){
-    var all = D.items.filter(shown), pins = pinned(all);
+    var had = D.items.filter(shown), all = had.filter(kindOn), pins = pinned(all);
+    el("koff").hidden = !(had.length && !all.length);
+    chip();
     el("hlist").innerHTML = pins.map(function(it){ return card(it); }).join("");
     el("hcnt").textContent = pins.length;
     el("snow").hidden = !pins.length;
@@ -482,14 +508,14 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     // with a store's post among them the list is no longer Riot's alone (plan 2 M9 block 1)
     el("oh").textContent = fresh.length ? "Earlier" : rest.some(function(it){ return kindOf(it) === "local"; }) ? "Latest" : "From Riot";
     el("sold").hidden = !rest.length;
-    if(!all.length && !pins.length){ el("loadfail").textContent = "No news yet."; el("loadfail").hidden = false; }
+    if(!had.length){ el("loadfail").textContent = "No news yet."; el("loadfail").hidden = false; }
   }
 
   // ---- SEARCH (as Rules', Mako 2026-11-07): every word typed must match a word of the post: the
   // word, one of its forms, a word it starts, or one a letter or two off. The headline ranks first,
   // then the summary, then Riot's own words. Matched words are marked (bold and lit, never colour
-  // alone). The Kinds chip narrows to one kind. All in the page; nothing is sent anywhere. ----
-  var IDX = [], VOC = {}, VK = [], HITS = null, FK = "";
+  // alone). The Kinds chip turns kinds on and off, here as on the page. All in the page; nothing is sent anywhere. ----
+  var IDX = [], VOC = {}, VK = [], HITS = null;
   var STOP = { the:1, and:1, for:1, you:1, your:1, are:1, can:1, with:1, that:1, this:1, does:1, what:1, when:1, how:1, its:1, has:1, have:1, not:1, but:1, from:1, into:1 };
   function norm(w){ return w.toLowerCase().replace(/[\u2019']/g, ""); }
   function words(t){ return (String(t || "").toLowerCase().replace(/[\u2019']/g, "").match(/[a-z0-9]+/g)) || []; }
@@ -581,16 +607,15 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     });
   }
   function search(){
-    var q = el("q").value.trim(), on = !!(q || FK);
+    var q = el("q").value.trim(), on = !!q;
     el("qx").disabled = !q;
     el("home").hidden = on;
     el("res").hidden = !on;
     if(!on){ HITS = null; el("rlist").innerHTML = ""; return; }
     var list;
-    if(q){ var f = find(q); list = f.ids.map(function(i){ return LIST[i]; }); HITS = Object.keys(f.hit).length ? f.hit : null; }
-    else { list = LIST.slice(); HITS = null; }
-    list = list.filter(function(it){ return !FK || kindOf(it) === FK; });
-    el("rh").textContent = q ? "Results" : KIND[FK].label;
+    var f = find(q); list = f.ids.map(function(i){ return LIST[i]; }); HITS = Object.keys(f.hit).length ? f.hit : null;
+    list = list.filter(kindOn);
+    el("rh").textContent = "Results";
     el("rcnt").textContent = list.length;
     chip();
     el("rlist").innerHTML = list.length ? list.map(function(it){ return card(it, isNew(it)); }).join("") : '<p class="empty">Nothing matches.</p>';
@@ -599,23 +624,37 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   el("q").addEventListener("input", search);
   el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
   el("q").addEventListener("keydown", function(e){ if(e.key === "Enter") el("q").blur(); });
-  // the Kinds chip: the kinds there are, in a pick list; picking one narrows the list, All kinds clears
+  // the Kinds chip: the kinds there are, a pick-many list (the calendar's Areas): a tap turns one kind
+  // on or off and the menu stays open; the chip says how many are on once any is off
+  function have(){ var h = {}; (D ? D.items.filter(shown) : []).forEach(function(it){ h[kindOf(it)] = (h[kindOf(it)] || 0) + 1; }); return h; }
   function kinds(){
-    var have = {}; LIST.forEach(function(it){ have[kindOf(it)] = 1; });
-    var h = '<button type="button" data-v=""' + (FK ? '' : ' class="on"') + '>All kinds</button>';
-    ORDER.forEach(function(k){ if(have[k]) h += '<button type="button" data-v="' + k + '"' + (FK === k ? ' class="on"' : '') + '>' + esc(KIND[k].label) + '</button>'; });
+    var n = have(), h = "";
+    ORDER.forEach(function(k){
+      if(n[k]) h += '<button type="button" class="tyrow" data-v="' + k + '" aria-pressed="' + (KOFF[k] ? "false" : "true") + '"><span class="lab">' + esc(KIND[k].label)
+        + '</span><span class="n">' + n[k] + '</span><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg></span></button>';
+    });
     el("klist").innerHTML = h;
   }
   function chip(){
-    el("kchip").innerHTML = esc(FK ? KIND[FK].label : "Kinds") + DOWN;
-    el("kchip").classList.toggle("on", !!FK);
-    el("kchip").setAttribute("aria-pressed", FK ? "true" : "false");
+    var n = have(), all = ORDER.filter(function(k){ return n[k]; }), on = all.filter(function(k){ return !KOFF[k]; });
+    var cut = on.length < all.length;
+    el("kchip").innerHTML = esc(cut ? on.length + " of " + all.length + " kinds" : "Kinds") + DOWN;
+    el("kchip").classList.toggle("on", cut);
+    el("kchip").setAttribute("aria-pressed", cut ? "true" : "false");
+  }
+  function keep(){
+    try{ localStorage.setItem(KOFFK, JSON.stringify(Object.keys(KOFF))); }catch(e){}
+    render(); if(!el("res").hidden) search();
   }
   el("kchip").addEventListener("click", function(){ kinds(); show(el("pkind")); });
   el("klist").addEventListener("click", function(ev){
     var b = ev.target.closest("button[data-v]"); if(!b) return;
-    FK = b.getAttribute("data-v"); chip(); show(null); search();
+    var k = b.getAttribute("data-v");
+    if(KOFF[k]) delete KOFF[k]; else KOFF[k] = 1;
+    b.setAttribute("aria-pressed", KOFF[k] ? "false" : "true");
+    keep();
   });
+  el("kall").addEventListener("click", function(){ KOFF = {}; keep(); });
 
   // ---- A POST'S MENU: RAVI's summary, then Riot's own words (the Facebook post, then its
   // article), then where it came from. Only a video leaves the app, to be watched. ----

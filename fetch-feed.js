@@ -26,7 +26,9 @@
 //    standings (players' names and placings) are never read at all, and a
 //    post Claude finds is only results or only a schedule (the calendar has
 //    those) is held: kept in the file with hold and no words, so it is not
-//    asked about again.
+//    asked about again. Claude also names the last day a post still matters
+//    (until), when it is plainly about one dated thing: the page drops a
+//    local post a week after it was posted, or after that day if later.
 //
 // Riot's short links (riot.com/...) are followed one step, as RAVI, to the
 // page they stand for, so a short link on Facebook and the full address on
@@ -458,9 +460,11 @@ const WHAT = ["entries open", "entries close", "drawing", "event", "release", "d
 // A LOCAL STORE'S POST (plan 2 M9 block 1): a short summary in RAVI's own words, or skip.
 const ASK_LOCAL = "You write for RAVI, a free community app for the Riftbound trading card game on Vancouver Island. " +
   "Below is a post by a local game store, or from its community group. Reply with one JSON object and nothing else: " +
-  "{\"skip\": true} when the post is only results or standings, or only a schedule of dates and times with nothing else a player should know; " +
+  "{\"skip\": true} when the post is only results or standings, or only a schedule, calendar or list of events " +
+  "(a month's events, weekly nights, a game named among others) with nothing a player has to do or would be caught out by not knowing; " +
   "otherwise {\"title\": a plain headline of at most 8 words that names the store; " +
-  "\"summary\": one or two short, plain sentences, under 40 words, in your own words, saying what a player should know and when}. " +
+  "\"summary\": one or two short, plain sentences, under 40 words, in your own words, saying what a player should know and when; " +
+  "\"until\": \"YYYY-MM-DD\", the last day the post still matters when it is plainly about one dated thing (the day of the event, the deadline), or null when it names no such day}. " +
   "Never copy the post's sentences. Never name a person: the store is the only name. " +
   "Use only facts in the post; work out relative dates (tomorrow, next week) from its published day. No hashtags, emoji, quotes or hype.";
 
@@ -477,7 +481,11 @@ function readLocal(t) {
   const clean = function (x, n) { return typeof x === "string" ? x.replace(/\s+/g, " ").trim().replace(/^["']|["']$/g, "").slice(0, n) : ""; };
   const title = clean(d.title, 100), sum = clean(d.summary, 300);
   if (!title || !sum) { throw new Error("no title or summary"); }
-  return { title: title, sum: sum };
+  const out = { title: title, sum: sum };
+  // the last day the post still matters (Mako 2026-11-10: a local post drops after a week unless it
+  // plainly pertains to a date); the page keeps it showing through that day
+  if (typeof d.until === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d.until) && !isNaN(Date.parse(d.until + "T12:00:00Z"))) { out.until = d.until; }
+  return out;
 }
 
 // Claude's reply -> { title, sum, dates } or a thrown error
@@ -557,15 +565,15 @@ async function enrich(items, prevItems, key) {
     // a local store's post: Claude's summary or nothing (never the store's own sentence)
     if (it.tier === "local") {
       if (!it.text) { continue; }   // not in the digest's last files: it stays as the file has it
-      const lk = sumKey("local\n" + localInput(it));
-      const put = function (from) { ["title", "sum", "sumBy", "hold"].forEach(function (f) { if (from[f] !== undefined) { it[f] = from[f]; } else { delete it[f]; } }); };
+      const lk = sumKey("local2\n" + localInput(it));   // local2: the tighter skip and until (2026-11-10)
+      const put = function (from) { ["title", "sum", "sumBy", "hold", "until"].forEach(function (f) { if (from[f] !== undefined) { it[f] = from[f]; } else { delete it[f]; } }); };
       if (was.sumKey === lk && (was.hold || (was.sum && was.sumBy === "claude"))) { put(was); it.sumKey = lk; continue; }
       put({}); delete it.sumKey;
       if (key && sumBudget > 0) {
         sumBudget--;
         try {
           const got = await claudeSum(localInput(it), key, ASK_LOCAL, readLocal);
-          if (got.skip) { put({ hold: "skip" }); held++; } else { put({ title: got.title, sum: got.sum, sumBy: "claude" }); local++; }
+          if (got.skip) { put({ hold: "skip" }); held++; } else { put({ title: got.title, sum: got.sum, sumBy: "claude", until: got.until }); local++; }
           it.sumKey = lk;
         } catch (e) { console.log("WARN local summary for " + it.id + " not written: " + e.message + "; tried again next run"); }
       }
