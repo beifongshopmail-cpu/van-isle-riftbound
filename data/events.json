@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-11T07:33:12.260Z",
- "generated_local": "2026-11-11T00:33:12-07:00",
+ "generated_at": "2026-11-11T20:01:51.585Z",
+ "generated_local": "2026-11-11T13:01:51-07:00",
  "window_start": "2026-11-11T07:00:00.000Z",
  "anchors": [
   {
@@ -28,8 +28,8 @@
    "name": "Duncan",
    "region": "island",
    "source": "playriftbound",
-   "returned": 3,
-   "added": 3
+   "returned": 4,
+   "added": 4
   },
   {
    "name": "Nanaimo",
@@ -159,9 +159,9 @@
   }
  ],
  "totals": {
-  "fetched": 78,
-  "unique": 80,
-  "prev_unique": 81,
+  "fetched": 79,
+  "unique": 81,
+  "prev_unique": 80,
   "recent": [
    {
     "d": "2026-11-03",
@@ -197,13 +197,13 @@
    },
    {
     "d": "2026-11-11",
-    "n": 80
+    "n": 81
    }
   ]
  },
  "unknown_templates": {
   "NEXUS_CUP": {
-   "count": 9,
+   "count": 10,
    "sample_name": "Legacy Nexus Cup"
   },
   "CHALLENGE_SERIES": {
@@ -213,8 +213,8 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-10",
-  "listed": 6,
+  "run": "2026-11-11",
+  "listed": 5,
   "added": 2,
   "error": null
  },
@@ -506,8 +506,8 @@
    "sid": "st-rottys-creations-victoria",
    "store": "Rotty's",
    "src": "store",
-   "url": "https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12CjkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/",
-   "conf": "2026-11-10",
+   "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
+   "conf": "2026-11-11",
    "swiss": null,
    "cut": null
   },
@@ -749,8 +749,8 @@
    "sid": "st-rottys-creations-victoria",
    "store": "Rotty's",
    "src": "store",
-   "url": "https://facebook.com/100088865365179/posts/pfbid028ga7K585q4trGNe5Qq12CjkfqENDyFq9tfJo23aYQ4ArYtw7nqDboFaSrQiaRTjil/",
-   "conf": "2026-11-10",
+   "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
+   "conf": "2026-11-11",
    "swiss": null,
    "cut": null
   },
@@ -2121,6 +2121,30 @@
    "store": "North Park Framing",
    "swiss": 5,
    "cut": true
+  },
+  {
+   "id": "rb117599543095444225",
+   "name": "Legacy Nexus Cup Draft",
+   "type": "other",
+   "start": "2027-03-20T06:00:00-07:00",
+   "end": null,
+   "day": "2027-03-20",
+   "time": "6:00 AM",
+   "venue": "The Fort Game Cafe",
+   "city": "Duncan",
+   "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
+   "region": "island",
+   "cap": 16,
+   "reg": 0,
+   "cents": 4000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
+   "store": "Fort Game Cafe",
+   "swiss": 4,
+   "cut": false
   },
   {
    "id": "rb117588162386359218",
