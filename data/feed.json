@@ -1,7 +1,23 @@
 {
  "updated": "2026-11-10",
- "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).",
+ "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence). kind local: a local store's post, RAVI's summary only, never the store's words; hold: read and left out.",
  "items": [
+  {
+   "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1847360796511395",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/groups/1289633928950754/permalink/1847360796511395",
+   "posted": "2026-11-09",
+   "source": "Skyhaven Games",
+   "credit": "Skyhaven Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Skyhaven Games Sunday Skirmish Starts at 5 PM",
+   "sum": "The Sunday Skirmish starts at 5 PM local time, even if the app shows otherwise. Registered players can now submit their decks, and Riftatlas text export is a fallback if needed.",
+   "sumBy": "claude",
+   "sumKey": "bbc74e350ff5b698"
+  },
   {
    "id": "fb:https://instagram.com/p/Dfh6Zril7rY",
    "kind": "announcement",
@@ -53,6 +69,22 @@
    "links": [
     "https://twitch.tv/videos/2922937997"
    ]
+  },
+  {
+   "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1845310586716416",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/groups/1289633928950754/permalink/1845310586716416",
+   "posted": "2026-11-07",
+   "source": "Skyhaven Games",
+   "credit": "Skyhaven Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Skyhaven Games Free Online Riftbound Mini-Worlds Event",
+   "sum": "A free, prize-free online Riftbound event on Riftatlas runs Monday, November 16 at 5:30 PM. Players use three decks across three rounds and cannot repeat legends that share a domain.",
+   "sumBy": "claude",
+   "sumKey": "da02b25156d0d625"
   },
   {
    "id": "fb:https://facebook.com/reel/958435193703586",
@@ -158,6 +190,36 @@
    "sumKey": "90e9a101e1d7506a"
   },
   {
+   "id": "fb:https://facebook.com/permalink.php",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/permalink.php",
+   "posted": "2026-11-04",
+   "source": "Colossal Cards and Collectables Victoria",
+   "credit": "Colossal Cards and Collectables Victoria, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "hold": "skip",
+   "sumKey": "41409caca30aaff2"
+  },
+  {
+   "id": "fb:https://facebook.com/GauntletGamesVictoria/posts/pfbid0M5q3dMndyutqZLsGecv2eXQRS4MofCsZ7n7oAE6NdzLYTZfa3PqaSL3m57VibU4Rl",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/GauntletGamesVictoria/posts/pfbid0M5q3dMndyutqZLsGecv2eXQRS4MofCsZ7n7oAE6NdzLYTZfa3PqaSL3m57VibU4Rl",
+   "posted": "2026-11-03",
+   "source": "Gauntlet Games",
+   "credit": "Gauntlet Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Gauntlet Games posts November 2026 event calendar",
+   "sum": "Gauntlet Games has published its November 2026 events calendar, which includes a Riftbound League of Legends tournament alongside events for other games.",
+   "sumBy": "claude",
+   "sumKey": "8c2e89e3b7912d99"
+  },
+  {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0mPqaQbLF8FDG1pwrseTDqZ5t7KBFCNLVfyauyYyTXhqox6uVauJdPnWUfwvqgHfgl",
    "kind": "announcement",
    "url": "https://facebook.com/playriftbound/posts/pfbid0mPqaQbLF8FDG1pwrseTDqZ5t7KBFCNLVfyauyYyTXhqox6uVauJdPnWUfwvqgHfgl",
@@ -179,6 +241,36 @@
      "from": "2026-11-03"
     }
    ]
+  },
+  {
+   "id": "fb:https://facebook.com/RottysCreations/posts/pfbid028rj7cDPpeSMKegfhk2KznHWk9coaSzqR5XTGbh2NGcoSRd2NjcCymQWouB13quGAl",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/RottysCreations/posts/pfbid028rj7cDPpeSMKegfhk2KznHWk9coaSzqR5XTGbh2NGcoSRd2NjcCymQWouB13quGAl",
+   "posted": "2026-11-03",
+   "source": "Rotty's Creations",
+   "credit": "Rotty's Creations, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "hold": "skip",
+   "sumKey": "68c98819a4f0b56f"
+  },
+  {
+   "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1838798774034264",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/groups/1289633928950754/permalink/1838798774034264",
+   "posted": "2026-11-01",
+   "source": "Skyhaven Games",
+   "credit": "Skyhaven Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Skyhaven Games Event Times Being Corrected",
+   "sum": "Skyhaven's Playriftbound event times are an hour off after a wrong time change. Staff are correcting them and holding the start for late players; call 250-477-1519 if you're on the way.",
+   "sumBy": "claude",
+   "sumKey": "9458f3e2b478d897"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0dFwTZvZgHFVB3F9vdKd9S2hDwyo7nBGvfTxfB9v9LME4wNkCU4ke8FYA1x1adiC4l",
@@ -316,6 +408,22 @@
    "sumBy": "claude",
    "sumKey": "0a88749f86f23929",
    "title": "Behind the Riftbound x K/DA Couture Collection artwork"
+  },
+  {
+   "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1833672164546925",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/groups/1289633928950754/permalink/1833672164546925",
+   "posted": "2026-10-27",
+   "source": "Skyhaven Games",
+   "credit": "Skyhaven Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Skyhaven Games Hosts First Radiance Skirmish Nov 15",
+   "sum": "Skyhaven Games is running its first Radiance Skirmish on Sunday, November 15 at 5 PM. Players who want a spot should tell the store so they can be added.",
+   "sumBy": "claude",
+   "sumKey": "981eb57333f4ceb1"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid02nEyhigwrjyUYHD5hoP4tWi9SB9Nt6FDndVf8a694R89RSZH7tMi3CLfWodjNP8s7l",
