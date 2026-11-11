@@ -80,6 +80,24 @@ check("digest (ravi-news, 2026-11-08): tier and reveal pass, local left out, lin
     links: ["https://facebook.com/playriftbound/posts/pfbid0R"] }]);
 });
 
+check("local (plan 2 M9): a store's post by the store's name, standings never read, no words kept", function () {
+  const d = { run: "2026-11-09", posts: [
+    { source: "Skyhaven Games Riftbound (League of Legends) Group", url: "https://facebook.com/groups/1/permalink/2/", posted: "2026-11-09", tier: "local", kind: "announcement", text: "Deck submissions are open." },
+    { source: "Skyhaven Games Riftbound (League of Legends) Group", url: "https://facebook.com/groups/1/permalink/3/", tier: "local", kind: "event", text: "Nexus Night Standings 1st - A B (3-0) 2nd - C D (2-1)" },
+    { source: "Riftbound", url: "https://www.facebook.com/playriftbound/posts/x", kind: "product", text: "official" }] };
+  const l = ff.localFromMuse(d);
+  assert.deepStrictEqual(l, [{ id: "fb:https://facebook.com/groups/1/permalink/2", kind: "local", tier: "local", url: "https://facebook.com/groups/1/permalink/2",
+    posted: "2026-11-09", source: "Skyhaven Games", credit: "Skyhaven Games, on Facebook", text: "Deck submissions are open.", via: ["muse"] }]);
+  assert.strictEqual(ff.storeOf("Colossal Cards and Collectables Victoria"), "Colossal Cards and Collectables Victoria");
+  assert.strictEqual(ff.isStandings("Our first Radiance Skirmish is on the 15th at 5 PM"), false);
+  assert.deepStrictEqual(ff.strip(l), [], "no summary and no hold: not written");
+  l[0].sum = "A summary.";
+  assert.strictEqual(ff.strip(l)[0].text, undefined);
+  assert.deepStrictEqual(ff.readLocal('{"skip": true}'), { skip: true });
+  assert.deepStrictEqual(ff.readLocal('{"title": "A", "summary": "B."}'), { title: "A", sum: "B." });
+  assert.throws(function () { ff.readLocal('{"title": "A"}'); });
+});
+
 check("merge: the same Riot post from both places is one item, newest first", function () {
   const d = ff.itemsFromDiscord([forwarded, plain]);
   const m = ff.itemsFromMuse({ run: "2026-10-10", posts: [{ source: "Riftbound", url: "https://www.facebook.com/playriftbound/posts/pfbid0X",

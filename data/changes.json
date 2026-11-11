@@ -2,9 +2,9 @@
   "note": "Feedback's Planned and Recently shipped (plan 2 M8.7 block 2, Mako 2026-11-07). Kept by hand at every block that ships something a player would notice and at every milestone close-out (records: RULE -- keep the feedback page's Planned and Recently shipped current). Each line is a short title (t, a few words, what the page shows) and its detail (d, a sentence, shown on a tap). page is a RAVI_PAGES id, or app for the whole app. A version field (v) joins each update once testers start.",
   "planned": [
     {
-      "page": "news",
-      "t": "Local stores' news",
-      "d": "Riftbound news from the island's stores, every store alike."
+      "page": "decks",
+      "t": "Likes on public decks",
+      "d": "Like the decks you rate and see what others like."
     },
     {
       "page": "app",
@@ -25,11 +25,6 @@
       "page": "rules",
       "t": "Ask a rules judge",
       "d": "Ask a rules question in plain words and get an answer from Riot's own rules."
-    },
-    {
-      "page": "decks",
-      "t": "Likes on public decks",
-      "d": "Like the decks you rate and see what others like."
     },
     {
       "page": "app",
@@ -66,6 +61,11 @@
     {
       "date": "2026-11-10",
       "items": [
+        {
+          "page": "news",
+          "t": "Local stores' news",
+          "d": "News now has a Local kind: a short summary of what the island's stores post about Riftbound, every store alike, with the way to the post itself."
+        },
         {
           "page": "calendar",
           "t": "Events across the whole island",

@@ -15,9 +15,18 @@
 //    Instagram, YouTube and X, kept word for word and credited to the place
 //    each was posted. One announcement is one entry: its canonical address in
 //    url, every platform's address in links. Each entry carries a tier:
-//    official entries are News; local and community entries are left out
-//    until RAVI has a place for them (plan 2 M9, local stores' news). An
-//    entry without a tier (before 2026-11-08) is official.
+//    official entries are News; community entries are left out. An entry
+//    without a tier (before 2026-11-08) is official.
+//    LOCAL entries (plan 2 M9 block 1, Mako 2026-11-10) are the island's
+//    stores' own posts, every store alike. A store's words are never kept or
+//    shown, only RAVI's short summary and the way to the post: News is a quick
+//    look at whether to go and read it, never a copy of a store's page or
+//    group. So a local post waits until Claude has written its summary (no
+//    first-sentence stand-in), its text is dropped before the file is written,
+//    standings (players' names and placings) are never read at all, and a
+//    post Claude finds is only results or only a schedule (the calendar has
+//    those) is held: kept in the file with hold and no words, so it is not
+//    asked about again.
 //
 // Riot's short links (riot.com/...) are followed one step, as RAVI, to the
 // page they stand for, so a short link on Facebook and the full address on
@@ -230,6 +239,37 @@ function itemsFromMuse(d) {
   });
 }
 
+// A post of standings: players' names with their placings. Never read, never
+// sent anywhere (RAVI ranks no players; the names are not RAVI's to show).
+function isStandings(t) {
+  const places = (String(t || "").match(/\b\d{1,2}(?:st|nd|rd|th)\s*[-:.)]/gi) || []).length;
+  return places >= 4 || (places >= 2 && /standings|results|final placings/i.test(t));
+}
+
+// The store a local entry is from: the digest's source, without the name of
+// its group ("Skyhaven Games Riftbound (League of Legends) Group").
+function storeOf(source) {
+  return String(source || "").replace(/\s+Riftbound\b.*\bGroup\s*$/i, "").replace(/\s+(?:Facebook\s+)?Group\s*$/i, "").replace(/\s+/g, " ").trim();
+}
+
+// Local entries: one item per store post, kind local, the store as its source.
+// text is carried only as far as the summary; strip() drops it before writing.
+function localFromMuse(d) {
+  return d.posts.filter(function (p) { return p.tier === "local" && !isStandings(p.text) && storeOf(p.source); }).map(function (p) {
+    const url = norm(p.url) || p.url, store = storeOf(p.source);
+    return { id: "fb:" + url, kind: "local", tier: "local", url: url, posted: p.posted || d.run, source: store, credit: store + ", on " + placeOf(url), text: p.text, via: ["muse"] };
+  });
+}
+
+// What the file keeps of the local items: no store's words, and none that has
+// neither its summary nor its hold yet (read again next run).
+function strip(items) {
+  return items.filter(function (it) { return it.tier !== "local" || it.sum || it.hold; }).map(function (it) {
+    if (it.tier === "local") { delete it.text; }
+    return it;
+  });
+}
+
 // ---- merging ----
 
 // A Discord link that a Muse post links to, or is, folds into that post.
@@ -415,6 +455,31 @@ const ASK = "You write for RAVI, a free community app for the Riftbound trading 
   "Use only facts in the post; work out relative dates (tomorrow, next week) from its published day. No hashtags, emoji, quotes or hype.";
 const WHAT = ["entries open", "entries close", "drawing", "event", "release", "deadline", "other"];
 
+// A LOCAL STORE'S POST (plan 2 M9 block 1): a short summary in RAVI's own words, or skip.
+const ASK_LOCAL = "You write for RAVI, a free community app for the Riftbound trading card game on Vancouver Island. " +
+  "Below is a post by a local game store, or from its community group. Reply with one JSON object and nothing else: " +
+  "{\"skip\": true} when the post is only results or standings, or only a schedule of dates and times with nothing else a player should know; " +
+  "otherwise {\"title\": a plain headline of at most 8 words that names the store; " +
+  "\"summary\": one or two short, plain sentences, under 40 words, in your own words, saying what a player should know and when}. " +
+  "Never copy the post's sentences. Never name a person: the store is the only name. " +
+  "Use only facts in the post; work out relative dates (tomorrow, next week) from its published day. No hashtags, emoji, quotes or hype.";
+
+function localInput(it) {
+  return "Published: " + (it.posted || "unknown") + "\nStore: " + it.source + "\n\n" + it.text;
+}
+
+// Claude's reply to ASK_LOCAL -> { skip: true } or { title, sum }, or a thrown error
+function readLocal(t) {
+  const a = t.indexOf("{"), b = t.lastIndexOf("}");
+  if (a === -1 || b < a) { throw new Error("no JSON"); }
+  const d = JSON.parse(t.slice(a, b + 1));
+  if (d.skip === true) { return { skip: true }; }
+  const clean = function (x, n) { return typeof x === "string" ? x.replace(/\s+/g, " ").trim().replace(/^["']|["']$/g, "").slice(0, n) : ""; };
+  const title = clean(d.title, 100), sum = clean(d.summary, 300);
+  if (!title || !sum) { throw new Error("no title or summary"); }
+  return { title: title, sum: sum };
+}
+
 // Claude's reply -> { title, sum, dates } or a thrown error
 function readReply(t) {
   const a = t.indexOf("{"), b = t.lastIndexOf("}");
@@ -454,11 +519,12 @@ function readPartial(t) {
   return readReply(JSON.stringify({ title: str("title"), summary: str("summary"), dates: dates }));
 }
 
-async function claudeSum(input, key) {
+async function claudeSum(input, key, system, read) {
+  system = system || ASK; read = read || readReply;
   const res = await fetch(CLAUDE + "/v1/messages", {
     method: "POST",
     headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json", "User-Agent": RB.ua },
-    body: JSON.stringify({ model: MODEL, max_tokens: 1024, system: ASK, messages: [{ role: "user", content: input.slice(0, 12000) }] }),
+    body: JSON.stringify({ model: MODEL, max_tokens: 1024, system: system, messages: [{ role: "user", content: input.slice(0, 12000) }] }),
     signal: AbortSignal.timeout(60000)
   });
   if (res.status !== 200) { throw new Error("HTTP " + res.status); }
@@ -469,14 +535,14 @@ async function claudeSum(input, key) {
   if (d.stop_reason && d.stop_reason !== "end_turn") {
     const all = (d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" ");
     // cut off at the cap: the headline, the summary and the dates that arrived whole are kept
-    if (d.stop_reason === "max_tokens") {
+    if (d.stop_reason === "max_tokens" && read === readReply) {
       try { const part = readPartial(all); console.log("summary cut off at the cap: kept its headline, summary and " + part.dates.length + " dates"); return part; }
       catch (e) { /* not even a whole summary: fall back below */ }
     }
     const began = all.slice(0, 120);
     throw new Error("stopped: " + d.stop_reason + (began ? "; the reply began: " + began : ""));
   }
-  return readReply((d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" "));
+  return read((d.content || []).filter(function (c) { return c.type === "text"; }).map(function (c) { return c.text; }).join(" "));
 }
 
 // Articles and summaries for every item, keeping what an earlier run wrote.
@@ -485,9 +551,26 @@ async function enrich(items, prevItems, key) {
   prevItems.forEach(function (p) { before[p.id] = p; });
   const arts = {};
   prevItems.forEach(function (p) { if (p.art) { arts[p.art.url] = p.art; } });
-  let artBudget = ARTS_PER_RUN, sumBudget = SUMS_PER_RUN, read = 0, wrote = 0, fell = 0;
+  let artBudget = ARTS_PER_RUN, sumBudget = SUMS_PER_RUN, read = 0, wrote = 0, fell = 0, local = 0, held = 0;
   for (const it of items) {
     const was = before[it.id] || {};
+    // a local store's post: Claude's summary or nothing (never the store's own sentence)
+    if (it.tier === "local") {
+      if (!it.text) { continue; }   // not in the digest's last files: it stays as the file has it
+      const lk = sumKey("local\n" + localInput(it));
+      const put = function (from) { ["title", "sum", "sumBy", "hold"].forEach(function (f) { if (from[f] !== undefined) { it[f] = from[f]; } else { delete it[f]; } }); };
+      if (was.sumKey === lk && (was.hold || (was.sum && was.sumBy === "claude"))) { put(was); it.sumKey = lk; continue; }
+      put({}); delete it.sumKey;
+      if (key && sumBudget > 0) {
+        sumBudget--;
+        try {
+          const got = await claudeSum(localInput(it), key, ASK_LOCAL, readLocal);
+          if (got.skip) { put({ hold: "skip" }); held++; } else { put({ title: got.title, sum: got.sum, sumBy: "claude" }); local++; }
+          it.sumKey = lk;
+        } catch (e) { console.log("WARN local summary for " + it.id + " not written: " + e.message + "; tried again next run"); }
+      }
+      continue;
+    }
     const a = articleOf(it);
     if (a && arts[a]) { it.art = arts[a]; }
     else if (a && artBudget > 0) {
@@ -514,7 +597,8 @@ async function enrich(items, prevItems, key) {
     else { keep({ title: it.art ? it.art.title : undefined, sum: firstSentence(it.text || (it.art && (it.art.desc || it.art.title)) || ""), sumBy: "first" }); }
     it.sumKey = k;
   }
-  console.log("articles: " + read + " read; summaries: " + wrote + " by Claude" + (fell ? ", " + fell + " fell back" : "") + (key ? "" : " (no ANTHROPIC_API_KEY: first sentences)"));
+  console.log("articles: " + read + " read; summaries: " + wrote + " by Claude" + (fell ? ", " + fell + " fell back" : "") + (key ? "" : " (no ANTHROPIC_API_KEY: first sentences)") +
+    "; local: " + local + " summed up, " + held + " held");
 }
 const PROD = !process.env.FEED_PR_BASE;
 
@@ -544,7 +628,7 @@ async function readMuse(token) {
     try { d = JSON.parse(Buffer.from(f.content || "", "base64").toString("utf8")); } catch (e) {}
     const bad = d ? checkMuse(d) : "not valid JSON";
     if (bad) { console.log("WARN muse " + name + " skipped: " + bad); warn++; continue; }
-    itemsFromMuse(d).forEach(function (it) { items.push(it); });
+    itemsFromMuse(d).concat(localFromMuse(d)).forEach(function (it) { items.push(it); });
   }
   return { items: items, files: names.length, warn: warn };
 }
@@ -570,8 +654,9 @@ async function main() {
   let prev = null;
   try { prev = JSON.parse(fs.readFileSync(OUT_FILE, "utf8")); } catch (e) {}
   const before = prev ? prev.items : [];
-  const items = foldRepeats(merge(before, fromDiscord.concat(muse.items)));
-  await enrich(items, before, process.env.ANTHROPIC_API_KEY || "");
+  const read = foldRepeats(merge(before, fromDiscord.concat(muse.items)));
+  await enrich(read, before, process.env.ANTHROPIC_API_KEY || "");
+  const items = strip(read);
   const oldIds = before.map(function (i) { return i.id; });
   const fresh = items.filter(function (i) { return oldIds.indexOf(i.id) === -1; });
   const rules = fresh.some(function (i) { return i.kind === "rules"; });
@@ -579,7 +664,7 @@ async function main() {
 
   if (prev && JSON.stringify(prev.items) === JSON.stringify(items)) { console.log("no change; nothing written"); return; }
   const today = TODAY || day(new Date().toISOString());
-  const out = { updated: today, note: "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence).", items: items };
+  const out = { updated: today, note: "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence). kind local: a local store's post, RAVI's summary only, never the store's words; hold: read and left out.", items: items };
   fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
   fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 1) + "\n");
   console.log("wrote " + items.length + " items (" + fresh.length + " new" + (rules ? ", rules among them" : "") + ")");
@@ -593,4 +678,5 @@ if (require.main === module) {
 }
 
 module.exports = { linksOf, norm, isRiot, kindOf, placeOf, DIGEST, shapeOf, discordText, itemsFromDiscord, checkMuse, itemsFromMuse, merge, day, isShort, expand, CHANNEL,
-  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, readReply, readPartial, MODEL };
+  wordsKey, foldRepeats, isArticle, articleOf, isVideo, readArticle, sumInput, sumKey, firstSentence, readReply, readPartial, MODEL,
+  isStandings, storeOf, localFromMuse, strip, readLocal, localInput, ASK_LOCAL };

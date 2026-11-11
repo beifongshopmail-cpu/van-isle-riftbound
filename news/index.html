@@ -206,7 +206,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   <footer class="foot">
     <p id="stamp"></p>
     <p>Market price is a public benchmark, not an offer from any store.</p>
-    <p>News by Riot Games, word for word from Riot's own site and accounts. Each headline and summary is RAVI's, written by Claude.</p>
+    <p>News by Riot Games, word for word from Riot's own site and accounts. Local news is RAVI's summary of the stores' own posts. Each headline and summary is RAVI's, written by Claude.</p>
     <p>
         Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
         Something wrong or missing? <a href="../feedback/">Tell us</a>.
@@ -250,16 +250,19 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     product:      { label: "Product",      rgb: window.RAVI_HUE("tangerine") }, // Collection's orange (2026-11-09)
     announcement: { label: "Announcement", rgb: window.RAVI_HUE("gold") },   // gold (M8.7 A9: Rules took the blue)
     market:       { label: "Market",       rgb: window.RAVI_HUE("slate") },   // Slate
-    reveal:       { label: "Reveal",       rgb: window.RAVI_HUE("mint") }     // Decks' mint: card reveals (the digest, 2026-11-08; as built, not chosen)
+    reveal:       { label: "Reveal",       rgb: window.RAVI_HUE("mint") },    // Decks' mint: card reveals (the digest, 2026-11-08; as built, not chosen)
+    // a local store's post (plan 2 M9 block 1, Mako's yes 2026-11-10): the palette's deep teal, every
+    // store alike; RAVI's short summary and the way to the post, never the store's words
+    local:        { label: "Local",        rgb: window.RAVI_HUE("teal") }
   };
-  var ORDER = ["rules", "event", "product", "reveal", "announcement", "market"];
+  var ORDER = ["rules", "event", "product", "reveal", "announcement", "local", "market"];
   var IV = {
     // the view chips, as Collection's and Decks' (plan 2 M8 round 5): Phosphor's squares-four, bold (MIT), and List
     grid: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM200,36H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,60H160V60h36Zm-96,40H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96Zm104-60H156a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,200,136Zm-4,60H160V160h36Z" fill="currentColor" stroke="none"/></svg>',
     list: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM100,136H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96ZM148,42H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,90H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,142H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,190H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24Z" fill="currentColor" stroke="none"/></svg>'
   };
   // the stand-in's icon: the page the kind belongs with
-  var KICON = { rules: "rules", event: "events", product: "collection", reveal: "decks", announcement: "whatsnew", market: "trade" };
+  var KICON = { rules: "rules", event: "events", product: "collection", reveal: "decks", announcement: "whatsnew", local: "whatsnew", market: "trade" };
   var VIEWK = "vir.news.view.v1", VIEW = "list";
   try{ if(localStorage.getItem(VIEWK) === "grid") VIEW = "grid"; }catch(e){}
   var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
@@ -476,7 +479,8 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     el("snew").hidden = !fresh.length;
     el("olist").innerHTML = rest.map(function(it){ return card(it); }).join("");
     el("ocnt").textContent = rest.length;
-    el("oh").textContent = fresh.length ? "Earlier" : "From Riot";
+    // with a store's post among them the list is no longer Riot's alone (plan 2 M9 block 1)
+    el("oh").textContent = fresh.length ? "Earlier" : rest.some(function(it){ return kindOf(it) === "local"; }) ? "Latest" : "From Riot";
     el("sold").hidden = !rest.length;
     if(!all.length && !pins.length){ el("loadfail").textContent = "No news yet."; el("loadfail").hidden = false; }
   }
@@ -617,20 +621,23 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   // article), then where it came from. Only a video leaves the app, to be watched. ----
   function fill(it){
     var a = it.art, k = KIND[kindOf(it)], h = "", fb = it.id.indexOf("fb:") === 0, at = place(it.url), riot = at === "playriftbound.com";
+    var local = kindOf(it) === "local";
     var m = el("ppost");
     m.style.setProperty("--c", k.rgb); m.style.setProperty("--cl", lit(k.rgb)); m.style.setProperty("--tint", "rgba(" + k.rgb + ",var(--cg))");
     el("pttl").textContent = head(it);
-    h += '<p class="rlab"><span class="mty">' + esc(k.label) + '</span>, ' + esc(dayLong(it.posted)) + '</p>';
+    h += '<p class="rlab"><span class="mty">' + esc(k.label) + '</span>, ' + (local && it.source ? esc(it.source) + ', ' : '') + esc(dayLong(it.posted)) + '</p>';
     if(it.sum) h += '<p class="rlab">RAVI\'s summary</p><p class="nsum sel">' + esc(it.sum) + '</p>';
     if(pic(it)) h += '<img class="npic" src="' + esc(pic(it)) + '" alt="">';
-    if(it.text) h += '<p class="rlab">Riot\'s post</p><div class="rtx sel">' + plain(it.text) + '</div>';
+    if(it.text && !local) h += '<p class="rlab">Riot\'s post</p><div class="rtx sel">' + plain(it.text) + '</div>';
     if(a) h += '<p class="rlab">' + (it.text ? "Riot's article: " + esc(a.title) : "Riot's article") + '</p><div class="rtx sel">' + clean(a.html) + '</div>';
     var ats = [fb ? at : "playriftbound.com"];
     (it.also || []).forEach(function(u){ var p = place(u); if(p && ats.indexOf(p) === -1) ats.push(p); });
-    h += '<p class="rsrc">' + esc("Riot, on " + (ats.length > 2 ? ats.slice(0, -1).join(", ") + " and " + ats[ats.length - 1] : ats.join(" and "))) + '.' + (a && fb && !riot ? ' The article is from playriftbound.com.' : '') + '</p>';
+    // a local store's post: RAVI's summary, the store by name, and the way to the post itself
+    if(local) h += '<p class="rsrc">' + esc((it.source || "A local store") + (at ? ", on " + at : "")) + '.</p>';
+    else h += '<p class="rsrc">' + esc("Riot, on " + (ats.length > 2 ? ats.slice(0, -1).join(", ") + " and " + ats[ats.length - 1] : ats.join(" and "))) + '.' + (a && fb && !riot ? ' The article is from playriftbound.com.' : '') + '</p>';
     // the one way out: a video to watch, or a reveal whose card is in the picture Riot posted
     // (the digest, 2026-11-08: a reveal is its picture, which RAVI does not copy)
-    if(web(it.url) && !riot && (it.video || kindOf(it) === "reveal")){
+    if(web(it.url) && !riot && (it.video || local || kindOf(it) === "reveal")){
       h += '<a class="pact btn glass nwatch" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do">' + (it.video ? "Watch on " : "See it on ") + esc(at) + ' ' + OUT + '</a>';
     }
     el("pbody").innerHTML = h;

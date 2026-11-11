@@ -212,6 +212,7 @@ window.RAVI_HUES = {
   gold: "251,213,48", garnet: "249,53,52", violet: "153,100,229", tangerine: "255,145,39",
   jade: "113,202,93", mint: "67,248,242", rust: "172,19,119", sky: "63,175,243",
   lime: "105,116,3", orchid: "250,144,248", lilac: "21,77,233",
+  teal: "28,110,128",   // deep teal, the palette's spare until News' Local took it (plan 2 M9, Mako's yes 2026-11-10)
   slate: "134,143,162", ice: "205,220,240", stone: "90,96,106", white: "240,240,245",
   // Riftbound's six domains (one copy: Decks, the deck image and the Tracker's runes read RAVI_RUNE)
   body: "255,145,39", calm: "113,202,93", chaos: "153,100,229", fury: "249,53,52", mind: "63,175,243", order: "251,213,48"
