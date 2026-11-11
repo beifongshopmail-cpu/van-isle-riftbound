@@ -196,6 +196,10 @@ a{color:inherit;text-decoration:none}
    aria-label. [hidden] is restated so it beats display:flex. */
 .evact{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
 .evact .evinfo{display:flex;flex-direction:column;align-items:stretch;gap:10px}
+/* the store's name, a compact pill to its page on Stores (plan 2 M9 block 4) */
+.evact .evstore{display:inline-flex;align-items:center;gap:4px;max-width:100%;height:var(--sz-sm);padding:0 10px 0 14px;margin:0 0 10px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone)}
+.evact .evstore span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evact .evstore .cvr{flex:0 0 auto;width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .evact .evaddr{flex:1;min-width:0;font-size:13px;line-height:1.4;color:var(--bone)}
 .evact .evaddr .evend{display:block;font-size:12px;color:var(--muted);margin-top:2px}
 .evact .evbtns{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
@@ -903,6 +907,16 @@ a{color:inherit;text-decoration:none}
       act.className = "evact";
       act.setAttribute("data-k", "do");
       act.hidden = true;
+      // the store, by name: a compact pill to its page on Stores (plan 2 M9 block 4)
+      if (!ev.sim && ev.sid !== null && ev.sid !== undefined && ev.venue){
+        var sl = document.createElement("a");
+        sl.className = "evstore btn glass";
+        sl.href = "../stores/?s=" + encodeURIComponent(String(ev.sid));
+        sl.setAttribute("aria-label", ev.venue + ", on Stores");
+        var sn = document.createElement("span"); sn.textContent = ev.venue; sl.appendChild(sn);
+        sl.insertAdjacentHTML("beforeend", '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>');
+        act.appendChild(sl);
+      }
       var street = streetOf(ev), ends = endOf(ev);
       var info = document.createElement("div");
       info.className = "evinfo";
@@ -1806,6 +1820,12 @@ a{color:inherit;text-decoration:none}
     var first = visible()[0];
     if (first){ var p = parseKey(first.day); cursor = {y:p.y, m:p.m}; }
     else { var d = new Date(); cursor = {y:d.getFullYear(), m:d.getMonth()}; }
+    // a day another page sent (the Stores page's Next events, plan 2 M9 block 4): ?day=YYYY-MM-DD
+    // opens the month on that day, chosen, as a tap on it would
+    try{
+      var wantDay = new URLSearchParams(location.search).get("day");
+      if (wantDay && /^\d{4}-\d\d-\d\d$/.test(wantDay) && wantDay >= todayKey()){ var wp = parseKey(wantDay); cursor = {y:wp.y, m:wp.m}; selected = wantDay; }
+    }catch(e){}
     renderMonth(); renderList(); renderTowns(); renderTypes(); renderStores(); renderSub(); renderStamp();
     requestAnimationFrame(measure);
     liveScan();

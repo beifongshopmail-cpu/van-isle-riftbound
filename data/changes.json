@@ -38,16 +38,21 @@
     },
     {
       "page": "app",
-      "t": "A Stores page",
-      "d": "Each store's address, hours and next events, every store alike."
-    },
-    {
-      "page": "app",
       "t": "Privacy and terms",
       "d": "One plain page on what RAVI keeps and the terms of using it."
     }
   ],
   "shipped": [
+    {
+      "date": "2026-11-11",
+      "items": [
+        {
+          "page": "stores",
+          "t": "The Stores page",
+          "d": "Every island store that runs Riftbound, each alike, by town: where it is with directions, its next events, and its latest posts from News. Tap a store's name on Events or Store details on a Local post to get there."
+        }
+      ]
+    },
     {
       "date": "2026-11-10",
       "items": [

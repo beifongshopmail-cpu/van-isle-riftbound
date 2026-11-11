@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="Every store on Vancouver Island that runs Riftbound: where it is and its next events.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Stores - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<script src="../account.js"></script>
+<style>
+/* The Stores page (plan 2 M9 block 4, Mako's yes to the design 2026-11-11). Every store on the
+   island that runs Riftbound, each alike (STYLE 1, store neutrality): grouped by town, towns and
+   stores A to Z, every row the same shape, no store first and none marked. A front end only:
+   data/stores.json (fetch-events.js, every store that has had an event), data/events.json (its
+   next events), data/feed.json (its posts on News, RAVI's summary only), data/store-info.json
+   (hours, phone and website, by hand from each store's own listing). Prior art, patterns only:
+   Wizards' store locator (a store's address, phone, website and coming events). The shared layer
+   is app.css; this block holds only the page's own rules. */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;
+  /* THIS DOES NOT STOP DOUBLE-TAP ZOOM. The touchend guard at the end of
+     the page is the fix. */
+  touch-action:manipulation}
+#str{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+/* A TOWN: its name and how many stores, then one press group of its stores */
+.town{margin-top:22px}
+.town:first-child{margin-top:14px}
+/* a store's row: its name, and under it whether it is open (once its hours are known) and its
+   next event, in words */
+.smid{flex:1;min-width:0;width:100%;display:flex;flex-direction:column;gap:2px;text-align:left} /* full width in the column row, so a long name or line ends in an ellipsis rather than spilling past the chevron */
+.smid .t{display:block;white-space:normal} /* a store's name in full, on two lines when long: a name is never cut */
+.snx{display:block;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.empty{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
+.foot a{color:var(--bone)}
+/* THE STORE'S MENU: where it is, its hours, how to reach it, its next events, its posts */
+.sadr{margin:0 2px 10px;font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
+.snow{margin:0 2px 8px;font-size:15px;line-height:1.4}
+.snow b{font-family:var(--disp);font-weight:700}
+.hrs{border-radius:22px;margin:0}
+.hk{display:flex;align-items:baseline;gap:12px;margin:0;padding:9px 16px}
+.hk + .hk{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
+.hk dt{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--muted)}
+.hk dd{flex:1;min-width:0;margin:0;font-size:15px;text-align:right}
+.hk.now dt,.hk.now dd{color:var(--bone);font-family:var(--disp);font-weight:700}
+.door.rec .chev{position:absolute;right:16px;top:calc(50% - 8px);color:var(--muted)}
+.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
+.rul{white-space:normal}
+.rul .t{white-space:normal;overflow:visible}
+.rbody{padding:2px 16px 14px}
+.rtx{font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
+.rlab{margin:8px 0 0;font-size:12px;font-weight:600;color:var(--muted)}
+/* AREAS, the Events page's own pick-many rows and its saved choice (STYLE 3, pick-many) */
+.tyrow .lab{flex:1;text-align:left}
+.tyrow .n{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.tyrow .box{width:18px;height:18px;flex:0 0 auto;display:flex}
+.tyrow .box svg{width:18px;height:18px;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.tyrow[aria-pressed="false"] .lab{color:var(--muted)}
+.tyrow[aria-pressed="false"] .box svg{visibility:hidden}
+</style>
+</head>
+<body>
+
+<div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
+
+<main id="str">
+  <h2 class="sr">Stores</h2>
+
+  <div id="boot"></div>
+  <script>document.getElementById("boot").innerHTML = RAVI_SKEL(["head", "rows:3", "head", "rows:5"]);</script>
+
+  <div id="towns" hidden></div>
+  <div id="none" hidden><p class="empty">No stores in your areas.</p><button type="button" class="pact btn glass" data-act="allareas" data-k="do">Show every area</button></div>
+  <p class="empty" id="loadfail" hidden>The stores could not be loaded. Check your connection and open the page again.</p>
+
+  <footer class="foot">
+    <p>Every store that runs Riftbound events on the island, listed alike, A to Z.</p>
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
+  </footer>
+</main>
+
+<!-- THE STANDARD BAR: Hub, Go to, the third slot unused for now (dimmed), Settings. -->
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"stores"},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["id", "tabset"], ["aria-label", "Stores settings"], ["data-fills", "pset"], ["data-k", "slot"]]}
+]);</script>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+
+<section class="panel frost" id="pset" aria-hidden="true" aria-label="Stores settings">
+  <div class="phead"><div class="ht"><h4 class="ttl">Stores settings</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody"><div class="row"><p class="lb">Areas</p><div class="pick" id="twlist" data-k="pick"></div></div></div>
+</section>
+
+<!-- ONE STORE: its name, then where it is, its hours, its next events, its posts; Follow in the foot -->
+<section class="panel frost" id="pstore" aria-hidden="true" aria-label="Store">
+  <div class="phead"><div class="ht"><h4 class="ttl" id="sname">Store</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button></div>
+  <div class="pbody" id="sbody"></div>
+  <div class="pfoot" id="sfoot"></div>
+</section>
+
+<script>
+(function(){
+  var FKEY = "vir.cal.filters.v1";
+  var STORES = [], EVENTS = [], POSTS = [], INFO = {}, OFF = {};
+  var DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"], DAYNAME = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // the event types' names, as every event card says them (STYLE 4)
+  var TYPE = { nexus: "Nexus Nights", skirmish: "Summoner Skirmish", learn: "Learn-to-Play", open: "Open Play", prerift: "Pre-Rift", other: "Event" };
+  var IS_APPLE = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  var CVR = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+  var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>';
+  var OUT = '<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h9v9M18 6 7 17"/></svg>';
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function townKey(s){ return String(s.city || "").trim().toLowerCase(); }
+  function norm(s){ return String(s || "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim(); }
+
+  // ---- island time: today's day key, weekday and minutes, whatever the phone's own zone ----
+  function nowIsland(){
+    var p = {}, f = new Intl.DateTimeFormat("en-US", { timeZone: "America/Vancouver", hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", weekday: "short" });
+    f.formatToParts(new Date()).forEach(function(x){ p[x.type] = x.value; });
+    return { day: p.year + "-" + p.month + "-" + p.day, dow: DOW.indexOf(p.weekday), min: (+p.hour % 24) * 60 + +p.minute };
+  }
+  function addDays(day, n){ var d = new Date(day + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function clock(hm){ var m = /^(\d{1,2}):(\d\d)$/.exec(hm || ""); if(!m) return ""; var h = +m[1], ap = h >= 12 ? "PM" : "AM"; return window.RAVI_TIME(((h + 11) % 12 + 1) + ":" + m[2] + " " + ap).replace(":00", ""); }
+  function mins(hm){ var m = /^(\d{1,2}):(\d\d)$/.exec(hm || ""); return m ? +m[1] * 60 + +m[2] : -1; }
+
+  // ---- AREAS: the Events page's own saved choice (vir.cal.filters.v1, towns: the ones off), so
+  // an area is set once for both pages; the other filters in the key are carried untouched ----
+  function loadOff(){
+    OFF = {};
+    try{ var o = JSON.parse(localStorage.getItem(FKEY) || "null"); if(o && Array.isArray(o.towns)) o.towns.forEach(function(t){ if(typeof t === "string") OFF[t] = true; }); }catch(e){}
+  }
+  function saveOff(){
+    try{
+      var o = JSON.parse(localStorage.getItem(FKEY) || "null"); if(!o || typeof o !== "object") o = {};
+      o.towns = Object.keys(OFF).filter(function(k){ return OFF[k]; });
+      localStorage.setItem(FKEY, JSON.stringify(o));
+    }catch(e){}
+  }
+
+  // ---- what a store has: its coming events, soonest first; its posts on News, newest first ----
+  function eventsOf(s){
+    var t = nowIsland().day;
+    return EVENTS.filter(function(e){ return !e.sim && String(e.sid) === s.sid && e.day >= t; }).sort(function(a, b){ return a.start < b.start ? -1 : a.start > b.start ? 1 : 0; });
+  }
+  // a post is the store's when its source is the store's name, alone (and no other store shares
+  // the name) or with its town; as News keeps a local post: a week, or until the day it is about
+  function postsOf(s){
+    var a = norm(s.name), twins = STORES.filter(function(x){ return norm(x.name) === a; }).length, t = nowIsland().day;
+    return POSTS.filter(function(p){
+      var n = norm(p.source);
+      if(!(n === a + " " + norm(s.city) || (n === a && twins === 1))) return false;
+      return (typeof p.until === "string" && p.until >= t) || (typeof p.posted === "string" && p.posted >= addDays(t, -7));
+    });
+  }
+  function whenOf(e){
+    var t = nowIsland().day, d = e.day === t ? "Today" : e.day === addDays(t, 1) ? "Tomorrow" : DOW[new Date(e.day + "T12:00:00Z").getUTCDay()] + " " + window.RAVI_DATE(e.day, true);
+    return d + (e.time ? ", " + window.RAVI_TIME(e.time) : "");
+  }
+  // OPEN OR CLOSED, in words, from the store's hours (store-info.json), or "" when RAVI has none
+  function spans(info, dow){ var h = info && info.hours && info.hours[DAYS[dow]]; return Array.isArray(h) ? h.filter(function(x){ return Array.isArray(x) && mins(x[0]) > -1 && mins(x[1]) > -1; }) : null; }
+  function stateOf(info){
+    if(!info || !info.hours) return "";
+    var n = nowIsland(), i, sp = spans(info, n.dow) || [], j, d, s;
+    for(i = 0; i < sp.length; i++){ if(n.min >= mins(sp[i][0]) && n.min < mins(sp[i][1])) return "Open, closes " + clock(sp[i][1]); }
+    for(i = 0; i < sp.length; i++){ if(n.min < mins(sp[i][0])) return "Closed, opens " + clock(sp[i][0]); }
+    for(j = 1; j <= 7; j++){ d = (n.dow + j) % 7; s = spans(info, d); if(s && s.length) return "Closed, opens " + (j === 1 ? "tomorrow" : DOW[d]) + " " + clock(s[0][0]); }
+    return "";
+  }
+  function street(s){
+    var p = String(s.address || "").replace(/,\s*(Canada|CA)\s*$/i, "").split(/\s*,\s*/).filter(Boolean);
+    return p.join(", ").replace(/([A-Z]\d[A-Z]) (\d[A-Z]\d)/, "$1\u00a0$2");
+  }
+  function maps(s){
+    var q = encodeURIComponent([s.name, street(s) || s.city].filter(Boolean).join(", "));
+    return IS_APPLE ? "https://maps.apple.com/?q=" + q : "https://www.google.com/maps/search/?api=1&query=" + q;
+  }
+
+  // ---- THE LIST: towns A to Z, each town's stores A to Z, every row the same shape ----
+  function render(){
+    var by = {}, names = {}, h = "", shown = 0;
+    STORES.forEach(function(s){ var k = townKey(s); if(!k || OFF[k]) return; (by[k] = by[k] || []).push(s); names[k] = s.city; shown++; });
+    Object.keys(by).sort().forEach(function(k){
+      h += '<section class="town"><div class="shead"><h2>' + esc(names[k]) + '</h2><span class="sp"></span><span class="cnt">' + by[k].length + '</span></div><div class="doors" data-k="deeper">';
+      by[k].forEach(function(s){
+        var ev = eventsOf(s)[0], st = stateOf(INFO[s.sid]), line = [];
+        if(st) line.push(st);
+        line.push(ev ? (TYPE[ev.type] || TYPE.other) + ", " + whenOf(ev) : "No events listed");
+        h += '<button type="button" class="door rec" data-act="store" data-sid="' + esc(s.sid) + '"><span class="smid"><span class="t">' + esc(s.name) + '</span><span class="snx">' + esc(line.join(". ")) + '</span></span>' + CVR + '</button>';
+      });
+      h += '</div></section>';
+    });
+    el("towns").innerHTML = h;
+    el("towns").hidden = !shown;
+    el("none").hidden = !!shown || !STORES.length;
+  }
+  function renderAreas(){
+    var n = {}, names = {}, h = "";
+    STORES.forEach(function(s){ var k = townKey(s); if(!k) return; n[k] = (n[k] || 0) + 1; names[k] = s.city; });
+    Object.keys(names).sort().forEach(function(k){
+      h += '<button type="button" class="tyrow" data-town="' + esc(k) + '" aria-pressed="' + (OFF[k] ? "false" : "true") + '"><span class="lab">' + esc(names[k]) + '</span><span class="n mono">' + n[k] + '</span><span class="box"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span></button>';
+    });
+    el("twlist").innerHTML = h;
+  }
+
+  // ---- ONE STORE ----
+  var CUR = null;
+  function fillStore(s){
+    var info = INFO[s.sid] || null, h = "", ad = street(s), evs = eventsOf(s), posts = postsOf(s), n = nowIsland(), st = stateOf(info), i, sp, rows = "";
+    el("sname").textContent = s.name;
+    h += '<div class="row"><p class="lb">Where</p>' + (ad ? '<p class="sadr sel">' + esc(ad) + '</p>' : '<p class="sadr">' + esc(s.city) + '</p>')
+      + '<a class="pact btn glass" href="' + esc(maps(s)) + '" target="_blank" rel="noopener" data-k="do">Directions ' + OUT + '</a></div>';
+    if(info && info.hours){
+      for(i = 0; i < 7; i++){
+        var d = (n.dow + i) % 7; sp = spans(info, d);
+        rows += '<div class="hk' + (i === 0 ? " now" : "") + '"><dt>' + (i === 0 ? "Today" : DAYNAME[d]) + '</dt><dd>' + (sp === null ? "Not listed" : sp.length ? sp.map(function(x){ return clock(x[0]) + " to " + clock(x[1]); }).join(", ") : "Closed") + '</dd></div>';
+      }
+      h += '<div class="row"><p class="lb">Hours</p>' + (st ? '<p class="snow"><b>' + esc(st) + '</b></p>' : '') + '<dl class="hrs glass">' + rows + '</dl>'
+        + (info.checked ? '<p class="pnote">Hours checked ' + esc(window.RAVI_DATE(info.checked)) + '. Holidays can differ.</p>' : '') + '</div>';
+    }
+    if(info && (info.phone || info.web)){
+      h += '<div class="row"><p class="lb">Contact</p><div class="doors" data-k="do">';
+      if(info.phone) h += '<a class="door act" href="tel:' + esc(String(info.phone).replace(/[^0-9+]/g, "")) + '"><span class="t">Call</span><span class="sp"></span><small>' + esc(info.phone) + '</small></a>';
+      if(info.web && /^https:\/\//.test(info.web)) h += '<a class="door act" href="' + esc(info.web) + '" target="_blank" rel="noopener"><span class="t">Website</span><span class="sp"></span><small>' + esc(info.web.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")) + '</small></a>';
+      h += '</div></div>';
+    }
+    h += '<div class="row"><p class="lb">Next events</p>';
+    if(evs.length){
+      h += '<div class="doors" data-k="deeper">';
+      evs.slice(0, 6).forEach(function(e){
+        h += '<a class="door rec" href="../calendar/?day=' + esc(e.day) + '"><span class="smid"><span class="t">' + esc(TYPE[e.type] || TYPE.other) + '</span><span class="snx">' + esc(whenOf(e)) + '</span></span>' + CVR + '</a>';
+      });
+      h += '</div>';
+      if(evs.length > 6) h += '<p class="pnote">' + (evs.length - 6) + ' more on Events.</p>';
+    } else h += '<p class="pnote">No events listed.</p>';
+    h += '</div>';
+    if(posts.length){
+      h += '<div class="row"><p class="lb">Lately</p><div class="doors" id="lately">';
+      posts.slice(0, 3).forEach(function(p){
+        var t = String(p.title || "").replace(new RegExp("^" + s.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*:\\s*", "i"), "");
+        h += '<button type="button" class="door rec rul" data-act="post" aria-expanded="false" data-k="open"><span class="t">' + esc(t) + '</span>' + CHEV + '</button><div class="rbody" hidden><p class="rtx sel">' + esc(p.sum || "") + '</p><p class="rlab">RAVI\'s summary of the store\'s post, ' + esc(window.RAVI_DATE(p.posted)) + '</p></div>';
+      });
+      h += '</div></div>';
+    }
+    el("sbody").innerHTML = h;
+    var base = "webcal://" + new URL("../data/store/", location.href).href.replace(/^https?:\/\//, "");
+    el("sfoot").innerHTML = '<a class="pact btn glass" href="' + esc(base + String(s.sid).replace(/[^A-Za-z0-9_-]/g, "") + ".ics") + '" data-k="do">Follow its events</a>';
+  }
+  function openStore(sid){
+    var s = STORES.filter(function(x){ return x.sid === String(sid); })[0]; if(!s) return false;
+    CUR = s; fillStore(s); set(el("pstore")); return true;
+  }
+
+  // ---- menus: one at a time ----
+  var OPENP = null;
+  function set(p){
+    if(OPENP && OPENP !== p){ OPENP.classList.remove("show"); OPENP.setAttribute("aria-hidden", "true"); }
+    OPENP = p || null;
+    if(p){
+      document.documentElement.classList.add("lock");
+      p.classList.add("show"); p.setAttribute("aria-hidden", "false");
+      var b = p.querySelector(".pbody"); if(b) b.scrollTop = 0;
+      el("scrim").classList.add("show");
+    } else { document.documentElement.classList.remove("lock"); el("scrim").classList.remove("show"); }
+    window.RAVI_EDGES && window.RAVI_EDGES();
+  }
+  document.addEventListener("click", function(ev){
+    var t = ev.target.closest("[data-act],[data-close],.tyrow"); if(!t) return;
+    if(t.hasAttribute("data-close")){ set(null); return; }
+    if(t.classList.contains("tyrow")){
+      var k = t.getAttribute("data-town"); OFF[k] = !OFF[k]; if(!OFF[k]) delete OFF[k];
+      t.setAttribute("aria-pressed", OFF[k] ? "false" : "true"); saveOff(); render(); return;
+    }
+    var a = t.getAttribute("data-act");
+    if(a === "store"){ openStore(t.getAttribute("data-sid")); return; }
+    if(a === "allareas"){ OFF = {}; saveOff(); renderAreas(); render(); return; }
+    if(a === "post"){
+      var body = t.nextElementSibling, on = t.getAttribute("aria-expanded") !== "true";
+      t.setAttribute("aria-expanded", on ? "true" : "false"); body.hidden = !on;
+      if(on){ body.classList.remove("reveal"); void body.offsetWidth; body.classList.add("reveal"); }
+      return;
+    }
+  });
+  el("scrim").addEventListener("click", function(){ set(null); });
+  el("tabset").addEventListener("click", function(){ if(OPENP === el("pset")) set(null); else { renderAreas(); set(el("pset")); } });
+  el("tabnav").addEventListener("click", function(){ set(OPENP === el("pnav") ? null : el("pnav")); });
+  window.RAVI_GOTO(el("pnavgoto"), "stores", "../");
+  el("pnhere").addEventListener("click", function(){ set(null); });
+
+  // ---- boot: the stores, then their events, hours and posts (each optional) ----
+  function get(u){ return fetch(u, { cache: "no-cache" }).then(function(r){ if(!r.ok) throw new Error("http " + r.status); return r.json(); }); }
+  loadOff();
+  get("../data/stores.json").then(function(S){
+    STORES = (S.stores || []).filter(function(s){ return s && s.sid != null && s.name; }).map(function(s){ s.sid = String(s.sid); return s; })
+      .sort(function(a, b){ return String(a.city).localeCompare(String(b.city)) || a.name.localeCompare(b.name); });
+    el("boot").remove();
+    render();
+    // a store another page sent: ?s=<its id>
+    var m = /[?&]s=([^&]{1,80})/.exec(location.search), want = "";
+    try{ if(m) want = decodeURIComponent(m[1]); }catch(e){}
+    function again(){ render(); if(CUR && OPENP === el("pstore")){ var y = el("sbody").scrollTop; fillStore(CUR); el("sbody").scrollTop = y; } }
+    if(want && openStore(want)){ try{ history.replaceState(null, "", location.pathname); }catch(e){} }
+    get("../data/events.json").then(function(E){ EVENTS = E.events || []; again(); }).catch(function(){});
+    get("../data/store-info.json").then(function(I){ INFO = (I && I.stores) || {}; again(); }).catch(function(){});
+    get("../data/feed.json").then(function(F){ POSTS = (F.items || []).filter(function(p){ return p && p.kind === "local" && p.source && p.title && p.sum; }).sort(function(a, b){ return String(b.posted).localeCompare(String(a.posted)); }); again(); }).catch(function(){});
+  }).catch(function(){ el("boot").remove(); el("loadfail").hidden = false; });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap still starts the timer, so a quick tap on words after a control
+  // (a menu opened by its row) is held off too.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early; pages.js holds off page pinch-zoom
+  // (2026-11-02). Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    // A control's tap goes through at once, but starts the timer: a quick second tap on a menu's
+    // words or a gap after tapping the row that opened it is still a double-tap to iPhone
+    // (plan 2 M8 close-out, Mako 2026-11-04: tap-to-zoom in menus).
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+      return;
+    }
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>

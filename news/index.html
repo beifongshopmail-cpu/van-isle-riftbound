@@ -658,6 +658,17 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
 
   // ---- A POST'S MENU: RAVI's summary, then Riot's own words (the Facebook post, then its
   // article), then where it came from. Only a video leaves the app, to be watched. ----
+  // the island's stores by name (data/stores.json), so a Local post can lead to its store
+  var STORE_LIST = [];
+  function snorm(x){ return String(x || "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim(); }
+  // the store a source names: its name with its town, or its name alone when no other store shares it
+  function storeOf(src){
+    var n = snorm(src), hit = STORE_LIST.filter(function(x){ var a = snorm(x.name); return n === a + " " + snorm(x.city) || (n === a && STORE_LIST.filter(function(y){ return snorm(y.name) === a; }).length === 1); });
+    return hit.length === 1 ? String(hit[0].sid) : "";
+  }
+  fetch("../data/stores.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(S){
+    STORE_LIST = (S.stores || []).filter(function(x){ return x && x.sid != null && x.name; });
+  }).catch(function(){});
   function fill(it){
     var a = it.art, k = KIND[kindOf(it)], h = "", fb = it.id.indexOf("fb:") === 0, at = place(it.url), riot = at === "playriftbound.com";
     var local = kindOf(it) === "local";
@@ -674,6 +685,8 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
     // a local store's post: RAVI's summary, the store by name, and the way to the post itself
     if(local) h += '<p class="rsrc">' + esc((it.source || "A local store") + (at ? ", on " + at : "")) + '.</p>';
     else h += '<p class="rsrc">' + esc("Riot, on " + (ats.length > 2 ? ats.slice(0, -1).join(", ") + " and " + ats[ats.length - 1] : ats.join(" and "))) + '.' + (a && fb && !riot ? ' The article is from playriftbound.com.' : '') + '</p>';
+    // a local store's post names its store: the way to that store on Stores (plan 2 M9 block 4)
+    if(local && it.source && storeOf(it.source)) h += '<a class="pact btn glass nstore" href="../stores/?s=' + encodeURIComponent(storeOf(it.source)) + '" data-k="do">Store details</a>';
     // the one way out: a video to watch, or a reveal whose card is in the picture Riot posted
     // (the digest, 2026-11-08: a reveal is its picture, which RAVI does not copy)
     if(web(it.url) && !riot && (it.video || local || kindOf(it) === "reveal")){

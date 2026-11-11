@@ -46,6 +46,7 @@ const OUT_FILE = path.join(OUT_DIR, "events.json");
 const PAST_FILE = path.join(OUT_DIR, "past.json");
 const SCHED_FILE = path.join(OUT_DIR, "sched.json");
 const NOTICE_FILE = path.join(OUT_DIR, "notices.json");
+const STORES_FILE = path.join(OUT_DIR, "stores.json");
 const PAST_DAYS = 30;
 const PAST_MAX = 400;
 const PAGE_SIZE = 100;
@@ -709,6 +710,31 @@ function pastShape(ev) {
   for (const k of PAST_FIELDS) if (ev[k] !== undefined && ev[k] !== null) o[k] = ev[k];
   return o;
 }
+// THE STORE LIST (plan 2 M9 block 4, the Stores page): every store that has had an event on
+// RAVI, one entry a store, kept across runs so a store with a quiet month stays listed. prev
+// is the last stores.json or null; a store not seen for STORE_KEEP_DAYS drops off. Sorted by
+// town, then name, so no store is put first by anything but the alphabet.
+const STORE_KEEP_DAYS = 120;
+function buildStores(prev, events, today) {
+  const by = new Map();
+  for (const s of (prev && Array.isArray(prev.stores) ? prev.stores : [])) {
+    if (!s || s.sid === null || s.sid === undefined || typeof s.name !== "string" || !isDay(s.seen)) continue;
+    if (daysBetween(s.seen, today) > STORE_KEEP_DAYS) continue;
+    by.set(String(s.sid), { sid: String(s.sid), name: s.name, short: typeof s.short === "string" ? s.short : s.name,
+      city: typeof s.city === "string" ? s.city : "", address: typeof s.address === "string" ? s.address : "", seen: s.seen });
+  }
+  for (const ev of events || []) {
+    if (!ev || ev.sim || ev.sid === null || ev.sid === undefined || !ev.venue) continue;
+    const k = String(ev.sid), old = by.get(k);
+    by.set(k, { sid: k, name: String(ev.venue), short: String(ev.store || ev.venue), city: String(ev.city || ""),
+      address: String(ev.address || "") || (old ? old.address : ""), seen: today });
+  }
+  const stores = Array.from(by.values()).sort(function (a, b) {
+    return a.city.localeCompare(b.city) || a.name.localeCompare(b.name) || a.sid.localeCompare(b.sid);
+  });
+  return { v: 1, updated: today, stores: stores };
+}
+
 function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch (err) { return null; }
 }
@@ -856,6 +882,9 @@ async function main() {
   const prevNotices = readJson(NOTICE_FILE);
   const notices = buildNotices(prevNotices, events, todayK);
   fs.writeFileSync(NOTICE_FILE, JSON.stringify(notices, null, 1) + "\n", "utf8");
+  const storeList = buildStores(readJson(STORES_FILE), events, todayK);
+  fs.writeFileSync(STORES_FILE, JSON.stringify(storeList, null, 1) + "\n", "utf8");
+  console.log(`wrote stores.json (${storeList.stores.length} stores)`);
   console.log(`notices: ${notices.items.length} kept, ${notices.items.length - (prevNotices && Array.isArray(prevNotices.items) ? prevNotices.items.filter(function (x) { return notices.items.some(function (y) { return y.id === x.id; }); }).length : 0)} new`);
   console.log(`wrote past.json (${past.length} finished events)`);
 
@@ -906,4 +935,4 @@ function recentCounts(prev, n, now) {
   return Object.keys(by).sort().map(function (d) { return { d: d, n: by[d] }; });
 }
 
-module.exports = { recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest, otherTowns, buildNotices };
+module.exports = { buildStores, STORE_KEEP_DAYS, recentCounts, shapeRb, oldWinter, learnSched, guessTime, guessAll, usualOf, shape, noteUnknown, priorUnique, shapeRb, rbUrl, rbHeaders, eventKey, buildPast, PAST_DAYS, configOf, withConfig, storeEvents, storeTime, carryStore, storeNorm, storeSid, readDigest, otherTowns, buildNotices };

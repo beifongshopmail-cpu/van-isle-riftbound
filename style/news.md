@@ -15,3 +15,4 @@ Read with STYLE.md (the core) before touching this page. A class this page defin
 Page-local classes (not in app.css; not Kit parts):
 - news/index.html: .box .dvrow .dvseg .dvsort .empty .extl .hit .ico17 .kempty .lab .mty .mv .nc .ncb .new .ngpic .ngrid .nph .ntile .wkbox .wksep .nh .nl1 .nnow .npic .ns .nsum .nt .nthumb .nwatch .n .plate .rlab .rsrc .rtx .srow .ty .tyrow .when .wkact .wkl
 - .nboot (plan 2 M8.7 motion trial, 2026-11-08): holds News' loading blocks (pages.js RAVI_SKEL) between the plate and This week while data/feed.json comes, removed once it has (or failed); in this phone's view (grid tiles or list cards).
+- news/index.html, plan 2 M9 block 4 (Stores): .nstore (Store details, a .pact link in a Local post's menu to that store on Stores, shown when the post's source names one store in data/stores.json)
