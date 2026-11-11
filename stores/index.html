@@ -56,6 +56,11 @@ body{-webkit-font-smoothing:antialiased;
 .sev{display:flex;align-items:center;gap:6px;max-width:100%;min-width:0;font-size:12px}
 .sev b{flex:0 0 auto;font-family:var(--disp);font-weight:700;color:rgb(var(--ml))}
 .mk{width:10px;height:10px;flex:0 0 auto;display:block;color:rgb(var(--ml))}
+/* the next event says it is the next one: 'Next:' and when, in grey, over its type's mark and name
+   (a type's name is never cut, so it keeps a line of its own) */
+.snext{display:flex;flex-direction:column;align-items:flex-start;gap:3px;max-width:100%;min-width:0}
+/* in a tile the next event is the card's second section, under a line across it (STYLE 3, Lists) */
+.stg .snext{align-self:stretch;margin:3px 4px 0;padding-top:8px;border-top:1px solid rgba(255,255,255,.07)}
 .mk svg{display:block;width:100%;height:100%}
 /* GRID (the default): two across, each store a tile, the stand-in on top (2:1, corner 14 inside the
    card's 22 and 8), the town, the name, the next event and when on its own line */
@@ -65,7 +70,7 @@ body{-webkit-font-smoothing:antialiased;
 .stg{display:flex;flex-direction:column;gap:5px;width:100%;padding:8px 8px 12px;border-radius:22px;text-align:left;color:var(--bone);font:inherit}
 .stg .sic{width:100%;height:auto;aspect-ratio:2/1;border-radius:14px}
 .stg .sic svg{width:30px;height:30px}
-.stg .stw,.stg .snm,.stg .sev,.stg .swn{padding:0 4px}
+.stg .stw,.stg .snm{padding:0 4px}
 .stg .stw .cvr{margin-left:auto;flex:0 0 auto}
 .stg .snm{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .swn{display:block;font-family:var(--text);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -276,14 +281,15 @@ body{-webkit-font-smoothing:antialiased;
     var nm = '<span class="snm">' + esc(s.name) + '</span>';
     var icon = '<span class="sic" aria-hidden="true">' + window.RAVI_ICON("stores") + '</span>';
     if(VIEW === "grid"){
-      var evl = ev ? '<span class="sev"' + ml(ev) + '>' + mark(ev) + '<b>' + esc(TYPE[tkey(ev)]) + '</b></span><span class="swn">' + esc(whenOf(ev)) + '</span>'
-        : '<span class="swn">No events listed</span>';
-      return wrap + '<button type="button" class="stg btn glass stl" data-act="store" data-sid="' + esc(s.sid) + '" data-k="deeper">' + icon + tw + nm + evl + '</button></div>';
+      return wrap + '<button type="button" class="stg btn glass stl" data-act="store" data-sid="' + esc(s.sid) + '" data-k="deeper">' + icon + nm + tw + nextOf(ev) + '</button></div>';
     }
-    var evr = ev ? '<span class="sev"' + ml(ev) + '>' + mark(ev) + '<b>' + esc(TYPE[tkey(ev)]) + '</b></span><span class="swn">' + esc(whenOf(ev)) + '</span>'
-      : '<span class="swn">No events listed</span>';
     return wrap + '<button type="button" class="door btn glass rec stl" data-act="store" data-sid="' + esc(s.sid) + '" data-k="deeper">' + icon
-      + '<span class="stt">' + tw + nm + evr + '</span>' + CVR + '</button></div>';
+      + '<span class="stt">' + nm + tw + nextOf(ev) + '</span>' + CVR + '</button></div>';
+  }
+  // a store's next event: 'Next:' and when, then its type's mark and name; or that none is listed
+  function nextOf(ev){
+    return '<span class="snext">' + (ev ? '<span class="swn">Next: ' + esc(whenOf(ev)) + '</span><span class="sev"' + ml(ev) + '>' + mark(ev) + '<b>' + esc(TYPE[tkey(ev)]) + '</b></span>'
+      : '<span class="swn">No events listed</span>') + '</span>';
   }
   function render(){
     var inArea = STORES.filter(function(s){ var k = townKey(s); return k && !OFF[k]; }), list = inArea.filter(matches), t = el("towns");
