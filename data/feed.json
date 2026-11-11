@@ -13,10 +13,11 @@
    "via": [
     "muse"
    ],
-   "title": "Skyhaven Games Sunday Skirmish Starts at 5 PM",
-   "sum": "The Sunday Skirmish starts at 5 PM local time, even if the app shows otherwise. Registered players can now submit their decks, and Riftatlas text export is a fallback if needed.",
+   "title": "Skyhaven Games: Sunday Skirmish start time and decks",
+   "sum": "The Sunday Skirmish starts at 5 PM local time on Sunday 15 November, regardless of what the app shows. Registered players can submit decks now, and Riftatlas can build and export a text list.",
    "sumBy": "claude",
-   "sumKey": "bbc74e350ff5b698"
+   "until": "2026-11-15",
+   "sumKey": "3e4c1cb3d059c3f0"
   },
   {
    "id": "fb:https://instagram.com/p/Dfh6Zril7rY",
@@ -81,10 +82,11 @@
    "via": [
     "muse"
    ],
-   "title": "Skyhaven Games Free Online Riftbound Mini-Worlds Event",
-   "sum": "A free, prize-free online Riftbound event on Riftatlas runs Monday, November 16 at 5:30 PM. Players use three decks across three rounds and cannot repeat legends that share a domain.",
+   "title": "Skyhaven Games hosts free online Riftbound Mini-Worlds",
+   "sum": "Skyhaven Games is running a free, no-prize online Riftbound event on Riftatlas at 5:30 PM Monday. Players use three decks over three rounds and cannot repeat legends that share a domain.",
    "sumBy": "claude",
-   "sumKey": "da02b25156d0d625"
+   "until": "2026-11-16",
+   "sumKey": "41007829ebf27d38"
   },
   {
    "id": "fb:https://facebook.com/reel/958435193703586",
@@ -201,7 +203,7 @@
     "muse"
    ],
    "hold": "skip",
-   "sumKey": "41409caca30aaff2"
+   "sumKey": "afa3ba41c0ae0e56"
   },
   {
    "id": "fb:https://facebook.com/GauntletGamesVictoria/posts/pfbid0M5q3dMndyutqZLsGecv2eXQRS4MofCsZ7n7oAE6NdzLYTZfa3PqaSL3m57VibU4Rl",
@@ -214,10 +216,8 @@
    "via": [
     "muse"
    ],
-   "title": "Gauntlet Games posts November 2026 event calendar",
-   "sum": "Gauntlet Games has published its November 2026 events calendar, which includes a Riftbound League of Legends tournament alongside events for other games.",
-   "sumBy": "claude",
-   "sumKey": "8c2e89e3b7912d99"
+   "hold": "skip",
+   "sumKey": "9a65567626ac4bdb"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0mPqaQbLF8FDG1pwrseTDqZ5t7KBFCNLVfyauyYyTXhqox6uVauJdPnWUfwvqgHfgl",
@@ -254,7 +254,7 @@
     "muse"
    ],
    "hold": "skip",
-   "sumKey": "68c98819a4f0b56f"
+   "sumKey": "520c932362052ffc"
   },
   {
    "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1838798774034264",
@@ -267,10 +267,11 @@
    "via": [
     "muse"
    ],
-   "title": "Skyhaven Games Event Times Being Corrected",
-   "sum": "Skyhaven's Playriftbound event times are an hour off after a wrong time change. Staff are correcting them and holding the start for late players; call 250-477-1519 if you're on the way.",
+   "title": "Skyhaven Games: Playriftbound event times shifted an hour",
+   "sum": "Playriftbound shows Skyhaven's events one hour off because of a time change BC doesn't observe. Staff are correcting it manually. If you're on your way, call 250-477-1519.",
    "sumBy": "claude",
-   "sumKey": "9458f3e2b478d897"
+   "until": "2026-11-01",
+   "sumKey": "c6da3e4ff24f48d6"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0dFwTZvZgHFVB3F9vdKd9S2hDwyo7nBGvfTxfB9v9LME4wNkCU4ke8FYA1x1adiC4l",
@@ -420,10 +421,11 @@
    "via": [
     "muse"
    ],
-   "title": "Skyhaven Games Hosts First Radiance Skirmish Nov 15",
-   "sum": "Skyhaven Games is running its first Radiance Skirmish on Sunday, November 15 at 5 PM. Players who want a spot should tell the store so they can be added.",
+   "title": "Skyhaven Games opens sign-ups for Radiance Skirmish",
+   "sum": "Skyhaven Games' first Radiance Skirmish is on Sunday, November 15 at 5 PM. To take a spot, tell the store and they will add you to the list.",
    "sumBy": "claude",
-   "sumKey": "981eb57333f4ceb1"
+   "until": "2026-11-15",
+   "sumKey": "2a6de739b0d739a4"
   },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid02nEyhigwrjyUYHD5hoP4tWi9SB9Nt6FDndVf8a694R89RSZH7tMi3CLfWodjNP8s7l",
