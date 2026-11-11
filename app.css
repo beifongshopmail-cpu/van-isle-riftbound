@@ -881,3 +881,25 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 :where(html.cnew) .trow[data-tier]{--tint:rgba(var(--tc),var(--cg))}   /* the row is coloured glass in its tier's colour (Mako 2026-11-09 16:29) */
 :where(html.cnew) .trow[data-tier] .tlet{--tint:rgb(var(--tc));background:rgb(var(--tc));color:var(--ink)}   /* --tint: inside the row it is drawn flat from it */
 :where(html.cnew) .trow[data-tier] .tlet small{color:rgba(8,9,10,.72)}
+
+/* ======== BROWSE: the Browse pattern's parts (STYLE.md sections 0 and 5) ========
+   One copy for every page. Moved here 2026-11-11 from the pages that each carried their own
+   identical copy (rb-tools design/style-diff.js: nothing the phone draws changed). A page places
+   these (its margins are its own) and never reshapes them; a page that must, says so in its notes. */
+.plate{border-radius:24px;padding:10px;background:var(--plate-solid);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}
+}
+.dvrow{display:flex;align-items:center;gap:8px}
+.dvrow .sp{flex:1}
+.dvseg button{width:40px;padding:0;display:grid;place-items:center}
+.dvseg svg{width:18px;height:18px;fill:currentColor}
+.tyrow .lab{flex:1;text-align:left}
+.tyrow .n{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
+.tyrow .box{width:18px;height:18px;flex:0 0 auto;display:flex}
+.tyrow .box svg{width:18px;height:18px;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.tyrow[aria-pressed="false"] .lab{color:var(--muted)}
+.tyrow[aria-pressed="false"] .box svg{visibility:hidden}
+.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
+.rbody{padding:2px 16px 14px}
+mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}

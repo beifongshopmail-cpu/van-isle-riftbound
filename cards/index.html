@@ -38,13 +38,7 @@ body{-webkit-font-smoothing:antialiased;
    plate frost, clear. Under the search, Sort and one Filters chip, as Decks' browser (five filters
    fold into one chip, STYLE 5). Grid or List sits at the right of the list's head, as Collection's. */
 .srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}
-.plate{border-radius:24px;padding:10px;
-  background:var(--plate-solid);
-  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
-.dvrow{display:flex;align-items:center;gap:6px;margin-top:10px}
-.dvseg button{width:40px;padding:0;display:grid;place-items:center}
-.dvseg svg{width:18px;height:18px;fill:currentColor}
+.dvrow{gap:6px;margin-top:10px}   /* a bend: 6 apart so Sort's longest name fits at 360 (style/cards.md) */
 .fchip{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .fchip .n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--ink);color:var(--bone);font-size:12px}
@@ -117,8 +111,6 @@ body{-webkit-font-smoothing:antialiased;
 .rul .t{white-space:normal;overflow:visible}
 .rty{font-family:var(--disp);font-size:12px;font-weight:700;color:rgb(var(--cl))}
 .door.rec .chev{position:absolute;right:16px;top:calc(50% - 8px);color:var(--muted)}
-.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
-.rbody{padding:2px 16px 14px}
 .rlab{margin:8px 0 4px;font-size:12px;font-weight:600;color:var(--muted)}
 .rlab:first-child{margin-top:0}
 /* the Add to menu: what each place already holds, in grey, at the row's right */

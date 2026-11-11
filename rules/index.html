@@ -41,16 +41,10 @@ body{-webkit-font-smoothing:antialiased;
 .new{display:inline-block;vertical-align:2px;margin-left:8px;flex:0 0 auto;font-size:12px;font-weight:700;letter-spacing:.06em;
   color:var(--ink);background:var(--bone);padding:1px 6px;border-radius:999px}
 .door > .new{vertical-align:0}
-.plate{border-radius:24px;padding:10px;
-  background:var(--plate-solid);
-  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 /* A list entry that opens in place: the row (.door.rec, kind open) and the
    body under it (.rbody), siblings inside one group. */
 .door.rec .t.wrap{white-space:normal;line-height:1.3}
 .door.rec .chev{position:absolute;top:14px;right:16px;color:var(--muted)}
-.doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
-.rbody{padding:2px 16px 14px}
 .rlab{margin:8px 0 4px;font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
 /* Riot's own markup, as fetch-rules.js kept it */
 .rtx{font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
@@ -90,7 +84,6 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
 .rnrow .sp{flex:1}
 .rnote .rntx{padding:0 16px 12px}
 /* A MATCHED WORD (plan 2 M5): bold and lit, so it never rests on colour alone */
-mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
 .rtx.old mark.hit{color:var(--bone)}
 .extl{width:16px;height:16px;flex:0 0 auto;stroke:var(--muted);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
 </style>

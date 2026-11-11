@@ -37,16 +37,9 @@ body{-webkit-font-smoothing:antialiased;
    --top-clear, plate frost, clear; the Kinds chip under the search (STYLE 7: three kinds or more
    fold into one chip that opens a menu of rows). */
 .srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}   /* the plate is chrome: clear */
-.plate{border-radius:24px;padding:10px;
-  background:var(--plate-solid);
-  box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
 /* THE VIEW ROW (as Collection's and Decks'): Grid or List, then the Kinds chip (three kinds or more
    fold into one chip that opens a menu of rows, STYLE 7) */
-.dvrow{display:flex;align-items:center;gap:8px;margin-top:10px}
-.dvrow .sp{flex:1}
-.dvseg button{width:40px;padding:0;display:grid;place-items:center}
-.dvseg svg{width:18px;height:18px;fill:currentColor}
+.dvrow{margin-top:10px}
 .dvsort{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
   font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--bone)}
 .dvsort svg{flex:0 0 auto;width:14px;height:14px}
@@ -54,15 +47,9 @@ body{-webkit-font-smoothing:antialiased;
 /* THE KINDS MENU: a pick-many list, as Events settings' Areas (the calendar's .tyrow, STYLE 5): several
    kinds can be on at once, so each row carries its own check (.box) and its count (.n) */
 .tyrow .lab{flex:1;min-width:0;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tyrow .n{font-family:var(--text);font-size:12px;font-weight:600;color:var(--muted)}
-.tyrow .box{width:18px;height:18px;flex:0 0 auto;display:flex}
-.tyrow .box svg{width:18px;height:18px;stroke:var(--bone);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.tyrow[aria-pressed="false"] .lab{color:var(--muted)}
-.tyrow[aria-pressed="false"] .box svg{visibility:hidden}
 /* every kind turned off: what is missing, and its own button (STYLE 4, Words) */
 .kempty .pact{margin-top:10px}
 .dvsort:active{transform:scale(.96)}
-mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
 /* THIS WEEK: one glass row that opens in place, as Collection's Movers (Mako 2026-11-07): closed,
    unless what it shows changed since the last visit; a hairline under its head, the price moves, a
    line, the top legends with the Tier list under the last line. Its lists you read (no taps). */

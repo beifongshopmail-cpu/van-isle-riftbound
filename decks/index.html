@@ -114,9 +114,7 @@ body{-webkit-font-smoothing:antialiased;
 /* the plate's words and buttons start at --top-clear, clear of iOS's blur under the status
    bar; only its own top edge may sit in it (Mako 2026-10-19) */
 .stick{position:sticky;top:calc(var(--top-clear) - 10px);height:0;z-index:10}
-.plate{width:calc(100% - 24px);max-width:456px;margin:0 auto;border-radius:24px;padding:10px;
-  background:var(--plate-solid);box-shadow:var(--glass-base),0 8px 24px rgba(0,0,0,.45)}
-@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate{background:var(--plate-glass);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%)}}
+.plate{width:calc(100% - 24px);max-width:456px;margin:0 auto}   /* a bend: the plate sits fixed, full width less 24 (style/decks.md) */
 .plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) calc(var(--s) - 15%),rgba(var(--c2),.32) calc(var(--s) + 15%)),rgba(10,11,13,.94)}
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.plate.cg2{background:linear-gradient(145deg,rgba(var(--c),.32) calc(var(--s) - 15%),rgba(var(--c2),.32) calc(var(--s) + 15%)),rgba(10,11,13,.5)}}
 .plate.cg2{--muted:#DCDEE2}
@@ -145,8 +143,6 @@ body{-webkit-font-smoothing:antialiased;
 .res .bnone{padding:14px 8px}
 
 /* the view row at the top of the deck: how every section shows, and its sort */
-.dvrow{display:flex;align-items:center;gap:8px}
-.dvseg button{width:40px;padding:0;display:grid;place-items:center}
 .dvseg svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .dvseg.cols button{width:var(--sz-seg);font-size:13px}
 .dvsort{margin-left:auto;flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
