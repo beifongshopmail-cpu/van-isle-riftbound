@@ -100,14 +100,16 @@ body{-webkit-font-smoothing:antialiased;
 .foot a{color:var(--bone)}
 /* THE STORE'S MENU: where it is, its hours, how to reach it, its next events, its posts */
 .sadr{margin:0 2px 10px;font-size:15px;line-height:1.4;color:var(--bone);overflow-wrap:anywhere}
-.snow{margin:0 2px 8px;font-size:15px;line-height:1.4}
-.snow b{font-family:var(--disp);font-weight:700}
-.hrs{border-radius:22px;margin:0}
-.hk{display:flex;align-items:baseline;gap:12px;margin:0;padding:9px 16px}
-.hk + .hk{background-image:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.08));background-size:calc(100% - 16px) 1px;background-position:16px 0;background-repeat:no-repeat}
-.hk dt{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--muted)}
-.hk dd{flex:1;min-width:0;margin:0;font-size:15px;text-align:right}
-.hk.now dt,.hk.now dd{color:var(--bone);font-family:var(--disp);font-weight:700}
+/* the hours are words you read, so they sit on the menu with no surface (glass means press; Mako
+   2026-11-11 20:37: the glass card read as something to tap): whether it is open now, in bold, then
+   the week from today, a day and its hours a line; today in bold, the same face */
+.snow{margin:0 2px 6px;font-size:15px;line-height:1.4}
+.snow b{font-weight:700}
+.hrs{margin:0 2px}
+.hk{display:flex;align-items:baseline;gap:12px;margin:0;padding:2px 0;font-size:15px;line-height:1.4;color:var(--muted)}
+.hk dt{flex:0 0 auto}
+.hk dd{flex:1;min-width:0;margin:0;text-align:right}
+.hk.now{color:var(--bone);font-weight:700}
 .door.rec .chev{position:absolute;right:16px;top:calc(50% - 8px);color:var(--muted)}
 .rul{white-space:normal}
 .rul .t{white-space:normal;overflow:visible}
@@ -348,18 +350,18 @@ body{-webkit-font-smoothing:antialiased;
     el("sname").textContent = s.name;
     if(picOf(s)) h += '<img class="smpic" src="' + esc(picOf(s)) + '" alt="' + esc(s.name) + ', from the street">';
     h += '<p class="mtw">' + esc(s.city) + '</p>';
-    h += '<div class="row"><p class="lb">Where</p>' + (ad ? '<p class="sadr sel">' + esc(ad) + '</p>' : '<p class="sadr">' + esc(s.city) + '</p>')
+    h += '<div class="row">' + (ad ? '<p class="sadr sel">' + esc(ad) + '</p>' : '<p class="sadr">' + esc(s.city) + '</p>')
       + '<a class="pact btn glass" href="' + esc(maps(s)) + '" target="_blank" rel="noopener" data-k="do">Directions ' + OUT + '</a></div>';
     if(info && info.hours){
       for(i = 0; i < 7; i++){
         var d = (n.dow + i) % 7; sp = spans(info, d);
         rows += '<div class="hk' + (i === 0 ? " now" : "") + '"><dt>' + (i === 0 ? "Today" : DAYNAME[d]) + '</dt><dd>' + (sp === null ? "Not listed" : sp.length ? sp.map(function(x){ return clock(x[0]) + " to " + clock(x[1]); }).join(", ") : "Closed") + '</dd></div>';
       }
-      h += '<div class="row"><p class="lb">Hours</p>' + (st ? '<p class="snow"><b>' + esc(st) + '</b></p>' : '') + '<dl class="hrs glass">' + rows + '</dl>'
+      h += '<div class="row">' + (st ? '<p class="snow"><b>' + esc(st) + '</b></p>' : '') + '<dl class="hrs">' + rows + '</dl>'
         + (info.checked ? '<p class="pnote">Hours checked ' + esc(window.RAVI_DATE(info.checked)) + '. Holidays can differ.</p>' : '') + '</div>';
     }
     if(info && (info.phone || info.web)){
-      h += '<div class="row"><p class="lb">Contact</p><div class="doors" data-k="do">';
+      h += '<div class="row"><div class="doors" data-k="do">';
       if(info.phone) h += '<a class="door act" href="tel:' + esc(String(info.phone).replace(/[^0-9+]/g, "")) + '"><span class="t">Call</span><span class="sp"></span><small>' + esc(info.phone) + '</small></a>';
       if(info.web && /^https:\/\//.test(info.web)) h += '<a class="door act" href="' + esc(info.web) + '" target="_blank" rel="noopener"><span class="t">Website</span><span class="sp"></span><small>' + esc(info.web.replace(/^https:\/\/(www\.)?/, "").replace(/\/$/, "")) + '</small></a>';
       h += '</div></div>';
