@@ -49,7 +49,46 @@
    "phone": "778-265-5727",
    "web": "https://elite4games.com",
    "checked": "2026-11-11",
-   "source": "elite4games.com footer (no hours listed there)"
+   "source": "nearmetcg.com listing, the only one found (the store's own site lists none)",
+   "hours": {
+    "mon": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "tue": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "wed": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "thu": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "fri": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "sat": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "sun": []
+   }
   },
   "2069": {
    "hours": {
@@ -318,13 +357,101 @@
   },
   "21894": {
    "phone": "250-897-2512",
-   "source": "the store's window sign; hours not found",
-   "checked": "2026-11-11"
+   "source": "the store's Facebook page hours (via globuya), Friday matching Wanderboat",
+   "checked": "2026-11-11",
+   "hours": {
+    "mon": [
+     [
+      "11:00",
+      "17:00"
+     ]
+    ],
+    "tue": [
+     [
+      "11:00",
+      "17:00"
+     ]
+    ],
+    "wed": [
+     [
+      "11:00",
+      "21:00"
+     ]
+    ],
+    "thu": [
+     [
+      "11:00",
+      "21:00"
+     ]
+    ],
+    "fri": [
+     [
+      "11:00",
+      "21:00"
+     ]
+    ],
+    "sat": [
+     [
+      "11:00",
+      "21:00"
+     ]
+    ],
+    "sun": [
+     [
+      "11:00",
+      "17:00"
+     ]
+    ]
+   }
   },
   "019fb060-93e6-7a79-a82a-fc4762d7e46e": {
    "phone": "250-758-1484",
-   "source": "listings; their hours disagree, so none shown",
-   "checked": "2026-11-11"
+   "source": "Apple Maps and Waze listings, which agree",
+   "checked": "2026-11-11",
+   "hours": {
+    "mon": [
+     [
+      "10:00",
+      "18:00"
+     ]
+    ],
+    "tue": [
+     [
+      "10:00",
+      "18:00"
+     ]
+    ],
+    "wed": [
+     [
+      "10:00",
+      "18:00"
+     ]
+    ],
+    "thu": [
+     [
+      "10:00",
+      "20:00"
+     ]
+    ],
+    "fri": [
+     [
+      "10:00",
+      "20:00"
+     ]
+    ],
+    "sat": [
+     [
+      "10:00",
+      "18:00"
+     ]
+    ],
+    "sun": [
+     [
+      "10:00",
+      "18:00"
+     ]
+    ]
+   }
   },
   "18437": {
    "phone": "250-880-9658",
@@ -335,8 +462,42 @@
   "01a02b42-28ed-7be5-a65a-49431ed2f88f": {
    "phone": "250-709-7882",
    "web": "https://thefortduncan.com",
-   "source": "thefortduncan.com and listings; their hours disagree, so none shown",
-   "checked": "2026-11-11"
+   "source": "Yelp listing, claimed by the store (updated Oct 2026), the newest of listings that disagree",
+   "checked": "2026-11-11",
+   "hours": {
+    "mon": [],
+    "tue": [],
+    "wed": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "thu": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "fri": [
+     [
+      "14:00",
+      "22:00"
+     ]
+    ],
+    "sat": [
+     [
+      "12:00",
+      "23:00"
+     ]
+    ],
+    "sun": [
+     [
+      "12:00",
+      "20:00"
+     ]
+    ]
+   }
   }
  }
 }
