@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117090364024088994@van-isle-riftbound
-DTSTAMP:20261112T222729Z
+DTSTAMP:20261112T224729Z
 DTSTART:20261114T230000Z
 DTEND:20261115T020000Z
 SUMMARY:radiance skirmish #1
 LOCATION:2220 Bowen Rd\, Nanaimo\, BC V9S 1H9\, Canada
 DESCRIPTION:Summoner Skirmish\nSports Card Alley\, Nanaimo\n2 of 16 spots l
- eft\, checked Nov 12\, 3:27 PM\n$15.00 CAD\nSign up: https://playriftbound
+ eft\, checked Nov 12\, 3:47 PM\n$15.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117090364024088994
 URL:https://playriftbound.com/en-US/events/117090364024088994
 CATEGORIES:Summoner Skirmish
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117124218815349026@van-isle-riftbound
-DTSTAMP:20261112T222729Z
+DTSTAMP:20261112T224729Z
 DTSTART:20261219T230000Z
 DTEND:20261220T020000Z
 SUMMARY:RAD skirmish 2
 LOCATION:2220 Bowen Rd\, Nanaimo\, BC V9S 1H9\, Canada
 DESCRIPTION:Summoner Skirmish\nSports Card Alley\, Nanaimo\n7 of 16 spots l
- eft\, checked Nov 12\, 3:27 PM\n$15.00 CAD\nSign up: https://playriftbound
+ eft\, checked Nov 12\, 3:47 PM\n$15.00 CAD\nSign up: https://playriftbound
  .com/en-US/events/117124218815349026
 URL:https://playriftbound.com/en-US/events/117124218815349026
 CATEGORIES:Summoner Skirmish
@@ -41,13 +41,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117560300397806244@van-isle-riftbound
-DTSTAMP:20261112T222729Z
+DTSTAMP:20261112T224729Z
 DTSTART:20270123T210000Z
 DTEND:20270124T000000Z
 SUMMARY:Legacy Pre-Rift
 LOCATION:2220 Bowen Rd\, Nanaimo\, BC V9S 1H9\, Canada
 DESCRIPTION:Pre-Rift\nSports Card Alley\, Nanaimo\n12 of 16 spots left\, ch
- ecked Nov 12\, 3:27 PM\n$50.00 CAD\nSign up: https://playriftbound.com/en-
+ ecked Nov 12\, 3:47 PM\n$50.00 CAD\nSign up: https://playriftbound.com/en-
  US/events/117560300397806244
 URL:https://playriftbound.com/en-US/events/117560300397806244
 CATEGORIES:Pre-Rift
@@ -56,13 +56,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117560491405578463@van-isle-riftbound
-DTSTAMP:20261112T222729Z
+DTSTAMP:20261112T224729Z
 DTSTART:20270213T210000Z
 DTEND:20270214T000000Z
 SUMMARY:Legacy Nexus Cup
 LOCATION:2220 Bowen Rd\, Nanaimo\, BC V9S 1H9\, Canada
 DESCRIPTION:Event\nSports Card Alley\, Nanaimo\n14 of 16 spots left\, check
- ed Nov 12\, 3:27 PM\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/
+ ed Nov 12\, 3:47 PM\n$10.00 CAD\nSign up: https://playriftbound.com/en-US/
  events/117560491405578463
 URL:https://playriftbound.com/en-US/events/117560491405578463
 CATEGORIES:Event
