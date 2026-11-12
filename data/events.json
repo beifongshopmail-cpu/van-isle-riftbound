@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-12T20:40:28.312Z",
- "generated_local": "2026-11-12T13:40:28-07:00",
+ "generated_at": "2026-11-12T22:27:29.122Z",
+ "generated_local": "2026-11-12T15:27:29-07:00",
  "window_start": "2026-11-12T07:00:00.000Z",
  "anchors": [
   {
@@ -161,7 +161,7 @@
  "totals": {
   "fetched": 75,
   "unique": 108,
-  "prev_unique": 80,
+  "prev_unique": 108,
   "recent": [
    {
     "d": "2026-11-03",
@@ -264,16 +264,17 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117454327448500237",
@@ -293,11 +294,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 1,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117089941548488590",
@@ -317,11 +319,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st893416177135",
@@ -368,11 +371,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st215383740490",
@@ -419,11 +423,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117089944509981053",
@@ -443,11 +448,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 5,
-   "cut": false
+   "cut": true,
+   "bo": 3
   },
   {
    "id": "rb117090364024088994",
@@ -467,11 +473,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
    "store": "Sports Card Alley",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117497233144348710",
@@ -491,11 +498,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117073785007006396",
@@ -515,11 +523,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st908683265121",
@@ -593,11 +602,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st862288418366",
@@ -644,11 +654,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st105793433595",
@@ -722,11 +733,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117089694282897798",
@@ -746,11 +758,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 21894,
    "store": "AJ's",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117497236336804009",
@@ -770,11 +783,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117096953908084886",
@@ -794,11 +808,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 16866,
    "store": "Everything Games",
    "swiss": 5,
-   "cut": true
+   "cut": true,
+   "bo": 3
   },
   {
    "id": "st570690520204",
@@ -845,11 +860,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 15103,
    "store": "Colossal Victoria",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117454301417787736",
@@ -869,11 +885,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st272621717112",
@@ -920,11 +937,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st623042421674",
@@ -971,11 +989,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st417151993215",
@@ -1022,11 +1041,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117497239560280331",
@@ -1046,11 +1066,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117454304230078174",
@@ -1070,11 +1091,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st167064844339",
@@ -1121,11 +1143,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st111371384830",
@@ -1172,11 +1195,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117185651823198962",
@@ -1196,11 +1220,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
    "store": "Fort Game Cafe",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117454314328231745",
@@ -1220,11 +1245,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117525496661669390",
@@ -1244,11 +1270,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st842082384019",
@@ -1295,11 +1322,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 1,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117089949895350173",
@@ -1319,11 +1347,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st628644062307",
@@ -1397,11 +1426,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117454321388311216",
@@ -1421,11 +1451,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st966235653200",
@@ -1472,11 +1503,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st861163561776",
@@ -1523,11 +1555,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117089697560448344",
@@ -1547,11 +1580,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 21894,
    "store": "AJ's",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117089949356892554",
@@ -1571,11 +1605,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 902,
    "store": "Colossal Courtenay",
-   "swiss": 4,
-   "cut": false
+   "swiss": 5,
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117124218815349026",
@@ -1595,11 +1630,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
    "store": "Sports Card Alley",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117170913739919281",
@@ -1619,11 +1655,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 15103,
    "store": "Colossal Victoria",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117454338043678755",
@@ -1643,11 +1680,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117096961730592935",
@@ -1667,11 +1705,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 16866,
    "store": "Everything Games",
    "swiss": 5,
-   "cut": true
+   "cut": true,
+   "bo": 3
   },
   {
    "id": "st930744312717",
@@ -1745,11 +1784,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st604358770014",
@@ -1796,11 +1836,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117186764306510911",
@@ -1820,11 +1861,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
    "store": "Fort Game Cafe",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117129753104838820",
@@ -1844,11 +1886,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117073792152834647",
@@ -1868,11 +1911,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117520759300703415",
@@ -1892,11 +1936,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st487260772310",
@@ -1943,11 +1988,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
    "store": "Fort Game Cafe",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117560253985210722",
@@ -1967,11 +2013,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 21894,
    "store": "AJ's",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117533557541460958",
@@ -1991,11 +2038,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 16866,
    "store": "Everything Games",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st475715241528",
@@ -2069,11 +2117,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st852876344281",
@@ -2120,11 +2169,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117560300397806244",
@@ -2144,11 +2194,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
    "store": "Sports Card Alley",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117560257911341412",
@@ -2168,11 +2219,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 21894,
    "store": "AJ's",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117584991387629475",
@@ -2192,11 +2244,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117521153341296541",
@@ -2216,11 +2269,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117520785658195785",
@@ -2240,11 +2294,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st924688749093",
@@ -2291,11 +2346,12 @@
    "currency": "USD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 16866,
    "store": "Everything Games",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st188045422591",
@@ -2342,11 +2398,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117520791840455365",
@@ -2366,11 +2423,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st566495834964",
@@ -2417,11 +2475,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 15103,
    "store": "Colossal Victoria",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117520566570008520",
@@ -2441,11 +2500,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117520575246477805",
@@ -2465,11 +2525,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117520569907363874",
@@ -2489,11 +2550,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117584996490151342",
@@ -2513,11 +2575,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "st441432519948",
@@ -2564,11 +2627,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 3,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117521173340655612",
@@ -2588,11 +2652,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 902,
    "store": "Colossal Courtenay",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117566145685561435",
@@ -2612,11 +2677,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 21894,
    "store": "AJ's",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117560152232916078",
@@ -2636,11 +2702,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "store": "Elite4",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "st636135720247",
@@ -2687,11 +2754,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
    "store": "Sports Card Alley",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117572568010742053",
@@ -2711,11 +2779,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": 15103,
    "store": "Colossal Victoria",
    "swiss": 4,
-   "cut": true
+   "cut": true,
+   "bo": 1
   },
   {
    "id": "rb117588153864541188",
@@ -2735,11 +2804,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 5,
-   "cut": true
+   "cut": true,
+   "bo": 3
   },
   {
    "id": "rb117520594838845121",
@@ -2759,11 +2829,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 4294,
    "store": "Skyhaven",
    "swiss": 5,
-   "cut": false
+   "cut": false,
+   "bo": 3
   },
   {
    "id": "rb117533572584004975",
@@ -2783,11 +2854,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 16866,
    "store": "Everything Games",
    "swiss": 5,
-   "cut": false
+   "cut": true,
+   "bo": 3
   },
   {
    "id": "st349915776029",
@@ -2861,11 +2933,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 18437,
    "store": "North Park Framing",
    "swiss": 5,
-   "cut": true
+   "cut": true,
+   "bo": 3
   },
   {
    "id": "rb117599543095444225",
@@ -2885,11 +2958,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 1,
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
    "store": "Fort Game Cafe",
    "swiss": 4,
-   "cut": false
+   "cut": false,
+   "bo": 1
   },
   {
    "id": "rb117588162386359218",
@@ -2909,11 +2983,12 @@
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": null,
+   "wins": 2,
    "sid": 2069,
    "store": "Gauntlet",
    "swiss": 5,
-   "cut": true
+   "cut": true,
+   "bo": 3
   }
  ]
 }
