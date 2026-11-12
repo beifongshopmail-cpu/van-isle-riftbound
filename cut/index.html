@@ -100,7 +100,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   </section>
 
   <section class="csec glass" id="sfin">
-    <div class="shead"><h2>Your finishes</h2></div>
+    <div class="shead"><h2>Your finishes</h2><span class="sp"></span><span class="cnt" id="fincnt"></span></div>
     <div id="fin"></div>
   </section>
 
@@ -133,13 +133,13 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="phead"><h4 class="ttl">How it's worked out</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="doors glass" data-k="open">
     <button type="button" class="door" aria-expanded="false" aria-controls="hw1" data-k="open"><span class="t">Worst case</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw1" hidden><p>The other tables' last two rounds go the way that puts the most players level with you or ahead.</p></div>
+    <div class="hwb" id="hw1" hidden><p>Every other table's last two rounds go the way that hurts you most. In here means nothing can keep you out.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw2" data-k="open"><span class="t">Chance</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw2" hidden><p>The event is played out many times over. Every other match is a coin flip, with one in ten drawn, and a tie on points is settled by luck.</p></div>
+    <div class="hwb" id="hw2" hidden><p>How often that finish makes the cut when RAVI plays the rest of the event out hundreds of times. Other players' matches are coin flips, with one in ten drawn. Level on points at the cut's edge, the last places go by luck.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw3" data-k="open"><span class="t">Tiebreakers</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw3" hidden><p>A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1.</p></div>
-    <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">A guide</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw4" hidden><p>Pairings are modelled, not the store's, so take it as a guide.</p></div>
+    <div class="hwb" id="hw3" hidden><p>You are level on points with players at the cut's edge, so tiebreakers decide it. A win is 3 points and a draw 1.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">How exact this is</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw4" hidden><p>RAVI guesses the pairings, and the store's will differ. Treat every answer as a guide.</p></div>
   </div></div>
 </section>
 <script>
@@ -286,10 +286,36 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (d > 0 && st.w + st.l + st.d >= st.r) { return; }
       st[id] = v;
     }
-    save(); render();
+    if (!holding) { save(); }
+    render();
   }
+  // PRESS AND HOLD (plan 2 M9 block 8, Mako 2026-11-12: Players often passes 20): a stepper held
+  // down repeats, slowly then fast, as iPhone's own stepper does; a tap is still one step. While
+  // it runs only the numbers move; the finishes are worked out once on release.
+  var holding = false, holdT = null, holdN = 0, held = false;
+  function holdStop(){
+    if (holdT) { clearTimeout(holdT); holdT = null; }
+    if (holding) { holding = false; save(); render(); }
+  }
+  document.addEventListener("pointerdown", function(e){
+    var b = e.target.closest ? e.target.closest("[data-step]") : null;
+    holdStop(); held = false; holdN = 0;
+    if (!b || (e.button !== undefined && e.button > 0)) { return; }
+    var id = b.getAttribute("data-step"), d = +b.getAttribute("data-d");
+    function tick(){
+      var was = st[id];
+      holding = true; held = true; holdN++;
+      stepTo(id, d);
+      if (st[id] === was) { holdStop(); return; }
+      holdT = setTimeout(tick, holdN < 10 ? 110 : 45);
+    }
+    b.addEventListener("pointerleave", holdStop, { once: true });
+    holdT = setTimeout(tick, 420);
+  });
+  ["pointerup", "pointercancel", "blur"].forEach(function(n){ window.addEventListener(n, holdStop, true); });
   document.addEventListener("click", function(e){
     var b = e.target.closest ? e.target.closest("[data-step]") : null;
+    if (b && held) { held = false; return; }   // the hold already stepped
     if (b) { stepTo(b.getAttribute("data-step"), +b.getAttribute("data-d")); }
   });
   $("kseg").addEventListener("click", function(e){
@@ -339,7 +365,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     return Math.round(p * 100) + "%";
   }
   function how(row, left){
-    if (!left) { return "Final"; }
+    if (!left) { return "Final record"; }
+    if (left === 1) { return row.w ? "Win the last round" : (row.d ? "Draw the last round" : "Lose the last round"); }
     var p = [];
     if (row.w) { p.push("win " + row.w); }
     if (row.d) { p.push("draw " + row.d); }
@@ -381,7 +408,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     $("recnote").hidden = !rec.n;
     $("recnote").textContent = rec.n ? "From the Tracker: " + rec.n + (rec.n === 1 ? " match" : " matches") + " tagged to this event (" + rec.w + "-" + rec.l + "-" + rec.d + "). The steppers change it here only." : "";
     }
-    var out = $("fin");
+    var out = $("fin"), lf = st.r - played;
+    $("fincnt").textContent = !st.k ? "" : (lf ? lf + (lf === 1 ? " round left" : " rounds left") : "No rounds left");
+    if (holding) { return; }
     if (!st.k) { out.innerHTML = '<p class="cnote">No top cut, so no finishes to work out.</p>'; return; }
     // the chance beside each finish (plan 2 M9 block 8): cut.js plays the event out; the same
     // numbers give the same chances, so they are worked out once per input
@@ -392,7 +421,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var r = s.rows[i];
       if (shown && gone(i) && gone(i - 1)) { rest++; continue; }
       shown++;
-      h += '<div class="fr"><span><b>' + r.final.w + "-" + r.final.l + "-" + r.final.d + '</b><small>' + esc(how(r, s.left)) + ", " + r.pts + ' points</small></span>' + chip(r.worst) + '<span class="fp">' + pct(ch[i], r) + '</span></div>';
+      h += '<div class="fr"><span><b>' + r.final.w + "-" + r.final.l + "-" + r.final.d + '</b><small>' + esc(how(r, s.left)) + '</small></span>' + chip(r.worst) + '<span class="fp">' + pct(ch[i], r) + '</span></div>';
     }
     h += '</div>';
     if (rest) { h += '<p class="fmore">Every finish below these is out.</p>'; }
@@ -406,7 +435,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var safe = null, i, draw = null;
     for (i = 0; i < s.rows.length; i++) { if (s.rows[i].worst.verdict === "in") { safe = i; } else { break; } }
     for (i = 0; i < s.rows.length; i++) { if (s.left && s.rows[i].d === s.left) { draw = s.rows[i]; } }
-    var t = safe === null ? "No finish is safe in the worst case." : "Safe in the worst case: " + rec(s.rows[safe].final) + (safe > 0 ? " or better." : ".");
+    var t = safe === null ? "No finish gets you in for certain." : rec(s.rows[safe].final) + (safe > 0 ? " or better" : "") + " gets you in for certain.";
     if (draw && draw.worst.verdict === "in") { t += " You can draw in."; }
     return '<p class="fsafe">' + esc(t) + '</p>';
   }
