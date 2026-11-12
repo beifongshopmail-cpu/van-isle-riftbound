@@ -133,7 +133,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <button type="button" class="door" aria-expanded="false" aria-controls="hw1" data-k="open"><span class="t">Worst case</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="hwb" id="hw1" hidden><p>Every other table's last two rounds go the way that hurts you most. In here means nothing can keep you out.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw2" data-k="open"><span class="t">Chance</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw2" hidden><p>How often that finish makes the cut when RAVI plays the rest of the event out hundreds of times. Other players' matches are coin flips, with one in ten drawn. Level on points at the cut's edge, the last places go by luck.</p></div>
+    <div class="hwb" id="hw2" hidden><p>How often that finish makes the cut when RAVI plays the rest of the event out hundreds of times. Other players' matches are coin flips, with one in ten drawn, or one in fifty at a best of 1 event. Level on points at the cut's edge, the last places go by luck.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw3" data-k="open"><span class="t">Tiebreakers</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="hwb" id="hw3" hidden><p>You are level on points with players at the cut's edge, so tiebreakers decide it. A win is 3 points and a draw 1.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">How exact this is</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
@@ -209,7 +209,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     function txt(v){ return typeof v === "string" ? v.slice(0, 160) : ""; }
     function num(v){ return typeof v === "number" && isFinite(v) && v >= 0 && v <= 100000 ? Math.floor(v) : null; }
     return { id: e.id, day: e.day, name: txt(e.name) || "Event", type: typeof e.type === "string" && /^[a-z]{1,12}$/.test(e.type) ? e.type : "other", store: txt(e.store), venue: txt(e.venue), time: txt(e.time), start: txt(e.start), reg: num(e.reg), cap: num(e.cap),
-      swiss: typeof e.swiss === "number" && e.swiss >= 1 && e.swiss <= 15 && Math.floor(e.swiss) === e.swiss ? e.swiss : null, cut: typeof e.cut === "boolean" ? e.cut : null };
+      swiss: typeof e.swiss === "number" && e.swiss >= 1 && e.swiss <= 15 && Math.floor(e.swiss) === e.swiss ? e.swiss : null, cut: typeof e.cut === "boolean" ? e.cut : null,
+      bo: e.bo === 1 || e.bo === 3 || e.bo === 5 ? e.bo : null };
   }
   // the Event row names an event as the Game page does: its kind and the store's short name
   var KIND = { nexus: "Nexus Nights", skirmish: "Summoner Skirmish", learn: "Learn-to-Play", open: "Open Play", prerift: "Pre-Rift", other: "Event" };
@@ -412,7 +413,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     if (!st.k) { out.innerHTML = '<p class="cnote">No top cut, so no finishes to work out.</p>'; return; }
     // the chance beside each finish (plan 2 M9 block 8): cut.js plays the event out; the same
     // numbers give the same chances, so they are worked out once per input
-    var s = C.scenarios(st), ck = [st.n, st.r, st.k, st.w, st.l, st.d].join("."), ch = chCache[ck] || (chCache[ck] = C.chances(st, { s: s }));
+    var s = C.scenarios(st), tie = evInfo && evInfo.bo === 1 ? 0.02 : 0.1,   // best of 1 rarely runs out of time
+      ck = [st.n, st.r, st.k, st.w, st.l, st.d, tie].join("."), ch = chCache[ck] || (chCache[ck] = C.chances(st, { s: s, tie: tie }));
     function gone(j){ return s.rows[j].worst.verdict === "out" && ch[j] < 0.005; }
     var h = '<div class="fh"><span>Finish</span><span>Worst case</span><span>Chance</span></div><div class="flist">', shown = 0, rest = 0;
     for (i = 0; i < s.rows.length; i++) {

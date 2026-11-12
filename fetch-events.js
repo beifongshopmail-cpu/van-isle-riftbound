@@ -342,7 +342,10 @@ function braceEnd(s, i) {
   return -1;
 }
 
-// An event page -> { swiss, cut }, or null when the page carries no config Riot's way.
+// An event page -> { swiss, cut, bo }, or null when the page carries no config Riot's way.
+// bo (plan 2 M9 block 8, 2026-11-12): the page's matchFormat (BO1, BO3, BO5) as 1, 3 or 5, or null.
+// It fills the event's wins (the games that win a match), which the Tracker reads for its best of
+// and Top cut for its share of drawn matches.
 function configOf(html) {
   const text = streamOf(html);
   const at = text.indexOf('{"__typename":"RiftboundTournamentConfig"');
@@ -353,8 +356,10 @@ function configOf(html) {
   try { c = JSON.parse(text.slice(at, end + 1)); } catch (err) { return null; }
   const cut = Object.prototype.hasOwnProperty.call(STRUCTURES, c.structure) ? STRUCTURES[c.structure] : null;
   const swiss = Number.isInteger(c.roundCount) && c.roundCount >= 1 && c.roundCount <= 15 ? c.roundCount : null;
-  if (cut === null && swiss === null) return null;
-  return { swiss: swiss, cut: cut };
+  const m = /^BO([135])$/.exec(typeof c.matchFormat === "string" ? c.matchFormat : "");
+  const bo = m ? Number(m[1]) : null;
+  if (cut === null && swiss === null && bo === null) return null;
+  return { swiss: swiss, cut: cut, bo: bo };
 }
 
 async function readConfig(id) {
@@ -365,27 +370,37 @@ async function readConfig(id) {
   return configOf(await res.text());
 }
 
-// Gives every event swiss and cut: carried from last run's file when already known, else read
+// Gives every event swiss, cut and bo (and wins from bo): carried from last run's file when already known, else read
 // from its page (PlayRiftbound events only, at most max a run). A failed read leaves the event
 // unknown, so the next run tries again; it never fails the run.
 async function withConfig(events, prevEvents, read, max) {
-  const known = new Map();
+  // known: read since the page's best-of was kept too (it has a bo, even null). old: read before
+  // that; its swiss and cut carry over and its page is read once more for the best-of.
+  const known = new Map(), old = new Map();
+  const okBo = (v) => (v === 1 || v === 3 || v === 5 ? v : null);
   for (const p of (Array.isArray(prevEvents) ? prevEvents : [])) {
     if (p && typeof p.id === "string" && typeof p.cut === "boolean") {
-      known.set(p.id, { swiss: Number.isInteger(p.swiss) && p.swiss >= 1 && p.swiss <= 15 ? p.swiss : null, cut: p.cut });
+      const v = { swiss: Number.isInteger(p.swiss) && p.swiss >= 1 && p.swiss <= 15 ? p.swiss : null, cut: p.cut };
+      if (Object.prototype.hasOwnProperty.call(p, "bo")) { v.bo = okBo(p.bo); known.set(p.id, v); } else old.set(p.id, v);
     }
   }
+  const setBo = (ev, bo) => {
+    ev.bo = okBo(bo);
+    if (ev.bo && (ev.wins === null || ev.wins === undefined)) ev.wins = (ev.bo + 1) / 2;
+  };
   const stat = { kept: 0, read: 0, failed: 0, waiting: 0 };
   for (const ev of events) {
     ev.swiss = null; ev.cut = null;
     const k = known.get(ev.id);
-    if (k) { ev.swiss = k.swiss; ev.cut = k.cut; stat.kept++; continue; }
+    if (k) { ev.swiss = k.swiss; ev.cut = k.cut; setBo(ev, k.bo); stat.kept++; continue; }
     if (!/^rb\d{1,24}$/.test(String(ev.id))) continue;
+    const o = old.get(ev.id);
+    if (o) { ev.swiss = o.swiss; ev.cut = o.cut; }
     if (stat.read >= max) { stat.waiting++; continue; }
     stat.read++;
     try {
       const c = await read(ev.id);
-      if (c) { ev.swiss = c.swiss; ev.cut = c.cut; } else stat.failed++;
+      if (c) { ev.swiss = c.swiss; ev.cut = c.cut; setBo(ev, c.bo); } else stat.failed++;
     } catch (err) {
       stat.failed++;
     }
