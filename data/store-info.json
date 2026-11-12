@@ -49,46 +49,7 @@
    "phone": "778-265-5727",
    "web": "https://elite4games.com",
    "checked": "2026-11-11",
-   "source": "nearmetcg.com listing, the only one found (the store's own site lists none)",
-   "hours": {
-    "mon": [
-     [
-      "09:00",
-      "17:00"
-     ]
-    ],
-    "tue": [
-     [
-      "09:00",
-      "17:00"
-     ]
-    ],
-    "wed": [
-     [
-      "09:00",
-      "17:00"
-     ]
-    ],
-    "thu": [
-     [
-      "09:00",
-      "17:00"
-     ]
-    ],
-    "fri": [
-     [
-      "09:00",
-      "17:00"
-     ]
-    ],
-    "sat": [
-     [
-      "09:00",
-      "17:00"
-     ]
-    ],
-    "sun": []
-   }
+   "source": "elite4games.com footer (no hours listed there); one aggregator lists hours, not shown (the rule: the store's own listing, or two that agree)"
   },
   "2069": {
    "hours": {
