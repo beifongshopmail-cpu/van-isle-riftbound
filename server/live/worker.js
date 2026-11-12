@@ -197,6 +197,13 @@ async function toAlerts(req, env, path) {
 }
 
 export default {
+  // THE HOURLY RUN (plan 2 M9 block 6, notify.js): Wishlist prices, new events from followed stores and
+  // the admin's Notices. Only this sets X-Ravi-Tick; toAccounts builds its own headers, so no caller can.
+  async scheduled(ev, env, ctx) {
+    if (!env || !env.ACCOUNTS) return;
+    const stub = env.ACCOUNTS.get(env.ACCOUNTS.idFromName("all"));
+    ctx.waitUntil(stub.fetch(new Request("https://accounts/tick", { method: "POST", headers: { "Content-Type": "application/json", "X-Ravi-Tick": "1" }, body: "{}" })).then(function (r) { return r.text(); }).catch(function () {}));
+  },
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: Object.assign({ "Access-Control-Allow-Methods": "GET, POST", "Access-Control-Allow-Headers": /^\/(acct|finishes)\//.test(url.pathname) ? "Content-Type, Authorization" : "Content-Type", "Access-Control-Max-Age": "86400" }, cors(req)) });

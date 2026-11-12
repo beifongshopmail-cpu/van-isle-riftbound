@@ -485,6 +485,7 @@ input[type="file"]{display:none}
     if(cur) SET.cur = cur;
     try{ var z = JSON.parse(localStorage.getItem(SKEY)); if(z){ for(var k in SET){ if(z.hasOwnProperty(k) && typeof z[k] === typeof SET[k]) SET[k] = z[k]; } } }catch(e){}
     if(SET.view !== "all" && SET.view !== "wish" && !port(SET.view)) SET.view = "all";
+    if(/[?&]view=wish(&|$)/.test(location.search)) SET.view = "wish"; // a Wishlist price alert's link (plan 2 M9 block 6)
     if(!SORTS[window.RAVI_SORT.key(SET.sort)]) SET.sort = "value";
   }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }

@@ -265,7 +265,18 @@
     for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
     return out;
   }
-  function offerAlertStart(swUrl, cb) {
+  // KINDS (plan 2 M9 block 6): each kind is on or off per phone. o trade offers (OA_KEY, as before),
+  // w Wishlist prices, f stores you follow, n Notices (the admin's account); AK_KEY holds the letters of w, f, n
+  var AK_KEY = "vir.alertkinds.v1";
+  function kindsHere() { try { return String(root.localStorage.getItem(AK_KEY) || "").replace(/[^wfn]/g, ""); } catch (e) { return ""; } }
+  function alertOn(k) { return k === "o" ? offerAlertsOn() : kindsHere().indexOf(k) >= 0; }
+  function markKind(k, on) {
+    if (k === "o") { try { if (on) root.localStorage.setItem(OA_KEY, "1"); else root.localStorage.removeItem(OA_KEY); } catch (e) {} return; }
+    var h = kindsHere().replace(k, "") + (on ? k : "");
+    try { if (h) root.localStorage.setItem(AK_KEY, h); else root.localStorage.removeItem(AK_KEY); } catch (e) {}
+  }
+  function offerAlertStart(swUrl, cb) { alertStart("o", swUrl, cb); }
+  function alertStart(kind, swUrl, cb) {
     if (!pushOk()) { cb("Alerts need RAVI opened from your Home Screen."); return; }
     root.Notification.requestPermission().then(function (p) {
       if (p !== "granted") throw new Error("denied");
@@ -276,19 +287,20 @@
       });
     }).then(function (sub) {
       var j = sub.toJSON();
-      call("POST", "/opush", { sub: { endpoint: j.endpoint, keys: j.keys } }, function (err) {
+      call("POST", "/opush", { sub: { endpoint: j.endpoint, keys: j.keys }, kind: kind }, function (err) {
         if (err) { cb(err); return; }
-        try { root.localStorage.setItem(OA_KEY, "1"); } catch (e) {}
+        markKind(kind, true);
         cb(null);
       });
     }).catch(function (e) { cb(e && e.message === "denied" ? "Alerts are off for RAVI in your phone's Settings." : "Alerts did not turn on. Try again in a minute."); });
   }
-  function offerAlertStop(cb) {
-    try { root.localStorage.removeItem(OA_KEY); } catch (e) {}
+  function offerAlertStop(cb) { alertStop("o", cb); }
+  function alertStop(kind, cb) {
+    markKind(kind, false);
     if (!pushOk()) { cb(null); return; }
     root.navigator.serviceWorker.getRegistration().then(function (reg) { return reg && reg.pushManager.getSubscription(); }).then(function (s) {
       if (!s) { cb(null); return; }
-      call("POST", "/opush/off", { endpoint: s.endpoint }, function () { cb(null); });
+      call("POST", "/opush/off", { endpoint: s.endpoint, kind: kind }, function () { cb(null); });
     }, function () { cb(null); });
   }
   function offerAct(what, body, cb) { if (["answer", "meet", "done"].indexOf(what) < 0) return cb("bad request"); call("POST", "/offer/" + what, body, cb); }
@@ -332,7 +344,7 @@
   root.RAVI_ACCT = { BASE: BASE, KEY: KEY, supported: supported, signedIn: signedIn, saved: saved, view: view,
     isGuest: isGuest, makeGuest: makeGuest, devName: devName, onChange: function (f) { onChange.push(f); },
     keyName: keyName, keyOff: keyOff, devices: devices, deviceOut: deviceOut, othersOut: othersOut, exportData: exportData, board: board, offers: offers, offerSend: offerSend, offerAct: offerAct, report: report, block: block, blocks: blocks, adminReports: adminReports, adminAct: adminAct, syncCall: syncCall, decks: decks, deckGet: deckGet, deckCopy: deckCopy, deckLike: deckLike, handle: handle,
-    going: going, goingSet: goingSet, offerAlertsOn: offerAlertsOn, offerAlertStart: offerAlertStart, offerAlertStop: offerAlertStop,
+    going: going, goingSet: goingSet, offerAlertsOn: offerAlertsOn, offerAlertStart: offerAlertStart, offerAlertStop: offerAlertStop, alertOn: alertOn, alertStart: alertStart, alertStop: alertStop,
     linkStart: linkStart, linkWait: linkWait, linkFind: linkFind, linkOk: linkOk,
     create: create, addKey: addKey, signIn: signIn, recover: recover, me: me, newCode: newCode, signOut: signOut, remove: remove,
     saveProfile: saveProfile, setPic: setPic, uploadPhoto: uploadPhoto, picUrl: picUrl, picFit: picFit, CROP: CROP,
@@ -484,7 +496,7 @@
         '<button type="button" class="pact btn glass acgap" id="acsuclaim" data-k="do">Claim</button></div>' +
         '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2, "t"),
       acsut: suHead("Your areas", 3) + '<div class="pbody"><div class="pick" id="acsutowns" data-k="pick" aria-label="Areas"></div><p class="pnote" id="acsutnote"></p></div>' + suFoot("t", 3),
-      acsu3: suHead("Alerts", 4) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" aria-pressed="false">Trade offers</button></div>' +
+      acsu3: suHead("Alerts", 4) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" data-kind="o" aria-pressed="false">Trade offers</button><button type="button" id="acsuwish" data-kind="w" aria-pressed="false">Wishlist prices</button><button type="button" id="acsufol" data-kind="f" aria-pressed="false">Stores you follow</button></div>' +
         '<p class="pnote" id="acsu3note"></p><p class="pnote">Live event pairings: at a live event, tap Alert me when I\'m paired.</p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3, 4),
       acsu4: suHead("Your hub", 5) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
         '<p class="pnote">Drag a block to move it, or down here to take it off. Or tap one, then another.</p>' +
@@ -1018,11 +1030,16 @@
     } else if (n === "t") {
       suTowns();
     } else if (n === 3) {
-      var saved = A.signedIn() && !A.isGuest(), on = !!(A.offerAlertsOn && A.offerAlertsOn()), b = $("acsuoffer");
-      b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); b.disabled = !saved;
-      $("acsu3note").textContent = saved ? "An alert on this phone when someone on the Exchange sends you an offer." : "Trade offers come only to a saved account.";
+      var saved = A.signedIn() && !A.isGuest(), any = false;
+      ["acsuoffer", "acsuwish", "acsufol"].forEach(function (id) {
+        var b = $(id), on = !!(A.alertOn && A.alertOn(b.getAttribute("data-kind")));
+        b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); b.disabled = !saved;
+        if (on) any = true;
+      });
+      $("acsu3note").textContent = saved ? "" : "Alerts come only to a saved account.";
+      $("acsu3note").hidden = saved;
       say("acsu3msg", "");
-      suNext(3, on);
+      suNext(3, any);
     } else if (n === 4) {
       if (!suEdit && root.RAVI_HUBEDIT) suEdit = root.RAVI_HUBEDIT({ grid: $("acsuhub"), shelf: $("acsuhubs"), off: $("acsuhuboff"), onSave: function () { suHub = true; suNext(4, true); } });
       if (suEdit) suEdit.draw();
@@ -1099,7 +1116,7 @@
   }
   function suWire() {
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-sunext],[data-sutown],#acsusave,#acsuclaim,#acsuoffer,#acsudone,#acsunew") : null;
+      var t = e.target.closest ? e.target.closest("[data-sunext],[data-sutown],#acsusave,#acsuclaim,#acsuoffer,#acsuwish,#acsufol,#acsudone,#acsunew") : null;
       if (!t || !suOn) return;
       if (t.hasAttribute("data-sutown")) return suTownTap(t);
       if (t.hasAttribute("data-sunext")) return deeper("acsu" + t.getAttribute("data-sunext"));
@@ -1125,10 +1142,10 @@
           paintAll(); suEnter(2); say("acsu2msg", "Claimed. It is yours on RAVI.");
         });
       }
-      if (t.id === "acsuoffer") {
-        var on = A.offerAlertsOn();
+      if (t.id === "acsuoffer" || t.id === "acsuwish" || t.id === "acsufol") {
+        var kd = t.getAttribute("data-kind"), on = A.alertOn(kd);
         t.disabled = true; say("acsu3msg", on ? "Turning off." : "Turning on.");
-        return (on ? A.offerAlertStop : function (cb) { A.offerAlertStart(new URL(REL + "alerts-sw.js", root.location.href).href, cb); })(function (err) {
+        return (on ? function (cb) { A.alertStop(kd, cb); } : function (cb) { A.alertStart(kd, new URL(REL + "alerts-sw.js", root.location.href).href, cb); })(function (err) {
           suEnter(3); say("acsu3msg", err || (on ? "Off on this phone." : "On."));
         });
       }
@@ -1137,6 +1154,11 @@
     $("acsurt").addEventListener("keydown", function (e) { if (e.key === "Enter") $("acsuclaim").click(); });
   }
   root.RAVI_SETUP = { open: function () { suOpen(); }, auto: function () { suAuto(); }, seen: suSeen, KEY: SU_KEY };
+  // A NOTICE ALERT'S LINK (plan 2 M9 block 6): ?notices=1 opens Notices, on the admin's account only
+  if (/[?&]notices=1/.test(root.location.search)) {
+    var nGo = function () { var v = A && A.view && A.view(); if (v && v.admin && root.RAVI_ACCT_OPEN) setTimeout(function () { root.RAVI_ACCT_OPEN("acnotm"); }, 400); };
+    if (doc.readyState === "complete") nGo(); else root.addEventListener("load", nGo);
+  }
 
   // a button says it worked, in place, for a moment (Mako 2026-10-31: saving shows it saved)
   function done(btn, words, after) {

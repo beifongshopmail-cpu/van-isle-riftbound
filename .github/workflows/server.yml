@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: "22"
       - name: Parser and server load
-        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js'), import('./finishes.js'), import('./accounts.js')]).then(() => console.log('server code loads'))"
+        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js'), import('./finishes.js'), import('./accounts.js'), import('./notify.js')]).then(() => console.log('server code loads'))"
       - name: Secrets in place?
         id: sec
         run: |

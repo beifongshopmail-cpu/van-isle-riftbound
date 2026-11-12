@@ -22,22 +22,27 @@
       "d": "Install it from the store as well as from the web."
     },
     {
-      "page": "collection",
-      "t": "Price alerts on your Wishlist",
-      "d": "An alert when a card on your Wishlist moves in price."
-    },
-    {
-      "page": "calendar",
-      "t": "New event alerts",
-      "d": "An alert when a store you follow posts a new event."
-    },
-    {
       "page": "app",
       "t": "Privacy and terms",
       "d": "One plain page on what RAVI keeps and the terms of using it."
     }
   ],
   "shipped": [
+    {
+      "date": "2026-11-12",
+      "items": [
+        {
+          "page": "collection",
+          "t": "Wishlist price alerts",
+          "d": "At most once a day, an alert names each Wishlist card whose price moved 10% or more, down or up."
+        },
+        {
+          "page": "calendar",
+          "t": "New event alerts",
+          "d": "An alert when a store or area you follow adds an event. Alerts that land overnight wait until 9 AM."
+        }
+      ]
+    },
     {
       "date": "2026-11-11",
       "items": [

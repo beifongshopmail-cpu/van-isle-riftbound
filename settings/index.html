@@ -70,7 +70,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <p class="lb stlb">Alerts</p>
   <div class="doors stgrp" id="stalert" data-k="deeper">
       <button type="button" class="door" data-st="pme"><span class="t">Live event pairings</span><span class="sp"></span><small id="pmev"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
-      <button type="button" class="door chk" id="stoffer" data-st="poffer" aria-pressed="false" data-k="pick"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small></button>
+      <button type="button" class="door chk" id="stoffer" data-st="poffer" data-kind="o" aria-pressed="false" data-k="pick"><span class="t">Trade offers</span><span class="sp"></span><small id="pofferv"></small></button>
+      <button type="button" class="door chk" id="stwish" data-st="pwish" data-kind="w" aria-pressed="false" data-k="pick"><span class="t">Wishlist prices</span><span class="sp"></span><small id="pwishv"></small></button>
+      <button type="button" class="door chk" id="stfol" data-st="pfol" data-kind="f" aria-pressed="false" data-k="pick"><span class="t">Stores you follow</span><span class="sp"></span><small id="pfolv"></small></button>
+      <button type="button" class="door chk" id="stnot" data-st="pnot" data-kind="n" data-adm aria-pressed="false" data-k="pick" hidden><span class="t">Notices</span><span class="sp"></span><small id="pnotv"></small></button>
   </div>
   <p class="stmsg" id="stoffermsg" aria-live="polite"></p>
   <p class="lb stlb">Hub</p>
@@ -268,6 +271,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   var WORDS = {
     pme: "live event events pairing pairings alerts alert notifications riot name tag id test table round",
     poffer: "trade offers offer counter alerts alert notifications board",
+    pwish: "wishlist prices price moves cards alerts alert notifications",
+    pfol: "stores store follow following new events event alerts alert notifications",
+    pnot: "notices notice admin alerts alert notifications",
     plocal: "share my legend tier list local decks deck placing standings game",
     phub: "hub layout blocks block grid arrange order move drag pages home",
     popen: "open the app to start launch first page",
@@ -277,28 +283,38 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     pweek: "week starts sunday monday calendar events day"
   };
   window.ST_MEVAL = meVal;
-  // TRADE OFFERS: the Trade board's Offer alerts switch, here too (account.js keeps it; saved accounts only)
-  var offer = document.getElementById("stoffer"), offerMsg = document.getElementById("stoffermsg");
+  // ALERT KINDS (block 5's Trade offers; plan 2 M9 block 6 adds Wishlist prices, Stores you follow and, on the
+  // admin's account, Notices): check rows, each on or off on this phone (account.js keeps them; saved accounts only)
+  var offerMsg = document.getElementById("stoffermsg"), KROWS = ["stoffer", "stwish", "stfol", "stnot"].map(function(id){ return document.getElementById(id); });
+  var KSAY = { o: "On. An alert comes to this phone when someone sends you an offer.", w: "On. At most once a day, when a Wishlist price moves 10% or more.",
+    f: "On. An alert comes when a store you follow adds an event.", n: "On. An alert comes when a notice lands." };
+  function isAdm(){ var A = window.RAVI_ACCT, v = A && A.view && A.view(); return !!(v && v.admin); }
   function drawOffer(){
-    var A = window.RAVI_ACCT, on = !!(A && A.offerAlertsOn && A.offerAlertsOn()), saved = !!(A && A.signedIn() && !A.isGuest());
-    offer.setAttribute("aria-pressed", String(on)); offer.classList.toggle("on", on);
-    val("poffer", saved ? "" : "Save your account first");
+    var A = window.RAVI_ACCT, saved = !!(A && A.signedIn() && !A.isGuest());
+    KROWS.forEach(function(b){
+      var k = b.getAttribute("data-kind"), on = !!(A && A.alertOn && A.alertOn(k));
+      b.setAttribute("aria-pressed", String(on)); b.classList.toggle("on", on);
+      val(b.getAttribute("data-st"), saved ? "" : "Save your account first");
+      if (b.hasAttribute("data-adm") && !isAdm()) { b.hidden = true; } else if (b.hasAttribute("data-adm") && !stq.value) { b.hidden = false; }
+    });
   }
-  offer.addEventListener("click", function(){
-    var A = window.RAVI_ACCT;
-    if (!A || offer.disabled) { return; }
-    if (!(A.signedIn() && !A.isGuest())) { if (window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN(); } return; }
-    var on = A.offerAlertsOn();
-    offer.disabled = true; offerMsg.textContent = on ? "Turning off." : "Turning on.";
-    (on ? A.offerAlertStop : function(cb){ A.offerAlertStart(new URL("../alerts-sw.js", location.href).href, cb); })(function(err){
-      drawOffer();
-      offerMsg.textContent = err || (on ? "Off on this phone." : "On. An alert comes to this phone when someone sends you an offer.");
+  KROWS.forEach(function(b){
+    b.addEventListener("click", function(){
+      var A = window.RAVI_ACCT, k = b.getAttribute("data-kind");
+      if (!A || b.disabled) { return; }
+      if (!(A.signedIn() && !A.isGuest())) { if (window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN(); } return; }
+      var on = A.alertOn(k);
+      b.disabled = true; offerMsg.textContent = on ? "Turning off." : "Turning on.";
+      (on ? function(cb){ A.alertStop(k, cb); } : function(cb){ A.alertStart(k, new URL("../alerts-sw.js", location.href).href, cb); })(function(err){
+        b.disabled = false; drawOffer();
+        offerMsg.textContent = err || (on ? "Off on this phone." : KSAY[k]);
+      });
     });
   });
-  drawOffer();
   if (window.RAVI_ACCT && window.RAVI_ACCT.onChange) { window.RAVI_ACCT.onChange(drawOffer); }
   if (window.RAVI_ACCT && window.RAVI_ACCT.onChange) { window.RAVI_ACCT.onChange(meVal); }
   var stq = document.getElementById("stq"), stqx = document.getElementById("stqx"), none = document.getElementById("stnone");
+  drawOffer();
   function find(){
     var q = stq.value.toLowerCase().replace(/[^a-z0-9#\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
     stqx.disabled = !stq.value;
@@ -306,7 +322,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       var grp = document.getElementById(g), left = 0;
       grp.querySelectorAll("[data-st]").forEach(function(b){
         var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);
-        var hit = q.every(function(w){ return have.some(function(h){ return h.indexOf(w) === 0; }); });
+        var hit = q.every(function(w){ return have.some(function(h){ return h.indexOf(w) === 0; }); }) && !(b.hasAttribute("data-adm") && !isAdm());
         b.hidden = !hit; if (hit) { left++; }
       });
       grp.hidden = !left; if (left) { any = true; }

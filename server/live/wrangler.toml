@@ -8,6 +8,11 @@ workers_dev = true
 
 # Accounts allowed to settle Riot ID disputes (accounts.js): RAVI account
 # numbers, comma separated. Mako's number goes here (Your data shows it).
+# The hourly run (plan 2 M9 block 6, notify.js): Wishlist prices, new events from followed
+# stores, the admin's Notices. Cron Triggers are on the free plan.
+[triggers]
+crons = ["25 * * * *"]
+
 [vars]
 ADMIN = "00eba1d7eaba3dcf7ca6dc50"
 
