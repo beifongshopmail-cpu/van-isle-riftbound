@@ -685,6 +685,38 @@
   function goalOf(f){ return (FMTS[f || FMT] || FMTS["1v1"]).goal; }
   function teamOf(p){ return p % 2 === 1 ? 1 : 2; }
   function teamName(t){ return t === 1 ? "Team A" : "Team B"; }
+  // TURN ORDER (Mako 2026-11-11 22:42): with more than two, New match's players are tapped in the
+  // order they go; the last fills in by itself, and in 2v2, where the teams alternate, the rest
+  // fills in after two taps. The order rides on the game's first event (o) and seats the players
+  // clockwise from you. A player's number is who they are (their name, legend, colour, team: 1
+  // and 3 are Team A); their place at the table follows the order.
+  function defOrder(f){ var o = [], i; for (i = 1; i <= seatsOf(f); i++) { o.push(i); } return o; }
+  function canNext(o, x, f){
+    if (o.indexOf(x) >= 0) { return false; }
+    return !(f === "2v2" && o.length && teamOf(x) === teamOf(o[o.length - 1]));
+  }
+  function okOrder(o, f){
+    if (!o || !o.length || o.length !== seatsOf(f)) { return false; }
+    for (var i = 0; i < o.length; i++) {
+      if (!(o[i] >= 1 && o[i] <= o.length) || !canNext(o.slice(0, i), o[i], f)) { return false; }
+    }
+    return true;
+  }
+  // fill in what is forced (a single choice left); all: fill the rest in player order
+  function fillOrder(o, f, all){
+    var n = seatsOf(f), x, c;
+    o = o.slice();
+    while (o.length < n) {
+      c = [];
+      for (x = 1; x <= n; x++) { if (canNext(o, x, f)) { c.push(x); } }
+      if (!c.length || (c.length > 1 && !all)) { break; }
+      o.push(c[0]);
+    }
+    return o;
+  }
+  function gameOrder(){ var o = ev && ev[0] && ev[0].o; return okOrder(o, FMT) ? o : defOrder(FMT); }
+  // the player at place k round the table, counted clockwise from you (place 1)
+  function posPlayer(k){ var o = gameOrder(), i = o.indexOf(1); return o[(i + k - 1) % o.length]; }
   var MODES = ["focus","split"];
   var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
   var KEY = { conquer:"C", hold:"H", other:"O" };
@@ -1204,6 +1236,7 @@
   var mode = "focus";
   var wake = null;
   var firstP = 1;
+  var ordPick = null; // New match's turn order as tapped, more than two
   var bo = 3;
   var boPick = 3;
   var banked = [];
@@ -1265,6 +1298,11 @@
     if (e.t === "turn") {
       if (!okPl(e.p) || !okNum(e.n) || e.n < 1) { return null; }
       o = { t:"turn", p:e.p, n:Math.floor(e.n) };
+      if (e.o && e.o.length === okMax && okMax > 2) {
+        var seen = {}, good = true;
+        for (var oi = 0; oi < e.o.length; oi++) { if (!okPl(e.o[oi]) || seen[e.o[oi]]) { good = false; } seen[e.o[oi]] = 1; }
+        if (good) { o.o = e.o.slice(); }
+      }
     } else if (e.t === "point") {
       if (!okPl(e.p) || !okPl(e.tp) || !okNum(e.tn) || e.tn < 1) { return null; }
       o = { t:"point", p:e.p, src:Object.prototype.hasOwnProperty.call(SRC, e.src) ? e.src : "other",
@@ -1798,6 +1836,7 @@
   function buildMP(){
     var L = SEATS[FMT], h = "", i;
     function cell(p, far, wide){
+      p = posPlayer(p);
       return "<section class=\"seat p" + p + (far ? " far" : "") + (wide ? " wide" : "") + (lcol ? " lcol" : "") + "\" data-seat=\"" + p + "\"></section>";
     }
     var lcol;
@@ -1805,7 +1844,7 @@
     h += "<div class=\"smid\" id=\"smid\"></div>";
     for (i = 0; i < L.bot.length; i++) { lcol = i === 0 && L.bot.length > 1; h += cell(L.bot[i], false, L.bot.length === 1); }
     field.innerHTML = "<div class=\"mpf\" data-f=\"" + FMT + "\">" + h + "</div>";
-    fieldKind = FMT;
+    fieldKind = mpKind();
     fieldBuilt = true;
   }
   function seatKey(p){
@@ -1844,8 +1883,9 @@
       ps.style.setProperty("--sc", colourOf(p));
     }
   }
+  function mpKind(){ return FMT + ":" + gameOrder().join(""); }
   function renderMP(){
-    if (fieldKind !== FMT) { buildMP(); }
+    if (fieldKind !== mpKind()) { buildMP(); }
     var seats = field.querySelectorAll(".seat");
     for (var i = 0; i < seats.length; i++) { fillSeat(seats[i], parseInt(seats[i].getAttribute("data-seat"), 10)); }
     var mid = document.getElementById("smid"), tl = tmLine(true) + tmLine(false);
@@ -1855,9 +1895,9 @@
   // passing over anyone who is out.
   function nextSeat(p){
     if (!isMP()) { return p === 1 ? 2 : 1; }
-    var n = seatsOf(), out = tallyMP(ev, FMT).out;
+    var o = gameOrder(), n = o.length, out = tallyMP(ev, FMT).out, i = o.indexOf(p);
     for (var k = 1; k <= n; k++) {
-      var q = ((p - 1 + k) % n) + 1;
+      var q = o[(i + k) % n];
       if (!out[q]) { return q; }
     }
     return p;
@@ -2254,7 +2294,13 @@
     bo = isMP() ? 1 : boPick;
     banked = [];
     saveMatch();
-    ev = fresh(firstP);
+    if (isMP()) {
+      var o = fillOrder(ordPick || defOrder(FMT), FMT, true);
+      if (!okOrder(o, FMT)) { o = defOrder(FMT); }
+      ev = [ { t:"turn", p:o[0], n:1, at:Date.now(), o:o } ];
+    } else {
+      ev = fresh(firstP);
+    }
     renderPast();
     save();
     render();
@@ -2869,23 +2915,33 @@
     for (var i = 0; i < b.length; i++) { b[i].setAttribute("aria-pressed", b[i].getAttribute("data-fmt") === fmtPick ? "true" : "false"); }
   }
 
-  // Who goes first: a choice per player of the format the menu is for (setF)
+  // Who goes first: 1v1's two choices; more than two, the players tapped in turn order, each
+  // showing its place once it has one, a player who cannot come next (2v2) dimmed
   function syncFirst(){
-    var box = document.getElementById("first"), n = seatsOf(setF), b = box.getElementsByTagName("button"), i;
-    if (firstP > n) { firstP = 1; }
+    var f = fmtPick, box = document.getElementById("first"), n = seatsOf(f), b = box.getElementsByTagName("button"), i;
+    if (!ordPick || !ordPick.length || ordPick.length > n) { ordPick = defOrder(f); }
+    if (firstP > 2) { firstP = 1; }
     if (b.length !== n) {
       var h = "";
       for (i = 1; i <= n; i++) { h += "<button type=\"button\" data-first=\"" + i + "\" aria-pressed=\"false\"></button>"; }
       box.innerHTML = h;
       b = box.getElementsByTagName("button");
     }
+    var mp = isMP(f), full = ordPick.length >= n;
     for (i = 0; i < b.length; i++) {
-      var p = parseInt(b[i].getAttribute("data-first"), 10);
-      // four names do not fit with "first" after each: more than two, the names alone
-      b[i].textContent = nameOf(p, setF) + (isMP(setF) ? "" : " first");
-      if (isMP(setF)) { b[i].setAttribute("aria-label", nameOf(p, setF) + " first"); } else { b[i].removeAttribute("aria-label"); }
-      wearSide(b[i], p, setF);
-      b[i].setAttribute("aria-pressed", p === firstP ? "true" : "false");
+      var p = parseInt(b[i].getAttribute("data-first"), 10), at = ordPick.indexOf(p);
+      if (mp) {
+        b[i].textContent = (at >= 0 ? (at + 1) + " " : "") + nameOf(p, f);
+        b[i].setAttribute("aria-label", at >= 0 ? nameOf(p, f) + ", " + ["first", "second", "third", "fourth"][at] : nameOf(p, f));
+        b[i].disabled = !full && at < 0 && !canNext(ordPick, p, f);
+        b[i].setAttribute("aria-pressed", at === 0 ? "true" : "false");
+      } else {
+        b[i].textContent = nameOf(p, f) + " first";
+        b[i].removeAttribute("aria-label");
+        b[i].disabled = false;
+        b[i].setAttribute("aria-pressed", p === firstP ? "true" : "false");
+      }
+      wearSide(b[i], p, f);
     }
   }
 
@@ -2898,6 +2954,7 @@
     preAt = Date.now();
     fmtPick = (again && isMP()) ? FMT : "1v1";
     setF = fmtPick;
+    ordPick = (again && isMP()) ? gameOrder().slice() : defOrder(fmtPick);
     syncFmt();
     tmDisarm();
     disarmConcede();
@@ -3007,7 +3064,7 @@
     var t = (e.target.closest && e.target.closest("button")) || e.target;
     var fm = t.getAttribute && t.getAttribute("data-fmt");
     if (fm && FMTS[fm]) {
-      fmtPick = fm; setF = fm;
+      fmtPick = fm; setF = fm; ordPick = defOrder(fm);
       syncFmt(); syncLen(); syncSetup(); syncFirst();
       return;
     }
@@ -3019,7 +3076,15 @@
     }
     var fp = t.getAttribute && t.getAttribute("data-first");
     if (fp) {
-      firstP = parseInt(fp, 10);
+      var fpn = parseInt(fp, 10);
+      if (isMP(fmtPick)) {
+        // a tap names who goes next; once everyone has a place, a tap starts the order over
+        if (ordPick.length >= seatsOf(fmtPick)) { ordPick = [fpn]; }
+        else if (canNext(ordPick, fpn, fmtPick)) { ordPick.push(fpn); }
+        ordPick = fillOrder(ordPick, fmtPick);
+      } else {
+        firstP = fpn;
+      }
       syncFirst();
       return;
     }
