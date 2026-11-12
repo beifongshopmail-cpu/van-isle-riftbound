@@ -19,7 +19,7 @@ Browse: a list of things you search, look through and open. Reference: Cards (ca
 - Parts, in this order: the wordmark row; the sticky search plate (section 5, Browse parts): the search, then one row of Grid | List and the chips (Sort; Filters, or Kinds); the list's head with its count; the list; Back to top on a long list; the footer.
 - The list: Grid, a tile per thing (two across; three for card pictures); List, a record row per thing. Each thing shows its picture or stand-in, its name and at most two more lines that matter, and the chevron when it opens.
 - Each thing shows its own picture: a photo, its art or its cover. A stand-in only until it has one; a page whose things have no pictures gets them before it ships.
-- A thing opens as a menu, never a full screen: the head its name and Close; the body in this order: its picture, its words, its facts (a glass card of rows you read), its lists (press groups); the foot its one action. A link in (?<key>=<id>) opens its menu over the list.
+- A thing opens as a menu, never a full screen: the head its name and Close; the body in this order: its picture, its words, its facts as words on the menu with no surface (glass means press), its lists (press groups); the foot its one action. A link in (?<key>=<id>) opens its menu over the list.
 - Empty: says what is missing and carries its own button (Show all <things>). Loading: the page's own loading blocks in this phone's view.
 - Colour: none on the things or their menus, unless the colour names a kind (section 4, Colour: News' kinds, Rules' sections, a player).
 
