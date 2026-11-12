@@ -19,6 +19,7 @@ Decks (decks/index.html)
 - Sort and group (#psort) and a section's Sort by are rows (.pick), the arrow on the chosen sort, a second tap flips it, as every sort menu (plan 2 M8.7 B7).
 - Stats are tiles. A tapped tile opens in place to the full row with its chart, and Open all and Close all sit above them. (Mako's yes 2026-10-24)
 - A change updates the page in place; pictures that stay are never rebuilt (paint() in decks/index.html). (Mako's yes 2026-10-24)
+- The tour's deck (plan 2 M9 block 7; Mako 2026-11-12): the Decks tour shows Deck | Stats | Hand and Edit on a deck. With a deck of the player's own it opens that one and leaves it open. With none, an example opens read-only as a Tier list deck does: the newest winning top-cut list (data/tierlists.json), named Example deck, its card reading 'An example deck' and 'Here for the tour; it goes when the tour ends', then the TopDeck.gg line; never kept on the phone or sent anywhere (Copy to my decks keeps it if the player wants it); the list of decks comes back when the tour ends.
 
 Bends (Browse parts, STYLE.md section 5): .plate (fixed under the wordmark, the page's width less 24, at most 456); .dvseg svg (its view icons are drawn as lines).
 

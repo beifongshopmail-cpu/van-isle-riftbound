@@ -1119,6 +1119,28 @@ body{-webkit-font-smoothing:antialiased;
     CURID = d.id; SCREEN = "deck"; VIEW = "deck"; HAND = null; ASIDE = []; EDIT = false;
     pressSeg(el("vw"), "data-vw", VIEW); openPanel(null); render(); window.scrollTo(0, 0);
   }
+  // THE TOUR'S DECK (plan 2 M9 block 7; Mako 2026-11-12: an example deck in reserve for the guided
+  // tour when no deck is made yet, gone right after). The Decks tour asks for a deck to show
+  // Deck | Stats | Hand and Edit on: the player's own when there is one, opened as a tap on it
+  // would; with none, the newest winning top-cut list (data/tierlists.json) opens read-only as
+  // the example, never kept on the phone and never sent anywhere, and the list comes back when
+  // the tour ends. (tour.js names these three.)
+  var EXBUSY = false;
+  window.RAVI_DECKS_NONE = function(){ return !DECKS.length; };
+  window.RAVI_DECK_TOUR = function(){
+    if(SCREEN === "deck" || !I) return;
+    if(DECKS.length){ go("deck", DECKS.some(function(x){ return x.id === CURID; }) ? CURID : DECKS[0].id); return; }
+    if(EXBUSY) return;
+    EXBUSY = true;
+    fetch("../data/tierlists.json").then(function(r){ return r.json(); }).then(function(j){
+      EXBUSY = false;
+      var l = j && Array.isArray(j.lists) ? j.lists.filter(function(x){ return x && x.r === 1 && typeof x.c === "string"; })[0] || j.lists[0] : null;
+      if(!l || !l.c || !window.RAVI_TOUR || SCREEN === "deck" || DECKS.length) return;
+      roTier(l.c, "");
+      if(isRO()){ RO.example = true; RO.deck.name = "Example deck"; render(); }
+    }).catch(function(){ EXBUSY = false; });
+  };
+  window.RAVI_DECK_TOUR_END = function(){ if(RO && RO.example){ go("home"); } };
   function roCard(){
     var w = RO.who || {}, st = "", inner = "";
     if(RO.tier){
@@ -1131,7 +1153,8 @@ body{-webkit-font-smoothing:antialiased;
     } else if(w.pic && w.pic.k === "p" && A) st = ' style="background-image:url(' + A.BASE + '/acct/bpic/' + esc(RO.h) + '?v=' + (+w.pic.v || 0) + ')"';
     else inner = PERSON;
     var bits = [];
-    if(RO.tier){ bits.push("A top-cut list from TopDeck.gg"); }
+    if(RO.example){ bits.push("Here for the tour; it goes when the tour ends"); bits.push("A top-cut list from TopDeck.gg"); }
+    else if(RO.tier){ bits.push("A top-cut list from TopDeck.gg"); }
     else {
       if(w.name && w.user) bits.push("@" + w.user);
       bits.push((RO.vis === "pub" ? "Public, shared " : "Shared by link, ") + ago(RO.vt));
@@ -1145,7 +1168,7 @@ body{-webkit-font-smoothing:antialiased;
     var acts = installed()
       ? '<div class="two"><button type="button" class="pact btn glass" data-act="rocopy" data-k="do">Copy to my decks</button><button type="button" class="pact btn glass" data-act="rocode" data-k="do">Copy deck code</button></div>'
       : '<button type="button" class="pact btn glass" data-act="rocode" data-k="do">Copy deck code</button><p class="pnote" style="margin-top:8px">Paste it into Import on Decks in the RAVI app, or any deck builder.</p>';
-    return '<section class="dsec glass rocard"><div class="rowho"><span class="ropic" aria-hidden="true"' + st + '>' + inner + '</span><span class="ronm"><b>' + esc(RO.tier ? cap(RO.tier) : (w.name || whoWord(w))) + '</b><small>' + esc(bits.join(" · ")) + '</small></span>' + like + '</div>' + acts + saverow + '</section>';
+    return '<section class="dsec glass rocard"><div class="rowho"><span class="ropic" aria-hidden="true"' + st + '>' + inner + '</span><span class="ronm"><b>' + esc(RO.example ? "An example deck" : RO.tier ? cap(RO.tier) : (w.name || whoWord(w))) + '</b><small>' + esc(bits.join(" · ")) + '</small></span>' + like + '</div>' + acts + saverow + '</section>';
   }
   function roCopy(){
     if(!RO) return;

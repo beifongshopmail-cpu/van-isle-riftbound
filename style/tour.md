@@ -10,6 +10,7 @@ The tour (tour.js, app.css THE TOUR; plan 2 M9 block 7, direction agreed with Ma
 - Where a stop says so, the player goes on by tapping the real control (an event card, a store, a card, Tracker settings) and the tour follows it into its menu as soon as that is drawn; Next taps it for them. A menu the tour opened closes before a stop outside it.
 - The light glides from one control to the next in .34s on the settle curve; with reduced motion it steps. The tour fades in over .2s.
 - A stop whose control is not on the page (no live event, no Movers yet) is left out, and the count is of the stops there are.
+- A page may set a stop up (a stop's pre, a function the page offers) and put things back when the tour ends (the tour's end): Decks opens a deck for its last stops, the player's own or an example that goes when the tour ends (style/decks.md).
 - Stops: two to five a page, the less obvious parts only, each two or three lines at 402 in the app's words (STYLE.md section 4, Words), spoken to the player (you, your); a page's name is bold (.tourt b, Poppins 600; written between stars in tour.js). Every tour's stops are in tour.js (RAVI_TOURS), one list per page; rb-tools p2m9h walks every tour at 402 and 360.
 - Prior art, the approach only: driver.js (MIT), Apple's TipKit and NN/g's findings on tutorials (records: NEXT -- a guided tour of RAVI).
 

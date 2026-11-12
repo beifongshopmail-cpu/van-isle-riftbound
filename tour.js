@@ -16,6 +16,10 @@
 //   tap  true: the player goes on by tapping the real control (Next taps it for them)
 //   in   true: the control is inside the menu the stop before opened, so it is not looked for
 //        until then
+//   pre  the name of a function the page offers (on window) that sets the stop up before its
+//        control is looked for: Decks opens a deck, the player's own or the example (RAVI_DECK_TOUR)
+//   when the name of a function the page offers that says whether this stop belongs at all
+// A tour may name an end function the same way, called when the tour ends (Done or Skip).
 // A stop whose control is not on the page is left out, and the count is of the stops there are.
 (function(){
   "use strict";
@@ -76,10 +80,12 @@
       { s: "#mvtog", t: "Movers shows your biggest gains and losses." },
       { s: "#tabadd", t: "Add cards shows every card. Tap a picture to add one." }
     ] },
-    decks: { page: "decks/", stops: [
+    decks: { page: "decks/", end: "RAVI_DECK_TOUR_END", stops: [
       { s: "#hplate [data-act=imp]", t: "Import brings a deck over from Piltover Archive, Riftmana or another builder." },
-      { s: "#hplate [data-act=new]", t: "Build a deck here. RAVI checks Riot's deck rules as you go, and gives you Stats and a sample Hand." },
-      { s: "#hview", t: "Public shows decks other players share. Copy one to make it yours." }
+      { s: "#hview", t: "Public shows decks other players share. Copy one to make it yours." },
+      { s: ".rocard", pre: "RAVI_DECK_TOUR", when: "RAVI_DECKS_NONE", t: "This is an example deck, here just for the tour. It goes away when you finish." },
+      { s: "#vw", pre: "RAVI_DECK_TOUR", t: "Deck is the list, checked against Riot's deck rules. Stats breaks it down, and Hand deals you a sample hand." },
+      { s: "#tabedit", pre: "RAVI_DECK_TOUR", t: "Edit lets you change a deck of your own: steppers on each card, and tiles to add more." }
     ] },
     cards: { page: "cards/", stops: [
       { s: ".plate .sf", t: "Search by name, number, tag or type. Cards that match only in their text come after." },
@@ -110,7 +116,7 @@
 
   var CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
   var el = null, hole, pop, words, count, foot, blocks = [], mid;
-  var stops = [], at = -1, target = null, cur = null, from = null, t0 = 0, raf = 0, busy = false, GLIDE = 340;
+  var stops = [], at = -1, target = null, cur = null, from = null, t0 = 0, raf = 0, busy = false, done = "", GLIDE = 340;
 
   function still(){
     if (window.RAVI_LESS) { return true; }
@@ -224,17 +230,32 @@
     if (document.querySelector(".panel.show")) { x = document.querySelector(".panel.show [data-close]"); if (x) { x.click(); } }
     return true;
   }
+  function fn(name){ return name && typeof window[name] === "function" ? window[name] : null; }
   function go(n){
-    var s, e, last, wait = 0;
     busy = false;
-    if (target) { target.removeAttribute("data-tour-on"); }
-    // the next stop that is on the page
-    for (; n < stops.length; n++) { e = find(stops[n].s); if (e) { break; } }
+    if (target) { target.removeAttribute("data-tour-on"); target = null; }
+    seek(n, 0);
+  }
+  // the next stop that is on the page; one the page sets up, or one inside what the last tap
+  // opened, is waited for (2.4 s at most)
+  function seek(n, tries){
+    var s, e;
+    if (!el) { return; }
     if (n >= stops.length) { return end(); }
     s = stops[n];
+    if (s.pre && !tries && fn(s.pre)) { try { fn(s.pre)(); } catch (x) {} }
+    e = find(s.s);
+    if (!e) {
+      if ((s.pre || s["in"]) && tries < 60) { busy = true; setTimeout(function(){ seek(n, tries + 1); }, 40); return; }
+      return seek(n + 1, 0);
+    }
+    busy = false;
+    show(n, e);
+  }
+  function show(n, e){
+    var s = stops[n], last = n === stops.length - 1, wait = 0;
     if (shut(e)) { wait = still() ? 60 : 240; }
     at = n; target = e; e.setAttribute("data-tour-on", "");
-    last = n === stops.length - 1;
     // the words, a page's name between stars drawn bold; built as nodes, never as markup
     words.textContent = "";
     s.t.split("*").forEach(function(part, i){
@@ -263,15 +284,21 @@
     document.removeEventListener("click", tapped, true);
     if (el && el.parentNode) { el.parentNode.removeChild(el); }
     el = null; target = null; cur = null; at = -1; blocks = [];
+    if (fn(done)) { try { fn(done)(); } catch (e) {} }   // the page puts back what it set up for the tour
+    done = "";
   }
   function start(id){
     var t = window.RAVI_TOURS[id], i, n = 0, s;
     if (!t || el) { return false; }
-    stops = t.stops.map(function(x){ return { s: x.s, t: x.t, tap: !!x.tap, "in": !!x["in"] }; });
+    stops = t.stops.map(function(x){ return { s: x.s, t: x.t, tap: !!x.tap, "in": !!x["in"], pre: x.pre || "", when: x.when || "" }; });
+    done = t.end || "";
     // the stops there are: a control on the page now, or one inside the menu a counted stop opens
     for (i = 0; i < stops.length; i++) {
       s = stops[i];
-      s.live = s["in"] ? (i > 0 && stops[i - 1].live && stops[i - 1].tap) : !!find(s.s);
+      if (s.when && !(fn(s.when) && fn(s.when)())) { s.live = false; }
+      else if (s.pre) { s.live = !!fn(s.pre); }
+      else if (s["in"]) { s.live = i > 0 && stops[i - 1].live && stops[i - 1].tap; }
+      else { s.live = !!find(s.s); }
       if (s.live) { n++; s.num = n; }
     }
     stops = stops.filter(function(x){ return x.live; });
