@@ -386,7 +386,7 @@ body{-webkit-font-smoothing:antialiased;
     }
     el("sbody").innerHTML = h;
     var base = "webcal://" + new URL("../data/store/", location.href).href.replace(/^https?:\/\//, "");
-    el("sfoot").innerHTML = '<a class="pact btn glass" href="' + esc(base + String(s.sid).replace(/[^A-Za-z0-9_-]/g, "") + ".ics") + '" data-k="do">Follow its events</a>';
+    el("sfoot").innerHTML = '<a class="pact btn glass" href="' + esc(base + String(s.sid).replace(/[^A-Za-z0-9_-]/g, "") + ".ics") + '" data-k="do">Follow their events</a>';
   }
   function openStore(sid){
     var s = STORES.filter(function(x){ return x.sid === String(sid); })[0]; if(!s) return false;
