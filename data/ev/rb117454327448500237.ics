@@ -6,8 +6,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 UID:rb117454327448500237@van-isle-riftbound
 DTSTAMP:20260901T000000Z
-DTSTART;TZID=America/Vancouver:20261113T190000
-DTEND;TZID=America/Vancouver:20261113T220000
+DTSTART;TZID=America/Vancouver:20261113T180000
+DTEND;TZID=America/Vancouver:20261113T210000
 SUMMARY:Skyhaven Friday Learn to Play
 LOCATION:3458 Tillicum Rd\, Victoria\, BC V8Z 4H3\, Canada
 DESCRIPTION:Learn-to-Play\nSkyhaven Games\, Victoria\n14 of 16 spots left\n

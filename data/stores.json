@@ -1,6 +1,6 @@
 {
  "v": 1,
- "updated": "2026-11-11",
+ "updated": "2026-11-12",
  "stores": [
   {
    "sid": "21894",
@@ -8,7 +8,7 @@
    "short": "AJ's",
    "city": "Campbell River",
    "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "902",
@@ -16,7 +16,7 @@
    "short": "Colossal Courtenay",
    "city": "Courtenay",
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "01a02b42-28ed-7be5-a65a-49431ed2f88f",
@@ -24,7 +24,7 @@
    "short": "Fort Game Cafe",
    "city": "Duncan",
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
@@ -32,7 +32,7 @@
    "short": "Sports Card Alley",
    "city": "Nanaimo",
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "01a0310f-8c3a-78f3-a379-1c67b942326c",
@@ -40,7 +40,7 @@
    "short": "Card Corner",
    "city": "Port Alberni",
    "address": "5262 Argyle St, Port Alberni, BC V9Y 1T9, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "15103",
@@ -48,7 +48,7 @@
    "short": "Colossal Victoria",
    "city": "Victoria",
    "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
@@ -56,7 +56,7 @@
    "short": "Elite4",
    "city": "Victoria",
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "16866",
@@ -64,7 +64,7 @@
    "short": "Everything Games",
    "city": "Victoria",
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "2069",
@@ -72,7 +72,7 @@
    "short": "Gauntlet",
    "city": "Victoria",
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "18437",
@@ -80,7 +80,7 @@
    "short": "North Park Framing",
    "city": "Victoria",
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "st-rottys-creations-victoria",
@@ -88,7 +88,7 @@
    "short": "Rotty's",
    "city": "Victoria",
    "address": "",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   },
   {
    "sid": "4294",
@@ -96,7 +96,7 @@
    "short": "Skyhaven",
    "city": "Victoria",
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "seen": "2026-11-11"
+   "seen": "2026-11-12"
   }
  ]
 }

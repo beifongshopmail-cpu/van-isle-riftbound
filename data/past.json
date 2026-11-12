@@ -3,6 +3,18 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117560608744223758",
+   "name": "Gauntlet Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-11T18:00:00-07:00",
+   "day": "2026-11-11",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "store": "Gauntlet",
+   "region": "victoria",
+   "sid": 2069
+  },
+  {
    "id": "rb117454297833145987",
    "name": "Skyhaven Sunday Nexus Night",
    "type": "nexus",

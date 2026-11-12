@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-11T20:01:51.585Z",
- "generated_local": "2026-11-11T13:01:51-07:00",
- "window_start": "2026-11-11T07:00:00.000Z",
+ "generated_at": "2026-11-12T08:00:15.246Z",
+ "generated_local": "2026-11-12T01:00:15-07:00",
+ "window_start": "2026-11-12T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 55,
-   "added": 55
+   "returned": 54,
+   "added": 54
   },
   {
    "name": "Sidney",
@@ -159,9 +159,9 @@
   }
  ],
  "totals": {
-  "fetched": 79,
-  "unique": 81,
-  "prev_unique": 80,
+  "fetched": 78,
+  "unique": 80,
+  "prev_unique": 81,
   "recent": [
    {
     "d": "2026-11-03",
@@ -198,6 +198,10 @@
    {
     "d": "2026-11-11",
     "n": 81
+   },
+   {
+    "d": "2026-11-12",
+    "n": 80
    }
   ]
  },
@@ -221,30 +225,6 @@
  "other_towns": [],
  "events": [
   {
-   "id": "rb117560608744223758",
-   "name": "Gauntlet Games Nexus Night",
-   "type": "nexus",
-   "start": "2026-11-11T18:00:00-07:00",
-   "end": null,
-   "day": "2026-11-11",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 2069,
-   "store": "Gauntlet",
-   "swiss": 3,
-   "cut": false
-  },
-  {
    "id": "rb117525463093881953",
    "name": "North Park Picture Framing and Collectables Open Play",
    "type": "open",
@@ -257,7 +237,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 0,
+   "reg": 1,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -272,10 +252,10 @@
    "id": "rb117454327448500237",
    "name": "Skyhaven Friday Learn to Play",
    "type": "learn",
-   "start": "2026-11-13T19:00:00-07:00",
+   "start": "2026-11-13T18:00:00-07:00",
    "end": null,
    "day": "2026-11-13",
-   "time": "7:00 PM",
+   "time": "6:00 PM",
    "venue": "Skyhaven Games",
    "city": "Victoria",
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
@@ -377,7 +357,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 24,
-   "reg": 2,
+   "reg": 3,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -464,16 +444,16 @@
    "id": "rb117073785007006396",
    "name": "Radiance Skirmish #1",
    "type": "skirmish",
-   "start": "2026-11-15T18:00:00-07:00",
+   "start": "2026-11-15T17:00:00-07:00",
    "end": null,
    "day": "2026-11-15",
-   "time": "6:00 PM",
+   "time": "5:00 PM",
    "venue": "Skyhaven Games",
    "city": "Victoria",
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 17,
+   "reg": 18,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -1463,7 +1443,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1991,7 +1971,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 1,
+   "reg": 2,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -2135,7 +2115,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 4000,
    "currency": "CAD",
    "updated": null,
