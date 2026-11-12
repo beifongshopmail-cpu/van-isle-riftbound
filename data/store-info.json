@@ -50,6 +50,293 @@
    "web": "https://elite4games.com",
    "checked": "2026-11-11",
    "source": "elite4games.com footer (no hours listed there)"
+  },
+  "2069": {
+   "hours": {
+    "mon": [
+     [
+      "12:00",
+      "21:00"
+     ]
+    ],
+    "tue": [
+     [
+      "12:00",
+      "21:00"
+     ]
+    ],
+    "wed": [
+     [
+      "12:00",
+      "21:00"
+     ]
+    ],
+    "thu": [
+     [
+      "12:00",
+      "21:00"
+     ]
+    ],
+    "fri": [
+     [
+      "12:00",
+      "21:00"
+     ]
+    ],
+    "sat": [
+     [
+      "10:00",
+      "21:00"
+     ]
+    ],
+    "sun": [
+     [
+      "10:00",
+      "21:00"
+     ]
+    ]
+   },
+   "phone": "778-265-5556",
+   "web": "https://www.gauntletgamesvictoria.ca",
+   "source": "gauntletgamesvictoria.ca contact page",
+   "checked": "2026-11-11"
+  },
+  "4294": {
+   "hours": {
+    "mon": [],
+    "tue": [
+     [
+      "11:00",
+      "22:00"
+     ]
+    ],
+    "wed": [
+     [
+      "11:00",
+      "22:00"
+     ]
+    ],
+    "thu": [
+     [
+      "11:00",
+      "22:00"
+     ]
+    ],
+    "fri": [
+     [
+      "11:00",
+      "22:00"
+     ]
+    ],
+    "sat": [
+     [
+      "09:00",
+      "22:00"
+     ]
+    ],
+    "sun": [
+     [
+      "09:00",
+      "22:00"
+     ]
+    ]
+   },
+   "phone": "250-477-1519",
+   "source": "Yelp listing (updated Nov 2026), matching Cybo",
+   "checked": "2026-11-11"
+  },
+  "902": {
+   "hours": {
+    "mon": [
+     [
+      "12:00",
+      "18:00"
+     ]
+    ],
+    "tue": [],
+    "wed": [
+     [
+      "12:00",
+      "18:00"
+     ]
+    ],
+    "thu": [
+     [
+      "12:00",
+      "18:00"
+     ]
+    ],
+    "fri": [
+     [
+      "10:00",
+      "21:00"
+     ]
+    ],
+    "sat": [
+     [
+      "10:00",
+      "21:00"
+     ]
+    ],
+    "sun": [
+     [
+      "12:00",
+      "21:00"
+     ]
+    ]
+   },
+   "phone": "250-871-6627",
+   "source": "Yelp and Nextdoor listings, which agree",
+   "checked": "2026-11-11"
+  },
+  "15103": {
+   "hours": {
+    "mon": [],
+    "tue": [
+     [
+      "12:00",
+      "20:00"
+     ]
+    ],
+    "wed": [
+     [
+      "12:00",
+      "20:00"
+     ]
+    ],
+    "thu": [
+     [
+      "12:00",
+      "20:00"
+     ]
+    ],
+    "fri": [
+     [
+      "10:00",
+      "20:00"
+     ]
+    ],
+    "sat": [
+     [
+      "10:00",
+      "20:00"
+     ]
+    ],
+    "sun": [
+     [
+      "10:00",
+      "20:00"
+     ]
+    ]
+   },
+   "phone": "778-445-3433",
+   "source": "Apple Maps listing, matching the store's own extended-hours post (Apr 2026)",
+   "checked": "2026-11-11"
+  },
+  "01a0310f-8c3a-78f3-a379-1c67b942326c": {
+   "hours": {
+    "mon": [],
+    "tue": [
+     [
+      "12:00",
+      "18:00"
+     ]
+    ],
+    "wed": [
+     [
+      "12:00",
+      "18:00"
+     ]
+    ],
+    "thu": [
+     [
+      "12:00",
+      "18:00"
+     ]
+    ],
+    "fri": [
+     [
+      "12:00",
+      "19:00"
+     ]
+    ],
+    "sat": [
+     [
+      "09:00",
+      "17:00"
+     ]
+    ],
+    "sun": []
+   },
+   "source": "the store's own shop site (thecardcornerandgames.shopsettings.com); Sunday and Monday not listed there, so closed",
+   "checked": "2026-11-11"
+  },
+  "st-rottys-creations-victoria": {
+   "hours": {
+    "mon": [],
+    "tue": [
+     [
+      "11:00",
+      "20:00"
+     ]
+    ],
+    "wed": [
+     [
+      "11:00",
+      "20:00"
+     ]
+    ],
+    "thu": [
+     [
+      "11:00",
+      "20:00"
+     ]
+    ],
+    "fri": [
+     [
+      "11:00",
+      "20:00"
+     ]
+    ],
+    "sat": [
+     [
+      "11:00",
+      "22:00"
+     ]
+    ],
+    "sun": [
+     [
+      "11:00",
+      "22:00"
+     ]
+    ]
+   },
+   "phone": "250-590-1418",
+   "web": "https://rottyscreations.com",
+   "source": "Otaku No Culture interview at the Victoria opening (Oct 2026): Tue to Sun 11 to 8, 10 Sat and Sun",
+   "checked": "2026-11-11"
+  },
+  "21894": {
+   "phone": "250-897-2512",
+   "source": "the store's window sign; hours not found",
+   "checked": "2026-11-11"
+  },
+  "019fb060-93e6-7a79-a82a-fc4762d7e46e": {
+   "phone": "250-758-1484",
+   "source": "listings; their hours disagree, so none shown",
+   "checked": "2026-11-11"
+  },
+  "18437": {
+   "phone": "250-880-9658",
+   "web": "https://npframing.ca",
+   "source": "npframing.ca; it shows only today's hours",
+   "checked": "2026-11-11"
+  },
+  "01a02b42-28ed-7be5-a65a-49431ed2f88f": {
+   "phone": "250-709-7882",
+   "web": "https://thefortduncan.com",
+   "source": "thefortduncan.com and listings; their hours disagree, so none shown",
+   "checked": "2026-11-11"
   }
  }
 }
