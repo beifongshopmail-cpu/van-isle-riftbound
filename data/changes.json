@@ -2,19 +2,14 @@
   "note": "Feedback's Planned and Recently shipped (plan 2 M8.7 block 2, Mako 2026-11-07). Kept by hand at every block that ships something a player would notice and at every milestone close-out (records: RULE -- keep the feedback page's Planned and Recently shipped current). Each line is a short title (t, a few words, what the page shows) and its detail (d, a sentence, shown on a tap). page is a RAVI_PAGES id, or app for the whole app. A version field (v) joins each update once testers start.",
   "planned": [
     {
-      "page": "counter",
-      "t": "Tracker for 2v2 and more players",
-      "d": "Keep score for two against two and for three or four players."
+      "page": "calendar",
+      "t": "Events beyond the island",
+      "d": "Pick any area, not only Vancouver Island."
     },
     {
       "page": "app",
       "t": "Use RAVI offline",
       "d": "The app opens and works with no connection."
-    },
-    {
-      "page": "calendar",
-      "t": "Events beyond the island",
-      "d": "Pick any area, not only Vancouver Island."
     },
     {
       "page": "rules",
@@ -46,6 +41,11 @@
     {
       "date": "2026-11-11",
       "items": [
+        {
+          "page": "counter",
+          "t": "Tracker for 2v2 and more players",
+          "d": "New match has a Format: 1v1 as always, 2v2, 3 players or 4 players. Two seats on each long side of the table, each with its own score, Conquer, Hold and Pass turn; 2v2 plays to 11 as a team, free-for-all to 8."
+        },
         {
           "page": "stores",
           "t": "The Stores page",

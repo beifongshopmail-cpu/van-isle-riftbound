@@ -416,6 +416,40 @@
   .lgpchips{flex-wrap:wrap;border-radius:22px}
   .lgpchips button{flex:1 1 auto;padding:0 12px}
 
+  /* ======== 2v2 AND FREE-FOR-ALL (plan 2 M9 block 5, Mako's yes 2026-11-11): two seats per long
+     side, the far pair turned to face across the table; 3 players, one seat across the top. As
+     1v1's halves, a seat sits on the black ground and its colour is in its name, its numeral and
+     its score buttons' stain (Mako 2026-11-11 21:55); a hairline parts the two seats of a side and
+     the two sides. Each seat: name, score, Conquer | Hold and, on the active seat only, Pass turn
+     (it keeps its place on the others, unseen, so nothing moves on a pass). ======== */
+  .mpf{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);gap:0}
+  .mpf > .smid{grid-column:1/-1;grid-row:2}
+  .mpf > .seat.far{grid-row:1}
+  .mpf > .seat:not(.far){grid-row:3}
+  .mpf > .seat.wide{grid-column:1/-1}
+  .seat{position:relative;min-width:0;min-height:0;overflow:hidden;
+    display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;padding:10px 8px}
+  .seat.far{transform:rotate(180deg)}
+  /* the hairline between a side's two seats: on the left seat's inner edge (a turned seat's
+     left edge is drawn on the right) */
+  .seat.lcol{border-right:1px solid rgba(255,255,255,.08)}
+  .seat.far.lcol{border-right:0;border-left:1px solid rgba(255,255,255,.08)}
+  .mpf > .smid{border-top:1px solid rgba(255,255,255,.08)}
+  .seat.out{opacity:.4}
+  .seat .name{order:0;margin:0 0 4px;align-self:center;justify-content:center}
+  .stm{flex:0 0 auto;color:var(--muted);font-weight:600;margin-right:7px}
+  .name .nm + .stm{margin:0 0 0 7px}
+  .seat .num{order:1;text-align:center;font-size:min(32vw,calc((50vh - 230px) * 1.2))}
+  .seat .acts{order:2;grid-template-columns:repeat(2,1fr);margin-top:10px}
+  .seat .acts button{font-size:13px;letter-spacing:.02em;padding:0}
+  .seat .pass{order:3;margin:8px 0 0}
+  .seat:not(.on) .pass{visibility:hidden}
+  .seat .lgathumb{top:8px;left:8px;width:44px;height:62px;border-radius:4px}
+  /* End game for more than two: a button per player, two across */
+  .mpg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .mpg + .pact{margin-top:8px}
+  #first button{min-width:0;padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
   /* THE EXPANDED CARD STAYS A TAP-ANYWHERE IMAGE VIEWER, not a menu */
   .spot{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;
     background:rgba(0,0,0,.7);border:0;padding:var(--top-clear) 14px max(14px,env(safe-area-inset-bottom));
@@ -505,6 +539,22 @@
                 <div class="seg swatch" id="c2" data-k="pick"></div>
               </div>
             </div>
+            <div class="pcard" id="pcard3" data-p="3" hidden>
+              <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot3"></i><span class="pnm" id="pnm3">Player 3</span><span class="sp"></span><small class="plegh" id="plegh3">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+              <div class="pcbody" id="pcbody3" hidden>
+                <div class="nf tall"><input type="text" id="n3" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Player 3" aria-label="Player 3's name" data-k="type"></div>
+                <button type="button" class="door btn glass" id="lgp3" data-lgp="3" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+                <div class="seg swatch" id="c3" data-k="pick"></div>
+              </div>
+            </div>
+            <div class="pcard" id="pcard4" data-p="4" hidden>
+              <button type="button" class="pchead" aria-expanded="false" data-k="open"><i class="pdot" id="pdot4"></i><span class="pnm" id="pnm4">Player 4</span><span class="sp"></span><small class="plegh" id="plegh4">No legend</small><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+              <div class="pcbody" id="pcbody4" hidden>
+                <div class="nf tall"><input type="text" id="n4" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Player 4" aria-label="Player 4's name" data-k="type"></div>
+                <button type="button" class="door btn glass" id="lgp4" data-lgp="4" data-k="deeper"><span class="t">Legend</span><span class="sp"></span><small>No legend</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+                <div class="seg swatch" id="c4" data-k="pick"></div>
+              </div>
+            </div>
           </div>
         </div>
     </div>
@@ -521,6 +571,7 @@
 <section class="panel frost" id="pnew" aria-hidden="true" aria-label="New match">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">New match</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody">
+    <div class="row"><div class="seg" id="fmtseg" role="group" aria-label="Format" data-k="pick"><button type="button" data-fmt="1v1" aria-pressed="true">1v1</button><button type="button" data-fmt="2v2" aria-pressed="false">2v2</button><button type="button" data-fmt="ffa3" aria-pressed="false">3 players</button><button type="button" data-fmt="ffa4" aria-pressed="false">4 players</button></div></div>
     <div class="row"><div class="seg" id="blen" role="group" aria-label="Match length" data-k="pick"><button type="button" data-bo="1" aria-pressed="false">Single game</button><button type="button" data-bo="3" aria-pressed="true">Best of 3</button></div></div>
     <div class="row"><div class="seg who1" id="first" role="group" aria-label="Who goes first" data-k="pick"><button type="button" data-first="1" aria-pressed="true">You first</button><button type="button" data-first="2" aria-pressed="false">Opponent first</button></div></div>
     <div data-slot></div>
@@ -556,14 +607,14 @@
 <!-- END GAME: one deeper from the Game settings foot -->
 <section class="panel frost" id="pend" aria-hidden="true" aria-label="End game">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">End game</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody">
+  <div class="pbody"><div id="pend1">
     <div class="row"><p class="lb">Who concedes?</p><div class="two"><button type="button" class="sidebtn btn glass" data-concede="1" id="cc1" data-k="do">You</button><button type="button" class="sidebtn btn glass" data-concede="2" id="cc2" data-k="do">Opponent</button></div></div>
     <div class="row"><p class="lb">Time called: who won?</p><div class="three">
       <button type="button" class="sidebtn btn glass" id="pendw1" data-endw="1" style="color:var(--pc)" data-k="do">You</button>
       <button type="button" class="pact btn glass" id="pendtd" data-endw="0" data-k="do">Draw</button>
       <button type="button" class="sidebtn btn glass" id="pendw2" data-endw="2" style="color:var(--pc)" data-k="do">Opponent</button>
     </div><button type="button" class="pact btn glass" id="pendagree" data-endagree="1" data-k="do">Intentional draw</button></div>
-  </div>
+  </div><div id="pendmp" hidden></div></div>
 </section>
 
 <!-- LOG: this game, with the way into past matches always in the foot -->
@@ -616,6 +667,23 @@
   var GKEY = "vir.counter.game.v1";
   var MKEY = "vir.counter.mode.v1";
   var GOAL = 8;
+  // FORMATS (plan 2 M9 block 5): 1v1 is the default and plays exactly as before. 2v2 is Riot's
+  // Magma Chamber: two teams, a team score to 11, turns alternate teams across the table (seats
+  // 1 and 3 are Team A, 2 and 4 Team B; seat 1 is you). 3 and 4 players are Riot's FFA3 and FFA4
+  // (Skirmish, War): to 8, clockwise from you. Every multiplayer game is one game (Bo1). A seat's
+  // number is its place in the turn order.
+  var FMTS = { "1v1":{ n:2, goal:8, tag:"BO1" }, "2v2":{ n:4, goal:11, tag:"2v2" },
+               "ffa3":{ n:3, goal:8, tag:"FFA3" }, "ffa4":{ n:4, goal:8, tag:"FFA4" } };
+  // where each seat sits: the top row (turned to face across), then the bottom row
+  var SEATS = { "2v2":{ top:[2,4], bot:[1,3] }, "ffa3":{ top:[2], bot:[1,3] }, "ffa4":{ top:[2,3], bot:[1,4] } };
+  var FMT = "1v1";      // the game on the field
+  var fmtPick = "1v1";  // New match's Format
+  var setF = "1v1";     // the format the open menu's player cards are for
+  function isMP(f){ return (f || FMT) !== "1v1"; }
+  function seatsOf(f){ return (FMTS[f || FMT] || FMTS["1v1"]).n; }
+  function goalOf(f){ return (FMTS[f || FMT] || FMTS["1v1"]).goal; }
+  function teamOf(p){ return p % 2 === 1 ? 1 : 2; }
+  function teamName(t){ return t === 1 ? "Team A" : "Team B"; }
   var MODES = ["focus","split"];
   var SRC = { conquer:"Conquer", hold:"Hold", other:"Other" };
   var KEY = { conquer:"C", hold:"H", other:"O" };
@@ -704,8 +772,10 @@
     s = s - m*60;
     return (neg ? "-" : "") + m + ":" + (s < 10 ? "0" + s : s);
   }
+  // the player clocks are 1v1's: with more than two the timer line is the round timer alone
+  function clk(){ return clockOn && FMT === "1v1"; }
   function tmLine(far){
-    if (!clockOn) {
+    if (!clk()) {
       var msOld = tmMs();
       if(msOld === null) return "";
       return "<div class=\"tmv" + (far ? " tmfar" : "") + (msOld <= 0 ? " tmover" : "") + "\">"
@@ -736,7 +806,7 @@
   function timerTick(){
     var ms = tmMs();
     if(ms === null && !clockOn){ if(tmInt){ clearInterval(tmInt); tmInt = null; } return; }
-    if (clockOn) {
+    if (clk()) {
       var farEl = document.getElementById("tmFar"), nearEl = document.getElementById("tmNear");
       if (mode === "split" && farEl) { farEl.innerHTML = tmLine(true); }
       if (nearEl) { nearEl.innerHTML = tmLine(false); }
@@ -1044,13 +1114,30 @@
   var SWATCH = (window.RAVI_PLAYER_COLOURS || []).map(function(c){ return c.hex; });
   if (SWATCH.length < 2) { SWATCH = ["#5989F6","#FE5C8B"]; }
   var players = { 1:{ name:"", legend:"", art:"", colour:SWATCH[0], set:false },
-                  2:{ name:"", legend:"", art:"", colour:SWATCH[1], set:false } };
+                  2:{ name:"", legend:"", art:"", colour:SWATCH[1], set:false },
+                  3:{ name:"", legend:"", art:"", colour:SWATCH[2] || SWATCH[0], set:false },
+                  4:{ name:"", legend:"", art:"", colour:SWATCH[3] || SWATCH[1], set:false } };
+  // a seat's colour: its player's own, or in 2v2 its team's (Team A wears seat 1's, Team B seat 2's)
+  function colourOf(p, f){
+    f = f || FMT;
+    if (f === "2v2") { return players[teamOf(p)].colour; }
+    return (players[p] || players[1]).colour;
+  }
   function myKey(){ var m = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null; return m ? m.k : ""; }
   function defaults(){
     var mine = window.RAVI_MY_COLOUR ? window.RAVI_MY_COLOUR() : null, k = mine ? mine.k : "";
-    for (var q = 1; q <= 2; q++) { if (players[q].set !== false && players[q].set !== k) { players[q].set = false; } }
+    for (var q = 1; q <= 4; q++) { if (players[q].set !== false && players[q].set !== k) { players[q].set = false; } }
     if (players[1].set === false) { players[1].colour = mine ? mine.hex : SWATCH[0]; }
     if (players[2].set === false) { players[2].colour = players[1].colour === SWATCH[1] ? SWATCH[0] : SWATCH[1]; }
+    // seats 3 and 4 (more than two players): the first swatches the seats before them leave free
+    for (var r = 3; r <= 4; r++) {
+      if (players[r].set !== false) { continue; }
+      for (var j = 0; j < SWATCH.length; j++) {
+        var used = false;
+        for (var u = 1; u < r; u++) { if (players[u].colour === SWATCH[j]) { used = true; } }
+        if (!used) { players[r].colour = SWATCH[j]; break; }
+      }
+    }
   }
   // A CONTROL THAT ACTS ON A SIDE WEARS THAT SIDE. The stain (.14) and the
   // press (.50) are computed here rather than with color-mix(), which the
@@ -1059,9 +1146,9 @@
     var n = parseInt(String(hex).slice(1), 16);
     return "rgba(" + (n >> 16) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
   }
-  function wearSide(el, p){
+  function wearSide(el, p, f){
     if (!el) { return; }
-    var c = players[p].colour;
+    var c = colourOf(p, f);
     el.style.setProperty("--c", c);
     el.style.setProperty("--pc", c);
     el.style.setProperty("--pct", rgbaOf(c, .14));
@@ -1078,8 +1165,15 @@
     if (n.length > 14) { n = n.split(/\s+/)[0].slice(0, 14); }
     return n || "You";
   }
-  function defName(p){ return p === 2 ? "Opponent" : myName(); }
-  function nameOf(p){ return players[p].name || defName(p); }
+  // more than two: 2v2 is you, Opponent 1, Ally, Opponent 2 in turn order; free-for-all Player 2 to 4
+  function defName(p, f){
+    f = f || FMT;
+    if (p === 1) { return myName(); }
+    if (f === "2v2") { return p === 3 ? "Ally" : (p === 2 ? "Opponent 1" : "Opponent 2"); }
+    if (f !== "1v1") { return "Player " + p; }
+    return "Opponent";
+  }
+  function nameOf(p, f){ return (players[p] && players[p].name) || defName(p, f); }
   // the sentences read for "You": You win, You concede, Your turn 3
   function verb(n, v){ return n === "You" ? v.replace(/s$/, "") : v; }
   function turnOf(n){ return n === "You" ? "Your" : n; }
@@ -1114,7 +1208,7 @@
   var banked = [];
   var liveAt = 0; // see syncLive
 
-  function fresh(p){ return [ { t:"turn", p:(p === 2 ? 2 : 1), n:1, at:Date.now() } ]; }
+  function fresh(p){ return [ { t:"turn", p:((p >= 2 && p <= seatsOf()) ? p : 1), n:1, at:Date.now() } ]; }
 
   function save(){ try { localStorage.setItem(GKEY, JSON.stringify(ev)); } catch (e) {} }
   function saveMode(){ try { localStorage.setItem(MKEY, mode); } catch (e) {} }
@@ -1124,7 +1218,7 @@
       var raw = localStorage.getItem(PKEY);
       if (!raw) { return; }
       var o = JSON.parse(raw);
-      for (var p = 1; p <= 2; p++) {
+      for (var p = 1; p <= 4; p++) {
         if (o && o[p]) {
           // the old defaults (before plan 2 M3 block 2) read as no name typed
           if (typeof o[p].name === "string" && o[p].name !== "Player " + p) { players[p].name = o[p].name; }
@@ -1161,7 +1255,8 @@
   // fixed lists, names are text. An event that fails is dropped; a match with no time or no
   // readable game is not kept (M14: a shared file cannot carry markup or break the page).
   function okNum(x){ return typeof x === "number" && isFinite(x); }
-  function okPl(x){ return x === 1 || x === 2 ? x : 0; }
+  var okMax = 2; // seats in the match being read: 2, or 3 or 4 in a multiplayer record
+  function okPl(x){ return (x === 1 || x === 2 || ((x === 3 || x === 4) && x <= okMax)) ? x : 0; }
   function okTxt(x){ return typeof x === "string" ? x : ""; }
   function cleanEv(e){
     if (!e || typeof e !== "object") { return null; }
@@ -1192,6 +1287,11 @@
   }
   function cleanMatch(m){
     if (!m || typeof m !== "object" || m.v !== 1 || !okNum(m.at) || !m.games || !m.games.length) { return null; }
+    var mf = (typeof m.fmt === "string" && FMTS[m.fmt] && m.fmt !== "1v1") ? m.fmt : "1v1";
+    okMax = seatsOf(mf);
+    try { return cleanMatchAs(m, mf); } finally { okMax = 2; }
+  }
+  function cleanMatchAs(m, mf){
     var games = [], i, j, g, ev;
     for (i = 0; i < m.games.length; i++) {
       g = m.games[i];
@@ -1199,11 +1299,14 @@
       ev = [];
       for (j = 0; j < g.ev.length; j++) { var c = cleanEv(g.ev[j]); if (c) { ev.push(c); } }
       if (!ev.length) { continue; }
-      var gp = g.p && typeof g.p === "object" ? g.p : {};
-      games.push({ ev:ev, p:{ 1:cleanSide(gp[1]), 2:cleanSide(gp[2]) } });
+      var gp = g.p && typeof g.p === "object" ? g.p : {}, sides = {};
+      for (var q = 1; q <= okMax; q++) { sides[q] = cleanSide(gp[q]); }
+      games.push({ ev:ev, p:sides });
+      if (mf !== "1v1") { break; } // a multiplayer match is one game
     }
     if (!games.length) { return null; }
     var o = { v:1, at:m.at, bo:(m.bo === 1 || m.bo === 3) ? m.bo : (games.length > 1 ? 3 : 1), games:games };
+    if (mf !== "1v1") { o.fmt = mf; o.bo = 1; }
     if (m.me === 1 || m.me === 2) { o.me = m.me; }
     if (m.tag && typeof m.tag === "object" && (typeof m.tag.id === "string" || okNum(m.tag.id))) {
       o.tag = { id:m.tag.id, name:okTxt(m.tag.name), venue:okTxt(m.tag.venue), day:okTxt(m.tag.day) };
@@ -1310,6 +1413,7 @@
       var m = JSON.parse(raw);
       if (!m || m.v !== 1) { return; }
       if (m.bo === 1 || m.bo === 3) { bo = m.bo; }
+      if (typeof m.fmt === "string" && FMTS[m.fmt]) { FMT = m.fmt; }
       if (typeof m.live === "number") { liveAt = m.live; }
       if (m.games && m.games.length) {
         var out = [];
@@ -1323,10 +1427,17 @@
   }
 
   function saveMatch(){
-    try { localStorage.setItem(CKEY, JSON.stringify({ v:1, bo:bo, games:banked, live:liveAt })); } catch (e) {}
+    var o = { v:1, bo:bo, games:banked, live:liveAt };
+    if (isMP()) { o.fmt = FMT; }
+    try { localStorage.setItem(CKEY, JSON.stringify(o)); } catch (e) {}
   }
 
   function snap(){
+    if (isMP()) {
+      var o = {};
+      for (var q = 1; q <= seatsOf(); q++) { o[q] = { name:nameOf(q), legend:players[q].legend, colour:colourOf(q) }; }
+      return o;
+    }
     return { 1:{ name:nameOf(1), legend:players[1].legend, colour:players[1].colour },
              2:{ name:nameOf(2), legend:players[2].legend, colour:players[2].colour } };
   }
@@ -1337,6 +1448,7 @@
     if (!games.length) { return null; }
     // me: the side that was this phone's owner (the near side, 1), for auto-fill
     var rec = { v:1, at:at, bo:bo, me:1, games:games };
+    if (isMP()) { rec.fmt = FMT; }
     var cur = cseGet();
     if (cur) {
       rec.tag = { id:cur.id, name:cur.name, venue:cur.venue, day:cur.day };
@@ -1437,11 +1549,17 @@
   // Otherwise this is exactly the classic need()/matchWinner() path,
   // reduced to game-win counting so a single finished game (bo 1) and a
   // multi-game match (bo 3) share one formula.
-  function matchResult(games, curBo){
+  function matchResult(games, curBo, f){
     if (!games.length) { return 0; }
+    f = f || FMT;
+    if (f !== "1v1") {
+      // one game: its winner (a seat, or in 2v2 a team: 1 is Team A, yours), a draw, or 0
+      var gl = games[games.length - 1].ev, mw = winnerOf(gl, f);
+      return mw ? mw : (isDraw(gl) ? "draw" : 0);
+    }
     var w1 = 0, w2 = 0, i, wi;
     for (i = 0; i < games.length; i++) {
-      wi = winnerOf(games[i].ev);
+      wi = winner1(games[i].ev);
       if (wi === 1) { w1++; } else if (wi === 2) { w2++; }
     }
     if (endedByCall(games)) {
@@ -1469,7 +1587,60 @@
     for (var i = ev.length - 1; i >= 0; i--) { if (ev[i].t === "turn") { return ev[i]; } }
     return { t:"turn", p:1, n:1 };
   }
-  function winnerOf(list){
+  // Who won a game: 1 or 2 in 1v1; in 2v2 the team (1 Team A, 2 Team B); in free-for-all the seat.
+  // f is the game's format, the field's when left out (a past record passes its own).
+  function winnerOf(list, f){
+    f = f || FMT;
+    return f === "1v1" ? winner1(list) : winnerMP(list, f);
+  }
+  // The scores in a multiplayer game: by seat, or by team in 2v2; who is out (free-for-all concedes)
+  function tallyMP(list, f){
+    var n = seatsOf(f), pts = {}, out = {}, q;
+    for (q = 1; q <= n; q++) { pts[q] = 0; }
+    for (q = 0; q < list.length; q++) {
+      var e = list[q];
+      if (e.t === "point" && pts[e.p] !== undefined) { pts[e.p]++; }
+      else if (e.t === "concede") { out[e.p] = 1; }
+    }
+    if (f === "2v2") {
+      var tp = { 1:0, 2:0 };
+      for (q = 1; q <= n; q++) { tp[teamOf(q)] += pts[q]; }
+      return { seat:pts, team:tp, out:out };
+    }
+    return { seat:pts, team:null, out:out };
+  }
+  function scoreMP(p, list, f){
+    var t = tallyMP(list || ev, f || FMT);
+    return t.team ? t.team[teamOf(p)] : t.seat[p];
+  }
+  // Riot 323.1: at or past the Victory Score (11 in 2v2, else 8) and more than any opponent. In
+  // 2v2 one player's concede loses for the team; in free-for-all it puts that player out, and the
+  // last one in wins. A call (time or an intentional draw) ends it as said.
+  function winnerMP(list, f){
+    var i, e;
+    for (i = 0; i < list.length; i++) {
+      e = list[i];
+      if (e.t === "end") { return e.w; }
+      if (e.t === "concede" && f === "2v2") { return teamOf(e.p) === 1 ? 2 : 1; }
+    }
+    var t = tallyMP(list, f), g = goalOf(f);
+    if (t.team) {
+      if (t.team[1] >= g && t.team[1] > t.team[2]) { return 1; }
+      if (t.team[2] >= g && t.team[2] > t.team[1]) { return 2; }
+      return 0;
+    }
+    var alive = [];
+    for (i = 1; i <= seatsOf(f); i++) { if (!t.out[i]) { alive.push(i); } }
+    if (alive.length === 1) { return alive[0]; }
+    for (i = 0; i < alive.length; i++) {
+      var a = alive[i], best = true;
+      if (t.seat[a] < g) { continue; }
+      for (var j = 0; j < alive.length; j++) { if (alive[j] !== a && t.seat[alive[j]] >= t.seat[a]) { best = false; } }
+      if (best) { return a; }
+    }
+    return 0;
+  }
+  function winner1(list){
     for (var i = list.length - 1; i >= 0; i--) {
       if (list[i].t === "concede") { return list[i].p === 1 ? 2 : 1; }
       if (list[i].t === "end") { return list[i].w; }
@@ -1569,8 +1740,9 @@
       "\" style=\"--c:" + players[p].colour + "\">" + blockInner(p, role) + "</section>";
   }
 
-  var fieldBuilt = false;
+  var fieldBuilt = false, fieldKind = "";
   function buildField(){
+    fieldKind = "1v1";
     field.innerHTML =
       "<section class=\"side\" id=\"sideTop\"></section>" +
       "<div id=\"tmFar\"></div>" +
@@ -1619,6 +1791,77 @@
     for (var m = 0; m < bs.length; m++) { if (bs[m].disabled !== d) { bs[m].disabled = d; } }
   }
 
+  // THE MULTIPLAYER FIELD: a seat per player, two per long side (SEATS), the round timer between
+  // the rows. Built once per format; a seat is rebuilt only when what it is made of changes, and
+  // otherwise updated in place, as the 1v1 sides are, so a motion on it is never cut off.
+  function buildMP(){
+    var L = SEATS[FMT], h = "", i;
+    function cell(p, far, wide){
+      return "<section class=\"seat p" + p + (far ? " far" : "") + (wide ? " wide" : "") + (lcol ? " lcol" : "") + "\" data-seat=\"" + p + "\"></section>";
+    }
+    var lcol;
+    for (i = 0; i < L.top.length; i++) { lcol = i === 0 && L.top.length > 1; h += cell(L.top[i], true, L.top.length === 1); }
+    h += "<div class=\"smid\" id=\"smid\"></div>";
+    for (i = 0; i < L.bot.length; i++) { lcol = i === 0 && L.bot.length > 1; h += cell(L.bot[i], false, L.bot.length === 1); }
+    field.innerHTML = "<div class=\"mpf\" data-f=\"" + FMT + "\">" + h + "</div>";
+    fieldKind = FMT;
+    fieldBuilt = true;
+  }
+  function seatKey(p){
+    return [FMT, nameOf(p), lgaMode, lgaSrc(p), !!tallyMP(ev, FMT).out[p]].join("|");
+  }
+  function seatInner(p){
+    var out = !!tallyMP(ev, FMT).out[p];
+    var lgaS = lgaSrc(p);
+    var art = (lgaMode === "small" && lgaS)
+      ? "<button type=\"button\" class=\"lgathumb\" data-spot=\"" + p + "\" aria-label=\"Expand card\" data-k=\"play\" style=\"background-image:url(" + lgaS + ")\"></button>"
+      : "";
+    var tm = FMT === "2v2" ? "<span class=\"stm\">" + teamName(teamOf(p)) + "</span>" : "";
+    return art +
+      "<div class=\"name\">" + tm + "<span class=\"nm\">" + esc(nameOf(p)) + "</span>" + (out ? "<span class=\"stm\">Out</span>" : "") + "</div>" +
+      "<div class=\"num\">" + scoreMP(p) + "</div>" +
+      "<div class=\"acts\" data-k=\"play\">" +
+        "<button data-p=\"" + p + "\" data-s=\"conquer\">Conquer</button>" +
+        "<button data-p=\"" + p + "\" data-s=\"hold\">Hold</button></div>" +
+      "<button type=\"button\" class=\"pass btn glass\" data-k=\"play\">Pass turn</button>";
+  }
+  function fillSeat(el, p){
+    var c = ctx(), over = gameOver(), out = !!tallyMP(ev, FMT).out[p], on = c.p === p;
+    wearSide(el, p);
+    el.classList.toggle("on", on && !over);
+    el.classList.toggle("out", out);
+    var k = seatKey(p);
+    if (el.rviKey !== k) { el.innerHTML = seatInner(p); el.rviKey = k; }
+    var n = el.querySelector(".num"), sc = String(scoreMP(p));
+    if (n && n.textContent !== sc) { n.textContent = sc; }
+    var bs = el.querySelectorAll(".acts button"), d = over || out;
+    for (var i = 0; i < bs.length; i++) { if (bs[i].disabled !== d) { bs[i].disabled = d; } }
+    var ps = el.querySelector(".pass");
+    if (ps) {
+      if (on && !over) { ps.id = "seam"; } else { ps.removeAttribute("id"); }
+      ps.disabled = over || !on;
+      ps.style.setProperty("--sc", colourOf(p));
+    }
+  }
+  function renderMP(){
+    if (fieldKind !== FMT) { buildMP(); }
+    var seats = field.querySelectorAll(".seat");
+    for (var i = 0; i < seats.length; i++) { fillSeat(seats[i], parseInt(seats[i].getAttribute("data-seat"), 10)); }
+    var mid = document.getElementById("smid"), tl = tmLine(true) + tmLine(false);
+    if (mid && mid.innerHTML !== tl) { mid.innerHTML = tl; }
+  }
+  // The next player in the turn order: 1v1 the other side; more than two, round the table,
+  // passing over anyone who is out.
+  function nextSeat(p){
+    if (!isMP()) { return p === 1 ? 2 : 1; }
+    var n = seatsOf(), out = tallyMP(ev, FMT).out;
+    for (var k = 1; k <= n; k++) {
+      var q = ((p - 1 + k) % n) + 1;
+      if (!out[q]) { return q; }
+    }
+    return p;
+  }
+
   function seam(){
     var c = ctx(), d = gameOver() ? " disabled" : "";
     if (clockOn && paused(ev)) {
@@ -1633,8 +1876,11 @@
       "<em><b>" + esc(turnOf(nameOf(c.p))) + "</b> turn " + c.n + "</em></button></div>";
   }
 
-  function logHTML(list, nm){
+  // col and wn are for more than two players: each player's colour on their points, and the
+  // winner's name for a call (a team's in 2v2). Left out, the log is 1v1's.
+  function logHTML(list, nm, col, wn){
     var out = "";
+    wn = wn || nm;
     if (list.length <= 1) {
       out = "<li class=\"empty\">No points yet.</li>";
     }
@@ -1642,7 +1888,7 @@
       var e = list[i];
       if (e.t === "point") {
         out += "<li class=\"e" + (e.p === 2 ? 2 : 1) + "\"><span class=\"lt\">" + esc(turnOf(nm(e.tp))) +
-               " turn " + Number(e.tn) + "</span><span class=\"rt\"><b>" + esc(nm(e.p)) +
+               " turn " + Number(e.tn) + "</span><span class=\"rt\"><b" + (col ? " style=\"color:" + col(e.p) + "\"" : "") + ">" + esc(nm(e.p)) +
                " +1</b> " + SRC[e.src] + "</span></li>";
       } else if (e.t === "concede") {
         out += "<li class=\"et\"><span class=\"lt\">Game over</span>" +
@@ -1656,7 +1902,7 @@
                  "<span class=\"rt\"><b>Game drawn</b></span></li>";
         } else {
           out += "<li class=\"et\"><span class=\"lt\">Time called</span>" +
-                 "<span class=\"rt\"><b>" + esc(nm(e.w)) + " " + verb(nm(e.w), "wins") + " the game</b></span></li>";
+                 "<span class=\"rt\"><b>" + esc(wn(e.w)) + " " + verb(wn(e.w), "wins") + " the game</b></span></li>";
         }
       } else if (e.t === "pause") {
         out += "<li class=\"et\"><span class=\"lt\">Clock</span><span class=\"rt\">Paused</span></li>";
@@ -1680,7 +1926,7 @@
   }
 
   function statsOf(list){
-    var s = { 1:0, 2:0, turns:0, conceded:0, first:1, src:{ conquer:0, hold:0, other:0 } };
+    var s = { 1:0, 2:0, 3:0, 4:0, turns:0, conceded:0, first:1, src:{ conquer:0, hold:0, other:0 } };
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
       if (e.t === "point") { s[e.p]++; if (s.src[e.src] !== undefined) { s.src[e.src]++; } }
@@ -1707,11 +1953,30 @@
   // missing `at` (an old-shape record, from before step 8) makes the
   // whole game untimed rather than partly timed. A game with no
   // pause/resume events at all gives exactly the totals this replaced.
-  function gameTimes(list){
+  function gameTimes(list, f){
     if (!list.length) { return { 1:0, 2:0 }; }
     var k;
     for (k = 0; k < list.length; k++) { if (typeof list[k].at !== "number") { return null; } }
     var term = null, i;
+    if (f && f !== "1v1") {
+      // a multiplayer game ends at the event that decided it
+      for (k = 0; k < list.length && term === null; k++) {
+        var part = list.slice(0, k + 1);
+        if (winnerMP(part, f) || isDraw(part)) { term = list[k].at; }
+      }
+      if (term === null) { term = Date.now(); }
+      var mo = {}, mc = list[0].p, mrun = true, mprev = list[0].at;
+      for (k = 1; k <= seatsOf(f); k++) { mo[k] = 0; }
+      for (k = 1; k < list.length && list[k].at <= term; k++) {
+        if (mrun) { mo[mc] += Math.max(0, list[k].at - mprev); }
+        mprev = list[k].at;
+        if (list[k].t === "turn") { mc = list[k].p; }
+        else if (list[k].t === "pause") { mrun = false; }
+        else if (list[k].t === "resume") { mrun = true; }
+      }
+      if (mrun) { mo[mc] += Math.max(0, term - mprev); }
+      return mo;
+    }
     for (i = list.length - 1; i >= 0; i--) {
       if (list[i].t === "concede" || list[i].t === "end") { term = list[i].at; break; }
     }
@@ -1752,9 +2017,15 @@
 
   // "<P1> 12:34 . <P2> 10:02", the same middle dot cseLabel uses, or
   // "Time not recorded".
-  function timeLineText(list, nm){
-    var t = gameTimes(list);
+  function timeLineText(list, nm, f){
+    f = f || "1v1";
+    var t = gameTimes(list, f);
     if (!t) { return "Time not recorded"; }
+    if (f !== "1v1") {
+      var parts = [];
+      for (var q = 1; q <= seatsOf(f); q++) { parts.push(nm(q) + " " + fmtDur(t[q] || 0)); }
+      return parts.join(" \u00b7 ");
+    }
     return nm(1) + " " + fmtDur(t[1]) + " \u00b7 " + nm(2) + " " + fmtDur(t[2]);
   }
 
@@ -1804,6 +2075,7 @@
     var out = "";
     for (var i = 0; i < history.length; i++) {
       var m = history[i];
+      if (m.fmt && m.fmt !== "1v1") { out += pastRowMP(m, i); continue; }
       var gs = m.games, g0 = gs[0];
       var nm = (function(rec, me){
         return function(pp){ return rec.p[pp].name || (pp === (me || 1) ? "You" : "Opponent"); };
@@ -1811,18 +2083,18 @@
       var multi = gs.length > 1 || m.bo === 3;
       var gw1 = 0, gw2 = 0, tt = 0, body = "";
       for (var j = 0; j < gs.length; j++) {
-        var gj = gs[j], sj = statsOf(gj.ev), wj = winnerOf(gj.ev);
+        var gj = gs[j], sj = statsOf(gj.ev), wj = winnerOf(gj.ev, "1v1");
         if (wj === 1) { gw1++; } else if (wj === 2) { gw2++; }
         tt += sj.turns;
         var jt = sj.conceded ? "conceded" : sj.turns + " turns";
         body += "<div class=\"ghead\">Game " + (j + 1) +
           "<b class=\"g1\">" + sj[1] + "</b><b>vs</b><b class=\"g2\">" + sj[2] + "</b>" +
           "<span class=\"gsub\">" + esc(nm(sj.first)) + " first &middot; " + jt + "</span></div>";
-        body += "<p class=\"pnote\">" + esc(timeLineText(gj.ev, nm)) + "</p>";
+        body += "<p class=\"pnote\">" + esc(timeLineText(gj.ev, nm, "1v1")) + "</p>";
         body += "<ol>" + logHTML(gj.ev, nm) + "</ol>";
       }
       var s0 = statsOf(g0.ev);
-      var w = matchResult(gs, m.bo);
+      var w = matchResult(gs, m.bo, "1v1");
       var lf = multi ? gw1 : s0[1], rt = multi ? gw2 : s0[2];
       var rc = w === 1 ? "rwin" : (w === 2 ? "rloss" : (w === "draw" ? "rdraw" : "rdnf"));
       var rl = w === 1 ? "Win" : (w === 2 ? "Loss" : (w === "draw" ? "Draw" : "DNF"));
@@ -1849,6 +2121,38 @@
     elPast.innerHTML = out;
   }
 
+  // A PAST MULTIPLAYER MATCH: the same row as 1v1's (your result, your score against the best
+  // other, the format, who you played, the day), opening to its time, scores and log.
+  function pastRowMP(m, i){
+    var mf = m.fmt, g0 = m.games[0], n = seatsOf(mf), q;
+    var nm = function(pp){ return (g0.p[pp] && g0.p[pp].name) || (pp === 1 ? "You" : defName(pp, mf)); };
+    var col = function(pp){ var c = g0.p[pp] && g0.p[pp].colour; return /^#[0-9a-fA-F]{6}$/.test(c || "") ? c : "var(--bone)"; };
+    var w = matchResult(m.games, 1, mf), st = statsOf(g0.ev), t = tallyMP(g0.ev, mf);
+    var rc = w === 1 ? "rwin" : (w === "draw" ? "rdraw" : (w === 0 ? "rdnf" : "rloss"));
+    var rl = w === 1 ? "Win" : (w === "draw" ? "Draw" : (w === 0 ? "DNF" : "Loss"));
+    var mine = t.team ? t.team[1] : t.seat[1], best = 0, others = [], sc = [];
+    if (t.team) { best = t.team[2]; others = [nm(2), nm(4)]; }
+    else { for (q = 2; q <= n; q++) { best = Math.max(best, t.seat[q]); others.push(nm(q)); } }
+    for (q = 1; q <= n; q++) {
+      sc.push("<b style=\"color:" + col(q) + "\">" + esc(nm(q)) + " " + (t.team ? t.team[teamOf(q)] : t.seat[q]) + "</b>");
+    }
+    var hideRow = pastFilter !== null && (!m.tag || String(m.tag.id) !== pastFilter);
+    var tagd = m.tag ? (" &middot; " + esc(cseLabel(m.tag))) : "";
+    var wn = mf === "2v2" ? teamName : nm;
+    return "<li" + (hideRow ? " hidden" : "") + " data-m=\"" + i + "\"><button class=\"mrow rec\" data-m=\"" + i + "\" data-k=\"open\" aria-expanded=\"false\">" +
+      "<span class=\"res " + rc + "\">" + rl + "</span>" +
+      "<span class=\"sco\"><b class=\"s1\">" + mine + "</b><b class=\"dash\">-</b><b class=\"s2\">" + best + "</b></span>" +
+      "<span class=\"fmt\">" + FMTS[mf].tag + "</span>" +
+      "<span class=\"opp\"><span class=\"vs\">vs</span> <span class=\"them\">" + esc(others.join(", ")) + "</span></span>" +
+      "<span class=\"mday\">" + stamp(m.at) + "</span>" +
+      "<svg class=\"chev\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 15 12 9 18 15\"/></svg></button>" +
+      "<div class=\"mbody\"><p class=\"pnote\">" + esc(matchTimeText(m.games)) + "</p><div class=\"dtl\">" +
+      (mf === "2v2" ? "2v2" : n + " players") + " &middot; " + st.turns + (st.turns === 1 ? " turn" : " turns") + tagd + "</div>" +
+      "<div class=\"ghead\">" + sc.join(" ") + "<span class=\"gsub\">" + esc(nm(st.first)) + " first</span></div>" +
+      "<p class=\"pnote\">" + esc(timeLineText(g0.ev, nm, mf)) + "</p>" +
+      "<ol>" + logHTML(g0.ev, nm, col, wn) + "</ol></div></li>";
+  }
+
   function render(){
     syncLive();
     syncCallEnd();
@@ -1859,7 +2163,21 @@
     // the banner rises when a game ends in front of you, not on first paint
     if (w && !wasWon && fieldBuilt) { restartFx(elBanner, "winrise"); }
     var open = w ? matchOpen() : false;
-    if (!w) {
+    if (w && isMP()) {
+      // one game: a player, or in 2v2 a team, wins it; or it is drawn
+      var mw = winnerOf(ev);
+      if (!mw) {
+        var mend = lastEnd(ev);
+        elWin.textContent = (mend && mend.why === "agreed") ? "Intentional draw" : "Game drawn";
+        elWin.style.color = "var(--bone)";
+      } else if (FMT === "2v2") {
+        elWin.textContent = teamName(mw) + " wins";
+        elWin.style.color = colourOf(mw);
+      } else {
+        elWin.textContent = nameOf(mw) + " " + verb(nameOf(mw), "wins");
+        elWin.style.color = colourOf(mw);
+      }
+    } else if (!w) {
       elWin.textContent = nameOf(1) + " " + verb(nameOf(1), "wins");
       elWin.style.color = "";
     } else if (open) {
@@ -1891,10 +2209,15 @@
     var mb = elModes.getElementsByTagName("button");
     for (var k = 0; k < mb.length; k++) {
       mb[k].setAttribute("aria-pressed", mb[k].getAttribute("data-mode") === mode ? "true" : "false");
+      // Focus | Split are 1v1's layouts: dimmed in place for more than two
+      mb[k].disabled = isMP();
     }
     elUndo.disabled = ev.length <= 1;
 
-    if (!fieldBuilt) { buildField(); }
+    if (isMP()) {
+      renderMP();
+    } else {
+    if (fieldKind !== "1v1") { buildField(); }
     var topP, botP, topR, botR;
     if (mode === "split") { topP = 2; botP = 1; topR = "equal"; botR = "equal"; }
     else { topP = 2; botP = 1; topR = "minor"; botR = "major"; }
@@ -1903,10 +2226,11 @@
     document.getElementById("tmFar").innerHTML = (mode === "split") ? tmLine(true) : "";
     document.getElementById("seamSlot").innerHTML = seam();
     document.getElementById("tmNear").innerHTML = tmLine(false);
+    }
 
     var lt = document.getElementById("logtime");
-    if (lt) { lt.textContent = timeLineText(ev, nameOf); }
-    elLog.innerHTML = logHTML(ev, nameOf);
+    if (lt) { lt.textContent = timeLineText(ev, nameOf, FMT); }
+    elLog.innerHTML = isMP() ? logHTML(ev, nameOf, colourOf, FMT === "2v2" ? teamName : nameOf) : logHTML(ev, nameOf);
     document.getElementById("logcnt").textContent = turnOf(nameOf(c.p)) + " turn " + c.n;
     syncPend();
     syncClockRow();
@@ -1925,7 +2249,8 @@
 
   function startNew(){
     if (liveAt !== 0) { liveAt = 0; } else { endMatch(); }
-    bo = boPick;
+    FMT = fmtPick;
+    bo = isMP() ? 1 : boPick;
     banked = [];
     saveMatch();
     ev = fresh(firstP);
@@ -1940,15 +2265,21 @@
     if (!t || t === field) { return; }
     if (t.id === "seam") {
       if (gameOver()) { return; }
-      if (clockOn && paused(ev)) {
+      if (clk() && paused(ev)) {
         ev.push({ t:"resume", at:Date.now() });
         save(); render();
         return;
       }
-      var c = ctx(), nx = c.p === 1 ? 2 : 1;
+      var c = ctx(), nx = nextSeat(c.p);
       var oe = document.querySelector("#seam em"), og = oe ? oe.innerHTML : "";
       ev.push({ t:"turn", p:nx, n:turns(nx) + 1, at:Date.now() });
-      save(); render(); flashSeam(nx, og, players[c.p].colour); keepAwake();
+      save(); render();
+      if (isMP()) {
+        // the Pass turn moves to the next seat and flashes in its colour
+        restartFx(document.getElementById("seam"), "flash-p");
+        try { if (navigator.vibrate) { navigator.vibrate(16); } } catch (e) {}
+      } else { flashSeam(nx, og, players[c.p].colour); }
+      keepAwake();
       return;
     }
     if (t.getAttribute("data-spot")) {
@@ -2002,6 +2333,15 @@
   // A POINT LANDS on the nodes fillSide kept: the numeral settles and the
   // newest rail line draws in.
   function landPoint(p){
+    if (isMP()) {
+      // every seat the point counts for: the scorer's, and in 2v2 their ally's too
+      var ss = field.querySelectorAll(".seat");
+      for (var q = 0; q < ss.length; q++) {
+        var sp = parseInt(ss[q].getAttribute("data-seat"), 10);
+        if (sp === p || (FMT === "2v2" && teamOf(sp) === teamOf(p))) { restartFx(ss[q].querySelector(".num"), "ptland"); }
+      }
+      return;
+    }
     var sd = field.querySelector(".side.p" + p);
     if (!sd) { return; }
     restartFx(sd.querySelector(".num"), "ptland");
@@ -2172,7 +2512,7 @@
       return;
     }
     disarmAgain();
-    openPre(false);
+    openPre(false, true);
   });
   document.getElementById("nextrow").addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest("button") : e.target;
@@ -2260,6 +2600,10 @@
       OPENP.setAttribute("aria-hidden", "true");
     }
     OPENP = p || null;
+    if (p === pgame || p === pnew) {
+      var wantF = p === pnew ? fmtPick : FMT;
+      if (setF !== wantF) { setF = wantF; syncSetup(); syncFirst(); }
+    }
     if (p) {
       var slot = p.querySelector("[data-slot]");
       if (slot && shared.parentNode !== slot) { slot.appendChild(shared); }
@@ -2319,10 +2663,11 @@
     var b1 = document.getElementById("cc1"), b2 = document.getElementById("cc2");
     if (b1) { b1.classList.remove("armed"); b1.textContent = nameOf(1); }
     if (b2) { b2.classList.remove("armed"); b2.textContent = nameOf(2); }
+    if (isMP()) { syncPendMP(); }
   }
 
   function buildSetup(){
-    for (var p = 1; p <= 2; p++) {
+    for (var p = 1; p <= 4; p++) {
       var sw = document.getElementById("c" + p), h = "";
       for (var j = 0; j < SWATCH.length; j++) {
         var cn = (window.RAVI_PLAYER_COLOURS || [])[j];
@@ -2373,7 +2718,46 @@
   // Labels, side colours and the disabled state (the row in the Game
   // menu, and all four rows here) -- gameOver() disables every one of
   // them, the same reasoning as the concede buttons.
+  // END GAME FOR MORE THAN TWO, built from the state (armed or not) each time. 2v2 is 1v1's shape
+  // with the teams: one player's concede loses for the team. Free-for-all has a button per player
+  // still in, two across: a concede puts that player out and play goes on.
+  function syncPendMP(){
+    var one = document.getElementById("pend1"), box = document.getElementById("pendmp");
+    if (!one || !box) { return; }
+    one.hidden = isMP();
+    box.hidden = !isMP();
+    if (!isMP()) { box.innerHTML = ""; return; }
+    var over = gameOver(), dis = over ? " disabled" : "", out = tallyMP(ev, FMT).out, h = "", q;
+    function side(attr, v, label, armedTxt, armed){
+      return "<button type=\"button\" class=\"sidebtn btn glass" + (armed ? " armed" : "") + "\" " + attr + "=\"" + v + "\" data-k=\"do\"" + dis + ">" +
+        esc(armed ? armedTxt : label) + "</button>";
+    }
+    var drawB = "<button type=\"button\" class=\"pact btn glass" + (pendArmed === "0" ? " armed" : "") + "\" data-endw=\"0\" data-k=\"do\"" + dis + ">" + (pendArmed === "0" ? "Sure?" : "Draw") + "</button>";
+    var agreeB = "<button type=\"button\" class=\"pact btn glass" + (pendArmed === "agree" ? " armed" : "") + "\" data-endagree=\"1\" data-k=\"do\"" + dis + ">" + (pendArmed === "agree" ? "Sure? Tap again" : "Intentional draw") + "</button>";
+    if (FMT === "2v2") {
+      h += "<div class=\"row\"><p class=\"lb\">Who concedes?</p><div class=\"two\">" +
+        side("data-concede", 1, teamName(1), "Sure? Tap again", ccArmed === "1") + side("data-concede", 2, teamName(2), "Sure? Tap again", ccArmed === "2") + "</div></div>";
+      h += "<div class=\"row\"><p class=\"lb\">Time called: who won?</p><div class=\"three\">" +
+        side("data-endw", 1, teamName(1), "Sure?", pendArmed === "1") + drawB + side("data-endw", 2, teamName(2), "Sure?", pendArmed === "2") + "</div>" + agreeB + "</div>";
+    } else {
+      var cs = "", ws = "";
+      for (q = 1; q <= seatsOf(); q++) {
+        if (out[q]) { continue; }
+        cs += side("data-concede", q, nameOf(q), "Sure? Tap again", ccArmed === String(q));
+        ws += side("data-endw", q, nameOf(q), "Sure?", pendArmed === String(q));
+      }
+      h += "<div class=\"row\"><p class=\"lb\">Who concedes?</p><div class=\"mpg\">" + cs + "</div></div>";
+      h += "<div class=\"row\"><p class=\"lb\">Time called: who won?</p><div class=\"mpg\">" + ws + "</div>" + drawB + agreeB + "</div>";
+    }
+    box.innerHTML = h;
+    var bs = box.querySelectorAll("[data-concede],[data-endw]");
+    for (q = 0; q < bs.length; q++) {
+      var v = parseInt(bs[q].getAttribute("data-concede") || bs[q].getAttribute("data-endw"), 10);
+      if (v) { wearSide(bs[q], v); }
+    }
+  }
   function syncPend(){
+    syncPendMP();
     var over = gameOver();
     var b1 = document.getElementById("pendw1"), b2 = document.getElementById("pendw2");
     var td = document.getElementById("pendtd"), ag = document.getElementById("pendagree");
@@ -2400,6 +2784,7 @@
   pend.addEventListener("click", function(e){
     var t = e.target.closest ? e.target.closest("button") : null;
     if (!t) { return; }
+    if (isMP() && t.closest("#pendmp")) { pendMP(t); return; }
     var cc = t.getAttribute("data-concede");
     if (cc) {
       if (gameOver() || t.disabled) { syncConcedeLabels(); return; }
@@ -2437,20 +2822,68 @@
     closeMenus();
   });
 
-  function syncLen(){
-    var b = document.getElementById("blen").getElementsByTagName("button");
-    for (var i = 0; i < b.length; i++) {
-      var v = parseInt(b[i].getAttribute("data-bo"), 10);
-      b[i].setAttribute("aria-pressed", v === boPick ? "true" : "false");
+  // a tap in End game with more than two: the same two-tap confirm, the rows rebuilt from the state
+  function pendMP(t){
+    if (t.disabled || gameOver()) { return; }
+    var cc = t.getAttribute("data-concede"), ew = t.getAttribute("data-endw"), ea = t.hasAttribute("data-endagree");
+    if (cc) {
+      if (ccArmed !== cc) {
+        disarmPend(); disarmConcede();
+        ccArmed = cc; ccTimer = setTimeout(disarmConcede, 3000);
+        syncPendMP();
+        return;
+      }
+      disarmConcede();
+      ev.push({ t:"concede", p:parseInt(cc, 10), at:Date.now() });
+      save(); render(); closeMenus();
+      return;
     }
+    if (ew === null && !ea) { return; }
+    var key = ea ? "agree" : ew;
+    if (pendArmed !== key) {
+      disarmConcede(); disarmPend();
+      pendArmed = key; pendTimer = setTimeout(disarmPend, 3000);
+      syncPendMP();
+      return;
+    }
+    disarmPend();
+    if (ea) { ev.push({ t:"end", w:0, why:"agreed", at:Date.now() }); }
+    else { ev.push({ t:"end", w:parseInt(ew, 10), why:"time", at:Date.now() }); }
+    save(); render(); closeMenus();
   }
 
-  function syncFirst(){
-    var b = document.getElementById("first").getElementsByTagName("button");
+  // Match length is 1v1's: with more than two it is one game, the track dimmed on Single game
+  function syncLen(){
+    var b = document.getElementById("blen").getElementsByTagName("button"), mp = isMP(fmtPick);
     for (var i = 0; i < b.length; i++) {
+      var v = parseInt(b[i].getAttribute("data-bo"), 10);
+      b[i].setAttribute("aria-pressed", (mp ? v === 1 : v === boPick) ? "true" : "false");
+      b[i].disabled = mp;
+    }
+  }
+  // New match's Format: 1v1 every time it opens, unless the win banner of a multiplayer game
+  // opened it (the same format again)
+  function syncFmt(){
+    var b = document.getElementById("fmtseg").getElementsByTagName("button");
+    for (var i = 0; i < b.length; i++) { b[i].setAttribute("aria-pressed", b[i].getAttribute("data-fmt") === fmtPick ? "true" : "false"); }
+  }
+
+  // Who goes first: a choice per player of the format the menu is for (setF)
+  function syncFirst(){
+    var box = document.getElementById("first"), n = seatsOf(setF), b = box.getElementsByTagName("button"), i;
+    if (firstP > n) { firstP = 1; }
+    if (b.length !== n) {
+      var h = "";
+      for (i = 1; i <= n; i++) { h += "<button type=\"button\" data-first=\"" + i + "\" aria-pressed=\"false\"></button>"; }
+      box.innerHTML = h;
+      b = box.getElementsByTagName("button");
+    }
+    for (i = 0; i < b.length; i++) {
       var p = parseInt(b[i].getAttribute("data-first"), 10);
-      b[i].textContent = nameOf(p) + " first";
-      wearSide(b[i], p);
+      // four names do not fit with "first" after each: more than two, the names alone
+      b[i].textContent = nameOf(p, setF) + (isMP(setF) ? "" : " first");
+      if (isMP(setF)) { b[i].setAttribute("aria-label", nameOf(p, setF) + " first"); } else { b[i].removeAttribute("aria-label"); }
+      wearSide(b[i], p, setF);
       b[i].setAttribute("aria-pressed", p === firstP ? "true" : "false");
     }
   }
@@ -2460,8 +2893,11 @@
   // Opening it leaves a running timer alone; Start match clears a timer
   // left from before it opened, and keeps one set while it was open.
   var preAt = 0; // when New match last opened; Start match keeps a timer set since
-  function openPre(fromGame){
+  function openPre(fromGame, again){
     preAt = Date.now();
+    fmtPick = (again && isMP()) ? FMT : "1v1";
+    setF = fmtPick;
+    syncFmt();
     tmDisarm();
     disarmConcede();
     // the current event's wins (if any) recommend a length every time New
@@ -2488,9 +2924,9 @@
   function syncClockRow(){
     var btn = document.getElementById("clockpause");
     if (!btn) { return; }
-    btn.hidden = !clockOn;
+    btn.hidden = !clk();
     var crow = document.getElementById("pcardc");
-    if (crow) { crow.hidden = !clockOn; }
+    if (crow) { crow.hidden = !clk(); }
     var p = paused(ev);
     btn.querySelector(".t").textContent = p ? "Resume clock" : "Pause clock";
     btn.querySelector("small").textContent = p ? "paused" : "for a judge call";
@@ -2499,12 +2935,17 @@
 
   function syncSetup(){
     syncConcedeLabels();
+    lgaSync();
     syncClockRow();
     cseSyncRow();
-    for (var p = 1; p <= 2; p++) {
+    for (var p = 1; p <= 4; p++) {
+      // a card per player of the format the menu is for; in 2v2 seats 3 and 4 wear their team's
+      // colour, picked on seats 1 and 2, so they have no swatches
+      document.getElementById("pcard" + p).hidden = p > seatsOf(setF);
+      document.getElementById("c" + p).hidden = setF === "2v2" && p > 2;
       var nf = document.getElementById("n" + p);
       nf.value = players[p].name;
-      nf.placeholder = defName(p);
+      nf.placeholder = defName(p, setF);
       lgpLabel(p);
       syncPlayerHead(p);
       var bs = document.getElementById("c" + p).getElementsByTagName("button");
@@ -2521,8 +2962,8 @@
     var dot = document.getElementById("pdot" + p);
     var nm = document.getElementById("pnm" + p);
     var legh = document.getElementById("plegh" + p);
-    if (dot) { dot.style.background = players[p].colour; }
-    if (nm) { nm.textContent = nameOf(p); nm.style.color = players[p].colour; }
+    if (dot) { dot.style.background = colourOf(p, setF); }
+    if (nm) { nm.textContent = nameOf(p, setF); nm.style.color = colourOf(p, setF); }
     if (legh) { legh.textContent = players[p].legend || "No legend"; }
   }
   // Only one player card open at a time; both shut whenever any menu
@@ -2563,6 +3004,12 @@
     // back to e.target keeps taps on non-button elements working as they
     // did before.
     var t = (e.target.closest && e.target.closest("button")) || e.target;
+    var fm = t.getAttribute && t.getAttribute("data-fmt");
+    if (fm && FMTS[fm]) {
+      fmtPick = fm; setF = fm;
+      syncFmt(); syncLen(); syncSetup(); syncFirst();
+      return;
+    }
     var bl = t.getAttribute && t.getAttribute("data-bo");
     if (bl) {
       boPick = parseInt(bl, 10);
@@ -2879,6 +3326,9 @@
     if (c) { c.classList.toggle("on", lgaMode === "small"); }
     if (r) { r.classList.toggle("on", lgrOn); }
     if (k) { k.classList.toggle("on", clockOn); }
+    // Domains and the player clocks are 1v1's field: dimmed in place for more than two
+    if (r) { r.disabled = isMP(); }
+    if (k) { k.disabled = isMP(); }
     var v = document.getElementById("lgaval"), on = [];
     if (lgaMode === "small") { on.push("Art"); }
     if (lgrOn) { on.push("Domains"); }
