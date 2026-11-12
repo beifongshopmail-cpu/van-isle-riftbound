@@ -1866,10 +1866,13 @@
     var m = meta(), now = Date.now();
     if (m.a !== s.id) {
       // a new account on this phone (saved, signed in to another, or a new guest): it gets everything here
-      M = m = { a: s.id, c: 0, k: {} };
+      M = m = { a: s.id, c: 0, k: {}, f2: 1 };
       KEYS.forEach(function (key) { stamp(key, now); });
       KEYS.forEach(function (key) { var km = m.k[key]; Object.keys(km).forEach(function (id) { km[id][2] = 1; }); });
     } else KEYS.forEach(function (key) { stamp(key, now); });
+    // once (plan 2 M9 block 6): a store's follow (f:store/<id>.ics) was refused by the server before
+    // sync ids could hold "/", yet marked sent; send each again so alerts know the stores you follow
+    if (!m.f2) { var fk = m.k["vir.follow.v1"] || {}; Object.keys(fk).forEach(function (id) { if (id.indexOf("/") >= 0 && fk[id][0] !== "") fk[id][2] = 1; }); m.f2 = 1; }
     var put = [], sent = {}, size = 0;
     KEYS.forEach(function (key) {
       var km = m.k[key], items = null;

@@ -386,7 +386,13 @@ body{-webkit-font-smoothing:antialiased;
     }
     el("sbody").innerHTML = h;
     var base = "webcal://" + new URL("../data/store/", location.href).href.replace(/^https?:\/\//, "");
-    el("sfoot").innerHTML = '<a class="pact btn glass" href="' + esc(base + String(s.sid).replace(/[^A-Za-z0-9_-]/g, "") + ".ics") + '" data-k="do">Follow their events</a>';
+    var sfile = String(s.sid).replace(/[^A-Za-z0-9_-]/g, "") + ".ics";
+    el("sfoot").innerHTML = '<a class="pact btn glass" id="sfollow" href="' + esc(base + sfile) + '" data-k="do">Follow their events</a>';
+    // the follow is kept as Events' Follow keeps it (vir.follow.v1), so New event alerts know this store (plan 2 M9 block 6)
+    el("sfollow").addEventListener("click", function(){
+      var m = {}; try{ m = JSON.parse(localStorage.getItem("vir.follow.v1") || "{}") || {}; }catch(e){ m = {}; }
+      if (!m["store/" + sfile]) { m["store/" + sfile] = 1; try{ localStorage.setItem("vir.follow.v1", JSON.stringify(m)); }catch(e){} }
+    });
   }
   function openStore(sid){
     var s = STORES.filter(function(x){ return x.sid === String(sid); })[0]; if(!s) return false;
