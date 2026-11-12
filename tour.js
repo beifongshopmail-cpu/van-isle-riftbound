@@ -96,7 +96,8 @@
     rules: { page: "rules/", stops: [
       { s: ".plate .sf", t: "Search every erratum, FAQ and ruling. Typos are forgiven." },
       { s: ".plate .fchip", t: "Filters narrows things down by kind and by set." },
-      { s: "#docs", t: "These are Riot's own documents. NEW marks what changed since your last visit." }
+      { s: "#docs", t: "These are Riot's own documents. NEW marks what changed since your last visit." },
+      { s: "#tabupd", t: "Updates lists Riot's patch notes, ban list posts and Tournament Rules changes, newest first." }
     ] },
     news: { page: "news/", stops: [
       { s: "#snow", t: "Happening now holds drawings and entries still open, the soonest to close first." },

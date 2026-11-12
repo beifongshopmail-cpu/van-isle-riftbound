@@ -146,7 +146,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
 <script>RAVI_BAR(document.getElementById("tabs"), [
   "hub",
   {go:"rules"},
-  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"log", a:[["class", "tab"], ["id", "tabupd"], ["aria-label", "Updates"], ["data-k", "slot"], ["data-fills", "pupd"]]},
   {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
 ]);</script>
 
@@ -159,6 +159,13 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
 <section class="panel frost" id="pfl" aria-hidden="true" aria-label="Filter">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-act="back" aria-label="Back" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl" id="flttl">Kind</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
   <div class="pbody"><div class="pick" id="flpick" data-k="pick"></div></div>
+</section>
+<!-- Updates (plan 2 M9 block 8, Mako's yes 2026-11-12): the bar's third slot. Riot's patch notes, ban
+     list posts and Tournament Rules changelogs (rules.json later), newest first; a row opens in place,
+     then links to Riot. -->
+<section class="panel frost" id="pupd" aria-hidden="true" aria-label="Updates">
+  <div class="phead"><div class="ht"><h4 class="ttl">Updates</h4><span class="cnt" id="updcnt"></span></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody"><div class="doors glass" id="updrows" data-k="open"></div></div>
 </section>
 <section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
   <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
@@ -243,6 +250,9 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
   function title(it){ return it.cards ? it.cards[0] : (it.q || it.title || ""); }
   function body(it){
     var url = (SRC[it.source] || {}).url || "";
+    if(it.kind === "update"){
+      return '<div class="rtx">' + esc(UPW[it.what]) + '</div><p class="rsrc"><a href="' + esc(web(it.url)) + '" target="_blank" rel="noopener">Read it on playriftbound.com</a></p>';
+    }
     if(it.kind === "errata"){
       return '<p class="rlab">New text</p>' + rtx(it["new"], url) + (it.old ? '<button type="button" class="rold" data-act="rold" aria-expanded="false" data-k="open">Old text' + CHEV + '</button><div hidden>' + rtx(it.old, url, "old") + '</div>' : "");
     }
@@ -362,13 +372,38 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
     el("artbody").querySelectorAll(".rtx").forEach(function(x){ window.RAVI_KW_TAGS(x); });
   }
 
+  // ---- Updates (the bar's third slot): Riot's posts about what changed in the rules, which the
+  // page's sections do not hold: Core Rules patch notes, ban list posts, Tournament Rules changelogs
+  // (rules.json later). Each is rebuilt from checked fields; its title loses Riot's filing tags
+  // ('[Article]', a trailing code) and nothing else. NEW as the page's entries: posted since the last visit.
+  var UPD = [], UPK = { ban: "Ban list", tourn: "Tournament Rules", core: "Core Rules", other: "Rules" };
+  var UPW = { ban: "Riot's post on the cards banned or unbanned.", tourn: "Riot's notes on what changed in the Tournament Rules.", core: "Riot's notes on what changed in the Core Rules.", other: "A rules post from Riot." };
+  function updLoad(){
+    UPD = [];
+    (Array.isArray(D.later) ? D.later : []).forEach(function(l, i){
+      if(!l || typeof l.title !== "string" || typeof l.url !== "string" || typeof l.published !== "string" || !/^\d{4}-\d{2}-\d{2}/.test(l.published)) return;
+      var t = l.title.replace(/^\s*\[[^\]]*\]\s*/, "").replace(/\s*\[[A-Za-z0-9_]+\]\s*$/, "").trim().slice(0, 160);
+      if(!t) return;
+      var what = /\bbans?\b|ban list/i.test(t) ? "ban" : (/tournament rules|changelog/i.test(t) ? "tourn" : (/patch notes|core rules/i.test(t) ? "core" : "other"));
+      var it = { id: "upd#" + i, kind: "update", what: what, title: t, url: l.url, published: l.published, changed: l.published.slice(0, 10) };
+      UPD.push(it); ITEM[it.id] = it;
+    });
+    UPD.sort(function(a, b){ return a.published < b.published ? 1 : (a.published > b.published ? -1 : 0); });
+  }
+  function fillUpd(){
+    var h = "";
+    UPD.forEach(function(it){ h += entry(it, day(it.published) + " \u00b7 " + UPK[it.what]); });
+    el("updrows").innerHTML = h || '<p class="empty">No updates from Riot yet.</p>';
+    el("updcnt").textContent = UPD.length || "";
+  }
+
   // ---- the page ----
   // NEW SINCE THE LAST VISIT (in place of the Latest menu, Mako 2026-10-24): an entry or document whose
   // 'changed' day (fetch-rules.js) is after the visit stored in vir.rules.seen.v1. A first visit is the
   // baseline: nothing is NEW. Badges stay while the page is open; leaving it records the newest change.
   var SEENK = "vir.rules.seen.v1", SEEN = null, NEWB = '<span class="new">NEW</span>';
   function isNew(it){ return !!(SEEN && it && it.changed && it.changed > SEEN); }
-  function newest(){ var m = ""; D.items.forEach(function(it){ if(it.changed && it.changed > m) m = it.changed; }); return m; }
+  function newest(){ var m = ""; D.items.forEach(function(it){ if(it.changed && it.changed > m) m = it.changed; }); UPD.forEach(function(u){ if(u.changed > m) m = u.changed; }); return m; }
   function seenStart(){
     try{ SEEN = localStorage.getItem(SEENK); }catch(e){ SEEN = null; }
     if(!SEEN){ SEEN = newest(); try{ localStorage.setItem(SEENK, SEEN); }catch(e){} }
@@ -558,6 +593,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
     });
     VK = Object.keys(VOC).map(function(w){ return { w: w, s: stem(w), at: VOC[w] }; });
     chips();
+    updLoad();
     seenStart();
     render();
   }
@@ -586,6 +622,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
   el("tabnav").addEventListener("click", function(){ openPanel(OPENP === el("pnav") ? null : el("pnav")); });
   window.RAVI_GOTO(el("pnavgoto"), "rules", "../");
   el("pnhere").addEventListener("click", function(){ openPanel(null); });
+  el("tabupd").addEventListener("click", function(){ if(OPENP === el("pupd")){ openPanel(null); return; } if(D){ fillUpd(); } openPanel(el("pupd")); });
   el("q").addEventListener("input", search);
   el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
 

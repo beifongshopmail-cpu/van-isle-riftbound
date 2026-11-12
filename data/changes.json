@@ -31,6 +31,7 @@
     {
       "date": "2026-11-12",
       "items": [
+        {"page":"rules","t":"Rules updates","d":"The bar on Rules has Updates: Riot's patch notes, ban list posts and Tournament Rules changes, newest first, each with the way to the post."},{"page":"counter","t":"Best of 1 or 3 from the event","d":"Pick an event on the Tracker and New match starts on the best-of the store listed."},
         {"page":"cut","t":"Top cut shows your chance","d":"Each finish now shows its chance of making the cut, a percent beside the worst case, in place of Likely."},
         {
           "page": "start",
