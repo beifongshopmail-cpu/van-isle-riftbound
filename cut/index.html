@@ -40,8 +40,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .sv{min-width:36px;text-align:center;font-family:var(--disp);font-weight:600;font-size:15px}
 .cseg{margin-top:10px}
 .cnote{margin:10px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
-/* the finishes: the record and how, then the worst case and the likely one */
-.fh,.fr{display:grid;grid-template-columns:1fr 92px 92px;gap:6px;align-items:center}
+/* the finishes: the record and how, then the worst case and the chance (plan 2 M9 block 8) */
+.fh,.fr{display:grid;grid-template-columns:1fr 92px 56px;gap:6px;align-items:center}
 .fh{margin:0 4px 6px;font-size:12px;color:var(--muted)}
 .fh span:not(:first-child){text-align:center}
 .flist{background:var(--recess);border-radius:22px;overflow:hidden}
@@ -55,6 +55,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .vd.in{background:rgba(var(--h-mint),.24)}
 .vd.ties{background:rgba(var(--h-gold),.24)}
 .vd.out{background:rgba(255,255,255,.06);color:var(--muted)}
+/* the chance: a number, in the record's own type */
+.fp{text-align:center;font-family:var(--disp);font-weight:600;font-size:15px}
 .fmore{margin:10px 4px 0;font-size:12px;color:var(--muted)}
 /* the safe line leads Your finishes (plan 2 M8.7 E1): body text, bone */
 .fsafe{margin:0 4px 12px;font-size:15px;line-height:1.4}
@@ -132,8 +134,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="pbody"><div class="doors glass" data-k="open">
     <button type="button" class="door" aria-expanded="false" aria-controls="hw1" data-k="open"><span class="t">Worst case</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="hwb" id="hw1" hidden><p>The other tables' last two rounds go the way that puts the most players level with you or ahead.</p></div>
-    <button type="button" class="door" aria-expanded="false" aria-controls="hw2" data-k="open"><span class="t">Likely</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
-    <div class="hwb" id="hw2" hidden><p>Every other match is played out and the player ahead wins it.</p></div>
+    <button type="button" class="door" aria-expanded="false" aria-controls="hw2" data-k="open"><span class="t">Chance</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
+    <div class="hwb" id="hw2" hidden><p>The event is played out many times over. Every other match is a coin flip, with one in ten drawn, and a tie on points is settled by luck.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw3" data-k="open"><span class="t">Tiebreakers</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
     <div class="hwb" id="hw3" hidden><p>A tie on points goes against you, so it reads Tiebreakers. A win is 3 points and a draw 1.</p></div>
     <button type="button" class="door" aria-expanded="false" aria-controls="hw4" data-k="open"><span class="t">A guide</span><span class="sp"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></button>
@@ -328,6 +330,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     out: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>' };
   var WORD = { in: "In", ties: "Tiebreakers", out: "Out" };
   function chip(v){ return '<span class="vd ' + v.verdict + '">' + MARK[v.verdict] + WORD[v.verdict] + '</span>'; }
+  // a chance in words: certain only when the worst case is In; never a bare 0 or 100 from the draw
+  var chCache = {};
+  function pct(p, row){
+    if (row.worst.verdict === "in") { return "100%"; }
+    if (p < 0.005) { return "&lt;1%"; }
+    if (p >= 0.995) { return "&gt;99%"; }
+    return Math.round(p * 100) + "%";
+  }
   function how(row, left){
     if (!left) { return "Final"; }
     var p = [];
@@ -373,12 +383,16 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     }
     var out = $("fin");
     if (!st.k) { out.innerHTML = '<p class="cnote">No top cut, so no finishes to work out.</p>'; return; }
-    var s = C.scenarios(st), h = '<div class="fh"><span>Finish</span><span>Worst case</span><span>Likely</span></div><div class="flist">', shown = 0, rest = 0;
+    // the chance beside each finish (plan 2 M9 block 8): cut.js plays the event out; the same
+    // numbers give the same chances, so they are worked out once per input
+    var s = C.scenarios(st), ck = [st.n, st.r, st.k, st.w, st.l, st.d].join("."), ch = chCache[ck] || (chCache[ck] = C.chances(st, { s: s }));
+    function gone(j){ return s.rows[j].worst.verdict === "out" && ch[j] < 0.005; }
+    var h = '<div class="fh"><span>Finish</span><span>Worst case</span><span>Chance</span></div><div class="flist">', shown = 0, rest = 0;
     for (i = 0; i < s.rows.length; i++) {
       var r = s.rows[i];
-      if (shown && r.worst.verdict === "out" && r.likely.verdict === "out" && s.rows[i - 1].worst.verdict === "out" && s.rows[i - 1].likely.verdict === "out") { rest++; continue; }
+      if (shown && gone(i) && gone(i - 1)) { rest++; continue; }
       shown++;
-      h += '<div class="fr"><span><b>' + r.final.w + "-" + r.final.l + "-" + r.final.d + '</b><small>' + esc(how(r, s.left)) + ", " + r.pts + ' points</small></span>' + chip(r.worst) + chip(r.likely) + '</div>';
+      h += '<div class="fr"><span><b>' + r.final.w + "-" + r.final.l + "-" + r.final.d + '</b><small>' + esc(how(r, s.left)) + ", " + r.pts + ' points</small></span>' + chip(r.worst) + '<span class="fp">' + pct(ch[i], r) + '</span></div>';
     }
     h += '</div>';
     if (rest) { h += '<p class="fmore">Every finish below these is out.</p>'; }

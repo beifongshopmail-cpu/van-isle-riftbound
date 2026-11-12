@@ -240,6 +240,124 @@
     return { input: c, left: left, rows: out };
   }
 
+  // A CHANCE PER FINISH (plan 2 M9 block 8, 2026-11-12; Cards Realm's calculator gives a percent
+  // per record, Limitless's takes a tie rate). The event is played out many times: each round the
+  // players are paired top down by points, in a fresh random order inside each points group; every
+  // other match is a coin flip, except that a share of them (tie, one in ten: about what best of 3
+  // draws on time) is drawn; my own rounds follow the finish. A finish's chance is the share of
+  // those events in which it makes the cut; level on points at the cut's edge, the places left go
+  // by luck among the players level. The draw is seeded from the input, so the same numbers give
+  // the same chances. Small fields are played once per finish, from the rounds already played;
+  // large ones (where one player's results barely move the rest) are played once for all finishes.
+  var BUDGET = 3000000, TIE = 0.1;
+  function rng(seed) {                                   // mulberry32
+    var a = seed >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) >>> 0;
+      var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  // one round on pts (a typed array, player 0 me). mine: "W", "D", "L", or null when player 0 is
+  // one more of the field. ws: { order, cnt, tmp } scratch arrays.
+  function simRound(pts, n, mine, tie, rand, ws) {
+    var order = ws.order, tmp = ws.tmp, cnt = ws.cnt, i, j, x, m = 0, first = mine === null ? 0 : 1;
+    // the others in a random order, then by points, most first (a counting sort keeps the order inside a group)
+    var len = 0;
+    for (i = first; i < n; i++) { tmp[len++] = i; }
+    for (i = len - 1; i > 0; i--) { j = Math.floor(rand() * (i + 1)); x = tmp[i]; tmp[i] = tmp[j]; tmp[j] = x; }
+    for (i = 0; i < n; i++) { if (pts[i] > m) { m = pts[i]; } }
+    for (i = 0; i <= m + 1; i++) { cnt[i] = 0; }
+    for (i = 0; i < len; i++) { cnt[m - pts[tmp[i]] + 1]++; }
+    for (i = 1; i <= m + 1; i++) { cnt[i] += cnt[i - 1]; }
+    // me first in my points group, as pairings() does: leave my place free
+    var my = -1;
+    if (first) { my = cnt[m - pts[0]]; }
+    for (i = 0; i < len; i++) { j = cnt[m - pts[tmp[i]]]++; order[my >= 0 && j >= my ? j + 1 : j] = tmp[i]; }
+    if (first) { order[my] = 0; }
+    var all = len + first;
+    if (all % 2) {
+      // the lowest other player gets the bye
+      if (order[all - 1] === 0 && all > 1) { order[all - 1] = order[all - 2]; order[all - 2] = 0; }
+      pts[order[all - 1]] += 3; all--;
+    }
+    for (i = 0; i + 1 < all; i += 2) {
+      var a = order[i], b = order[i + 1], res;
+      if (first && (a === 0 || b === 0)) {
+        res = a === 0 ? mine : (mine === "W" ? "L" : (mine === "L" ? "W" : "D"));
+      } else {
+        x = rand();
+        res = x < tie ? "D" : (x < tie + (1 - tie) / 2 ? "W" : "L");
+      }
+      if (res === "W") { pts[a] += 3; } else if (res === "L") { pts[b] += 3; } else { pts[a] += 1; pts[b] += 1; }
+    }
+  }
+  function share(above, tied, k) {
+    if (above >= k) { return 0; }
+    if (above + tied < k) { return 1; }
+    return (k - above) / (tied + 1);
+  }
+  // The chance of making the cut for every finish of scenarios(o), in its order: 0 to 1, or null
+  // with no cut. opt.tie: the share of other matches drawn (default one in ten). opt.s: scenarios(o)
+  // already worked out. A finish that is In in the worst case is certain.
+  function chances(o, opt) {
+    opt = opt && typeof opt === "object" ? opt : {};
+    var s = opt.s && opt.s.rows && opt.s.input ? opt.s : scenarios(o), c = s.input, rows = s.rows, out = [], i, j;
+    var tie = typeof opt.tie === "number" && opt.tie >= 0 && opt.tie <= 0.9 ? opt.tie : TIE;
+    if (!c.k) { for (i = 0; i < rows.length; i++) { out.push(null); } return out; }
+    if (c.k >= c.n) { for (i = 0; i < rows.length; i++) { out.push(1); } return out; }
+    var n = c.n, r = c.r, k = c.k, played = c.w + c.l + c.d, left = s.left;
+    var rand = rng(2654435761 ^ (n * 73856093) ^ (r * 19349663) ^ (k * 83492791) ^ (c.w * 2971215073) ^ (c.l * 433494437) ^ (c.d * 1597334677));
+    var pts = new Int32Array(n), base = new Int32Array(n), ws = { order: new Int32Array(n), tmp: new Int32Array(n), cnt: new Int32Array(3 * r + 3) };
+    var acc = [], sims, rd, t, above, tied;
+    for (i = 0; i < rows.length; i++) { acc.push(0); }
+    var past = path(c.w, c.d, c.l, 0, 0, 0);
+    sims = Math.min(2000, Math.floor(BUDGET / (n * (played + rows.length * Math.max(1, left)))));
+    if (sims >= 300) {
+      // once per finish, from the rounds already played
+      var paths = [];
+      for (i = 0; i < rows.length; i++) { paths.push(path(0, 0, 0, rows[i].w, rows[i].d, rows[i].l)); }
+      for (var sm = 0; sm < sims; sm++) {
+        for (i = 0; i < n; i++) { base[i] = 0; }
+        for (rd = 0; rd < played; rd++) { simRound(base, n, past[rd], tie, rand, ws); }
+        for (i = 0; i < rows.length; i++) {
+          pts.set(base);
+          for (rd = 0; rd < left; rd++) { simRound(pts, n, paths[i][rd], tie, rand, ws); }
+          t = pts[0]; above = 0; tied = 0;
+          for (j = 1; j < n; j++) { if (pts[j] > t) { above++; } else if (pts[j] === t) { tied++; } }
+          acc[i] += share(above, tied, k);
+        }
+      }
+    } else {
+      // a large field: played once for every finish, player 0 one more of the field
+      sims = Math.max(300, Math.min(4000, Math.floor(BUDGET / (n * r))));
+      var hist = new Int32Array(3 * r + 2), top = 3 * r;
+      for (var sm2 = 0; sm2 < sims; sm2++) {
+        for (i = 0; i < n; i++) { pts[i] = 0; }
+        for (rd = 0; rd < r; rd++) { simRound(pts, n, null, tie, rand, ws); }
+        for (i = 0; i <= top + 1; i++) { hist[i] = 0; }
+        for (j = 1; j < n; j++) { hist[pts[j]]++; }
+        for (i = top - 1; i >= 0; i--) { hist[i] += hist[i + 1]; }      // hist[p]: players on p or more
+        for (i = 0; i < rows.length; i++) {
+          t = rows[i].pts; above = t + 1 <= top ? hist[t + 1] : 0; tied = (t <= top ? hist[t] : 0) - above;
+          acc[i] += share(above, tied, k);
+        }
+      }
+    }
+    for (i = 0; i < rows.length; i++) { out.push(rows[i].worst.verdict === "in" ? 1 : acc[i] / sims); }
+    // more points never mean a smaller chance (the draw's noise aside): rows run best first
+    var floor = 0, g = rows.length - 1;
+    while (g >= 0) {
+      var h = g, gm = 0;
+      while (h >= 0 && rows[h].pts === rows[g].pts) { if (out[h] < floor) { out[h] = floor; } if (out[h] > gm) { gm = out[h]; } h--; }
+      if (gm > floor) { floor = gm; }
+      g = h;
+    }
+    return out;
+  }
+
   // A record from the Game page's saved matches tagged to one event: player 1 is you. A match is
   // won on games; level games (or none decided) is a draw. Matches are rebuilt from checked fields.
   function recordFrom(history, evId) {
@@ -277,7 +395,7 @@
     return r;
   }
 
-  var API = { PTS: PTS, CUTS: CUTS, roundsFor: roundsFor, cutFor: cutFor, clean: clean, scenarios: scenarios, recordFrom: recordFrom, simulate: simulate };
+  var API = { PTS: PTS, CUTS: CUTS, roundsFor: roundsFor, cutFor: cutFor, clean: clean, scenarios: scenarios, recordFrom: recordFrom, simulate: simulate, chances: chances };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_CUT = API; }
 })(this);

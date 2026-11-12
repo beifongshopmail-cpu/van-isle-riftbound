@@ -31,6 +31,7 @@
     {
       "date": "2026-11-12",
       "items": [
+        {"page":"cut","t":"Top cut shows your chance","d":"Each finish now shows its chance of making the cut, a percent beside the worst case, in place of Likely."},
         {
           "page": "start",
           "t": "Guided tours",

@@ -56,7 +56,7 @@
     cut: { page: "cut/", stops: [
       { s: "#evbtn", t: "Pick your event, and its players, rounds and cut fill in for you." },
       { s: "#srec", t: "Set your record so far. Matches the *Tracker* tied to the event are counted already." },
-      { s: "#sfin", t: "Every finish still open to you. Worst case: other tables fall against you. Likely: the player ahead wins." }
+      { s: "#sfin", t: "Every finish still open to you. Worst case: other tables fall against you. Chance: how often it makes the cut." }
     ] },
     tier: { page: "tier/", stops: [
       { s: "#tscope", t: "Global counts every event TopDeck.gg lists, worldwide. Local counts only your areas, from decks players add." },
