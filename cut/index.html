@@ -64,9 +64,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .hwb{padding:0 16px 14px}
 .hwb p{margin:0;font-size:15px;line-height:1.4;color:var(--muted)}
 /* the event menu's rows carry two lines */
-#evl button{flex-direction:column;align-items:flex-start;text-align:left;justify-content:center;height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px;gap:2px}
-#evl button.on{padding-right:44px}
-#evl small{display:block;white-space:normal}
+/* (its rows are app.css's two-line pick rows, .pick.twol, as the Tracker's Event menu) */
 /* the Event row (M17 block 4 phone check): the label stays whole, the value takes the rest and
    is trimmed only when even the short name is too long; the chevron always shows */
 #evbtn .t,#evbtn .cvr{flex-shrink:0}
@@ -123,7 +121,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </section>
 <section class="panel frost" id="pev" aria-hidden="true" aria-label="Event">
   <div class="phead"><h4 class="ttl">Event</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="evl" data-k="pick"></div></div>
+  <div class="pbody"><div class="pick twol" id="evl" data-k="pick"></div></div>
 </section>
 <!-- How it's worked out (M17 sweep, Mako 2026-10-30): the explanation sits behind the bar's info
      slot, as the Tier list's How it's counted, instead of a standing note under Your finishes. -->

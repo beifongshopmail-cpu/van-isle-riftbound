@@ -273,9 +273,7 @@
 
   /* the Event menu: each row is name, then venue/time under it. Content
      row: sized by its own two lines, with the row floor under it. */
-  #evlist button{flex-direction:column;align-items:flex-start;height:auto;min-height:var(--sz-row);padding:10px 16px;gap:2px}
-  #evlist button.on{padding-right:44px}
-  #evlist small{display:block}
+  /* its rows are app.css's two-line pick rows (.pick.twol), as Top cut's Event menu */
 
   /* colours: a sunken one-of-six track now (app.css's .seg.swatch) --
      each capsule IS the colour, no inner dot. */
@@ -601,7 +599,7 @@
 </section>
 <section class="panel frost" id="pevt" aria-hidden="true" aria-label="Event">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Event</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="evlist" data-k="pick"></div></div>
+  <div class="pbody"><div class="pick twol" id="evlist" data-k="pick"></div></div>
 </section>
 
 <!-- END GAME: one deeper from the Game settings foot -->
@@ -1067,7 +1065,7 @@
       h += "<button type=\"button\" data-ev=\"" + esc(e.id) + "\"" +
         (on ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">" +
         "<span class=\"t\">" + esc(e.name || elab) + "</span><small>" +
-        esc([window.RAVI_DATE(e.day, true) + (e.time ? ", " + window.RAVI_TIME(e.time) : ""), e.venue || e.store || ""].filter(Boolean).join(" \u00b7 ")) + "</small></button>";
+        esc([window.RAVI_DATE(e.day, true) + (e.time ? ", " + window.RAVI_TIME(e.time) : ""), e.store || e.venue || ""].filter(Boolean).join(" \u00b7 ")) + "</small></button>";
     }
     h += "<button type=\"button\" data-ev=\"\"" +
       (!cur ? " class=\"on\" aria-pressed=\"true\"" : " aria-pressed=\"false\"") + ">No event</button>";

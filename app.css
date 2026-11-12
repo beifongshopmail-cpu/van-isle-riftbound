@@ -508,6 +508,10 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
 /* a record inside a pick group (the calendar's store rows): a .pick row's
    own height and padding give way to the record's */
 .pick button.rec{height:auto;padding-top:7px;padding-bottom:7px}
+/* a pick list of two-line rows (the Event menus on the Tracker and Top cut; Mako 2026-11-12: one
+   layout): the name, then its details under it, both from the left edge, wrapping there */
+.pick.twol button{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;height:auto;min-height:var(--sz-row);padding-top:7px;padding-bottom:7px;text-align:left}
+.pick.twol small{display:block;white-space:normal}
 .door.rec small{white-space:normal;width:100%}
 .door.rec .cvr{position:absolute;top:calc(50% - 8px);right:16px}
 
