@@ -61,8 +61,17 @@ body{-webkit-font-smoothing:antialiased;
 .cmid{flex:1;min-width:0}
 .cnm{display:block;font-family:var(--disp);font-size:15px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .csub{display:block;margin-top:3px;font-family:var(--text);font-size:12px;font-weight:400;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cend{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px}   /* a List row's right end: BANNED over the price */
 .camt{flex:0 0 auto;font-family:var(--disp);font-size:15px;font-weight:700;white-space:nowrap}
 .empty{padding:30px 8px;font-size:15px;color:var(--muted);text-align:center}
+/* BANNED: Decks' red pill, the no-entry mark and the word, wherever the card shows (Mako 2026-11-11) */
+.ban{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:11px;background:var(--over);color:#fff;
+  font-family:var(--disp);font-size:12px;font-weight:700;white-space:nowrap}
+.ban svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+/* on a picture it sits centred near the foot, as on Decks' grid and card menu */
+.bstack{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:1}
+.bstack > *{box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.bstack.menu{bottom:10px}
 .cpic,.crow,.mpic{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .foot a{color:var(--bone)}
 /* ONE CARD IS A MENU, as a card is everywhere else in RAVI (Decks', Collection's, the Exchange's card
@@ -238,6 +247,10 @@ body{-webkit-font-smoothing:antialiased;
   }
   function money(usd){ return "$" + (CUR === "CAD" ? usd * FX : usd).toFixed(2); }
   function banned(x){ return !!(BAN && x && X.isBanned(BAN, nm(x))); }
+  // no entry, for Banned (Decks' own)
+  var NOENT = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></svg>';
+  function banPill(x){ return banned(x) ? '<span class="ban">' + NOENT + 'BANNED</span>' : ""; }
+  function banStack(x, place){ return banned(x) ? '<span class="bstack' + (place ? " " + place : "") + '">' + banPill(x) + '</span>' : ""; }
   function key(s){ return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
   var ARROW = { up: '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("up") + '"/></svg>', dn: '<svg viewBox="4 4 16 16" aria-hidden="true"><path d="' + window.RAVI_ARROW("dn") + '"/></svg>' };
   var DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
@@ -303,8 +316,9 @@ body{-webkit-font-smoothing:antialiased;
   function subOf(x){ var b = [typeWord(x)], d = domWords(x); if(d) b.push(d); if(typeof x.e === "number") b.push(x.e + " energy"); return b.join(", "); }
   function tile(e){
     var x = e.x, p = PR[e.code], rot = land(x);
-    if(SET.view === "list") return '<button type="button" class="crow" data-code="' + esc(e.code) + '" data-k="card"><span class="art' + (rot ? " rot" : "") + '">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(e.name) + '</span><span class="csub">' + esc(subOf(x)) + '</span></span>' + (p != null ? '<span class="camt">' + money(p) + '</span>' : '') + '</button>';
-    return '<div class="ctile"><button type="button" class="cpic' + (rot ? " rot" : "") + '" data-code="' + esc(e.code) + '" data-k="card" aria-label="' + esc(e.name) + (p != null ? ", " + money(p) : "") + '">' + img(x) + '</button><p class="tnm">' + esc(e.name) + '</p><p class="tpr">' + (p != null ? money(p) : "&nbsp;") + '</p></div>';
+    var ban = banned(x), amt = p != null ? '<span class="camt">' + money(p) + '</span>' : '';
+    if(SET.view === "list") return '<button type="button" class="crow" data-code="' + esc(e.code) + '" data-k="card"' + (ban ? ' aria-label="' + esc(e.name) + ', banned' + (p != null ? ", " + money(p) : "") + '"' : '') + '><span class="art' + (rot ? " rot" : "") + '">' + img(x) + '</span><span class="cmid"><span class="cnm">' + esc(e.name) + '</span><span class="csub">' + esc(subOf(x)) + '</span></span>' + (ban ? '<span class="cend">' + banPill(x) + amt + '</span>' : amt) + '</button>';
+    return '<div class="ctile"><button type="button" class="cpic' + (rot ? " rot" : "") + '" data-code="' + esc(e.code) + '" data-k="card" aria-label="' + esc(e.name) + (ban ? ", banned" : "") + (p != null ? ", " + money(p) : "") + '">' + img(x) + banStack(x) + '</button><p class="tnm">' + esc(e.name) + '</p><p class="tpr">' + (p != null ? money(p) : "&nbsp;") + '</p></div>';
   }
   var LAST = [];
   function render(keep){
@@ -507,7 +521,7 @@ body{-webkit-font-smoothing:antialiased;
   function fillCard(){
     var e = CV.e, x = shown(), base = e.x, h = "", f = "", r = CV.rows[CV.pi], rules = rulesFor(base), wide = land(x);
     el("cname").textContent = e.name;
-    h += '<div class="mbox' + (wide ? " land" : "") + '"><button type="button" class="mpic' + (wide ? " land" : "") + '" data-act="spot" aria-label="See the full card" data-k="card">' + img(x, true) + '</button></div>';
+    h += '<div class="mbox' + (wide ? " land" : "") + '"><button type="button" class="mpic' + (wide ? " land" : "") + '" data-act="spot" aria-label="See the full card' + (banned(base) ? ', banned' : '') + '" data-k="card">' + img(x, true) + '</button>' + banStack(base, "menu") + '</div>';
     if(base.q || base.f) h += '<div class="row"><div class="ctxt glass"><div class="rtx sel" id="ctext">' + clean(base.q || "") + (base.f ? clean(base.f) : "") + '</div></div></div>';
     f += fact("Type", esc(typeWord(base)));
     f += fact("Domain", esc(domWords(base)));
@@ -714,7 +728,7 @@ body{-webkit-font-smoothing:antialiased;
     fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(R){
       RULES = R.items || []; (R.sources || []).forEach(function(s){ SRC[s.id] = s; });
       var it = RULES.filter(function(i){ return i.id === "hub#constructed-format-legality"; })[0];
-      if(it) BAN = X.bannedFrom(it.html);
+      if(it){ BAN = X.bannedFrom(it.html); render(true); }
       if(CV && OPENP === el("pcard")){ var y = el("cbody").scrollTop; fillCard(); el("cbody").scrollTop = y; }
     }).catch(function(){});
   }).catch(function(){ el("boot").remove(); el("loadfail").hidden = false; });

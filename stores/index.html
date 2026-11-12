@@ -49,7 +49,7 @@ body{-webkit-font-smoothing:antialiased;
 /* in List the photo is 64 (STYLE.md section 5, Browse parts), so it balances the row's four lines.
    The type stays on its own line: after its date it fits 4 stores of 12 at 402 and none at 360, and
    a type's name is never cut (tried 2026-11-11 19:30) */
-.door.rec.stl > .sic{width:64px;height:64px}
+.door.rec.stl > .sic{width:64px;height:64px} /* size-exempt: the store's photo */
 .stt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
 /* the stand-in: the store icon on a picture's ground (--recess), no colour: a store has no kind */
 .sic{flex:0 0 auto;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--recess);color:var(--muted)}

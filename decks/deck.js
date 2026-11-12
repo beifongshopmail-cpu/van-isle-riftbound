@@ -911,7 +911,11 @@
         rows.forEach(function (r) { if (!r.code && r.id === v.id) { row = r; } });
         if (!row) {
           var s = PX.sets[PX.byId[v.id].g], promoSet = /promo/i.test(s.n), kind = tcgKind(v, s);
-          row = { code: "", id: v.id, pic: codeOf(base.c), own: false, set: s.a,
+          // a Signature is its overnumber signed: with no picture of its own it shows the picture of
+          // Riot's printing with its set and number, never the base's (Mako 2026-11-11)
+          var pic = codeOf(base.c), sigOf = /\*$/.test(v.num) ? v.num.replace(/\*$/, "").replace(/^0+(?=\d)/, "") : "";
+          if (sigOf) { rows.forEach(function (r) { if (r.code && r.set === s.a && String(r.num).replace(/^0+(?=\d)/, "") === sigOf) { pic = r.code; } }); }
+          row = { code: "", id: v.id, pic: pic, own: false, set: s.a,
             setName: promoSet ? "" : s.n.replace(/^Riftbound\s+/, "").replace(/\s+Cards$/, ""),
             num: v.num, kind: shortKind(kind), promo: promoSet || /promo|top 8|champion/i.test(kind) || /promo/i.test(v.rarity), fins: [], t: 100000 + v.t / 1e6 + v.id / 1e9 };
           rows.push(row);
