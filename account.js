@@ -502,7 +502,8 @@
         '<p class="pnote">Drag a block to move it, or down here to take it off. Or tap one, then another.</p>' +
         '<button type="button" class="pact btn glass acgap" id="acsuhuboff" data-k="do" disabled>Take off the hub</button></div>' + suFoot(4, 5),
       acsu5: suHead("All set", 0) + '<div class="pbody"><p class="pnote">The Guide covers Riftbound and RAVI, and runs this setup again.</p>' +
-        '<div class="doors acgap" data-k="deeper"><a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">Guide</span><span class="sp"></span>' + CV + '</a></div></div>' +
+        '<div class="doors acgap" data-k="deeper"><a class="door" id="acsutour" href="' + REL + 'calendar/" data-tour="bar"><span class="t">Show me around</span><span class="sp"></span>' + CV + '</a>' +
+        '<a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">Guide</span><span class="sp"></span>' + CV + '</a></div></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsudone" data-k="do">Done</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
       acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Exchange shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
@@ -1116,12 +1117,12 @@
   }
   function suWire() {
     doc.body.addEventListener("click", function (e) {
-      var t = e.target.closest ? e.target.closest("[data-sunext],[data-sutown],#acsusave,#acsuclaim,#acsuoffer,#acsuwish,#acsufol,#acsudone,#acsunew") : null;
+      var t = e.target.closest ? e.target.closest("[data-sunext],[data-sutown],#acsusave,#acsuclaim,#acsuoffer,#acsuwish,#acsufol,#acsudone,#acsunew,#acsutour") : null;
       if (!t || !suOn) return;
       if (t.hasAttribute("data-sutown")) return suTownTap(t);
       if (t.hasAttribute("data-sunext")) return deeper("acsu" + t.getAttribute("data-sunext"));
       if (t.id === "acsudone") return closeAll();
-      if (t.id === "acsunew") { suOn = false; return; } // the link goes on to New here
+      if (t.id === "acsunew" || t.id === "acsutour") { suOn = false; return; } // the link goes on to the Guide, or to the bar's tour
       if (t.id === "acsusave") {
         t.disabled = true; say("acsu1msg", "Making your passkey...");
         return A.addKey(function (err, j) {

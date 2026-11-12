@@ -161,6 +161,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 :where(html.cnew) #setup{--sc:var(--ycr,89,137,246)}
 :where(html.cnew) #around{--sc:var(--h-jade)}   /* App settings' green */
 :where(html.cnew) :is(#try,#deck,#signup,#bring,#rules,#setup,#around){--tint:transparent;background:linear-gradient(rgba(var(--sc),var(--cg)),rgba(var(--sc),var(--cg))),var(--glass)}
+/* Show me a page (plan 2 M9 block 7): the labels over its two groups, On your hub and Other pages */
+.npl{margin:14px 4px 6px}
+.shead + .npl{margin-top:0}
 .npc{display:none}
 :where(html.cnew) #pages .door.rec{padding-left:60px} /* size-exempt: room for the row's coloured chip (.npc), a list that mixes things keeps colour small (STYLE 4, Where colour goes 3; Mako's yes 2026-11-09) */
 :where(html.cnew) .npc{display:grid;position:absolute;left:16px;top:calc(50% - 16px);width:32px;height:32px;border-radius:10px;place-items:center;background:rgba(var(--c),.34);color:var(--bone)}
@@ -482,12 +485,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="ntx">The hub is where the app opens. Its blocks are your seven picks, and its last block, <b>All pages</b>, lists every page so you can go to any of them.</p>
     <p class="ntx">Every other page has the same bar along the bottom, in the same order: Hub, Go to (any page), the page's own action, and its settings.</p>
     <p class="ntx">App settings picks the hub's blocks and the page the app opens to.</p>
-    <div class="doors"><a class="door" href="../settings/" data-k="deeper"><span class="t">App settings</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+    <div class="doors"><a class="door" href="../calendar/" data-tour="bar" data-k="deeper"><span class="t">Show me the bar</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door" href="../settings/" data-k="deeper"><span class="t">App settings</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
   </section>
 
   <section class="nsec glass" id="pages">
-    <div class="shead"><h2>The pages</h2></div>
-    <div class="doors"><a class="door rec" href="../calendar/" data-k="deeper"><span class="t">Events</span><small>Every island event by day. Filter by area, store and kind; Follow a store to get its events in your phone's calendar.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../counter/" data-k="deeper"><span class="t">Tracker</span><small>Keep score for a match, with a match timer and a log. Tag a match to its event to keep a record.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../trade/" data-k="deeper"><span class="t">Appraise</span><small>Price a trade: add cards to both sides and see their market value, at the percentages you set. Save trades for later.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../board/" data-k="deeper"><span class="t">Exchange</span><small>Players near you who have cards you want and want cards you have. Make an offer; you trade in person.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../decks/" data-k="deeper"><span class="t">Decks</span><small>Build or import a deck. Riot's deck rules are checked as you go, with stats and a sample hand.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../collection/" data-k="deeper"><span class="t">Collection</span><small>Track the cards you own, in binders and a wishlist, with their value over time. Can import from Collectr.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../rules/" data-k="deeper"><span class="t">Rules</span><small>Riot's documents, errata and FAQs. NEW marks what changed since your last visit.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../news/" data-k="deeper"><span class="t">News</span><small>Riot's posts, each with a short summary, read without leaving the app. What is happening now sits on top.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../cut/" data-k="deeper"><span class="t">Top cut</span><small>Will your record make the top cut? Every finish still open to you, worst case and likely.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../tier/" data-k="deeper"><span class="t">Tier list</span><small>Which legends are played most and reach the top cut, worldwide or in your area.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../feedback/" data-k="deeper"><span class="t">Feedback</span><small>Tell us about a bug, a wrong or missing event, or an idea.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+    <div class="shead"><h2>Show me a page</h2></div>
+    <div class="doors"><a class="door rec" href="../calendar/" data-k="deeper"><span class="t">Events</span><small>Every island event by day. Filter by area, store and kind; Follow a store to get its events in your phone's calendar.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../stores/" data-k="deeper"><span class="t">Stores</span><small>Every store that runs Riftbound on the island: its address, hours and next events.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../counter/" data-k="deeper"><span class="t">Tracker</span><small>Keep score for a match, with a match timer and a log. Tag a match to its event to keep a record.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../trade/" data-k="deeper"><span class="t">Appraise</span><small>Price a trade: add cards to both sides and see their market value, at the percentages you set. Save trades for later.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../board/" data-k="deeper"><span class="t">Exchange</span><small>Players near you who have cards you want and want cards you have. Make an offer; you trade in person.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../decks/" data-k="deeper"><span class="t">Decks</span><small>Build or import a deck. Riot's deck rules are checked as you go, with stats and a sample hand.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../collection/" data-k="deeper"><span class="t">Collection</span><small>Track the cards you own, in binders and a wishlist, with their value over time. Can import from Collectr.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../cards/" data-k="deeper"><span class="t">Cards</span><small>Every card: its text, printings, prices, legality and rulings.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../rules/" data-k="deeper"><span class="t">Rules</span><small>Riot's documents, errata and FAQs. NEW marks what changed since your last visit.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../news/" data-k="deeper"><span class="t">News</span><small>Riot's posts, each with a short summary, read without leaving the app. What is happening now sits on top.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../cut/" data-k="deeper"><span class="t">Top cut</span><small>Will your record make the top cut? Every finish still open to you, worst case and likely.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../tier/" data-k="deeper"><span class="t">Tier list</span><small>Which legends are played most and reach the top cut, worldwide or in your area.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a><a class="door rec" href="../feedback/" data-k="deeper"><span class="t">Feedback</span><small>Tell us about a bug, a wrong or missing event, or an idea.</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a></div>
   </section>
   </div>
 
@@ -614,6 +617,31 @@ document.getElementById("nsetup").addEventListener("click", function(){ if (wind
     }
     lastT = now; lastX = tch.clientX; lastY = tch.clientY;
   }, {passive:false});
+})();
+</script>
+<script>
+/* SHOW ME A PAGE (plan 2 M9 block 7): each row goes to its page and asks for that page's tour
+   (data-tour; pages.js THE TOUR). The player's hub pages come first, in the hub's order, under
+   On your hub; the rest follow under Other pages, in Go to's order. */
+(function(){
+  var sec = document.getElementById("pages"), grp = sec.querySelector(".doors"), rows = {}, order = [], picks, i, id;
+  Array.prototype.forEach.call(grp.querySelectorAll("a.door"), function(a){
+    var m = /\.\.\/([a-z]+)\//.exec(a.getAttribute("href") || "");
+    if (m) { a.setAttribute("data-tour", m[1]); rows[m[1]] = a; }
+  });
+  (window.RAVI_PAGES || []).forEach(function(p){ if (rows[p.id]) { order.push(p.id); } });
+  picks = (window.RAVI_HUB_PICKS ? window.RAVI_HUB_PICKS() : []).filter(function(x){ return rows[x]; });
+  function group(label, ids){
+    if (!ids.length) { return; }
+    var lb = document.createElement("p"), g = document.createElement("div");
+    lb.className = "lb npl"; lb.textContent = label;
+    g.className = "doors";
+    for (i = 0; i < ids.length; i++) { g.appendChild(rows[ids[i]]); }
+    sec.appendChild(lb); sec.appendChild(g);
+  }
+  grp.parentNode.removeChild(grp);
+  group("On your hub", picks);
+  group("Other pages", order.filter(function(x){ return picks.indexOf(x) < 0; }));
 })();
 </script>
 <script>

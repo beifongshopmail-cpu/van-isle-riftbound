@@ -903,3 +903,24 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 .doors > .door:has(+ .rbody[hidden]:last-child){background-image:none}
 .rbody{padding:2px 16px 14px}
 mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;border-radius:4px;padding:0 1px;box-shadow:0 1px 0 rgba(255,255,255,.55)}
+
+/* ======== THE TOUR (plan 2 M9 block 7; tour.js; style/tour.md) ========
+   A tour the player starts from the Guide: the page dims, one control is lit by a cut-out with a
+   bone ring (never colour alone), and its words sit beside it on the menus' grey. Above every menu
+   and the lifted picture. The dim is the cut-out's own shadow, so the lit control is the page itself. */
+.tour{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:0;transition:opacity .2s ease}
+.tour.on{opacity:1}
+.tourk{position:fixed;pointer-events:auto}
+.tourh{position:fixed;box-sizing:border-box;border:2px solid var(--bone);box-shadow:0 0 0 200vmax rgba(0,0,0,.62);pointer-events:none}
+.tourp{position:fixed;left:12px;right:12px;max-width:456px;margin:0 auto;box-sizing:border-box;padding:14px 12px 12px 16px;border-radius:22px;pointer-events:auto;
+  background:var(--plate-solid);box-shadow:var(--glass-base),0 14px 36px rgba(0,0,0,.5)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
+  .tourp{background:var(--plate-glass);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}
+}
+.tourt{margin:0 4px 10px 0;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
+.tourf{display:flex;align-items:center;gap:6px}
+.tourc{font-family:var(--text);font-weight:600;font-size:12px;color:var(--muted)}
+.tourb{display:inline-flex;align-items:center;gap:4px;height:var(--sz-sm);box-sizing:border-box;padding:0 14px;border:0;border-radius:calc(var(--sz-sm) / 2);background:var(--flat);
+  font-family:var(--disp);font-weight:600;font-size:13px;color:var(--bone);-webkit-tap-highlight-color:transparent}
+.tourb:active{background:var(--glass-press)}
+.tourb svg{width:16px;height:16px;margin-right:-4px}

@@ -32,6 +32,11 @@
       "date": "2026-11-12",
       "items": [
         {
+          "page": "start",
+          "t": "Show me a page",
+          "d": "The Guide's New to RAVI can walk you round any page: it lights one control at a time and says what it does. It never starts by itself."
+        },
+        {
           "page": "collection",
           "t": "Wishlist price alerts",
           "d": "At most once a day, an alert names each Wishlist card whose price moved 10% or more, down or up."

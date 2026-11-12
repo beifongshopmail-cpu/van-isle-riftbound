@@ -1120,6 +1120,28 @@ window.RAVI_BAR = function(nav, slots){
   }, { passive: false });
 })();
 
+// THE TOUR (plan 2 M9 block 7; Mako's yes 2026-11-12: per-page tours the player starts). A link that
+// carries data-tour="<id>" asks for a tour of the page it goes to: the ask rides to that page in the
+// session (ravi.tour.v1), and that page loads tour.js, which holds the engine and every tour's
+// stops. With nothing asked nothing loads, so a tour never starts by itself.
+(function(){
+  if (typeof document === "undefined") { return; }
+  var KEY = "ravi.tour.v1", me = document.currentScript, base = me && me.src ? me.src.replace(/pages\.js(\?.*)?$/, "") : "";
+  document.addEventListener("click", function(e){
+    var a = e.target && e.target.closest ? e.target.closest("a[data-tour]") : null;
+    if (a) { try { sessionStorage.setItem(KEY, a.getAttribute("data-tour")); } catch (x) {} }
+  }, true);
+  function boot(){
+    var id = null, s;
+    try { id = sessionStorage.getItem(KEY); } catch (e) {}
+    if (!id || window.RAVI_GATE) { return; }
+    if (window.RAVI_TOUR) { window.RAVI_TOUR.boot(); return; }
+    s = document.createElement("script"); s.src = base + "tour.js"; document.head.appendChild(s);
+  }
+  addEventListener("pageshow", function(e){ if (e.persisted) { boot(); } });
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
+})();
+
 // BACK (plan 2 M8.7 A1; Mako's yes 2026-11-08 to the sweep's finding; widened 20:33: "the back button
 // should be around more ... a bit weird having it only pop up after specifically a page links to
 // another page but not when you use go to"). A round Back sits in the wordmark row's top left, level
