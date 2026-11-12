@@ -231,7 +231,7 @@ Browse parts (the Browse pattern, section 0; reference cards/index.html)
 Your picture and the account menus (account.js): style/account.md. Wherever a page needs a saved account it shows a Save your account row (RAVI_SAVEROW), which opens the account menu; never directions such as 'tap your picture'. A button that saves says so in its own words for a moment: Saved, Claimed.
 
 Back (every page)
-- Back (pages.js, app.css .rvback): a page reached from another page, by a link inside it or by Go to, shows a round glass Back (.circ 36, the chevron at 18 and 2.4) in the wordmark row's top left, 18 in, level with your picture; it returns where you were and keeps stepping back along your trail. The hub is home: a page it opens shows none, and going to the hub starts the trail again. RAVI_BACK_MARK(url) marks a move made from script. While the page shows a Back of its own (data-ownback, Decks' Back to your decks) this one stands aside, the trail kept. Always plain glass. [T]
+- Back (pages.js, app.css .rvback): a page reached from another page, by a link inside it or by Go to, shows a round glass Back (.circ 36, the chevron at 18 and 2.4) in the wordmark row's top left, 18 in, level with your picture; it returns where you were and keeps stepping back along your trail. The hub is home: a page it opens shows none. Reached from a page, the hub shows Back to that page; a hub opened fresh shows none. RAVI_BACK_MARK(url) marks a move made from script. While the page shows a Back of its own (data-ownback, Decks' Back to your decks) this one stands aside, the trail kept. Always plain glass. [T]
 
 Choose lists (settings/index.html, calendar/index.html)
 - .pick: sunken group; rows are button or a, 44 high, Poppins 600 15, padding 0 16. Add .on for a chosen row (bone check). A row may hold small (grey value) or .sp.
@@ -393,6 +393,7 @@ The hub block and the install screen: style/hub.md and style/install.md.
 Each page's own rules, its menus and its page-local classes, one file per page in style/, its pattern on the first line. Read the file of every page a change touches, with this core. A new page gets its file in the same commit as the page. Notes say what the page is now; their history is in the records too.
 - style/hub.md: The hub (index.html)
 - style/account.md: Your picture and the account menus (account.js), every page
+- style/tour.md: The tour (tour.js), any page, started from the Guide
 - style/calendar.md: Events, the calendar (calendar/)
 - style/stores.md: Stores (stores/)
 - style/counter.md: Tracker, the counter (counter/)
