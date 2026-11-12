@@ -918,6 +918,7 @@ mark.hit{background:rgba(255,255,255,.16);color:var(--bone);font-weight:700;bord
   .tourp{background:var(--plate-glass);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%)}
 }
 .tourt{margin:0 4px 10px 0;font-family:var(--text);font-size:15px;line-height:1.4;color:var(--bone)}
+.tourt b{font-family:var(--disp);font-weight:600}
 .tourf{display:flex;align-items:center;gap:6px}
 .tourc{font-family:var(--text);font-weight:600;font-size:12px;color:var(--muted)}
 .tourb{display:inline-flex;align-items:center;gap:4px;height:var(--sz-sm);box-sizing:border-box;padding:0 14px;border:0;border-radius:calc(var(--sz-sm) / 2);background:var(--flat);

@@ -33,8 +33,8 @@
       "items": [
         {
           "page": "start",
-          "t": "Show me a page",
-          "d": "The Guide's New to RAVI can walk you round any page: it lights one control at a time and says what it does. It never starts by itself."
+          "t": "Guided tours",
+          "d": "The Guide's Getting around can show you round the bar and any page: it lights one control at a time and says what it does. It never starts by itself."
         },
         {
           "page": "collection",

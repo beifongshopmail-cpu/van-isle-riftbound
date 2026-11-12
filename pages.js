@@ -1160,7 +1160,8 @@ window.RAVI_BAR = function(nav, slots){
   function trail(){ try { var t = JSON.parse(sessionStorage.getItem(KEY) || "[]"); return Array.isArray(t) ? t : []; } catch (e) { return []; } }
   function keep(t){ try { if (t.length) { sessionStorage.setItem(KEY, JSON.stringify(t.slice(-30))); } else { sessionStorage.removeItem(KEY); } } catch (e) {} }
   window.RAVI_BACK_MARK = function(u){
-    if (hub(u) || hub(location.href)) { keep([]); return; }   // to or from home: the trail starts again
+    if (hub(location.href)) { keep([]); return; }   // from home: the trail starts again
+    // to home (Mako 2026-11-12: a tap on Hub may be a slip): the move is kept, so the hub shows Back to where you were
     var t = trail();
     t.push({ from: path(location.href), to: path(u) }); keep(t);
   };
@@ -1171,6 +1172,7 @@ window.RAVI_BAR = function(nav, slots){
   }, true);
   function boot(){
     var row = document.querySelector(".wmrow"), t = trail(), top = t[t.length - 1], old;
+    if (!row && hub(location.href) && document.getElementById("grid")) { row = document.body; }   // the hub has no wordmark row: its Back sits in the same corner
     if (!row) return;
     old = row.querySelector(".rvback"); if (old) { old.remove(); }
     if (!top || top.to !== path(location.href) || history.length < 2) return;

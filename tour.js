@@ -11,7 +11,8 @@
 //
 // A tour: { page: "<folder>/", stops: [ ... ] }. A stop:
 //   s    the control to light: a selector, or a list tried in order; the first one drawn wins
-//   t    its words: two or three lines at 402, in the app's voice (STYLE.md section 4, Words)
+//   t    its words: two or three lines at 402, in the app's voice (STYLE.md section 4, Words); a page's
+//        name goes between stars and is drawn bold (*Events*)
 //   tap  true: the player goes on by tapping the real control (Next taps it for them)
 //   in   true: the control is inside the menu the stop before opened, so it is not looked for
 //        until then
@@ -23,87 +24,87 @@
 
   window.RAVI_TOURS = {
     bar: { page: "calendar/", stops: [
-      { s: "#tabs > a.tab", t: "Hub. Your blocks, from any page." },
-      { s: "#tabnav", t: "Go to. Every page, without a trip to the hub." },
-      { s: "#subtab", t: "The third slot is the page's own action. On Events it is Follow." },
-      { s: "#tabset", t: "The page's settings. Dim on a page that has none." },
-      { s: "#acpic", t: "Your picture. Your account, profile and Riot ID." }
+      { s: "#tabs > a.tab", t: "This is *Hub*. It takes you back to your blocks from any page." },
+      { s: "#tabnav", t: "*Go to* lists every page, so you never need the hub to get around." },
+      { s: "#subtab", t: "The third slot is the page's own action. Here on *Events* it is Follow." },
+      { s: "#tabset", t: "The gear is this page's settings. It dims on a page that has none." },
+      { s: "#acpic", t: "Your picture is your account: your profile and your Riot ID." }
     ] },
     calendar: { page: "calendar/", stops: [
-      { s: ".ev .evhead", tap: true, t: "Tap an event to open it." },
-      { s: ".evact:not([hidden]) .evbtns", "in": true, t: "Directions, your phone's calendar and the event's own page, where you register." },
+      { s: ".ev .evhead", tap: true, t: "Tap an event to open it up." },
+      { s: ".evact:not([hidden]) .evbtns", "in": true, t: "From here you can get directions, add it to your phone's calendar, or open its own page to register." },
       { s: ".ev .lvl:not([hidden])", t: "A running event says LIVE, with its round and time left. Open it for pairings and standings." },
       { s: "#subtab", t: "Follow puts a store's or an area's events in your phone's calendar and keeps them current." },
-      { s: "#tabset", t: "Events settings picks the areas, types and stores you see. Stores and the Tier list use the same areas." }
+      { s: "#tabset", t: "Settings picks the areas, types and stores you see. *Stores* and the *Tier list*'s Local use your areas too." }
     ] },
     stores: { page: "stores/", stops: [
-      { s: [".stg", ".stl"], tap: true, t: "Each store says whether it is open and what its next event is. Tap one." },
+      { s: [".stg", ".stl"], tap: true, t: "Each store shows if it is open and what it runs next. Tap one to see more." },
       { s: "#sfollow", "in": true, t: "Follow their events adds this store's events to your phone's calendar." },
-      { s: "#tabset", t: "Stores settings picks your areas, the same ones Events uses." }
+      { s: "#tabset", t: "Settings picks your areas, the same ones *Events* uses." }
     ] },
     counter: { page: "counter/", stops: [
-      { s: ["#sideBot .acts", ".seat .acts"], t: "Conquer, Hold and Other each add a point. The log keeps which." },
-      { s: ["#seam", ".seat .pass"], t: "Pass turn as your turn ends. The log times every turn." },
-      { s: "#modes", t: "Focus is your own phone, your score large. Split is one phone between two players." },
-      { s: "#setupbtn", tap: true, t: "Tracker settings holds the Match timer, the event and each player's legend. Tap it." },
-      { s: "#evbtn", "in": true, t: "Event ties this match to an event today, so Top cut knows your record." }
+      { s: ["#sideBot .acts", ".seat .acts"], t: "Conquer, Hold and Other each add a point for you. The log remembers which." },
+      { s: ["#seam", ".seat .pass"], t: "Pass turn when your turn ends. The log times every turn for you." },
+      { s: "#modes", t: "Focus is for your own phone, with your score large. Split shares one phone between two players." },
+      { s: "#setupbtn", tap: true, t: "Settings holds the Match timer, the event and each player's legend. Tap it to have a look." },
+      { s: "#evbtn", "in": true, t: "Event ties this match to an event today, so *Top cut* already knows your record." }
     ] },
     cut: { page: "cut/", stops: [
-      { s: "#evbtn", t: "Pick an event and its players, rounds and cut fill in." },
-      { s: "#srec", t: "Set your record so far. A match the Tracker tied to the event counts itself." },
-      { s: "#sfin", t: "Every finish still open to you. Worst case: the other tables fall against you. Likely: the player ahead wins." }
+      { s: "#evbtn", t: "Pick your event, and its players, rounds and cut fill in for you." },
+      { s: "#srec", t: "Set your record so far. Matches the *Tracker* tied to the event are counted already." },
+      { s: "#sfin", t: "Every finish still open to you. Worst case: other tables fall against you. Likely: the player ahead wins." }
     ] },
     tier: { page: "tier/", stops: [
-      { s: "#tscope", t: "Global counts every event TopDeck.gg lists. Local counts your areas, from decks players add." },
-      { s: ".tlet", t: "Tap a letter for the whole tier, best conversion first." },
+      { s: "#tscope", t: "Global counts every event TopDeck.gg lists, worldwide. Local counts only your areas, from decks players add." },
+      { s: ".tlet", t: "Tap a letter to see its whole tier, best conversion first." },
       { s: ".tleg", t: "Tap a legend for its numbers, its top-cut lists and its most played cards." }
     ] },
     trade: { page: "trade/", stops: [
-      { s: "#sides", t: "Yours or Theirs: the side the next card goes to." },
-      { s: ".plate .sf", t: "Search a card, then tap it to add it to that side." },
-      { s: "#tabset", t: "Appraise settings sets the percent of market price each side trades at." },
-      { s: "#tabsav", t: "Saved trades keeps a trade to come back to." }
+      { s: "#sides", t: "Yours or Theirs: pick the side your next card goes to." },
+      { s: ".plate .sf", t: "Search for a card, then tap it to add it to that side." },
+      { s: "#tabset", t: "Settings sets the percent of market price each side trades at." },
+      { s: "#tabsav", t: "Saved trades keeps a trade so you can come back to it." }
     ] },
     board: { page: "board/", stops: [
-      { s: "#bview", t: "Matches are players who have cards on your Wishlist and want cards in your For trade binder." },
-      { s: "#taboff", t: "Offers, sent and received. The ones waiting on you are counted here." },
-      { s: "#tabset", t: "Exchange settings: what you share, and how other players see you." }
+      { s: "#bview", t: "Matches are players who have cards on your Wishlist and want cards in your binders set For trade." },
+      { s: "#taboff", t: "Your offers, sent and received, live here. The ones waiting on you are counted." },
+      { s: "#tabset", t: "Settings is where you choose what you share and how other players see you." }
     ] },
     collection: { page: "collection/", stops: [
-      { s: "#portbtn", t: "Binders. Collection is every card you own; the Wishlist is counted apart." },
-      { s: "#first [data-act=import]", t: "Import from Collectr brings your Collectr export in." },
-      { s: "#mvtog", t: "Movers: your biggest gains and losses." },
+      { s: "#portbtn", t: "Your binders live here. Collection is every card you own; the Wishlist is not counted." },
+      { s: "#first [data-act=import]", t: "Coming from Collectr? Bring your export in here." },
+      { s: "#mvtog", t: "Movers shows your biggest gains and losses." },
       { s: "#tabadd", t: "Add cards shows every card. Tap a picture to add one." }
     ] },
     decks: { page: "decks/", stops: [
-      { s: "#hplate [data-act=imp]", t: "Import brings a deck in from Piltover Archive, Riftmana or another builder." },
-      { s: "#hplate [data-act=new]", t: "A deck checks Riot's deck rules as you build, and has Stats and a sample Hand." },
-      { s: "#hview", t: "Public is decks other players share. Copy one to make it yours." }
+      { s: "#hplate [data-act=imp]", t: "Import brings a deck over from Piltover Archive, Riftmana or another builder." },
+      { s: "#hplate [data-act=new]", t: "Build a deck here. RAVI checks Riot's deck rules as you go, and gives you Stats and a sample Hand." },
+      { s: "#hview", t: "Public shows decks other players share. Copy one to make it yours." }
     ] },
     cards: { page: "cards/", stops: [
       { s: ".plate .sf", t: "Search by name, number, tag or type. Cards that match only in their text come after." },
-      { s: "#flsb", t: "Filters narrows by set, type, domain, rarity and Energy." },
-      { s: ".cpic", tap: true, t: "Tap a card for its text, printings, prices and rulings." },
+      { s: "#flsb", t: "Filters narrows things down by set, type, domain, rarity and Energy." },
+      { s: ".cpic", tap: true, t: "Tap a card to see its text, printings, prices and rulings." },
       { s: "#pcard .pfoot .pact", "in": true, t: "Add to puts it on your Wishlist, in a binder or in a deck." }
     ] },
     rules: { page: "rules/", stops: [
       { s: ".plate .sf", t: "Search every erratum, FAQ and ruling. Typos are forgiven." },
-      { s: ".plate .fchip", t: "Filters narrows by kind and by set." },
-      { s: "#docs", t: "Riot's own documents. NEW marks what changed since your last visit." }
+      { s: ".plate .fchip", t: "Filters narrows things down by kind and by set." },
+      { s: "#docs", t: "These are Riot's own documents. NEW marks what changed since your last visit." }
     ] },
     news: { page: "news/", stops: [
-      { s: "#snow", t: "Happening now: drawings and entries still open, the soonest to close first." },
-      { s: "#wktog", t: "This week: the biggest price moves and the top legends." },
-      { s: "#kchip", t: "Kinds turns each kind of post on or off." }
+      { s: "#snow", t: "Happening now holds drawings and entries still open, the soonest to close first." },
+      { s: "#wktog", t: "This week has the biggest price moves and the top legends." },
+      { s: "#kchip", t: "Kinds lets you turn each kind of post on or off." }
     ] },
     feedback: { page: "feedback/", stops: [
-      { s: "#planned", t: "Planned: what is coming. Tap a line for more." },
-      { s: "#tabsend", t: "Send feedback: a bug, a wrong or missing event, or an idea." }
+      { s: "#planned", t: "Planned is what is coming. Tap a line to read more." },
+      { s: "#tabsend", t: "Found a bug, a wrong or missing event, or have an idea? Send it here." }
     ] },
     settings: { page: "settings/", stops: [
-      { s: "#stalert", t: "Alerts, each kind on or off for this phone." },
+      { s: "#stalert", t: "Your alerts, each kind on or off for this phone." },
       { s: "#sthubg", t: "Hub layout picks your seven blocks. Open the app to picks the page RAVI starts on." },
-      { s: "#streset", t: "Reset puts every setting back." }
+      { s: "#streset", t: "Reset puts every setting back as it was." }
     ] }
   };
 
@@ -159,9 +160,15 @@
   // a tap stop: the player's tap on the real control goes on, once what it opens has arrived
   function tapped(e){
     if (!el || at < 0 || !stops[at].tap || !target || !target.contains(e.target)) { return; }
-    var n = at + 1;
+    // go on as soon as what the tap opens is drawn (the light then follows it as it settles), not
+    // after a fixed wait: checked every 40 ms, for .7 s at most
+    var n = at + 1, tries = 0;
     busy = true;
-    setTimeout(function(){ busy = false; if (el && at === n - 1) { go(n); } }, still() ? 120 : 460);
+    (function look(){
+      if (!el || at !== n - 1) { busy = false; return; }
+      if (n >= stops.length || find(stops[n].s) || tries++ > 17) { busy = false; go(n); return; }
+      setTimeout(look, 40);
+    })();
   }
   function btn(attr, label, lead){
     var b = document.createElement("button");
@@ -228,7 +235,14 @@
     if (shut(e)) { wait = still() ? 60 : 240; }
     at = n; target = e; e.setAttribute("data-tour-on", "");
     last = n === stops.length - 1;
-    words.textContent = s.t;
+    // the words, a page's name between stars drawn bold; built as nodes, never as markup
+    words.textContent = "";
+    s.t.split("*").forEach(function(part, i){
+      if (!part) { return; }
+      var nd = i % 2 ? document.createElement("b") : document.createTextNode(part);
+      if (i % 2) { nd.textContent = part; }
+      words.appendChild(nd);
+    });
     count.textContent = s.num + " of " + stops.total;
     while (foot.lastChild && foot.lastChild.tagName === "BUTTON") { foot.removeChild(foot.lastChild); }
     if (last) { foot.appendChild(btn("data-tour-done", "Done")); }
