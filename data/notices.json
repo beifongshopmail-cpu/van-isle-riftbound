@@ -4,9 +4,31 @@
   "campbell river",
   "courtenay",
   "duncan",
+  "langford",
   "nanaimo",
   "port alberni",
   "victoria"
  ],
- "items": []
+ "items": [
+  {
+   "id": "first:langford",
+   "at": "2026-11-12",
+   "text": "Langford has its first events on RAVI (11)."
+  },
+  {
+   "id": "store:st-north-park-framing-and-collectibles-victoria",
+   "at": "2026-11-12",
+   "text": "A new store: North Park Framing and Collectibles, Victoria, from its own post. It needs a short name."
+  },
+  {
+   "id": "store:st-elite4-games-langford",
+   "at": "2026-11-12",
+   "text": "A new store: Elite4 Games, Langford, from its own post. It needs a short name."
+  },
+  {
+   "id": "store:st-everything-games-langford",
+   "at": "2026-11-12",
+   "text": "A new store: Everything Games, Langford, from its own post. It needs a short name."
+  }
+ ]
 }

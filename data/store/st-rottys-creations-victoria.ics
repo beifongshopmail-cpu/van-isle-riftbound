@@ -11,34 +11,34 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:st496098811572@van-isle-riftbound
-DTSTAMP:20261112T080015Z
+DTSTAMP:20261112T204028Z
 DTSTART:20261118T000000Z
 DTEND:20261118T030000Z
 SUMMARY:Riftbound casual play
 LOCATION:Rotty's Creations
 DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
  ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
-  https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLE
- VZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl
-URL:https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApS
- LEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl
+  https://www.facebook.com/RottysCreations/posts/pfbid02NtzvyUtwmetu75A8eWu
+ ZsjzzUou3roajaSK9fduarCWKebeKjuF3tpeyBUxt9Jf9l
+URL:https://www.facebook.com/RottysCreations/posts/pfbid02NtzvyUtwmetu75A8e
+ WuZsjzzUou3roajaSK9fduarCWKebeKjuF3tpeyBUxt9Jf9l
 CATEGORIES:Open Play
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:st272621717112@van-isle-riftbound
-DTSTAMP:20261112T080015Z
+DTSTAMP:20261112T204028Z
 DTSTART:20261125T000000Z
 DTEND:20261125T030000Z
 SUMMARY:Riftbound casual play
 LOCATION:Rotty's Creations
 DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
  ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
-  https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLE
- VZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl
-URL:https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApS
- LEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl
+  https://www.facebook.com/RottysCreations/posts/pfbid02NtzvyUtwmetu75A8eWu
+ ZsjzzUou3roajaSK9fduarCWKebeKjuF3tpeyBUxt9Jf9l
+URL:https://www.facebook.com/RottysCreations/posts/pfbid02NtzvyUtwmetu75A8e
+ WuZsjzzUou3roajaSK9fduarCWKebeKjuF3tpeyBUxt9Jf9l
 CATEGORIES:Open Play
 STATUS:CONFIRMED
 TRANSP:OPAQUE

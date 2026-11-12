@@ -1,0 +1,102 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:RAVI - Elite4 Games\, Langford
+X-WR-TIMEZONE:America/Vancouver
+X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each 
+ event's own page.
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:st893416177135@van-isle-riftbound
+DTSTAMP:20261112T204028Z
+DTSTART:20261114T173000Z
+DTEND:20261114T203000Z
+SUMMARY:Radiance Summoner Skirmish I
+LOCATION:Elite4 Games
+DESCRIPTION:Event\nElite4 Games\, Langford\n$20.00 CAD\nFrom the store's ow
+ n post\, not on PlayRiftbound. Check with the store before you go.\nThe po
+ st: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st628644062307@van-isle-riftbound
+DTSTAMP:20261112T204028Z
+DTSTART:20261212T183000Z
+DTEND:20261212T213000Z
+SUMMARY:Radiance Summoner Skirmish II
+LOCATION:Elite4 Games
+DESCRIPTION:Event\nElite4 Games\, Langford\n$20.00 CAD\nFrom the store's ow
+ n post\, not on PlayRiftbound. Check with the store before you go.\nThe po
+ st: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st487260772310@van-isle-riftbound
+DTSTAMP:20261112T204028Z
+DTSTART:20270123T000000Z
+DTEND:20270123T030000Z
+SUMMARY:Legacy Pre-Rift #1
+LOCATION:Elite4 Games
+DESCRIPTION:Event\nElite4 Games\, Langford\n$45.00 CAD\nFrom the store's ow
+ n post\, not on PlayRiftbound. Check with the store before you go.\nThe po
+ st: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st924688749093@van-isle-riftbound
+DTSTAMP:20261112T204028Z
+DTSTART:20270124T173000Z
+DTEND:20270124T203000Z
+SUMMARY:Legacy Pre-Rift #2
+LOCATION:Elite4 Games
+DESCRIPTION:Event\nElite4 Games\, Langford\n$45.00 CAD\nFrom the store's ow
+ n post\, not on PlayRiftbound. Check with the store before you go.\nThe po
+ st: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st566495834964@van-isle-riftbound
+DTSTAMP:20261112T204028Z
+DTSTART:20270124T210000Z
+DTEND:20270125T000000Z
+SUMMARY:Legacy Pre-Rift #3
+LOCATION:Elite4 Games
+DESCRIPTION:Event\nElite4 Games\, Langford\n$45.00 CAD\nFrom the store's ow
+ n post\, not on PlayRiftbound. Check with the store before you go.\nThe po
+ st: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st636135720247@van-isle-riftbound
+DTSTAMP:20261112T204028Z
+DTSTART:20270213T173000Z
+DTEND:20270213T203000Z
+SUMMARY:Legacy Nexus Cup
+LOCATION:Elite4 Games
+DESCRIPTION:Event\nElite4 Games\, Langford\n$20.00 CAD\nFrom the store's ow
+ n post\, not on PlayRiftbound. Check with the store before you go.\nThe po
+ st: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -27,6 +27,22 @@
    "seen": "2026-11-12"
   },
   {
+   "sid": "st-elite4-games-langford",
+   "name": "Elite4 Games",
+   "short": "Elite4 Games",
+   "city": "Langford",
+   "address": "",
+   "seen": "2026-11-12"
+  },
+  {
+   "sid": "st-everything-games-langford",
+   "name": "Everything Games",
+   "short": "Everything Games",
+   "city": "Langford",
+   "address": "",
+   "seen": "2026-11-12"
+  },
+  {
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
    "name": "Sports Card Alley",
    "short": "Sports Card Alley",
@@ -72,6 +88,14 @@
    "short": "Gauntlet",
    "city": "Victoria",
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
+   "seen": "2026-11-12"
+  },
+  {
+   "sid": "st-north-park-framing-and-collectibles-victoria",
+   "name": "North Park Framing and Collectibles",
+   "short": "North Park Framing and Collectibles",
+   "city": "Victoria",
+   "address": "",
    "seen": "2026-11-12"
   },
   {

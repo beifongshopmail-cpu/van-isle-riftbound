@@ -9,49 +9,4 @@ X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each
  event's own page.
 REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
-BEGIN:VEVENT
-UID:rb117503634336671916@van-isle-riftbound
-DTSTAMP:20261112T080015Z
-DTSTART:20261115T190000Z
-DTEND:20261115T220000Z
-SUMMARY:Nexus Afternoon @ The Card Corner
-LOCATION:5262 Argyle St\, Port Alberni\, BC V9Y 1T9\, Canada
-DESCRIPTION:Nexus Nights\nThe Card Corner & Games\, Port Alberni\n16 of 16 
- spots left\, checked Nov 12\, 1:00 AM\n$7.99 CAD\nSign up: https://playrif
- tbound.com/en-US/events/117503634336671916
-URL:https://playriftbound.com/en-US/events/117503634336671916
-CATEGORIES:Nexus Nights
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
-UID:rb117503643276174705@van-isle-riftbound
-DTSTAMP:20261112T080015Z
-DTSTART:20261122T210000Z
-DTEND:20261123T000000Z
-SUMMARY:Nexus Afternoon @ The Card Corner
-LOCATION:5262 Argyle St\, Port Alberni\, BC V9Y 1T9\, Canada
-DESCRIPTION:Nexus Nights\nThe Card Corner & Games\, Port Alberni\n16 of 16 
- spots left\, checked Nov 12\, 1:00 AM\n$7.99 CAD\nSign up: https://playrif
- tbound.com/en-US/events/117503643276174705
-URL:https://playriftbound.com/en-US/events/117503643276174705
-CATEGORIES:Nexus Nights
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-BEGIN:VEVENT
-UID:rb117503647480112569@van-isle-riftbound
-DTSTAMP:20261112T080015Z
-DTSTART:20261129T210000Z
-DTEND:20261130T000000Z
-SUMMARY:Nexus Afternoon @ The Card Corner
-LOCATION:5262 Argyle St\, Port Alberni\, BC V9Y 1T9\, Canada
-DESCRIPTION:Nexus Nights\nThe Card Corner & Games\, Port Alberni\n16 of 16 
- spots left\, checked Nov 12\, 1:00 AM\n$7.99 CAD\nSign up: https://playrif
- tbound.com/en-US/events/117503647480112569
-URL:https://playriftbound.com/en-US/events/117503647480112569
-CATEGORIES:Nexus Nights
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
 END:VCALENDAR
