@@ -417,7 +417,7 @@
   .lgpchips button{flex:1 1 auto;padding:0 12px}
 
   /* ======== 2v2 AND FREE-FOR-ALL (plan 2 M9 block 5, Mako's yes 2026-11-11): two seats per long
-     side, the far pair turned to face across the table; 3 players, one seat across the top. As
+     side, the far pair turned to face across the table; 3 players, you alone across the near side. As
      1v1's halves, a seat sits on the black ground and its colour is in its name, its numeral and
      its score buttons' stain (Mako 2026-11-11 21:55); a hairline parts the two seats of a side and
      the two sides. Each seat: name, score, Conquer | Hold and, on the active seat only, Pass turn
@@ -670,12 +670,13 @@
   // FORMATS (plan 2 M9 block 5): 1v1 is the default and plays exactly as before. 2v2 is Riot's
   // Magma Chamber: two teams, a team score to 11, turns alternate teams across the table (seats
   // 1 and 3 are Team A, 2 and 4 Team B; seat 1 is you). 3 and 4 players are Riot's FFA3 and FFA4
-  // (Skirmish, War): to 8, clockwise from you. Every multiplayer game is one game (Bo1). A seat's
+  // (Skirmish, War): to 8, clockwise from you. 3 players: you have the near side to yourself, the
+  // other two share the far side (Mako 2026-11-11 22:28). Every multiplayer game is one game (Bo1). A seat's
   // number is its place in the turn order.
   var FMTS = { "1v1":{ n:2, goal:8, tag:"BO1" }, "2v2":{ n:4, goal:11, tag:"2v2" },
                "ffa3":{ n:3, goal:8, tag:"FFA3" }, "ffa4":{ n:4, goal:8, tag:"FFA4" } };
   // where each seat sits: the top row (turned to face across), then the bottom row
-  var SEATS = { "2v2":{ top:[2,4], bot:[1,3] }, "ffa3":{ top:[2], bot:[1,3] }, "ffa4":{ top:[2,3], bot:[1,4] } };
+  var SEATS = { "2v2":{ top:[2,4], bot:[1,3] }, "ffa3":{ top:[2,3], bot:[1] }, "ffa4":{ top:[2,3], bot:[1,4] } };
   var FMT = "1v1";      // the game on the field
   var fmtPick = "1v1";  // New match's Format
   var setF = "1v1";     // the format the open menu's player cards are for
