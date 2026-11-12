@@ -42,6 +42,14 @@ body{-webkit-font-smoothing:antialiased;
    event's type, its mark and name (STYLE.md section 4, the ladder, step 2). The town is on the card. */
 .stc{margin:0 0 8px}
 .door.rec.stl{flex-direction:row;align-items:center;gap:12px}   /* the chevron sits on the right as every record's */
+/* a store in List wears the same grey as a tile in Grid: the flat fill on its group's glass (Mako
+   2026-11-11 19:30), and the group's press shade */
+.doors.stc > .door.stl{background-color:var(--flat)}
+.doors.stc > .door.stl:active{background-color:var(--glass-press)}
+/* in List the photo is 64 (STYLE.md section 5, Browse parts), so it balances the row's four lines.
+   The type stays on its own line: after its date it fits 4 stores of 12 at 402 and none at 360, and
+   a type's name is never cut (tried 2026-11-11 19:30) */
+.door.rec.stl > .sic{width:64px;height:64px}
 .stt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
 /* the stand-in: the store icon on a picture's ground (--recess), no colour: a store has no kind */
 .sic{flex:0 0 auto;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--recess);color:var(--muted)}
