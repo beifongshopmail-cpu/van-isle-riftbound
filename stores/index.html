@@ -46,6 +46,12 @@ body{-webkit-font-smoothing:antialiased;
 /* the stand-in: the store icon on a picture's ground (--recess), no colour: a store has no kind */
 .sic{flex:0 0 auto;width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:var(--recess);color:var(--muted)}
 .sic svg{width:28px;height:28px}
+/* a store's own photo (img/stores/<sid>.webp, 960 x 480, cropped from Mako's pictures) fills its
+   stand-in's place; the ground under it while it loads is --recess (STYLE.md section 4) */
+.sic{overflow:hidden}
+.sic img{display:block;width:100%;height:100%;object-fit:cover}
+/* the store's menu opens on its photo, as a card's menu on its picture (STYLE.md section 0, Browse) */
+.smpic{display:block;width:100%;aspect-ratio:2/1;object-fit:cover;border-radius:14px;background:var(--recess);margin:0 0 12px}
 /* the town, in grey words; then open or closed, muted */
 .stw{display:flex;align-items:center;gap:8px;max-width:100%;min-width:0;font-size:12px}
 .stw b{flex:0 0 auto;font-family:var(--disp);font-weight:700;color:var(--muted)}
@@ -197,6 +203,10 @@ body{-webkit-font-smoothing:antialiased;
     list: '<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M100,36H56A20,20,0,0,0,36,56v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V56A20,20,0,0,0,100,36ZM96,96H60V60H96ZM100,136H56a20,20,0,0,0-20,20v44a20,20,0,0,0,20,20h44a20,20,0,0,0,20-20V156A20,20,0,0,0,100,136Zm-4,60H60V160H96ZM148,42H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,90H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,142H208a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24ZM148,190H184a12,12,0,0,1,0,24H148a12,12,0,0,1,0-24Z" fill="currentColor" stroke="none"/></svg>'
   };
   var IS_APPLE = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent);
+  // the stores with a photo of their own, by sid (img/stores/<sid>.webp); the rest keep the stand-in
+  var PICS = {"4294":1, "019fb060-927e-7709-b9cb-32c53ec8c895":1, "st-rottys-creations-victoria":1, "18437":1, "2069":1, "16866":1,
+    "01a0310f-8c3a-78f3-a379-1c67b942326c":1, "019fb060-93e6-7a79-a82a-fc4762d7e46e":1, "01a02b42-28ed-7be5-a65a-49431ed2f88f":1, "902":1, "15103":1, "21894":1};
+  function picOf(s){ return PICS[s.sid] ? "../img/stores/" + encodeURIComponent(s.sid) + ".webp" : ""; }
   var CVR = '<svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
   var CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg>';
   var OUT = '<svg class="extl" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h9v9M18 6 7 17"/></svg>';
@@ -279,7 +289,7 @@ body{-webkit-font-smoothing:antialiased;
     var ev = eventsOf(s)[0], st = stateOf(INFO[s.sid]), wrap = '<div class="doors stc">';
     var tw = '<span class="stw"><b>' + esc(s.city) + '</b>' + (st ? '<span>' + esc(st) + '</span>' : '') + (VIEW === "grid" ? CVR : '') + '</span>';
     var nm = '<span class="snm">' + esc(s.name) + '</span>';
-    var icon = '<span class="sic" aria-hidden="true">' + window.RAVI_ICON("stores") + '</span>';
+    var pic = picOf(s), icon = '<span class="sic" aria-hidden="true">' + (pic ? '<img src="' + esc(pic) + '" alt="" loading="lazy" decoding="async">' : window.RAVI_ICON("stores")) + '</span>';
     if(VIEW === "grid"){
       return wrap + '<button type="button" class="stg btn glass stl" data-act="store" data-sid="' + esc(s.sid) + '" data-k="deeper">' + icon + nm + tw + nextOf(ev) + '</button></div>';
     }
@@ -328,6 +338,7 @@ body{-webkit-font-smoothing:antialiased;
   function fillStore(s){
     var info = INFO[s.sid] || null, h = "", ad = street(s), evs = eventsOf(s), posts = postsOf(s), n = nowIsland(), st = stateOf(info), i, sp, rows = "";
     el("sname").textContent = s.name;
+    if(picOf(s)) h += '<img class="smpic" src="' + esc(picOf(s)) + '" alt="' + esc(s.name) + ', from the street">';
     h += '<p class="mtw">' + esc(s.city) + '</p>';
     h += '<div class="row"><p class="lb">Where</p>' + (ad ? '<p class="sadr sel">' + esc(ad) + '</p>' : '<p class="sadr">' + esc(s.city) + '</p>')
       + '<a class="pact btn glass" href="' + esc(maps(s)) + '" target="_blank" rel="noopener" data-k="do">Directions ' + OUT + '</a></div>';
