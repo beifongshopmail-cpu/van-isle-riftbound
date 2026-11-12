@@ -146,6 +146,20 @@ check("store events: the calendar file links the store's post, never PlayRiftbou
   assert.ok(text.indexOf("DTEND;TZID=America/Vancouver:20261110T200000") !== -1, "ends at 8");
 });
 
+check("store events: a store's post under a shorter spelling of its name is still that store (2026-11-12)", function () {
+  // North Park's own post said 'North Park Framing and Collectibles'; PlayRiftbound lists
+  // 'North Park Picture Framing and Collectables'. The night showed twice.
+  const d = { run: "2026-11-12", posts: [], store_events: [
+    { cancelled: false, city: "Victoria", date: "2026-11-12", fee: "", format: "open play", name: "Open Play", store: "North Park Framing and Collectibles", time: "6:00 PM", url: POST }
+  ] };
+  const listed = [{ id: "rb1177", name: "North Park Picture Framing and Collectables Open Play", type: "open", start: "2026-11-12T18:00:00-08:00", day: "2026-11-12", venue: "North Park Picture Framing and Collectables", city: "Victoria", region: "victoria", sid: 18437 }];
+  assert.strictEqual(fe.storeEvents(d, listed, "2026-11-12").length, 0, "the night PlayRiftbound lists is not added again");
+  const alone = fe.storeEvents(d, [], "2026-11-12");
+  assert.strictEqual(alone.length, 1, "with no listing the post comes through");
+  assert.strictEqual(alone[0].sid, 18437, "as North Park's own store");
+  assert.strictEqual(alone[0].venue, "North Park Picture Framing and Collectables", "under the name PlayRiftbound uses");
+});
+
 if (failures) {
   console.log(failures + " failed");
   process.exit(1);

@@ -430,6 +430,14 @@ for (const k of Object.keys(RB_STORES)) {
   const at = k.lastIndexOf("|");
   RB_NORM[storeNorm(k.slice(0, at)) + "|" + k.slice(at + 1)] = RB_STORES[k];
 }
+// A store's own posts may spell its name another way than PlayRiftbound lists it; each spelling
+// seen is named here beside the listing it means (every store alike; add one when a night shows twice).
+const STORE_SAYS = {
+  "north park framing and collectibles|victoria": "north park picture framing and collectables|victoria"
+};
+for (const k of Object.keys(STORE_SAYS)) {
+  if (RB_STORES[STORE_SAYS[k]]) RB_NORM[k] = RB_STORES[STORE_SAYS[k]];
+}
 function storeSid(name, city) {
   return "st-" + (storeNorm(name) + " " + String(city || "").toLowerCase()).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
