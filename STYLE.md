@@ -64,7 +64,7 @@ Colour
 - --hi #34383E: a pressed row in a sunken surface
 - --p1 #5989F6: player 1 and Yours (blue)
 - --p2 #FE5C8B: player 2 and Theirs (pink)
-- --rb1 #5DA5EE, --rb2 #EE5F9C: the badge's own blue and pink (RA, VI, its rim and the hub's flowing rim): the brand, kept apart from the players
+- --rb1 #5989F6, --rb2 #FE5C8B: the badge's blue and pink (RA, VI, its rim and the hub's flowing rim), the Yours and Theirs colours (--p1, --p2; Mako 2026-11-13); the home-screen icon and the deck image carry the same pair
 - --p1t, --p2t rgba(89,137,246,.14) and rgba(254,92,139,.14): side stain
 - --p1r, --p2r the same two at .50: side pressed or armed
 - --over #E5484D: round timer past zero
