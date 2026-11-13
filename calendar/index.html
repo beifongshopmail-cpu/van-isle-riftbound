@@ -395,6 +395,7 @@ a{color:inherit;text-decoration:none}
   <div class="row">
     <p class="lb">Stores</p>
     <div class="pick" id="stlist" data-k="pick"></div>
+    <p class="pnote" id="stnone" hidden>No stores in the areas left on.</p>
   </div>
   </div>
 </section>
@@ -1060,17 +1061,19 @@ a{color:inherit;text-decoration:none}
       var lb = (meta[b].venue + ", " + meta[b].city).toLowerCase();
       return la < lb ? -1 : (la > lb ? 1 : 0);
     });
-    var box = document.getElementById("stlist");
+    var box = document.getElementById("stlist"), shown = 0;
     box.innerHTML = "";
     for (var s = 0; s < keys.length; s++){
       var k = keys[s], m = meta[k];
+      // plan 2 M9 block 11: only the stores of the areas left on; a store keeps its own choice while
+      // its area is off (hiddenStores), so back on it is as it was left
+      if (hiddenTowns[String(m.city || "").trim().toLowerCase()]) continue;
+      shown++;
       var b = document.createElement("button");
       b.type = "button";
       b.className = "tyrow rec";
       b.setAttribute("data-store", k);
-      var areaOff = !!hiddenTowns[String(m.city || "").trim().toLowerCase()];
-      b.setAttribute("aria-pressed", hiddenStores[k] || areaOff ? "false" : "true");
-      b.disabled = areaOff;
+      b.setAttribute("aria-pressed", hiddenStores[k] ? "false" : "true");
       var l = document.createElement("span");
       l.className = "lab";
       var nm = document.createElement("span"); nm.className = "sname"; nm.textContent = m.venue; l.appendChild(nm);
@@ -1083,6 +1086,8 @@ a{color:inherit;text-decoration:none}
         '<span class="box"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>');
       box.appendChild(b);
     }
+    box.hidden = !shown;
+    document.getElementById("stnone").hidden = !!shown;
   }
 
   /* HIDDEN, IN WORDS (M9.6 consistency sweep, 2026-10-16). Calendar settings
