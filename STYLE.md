@@ -238,6 +238,7 @@ Choose lists (settings/index.html, calendar/index.html)
     <div class="pick" id="opento" data-k="pick"><button type="button" class="on">Hub</button><button type="button">Events</button></div>
 - Pick-many: rows carry aria-pressed; each row holds its own check (.tyrow above).
 - .rec: a record row (saved trade, past match, event row, store row). The one row allowed past one line: min-height 44, 7 above and below. In a .pick it is button.rec; in .doors it is .door.rec.
+- .pick.twol: a choose list of two-line rows, the name above its grey line, left-aligned, at least 44 high, 7 above and below (app.css). The Event menu on the Tracker and Top cut: the event's name, then its day, time and store.
 
 Press lists (trade/index.html)
 - .doors: glass group (corner 22, rows flat). .door: 44 high, Poppins 600 15, .t clipped, .sp, small grey value, .cvr right chevron (16, muted).
