@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-13T16:42:08.460Z",
- "generated_local": "2026-11-13T09:42:08-07:00",
+ "generated_at": "2026-11-13T20:21:44.811Z",
+ "generated_local": "2026-11-13T13:21:44-07:00",
  "window_start": "2026-11-13T07:00:00.000Z",
  "anchors": [
   {
@@ -341,7 +341,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 24,
-   "reg": 3,
+   "reg": 4,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -441,7 +441,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -1074,7 +1074,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 3,
+   "reg": 4,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
