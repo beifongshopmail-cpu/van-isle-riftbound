@@ -25,7 +25,7 @@
   --p1:#5989F6; --p2:#FE5C8B;                               /* player 1 and Yours blue, player 2 and Theirs pink (pages.js RAVI_PLAYER_COLOURS) */
   --p1t:rgba(89,137,246,.14); --p2t:rgba(254,92,139,.14);   /* score-button stain ("light") */
   --p1r:rgba(89,137,246,.50); --p2r:rgba(254,92,139,.50);   /* score-button press */
-  --rb1:#5DA5EE; --rb2:#EE5F9C;                             /* the badge's own blue and pink (RA, VI, its rim): the brand, not the players */
+  --rb1:#5989F6; --rb2:#FE5C8B;                             /* the badge: RA, VI and its rim in the Yours and Theirs colours (--p1, --p2; Mako 2026-11-13) */
   --over:#E5484D;
   /* THE GLASS RECIPE ("specular"): near-clear body, light caught along the top curve fading
      down the sides, a faint return at the base, a soft glow inside the base. No full outline. */

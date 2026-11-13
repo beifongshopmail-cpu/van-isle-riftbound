@@ -153,8 +153,8 @@
       g.font = "600 30px " + TEXT; g.fillStyle = C.muted; g.fillText(fit(g, p.counts.main + " cards" + (p.legend ? " \u00b7 " + p.legend.f.split(",")[0] : ""), W - 2 * PAD - 220), PAD, T.y + 104);
       g.font = "700 54px " + DISP; g.textAlign = "right";
       var vw = g.measureText("VI").width;
-      g.fillStyle = "#EE5F9C"; g.fillText("VI", W - PAD, T.y + 58);
-      g.fillStyle = "#5DA5EE"; g.fillText("RA", W - PAD - vw - 2, T.y + 58);
+      g.fillStyle = "#FE5C8B"; g.fillText("VI", W - PAD, T.y + 58);
+      g.fillStyle = "#5989F6"; g.fillText("RA", W - PAD - vw - 2, T.y + 58);
       g.font = "600 24px " + TEXT; g.fillStyle = C.muted; g.fillText("ravi.tools", W - PAD, T.y + 96);
       g.textAlign = "left";
 
