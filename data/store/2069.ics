@@ -11,14 +11,14 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117129749064470654@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20261114T180000Z
 DTEND:20261114T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 1
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Nov 12\, 9:16 PM\nFree\nSign up: https://playriftbound.com/en
- -US/events/117129749064470654
+ ft\, checked Nov 13\, 12:39 AM\nFree\nSign up: https://playriftbound.com/e
+ n-US/events/117129749064470654
 URL:https://playriftbound.com/en-US/events/117129749064470654
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED
@@ -26,14 +26,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117560610583491608@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20261119T010000Z
 DTEND:20261119T040000Z
 SUMMARY:Gauntlet Games Nexus Night
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n16 of 16 spots left\, 
- checked Nov 12\, 9:16 PM\n$5.00 CAD\nSign up: https://playriftbound.com/en
- -US/events/117560610583491608
+ checked Nov 13\, 12:39 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ n-US/events/117560610583491608
 URL:https://playriftbound.com/en-US/events/117560610583491608
 CATEGORIES:Nexus Nights
 STATUS:CONFIRMED
@@ -41,14 +41,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117560611882439366@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20261126T010000Z
 DTEND:20261126T040000Z
 SUMMARY:Gauntlet Games Nexus Night
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Nexus Nights\nGauntlet Games\, Victoria\n16 of 16 spots left\, 
- checked Nov 12\, 9:16 PM\n$5.00 CAD\nSign up: https://playriftbound.com/en
- -US/events/117560611882439366
+ checked Nov 13\, 12:39 AM\n$5.00 CAD\nSign up: https://playriftbound.com/e
+ n-US/events/117560611882439366
 URL:https://playriftbound.com/en-US/events/117560611882439366
 CATEGORIES:Nexus Nights
 STATUS:CONFIRMED
@@ -56,14 +56,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117129753104838820@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20270109T180000Z
 DTEND:20270109T210000Z
 SUMMARY:Gauntlet Games Radiance Skirmish 2
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Summoner Skirmish\nGauntlet Games\, Victoria\n32 of 32 spots le
- ft\, checked Nov 12\, 9:16 PM\nFree\nSign up: https://playriftbound.com/en
- -US/events/117129753104838820
+ ft\, checked Nov 13\, 12:39 AM\nFree\nSign up: https://playriftbound.com/e
+ n-US/events/117129753104838820
 URL:https://playriftbound.com/en-US/events/117129753104838820
 CATEGORIES:Summoner Skirmish
 STATUS:CONFIRMED
@@ -71,14 +71,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117584991387629475@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20270124T000000Z
 DTEND:20270124T030000Z
 SUMMARY:Gauntlet Games Legacy Pre-Rift 1
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Pre-Rift\nGauntlet Games\, Victoria\n32 of 32 spots left\, chec
- ked Nov 12\, 9:16 PM\nFree\nSign up: https://playriftbound.com/en-US/event
- s/117584991387629475
+ ked Nov 13\, 12:39 AM\nFree\nSign up: https://playriftbound.com/en-US/even
+ ts/117584991387629475
 URL:https://playriftbound.com/en-US/events/117584991387629475
 CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
@@ -86,14 +86,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117584996490151342@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20270128T010000Z
 DTEND:20270128T040000Z
 SUMMARY:Gauntlet Games Legacy Pre-Rift 2
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Pre-Rift\nGauntlet Games\, Victoria\n28 of 28 spots left\, chec
- ked Nov 12\, 9:16 PM\nFree\nSign up: https://playriftbound.com/en-US/event
- s/117584996490151342
+ ked Nov 13\, 12:39 AM\nFree\nSign up: https://playriftbound.com/en-US/even
+ ts/117584996490151342
 URL:https://playriftbound.com/en-US/events/117584996490151342
 CATEGORIES:Pre-Rift
 STATUS:CONFIRMED
@@ -101,14 +101,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117588153864541188@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20270227T180000Z
 DTEND:20270227T210000Z
 SUMMARY:Gauntlet Games Legacy Nexus Cup
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Event\nGauntlet Games\, Victoria\n32 of 32 spots left\, checked
-  Nov 12\, 9:16 PM\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/ev
- ents/117588153864541188
+  Nov 13\, 12:39 AM\n$15.00 CAD\nSign up: https://playriftbound.com/en-US/e
+ vents/117588153864541188
 URL:https://playriftbound.com/en-US/events/117588153864541188
 CATEGORIES:Event
 STATUS:CONFIRMED
@@ -116,14 +116,14 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117588162386359218@van-isle-riftbound
-DTSTAMP:20261113T041618Z
+DTSTAMP:20261113T073925Z
 DTSTART:20270327T180000Z
 DTEND:20270327T210000Z
 SUMMARY:Gauntlet Games Legacy Challenge Series
 LOCATION:1633 Hillside Ave #103\, Victoria\, BC V8T 2C4\, Canada
 DESCRIPTION:Event\nGauntlet Games\, Victoria\n32 of 32 spots left\, checked
-  Nov 12\, 9:16 PM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/ev
- ents/117588162386359218
+  Nov 13\, 12:39 AM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/e
+ vents/117588162386359218
 URL:https://playriftbound.com/en-US/events/117588162386359218
 CATEGORIES:Event
 STATUS:CONFIRMED

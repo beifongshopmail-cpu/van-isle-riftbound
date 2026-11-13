@@ -3,6 +3,18 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117525463093881953",
+   "name": "North Park Picture Framing and Collectables Open Play",
+   "type": "open",
+   "start": "2026-11-12T18:00:00-07:00",
+   "day": "2026-11-12",
+   "venue": "North Park Picture Framing and Collectables",
+   "city": "Victoria",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
    "id": "rb117560608744223758",
    "name": "Gauntlet Games Nexus Night",
    "type": "nexus",
