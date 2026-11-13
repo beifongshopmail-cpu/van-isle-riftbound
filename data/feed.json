@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12",
+ "updated": "2026-11-13",
  "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence). kind local: a local store's post, RAVI's summary only, never the store's words; hold: read and left out.",
  "items": [
   {
@@ -33,9 +33,10 @@
    "links": [
     "https://instagram.com/p/DfnjvG8lwjG"
    ],
-   "sum": "Riftbound will be at !",
-   "sumBy": "first",
-   "sumKey": "4b2ed4214d3c3292"
+   "sum": "Riftbound will be at TwitchCon 2026 all weekend, with photo ops and play tables at the Riot Games Theater. A giant card show match runs Sunday, 11 AM to 1:30 PM PT.",
+   "sumBy": "claude",
+   "sumKey": "4b2ed4214d3c3292",
+   "title": "Riftbound Hosts Giant Card Show Match at TwitchCon"
   },
   {
    "id": "fb:https://facebook.com/reel/40984809314451249",
