@@ -27,20 +27,20 @@
    "seen": "2026-11-13"
   },
   {
-   "sid": "st-elite4-games-langford",
+   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
    "name": "Elite4 Games",
-   "short": "Elite4 Games",
+   "short": "Elite4",
    "city": "Langford",
-   "address": "",
-   "seen": "2026-11-12"
+   "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
+   "seen": "2026-11-13"
   },
   {
-   "sid": "st-everything-games-langford",
+   "sid": "16866",
    "name": "Everything Games",
    "short": "Everything Games",
    "city": "Langford",
-   "address": "",
-   "seen": "2026-11-12"
+   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
+   "seen": "2026-11-13"
   },
   {
    "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
@@ -67,36 +67,12 @@
    "seen": "2026-11-13"
   },
   {
-   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895",
-   "name": "Elite4 Games",
-   "short": "Elite4",
-   "city": "Victoria",
-   "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
-   "seen": "2026-11-13"
-  },
-  {
-   "sid": "16866",
-   "name": "Everything Games",
-   "short": "Everything Games",
-   "city": "Victoria",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "seen": "2026-11-13"
-  },
-  {
    "sid": "2069",
    "name": "Gauntlet Games",
    "short": "Gauntlet",
    "city": "Victoria",
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "seen": "2026-11-13"
-  },
-  {
-   "sid": "st-north-park-framing-and-collectibles-victoria",
-   "name": "North Park Framing and Collectibles",
-   "short": "North Park Framing and Collectibles",
-   "city": "Victoria",
-   "address": "",
-   "seen": "2026-11-12"
   },
   {
    "sid": "18437",
