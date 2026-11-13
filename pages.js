@@ -922,12 +922,16 @@ window.RAVI_BAR = function(nav, slots){
 // ravi.web.v1, gone when the tab closes), on a ?sim= test link, or when a
 // test tool drives the page (navigator.webdriver; rb-tools m8-test.js proves
 // the screen by turning that off). window.RAVI_GATE is true while it shows.
+// One page is left alone (plan 2 M9 block 10, Mako's yes 2026-11-12): Privacy and Terms, privacy/,
+// marked data-read on its html, so anyone can read it without installing (Riot, a store's review).
+// window.RAVI_TAB is true there in a browser tab, and account.js makes no account for a reader.
 (function(){
   if (typeof document === "undefined" || typeof navigator === "undefined") { return; }  // read as plain data (audit.js)
   window.RAVI_GATE = false;
   function mm(q){ try { return !!(window.matchMedia && window.matchMedia(q).matches); } catch (e) { return false; } }
   if (navigator.standalone === true || mm("(display-mode: standalone)") || mm("(display-mode: fullscreen)") || mm("(display-mode: minimal-ui)")) { return; }
   if (navigator.webdriver) { return; }
+  if (document.documentElement.hasAttribute("data-read")) { window.RAVI_TAB = true; return; }
   if (/[?&]sim=/.test(location.search)) { return; }
   // a ?visit= test link (live.js) opens this tab as the browser version, so
   // the Game page and Top cut can be reached from it too
@@ -950,7 +954,7 @@ window.RAVI_BAR = function(nav, slots){
   var TOP = '<div class="gwtop"><h1 class="gwname"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr72" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M274 1175.9A923.4 923.4 0 0 1 1197.4 252.5H4631.1A923.4 923.4 0 0 1 5554.5 1175.9" fill="none" stroke="url(#rbr72)" stroke-width="81.7" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M274 1175.9A923.4 923.4 0 0 0 1197.4 2099.3H4631.1A923.4 923.4 0 0 0 5554.5 1175.9" fill="none" stroke="url(#rbr72)" stroke-width="81.7" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1>' +
     '<p class="gwline">The all-in-one Riftbound app.</p></div>';
   var NOTE = '<p class="gwnote">RAVI is built to run as an app. Your matches and saved trades stay on this phone.</p>' +
-    '<footer class="foot"><p>On a computer, or just looking? <a href="#" data-web data-k="do">Continue in the browser</a></p></footer>';
+    '<footer class="foot"><p>On a computer, or just looking? <a href="#" data-web data-k="do">Continue in the browser</a></p><p><a href="' + base + 'privacy/">Privacy and terms</a></p></footer>';
   // One numbered step; sub is an optional second line, 13 muted.
   function step(n, icon, words, sub){
     return '<div class="gwstep"><span class="gwn">' + n + '</span>' + icon + '<span class="gwt">' + words +
@@ -977,7 +981,8 @@ window.RAVI_BAR = function(nav, slots){
     }
     return TOP + '<section class="gwcard glass" id="gwpc"><div class="shead"><h2>RAVI is a phone app</h2></div>' +
       '<p class="gwtxt">Open this page on your phone, then add it to your Home Screen.</p>' +
-      '<button type="button" class="pact btn glass" data-web data-k="do">Continue in the browser</button></section>';
+      '<button type="button" class="pact btn glass" data-web data-k="do">Continue in the browser</button></section>' +
+      '<footer class="foot"><p><a href="' + base + 'privacy/">Privacy and terms</a></p></footer>';
   }
   // Android: the browser offers its own Install prompt once it is ready.
   function offer(){

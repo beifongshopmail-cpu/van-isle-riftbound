@@ -12,3 +12,4 @@ The install screen (pages.js, app.css; signed off by Mako 2026-10-09)
 - Android (#gwand): Install RAVI. The .pact button (#gwinst) shows only once the browser offers its prompt; otherwise one line says to use the browser menu.
 - A computer (#gwpc): RAVI is a phone app, one line, and Continue in the browser as a .pact.
 - The app icon appears once, small, in the last iPhone step. It is the wordmark itself, so never above the name. The icon (rb-tools render-icons.js from design/wordmark/icon.py; Mako 2026-11-01) is the glass badge filling the whole icon: RAVI .74 of the width, the blue-to-pink rim just inside the icon's rounded edge, a dark glass ground lit from the top.
+- Privacy and terms (plan 2 M9 block 10, Mako's yes 2026-11-12): the screen's footer carries a second line, Privacy and terms, to privacy/, the one page a tab may read (style/privacy.md); the computer's card gets the same line in a footer under it.

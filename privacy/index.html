@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-read>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#08090A">
+<meta name="description" content="RAVI's privacy and terms in plain words: what RAVI keeps, what it never has, what other players see, and the terms of using it.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAVI">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Privacy and terms - RAVI</title>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../app.css">
+<script src="../pages.js"></script>
+<script src="../account.js"></script>
+<script src="words.js"></script>
+<style>
+/* Privacy and terms (plan 2 M9 block 10, Mako's yes 2026-11-12). The Rows pattern, after App
+   settings: a search plate, then two press groups of rows under their labels, each row opening
+   its words in place. The words are words.js's, the same ones App settings' About menus draw.
+   The one page a browser tab may read (data-read on html; pages.js, THE INSTALL SCREEN). */
+html{background:var(--ground)}
+a{color:inherit;text-decoration:none}
+body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
+#lg{max-width:480px;margin:0 auto;
+  padding:0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px)}
+/* the search plate: sticky, parked 10 above --top-clear, plate frost, clear (as App settings) */
+.srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}
+.lglb{margin:14px 4px 6px}
+.lglb[hidden],.lggrp[hidden],.lggrp .door[hidden]{display:none}
+.lgb{padding:0 16px 14px}
+.lgb p{margin:0 0 8px;font-size:15px;line-height:1.4;color:var(--muted)}
+.lgb p:last-child{margin-bottom:0}
+.lgb a{color:var(--bone);text-decoration:underline;text-underline-offset:3px}
+.lgday{margin:10px 4px 0}
+.lgnone{margin:14px 4px 0;font-size:12px;line-height:1.5;color:var(--muted);text-align:center}
+.foot a{color:var(--bone)}
+</style>
+</head>
+<body>
+
+<div class="wmrow"><h1 class="wm"><span class="rb"><span class="rbg"></span><svg class="rbs" viewBox="0 0 5828.4 2351.8" aria-hidden="true" focusable="false"><defs><linearGradient id="rbr36" gradientUnits="userSpaceOnUse" x1="1091.6" y1="-646.8" x2="4736.9" y2="2998.5"><stop offset="0" stop-color="#5DA5EE"/><stop offset=".5" stop-color="#5DA5EE" stop-opacity=".35"/><stop offset=".5" stop-color="#EE5F9C" stop-opacity=".35"/><stop offset="1" stop-color="#EE5F9C"/></linearGradient></defs><path class="rbt" d="M314.8 1175.9A882.6 882.6 0 0 1 1197.4 293.3H4631.1A882.6 882.6 0 0 1 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><path class="rbb" d="M314.8 1175.9A882.6 882.6 0 0 0 1197.4 2058.4H4631.1A882.6 882.6 0 0 0 5513.6 1175.9" fill="none" stroke="url(#rbr36)" stroke-width="163.3" pathLength="1" stroke-dasharray="1 1"/><g class="rbl" transform="translate(1064.7 602.3) scale(.8)"><path class="c1" transform="translate(0 0)" d="M420 287V861H707Q766 861 818 838Q870 816 909 777Q948 738 970 686Q993 633 993 574Q993 515 970 462Q948 410 909 371Q870 332 818 310Q766 287 707 287ZM420 1434H133V0H707Q786 0 859 20Q932 41 996 78Q1059 116 1112 168Q1164 221 1202 285Q1239 349 1260 422Q1280 495 1280 574Q1280 648 1262 718Q1243 788 1208 851Q1174 914 1124 967Q1074 1020 1012 1059L1171 1434H866L741 1145L420 1147Z"/><path class="c1" transform="translate(1376 0)" d="M977 861V574Q977 515 954 462Q932 410 893 371Q854 332 802 310Q749 287 690 287Q631 287 578 310Q526 332 487 371Q448 410 426 462Q403 515 403 574V861ZM1264 1434H977V1147H403V1434H117V574Q117 455 162 350Q207 246 284 168Q362 90 466 45Q571 0 690 0Q809 0 914 45Q1018 90 1096 168Q1174 246 1219 350Q1264 455 1264 574Z"/><path class="c2" transform="translate(2796.9 0)" d="M1229 0 758 1434H471L2 0H328L614 957L901 0Z"/><path class="c2" transform="translate(4070.9 0)" d="M420 1434H133V0H420Z"/></g></svg></span><span class="sr">RAVI</span></h1></div>
+
+<main id="lg">
+  <h2 class="sr">Privacy and terms</h2>
+
+  <div class="srow plate glass">
+    <div class="sf">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
+      <input id="lgq" type="search" placeholder="Search privacy and terms" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search privacy and terms" data-k="type">
+      <button type="button" class="fbtn fx glass" id="lgqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+
+  <p class="lb lglb">Privacy</p>
+  <div class="lggrp" id="lgprivacy"></div>
+  <p class="lb lglb">Terms</p>
+  <div class="lggrp" id="lgterms"></div>
+  <p class="lgnone" id="lgnone" hidden>Nothing matches.</p>
+
+  <footer class="foot">
+    <p>
+        Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.<br>
+        Something wrong or missing? <a href="../feedback/">Tell us</a>.
+    </p>
+  </footer>
+</main>
+
+<!-- THE STANDARD BAR. This page sits under App settings (its About rows show the same words), so
+     its Go to slot is App settings'; it has no action and no settings of its own: both dim in place. -->
+<nav class="bar frost" id="tabs"></nav>
+<script>RAVI_BAR(document.getElementById("tabs"), [
+  "hub",
+  {go:"settings"},
+  {tag:"button", icon:"soon", a:[["class", "tab"], ["disabled", null], ["aria-label", "Nothing here yet"], ["data-k", "slot"]]},
+  {tag:"button", icon:"gear", a:[["class", "tab"], ["disabled", null], ["aria-label", "No settings on this page"], ["data-k", "slot"]]}
+]);</script>
+
+<div class="scrim" id="scrim"></div>
+<section class="panel frost tray" id="pnav" aria-hidden="true" aria-label="Pages">
+  <div class="pbody"><div class="goto" id="pnavgoto"></div></div>
+</section>
+
+<script>
+(function(){
+  // The one menu on this page: the Go to list. While it is open the page is locked at the root.
+  var scrim = document.getElementById("scrim"), pnav = document.getElementById("pnav"), on = false;
+  function show(v){
+    on = !!v;
+    pnav.classList.toggle("show", on); pnav.setAttribute("aria-hidden", on ? "false" : "true");
+    scrim.classList.toggle("show", on);
+    document.documentElement.classList.toggle("lock", on);
+  }
+  document.getElementById("tabnav").addEventListener("click", function(){ show(!on); });
+  window.RAVI_GOTO(document.getElementById("pnavgoto"), "settings", "../");
+  scrim.addEventListener("click", function(){ show(false); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && on) { show(false); } });
+
+  // THE WORDS (words.js): every row starts open here, since the page is for reading; a tap folds one
+  var LG = window.RAVI_LEGAL, KINDS = ["privacy", "terms"];
+  KINDS.forEach(function(k){
+    var el = document.getElementById("lg" + k);
+    el.innerHTML = LG.rows(k, true); LG.bind(el);
+  });
+  // SEARCH, as App settings': every typed word starts a word of a row's title or its words; rows that
+  // match stay (opened), a group with none left goes with its label
+  var q = document.getElementById("lgq"), qx = document.getElementById("lgqx"), none = document.getElementById("lgnone");
+  function find(){
+    var ws = q.value.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
+    qx.disabled = !q.value;
+    KINDS.forEach(function(k){
+      var el = document.getElementById("lg" + k), left = 0;
+      el.querySelectorAll(".door[aria-controls]").forEach(function(b){
+        var x = document.getElementById(b.getAttribute("aria-controls"));
+        var have = (b.textContent + " " + x.textContent).toLowerCase().split(/[^a-z0-9]+/);
+        var hit = ws.every(function(w){ return have.some(function(h){ return h.indexOf(w) === 0; }); });
+        b.hidden = !hit;
+        if (hit) { left++; if (ws.length) { b.setAttribute("aria-expanded", "true"); } }
+        x.hidden = !hit || b.getAttribute("aria-expanded") !== "true";
+      });
+      el.hidden = !left; el.previousElementSibling.hidden = !left;
+      if (left) { any = true; }
+    });
+    none.hidden = any;
+  }
+  q.addEventListener("input", find);
+  q.addEventListener("keydown", function(e){ if (e.key === "Enter") { q.blur(); } });
+  qx.addEventListener("click", function(){ q.value = ""; find(); q.focus(); });
+})();
+</script>
+<script>
+(function(){
+  // Double-tap-to-zoom guard. iOS Safari offers a zoom-to-fit gesture on
+  // text blocks, and no CSS property suppresses it -- touch-action,
+  // user-select and touch-callout were all tested and none is the lever.
+  // Swallowing the second tap is. A second touch within 320ms and 30px of
+  // the previous one is the gesture, and preventDefault on that touchend
+  // cancels it.
+  //
+  // Controls and links are skipped outright. They were already immune to
+  // the gesture, and guarding them costs a visible delay on fast repeated
+  // taps -- quantity steppers and scoring buttons in particular. A skipped
+  // tap still starts the timer, so a quick tap on words after a control
+  // (a menu opened by its row) is held off too.
+  //
+  // A scroll is a move, not a tap, and never reaches this. A pinch carries
+  // more than one touch point and returns early; pages.js holds off page pinch-zoom
+  // (2026-11-02). Attached at document level so it covers fixed overlays and
+  // anything added later.
+  var SKIP = "button,a,input,select,textarea,label,summary,[role=button]";
+  var lastT = 0, lastX = 0, lastY = 0;
+  document.addEventListener("touchend", function(ev){
+    if (ev.touches.length > 0) return;
+    if (ev.changedTouches.length !== 1) return;
+    var tch = ev.changedTouches[0];
+    var now = Date.now();
+    // A control's tap goes through at once, but starts the timer: a quick second tap on a menu's
+    // words or a gap after tapping the row that opened it is still a double-tap to iPhone
+    // (plan 2 M8 close-out, Mako 2026-11-04: tap-to-zoom in menus).
+    if (ev.target.closest && ev.target.closest(SKIP)){
+      lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+      return;
+    }
+    var dx = Math.abs(tch.clientX - lastX);
+    var dy = Math.abs(tch.clientY - lastY);
+    if (now - lastT < 320 && dx < 30 && dy < 30){
+      ev.preventDefault();
+    }
+    lastT = now; lastX = tch.clientX; lastY = tch.clientY;
+  }, {passive:false});
+})();
+</script>
+</body>
+</html>

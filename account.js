@@ -85,7 +85,7 @@
     cb = cb || function () {};
     if (signedIn()) return cb(null);
     if (guestBusy || (!force && Date.now() - guestAt < RETRY)) return cb("busy");
-    if (root.RAVI_GATE || (root.navigator && root.navigator.webdriver)) return cb("off"); // the install screen and test tools make no accounts
+    if (root.RAVI_GATE || root.RAVI_TAB || (root.navigator && root.navigator.webdriver)) return cb("off"); // the install screen, Privacy and Terms read in a browser tab, and test tools make no accounts
     guestBusy = true; guestAt = Date.now();
     var here = null;
     try { here = JSON.parse(root.localStorage.getItem("vir.me.v1") || "null"); } catch (e) {}
@@ -514,6 +514,7 @@
         '<p class="pnote" id="acnum"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
         '<button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
+        '<div class="doors acgap" data-k="deeper"><a class="door" id="acpriv" href="' + REL + 'settings/?open=pprivacy"><span class="t">Privacy</span><span class="sp"></span>' + CV + '</a></div>' +
         '<p class="acmsg" id="acdatamsg" aria-live="polite"></p></div>',
       acrec: headTitle("Recovery code") + '<div class="pbody"><div class="nf tall"><input type="text" id="acrecin" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go" aria-label="Recovery code" data-k="type"></div>' +
         '<p class="pnote">The code RAVI showed you when you saved your account. It signs you in once; you get a new one straight after.</p><p class="acmsg" id="acrecmsg" aria-live="polite"></p></div>' +
@@ -1105,7 +1106,7 @@
     if (A.signedIn()) refresh(true); else A.makeGuest(null, true);
   }
   function suAuto() {
-    if (suSeen() || root.RAVI_GATE || root.RAVI_AWAY || (root.navigator && root.navigator.webdriver)) return;
+    if (suSeen() || root.RAVI_GATE || root.RAVI_TAB || root.RAVI_AWAY || (root.navigator && root.navigator.webdriver)) return;
     if (!doc.querySelector(".hubname")) return; // the hub only
     var wait = 450;
     var tries = 0;

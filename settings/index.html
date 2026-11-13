@@ -17,6 +17,7 @@
 <script src="../account.js"></script>
 <script src="../live.js"></script>
 <script src="../hubedit.js"></script>
+<script src="../privacy/words.js"></script>
 <style>
 /* App settings. The shared layer (tokens, glass, the bar, menus, the
    footer) is app.css; this block holds only this page's own rules. A
@@ -45,6 +46,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .panel .pick+.pnote{margin-top:10px}
 .stmsg{margin:10px 2px 0;font-size:12px;line-height:1.5;color:var(--bone)}
 .stmsg:empty{display:none}
+/* Privacy and Terms (plan 2 M9 block 10): rows that open their words in place, as Top cut's How it's worked out */
+.lgb{padding:0 16px 14px}
+.lgb p{margin:0 0 8px;font-size:15px;line-height:1.4;color:var(--muted)}
+.lgb p:last-child{margin-bottom:0}
+.lgb a{color:var(--bone);text-decoration:underline;text-underline-offset:3px}
+.lgday{margin:10px 4px 0}
 /* Reset every setting while it waits for its second tap */
 .pact.armed{background-color:var(--glass-press)}
 </style>
@@ -89,6 +96,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <button type="button" class="door" data-st="pcur"><span class="t">Prices in</span><span class="sp"></span><small id="pcurv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door" data-st="pclock"><span class="t">Clock</span><span class="sp"></span><small id="pclockv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door" data-st="pweek"><span class="t">Week starts on</span><span class="sp"></span><small id="pweekv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+  <!-- About (plan 2 M9 block 10, Mako's yes 2026-11-12): Privacy and Terms, the words from privacy/words.js -->
+  <p class="lb stlb">About</p>
+  <div class="doors stgrp" id="stabout" data-k="deeper">
+      <button type="button" class="door" data-st="pprivacy"><span class="t">Privacy</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <button type="button" class="door" data-st="pterms"><span class="t">Terms</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
   </div>
   <p class="stn stnone" id="stnone" hidden>No setting matches.</p>
 
@@ -179,6 +192,14 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   </div>
 </section>
 
+<section class="panel frost" id="pprivacy" aria-hidden="true" aria-label="Privacy">
+  <div class="phead"><h4 class="ttl" id="pprivacyt">Privacy</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="lgprivacy"></div>
+</section>
+<section class="panel frost" id="pterms" aria-hidden="true" aria-label="Terms">
+  <div class="phead"><h4 class="ttl" id="ptermst">Terms</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="pbody" id="lgterms"></div>
+</section>
 <script>
 (function(){
   // The menus on this page: the Go to list, and one per settings row. One
@@ -203,6 +224,18 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   document.addEventListener("keydown", function(e){ if (e.key === "Escape" && shown) { show(null); } });
   document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click", function(){ show(null); }); });
   document.querySelectorAll(".doors [data-st]:not(.chk)").forEach(function(b){ b.addEventListener("click", function(){ show(document.getElementById(b.getAttribute("data-st"))); }); });
+  // Privacy and Terms (plan 2 M9 block 10): the words are privacy/words.js's, drawn closed each time the menu opens;
+  // a link in (?open=pprivacy or ?open=pterms, from Your data and every page's footer) opens its menu as the page loads
+  var LG = window.RAVI_LEGAL;
+  if (LG) {
+    ["privacy", "terms"].forEach(function(k){
+      var body = document.getElementById("lg" + k);
+      body.innerHTML = LG.rows(k, false); LG.bind(body);
+      document.querySelector('[data-st="p' + k + '"]').addEventListener("click", function(){ body.innerHTML = LG.rows(k, false); });
+    });
+    var om = /[?&]open=(pprivacy|pterms)\b/.exec(location.search);
+    if (om) { show(document.getElementById(om[1])); }
+  }
 })();
 </script>
 <script>
@@ -280,7 +313,9 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     pmotion: "motion opening animation intro movement reduce glow rim hub effects",
     pcur: "prices price currency money dollars cad usd canadian us",
     pclock: "clock time times hour 12 24 am pm",
-    pweek: "week starts sunday monday calendar events day"
+    pweek: "week starts sunday monday calendar events day",
+    pprivacy: "privacy data account keeps delete download age trackers ads about policy",
+    pterms: "terms rules conditions use legal about riot trades"
   };
   window.ST_MEVAL = meVal;
   // ALERT KINDS (block 5's Trade offers; plan 2 M9 block 6 adds Wishlist prices, Stores you follow and, on the
@@ -318,7 +353,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   function find(){
     var q = stq.value.toLowerCase().replace(/[^a-z0-9#\s]/g, " ").split(/\s+/).filter(Boolean), any = false;
     stqx.disabled = !stq.value;
-    ["stalert", "sthubg", "sttier", "stdisp"].forEach(function(g){
+    ["stalert", "sthubg", "sttier", "stdisp", "stabout"].forEach(function(g){
       var grp = document.getElementById(g), left = 0;
       grp.querySelectorAll("[data-st]").forEach(function(b){
         var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);
