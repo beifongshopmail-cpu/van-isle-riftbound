@@ -206,9 +206,9 @@ Page shell (feedback/index.html, settings/index.html)
     <div class="wmrow"><h1 class="wm"><span class="rb">...</span><span class="sr">RAVI</span></h1></div>
 - Main wrapper (page-local id, e.g. #fb): max-width 480, margin 0 auto, padding 0 12px calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + var(--barH) + 40px). The calendar's is .body and Appraise's #trd with .tail, the same idea; scrollbar-gutter stable and body min-height 100vh come from app.css.
 - No page opens with a line under the wordmark; its title is an h2.sr for screen readers. (.lede, 13 muted, no glass, stays in app.css: Decks' list count line.)
-- Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone. Every page with words ends in the credit; every page but App settings and Feedback ends it with "Something wrong or missing? Tell us."
-    <footer class="foot"><p>...</p><p>Built and maintained by <a href="https://beifonghithouse.com">Beifong's Hit-House</a>, Victoria BC.</p></footer>
-- A page that shows prices starts its footer with the price source line (RAVI_STAMP in pages.js: tcgcsv.com, the day, the rate) and "Market price is a public benchmark, not an offer from any store."
+- Footer (.foot): 30 above, a dim hairline inset 24 from both ends, paragraphs 12 muted, links bone. A footer holds only what is true of that page and nowhere else: a source with its day (prices, events), a credit owed to a data source, or how the page's own words were made. No credit, no Tell us, nothing repeated across pages. A page with nothing of its own has no footer.
+    <footer class="foot"><p id="stamp"></p></footer>
+- A page that shows prices ends with the price source line (RAVI_STAMP: tcgcsv.com, the day, the rate); the benchmark line lives in Terms.
 - The support plate (.sup.glass, RAVI_SUPPORT in pages.js): who builds RAVI and the tip link, one copy on App settings (after Motion) and Feedback (under Send feedback). Head Support RAVI, a 56 round picture (img/mako.webp, size-exempt), name and a muted line, two short paragraphs in Mako's words, a centred pill out to his Ko-fi with the out-arrow (.pact .extl).
 
 Section head and glass card (feedback/index.html)
