@@ -180,6 +180,44 @@ check("store events: a store's post naming another town than PlayRiftbound's is 
   assert.strictEqual(fe.storeEvents(dc, two, "2026-11-12").length, 1, "a store name two towns share is not matched by name alone");
 });
 
+check("stores: Elite4 and Everything Games are Langford, and a store's posts join its listing (2026-11-13)", function () {
+  // Mako's phone: Stores showed Elite4, Everything Games and North Park twice, each copy made from
+  // the store's own post; and both stores are in Langford, though PlayRiftbound says Victoria.
+  const E4 = "019fb060-927e-7709-b9cb-32c53ec8c895";
+  const raw = { id: "rb9", name: "Skirmish", start: "2026-11-21T10:30:00-08:00", day: "2026-11-21", tournament: { id: 9, name: "Skirmish", startsAt: "2026-11-21T18:30:00Z", config: {}, registrantCounts: [] },
+    organizer: { id: E4, name: "Elite4 Games", physicalAddress: { city: "Victoria", formattedAddress: "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada" } } };
+  const ev = fe.shapeRb(raw, "victoria");
+  assert.strictEqual(ev.city, "Langford", "Elite4's PlayRiftbound listing reads Langford");
+  assert.strictEqual(ev.region, "victoria", "still in the Victoria area");
+  const listed = [ev, { id: "rb2", name: "Open", day: "2026-11-18", venue: "Everything Games", city: "Langford", sid: 16866 }];
+  const d = { run: "2026-11-13", posts: [], store_events: [
+    { cancelled: false, city: "Langford", date: "2026-11-19", fee: "", format: "open play", name: "Open Play", store: "Elite4 Games", time: "6:00 PM", url: POST },
+    { cancelled: false, city: "Langford", date: "2026-11-20", fee: "", format: "", name: "Draft Night", store: "Everything Games", time: "6:00 PM", url: POST }
+  ] };
+  const got = fe.storeEvents(d, listed, "2026-11-13");
+  assert.strictEqual(got.length, 2, "nights PlayRiftbound does not list still come through");
+  assert.strictEqual(String(got[0].sid), E4, "Elite4's post is Elite4's listed store");
+  assert.strictEqual(String(got[1].sid), "16866", "Everything Games' post is its listed store");
+  assert.ok(got.every(function (e) { return e.city === "Langford"; }), "both in Langford");
+  // a store known only from the stores file (no listing this run) still takes the post
+  const alone = fe.storeEvents(d, [], "2026-11-13", [{ sid: E4, name: "Elite4 Games", city: "Victoria" }, { sid: "16866", name: "Everything Games", city: "Victoria" }]);
+  assert.strictEqual(String(alone[0].sid), E4, "from the stores file");
+  assert.strictEqual(alone[0].city, "Langford", "in Langford");
+  // the list drops the copies made from posts, and moves the two stores to Langford
+  const prev = { stores: [
+    { sid: E4, name: "Elite4 Games", short: "Elite4", city: "Victoria", address: "2770 Leigh Rd", seen: "2026-11-12" },
+    { sid: "st-elite4-games-langford", name: "Elite4 Games", short: "Elite4 Games", city: "Langford", address: "", seen: "2026-11-12" },
+    { sid: "16866", name: "Everything Games", short: "Everything Games", city: "Victoria", address: "721 Station Ave", seen: "2026-11-12" },
+    { sid: "st-everything-games-langford", name: "Everything Games", short: "Everything Games", city: "Langford", address: "", seen: "2026-11-12" },
+    { sid: "18437", name: "North Park Picture Framing and Collectables", short: "North Park", city: "Victoria", address: "1046 Mason St", seen: "2026-11-12" },
+    { sid: "st-north-park-framing-and-collectibles-victoria", name: "North Park Framing and Collectibles", short: "North Park Framing and Collectibles", city: "Victoria", address: "", seen: "2026-11-12" },
+    { sid: "st-rottys-creations-victoria", name: "Rotty's Creations", short: "Rotty's Creations", city: "Victoria", address: "", seen: "2026-11-12" }
+  ] };
+  const list = fe.buildStores(prev, [], "2026-11-13").stores;
+  assert.deepStrictEqual(list.map(function (s) { return s.sid; }).sort(), ["16866", "18437", E4, "st-rottys-creations-victoria"].sort(), "one of each store; a store only its posts name stays");
+  assert.ok(list.filter(function (s) { return s.sid === E4 || s.sid === "16866"; }).every(function (s) { return s.city === "Langford"; }), "Elite4 and Everything Games in Langford");
+});
+
 if (failures) {
   console.log(failures + " failed");
   process.exit(1);

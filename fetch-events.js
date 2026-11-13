@@ -41,6 +41,15 @@ const RB_STORES = {
   "skyhaven games|victoria": { sid: 4294, venue: "Skyhaven Games" }
 };
 
+// The town a store is really in, where PlayRiftbound's listing says another (Mako 2026-11-13:
+// Elite4 and Everything Games are in Langford; PlayRiftbound files both under Victoria). Keyed by
+// store id. Langford is in the Victoria area, so the area stays the same.
+const STORE_TOWN = {
+  "019fb060-927e-7709-b9cb-32c53ec8c895": "Langford", // Elite4 Games, 2770 Leigh Rd
+  "16866": "Langford" // Everything Games, 721 Station Ave
+};
+function townOf(sid, city) { return STORE_TOWN[String(sid)] || city; }
+
 const OUT_DIR = path.join(__dirname, "data");
 const OUT_FILE = path.join(OUT_DIR, "events.json");
 const PAST_FILE = path.join(OUT_DIR, "past.json");
@@ -500,15 +509,35 @@ function storeCents(fee) {
   const m = /\$\s*(\d{1,4})(?:\.(\d\d))?/.exec(String(fee || ""));
   return m ? Number(m[1]) * 100 + Number(m[2] || 0) : 0;
 }
+// The listed stores by name: each name only one listed store goes by (from this run's events and
+// the stores file; never a store made from a post), so a post naming that store in another town
+// joins it (Mako 2026-11-13: Elite4, Everything Games and North Park showed twice on Stores).
+function listedByName(existing, stores) {
+  const by = new Map();
+  const add = function (sid, name, city) {
+    if (sid === null || sid === undefined || /^st-/.test(String(sid)) || !name) return;
+    const n = storeNorm(name);
+    if (!by.has(n)) by.set(n, new Map());
+    if (!by.get(n).has(String(sid))) by.get(n).set(String(sid), { sid: sid, venue: String(name), city: townOf(sid, String(city || "")) });
+  };
+  for (const e of existing || []) if (e) add(e.sid, e.venue, e.city);
+  for (const s of stores || []) if (s) add(s.sid, s.name, s.city);
+  return function (name) {
+    const m = by.get(storeNorm(name));
+    return m && m.size === 1 ? m.values().next().value : null;
+  };
+}
 // digest: one daily file ({ run, store_events }); existing: the events already in this run
 // (PlayRiftbound and the old feed); today: YYYY-MM-DD in TZ. Returns the events to add.
-function storeEvents(digest, existing, today) {
+// stores: the stores file's list (optional), so a store with no listing this run is still known.
+function storeEvents(digest, existing, today, stores) {
   const list = digest && Array.isArray(digest.store_events) ? digest.store_events : [];
   const run = digest && isDay(digest.run) ? digest.run : null;
   if (!run || !isDay(today)) return [];
   const age = daysBetween(run, today);
   if (age < 0 || age > STORE_POSTS.days) return [];
   const taken = storeTaken(existing);
+  const listed = listedByName(existing, stores);
   const out = [], ids = new Set();
   for (const x of list) {
     if (!x || typeof x !== "object" || x.cancelled === true) continue;
@@ -521,8 +550,9 @@ function storeEvents(digest, existing, today) {
     if (/\bonline\b/i.test(name) || /\bonline\b/i.test(format)) continue;
     const t = storeTime(x.time);
     if (!t) continue;
-    const known = RB_NORM[storeNorm(store) + "|" + city.toLowerCase()] || null;
+    const known = RB_NORM[storeNorm(store) + "|" + city.toLowerCase()] || listed(store);
     const sid = known ? known.sid : storeSid(store, city);
+    const town = known ? townOf(sid, known.city || city) : city;
     if (taken("s" + sid, known ? known.venue : store, x.date) || taken("v" + storeNorm(store) + "|" + city.toLowerCase(), store, x.date)) continue;
     const id = "st" + String(BigInt("0x" + crypto.createHash("sha256").update(storeNorm(store) + "|" + city.toLowerCase() + "|" + x.date + "|" + name.toLowerCase()).digest("hex").slice(0, 12)) % 1000000000000n).padStart(12, "0");
     if (ids.has(id)) continue;
@@ -539,9 +569,9 @@ function storeEvents(digest, existing, today) {
       day: x.date,
       time: timeLabel(start),
       venue: known ? known.venue : store,
-      city: city,
+      city: town,
       address: "",
-      region: region,
+      region: TOWNS[town.toLowerCase()] || region,
       cap: null,
       reg: 0,
       cents: storeCents(x.fee),
@@ -607,7 +637,7 @@ function shape(raw, region) {
     day: dayKey(start),
     time: timeLabel(start),
     venue: String(store.name || "").replace(/ Ltd\.?$/, "").trim(),
-    city: store.city || "",
+    city: townOf(store.id, store.city || ""),
     address: store.full_address || "",
     region: TOWNS[String(store.city || "").trim().toLowerCase()] || region,
     cap: raw.capacity == null ? null : raw.capacity,
@@ -637,6 +667,7 @@ function shapeRb(node, region) {
   const name = String(org.name || "").replace(/ Ltd\.?$/i, "").trim();
   const city = String(addr.city || "").trim();
   const known = RB_STORES[name.toLowerCase() + "|" + city.toLowerCase()] || null;
+  const sidRb = known ? known.sid : (org.id || null);
   return {
     id: "rb" + t.id,
     name: String(t.name || "").trim(),
@@ -646,7 +677,7 @@ function shapeRb(node, region) {
     day: dayKey(start),
     time: timeLabel(start),
     venue: known ? known.venue : name,
-    city: city,
+    city: townOf(sidRb, city),
     address: addr.formattedAddress || "",
     region: TOWNS[city.toLowerCase()] || region,
     cap: (typeof c.participantCapacity === "number") ? c.participantCapacity : null,
@@ -656,8 +687,8 @@ function shapeRb(node, region) {
     updated: null,
     round: null,
     wins: null,
-    sid: known ? known.sid : (org.id || null),
-    store: STORE_SHORT[String(known ? known.sid : org.id)] || null
+    sid: sidRb,
+    store: STORE_SHORT[String(sidRb)] || null
   };
 }
 
@@ -764,13 +795,21 @@ function buildStores(prev, events, today) {
     if (!s || s.sid === null || s.sid === undefined || typeof s.name !== "string" || !isDay(s.seen)) continue;
     if (daysBetween(s.seen, today) > STORE_KEEP_DAYS) continue;
     by.set(String(s.sid), { sid: String(s.sid), name: s.name, short: typeof s.short === "string" ? s.short : s.name,
-      city: typeof s.city === "string" ? s.city : "", address: typeof s.address === "string" ? s.address : "", seen: s.seen });
+      city: townOf(s.sid, typeof s.city === "string" ? s.city : ""), address: typeof s.address === "string" ? s.address : "", seen: s.seen });
   }
   for (const ev of events || []) {
     if (!ev || ev.sim || ev.sid === null || ev.sid === undefined || !ev.venue) continue;
     const k = String(ev.sid), old = by.get(k);
     by.set(k, { sid: k, name: String(ev.venue), short: String(ev.store || ev.venue), city: String(ev.city || ""),
       address: String(ev.address || "") || (old ? old.address : ""), seen: today });
+  }
+  // a store made from a store's own posts goes when the store is listed: its name (or the spelling
+  // STORE_SAYS names) is one only one listed store has (Mako 2026-11-13: three stores showed twice)
+  const listed = listedByName([], Array.from(by.values()).map(function (s) { return { sid: s.sid, name: s.name, city: s.city }; }));
+  for (const s of Array.from(by.values())) {
+    if (!/^st-/.test(s.sid)) continue;
+    const said = RB_NORM[storeNorm(s.name) + "|" + s.city.toLowerCase()];
+    if ((said && by.has(String(said.sid))) || listed(s.name)) by.delete(s.sid);
   }
   const stores = Array.from(by.values()).sort(function (a, b) {
     return a.city.localeCompare(b.city) || a.name.localeCompare(b.name) || a.sid.localeCompare(b.sid);
@@ -876,7 +915,8 @@ async function main() {
     if (digest) {
       storePosts.run = digest.run;
       storePosts.listed = Array.isArray(digest.store_events) ? digest.store_events.length : 0;
-      posted = storeEvents(digest, Array.from(byId.values()), todayK);
+      const known0 = readJson(STORES_FILE);
+      posted = storeEvents(digest, Array.from(byId.values()), todayK, known0 && Array.isArray(known0.stores) ? known0.stores : []);
     }
   } catch (err) {
     storePosts.error = err.message;
