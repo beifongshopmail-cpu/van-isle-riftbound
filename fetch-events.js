@@ -474,6 +474,28 @@ function localDate(day, hm) {
 function daysBetween(a, b) { return Math.round((Date.parse(b + "T12:00:00Z") - Date.parse(a + "T12:00:00Z")) / 86400000); }
 function isDay(s) { return typeof s === "string" && /^\d{4}-\d\d-\d\d$/.test(s) && isFinite(Date.parse(s + "T12:00:00Z")); }
 function storeWho(ev) { return (ev.sid !== null && ev.sid !== undefined) ? "s" + ev.sid : "v" + storeNorm(ev.venue) + "|" + String(ev.city || "").toLowerCase(); }
+// What the listings already hold, for the store's-listing-wins rule: each store and day, and each
+// store name that only one store in the listings goes by. A store's post may name another town than
+// PlayRiftbound does (Elite4 posts Langford, its street address; PlayRiftbound lists Victoria: the
+// skirmish showed twice, Mako 2026-11-12), so a name only one listed store has is that store, in
+// any town. A name two stores share (Colossal in Victoria and Courtenay) is never decided by name.
+function storeTaken(existing) {
+  const days = new Set(), byName = new Map();
+  for (const e of existing || []) {
+    if (!e || !e.day) continue;
+    const who = storeWho(e);
+    days.add(who + "|" + e.day);
+    const n = storeNorm(e.venue);
+    if (!n) continue;
+    if (!byName.has(n)) byName.set(n, new Set());
+    byName.get(n).add(who);
+  }
+  return function (who, name, day) {
+    if (days.has(who + "|" + day)) return true;
+    const one = byName.get(storeNorm(name));
+    return !!one && one.size === 1 && days.has(one.values().next().value + "|" + day);
+  };
+}
 function storeCents(fee) {
   const m = /\$\s*(\d{1,4})(?:\.(\d\d))?/.exec(String(fee || ""));
   return m ? Number(m[1]) * 100 + Number(m[2] || 0) : 0;
@@ -486,8 +508,7 @@ function storeEvents(digest, existing, today) {
   if (!run || !isDay(today)) return [];
   const age = daysBetween(run, today);
   if (age < 0 || age > STORE_POSTS.days) return [];
-  const taken = new Set();
-  for (const e of existing || []) if (e && e.day) taken.add(storeWho(e) + "|" + e.day);
+  const taken = storeTaken(existing);
   const out = [], ids = new Set();
   for (const x of list) {
     if (!x || typeof x !== "object" || x.cancelled === true) continue;
@@ -502,7 +523,7 @@ function storeEvents(digest, existing, today) {
     if (!t) continue;
     const known = RB_NORM[storeNorm(store) + "|" + city.toLowerCase()] || null;
     const sid = known ? known.sid : storeSid(store, city);
-    if (taken.has("s" + sid + "|" + x.date) || taken.has("v" + storeNorm(store) + "|" + city.toLowerCase() + "|" + x.date)) continue;
+    if (taken("s" + sid, known ? known.venue : store, x.date) || taken("v" + storeNorm(store) + "|" + city.toLowerCase(), store, x.date)) continue;
     const id = "st" + String(BigInt("0x" + crypto.createHash("sha256").update(storeNorm(store) + "|" + city.toLowerCase() + "|" + x.date + "|" + name.toLowerCase()).digest("hex").slice(0, 12)) % 1000000000000n).padStart(12, "0");
     if (ids.has(id)) continue;
     ids.add(id);
@@ -540,12 +561,11 @@ function storeEvents(digest, existing, today) {
 // The digest could not be read this run: last run's store events stay while their
 // confirming run is within the days allowed, still under the store's-listing-wins rule.
 function carryStore(prevEvents, existing, today) {
-  const taken = new Set();
-  for (const e of existing || []) if (e && e.day) taken.add(storeWho(e) + "|" + e.day);
+  const taken = storeTaken(existing);
   return (Array.isArray(prevEvents) ? prevEvents : []).filter(function (e) {
     if (!e || e.src !== "store" || !isDay(e.conf) || !isDay(e.day) || e.day < today) return false;
     const age = daysBetween(e.conf, today);
-    return age >= 0 && age <= STORE_POSTS.days && !taken.has(storeWho(e) + "|" + e.day);
+    return age >= 0 && age <= STORE_POSTS.days && !taken(storeWho(e), e.venue, e.day);
   });
 }
 // The newest daily file within the days allowed, or null when there is none. A missing

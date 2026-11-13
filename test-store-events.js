@@ -160,6 +160,26 @@ check("store events: a store's post under a shorter spelling of its name is stil
   assert.strictEqual(alone[0].venue, "North Park Picture Framing and Collectables", "under the name PlayRiftbound uses");
 });
 
+check("store events: a store's post naming another town than PlayRiftbound's is still that store (2026-11-12)", function () {
+  // Elite4's own post put it in Langford (its street address is); PlayRiftbound lists Elite4 Games
+  // in Victoria. The Saturday skirmish showed twice (Mako's phone, 2026-11-12 21:02).
+  const d = { run: "2026-11-12", posts: [], store_events: [
+    { cancelled: false, city: "Langford", date: "2026-11-14", fee: "$20", format: "", name: "Radiance Summoner Skirmish I", store: "Elite4 Games", time: "10:30 AM", url: POST }
+  ] };
+  const listed = [{ id: "rb117089941548488590", name: "Radiance Summoner Skirmish I", type: "skirmish", start: "2026-11-14T10:30:00-07:00", day: "2026-11-14", venue: "Elite4 Games", city: "Victoria", sid: "019fb060-927e-7709-b9cb-32c53ec8c895" }];
+  assert.strictEqual(fe.storeEvents(d, listed, "2026-11-12").length, 0, "the skirmish PlayRiftbound lists is not added again");
+  const prev = fe.storeEvents(d, [], "2026-11-12");
+  assert.strictEqual(prev.length, 1, "with no listing the post comes through");
+  assert.strictEqual(fe.carryStore(prev, listed, "2026-11-12").length, 0, "nor is last run's copy carried beside it");
+  // two stores of one name in two towns: a name alone never decides it, so each town keeps its own
+  const two = [{ id: "rb1", name: "Skirmish", type: "skirmish", day: "2026-11-14", venue: "Colossal Cards & Collectables", city: "Victoria", sid: 15103 },
+    { id: "rb2", name: "Skirmish", type: "skirmish", day: "2026-11-15", venue: "Colossal Cards & Collectables", city: "Courtenay", sid: 902 }];
+  const dc = { run: "2026-11-12", posts: [], store_events: [
+    { cancelled: false, city: "Nanaimo", date: "2026-11-14", fee: "", format: "", name: "Open Play", store: "Colossal Cards & Collectables", time: "6:00 PM", url: POST }
+  ] };
+  assert.strictEqual(fe.storeEvents(dc, two, "2026-11-12").length, 1, "a store name two towns share is not matched by name alone");
+});
+
 if (failures) {
   console.log(failures + " failed");
   process.exit(1);
