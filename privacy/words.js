@@ -12,7 +12,7 @@
     day: "2026-11-12",
     privacy: [
       { t: "What RAVI keeps", p: [
-        "Every phone gets an account the first time RAVI opens. It keeps your decks, collection, games, trades, Follow and hub picks, so they can move to another phone.",
+        "Every phone gets an account the first time RAVI opens. It keeps your decks, collection, games, trades, follows and hub picks, so they can move to another phone.",
         "It keeps the profile you fill in: a display name, a username, a line about you, a home area and a picture. It keeps your Riot ID if you add it, and a name for each passkey and phone you sign in with.",
         "An alert you turn on keeps this phone's push address, so the alert can reach it."
       ] },
@@ -32,7 +32,7 @@
         "Alerts travel through Apple's or Google's push service. The Feedback form is Tally's, and what you type there goes to Tally. Card pictures load from Riot's and TCGplayer's servers. A link out, to a store, a map or Ko-fi, follows that site's own rules."
       ] },
       { t: "Reports and blocks", p: [
-        "A report is the reason you picked and the player it is about. Only RAVI's maintainer sees it, and it is never a rating. Reports not acted on are removed after a while. A blocked player is not told."
+        "A report is the reason you picked and the player it is about. Only Mako, who builds RAVI, sees it, and it is never a rating. Reports not acted on are removed after a while. A blocked player is not told."
       ] },
       { t: "Download or delete it", p: [
         "Your data, in your account, gives you a file of everything RAVI's server keeps for you. Delete account removes all of it at once. An account never saved and unused for 90 days is deleted."
@@ -41,7 +41,7 @@
         "RAVI is for players 13 and older."
       ] },
       { t: "Changes and questions", p: [
-        "RAVI is built and maintained by Beifong's Hit-House in Victoria, BC. When these words change, the day under them changes with them. Questions about your data go through " + FB + "."
+        "RAVI is built by Mako at Beifong's Hit-House in Victoria, BC. When these words change, the day under them changes with them. Questions about your data go through " + FB + "."
       ] }
     ],
     terms: [
@@ -50,7 +50,7 @@
       ] },
       { t: "As it is", p: [
         "RAVI is a community project, offered as it is. Nobody promises it is always up, right or free of mistakes. Event times, rules and prices come from other sources and can be late or wrong: check with the store, or Riot's own documents, before you count on them.",
-        "As far as the law allows, RAVI's maintainer is not liable for a loss that comes from using it."
+        "As far as the law allows, Mako and Beifong's Hit-House are not liable for a loss that comes from using it."
       ] },
       { t: "Riot Games", p: [
         "RAVI is a fan project. Riot Games does not make, endorse or sponsor it. Riftbound and its cards, art and symbols belong to Riot Games."
@@ -60,7 +60,7 @@
       ] },
       { t: "What you share", p: [
         "Your name, picture, decks and notes stay yours. Sharing one lets RAVI show it to other players. Keep it fit for a room of all ages: nothing hateful, sexual or against the law, and nothing that is someone else's.",
-        "Players can report what they see. RAVI's maintainer may hide or remove a picture or a shared deck, and may close an account that keeps at it."
+        "Players can report what they see. Mako may hide or remove a picture or a shared deck, and may close an account that keeps at it."
       ] },
       { t: "Playing fair", p: [
         "Claim only your own Riot ID. Do not pose as another player, copy other players' details in bulk, or try to break or overload RAVI."

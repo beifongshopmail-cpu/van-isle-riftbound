@@ -24,4 +24,3 @@ The launch intro (moved from STYLE.md section 8, 2026-11-11)
 Page-local classes (not in app.css; not Kit parts):
 - index.html (hub): .hubfoot .low, the All pages tray #pall (.blk, .blk.allp, .bi, .bn are app.css)
 - index.html (hub), listed in M7 from the style-lint baseline (2026-11-04): .ilet .rbb .rbglint .rbt
-- The hub's footer (plan 2 M9 block 10): under the Riot notice, one line, Privacy and terms, each word a bone link to App settings' menu (settings/?open=pprivacy, ?open=pterms), as every page's footer.

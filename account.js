@@ -510,7 +510,7 @@
       acnotm: headTitle("Notices") + '<div class="pbody"><div id="acnotlist"></div></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
       acrepm: headTitle("Reports") + '<div class="pbody"><div id="acreplist"></div><p class="acmsg" id="acrepmsg" aria-live="polite"></p></div>',
-      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, Follow and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
+      acdata: headTitle("Your data") + '<div class="pbody"><p class="pnote">Every phone gets an account. It keeps your decks, collection, games, trades, follows and hub picks; your profile and Riot ID; your devices and passkeys. Never a password or an email. Unsaved accounts unused for 90 days are deleted.</p>' +
         '<p class="pnote" id="acnum"></p>' +
         '<div class="doors acgap" data-k="do"><button type="button" class="door act" id="acdl"><span class="t">Download your data</span></button>' +
         '<button type="button" class="door act" id="acdel"><span class="t">Delete account</span></button></div>' +
