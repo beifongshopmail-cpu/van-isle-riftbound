@@ -393,6 +393,17 @@ body{-webkit-font-smoothing:antialiased;
     out.sort(function(a, b){ return a.h.end < b.h.end ? -1 : a.h.end > b.h.end ? 1 : ((b.it.posted || "") < (a.it.posted || "") ? -1 : 1); });
     return out.map(function(x){ return x.it; });
   }
+  // the page where a drawing is entered, for a post whose entries are still open: the hand-kept
+  // list's url for the day its entries close (ENTER, from data/feed-links.json), else ""
+  var ENTER = {};
+  function entry(it){
+    var ds = Array.isArray(it.dates) ? it.dates : [], i, x;
+    for(i = 0; i < ds.length; i++){
+      x = ds[i];
+      if(x && x.what === "entries close" && ymdOk(x.from) && x.from >= TODAY && ENTER[x.from]) return ENTER[x.from];
+    }
+    return "";
+  }
   function nowLine(it){ var h = NOW[it.id]; return h ? '<span class="nnow' + (h.u ? " " + h.u : "") + '">' + esc(h.s) + '</span>' : ""; }
 
   // a post is shown when it has words: its summary, Riot's text or its article
@@ -673,6 +684,11 @@ body{-webkit-font-smoothing:antialiased;
     if(web(it.url) && !riot && (it.video || local || kindOf(it) === "reveal")){
       h += '<a class="pact btn glass nwatch" href="' + esc(it.url) + '" target="_blank" rel="noopener" data-k="do">' + (it.video ? "Watch on " : "See it on ") + esc(at) + ' ' + OUT + '</a>';
     }
+    // a drawing's way to enter (Mako 2026-11-14): Riot's posts say 'link in bio', which RAVI cannot
+    // follow, so the entry page is kept by hand in data/feed-links.json by the day entries close,
+    // and shown on Riot's posts while entries are open. Never on a store's post.
+    var en = !local && entry(it);
+    if(en) h += '<a class="pact btn glass nwatch nenter" href="' + esc(en) + '" target="_blank" rel="noopener" data-k="do">Enter on ' + esc(place(en)) + ' ' + OUT + '</a>';
     el("pbody").innerHTML = h;
     mark(el("pbody"));
   }
@@ -786,6 +802,9 @@ body{-webkit-font-smoothing:antialiased;
     index();
     if(el("q").value.trim()) search();
   }).catch(function(){ var b = el("nboot"); if(b) b.remove(); el("loadfail").hidden = false; });
+  fetch("../data/feed-links.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(L){
+    (L && Array.isArray(L.enter) ? L.enter : []).forEach(function(e){ if(e && ymdOk(e.closes) && web(e.url) && place(e.url)) ENTER[e.closes] = e.url; });
+  }).catch(function(){});
   Promise.all([
     fetch("../data/prices.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(prices).catch(function(){}),
     fetch("../data/tier.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(legends).catch(function(){})
