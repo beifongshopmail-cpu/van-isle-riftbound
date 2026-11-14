@@ -874,12 +874,13 @@
       var tot = /\/(\d+)$/.exec(x.c || ""); if (tot && +p.num > +tot[1]) { return "Overnumbered"; }
       return "Showcase";
     }
-    if (/promo/i.test(rarity || "")) { return note && !/^R\d|^\d/.test(note) ? note : "Promo"; }
+    if (/promo/i.test(rarity || "")) { return note && !/^R\d|^\d|^[A-Z]$/.test(note) ? note : "Promo"; }
     return "Base";
   }
   // a printing only the price feed lists: its kind from its name's note, its rarity and number
   function tcgKind(v, s) {
-    var note = v.note || "", codeLike = /^[A-Z]{0,3}\d/.test(note);
+    // a code (R01b) or a lone variant letter (B, the b printing) is not a kind a player reads
+    var note = v.note || "", codeLike = /^[A-Z]{0,3}\d|^[A-Z]$/.test(note);
     if (note && KIND_WORDS.test(note)) { return note.replace(/^Alternate Art$/i, "Alt art"); }
     if (/promo/i.test(v.rarity) || /promo/i.test(s.n)) { return "Promo" + (note && !codeLike ? ", " + note : ""); }
     if (/a$/.test(v.num)) { return "Alt art"; }

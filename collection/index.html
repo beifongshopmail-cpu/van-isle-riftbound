@@ -1237,10 +1237,13 @@ input[type="file"]{display:none}
     var hd = rows[0].map(function(h){ return h.trim().toLowerCase(); }), at = {}, k;
     for(k in COLS){ at[k] = -1; for(var j = 0; j < COLS[k].length && at[k] < 0; j++) at[k] = hd.indexOf(COLS[k][j]); }
     if(at.name < 0 && at.id < 0) return { err: "That file has no product name column. Is it Collectr's CSV export?" };
-    var bySetNum = {}, bySetName = {}, byName = {};
+    var bySetNum = {}, bySetName = {}, byName = {}, byNum = {};
+    // a name without its note in brackets: 'Body Rune (B)' and 'Body Rune' are one card's printings
+    function bare(n){ return nrm(String(n || "").replace(/\s*\([^)]*\)\s*$/, "")); }
     P.cards.forEach(function(c){
       var s = setOf(c), sn = nrm(s.n);
       if(c.c) (bySetNum[sn + "|" + nrm(c.c)] = bySetNum[sn + "|" + nrm(c.c)] || []).push(c);
+      if(c.c) (byNum[nrm(c.c)] = byNum[nrm(c.c)] || []).push(c);
       (bySetName[sn + "|" + nrm(c.n)] = bySetName[sn + "|" + nrm(c.n)] || []).push(c);
       (byName[nrm(c.n)] = byName[nrm(c.n)] || []).push(c);
     });
@@ -1251,6 +1254,9 @@ input[type="file"]{display:none}
       if(id && BYID[id]) c = BYID[id];
       if(!c && get(r, "num")){ L = bySetNum[st + "|" + nrm(get(r, "num"))] || []; if(L.length > 1){ var m = L.filter(function(x){ return nrm(x.n) === nrm(nm); }); if(m.length) L = m; } c = L[0] || null; }
       if(!c){ L = bySetName[st + "|" + nrm(nm)] || []; c = L[0] || null; }
+      // the feed can file a printing under another set than the sheet names (the runes' promos
+      // moved from the promo set to their own sets): the same number and name, in any set, if only one
+      if(!c && get(r, "num")){ L = (byNum[nrm(get(r, "num"))] || []).filter(function(x){ return bare(x.n) === bare(nm); }); if(L.length === 1) c = L[0]; }
       if(!c){ L = byName[nrm(nm)] || []; if(L.length === 1) c = L[0]; }
       var q = parseInt(get(r, "qty"), 10); if(!(q > 0)) q = 1;
       out.rows++;
