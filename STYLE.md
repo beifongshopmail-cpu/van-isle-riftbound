@@ -321,7 +321,7 @@ Icons (pages.js RAVI_ICON; how they are drawn: records RULE -- icons)
 - Every drawn check is the list's (4 12 10 18 20 6). Every arrow is RAVI_ARROW (Lucide's arrow, ISC) in four directions (viewBox 4 4 16 16, line 2). One trash (Lucide's trash-2, sides drawn in), one no-picture person (Phosphor's user, filled), one Grid, List and Text set for the view chips.
 - Info is Phosphor's info, bold, drawn 22.5 across so the round icon reads as big as its square neighbours. A link out of RAVI wears the out-arrow (.extl); a link inside a line of text stays plain. Which family drawing each page and bar icon is: records RULE -- icons and the icon table's comments.
 - Decks' warning mark is a solid triangle with its mark cut out (Material Symbols warning, filled), red (--over), always beside its words.
-- Sorts (pages.js RAVI_SORT): a sort chip shows an up or down arrow and the sort's name; the sort menu is words only, the arrow on the chosen row; a second tap on the chosen row flips it (not My order, not Public). One name per idea on every page.
+- Sorts (pages.js RAVI_SORT): a sort chip shows an up or down arrow and the sort's name; the sort menu is words only, the arrow on the chosen row; a second tap on the chosen row flips it (not Your order, not Public). One name per idea on every page.
 
 Hub layout (hubedit.js, app.css HUB LAYOUT): the hub's own blocks (app.css THE HUB BLOCK, one copy for the hub and Hub layout) at the hub's size, dragged or tapped into place, the pages not on the hub below as the same blocks at the same size; one copy, drawn by App settings and the first-time setup (RAVI_HUBEDIT).
 
