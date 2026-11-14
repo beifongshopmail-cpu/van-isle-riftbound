@@ -490,7 +490,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       if (o && Array.isArray(o.towns)) { o.towns.forEach(function(k){ if (typeof k === "string" && !off[k]) { off[k] = true; n++; } }); }
       else if (o && o.scope === "victoria") { vic = true; }
     } catch (e) {}
-    return { off: off, vic: vic, name: vic ? "Greater Victoria" : n ? "your areas" : "Vancouver Island" };
+    var nm = vic ? "Greater Victoria" : n ? "your areas" : "Vancouver Island";
+    return { off: off, vic: vic, name: nm, where: (nm === "Vancouver Island" ? "on " : "in ") + nm };   // on an island, in a town or area
   }
   // an event with no town on record (finished before 2026-11-10) counts by its old area
   function inArea(ev, a){ return a.vic ? ev.region === "victoria" : !(ev.city && a.off[ev.city]); }
@@ -549,7 +550,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   }
   function drawLocal(){
     var box = $("tiers"), sum = $("tsum"), a = area(), name = a.name;
-    $("larea").textContent = "Decks players add for recent events in " + name + ".";
+    $("larea").textContent = "Decks players add for recent events " + a.where + ".";
     COUNTS = false;
     if (LSTATE !== "ready") {
       sum.textContent = LSTATE === "failed" ? "The local results could not be read. Try again later." : "";
@@ -568,8 +569,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       box.innerHTML = "<p class=\"tempty glass\">No decks added for " + esc(name) + " yet.</p>";
       return;
     }
-    var foot = plural(r.events, "event", "events") + " in " + name + " in the last " + LOCAL_DAYS + " days, added by players.";
-    sum.textContent = plural(r.entries, "deck", "decks") + " from " + plural(r.events, "event", "events") + " in " + name + ", the last " + LOCAL_DAYS + " days.";
+    var foot = plural(r.events, "event", "events") + " " + a.where + " in the last " + LOCAL_DAYS + " days, added by players.";
+    sum.textContent = plural(r.entries, "deck", "decks") + " from " + plural(r.events, "event", "events") + " " + a.where + ", the last " + LOCAL_DAYS + " days.";
     if (r.entries >= LOCAL_TIERS) {
       use(r, foot);
       board(r);
@@ -657,10 +658,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 
   function drawAddList(){
     var box = $("addlist"), a = area(), now = Date.now();
-    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days in " + a.name + ".";
+    $("addnote").textContent = "Finished events from the last " + OPEN_DAYS + " days " + a.where + ".";
     if (LSTATE !== "ready") { box.innerHTML = "<p class=\"pmsg\">" + (LSTATE === "failed" ? "The events could not be read. Try again later." : "Loading the events") + "</p>"; return; }
     var list = EVS.filter(function(e){ return inArea(e, a) && openable(e, now); });
-    if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events in " + esc(a.name) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
+    if (!list.length) { box.innerHTML = "<p class=\"pmsg\">No finished events " + esc(a.where) + " in the last " + OPEN_DAYS + " days.</p>"; return; }
     var mine = picks();
     box.innerHTML = "<div class=\"doors\" data-k=\"deeper\">" + list.map(function(e){
       var c = COUNTED[e.id], bits = [window.RAVI_WHEN(e.t), e.store].filter(Boolean);

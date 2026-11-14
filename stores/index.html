@@ -86,6 +86,8 @@ body{-webkit-font-smoothing:antialiased;
 .stg .sic svg{width:30px;height:30px}
 .stg .stw,.stg .snm{padding:0 4px}
 .stg .stw .cvr{margin-left:auto;flex:0 0 auto}
+.stg .stw{flex-wrap:wrap;row-gap:2px}
+.stg .stw span{order:3;flex:0 0 100%}   /* on a tile the open line sits under the town, so its first word is never cut (final sweep 2026-11-13) */
 .stg .snm{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .swn{display:block;font-family:var(--text);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* a row in the store's menu (Next events): its name, and under it when */

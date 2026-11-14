@@ -135,6 +135,8 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .bcbig.sq img{object-fit:contain}
 .bcbig.rot img{position:absolute;left:50%;top:50%;width:calc(100% * 1039 / 744);height:calc(100% * 744 / 1039);max-width:none;transform:translate(-50%,-50%) rotate(-90deg)}
 .bctx{min-width:0}
+.bcm{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}   /* the card menu: the card centred under its title, 150 wide, as every card menu (final sweep 2026-11-13) */
+.bcm .bcbig{width:150px;height:209px}
 .bctx b{display:block;font-family:var(--disp);font-weight:700;font-size:17px;margin:0 0 4px}
 .bctx p{margin:0 0 4px;font-size:15px;line-height:1.4}
 .bctx p.m{font-size:13px;color:var(--muted)}
@@ -259,7 +261,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     <p class="lb" style="margin-top:14px">My price</p>
     <div class="nrows bpct"><div class="nrow"><div><b id="pctv">At market</b><small>Shown on your cards, and used to price a trade</small></div><span class="sp"></span><button type="button" class="circ btn glass" id="pctdn" aria-label="Lower my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12"/></svg></button><button type="button" class="circ btn glass" id="pctup" aria-label="Raise my price" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 12h12M12 6v12"/></svg></button></div></div>
     <p class="lb" style="margin-top:14px">Offer alerts</p>
-    <div class="pick" data-k="pick"><button type="button" id="balert" aria-pressed="false">Alert me<span class="sp"></span><small>On this phone, when an offer comes</small></button></div>
+    <div class="pick" data-k="pick"><button type="button" id="balert" aria-pressed="false">Alert me<span class="sp"></span><small>On this phone</small></button></div>
     <p class="bmsg" id="balertmsg" aria-live="polite" hidden></p>
   </div>
 </section>
@@ -440,7 +442,7 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   var BOTH = '<span class="bboth">Both ways</span>';
   function saveRow(l){ return window.RAVI_SAVEROW ? window.RAVI_SAVEROW(l) : ""; } // M7 C2: the way there, not directions
   // no home area yet: the row that goes there (plan 2 M8.7 A4: a way somewhere is a row, never directions)
-  function areaRow(){ return '<div class="doors acsaverow" data-k="deeper"><button type="button" class="door btn glass" data-act="setarea"><span class="t">Set your home area</span><span class="sp"></span><small>Players near you first</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>'; }
+  function areaRow(){ return '<div class="doors acsaverow" data-k="deeper"><button type="button" class="door btn glass" data-act="setarea"><span class="t">Set your home area</span><span class="sp"></span><small>Near you first</small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button></div>'; }
   document.addEventListener("click", function(e){ var t = e.target.closest ? e.target.closest('[data-act="setarea"]') : null; if (t && window.RAVI_ACCT_OPEN) { window.RAVI_ACCT_OPEN("acprof"); } });
 var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
 
@@ -556,7 +558,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   }
   function drawBrowse(){
     var all = groups(), list = all.filter(function(g){ return hit(cname(g.i)) || g.who.some(function(w){ var f = DATA.people[w.h]; return f && (hit(f.name) || hit(f.user)); }); });
-    if (!all.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
+    if (!all.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet.</p><a class="pact btn glass" href="../collection/" data-k="do">Pick a binder</a></div>'; return ""; }
     if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No card or player matches your search.</p></div>'; return ""; }
     $("blist").innerHTML = '<div class="cgrid">' + list.map(tile).join("") + '</div>';
     HEADN = plural(list.length, "card", "cards") + " for trade";
@@ -574,7 +576,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     list.sort(function(a, b){
       return near(b.f) - near(a.f) || sg() * (sk() === "name" ? whoCmp(a.f, b.f) : b.top - a.top || b.n - a.n) || (a.f.h < b.f.h ? -1 : 1);
     });
-    if (!Object.keys(by).length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet. Mark a binder For trade and yours will be the first.</p></div>'; return ""; }
+    if (!Object.keys(by).length) { $("blist").innerHTML = '<div class="bempty glass"><p>No one is sharing cards for trade yet.</p><a class="pact btn glass" href="../collection/" data-k="do">Pick a binder</a></div>'; return ""; }
     if (!list.length) { $("blist").innerHTML = '<div class="bempty glass"><p>No player or card matches your search.</p></div>'; return ""; }
     $("blist").innerHTML = list.map(function(p){ return playerBlock(p.f, p.cards, p.n, (tradeOf(p.f.h) || {}).two); }).join("");
     HEADN = plural(list.length, "player", "players") + " trading";
@@ -764,7 +766,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   function drawCard(){
     var i = CARD.i, f = CARD.f, c = card(i), mine = MINE[i + "|" + f];
     $("pcardt").textContent = cname(i);
-    var h = '<div class="btop"><span class="bcbig' + (sealed(c) ? " sq" : "") + '">' + img(c, true) + '</span><div class="bctx"><b>' + esc(cname(i)) + '</b><p>' + esc(f) + ', ' + money(usd(i, f)) + '</p>'
+    var h = '<div class="bcm"><span class="bcbig' + (sealed(c) ? " sq" : "") + '">' + img(c, true) + '</span><div class="bctx"><p>' + esc(f) + ', ' + money(usd(i, f)) + '</p>'
       + (mine ? '<p class="m">' + esc(mine) + '</p>' : '') + '</div></div>';
     var who = DATA.browse.filter(function(r){ return r.i === i && r.f === f; });
     if (CARD.h && !who.some(function(r){ return r.h === CARD.h; })) { who.unshift({ h: CARD.h, q: CARD.q }); }
@@ -1367,7 +1369,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   function drawBlk(){
     var h = "";
     if (!BLKLOADED) { h = '<p class="bmsg">' + esc(BLKERR || "Loading the blocked players") + '</p>'; }
-    else if (!BLK.length) { h = '<p class="bmsg">Nobody blocked. Block a player from their menu: Report or block.</p>'; }
+    else if (!BLK.length) { h = '<p class="bmsg">No one is blocked.</p>'; }
     else {
       h = '<div class="doors" data-k="do">' + BLK.map(function(f){
         return '<button type="button" class="door rec bwr btn glass" data-unb="' + esc(f.h) + '">' + pic(f, 1) + '<span class="t">' + esc(nameOf(f)) + (subOf(f) ? '<small>' + esc(subOf(f)) + '</small>' : '') + '</span><span class="sp"></span><span class="bunb">Unblock</span></button>';

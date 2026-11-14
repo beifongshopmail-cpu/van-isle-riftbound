@@ -497,7 +497,7 @@
         '<p class="pnote" id="acsu2note"></p><p class="acmsg" id="acsu2msg" aria-live="polite"></p></div>' + suFoot(2, "t"),
       acsut: suHead("Your areas", 3) + '<div class="pbody"><div class="pick" id="acsutowns" data-k="pick" aria-label="Areas"></div><p class="pnote" id="acsutnote"></p></div>' + suFoot("t", 3),
       acsu3: suHead("Alerts", 4) + '<div class="pbody"><div class="pick" data-k="pick"><button type="button" id="acsuoffer" data-kind="o" aria-pressed="false">Trade offers</button><button type="button" id="acsuwish" data-kind="w" aria-pressed="false">Wishlist prices</button><button type="button" id="acsufol" data-kind="f" aria-pressed="false">Stores you follow</button></div>' +
-        '<p class="pnote" id="acsu3note"></p><p class="pnote">Live event pairings: at a live event, tap Alert me when I\'m paired.</p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3, 4),
+        '<p class="pnote" id="acsu3note"></p><p class="acmsg" id="acsu3msg" aria-live="polite"></p></div>' + suFoot(3, 4),
       acsu4: suHead("Your hub", 5) + '<div class="pbody"><div class="hlg" id="acsuhub" data-k="pick" aria-label="The hub"></div><p class="lb">Not on the hub</p><div class="hls" id="acsuhubs" data-k="pick" aria-label="Pages not on the hub"></div>' +
         '<p class="pnote">Drag a block to move it, or down here to take it off. Or tap one, then another.</p>' +
         '<button type="button" class="pact btn glass acgap" id="acsuhuboff" data-k="do" disabled>Take off the hub</button></div>' + suFoot(4, 5),

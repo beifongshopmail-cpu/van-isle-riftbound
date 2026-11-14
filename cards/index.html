@@ -280,7 +280,7 @@ body{-webkit-font-smoothing:antialiased;
     rar: { title: "Rarity", opts: function(){ return ["common", "uncommon", "rare", "epic", "showcase"].map(function(r){ return [r, cap(r)]; }); } },
     energy: { title: "Energy", opts: function(){ var a = [], i; for(i = 0; i <= 8; i++) a.push([String(i), i + " energy"]); a.push(["9", "9 or more"]); return a; } }
   };
-  var FKEYS = ["set", "type", "dom", "rar", "energy"];
+  var FKEYS = ["dom", "type", "energy", "rar", "set"];   // the order Decks' card browser lists them (final sweep, 2026-11-13)
   function flCount(){ return FKEYS.reduce(function(n, k){ return n + F[k].length; }, 0); }
   function flValue(k){
     if(!F[k].length) return "Any";

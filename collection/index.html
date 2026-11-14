@@ -816,7 +816,15 @@ input[type="file"]{display:none}
     el("mvbody").hidden = !MVOPEN;
     el("mvcnt").textContent = rangeWords().replace(/^in /, "");
     if(SET.movers && MVOPEN){ var mv = movers(items); el("mvup").innerHTML = mv.up; el("mvdn").innerHTML = mv.dn; }
+    // the Grid | List track is kept across renders, so its chosen fill slides as on Cards, Stores
+    // and News (pages.js A PICK-ONE TRACK SLIDES watches the node the tap landed on; final sweep 2026-11-13)
+    var oldSeg = el("hvseg");
     el("hview").innerHTML = viewRow();
+    if(oldSeg){
+      var newSeg = el("hvseg");
+      Array.prototype.forEach.call(oldSeg.querySelectorAll("button[data-hv]"), function(x){ x.setAttribute("aria-pressed", String(SET.hview === x.getAttribute("data-hv"))); });
+      newSeg.parentNode.replaceChild(oldSeg, newSeg);
+    }
     var list = q ? items.filter(function(x){ return nameHit(x, q); }) : items.slice();
     list.sort(window.RAVI_SORT.cmp(SET.sort, SORTS[window.RAVI_SORT.key(SET.sort)][1]));
     VIS = list;
