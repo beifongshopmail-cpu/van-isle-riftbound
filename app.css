@@ -444,8 +444,10 @@ a.door{color:inherit;text-decoration:none} /* a door that is a link looks like a
    slot; 26 high, Poppins 600 17, on a hub block (Mako 2026-11-14: 20 read small on the blocks, big in Go
    to). Plain figures set 1 lower than the line's middle: measured, every digit sits within about a
    quarter of a pixel of the circle's centre and fills about half its height; a single digit stays a
-   circle, 9+ a short pill. The Exchange's Offers slot wears the small one. */
-.cbadge{position:absolute;z-index:1;min-width:17px;height:17px;box-sizing:border-box;padding:1px 4px 0;border-radius:8.5px;background:var(--bone);color:var(--ink);font-family:var(--disp);font-weight:600;font-size:12px;line-height:16px;letter-spacing:0;text-align:center;white-space:nowrap;font-variant-numeric:normal;pointer-events:none}
+   circle, 9+ a short pill. The Exchange's Offers slot wears the small one. A 2 ring in the ground's
+   colour cuts it out of what it overlaps (a block's rim, an icon's lines), as Slack's, Discord's and the
+   Mac Dock's badges do (Mako 2026-11-14: the plain bone read a touch unpolished). */
+.cbadge{position:absolute;z-index:1;min-width:17px;height:17px;box-sizing:border-box;padding:1px 4px 0;border-radius:8.5px;background:var(--bone);color:var(--ink);font-family:var(--disp);font-weight:600;font-size:12px;line-height:16px;letter-spacing:0;text-align:center;white-space:nowrap;font-variant-numeric:normal;pointer-events:none;box-shadow:0 0 0 2px var(--ground)}
 .goto .gt{position:relative}
 .goto .gt .cbadge{top:6px;right:calc(50% - 23px);max-width:none;overflow:visible}
 /* never more than four across (Mako 2026-10-27): one row up to four; five and six as rows of
@@ -821,7 +823,7 @@ html:has([data-ownback]:not([hidden], [hidden] *)) .rvback{display:none}
 /* a hub block's count badge sits over its top right corner, as iPhone's on an app icon (Mako 2026-11-14),
    lifted off the block by a soft shadow */
 .blk{position:relative}
-.blk .cbadge{top:-8px;right:-8px;min-width:26px;height:26px;padding:1px 7px 0;border-radius:13px;font-size:17px;line-height:25px;box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.blk .cbadge{top:-8px;right:-8px;min-width:26px;height:26px;padding:1px 7px 0;border-radius:13px;font-size:17px;line-height:25px;box-shadow:0 0 0 2px var(--ground),0 2px 6px rgba(0,0,0,.45)}
 /* frosted like the coloured blocks (app.css .cg), so every block is one glass (Mako 2026-10-31) */
 @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
   .blk.allp{background:var(--glass);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%)}
