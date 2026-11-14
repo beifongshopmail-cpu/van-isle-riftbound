@@ -24,6 +24,26 @@
   ],
   "shipped": [
     {
+      "date": "2026-11-14",
+      "items": [
+        {
+          "page": "app",
+          "t": "Count badges",
+          "d": "A page with something waiting wears its number on the hub and in Go to: News and Rules since your last visit, Exchange offers, and decks holding a banned card. It clears when you open the page, and App settings can turn it off."
+        },
+        {
+          "page": "collection",
+          "t": "A new value graph",
+          "d": "Your collection's value is one line, a point a day, with its high and low named. Drag along it to read any day."
+        },
+        {
+          "page": "news",
+          "t": "Enter a drawing from News",
+          "d": "While a Riot drawing is open, its post has Enter on playriftbound.com, straight to the entry page."
+        }
+      ]
+    },
+    {
       "date": "2026-11-12",
       "items": [
         {"page":"settings","t":"Privacy and terms","d":"App settings has About: what RAVI keeps, what it never has and what other players see, and the terms of using it, in plain words."},
