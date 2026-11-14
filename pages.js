@@ -464,6 +464,32 @@ window.RAVI_HUB_MAX = 7;
 // The default seven follow Go to's groups (Mako 2026-11-09): Events, Tracker, Trade, Collection, Decks,
 // Rules, Guide.
 window.RAVI_HUB_DEFAULT = ["calendar", "counter", "trade", "collection", "decks", "rules", "start"];
+
+// RAVI_TINT(rgb, lift, lo, hi): a page colour as an icon wears it. Lifted toward white by
+// 'lift' as before, then its lightness (OKLab L, Bjorn Ottosson's Oklab, public domain maths)
+// is held inside lo..hi with its hue kept, so a near-white page (Decks) and a deep one (News,
+// Tier list) read as one set instead of one icon reading 'more' (Mako 2026-11-13; measured by
+// rb-tools design/icon-weight.js). Chroma gives way only as far as the screen's gamut needs.
+// Returns "r,g,b".
+window.RAVI_TINT = function(rgb, lift, lo, hi){
+  function lin(c){ c /= 255; return c <= .04045 ? c / 12.92 : Math.pow((c + .055) / 1.055, 2.4); }
+  function gam(c){ c = c <= .0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - .055; return c * 255; }
+  var c = String(rgb).split(","), t, v = [];
+  for (t = 0; t < 3; t++) { v.push(+c[t] + (255 - +c[t]) * lift); }
+  var r = lin(v[0]), g = lin(v[1]), b = lin(v[2]);
+  var l = Math.cbrt(.4122214708 * r + .5363325363 * g + .0514459929 * b), m = Math.cbrt(.2119034982 * r + .6806995451 * g + .1073969566 * b), s = Math.cbrt(.0883024619 * r + .2817188376 * g + .6299787005 * b);
+  var L = .2104542553 * l + .793617785 * m - .0040720468 * s, A = 1.9779984951 * l - 2.428592205 * m + .4505937099 * s, B = .0259040371 * l + .7827717662 * m - .808675766 * s;
+  if (L >= lo && L <= hi) { return v.map(Math.round).join(","); }
+  L = L < lo ? lo : hi;
+  var k, o, ok;
+  for (k = 1; k >= 0; k -= .02) {
+    l = Math.pow(L + .3963377774 * A * k + .2158037573 * B * k, 3); m = Math.pow(L - .1055613458 * A * k - .0638541728 * B * k, 3); s = Math.pow(L - .0894841775 * A * k - 1.291485548 * B * k, 3);
+    o = [gam(4.0767416621 * l - 3.3077115913 * m + .2309699292 * s), gam(-1.2684380046 * l + 2.6097574011 * m - .3413193965 * s), gam(-.0041960863 * l - .7034186147 * m + 1.707614701 * s)];
+    ok = o[0] >= -.5 && o[0] <= 255.5 && o[1] >= -.5 && o[1] <= 255.5 && o[2] >= -.5 && o[2] <= 255.5;
+    if (ok) { break; }
+  }
+  return o.map(function(x){ return Math.max(0, Math.min(255, Math.round(x))); }).join(",");
+};
 window.RAVI_HUB_PICKS = function(){
   var pages = window.RAVI_PAGES || [], raw = null, list, want = {}, out = [], i;
   try { raw = localStorage.getItem(window.RAVI_HUB_KEY); } catch (e) {}
@@ -535,11 +561,8 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
   // plan 2 M8 (Mako's yes 2026-11-04, note 6 of 2026-11-02): each tile's icon wears its page colour,
   // lifted .30 toward white so it reads on the sunken track; the words and the chosen tile stay as
   // they were, and the icon's shape still names the page
-  function lift(rgb){
-    var c = String(rgb).split(","), o = [];
-    for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .30)); }
-    return "rgb(" + o.join(",") + ")";
-  }
+  // 2026-11-13: its lightness held to one band so the tiles read as a set (RAVI_TINT)
+  function lift(rgb){ return "rgb(" + window.RAVI_TINT(rgb, .30, .74, .88) + ")"; }
   // A page whose bar already carries Hub leaves it out of Go to; only the
   // counter, whose strip has no Hub slot, passes withHub.
   var h = withHub ? '<a class="gt' + (hereId === "hub" ? " on" : "") + '" href="' + rel + '?hub">' + HUB_ICON + '<span>Hub</span></a>' : '';

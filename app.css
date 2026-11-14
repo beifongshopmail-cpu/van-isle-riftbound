@@ -677,7 +677,8 @@ html.gate body > :not(#ravigate){display:none!important}
 .acpic{position:absolute;top:calc(env(safe-area-inset-top,0px) + 25px);right:18px;z-index:5;width:var(--sz-sm);height:var(--sz-sm);
   box-sizing:border-box;padding:0;border:0;border-radius:50%;display:grid;place-items:center;color:var(--bone);
   background-color:var(--glass);background-size:190% auto;background-position:50% 20%;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transform-origin:50% 50%;-webkit-tap-highlight-color:transparent}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transform-origin:50% 50%;-webkit-tap-highlight-color:transparent;
+  --tint:transparent}   /* plain glass on every page, as Back; its rim is your colour once you pick one (Mako 2026-11-13) */
 .acpic:active{transform:scale(.96)}
 /* BACK (plan 2 M8.7 A1): a page reached by a link inside another page carries a round glass Back in
    the wordmark row's top left, level with your picture, 18 in; pages.js adds it. */

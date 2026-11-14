@@ -663,11 +663,7 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
   // settings (RAVI_HUB_PICKS in pages.js, up to seven, in the order Hub layout keeps), then
   // All pages, always last (M15, Mako 2026-10-26).
   // A block's icon and name take a pale tint of its own colour.
-  function tint(rgb){
-    var c = rgb.split(","), o = [];
-    for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .62)); }
-    return o.join(",");
-  }
+  function tint(rgb){ return window.RAVI_TINT(rgb, .62, .84, .93); }
   var grid = document.getElementById("grid");
   var byId = {};
   for (var i = 0; i < PAGES.length; i++) { byId[PAGES[i].id] = PAGES[i]; }

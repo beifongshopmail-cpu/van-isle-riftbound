@@ -14,7 +14,7 @@
     function q(sel) { return Array.prototype.slice.call(hl.querySelectorAll(sel)).concat(Array.prototype.slice.call(hs.querySelectorAll(sel))); }
     var ORDER = [], PICK = null, D = null, noClick = false;
     function pageOf(id){ for (var i = 0; i < PAGES().length; i++) { if (PAGES()[i].id === id && PAGES()[i].path) { return PAGES()[i]; } } return null; }
-    function tint(rgb){ var c = rgb.split(","), o = []; for (var t = 0; t < 3; t++) { o.push(Math.round(+c[t] + (255 - +c[t]) * .62)); } return o.join(","); }
+    function tint(rgb){ return window.RAVI_TINT(rgb, .62, .84, .93); }
     // the hub's own block (app.css THE HUB BLOCK: .blk, .bi, .bn), the same on the hub copy and the shelf (plan 2 M8.7, Mako 2026-11-08)
     function blk(p){ return '<button type="button" class="blk hlb glass cg" data-id="' + p.id + '" style="--cl:' + p.rgb + ';--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></button>'; }
     function drawHub(){

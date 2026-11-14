@@ -36,13 +36,20 @@ body{-webkit-font-smoothing:antialiased;
 #all{margin-top:22px}
 /* THE SEARCH STAYS AT THE TOP (as Rules' and News'): a sticky plate parked 10 above --top-clear,
    plate frost, clear. Under the search, Sort and one Filters chip, as Decks' browser (five filters
-   fold into one chip, STYLE 5). Grid or List sits at the right of the list's head, as Collection's. */
+   fold into one chip, STYLE 5). Grid | List leads the row, as News' and Collection's (Mako 2026-11-13). */
 .srow{margin-top:14px;position:sticky;top:calc(var(--top-clear) - 10px);z-index:10;--tint:transparent}
 .dvrow{gap:6px;margin-top:10px}   /* a bend: 6 apart so Sort's longest name fits at 360 (style/cards.md) */
 .fchip{flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
 .fchip.on{background:var(--bone);color:var(--ink);box-shadow:none}
 .fchip .n{min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--ink);color:var(--bone);font-size:12px}
 .fchip svg{flex:0 0 auto;width:14px;height:14px}
+/* Sort is the sort chip every Browse page uses (Collection's, News', Decks') */
+.dvsort{margin-left:auto;flex:0 1 auto;min-width:0;display:inline-flex;align-items:center;gap:6px;height:var(--sz-track);padding:0 12px;border-radius:20px;
+  font-family:var(--disp);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--bone)}
+.dvsort svg{flex:0 0 auto;width:14px;height:14px}
+.dvsort:active{transform:scale(.96)}
+/* under 399 wide the view row is full (its three parts need 340): Sort keeps its arrow, its name kept for screen readers (as Decks') */
+@media (max-width:398px){.dvrow .dvsort{min-width:44px;justify-content:center}.dvrow .dvsort > span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
 /* THE CARDS: the Decks browser's grid, three across; the name and the price of one under each. A
    picture's ground before it loads is --recess (STYLE 4). */
 .cgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px}
@@ -150,14 +157,14 @@ body{-webkit-font-smoothing:antialiased;
       <input id="q" type="search" placeholder="Search cards" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-k="type">
       <button type="button" class="fbtn fx glass" id="qx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
     </div>
-    <div class="dvrow"><button type="button" class="fchip btn glass" id="sortb" data-act="sort" data-k="do"></button><button type="button" class="fchip btn glass" id="flsb" data-act="fls" data-k="do">Filters</button></div>
+    <div class="dvrow"><div class="seg dvseg" id="vseg" role="group" aria-label="Cards show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="true"></button><button type="button" data-v="list" aria-label="List" aria-pressed="false"></button></div><button type="button" class="dvsort btn glass" id="sortb" data-act="sort" data-k="do"></button><button type="button" class="fchip btn glass" id="flsb" data-act="fls" data-k="do">Filters</button></div>
   </div>
 
   <div id="boot"></div>
   <script>document.getElementById("boot").innerHTML = RAVI_SKEL(["head", "tiles:9"]);</script>
 
   <section id="all" hidden>
-    <div class="shead"><h2 id="ah">All cards</h2><span class="cnt" id="acnt"></span><span class="sp"></span><div class="seg dvseg" id="vseg" role="group" aria-label="Cards show as" data-k="pick"><button type="button" data-v="grid" aria-label="Grid" aria-pressed="true"></button><button type="button" data-v="list" aria-label="List" aria-pressed="false"></button></div></div>
+    <div class="shead"><h2 id="ah">All cards</h2><span class="sp"></span><span class="cnt" id="acnt"></span></div>
     <div id="list"></div>
     <div id="none" hidden><p class="empty">No card matches.</p><button type="button" class="pact btn glass" data-act="clear" data-k="do">Show all cards</button></div>
   </section>
