@@ -1,16 +1,84 @@
 {
- "updated": "2026-11-13",
+ "updated": "2026-11-14",
  "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence). kind local: a local store's post, RAVI's summary only, never the store's words; hold: read and left out.",
  "items": [
   {
-   "id": "link:https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/",
+   "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1851933862720755",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/groups/1289633928950754/permalink/1851933862720755",
+   "posted": "2026-11-13",
+   "source": "Skyhaven Games",
+   "credit": "Skyhaven Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Skyhaven Games raffles two Radiance Vaults",
+   "sum": "Skyhaven Games restocked two Radiance Vaults at $49.99 plus tax. To enter the raffle, comment on their post. Winners are drawn at random after Skirmish starts.",
+   "sumBy": "claude",
+   "sumKey": "9156cdba4bd29e31"
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound",
+   "kind": "announcement",
+   "url": "https://facebook.com/playriftbound",
+   "posted": "2026-11-13",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Giving you a sneak peek of what's to come at Convergence Fest, live from #Worlds2026 Fan Fest! Riftbound 🤝 TFT 🤝 League Of Legends",
+   "via": [
+    "muse"
+   ],
+   "title": "Riot Teases Convergence Fest Content From Worlds Fan Fest",
+   "sum": "Riot is previewing upcoming Convergence Fest content live from the Worlds 2026 Fan Fest, tying Riftbound to TFT and League of Legends. The post gives no dates for the reveals.",
+   "sumBy": "claude",
+   "sumKey": "4e414a4ddcb0afe8"
+  },
+  {
+   "id": "fb:https://instagram.com/p/DfsHq3rF5yh",
+   "kind": "product",
+   "url": "https://instagram.com/p/DfsHq3rF5yh",
+   "posted": "2026-11-13",
+   "source": "Riftbound",
+   "credit": "Riot, on Instagram",
+   "text": "The Worlds 2026 Edition and the T1 2025 Worlds Champion Player bundle drawings are now LIVE! Enter now through November 16, 9AM PT for your chance to get your hands on these exclusive items through the link in bio!",
+   "via": [
+    "muse"
+   ],
+   "title": "Worlds 2026 Edition and T1 Bundle Drawings Open",
+   "sum": "Drawings for the Worlds 2026 Edition and T1 2025 Worlds Champion Player bundle are now open. Entries close November 16 at 9AM PT.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "entries open",
+     "label": "Entries open now",
+     "from": "2026-11-13"
+    },
+    {
+     "what": "entries close",
+     "label": "Entries close 9AM PT",
+     "from": "2026-11-16"
+    }
+   ],
+   "sumKey": "81d25bf7a0e02fec"
+  },
+  {
+   "id": "fb:https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/",
    "kind": "rules",
    "url": "https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/",
    "posted": "2026-11-13",
+   "source": "Riftbound",
+   "credit": "Riot, on playriftbound.com",
+   "text": "We're announcing the latest cards added to the Standard and Constructed 2v2 ban list. Hi everyone, Dave Guskin here. Before we jump in, I wanted to mention that these bans are a sort of a transition from all of our sets designed before the launch of the game to an age of Riftbound…",
    "via": [
-    "discord"
+    "discord",
+    "muse"
    ],
-   "shape": "followed",
+   "links": [
+    "https://instagram.com/p/DfsAzbtF2Fk",
+    "https://x.com/playriftbound/status/2121272109544697985",
+    "https://facebook.com/groups/1289633928950754/permalink/1851868949393913"
+   ],
    "art": {
     "url": "https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/",
     "title": "Radiance Ban List Updates (Effective November 23, 2026)",
@@ -19,8 +87,8 @@
     "html": "<p><strong>Effective</strong>: November 23, 2026</p><p>Eight cards and two battlefields are being added to the Standard and 2v2 Constructed ban list:</p><h4>Cards</h4><ul><li>Riven, Broken Blade</li><li>Zhonya's Hourglass</li><li>Stellacorn Herder</li><li>Nocturne, Horrifying</li><li>Rhasa the Sunderer</li><li>Brynhir Thundersong</li><li>Dazzling Aurora</li><li>Baited Hook</li></ul><h4>Battlefields</h4><ul><li>Emperor's Dais</li><li>Star Spring</li></ul><p>Hi everyone, Dave Guskin here. Before we jump in, I wanted to mention that these bans are a sort of a transition from all of our sets designed before the launch of the game to an age of Riftbound where our design, playtesting, and metagame are informed by all of you: All of the player data, deck builds, and card obscure interactions you've uncovered have helped inform stronger design of <i>Legacy </i>and onwards. Today we're taking some pretty dramatic steps to improve the health of the Riftbound metagame, and we want to walk you through our reasoning. We understand it's not ideal timing for some of you. There are many tournaments all around the world coming up soon. However, based on what we observed at the European Regional Championship last weekend and our own internal discussions and playtesting, we believe decisive action is needed now.</p><p>As we've previously discussed, there are three questions we ask when considering whether to ban a card:</p><ul><li>Is this card overrepresented in an unhealthy way?</li><li>Are the problems with this card likely to get better or worse over time?</li><li>Does this card promote unhealthy play patterns?</li></ul><h2><strong>Riven</strong></h2><p>There's a lot to be concerned about with the Riven deck:</p><ul><li>Accounted for 43% of the European Regional Championship registered decks.</li><li>Occupied 3 of the top 4 slots, and 8 out of the top 16.</li><li>It has a ~60%+ win rate versus the field in high level competitions excluding the mirror, even against other top decks.</li></ul><p>Even though it didn't win the Regional Championship, the play rate coupled with the win rate is itself cause for concern.</p><h3>Riven, Broken Blade</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/01867cc0e2618cf3d90570c5aca302b476f9f65e-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>Riven's 4 cost chosen champion is an incredible guaranteed turn two play. Due to her ability to spend her buff to ready herself, she has a self-enabling conquer-and-risk-nothing play pattern. This is further compounded when she can enter ready and gain her buff the same turn she enters play. Additionally, Riven's ability to spend the buff to stun can punish opponents who attempt to hold battlefields.</p><p>We've seen very strong 4 energy no power champion units become the de facto turn-two play for many decks. They become problematic when there is no risk in playing it without the proper tools or investment to protect it, causing situations with very little counterplay.</p><p>We've learned a lot about designing chosen champions this year, and we're keeping a closer eye on champion units for future sets.</p><h3>Zhonya's Hourglass</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/cecd70e934273aa7ae228228d2b75123d737ba40-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>Zhonya's Hourglass seems somewhat innocuous, but it provides powerful effects when combined with other cards. It protects your strongest units against removal, and its ability to be hidden allows it to dodge a lot of gear removal. It is also specifically very powerful in combination with Astral Heron, since it provides the first card played (when played from Hidden) all while also protecting the Heron.</p><h3>Stellacorn Herder</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/d261eec847680f9fd0a859bcf2f05ab41ae3bdb9-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>Stellacorn Herder is a very powerful reward for movement effects, and it has no restriction on the number of times you can get that payoff - we wouldn't print it this way today. In the Riven deck specifically, Stellacorn Herder immediately replaces itself with very little counterplay possible when played to a battlefield.</p><p>Similar to the ban of Stacked Deck in <i>Vendetta</i>, we understand that Stella is a staple card in many Calm decks and provides them with much-needed draw power. However, it shores up the weaknesses of the Calm domain too well and is likely to become more and more of a problem as time goes on, so we're taking action now to both weaken Riven and to promote the long-term health of Riftbound.</p><h3>Star Spring and Emperor's Dais</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/7ec4ad233f50446d7f9d5cd90f076421e2b673d8-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>These two battlefields are particularly powerful with Riven, since they provide a way to negate the risk of conquering. You can protect an exhausted unit that was used to conquer and still have a ready unit to return to base . This sort of gameplay is very similar to Reaver's Row, which we banned for similar reasons: it promotes non-interaction, allows for no-risk conquers, and it's disproportionately strong in some decks that abuse it.</p><h2><strong>Kennen</strong></h2><p>Despite Riven's apparent dominance, Kennen has retained its position at the top of the metagame:</p><ul><li>About 15% of RC players registered Kennen, and occupied 3 out of 8 slots in the Top 8.</li><li>Kennen won the whole event despite the prevalence of Riven.</li></ul><p>One additional thing to note about Kennen is that the high rolls (finding multiple Nocturnes or Rhasas) are VERY high, and due to its signature spell and Legend ability, these high rolls are more frequent and provide a huge amount of pressure toward battlefields.</p><h3>Nocturne, Horrifying</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/a3954f49177c957a82b2e67f6bb74d75a24932d0-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>Nocturne is a very exciting card that we wouldn't make in the same way today - specifically, it's an early game zero energy play that doesn't cost you a card when found and played off of a reveal. This problem is likely to get worse over time as we print more and more relatively innocuous \"look at the top of your deck\" cards into the environment. When a Kennen player hits two or even three Nocturnes in the early game, it's a pretty unhealthy pattern and can be incredibly frustrating for the opponent to deal with, especially due to the vast cost reduction.</p><h3>Rhasa the Sunderer</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/8a6f7e75a1b74fb490ee2479120a99a2c40f2567-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>Rhasa is a very powerful payoff for filling up your Trash, something that Kennen does incredibly well. Like Nocturne, we would not make this card with the knowledge we have now. This problem is likely to get worse over time as we print more and more relatively innocuous \"fill up your trash\" cards into the environment. Rhasa in particular is a big unit you can get back again and again using recursion, and because it costs 0 Energy, there's very little opportunity cost involved.</p><h2><strong>Kai'Sa</strong></h2><p>Even though the European Regional Championship was primarily a battle between two legends (Riven and Kennen), there was a significant third player - Kai'Sa.</p><h3>Brynhir Thundersong</h3><p><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/40f2194ce6efaaa4d8a1833cef81c8ef7381b929-1848x1063.jpg\" width=\"1848\" height=\"1063\"></p><p>Brynhir is a unique, powerful, and awesome effect. By stopping your opponent from playing cards on your turn, you can move into battlefields with impunity, knowing you'll be able to win combat. What's less awesome is an opponent playing Brynhir and locking you out from playing any cards on your own turn.</p><p>Three factors lead to Brynhir being a problem for Riftbound's long-term health:</p><ul><li>When you can play Brynhir on your opponent's Beginning phase, you can lock them out of a turn. We wouldn't print this card like that today.</li><li>The ways to get a chance to play Brynhir on your opponent's Beginning phase are complex and frustrating to play against.</li><li>Brynhir plus offensive \"blink\" effects (anything that banishes and then asks the player to replay that unit, like Temporal Breach) together are an extremely powerful removal tool, shoring up one of Kai'Sa's big weaknesses (enormous units).</li></ul><h2><strong>Dazzling Aurora</strong></h2><p><strong><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/583cbda288ef88e8d9afb1f8d38a9e2e4567ff7e-1848x1063.jpg\" width=\"1848\" height=\"1063\"></strong></p><p>For a long time, Dazzling Aurora has been one of the \"boogeymen\" of Riftbound. If you aren't playing it, you need a plan to defeat it, or you're in for a bad time. We think this first year of Riftbound was a great time to let players try powerful things, and it definitely feels like you're getting away with something when you Aurora into an Elder Dragon.</p><p>However, the pressure this puts on the Riftbound metagame is not something that we want long-term. The problems caused by this card will only get worse as we print more and more large game-ending threats that you can repeatedly fetch for free in a deck that isn't otherwise playing normal Riftbound. It homogenizes all energy-ramping decks into one form: Aurora deck and its existence pushes all Body domain decks toward this path to win best-ofs, which is unhealthy for Riftbound competitive. We think ramp and big monsters are healthy for Riftbound, but Aurora has too many dangerous things all in one card.</p><h2><strong>Baited Hook</strong></h2><p><strong><img src=\"https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/087b3ca5f2ed648c9c5738036ec468e7789819a1-1848x1063.jpg\" width=\"1848\" height=\"1063\"></strong></p><p>Baited Hook isn't a card that currently sees much (competitive) play right now, but these bans may create space for it to take over. Similar to Dazzling Aurora, it does something fundamentally dangerous: cheating out free units of high cost, with limited search alongside it. That's because it checks Might, not Energy cost, and if we were to make the card today, we would not have done that.</p><p>Looking ahead to early next year, after playtesting we've found that cards we are releasing in upcoming sets, including in <i>Legacy</i>, will have a high risk of being problematic when paired with Baited Hook. With the World Showcase in January, we're banning Baited Hook now rather than take the risk that the metagame for that event and for other events early next year are unhealthy in such a way that may require an emergency ban.</p><h1><strong>Timing and Effective Date</strong></h1><p>Here are some of the upcoming events we are aware of and which we discussed in our internal conversations:</p><ul><li>Nov 13-15: CCS 50K in Houston</li><li>Nov 20-22: Ningbo Minor, GenG Showdown in Los Angeles</li><li>Dec 5-6: Qingdao Minor</li><li>Dec 11-13: North America Regional Championship in Las Vegas</li><li>Jan 2-3: China Regional Championship in Guangzhou</li></ul><p>We try to avoid making bans within 2 weeks of major (premier-level) tournaments, because players need time to prepare without fear that the format will shift due to our intervention. For that reason, the bans will become effective on Monday, November 23.</p><h2><strong>Region Specific Bans</strong></h2><p>Previously, we've kept a global ban list but starting with this ban we will have separate ban lists depending on your competitive circuit. Starting November 23, we will be changing the way we do ban lists for regions that are not in parity with the global metagame. We are going to apply the most recent banned list as of a set's release - whatever ended up on the ban list by the end of a set's season will now be on the ban list at the start of that season. The bans we are announcing today (above) <strong>will not</strong> affect competitive events in Korea and Traditional Chinese regions until <i>Radiance</i> is released in those regions.</p><p>This also means that even though these cards won't be banned in those regions on November 23, their meta will still be shaken up, and many cards will be unbanned until the release of <i>Spiritforged, Vendetta, </i>and <i>Radiance</i> in those regions. Due to specific events in each region, the effective date for those regions may be varied.</p><h1><strong>Impact of Bans</strong></h1><p>The upside of banning cards is that we (hopefully) improve the competitive environment significantly. But there's a really important downside to acknowledge as well, you can't play those cards at official events anymore, even if you're just a fan of the champion and you have a fun deck you bring to Nexus Nights. Many of you have invested a lot of time and effort into acquiring and playing with these cards and decks, and we're making changes that negatively affect you. We've avoided banning some of these Epic cards that are problematic staples since the launch of the game to respect your investment in acquiring them but this opportunity and transition felt like the time to do it. While these cards are too powerful for the current format today, we're working towards supporting a format in the future where you will get a chance to play them in their full glory.</p><h1><strong>Future Bans</strong></h1><p>The first year of Riftbound was a very exciting time, but we also made Riftbound cards and decisions about their interactions with the rules in a vacuum - none of it was live with the actual Riftbound player base before we had to lock it down for manufacturing and shipping on a boat. That's just one of the unfortunate realities with a physical card game.</p><p>The great news is that sets in 2027 and moving into the future <i><strong>were</strong></i> made with player insight, feedback and understanding in mind. The Riftbound community and our players are incredibly talented at finding ways to play and cards to \"break\", even more so than our own team! So we believe we've learned a lot (and will continue to learn) while making this game, together with you.</p><p>Starting next year, we'll approach metagame intervention and bans a bit differently:</p><ul><li>Our goals for a healthy format won't change.</li><li>Our tolerance for how unhealthy specific cards need to be before we'll ban them will be a bit stricter.</li><li>Next year, we will use <i><strong>ban windows</strong></i> - any announcement of bans will happen on the Friday 2 weeks before each Continental, and on the Friday 2 weeks after.</li></ul><h2><strong>2v2</strong></h2><p>I also want to touch briefly on the 2v2 metagame - we've been monitoring it and have noted player sentiment and actual results that indicate Yasuo is quite strong in the format. We're not making additional bans in 2v2 right now but we have been actively exploring and testing changes to improve the 2v2 format experience and will share more early next year.</p><p>---</p><p>Thanks for reading, and we hope this set of changes improves Riftbound for all. I want to take a moment to extend my heartfelt thanks for your patience in building Riftbound with us, acknowledging that it took a whole community together to get the game this far, and the future is brighter than ever!</p><p>Dave Guskin<br>Game Director, Riftbound<br>@davetron</p>",
     "pic": "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news_live/040df0f1115ed94d03e2b4b4ad1ac4b521b3fcda-1920x1080.jpg?accountingTag=RB"
    },
-   "title": "Eight Cards and Two Battlefields Banned in Standard",
-   "sum": "Eight cards and two battlefields are added to the Standard and 2v2 Constructed ban list. The changes take effect on November 23, 2026.",
+   "title": "Eight cards and two battlefields banned in Riftbound",
+   "sum": "Eight cards and two battlefields, including Riven, Broken Blade, are added to the Standard and 2v2 Constructed ban list. The changes take effect November 23, 2026.",
    "sumBy": "claude",
    "dates": [
     {
@@ -29,7 +97,7 @@
      "from": "2026-11-23"
     }
    ],
-   "sumKey": "27ab5b91949b8074"
+   "sumKey": "96f36a5615963cb6"
   },
   {
    "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1850777449503063",
