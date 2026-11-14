@@ -1,7 +1,7 @@
 {
  "v": 1,
- "generated_at": "2026-10-11T10:07:29.507Z",
- "hash": "0a4aa282dac7c23c",
+ "generated_at": "2026-11-14T20:04:38.241Z",
+ "hash": "1e2595a35dbcdd47",
  "sources": [
   {
    "id": "hub",
@@ -106,7 +106,12 @@
  ],
  "later": [
   {
-   "title": "[Article] Radiance Patch Notes [RFB_ST0526_030_R001]",
+   "title": "Radiance Ban List Updates (Effective November 23, 2026)",
+   "url": "https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/",
+   "published": "2026-11-13T16:00:00.000Z"
+  },
+  {
+   "title": "Core Rules: Radiance Patch Notes (Effective October 16, 2026)",
    "url": "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/",
    "published": "2026-10-09T16:00:00.000Z"
   },
