@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-13T20:21:44.811Z",
- "generated_local": "2026-11-13T13:21:44-07:00",
- "window_start": "2026-11-13T07:00:00.000Z",
+ "generated_at": "2026-11-14T07:26:35.739Z",
+ "generated_local": "2026-11-14T00:26:35-07:00",
+ "window_start": "2026-11-14T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 55,
-   "added": 55
+   "returned": 54,
+   "added": 54
   },
   {
    "name": "Sidney",
@@ -159,8 +159,8 @@
   }
  ],
  "totals": {
-  "fetched": 76,
-  "unique": 80,
+  "fetched": 75,
+  "unique": 79,
   "prev_unique": 80,
   "recent": [
    {
@@ -206,6 +206,10 @@
    {
     "d": "2026-11-13",
     "n": 80
+   },
+   {
+    "d": "2026-11-14",
+    "n": 79
    }
   ]
  },
@@ -229,31 +233,6 @@
  "other_towns": [],
  "events": [
   {
-   "id": "rb117454327448500237",
-   "name": "Skyhaven Friday Learn to Play",
-   "type": "learn",
-   "start": "2026-11-13T18:00:00-07:00",
-   "end": null,
-   "day": "2026-11-13",
-   "time": "6:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 2,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 1,
-   "sid": 4294,
-   "store": "Skyhaven",
-   "swiss": 1,
-   "cut": false,
-   "bo": 1
-  },
-  {
    "id": "rb117089941548488590",
    "name": "Radiance Summoner Skirmish I",
    "type": "skirmish",
@@ -266,7 +245,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 8,
+   "reg": 9,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -316,7 +295,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -341,7 +320,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 24,
-   "reg": 4,
+   "reg": 7,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -466,7 +445,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 18,
+   "reg": 19,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
