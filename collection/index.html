@@ -46,15 +46,21 @@ body{-webkit-font-smoothing:antialiased;
 /* the movement chip, as Trade's: the arrow rides the percent and carries the direction, never a colour */
 .chip{display:inline-flex;align-items:center;gap:.25em;font:inherit;color:inherit;white-space:nowrap}
 .chip svg{width:.72em;height:.72em;flex:0 0 auto;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-/* THE CHART: glass bars in Rust inside a glass card (Mako's pick, 2026-10-25), one a day, a week
-   a bar past 62 days; a finger on it reads one bar */
-.chw{position:relative;margin:12px 0 0;height:190px;border-radius:22px;overflow:hidden;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+/* THE GRAPH: a thin line in the page's colour through one point a day, a faint fade under it, on the
+   page with no surface (glass means press; the graph is read); the range's high and low named at the
+   right; a finger on it reads one day and dims the line ahead (Mako's yes to the preview, 2026-11-14) */
+.chw{position:relative;margin:12px 0 0;height:136px;touch-action:pan-y;-webkit-user-select:none;user-select:none}
 .chw svg{position:relative;display:block;width:100%;height:100%}
-.chw .mk{stroke:rgba(237,234,227,.5);stroke-width:1}
-.chw .dot{fill:var(--bone);stroke:rgb(var(--page));stroke-width:2}
+.chw .ln{fill:none;stroke:rgb(var(--page));stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chw .ln.dim{stroke-opacity:.28}
+.chw .gl{stroke:rgba(255,255,255,.10);stroke-width:1;stroke-dasharray:2 5;stroke-linecap:round}
+.chw .mk{stroke:rgba(237,234,227,.42);stroke-width:1}
+.chw .dot{fill:var(--bone);stroke:var(--ground);stroke-width:2.5}
+.chw .end{fill:rgb(var(--page));stroke:var(--ground);stroke-width:2.5}
+.chw .hl{position:absolute;right:2px;font-size:12px;font-weight:600;line-height:14px;color:var(--muted);pointer-events:none}
 .chw .none{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 24px;font-size:13px;color:var(--muted)}
-#hchart{height:130px;margin:4px 0 0}
-.cseg{margin-top:10px}
+#hchart{height:112px;margin:4px 0 0}
+.cseg{margin-top:12px}
 .cnote{margin:8px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 /* SECTIONS */
 #app > section{margin-top:24px}
@@ -234,9 +240,9 @@ input[type="file"]{display:none}
     <div id="top">
     <div class="cval"><span class="v" id="val">$0.00</span><span class="u" id="valu">CAD</span></div>
     <div class="cchg" id="chg"></div>
-    <div class="chw glass" id="chart" data-k="view"></div>
+    <div class="chw" id="chart" data-k="view"></div>
     <div class="seg cseg" role="group" aria-label="Range" id="range" data-k="pick">
-      <button type="button" data-r="7" aria-pressed="false">7D</button><button type="button" data-r="30" aria-pressed="true">30D</button><button type="button" data-r="365" aria-pressed="false">1Y</button><button type="button" data-r="all" aria-pressed="false">All</button>
+      <button type="button" data-r="7" aria-pressed="false">7D</button><button type="button" data-r="30" aria-pressed="true">30D</button><button type="button" data-r="90" aria-pressed="false">90D</button><button type="button" data-r="all" aria-pressed="false">All</button>
     </div>
     <p class="cnote" id="mnote"></p>
     </div>
@@ -478,6 +484,7 @@ input[type="file"]{display:none}
     try{ var t = JSON.parse(localStorage.getItem("vir.trade.v1")); if(t && (t.cur === "USD" || t.cur === "CAD")) cur = t.cur; }catch(e){}
     if(cur) SET.cur = cur;
     try{ var z = JSON.parse(localStorage.getItem(SKEY)); if(z){ for(var k in SET){ if(z.hasOwnProperty(k) && typeof z[k] === typeof SET[k]) SET[k] = z[k]; } } }catch(e){}
+    if(SET.range === "365") SET.range = "all";
     if(SET.view !== "all" && SET.view !== "wish" && !port(SET.view)) SET.view = "all";
     if(/[?&]view=wish(&|$)/.test(location.search)) SET.view = "wish"; // a Wishlist price alert's link (plan 2 M9 block 6)
     if(!SORTS[window.RAVI_SORT.key(SET.sort)]) SET.sort = "value";
@@ -625,75 +632,86 @@ input[type="file"]{display:none}
     return f[0];
   }
 
-  // ---- THE CHART: glass bars in Rust (Mako's pick, 2026-10-25), one a day; past 62 days one a
-  // week, each week's last day. Each bar is the verdict ring's glass (Trade): the colour at .70
-  // fading to .16, a white sheen over its top and a lit cap. The scale and the marker follow
-  // tiny-spark's construction (github.com/graphieros/tiny-spark, MIT). ----
+  // ---- THE GRAPH: one thin line, a point a day (Mako's yes to the preview, 2026-11-14; glass bars
+  // before, 2026-10-25). The scale and the marker follow tiny-spark's construction
+  // (github.com/graphieros/tiny-spark, MIT). ----
   var GID = 0;
-  // THE BARS FOLLOW THEIR BOX (round 5, Mako: the top edge looked off now and then until a range change).
-  // A chart drawn while its box was hidden (a search, an empty list) took 100 as its width and was
+  // THE GRAPH FOLLOWS ITS BOX (round 5, Mako: the top edge looked off now and then until a range change).
+  // A graph drawn while its box was hidden (a search, an empty list) took 100 as its width and was
   // stretched to fit when shown. Now a box with no width waits, and a box that changes width redraws.
   var RO = window.ResizeObserver ? new ResizeObserver(function(es){ es.forEach(function(e){ var b = e.target; if(b.__draw && Math.abs(b.clientWidth - (b.__w || 0)) > 0.5) b.__draw(); }); }) : null;
+  // a smooth curve through the points that never rises above or dips below them (a monotone cubic,
+  // Fritsch and Carlson's tangents, as d3's curveMonotoneX draws it)
+  function curve(xs, ys){
+    var n = xs.length, i, d = [], m = [], p = "M" + xs[0].toFixed(1) + " " + ys[0].toFixed(1);
+    for(i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for(i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2;
+    for(i = 0; i < n - 1; i++){
+      if(d[i] === 0){ m[i] = 0; m[i + 1] = 0; continue; }
+      var a = m[i] / d[i], b = m[i + 1] / d[i], h = Math.sqrt(a * a + b * b);
+      if(h > 3){ m[i] = 3 * a / h * d[i]; m[i + 1] = 3 * b / h * d[i]; }
+    }
+    for(i = 0; i < n - 1; i++){
+      var dx = (xs[i + 1] - xs[i]) / 3;
+      p += "C" + (xs[i] + dx).toFixed(1) + " " + (ys[i] + m[i] * dx).toFixed(1) + " " + (xs[i + 1] - dx).toFixed(1) + " " + (ys[i + 1] - m[i + 1] * dx).toFixed(1) + " " + xs[i + 1].toFixed(1) + " " + ys[i + 1].toFixed(1);
+    }
+    return p;
+  }
+  // a high or low beside the graph: whole dollars from ten up, cents under it
+  function hlWords(c){ var v = Math.abs(conv(c / 100)); return v >= 10 ? "$" + Math.round(v).toLocaleString("en-US") : fmt(v); }
   function drawChart(box, sr, onScrub){
     box.__draw = function(){ drawChart(box, sr, onScrub); };
     if(RO && !box.__ro){ RO.observe(box); box.__ro = true; }
     box.__w = box.clientWidth;
     if(!box.clientWidth) return;
-    var w = box.clientWidth, ht = box.clientHeight || 190, all = sr.v, N = all.length;
-    if(N < 2){ box.innerHTML = '<div class="none">The price history starts ' + esc(window.RAVI_DATE(DAYS[0] || "")) + '. More days, more bars.</div>'; return; }
-    // the points drawn: every day, or every seventh counted back from the last
-    var pts = [], i;
-    if(N > 62){ for(i = N - 1; i >= 0; i -= 7) pts.unshift(i); } else { for(i = 0; i < N; i++) pts.push(i); }
-    var v = pts.map(function(k){ return all[k]; }), n = v.length;
-    var lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), top = 22, foot = 0;
-    if(hi === lo){ hi = lo + 1; lo = lo - 1; }
-    // the scale: the move fills a little over half the card, so a small list's few cents do not look
-    // like a cliff (round 4)
-    var span = hi - lo; lo -= span * 0.75; hi += span * 0.06;
-    // edge to edge, one slot a bar (round 2); the glass card's corners crop the ends
-    var step = w / n;
-    function X(j){ return (j + 0.5) * step; }
+    var w = box.clientWidth, ht = box.clientHeight || 136, v = sr.v, n = v.length;
+    if(n < 2){ box.innerHTML = '<div class="none">The price history starts ' + esc(window.RAVI_DATE(DAYS[0] || "")) + '.</div>'; return; }
+    // room at the right for the high and low; above and below for their words
+    var gut = 46, left = 3, top = 18, foot = 18, pw = w - left - gut;
+    var vlo = Math.min.apply(null, v), vhi = Math.max.apply(null, v);
+    // a floor on the scale: a move under 2% of the value never fills the whole height, so a small
+    // list's few cents do not look like a cliff (round 4)
+    var mid = (vhi + vlo) / 2, span = Math.max(vhi - vlo, mid * 0.02, 2), lo = mid - span / 2, hi = mid + span / 2;
+    function X(j){ return left + j / (n - 1) * pw; }
     function Y(x){ return top + (1 - (x - lo) / (hi - lo)) * (ht - top - foot); }
-    // ONE PIECE OF GLASS (round 3, Mako 2026-10-25): the bars' outline as one shape, no seams; each step's
-    // corners rounded a touch (up on a rise, down on a fall, 3 at most, never past half the step); a faint
-    // rim along the top instead of a lit cap on every bar
+    var xs = v.map(function(_, j){ return X(j); }), ys = v.map(Y), line = curve(xs, ys);
     var g = "cg" + (++GID), R = window.RAVI_PAGES.filter(function(p){ return p.id === "collection"; })[0].rgb;
-    function f1(x){ return x.toFixed(1); }
-    // EVERY STEP SMOOTH (round 4, Mako 2026-10-25: a small step still had sharp corners, its rounding
-    // capped at half its height): each change is one S-curve, flat into it and flat out of it, over 3
-    // either side of the step (less where the bars are narrow), whatever its height
-    var rs = Math.min(3, step * 0.45), top0 = "M0 " + f1(Y(v[0]));
-    for(i = 0; i < n - 1; i++){
-      var ya = Y(v[i]), yb = Y(v[i + 1]), xs = (i + 1) * step;
-      if(Math.abs(ya - yb) < 0.05) continue;
-      top0 += "L" + f1(xs - rs) + " " + f1(ya) + "C" + f1(xs) + " " + f1(ya) + " " + f1(xs) + " " + f1(yb) + " " + f1(xs + rs) + " " + f1(yb);
-    }
-    top0 += "L" + w + " " + f1(Y(v[n - 1]));
-    var shape = top0 + "L" + w + " " + (ht + 2) + "L0 " + (ht + 2) + "Z";
-    var defs = '<linearGradient id="' + g + '" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + ht + '"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".70"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity=".16"/></linearGradient>'
-      + '<linearGradient id="' + g + 's" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + (top + (ht - top) * 0.45) + '"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-      + '<clipPath id="' + g + 'c"><path d="' + shape + '"/></clipPath>';
-    var body = '<path class="shape" data-bars="' + n + '" d="' + shape + '" fill="url(#' + g + ')"/>'
-      + '<rect x="0" y="0" width="' + w + '" height="' + ht + '" fill="url(#' + g + 's)" clip-path="url(#' + g + 'c)"/>'
-      + '<path d="' + top0 + '" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="1"/>';
-    box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" preserveAspectRatio="none" aria-hidden="true"><defs>' + defs + '</defs>' + body
-      + '<line class="mk" x1="0" x2="0" y1="0" y2="' + ht + '" visibility="hidden"/><circle class="dot" r="4" cx="0" cy="0" visibility="hidden"/></svg>';
-    var svg = box.firstChild, mk = svg.querySelector(".mk"), dot = svg.querySelector(".dot"), on = false;
+    var area = line + "L" + xs[n - 1].toFixed(1) + " " + ht + "L" + xs[0].toFixed(1) + " " + ht + "Z";
+    var yh = Y(vhi), yl = Y(vlo), flat = vhi === vlo, gx = (w - gut + 6).toFixed(1);
+    // the high and low read apart: where whole dollars would name both the same, both show their cents
+    var wh = hlWords(vhi), wl = hlWords(vlo);
+    if(!flat && wh === wl){ wh = fmt(conv(vhi / 100)); wl = fmt(conv(vlo / 100)); }
+    box.innerHTML = '<svg viewBox="0 0 ' + w + ' ' + ht + '" aria-hidden="true"><defs>'
+      + '<linearGradient id="' + g + '" gradientUnits="userSpaceOnUse" x1="0" y1="' + top + '" x2="0" y2="' + ht + '"><stop offset="0" stop-color="rgb(' + R + ')" stop-opacity=".13"/><stop offset="1" stop-color="rgb(' + R + ')" stop-opacity="0"/></linearGradient>'
+      + '<clipPath id="' + g + 'c"><rect x="0" y="0" width="' + w + '" height="' + ht + '"/></clipPath></defs>'
+      + '<line class="gl" x1="' + left + '" x2="' + gx + '" y1="' + yh.toFixed(1) + '" y2="' + yh.toFixed(1) + '"/>'
+      + (flat ? '' : '<line class="gl" x1="' + left + '" x2="' + gx + '" y1="' + yl.toFixed(1) + '" y2="' + yl.toFixed(1) + '"/>')
+      + '<path class="ln dim" d="' + line + '"/>'
+      + '<g clip-path="url(#' + g + 'c)"><path d="' + area + '" fill="url(#' + g + ')"/><path class="ln" data-days="' + n + '" d="' + line + '"/></g>'
+      + '<circle class="end" r="4" cx="' + xs[n - 1].toFixed(1) + '" cy="' + ys[n - 1].toFixed(1) + '"/>'
+      + '<line class="mk" x1="0" x2="0" y1="4" y2="' + ht + '" visibility="hidden"/><circle class="dot" r="5" cx="0" cy="0" visibility="hidden"/></svg>'
+      + '<span class="hl" style="top:' + (yh - 16).toFixed(1) + 'px">' + esc(wh) + '</span>'
+      + (flat ? '' : '<span class="hl" style="top:' + (yl + 3).toFixed(1) + 'px">' + esc(wl) + '</span>');
+    var svg = box.firstChild, mk = svg.querySelector(".mk"), dot = svg.querySelector(".dot"), end = svg.querySelector(".end"), cr = svg.querySelector("clipPath rect"), on = false;
     function at(ev){
-      var r = box.getBoundingClientRect(), x = ev.clientX - r.left, j = Math.min(n - 1, Math.max(0, Math.floor(x / (r.width / n))));
-      mk.setAttribute("x1", X(j)); mk.setAttribute("x2", X(j)); dot.setAttribute("cx", X(j)); dot.setAttribute("cy", Y(v[j]));
-      mk.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible");
-      onScrub && onScrub(pts[j], N > 62);
+      var r = box.getBoundingClientRect(), x = ev.clientX - r.left, j = Math.min(n - 1, Math.max(0, Math.round((x - left) / pw * (n - 1))));
+      mk.setAttribute("x1", xs[j]); mk.setAttribute("x2", xs[j]); dot.setAttribute("cx", xs[j]); dot.setAttribute("cy", ys[j]);
+      mk.setAttribute("visibility", "visible"); dot.setAttribute("visibility", "visible"); end.setAttribute("visibility", "hidden");
+      cr.setAttribute("width", xs[j]); // the line and its fade stay lit up to the finger; ahead of it only the dim line shows
+      onScrub && onScrub(j);
     }
-    function off(){ on = false; mk.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); onScrub && onScrub(null); }
+    function off(){ on = false; mk.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); end.setAttribute("visibility", "visible"); cr.setAttribute("width", w); onScrub && onScrub(null); }
     box.onpointerdown = function(ev){ on = true; at(ev); };
     box.onpointermove = function(ev){ if(on) at(ev); };
     box.onpointerup = box.onpointercancel = box.onpointerleave = off;
   }
-  function dayWords(d, week){ return (week ? "Week to " : "") + window.RAVI_DATE(d); }
+  // the change line under a finger: the move from the range's first day up to that day, then the day
+  function scrubWords(sr, k){ return (k ? chip((sr.v[k] - sr.v[0]) / 100, pctOf(sr.v[0], sr.v[k])) : "") + '<span class="w">' + esc(dayWords(sr.days[k])) + '</span>'; }
+  function dayWords(d){ return window.RAVI_DATE(d); }
 
   // ---- THE PAGE ----
-  var RANGEW = { "7": "7 days", "30": "30 days", "365": "1 year" };
+  var RANGEW = { "7": "7 days", "30": "30 days", "90": "90 days" };
   function rangeWords(){ return SET.range === "all" ? "since " + window.RAVI_DATE(DAYS[0] || "", true) : "in " + RANGEW[SET.range]; }
   var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>';
   var CHECK = '<span class="ck"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></span>';
@@ -710,10 +728,10 @@ input[type="file"]{display:none}
     headChange();
     el("mnote").textContent = SET.view === "wish" ? "The Wishlist never counts toward your value." : "";
     el("mnote").hidden = SET.view !== "wish";
-    drawChart(el("chart"), SR, function(k, week){
+    drawChart(el("chart"), SR, function(k){
       if(k == null){ el("val").textContent = money(now / 100); headChange(); return; }
       el("val").textContent = money(SR.v[k] / 100);
-      el("chg").innerHTML = '<span class="w">' + esc(dayWords(SR.days[k], week)) + '</span>';
+      el("chg").innerHTML = scrubWords(SR, k);
     });
   }
   function headChange(){
@@ -798,7 +816,7 @@ input[type="file"]{display:none}
     var items = viewItems(), empty = !items.length;
     head();
     el("movers").hidden = empty; el("held").hidden = empty; el("first").hidden = !empty;
-    // an empty list has nothing to chart: the value stays, the bars and their controls go
+    // an empty list has nothing to chart: the value stays, the graph and its controls go
     el("chg").hidden = empty; el("chart").hidden = empty; el("range").hidden = empty; el("mnote").hidden = empty;
     el("firstttl").textContent = SET.view === "wish" ? "Your wishlist is empty" : "Start your collection";
     el("firsttx").textContent = SET.view === "wish"
@@ -808,7 +826,7 @@ input[type="file"]{display:none}
     var fimp = document.querySelector("#first [data-act=import]"); if(fimp) fimp.hidden = SET.view === "wish";
     el("hsf").hidden = empty; el("hview").hidden = empty;
     if(empty){ selEnd(); return; }
-    // while searching, the results sit right under the plate: the value, the bars and Movers step aside
+    // while searching, the results sit right under the plate: the value, the graph and Movers step aside
     var q = el("hq").value.trim().toLowerCase();
     el("top").hidden = !!q;
     el("movers").hidden = !SET.movers || !!q;
@@ -1195,7 +1213,7 @@ input[type="file"]{display:none}
     var x = '<div class="hpic">' + (c ? img(c, true) : '') + '</div>'
       + '<p class="hfacts">' + (c ? facts(c, h.f).map(esc).join(" &middot; ") : "") + (c && setOf(c).n ? '<br>' + esc(setOf(c).n) : '') + '</p>'
       + '<p class="hnow" id="hnow">' + money(now / 100) + '</p><div class="hchg" id="hchg"></div>'
-      + '<div class="chw glass" id="hchart"></div>'
+      + '<div class="chw" id="hchart"></div>'
       + '<div class="row" style="margin-top:12px"><div class="hrow"><span class="lbl">Count<small>' + (h.q > 1 ? money(h.q * now / 100) + " for " + h.q : money(now / 100) + " for one") + '</small></span><div class="stp" data-k="do"><button type="button" data-act="qdn" aria-label="' + (h.q === 1 ? "Remove" : "One fewer") + '"' + (h.q === 1 ? ' class="bin"' : '') + '>' + (h.q === 1 ? IC.bin : IC.minus) + '</button><span id="hq1">' + Number(h.q) + '</span><button type="button" data-act="qup" aria-label="One more">' + IC.plus + '</button></div></div></div>'
       + (fs.length > 1 ? '<div class="row"><p class="lb">Finish</p><div class="seg" role="group" aria-label="Finish" id="hfin" data-k="pick">' + fs.map(function(f){ return '<button type="button" data-f="' + esc(f) + '" aria-pressed="' + (f === h.f) + '">' + esc(f) + '</button>'; }).join("") + '</div></div>' : '')
       + (HPORT !== "wish" ? '<div class="row"><p class="lb">Price paid for one</p><div class="nf"><input id="hpaid" type="text" inputmode="decimal" placeholder="Not set" value="' + (h.paid != null ? esc(Number(h.paid).toFixed(2)) : "") + '" data-k="type"><span class="unit">' + esc(h.paid != null ? h.pc : SET.cur) + '</span></div></div>'
@@ -1211,7 +1229,7 @@ input[type="file"]{display:none}
     var sr = series([{ h: { i: h.i, f: h.f, q: 1, d: "" } }], "market");
     function hc(){ var v = sr.v; el("hnow").textContent = money(now / 100); el("hchg").innerHTML = v.length > 1 ? chip((v[v.length - 1] - v[0]) / 100, pctOf(v[0], v[v.length - 1])) + '<span class="w">' + esc(rangeWords()) + '</span>' : ""; }
     hc();
-    requestAnimationFrame(function(){ drawChart(el("hchart"), sr, function(k, week){ if(k == null){ hc(); return; } el("hnow").textContent = money(sr.v[k] / 100); el("hchg").innerHTML = '<span class="w">' + esc(dayWords(sr.days[k], week)) + '</span>'; }); });
+    requestAnimationFrame(function(){ drawChart(el("hchart"), sr, function(k){ if(k == null){ hc(); return; } el("hnow").textContent = money(sr.v[k] / 100); el("hchg").innerHTML = scrubWords(sr, k); }); });
   }
   function openHold(id, p){ HOLD = find(id, p); HPORT = p; if(!HOLD) return; fillHold(); go(el("phold")); }
   function changed(){ save(); render(); }
