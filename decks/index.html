@@ -513,7 +513,7 @@ body{-webkit-font-smoothing:antialiased;
           <input id="hq" type="search" placeholder="Search decks" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Search decks by name, Legend or card" data-k="type">
           <button type="button" class="fbtn fx glass" id="hqx" disabled data-k="do" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         </div>
-        <div class="seg hv" id="hview" role="group" aria-label="Show" data-k="pick"><button type="button" data-hv="mine" aria-pressed="true">My decks</button><button type="button" data-hv="pub" aria-pressed="false">Public</button><button type="button" data-hv="liked" aria-pressed="false">Liked</button></div>
+        <div class="seg hv" id="hview" role="group" aria-label="Show" data-k="pick"><button type="button" data-hv="mine" aria-pressed="true">Your decks</button><button type="button" data-hv="pub" aria-pressed="false">Public</button><button type="button" data-hv="liked" aria-pressed="false">Liked</button></div>
         <div class="hacts" id="hacts"><button type="button" class="pact btn glass" data-act="new" data-k="do">New deck</button><button type="button" class="pact btn glass" data-act="imp" data-k="do">Import</button></div>
         <div class="bchips" id="pchips" hidden></div>
       </section>
@@ -659,7 +659,7 @@ body{-webkit-font-smoothing:antialiased;
 
 <section class="panel frost" id="pdsort" aria-hidden="true" aria-label="Sort">
   <div class="phead"><h4 class="ttl">Sort</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick" id="dsortpick" data-k="pick"></div><p class="pnote" id="dsortnote" style="margin-top:10px">My order is the order you arrange in Edit.</p></div>
+  <div class="pbody"><div class="pick" id="dsortpick" data-k="pick"></div><p class="pnote" id="dsortnote" style="margin-top:10px">Your order is the order you arrange in Edit.</p></div>
 </section>
 
 <section class="panel frost" id="ptags" aria-hidden="true" aria-label="Tags">
@@ -1284,7 +1284,7 @@ body{-webkit-font-smoothing:antialiased;
   }
   // each sort: its key, its name, its natural way ("" for My order, which has none); choosing a sort
   // again flips it (RAVI_SORT, pages.js; plan 2 M8, Mako 2026-11-05)
-  var DSORTS = [["recent", "Edited", "down"], ["name", "Name", "up"], ["legend", "Legend", "up"], ["mine", "My order", ""]];
+  var DSORTS = [["recent", "Edited", "down"], ["name", "Name", "up"], ["legend", "Legend", "up"], ["mine", "Your order", ""]];
   // the list's sort chip: the arrow and the sort's name (v: the stored sort, with "-" when flipped)
   function hsortSet(x, v){ var R = window.RAVI_SORT, d = x[2] ? R.dir(v, x[2]) : "", b = el("hsortb"); b.innerHTML = R.chip(esc(x[1]), d); b.setAttribute("aria-label", R.label(x[1], d)); }
   function listOrder(){
@@ -2407,7 +2407,7 @@ body{-webkit-font-smoothing:antialiased;
       el("dsortnote").textContent = "Shared puts the newest first. Copies counts each player once.";
       return;
     }
-    el("dsortnote").textContent = "My order is the order you arrange in Edit.";
+    el("dsortnote").textContent = "Your order is the order you arrange in Edit.";
     var R = window.RAVI_SORT; el("dsortpick").innerHTML = DSORTS.map(function(x){ var on = R.key(SET.dsort) === x[0]; return R.row('data-act="dsset" data-v="' + x[0] + '"', x[1], on, on && x[2] ? R.dir(SET.dsort, x[2]) : ""); }).join("");
   }
   document.addEventListener("touchmove", function(ev){

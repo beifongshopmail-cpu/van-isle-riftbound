@@ -127,7 +127,7 @@ window.RAVI_ICON = (function(){
 })();
 // ONE SORT, EVERY PAGE (plan 2 M8, Mako 2026-11-05). A sort is stored as its key, with "-" on the end
 // when the player flipped it ("price-"). Each sort has a natural way (up or down); choosing it again in
-// its menu flips it, unless it is fixed (My order; Public decks, which the server orders).
+// its menu flips it, unless it is fixed (Your order; Public decks, which the server orders).
 // KEYWORDS and the colour Riot prints each tag in (plan 2 M8.7 F3): sampled from the printed cards by
 // rb-tools design/colour/keywords.py (288 cards paired, 2026-11-09). t teal, r crimson, g lime, n grey.
 // A keyword not listed here is left as Riot wrote it.
