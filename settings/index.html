@@ -80,6 +80,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       <button type="button" class="door chk" id="stwish" data-st="pwish" data-kind="w" aria-pressed="false" data-k="pick"><span class="t">Wishlist prices</span><span class="sp"></span><small id="pwishv"></small></button>
       <button type="button" class="door chk" id="stfol" data-st="pfol" data-kind="f" aria-pressed="false" data-k="pick"><span class="t">Stores you follow</span><span class="sp"></span><small id="pfolv"></small></button>
       <button type="button" class="door chk" id="stnot" data-st="pnot" data-kind="n" data-adm aria-pressed="false" data-k="pick" hidden><span class="t">Notices</span><span class="sp"></span><small id="pnotv"></small></button>
+      <button type="button" class="door chk on" id="stcount" data-st="pcount" aria-pressed="true" data-k="pick"><span class="t">Count badges</span></button>
   </div>
   <p class="stmsg" id="stoffermsg" aria-live="polite"></p>
   <p class="lb stlb">Hub</p>
@@ -245,9 +246,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   //   vir.tier.auto.off.v1 "1" turns off filling in your Local deck (live.js autoFill)
   //   ravi.fx.off.v1    "1" turns the hub's glow and the badge's flowing rim off (index.html)
   //   vir.motion.v1     "less" is Reduce motion (pages.js: html.rm, and scripts hear reduce)
+  //   vir.counts.off.v1 "1" turns the count badges off, the home-screen icon's number too (pages.js RAVI_COUNTS)
   // Reset (the bar's third slot) opens a small menu whose button removes them all.
   var CKEY = "vir.clock.v1", WKEY = "vir.week.v1";
-  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1", AKEY = "vir.tier.auto.off.v1", FKEY = "ravi.fx.off.v1", LKEY = "vir.motion.v1";
+  var OKEY = "vir.hub.open.v1", IKEY = "ravi.intro.off.v1", AKEY = "vir.tier.auto.off.v1", FKEY = "ravi.fx.off.v1", LKEY = "vir.motion.v1", NKEY = "vir.counts.off.v1";
   var PAGES = window.RAVI_PAGES || [];
   var opento = document.getElementById("opento"), intro = document.getElementById("stintro"), auto = document.getElementById("stauto"), fx = document.getElementById("stfx"), lessB = document.getElementById("stless");
   var hl = document.getElementById("sthub"), hs = document.getElementById("sthubs"), hoff = document.getElementById("sthuboff");
@@ -275,6 +277,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     var af = !get(AKEY);
     auto.classList.toggle("on", af);
     auto.setAttribute("aria-pressed", af ? "true" : "false");
+    mark(document.getElementById("stcount"), !get(NKEY));
     // each row's grey value: what its menu is set to now
     var ot = "Hub";
     for (n = 0; n < PAGES.length; n++) { if (PAGES[n].id === c) { ot = PAGES[n].name; } }
@@ -303,6 +306,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     pwish: "wishlist prices price moves cards alerts alert notifications",
     pfol: "stores store follow following new events event alerts alert notifications",
     pnot: "notices notice admin alerts alert notifications",
+    pcount: "count badges badge numbers number new unread waiting hub icon home screen",
     plocal: "share my legend tier list local decks deck placing standings game",
     phub: "hub layout blocks block grid arrange order move drag pages home",
     popen: "open the app to start launch first page",
@@ -398,6 +402,12 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     put(AKEY, get(AKEY) ? null : "1");
     render();
   });
+  // Count badges: on unless turned off; off also clears the home-screen icon's number
+  document.getElementById("stcount").addEventListener("click", function(){
+    put(NKEY, get(NKEY) ? null : "1");
+    render();
+    if (window.RAVI_COUNTS) { window.RAVI_COUNTS.again(document); }
+  });
   // Reset: its slot opens a small menu (#preset); the menu's button acts in one tap
   reset.addEventListener("click", function(){ window.ST_SHOW(document.getElementById("preset").classList.contains("show") ? null : "preset"); });
   // two taps, as every reset in the app (Mako 2026-11-03): Sure? Tap again, then it acts; 3 s lapses
@@ -410,7 +420,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
       return;
     }
     disarm();
-    put(OKEY, null); put(IKEY, null); put(AKEY, null); put(FKEY, null); put(LKEY, null); put(CKEY, null); put(WKEY, null); window.RAVI_HUB_SAVE(null);
+    put(OKEY, null); put(IKEY, null); put(AKEY, null); put(FKEY, null); put(LKEY, null); put(NKEY, null); put(CKEY, null); put(WKEY, null); window.RAVI_HUB_SAVE(null);
     if (window.RAVI_CUR() !== "CAD") { window.RAVI_SETCUR("CAD"); }
     document.documentElement.classList.remove("rm");
     if (window.ST_RESET) { window.ST_RESET(); }

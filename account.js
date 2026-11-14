@@ -1720,7 +1720,7 @@
 // whole value for a setting); the newest edit of an item wins; a deleted
 // item is kept as a mark for a while so the delete reaches every phone; a
 // whole store is never overwritten. Not synced: a game in progress, the
-// timer, test switches, seen marks and filters (only the stores below).
+// timer, test switches, filters, and every seen mark but News' and Rules' (only the stores below).
 // The export and import files stay. A page already open when another
 // phone's change arrives reloads once, if nothing was touched yet; if it
 // was, its stale copy is never written back over the newer one.
@@ -1794,6 +1794,8 @@
     },
     "vir.hub.blocks.v1": whole,
     "vir.hub.open.v1": whole,
+    "vir.news.seen.v1": whole, // the last News and Rules visits, so a second phone's count badges agree (plan 2 M9)
+    "vir.rules.seen.v1": whole,
     "vir.board.v1": whole // what you share on the Trade board: { wish: true } (plan 2 M2)
   };
   var KEYS = Object.keys(STORES);

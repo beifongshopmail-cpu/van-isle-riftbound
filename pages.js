@@ -572,12 +572,131 @@ window.RAVI_GOTO = function(container, hereId, rel, withHub, withSettings){
     if (p.id === hereId) {
       h += '<button type="button" class="gt on" id="pnhere" data-close>' + p.icon + '<span>' + p.name + '</span></button>';
     } else {
-      h += '<a class="gt" href="' + rel + p.path + '" style="--gi:' + lift(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></a>';
+      h += '<a class="gt" href="' + rel + p.path + '" data-pg="' + p.id + '" style="--gi:' + lift(p.rgb) + '">' + p.icon + '<span>' + p.name + '</span></a>';
     }
   }
   container.innerHTML = h;
   container.setAttribute("data-k", "pick");
+  if (window.RAVI_COUNTS) { window.RAVI_COUNTS.paint(container, rel); }
 };
+
+// COUNT BADGES (plan 2 M9, Mako's yes 2026-11-14): a page with things waiting wears their number in a
+// bone pill at the top right of its hub block (over the corner, as iPhone's) and beside its Go to
+// tile's icon. The number is the signal, never a colour; 9+ past nine; a page with nothing waiting
+// wears none. What counts, each as its page counts it:
+//   news   posts since your last visit to News (vir.news.seen.v1), in the kinds you have on, still shown
+//   rules  entries and updates changed since your last visit to Rules (vir.rules.seen.v1)
+//   board  offers waiting on you (the Exchange's Offers slot; a saved account only)
+//   decks  your decks holding a card banned in Constructed
+// News and Rules clear on a visit (the page records the newest day as you leave it); the Exchange as
+// offers are answered; Decks when the deck is fixed. The seen marks ride the account's sync, so a
+// second phone agrees. With no seen mark yet (never opened), the newest day now is the start, so
+// only what lands after counts. The marks come small from data/marks/ (marks.js), never the big
+// files. App settings' Count badges (vir.counts.off.v1 "1") turns them off, the home-screen icon's
+// number too. Where the phone allows it (an installed app with alerts allowed), the home-screen
+// icon carries the total.
+window.RAVI_COUNTS = (function(){
+  var OFFK = "vir.counts.off.v1", OCACHE = "ravi.counts.o", got = null, wait = [], asked = false, REL = "";
+  function g(k){ try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function s(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+  function today(){
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Vancouver", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+    catch (e) { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  }
+  function json(u){ return fetch(u, { cache: "no-cache" }).then(function(r){ if (!r.ok) { throw new Error("http " + r.status); } return r.json(); }); }
+  function news(m){
+    var p = m && Array.isArray(m.p) ? m.p : [], seen = g("vir.news.seen.v1"), off = {}, d = today(), n = 0, top = "";
+    p.forEach(function(x){ if (Array.isArray(x) && typeof x[0] === "string" && x[0] > top) { top = x[0]; } });
+    if (!seen) { if (top) { s("vir.news.seen.v1", top); } return 0; }
+    try { (JSON.parse(g("vir.news.kinds.v1") || "[]") || []).forEach(function(k){ off[k] = 1; }); } catch (e) {}
+    p.forEach(function(x){ if (Array.isArray(x) && x[0] > seen && !off[x[1]] && (!x[2] || x[2] >= d)) { n++; } });
+    return n;
+  }
+  function rules(m){
+    var c = m && m.c && typeof m.c === "object" ? m.c : {}, seen = g("vir.rules.seen.v1"), n = 0, top = "";
+    Object.keys(c).forEach(function(d){ if (d > top) { top = d; } });
+    if (!seen) { if (top) { s("vir.rules.seen.v1", top); } return 0; }
+    Object.keys(c).forEach(function(d){ if (d > seen && c[d] > 0) { n += +c[d]; } });
+    return n;
+  }
+  function decks(m){
+    var ban = {}, n = 0, v = null;
+    (m && Array.isArray(m.ban) ? m.ban : []).forEach(function(c){ ban[c] = 1; });
+    try { v = JSON.parse(g("vir.decks.v1")); } catch (e) { v = null; }
+    (v && Array.isArray(v.decks) ? v.decks : []).forEach(function(dk){
+      if (!dk || !dk.id) { return; }
+      var all = [dk.legend].concat(Object.keys(dk.main || {}), Object.keys(dk.side || {}), Array.isArray(dk.bf) ? dk.bf : []);
+      if (all.some(function(c){ return c && ban[c]; })) { n++; }
+    });
+    return n;
+  }
+  // offers waiting on you, kept a minute in the session so moving between pages asks the server once
+  function offers(cb){
+    var A = window.RAVI_ACCT, o = null;
+    if (!A || !A.signedIn || !A.signedIn() || !A.offers) { return cb(0); }
+    try { o = JSON.parse(sessionStorage.getItem(OCACHE)); } catch (e) { o = null; }
+    if (o && Date.now() - o.t < 60000) { return cb(+o.n || 0); }
+    A.offers(function(err, j){
+      if (err) { return cb(o ? +o.n || 0 : 0); }
+      var n = (j && Array.isArray(j.offers) ? j.offers : []).filter(function(x){ return x && x.turn === 1; }).length;
+      keepOffers(n); cb(n);
+    });
+  }
+  function keepOffers(n){ try { sessionStorage.setItem(OCACHE, JSON.stringify({ t: Date.now(), n: n })); } catch (e) {} }
+  function load(){
+    if (asked) { return; }
+    asked = true;
+    var out = { news: 0, rules: 0, board: 0, decks: 0 }, left = 3;
+    function one(){ if (--left) { return; } got = out; home(); var w = wait; wait = []; w.forEach(function(f){ f(); }); }
+    json(REL + "data/marks/news.json").then(function(m){ out.news = news(m); }).catch(function(){}).then(one);
+    json(REL + "data/marks/rules.json").then(function(m){ out.rules = rules(m); out.decks = decks(m); }).catch(function(){}).then(one);
+    offers(function(n){ out.board = n; one(); });
+  }
+  // the home-screen icon's number: the total, where the phone allows it
+  function home(){
+    var nav = window.navigator, t = 0;
+    if (!nav || !nav.setAppBadge) { return; }
+    if (!g(OFFK) && got) { Object.keys(got).forEach(function(k){ t += got[k]; }); }
+    try { var p = t ? nav.setAppBadge(t) : nav.clearAppBadge(); if (p && p.catch) { p.catch(function(){}); } } catch (e) {}
+  }
+  function words(n){ return n > 9 ? "9+" : String(n); }
+  // the badges on every [data-pg] under root; the hub's All pages block ([data-pgall]) wears the
+  // total of the pages not on the hub
+  function draw(root){
+    if (!root || !root.querySelectorAll) { return; }
+    var off = !!g(OFFK);
+    root.querySelectorAll("[data-pg],[data-pgall]").forEach(function(el){
+      var n = 0, id = el.getAttribute("data-pg");
+      if (!off && got) {
+        if (id) { n = got[id] || 0; }
+        else { var on = (el.getAttribute("data-pgall") || "").split(" "); Object.keys(got).forEach(function(k){ if (on.indexOf(k) < 0) { n += got[k]; } }); }
+      }
+      var b = el.querySelector(":scope > .cbadge"), sr = el.querySelector(":scope > .cbsr");
+      if (!n) { if (b) { b.remove(); } if (sr) { sr.remove(); } return; }
+      if (!b) { b = document.createElement("span"); b.className = "cbadge"; b.setAttribute("aria-hidden", "true"); el.appendChild(b); }
+      if (!sr) { sr = document.createElement("span"); sr.className = "sr cbsr"; el.appendChild(sr); }
+      b.textContent = words(n);
+      sr.textContent = ", " + n + " waiting";
+    });
+  }
+  return {
+    // fill the badges under root; rel is the way to the site's root ("../" from a page folder)
+    paint: function(root, rel){
+      if (typeof rel === "string" && !asked) { REL = rel; }
+      if (got) { draw(root); return; }
+      wait.push(function(){ draw(root); });
+      load();
+    },
+    // count again (the hub coming back into view, a setting changed); then redraw every badge
+    again: function(root){ got = null; asked = false; wait.push(function(){ draw(root || document); }); load(); },
+    // the Exchange tells its own count as it loads, so the next page agrees at once
+    offers: function(n){ keepOffers(n); if (got) { got.board = n; home(); } },
+    off: function(){ return !!g(OFFK); },
+    OFFK: OFFK,
+    // for the tests: the counts from the marks as given
+    _count: { news: news, rules: rules, decks: decks }
+  };
+})();
 
 // THE SUPPORT PLATE (M15, Mako 2026-10-27): who builds RAVI and a tip link, the same on App
 // settings and Feedback. Mako's words, lightly tidied; his picture (img/mako.webp, cropped to him

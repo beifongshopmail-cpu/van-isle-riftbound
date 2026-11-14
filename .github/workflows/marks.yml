@@ -1,0 +1,40 @@
+name: count badge marks
+
+# Rebuilds data/marks (marks.js: the little the hub and Go to need to count News, Rules and Decks)
+# whenever its sources change on main: a merged rules pull request, a new catalogue, a hand edit.
+# The feed and rules jobs build it too, since a workflow's own push starts no other workflow.
+on:
+  push:
+    branches: [main]
+    paths: ["data/feed.json", "data/rules.json", "cards/catalogue.json", "marks.js", "decks/deck.js", ".github/workflows/marks.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: marks
+  cancel-in-progress: false
+
+jobs:
+  marks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Build the marks
+        run: node marks.js
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/marks
+          if git diff --cached --quiet; then
+            echo "marks as they were; nothing committed"
+            exit 0
+          fi
+          git commit -m "data: count badge marks $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase
+          git push

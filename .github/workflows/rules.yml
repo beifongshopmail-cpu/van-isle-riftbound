@@ -41,6 +41,9 @@ jobs:
       - name: Read Riot's rules pages
         run: node fetch-rules.js
 
+      - name: The count badges' marks (marks.js)
+        run: node marks.js
+
       - name: Decide whether this is worth a pull request
         id: gate
         run: |
@@ -59,7 +62,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
-          git add data/rules.json
+          git add data/rules.json data/marks
           git commit -m "rules: Riot's rules pages changed $(date -u +%Y-%m-%dT%H:%MZ)"
           git push --force origin "$BRANCH"
           BODY="$RUNNER_TEMP/rules-pr.md"

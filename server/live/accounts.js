@@ -87,7 +87,7 @@ export const SESSION_DAYS = 180;
 export const KEYS_MAX = 10;
 // a link code lasts ms; its letters (no I L O, no digits); a phone approves or reads one code at a time
 export const LINK = { ms: 10 * 60000, len: 6, abc: "ABCDEFGHJKMNPQRSTUVWXYZ" };
-export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1", "vir.board.v1"]; // vir.board.v1: what you share on the Trade board (plan 2 M2)
+export const SYNC_KEYS = ["vir.decks.v1", "vir.coll.v1", "vir.counter.history.v1", "vir.trade.v1", "vir.trade.log.v1", "vir.follow.v1", "vir.hub.blocks.v1", "vir.hub.open.v1", "vir.board.v1", "vir.news.seen.v1", "vir.rules.seen.v1"]; // vir.board.v1: what you share on the Trade board (plan 2 M2); the two seen marks: the last News and Rules visits, for the count badges (plan 2 M9)
 // an item's text at most, an account's whole text, its items, items per call, items per answer, calls a day, days a delete is kept
 export const SYNC = { item: 262144, total: 5000000, items: 4000, put: 200, page: 300, day: 5000, keepGone: 120,
   guestTotal: 2000000 }; // an account never saved holds less (the security check, Mako's yes 2026-10-31: many throwaway guests must not fill the free plan)

@@ -12,3 +12,4 @@ App settings (settings/index.html)
 
 Page-local classes (not in app.css; not Kit parts):
 - settings/index.html: .armed .lgb .lgday .plate .srow .stgrp .stlb .stmenote .stmsg .stn .stnone .stresetn
+- Count badges (#stcount, plan 2 M9, Mako's yes 2026-11-14): the last row of Alerts, a check row on by default (vir.counts.off.v1 "1" while off); it needs no account; off, no count badge shows anywhere and the home-screen icon's number clears; Reset turns it back on.

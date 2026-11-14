@@ -23,5 +23,5 @@ Exchange (board/index.html; plan 2 M2, 2026-11-01)
 - The line 'Matched against your Wishlist ... and your For trade binder.' shows on Matches only (plan 2 M8.7 A4, Mako's yes 2026-11-10).
 Page-local classes (not in app.css; not Kit parts):
 - board/index.html: .bcm .ny .nt .balt .bside .bstart .bsay .bsee .bboth .bcard .bcbig .bcn .bcnt .bctl .bctx .bempty .bh3 .bimg .blab .bmsg .bnm .bnote .bpic .bpr .bprev .bq .bsec .bstrip .bt .btop .bview .bwho .bwr .cgrid .cpic .ctile .dvsort .hsort .nrow .nrows .plate .tcap .tnm .tpr .ttot; menus #pwho #pcard #psort #pself
-- board/index.html, listed in M7 from the style-lint baseline (2026-11-04): .bpct .bunb .ck .dim .f1 .f2 .fk .fl .fr .fs .fv .g4 .k .l1 .l2 .ld .m .mcash .mhead .mid .msub .oacts .off .ost .ovd .rot .sm .sq .tbadge .v
+- board/index.html, listed in M7 from the style-lint baseline (2026-11-04): .bpct .bunb .ck .dim .f1 .f2 .fk .fl .fr .fs .fv .g4 .k .l1 .l2 .ld .m .mcash .mhead .mid .msub .oacts .off .ost .ovd .rot .sm .sq .v
 - board/index.html, plan 2 M9 block 3 (Cards): .tocard (the row holding Open in Cards, a .pact link to the card's page, at the end of the card menu)

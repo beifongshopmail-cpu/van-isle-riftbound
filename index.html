@@ -674,12 +674,17 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
   for (var k = 0; k < picks.length; k++) {
     var p = byId[picks[k]]; // in the order App settings' Hub layout keeps (plan 2 M6)
     if (!p || !p.path) { continue; }
-    h += '<a class="blk glass cg" href="' + p.path + '" style="--cl:' + p.rgb + ';--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '" data-k="do"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
+    h += '<a class="blk glass cg" href="' + p.path + '" data-pg="' + p.id + '" style="--cl:' + p.rgb + ';--c:' + p.rgb + ';--ci:' + tint(p.rgb) + '" data-k="do"><span class="bi">' + p.icon + '</span><span class="bn">' + p.name + '</span></a>';
   }
-  h += '<button type="button" class="blk glass allp" id="hall" aria-haspopup="true" aria-expanded="false" aria-controls="pall" data-k="do"><span class="bi">' + window.RAVI_ICON("allpages") + '</span><span class="bn">All pages</span></button>';
+  h += '<button type="button" class="blk glass allp" id="hall" data-pgall="' + picks.join(" ") + '" aria-haspopup="true" aria-expanded="false" aria-controls="pall" data-k="do"><span class="bi">' + window.RAVI_ICON("allpages") + '</span><span class="bn">All pages</span></button>';
   grid.innerHTML = h;
+  if (window.RAVI_COUNTS) { window.RAVI_COUNTS.paint(grid, ""); }
   }
   drawGrid();
+  // COUNT BADGES come up to date when the hub comes back into view (back from a page, or the app
+  // brought to the front), so a page just read has cleared its number
+  window.addEventListener("pageshow", function(e){ if (e.persisted && window.RAVI_COUNTS) { window.RAVI_COUNTS.again(document); } });
+  document.addEventListener("visibilitychange", function(){ if (document.visibilityState === "visible" && window.RAVI_COUNTS) { window.RAVI_COUNTS.again(document); } });
   window.RAVI_HUB_DRAW = drawGrid;
   // THE BLOCKS RISE IN ONCE PER LAUNCH, with the launch intro (STYLE.md,
   // Motion): one after another, while the name is being read, all done by

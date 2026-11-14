@@ -166,7 +166,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 #shpick small{white-space:nowrap}
 /* OFFERS (plan 2 M2 block 2): the count on the bar's Offers slot, a card picked into an offer, My price */
 #taboff{position:relative}
-.tbadge{position:absolute;top:2px;right:calc(50% - 26px);min-width:20px;height:20px;box-sizing:border-box;padding:0 6px;border-radius:10px;background:var(--bone);color:var(--ink);font-family:var(--disp);font-weight:700;font-size:12px;line-height:20px;text-align:center;pointer-events:none}
+.tab .cbadge{top:2px;right:calc(50% - 26px)} /* the Offers slot's count: the app's count badge (app.css .cbadge), placed on the slot */
 .ctile.sel .cpic{box-shadow:0 0 0 3px var(--bone)}
 .ctile .ck{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--bone);color:var(--ink);display:grid;place-items:center;pointer-events:none}
 .ctile .ck svg{width:16px;height:16px}
@@ -861,9 +861,10 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
     return out;
   }
   function badge(){
-    var b = $("taboff"), n = OFF.filter(function(o){ return o.turn; }).length, el = b.querySelector(".tbadge");
+    var b = $("taboff"), n = OFF.filter(function(o){ return o.turn; }).length, el = b.querySelector(".cbadge");
+    if (OFFLOADED && window.RAVI_COUNTS) { window.RAVI_COUNTS.offers(n); }
     if (!n) { if (el) { el.remove(); } b.setAttribute("aria-label", "Offers"); return; }
-    if (!el) { el = document.createElement("span"); el.className = "tbadge"; b.appendChild(el); }
+    if (!el) { el = document.createElement("span"); el.className = "cbadge"; b.appendChild(el); }
     el.textContent = n > 9 ? "9+" : String(n);
     b.setAttribute("aria-label", "Offers, " + plural(n, "waiting on you", "waiting on you"));
   }

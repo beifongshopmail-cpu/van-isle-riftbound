@@ -20,6 +20,7 @@ The hub block (app.css THE HUB BLOCK since plan 2 M8.7: one copy, drawn by the h
 
 The launch intro (moved from STYLE.md section 8, 2026-11-11)
 - The launch intro: once per launch, the first time the hub shows (session flag ravi.intro.v1; off with ravi.intro.off.v1). 'Rift App' in blue over 'Van Isle' in pink, in the badge's own letters at their size, comes in and is read; the small letters fade while the four capitals travel into the badge; the glass opens out from behind them, the rim draws round from the left end both ways, meeting at the right, and the glass catches the light once. About 2.6s. The letters live inside the badge, so they move with it if the top area settles; at the end the badge is rebuilt from its markup. The hub's blocks rise in while the name is read. Any tap finishes it. No other page has one.
+- Count badges (pages.js RAVI_COUNTS, app.css .cbadge; plan 2 M9, Mako's yes 2026-11-14): a block whose page has things waiting wears their number over its top right corner (6 out from each edge, a soft shadow), as iPhone's on an app icon; All pages wears the total of the pages not on the hub. They count again when the hub comes back into view.
 
 Page-local classes (not in app.css; not Kit parts):
 - index.html (hub): .hubfoot .low, the All pages tray #pall (.blk, .blk.allp, .bi, .bn are app.css)
