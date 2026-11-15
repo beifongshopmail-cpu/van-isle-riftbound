@@ -1,14 +1,21 @@
-name: fetch core rules
+name: rules documents
 
-# Run by hand (workflow_dispatch) when New here's rule quotes are written or Riot updates its
-# Core Rules. fetch-core-rules.js downloads Riot's Core Rules PDF, from the link data/rules.json
-# already holds, byte for byte from Riot's file host.
-#
-# THIS WORKFLOW NEVER WRITES TO main and opens no pull request. It puts the PDF and its report
-# (core-rules.md) on the bot branch core-rules/fetch; a chat reads Riot's words there and quotes
-# them in its own reviewed commit. The bot's branch is reset each run.
+# Once a day at 04:50 UTC (after the 03:20 Rules Hub refresh, off the hour), by hand, and when its
+# own files change on main (so the copy exists the day this lands). fetch-core-rules.js downloads
+# Riot's Core Rules and Tournament Rules PDFs, from the links data/rules.json already holds, byte for
+# byte from Riot's file host, into docs/ with data/docs.json (Riot's link, date, size, SHA-256).
+# offline-list.js runs in the same commit so the worker's offline copy lists them. It commits to
+# main only when a document changed; no pull request, nothing to merge. If Riot's file is not a PDF
+# of a sane size the run fails and the last good copy stays.
 on:
+  schedule:
+    - cron: "50 4 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - fetch-core-rules.js
+      - .github/workflows/core-rules.yml
 
 permissions:
   contents: write
@@ -29,20 +36,21 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Fetch Riot's Core Rules
-        run: node fetch-core-rules.js
-        env:
-          CORE_OUT: riot
+      - name: Fetch Riot's rules documents
+        run: node fetch-core-rules.js >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Report
-        run: cat riot/core-rules.md >> "$GITHUB_STEP_SUMMARY"
+      - name: List them in the offline copy
+        run: node offline-list.js
 
-      - name: Put it on the bot branch
+      - name: Publish
         run: |
-          BRANCH="core-rules/fetch"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B "$BRANCH"
-          git add riot
-          git commit -m "core rules: Riot's Core Rules PDF $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push --force origin "$BRANCH"
+          git add docs data/docs.json offline.json
+          if git diff --cached --quiet; then
+            echo "nothing to publish"
+            exit 0
+          fi
+          git commit -m "data: Riot's rules documents $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin main
+          git push

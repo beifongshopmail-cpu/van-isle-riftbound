@@ -114,6 +114,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
     <section>
       <div class="shead"><h2>Current documents</h2></div>
       <div class="doors" id="docs" style="--tint:rgba(var(--h-jade),var(--cg))"></div>
+      <p class="rsrc" id="docsrc" hidden></p>
     </section>
     <section>
       <div class="shead"><h2>Errata</h2></div>
@@ -170,7 +171,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
 
 <script>
 (function(){
-  var D = null, BYSRC = {}, SRC = {};
+  var D = null, BYSRC = {}, SRC = {}, COPY = {};   // COPY: RAVI's copies of Riot's PDFs by rules item (data/docs.json)
   function el(id){ return document.getElementById(id); }
   function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   var MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -414,10 +415,16 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
   function render(){
     var docs = "", err = "", faq = "", i;
     var hub = BYSRC.hub || [];
+    var orig = [];
     hub.forEach(function(it){
-      if(it.kind === "doc"){
-        var up = /last updated:\s*([^<)]+)/i.exec(it.html);
-        docs += '<a class="door btn glass act" href="' + esc(web(it.url)) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + (up ? '<small>' + esc(up[1].trim()) + '</small>' : '') + OUT + '</a>';
+      if(it.kind !== "doc") return;
+      var cp = COPY[it.id], up = /last updated:\s*([^<)]+)/i.exec(it.html), when = cp ? cp.updated : (up ? up[1].trim() : "");
+      if(cp){
+        // RAVI's own copy (docs/, saved with the offline copy): handed to the phone as a file, so it reads with no signal
+        docs += '<button type="button" class="door btn glass act" data-act="doc" data-id="' + esc(it.id) + '" data-k="do"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + (when ? '<small>' + esc(when) + '</small>' : '') + '</button>';
+        orig.push('<a href="' + esc(web(cp.url)) + '" target="_blank" rel="noopener">' + esc(it.title) + '</a>');
+      }else{
+        docs += '<a class="door btn glass act" href="' + esc(web(it.url)) + '" target="_blank" rel="noopener" data-k="do"><span class="t">' + esc(it.title) + '</span>' + (isNew(it) ? NEWB : '') + '<span class="sp"></span>' + (when ? '<small>' + esc(when) + '</small>' : '') + OUT + '</a>';
       }
     });
     hub.forEach(function(it){
@@ -431,6 +438,8 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
       else faq += srcRow(s, "art");
     });
     el("docs").innerHTML = docs;
+    el("docsrc").innerHTML = orig.length ? "Riot's originals: " + orig.join(" and ") + "." : "";
+    el("docsrc").hidden = !orig.length;
     el("errata").innerHTML = err;
     el("faqs").innerHTML = faq;
     window.RAVI_EDGES && window.RAVI_EDGES();
@@ -603,6 +612,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
       openPanel(el("part"));
       return;
     }
+    if(a === "doc"){ openDoc(t.getAttribute("data-id")); return; }
     if(a === "legal"){ fillLegal(ITEM[t.getAttribute("data-id")]); openPanel(el("part")); return; }
     if(a === "fls"){ fillFls(); openPanel(OPENP === el("pfls") ? null : el("pfls")); return; }
     if(a === "fl"){ FL = t.getAttribute("data-f"); fillFl(); deeper(el("pfl")); return; }
@@ -619,7 +629,28 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
   el("q").addEventListener("input", search);
   el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
 
-  fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ D = d; window.RAVI_STALE("rules"); boot(); })
+  // A document opens from RAVI's copy: fetched (the worker answers from the saved copy with no signal)
+  // and handed to the phone as a file, which iOS shows in its own preview with Done, as Decks' Save as a
+  // file does. Should the copy not arrive, Riot's own link opens instead.
+  function openDoc(id){
+    var cp = COPY[id], it = ITEM[id];
+    if(!cp || !it) return;
+    var riot = web(cp.url);
+    fetch("../" + cp.file).then(function(r){ if(!r.ok) throw new Error(r.status); return r.blob(); }).then(function(b){
+      if(b.size < 1000) throw new Error("short");
+      var url = URL.createObjectURL(new Blob([b], { type: "application/pdf" })), a = document.createElement("a");
+      a.href = url; a.download = "Riftbound " + it.title + ".pdf";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+    }).catch(function(){ location.href = riot; });
+  }
+  // the copies' list: its own file, so a missing or broken one leaves the rows on Riot's links
+  var DOCSP = fetch("../data/docs.json", { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    ((j && j.docs) || []).forEach(function(x){
+      if(x && /^docs\/[a-z-]+\.pdf$/.test(String(x.file)) && /^https:\/\//.test(String(x.url))) COPY["hub#" + x.id] = x;
+    });
+  }).catch(function(){});
+  fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ return DOCSP.then(function(){ return d; }); }).then(function(d){ D = d; window.RAVI_STALE("rules"); boot(); })
     .catch(function(){ el("home").hidden = true; el("loadfail").hidden = false; });
 })();
 </script>

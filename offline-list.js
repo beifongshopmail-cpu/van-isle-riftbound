@@ -3,7 +3,8 @@
 // icon, a picture or a data file:  node offline-list.js     (rb-tools p2m10d checks it is current).
 // The list: the hub and every page folder (by its slash form), every local file their pages load
 // (script src, link href, img src), and the files pages read by script: data/*.json, data/marks,
-// cards/*.json and *.js, cards/backs, glyphs and runes, fonts, icons, img, and the scripts pages load
+// cards/*.json and *.js, cards/backs, glyphs and runes, docs (Riot's rules PDFs, fetch-core-rules.js), fonts,
+// icons, img, and the scripts pages load
 // on demand (tour.js, qr.js, qrscan.js). Never data/log, data/hist,
 // the .ics feeds, card art (the worker saves art as it is seen), the worker itself or this list.
 "use strict";
@@ -48,7 +49,7 @@ function build() {
     }
   });
   fs.readdirSync(path.join(ROOT, "data")).forEach(function (n) { if (/\.json$/.test(n)) { files["data/" + n] = 1; } });
-  ["data/marks", "cards/backs", "cards/glyphs", "cards/runes", "fonts", "icons", "img"].forEach(function (d) {
+  ["data/marks", "cards/backs", "cards/glyphs", "cards/runes", "docs", "fonts", "icons", "img"].forEach(function (d) {
     walk(d).forEach(function (rel) { if (!skip(rel)) { files[rel] = 1; } });
   });
   fs.readdirSync(path.join(ROOT, "cards")).forEach(function (n) { if (/\.(json|js)$/.test(n)) { files["cards/" + n] = 1; } });

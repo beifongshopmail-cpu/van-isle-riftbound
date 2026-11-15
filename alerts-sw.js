@@ -12,7 +12,7 @@
      seconds after the page has loaded, so it never competes with the page itself) the worker re-reads its
      whole list (offline.json, written by offline-list.js) into a fresh copy and switches to it only
      once every file has arrived, so the saved copy is one consistent snapshot. Each file is asked
-     for with no-cache, so an unchanged file costs a short answer. Pages and data read since are kept
+     whether it changed since the copy saved (its ETag), so an unchanged file costs a short answer. Pages and data read since are kept
      in the current copy too. Never data/log or data/hist.
    - Card pictures (cards/art, named by content, so a saved one never goes stale) are saved as they
      are seen, newest kept (about 60 MB at most), plus the legends' small pictures up front so a
@@ -21,6 +21,8 @@
      in place of the late-data line: 'No connection. Showing what was saved Nov 14.'
    - A page never saved, opened with no signal, gets one plain screen saying RAVI saves itself the
      first time it opens with signal.
+   - Riot's rules PDFs (docs/, kept daily by fetch-core-rules.js) are in the list; a request for part
+     of a saved file is answered with the whole saved file when there is no connection.
    Anything that goes wrong inside the handler falls through to the network, so a broken copy can
    never keep a page from loading. */
 "use strict";
@@ -95,12 +97,18 @@ function refresh(force) {
         var files = (list.files || []).filter(function (f) { return typeof f === "string" && !skip(f); });
         return caches.delete(next).then(function () { return caches.open(next); }).then(function (c) {
           var i = 0;
+          // each file is asked 'changed since the one saved?' (its ETag), so an unchanged file, a 17 MB
+          // rules PDF included, costs a short answer whatever the browser's own cache still holds
           function one() {
             if (i >= files.length) { return Promise.resolve(); }
             var u = HOME + files[i++];
-            return fetch(u, { cache: "no-cache" }).then(function (r) {
-              if (!r.ok || r.type !== "basic") { throw new Error(u + " " + r.status); }
-              return stamped(r).then(function (s) { return c.put(u, s); });
+            return caches.open(m.cur).then(function (old) { return old.match(u); }).catch(function () { return null; }).then(function (prev) {
+              var tag = prev && prev.headers.get("ETag"), opt = tag ? { cache: "no-store", headers: { "If-None-Match": tag } } : { cache: "no-cache" };
+              return fetch(u, opt).then(function (r) {
+                if (r.status === 304 && prev) { return stamped(prev).then(function (s) { return c.put(u, s); }); }
+                if (!r.ok || r.type !== "basic") { throw new Error(u + " " + r.status); }
+                return stamped(r).then(function (s) { return c.put(u, s); });
+              });
             }).then(one);
           }
           return Promise.all([one(), one(), one(), one()]);   // four at a time
@@ -174,6 +182,16 @@ function fresh(e, req, url, r) {
     });
   });
 }
+// a request for part of a file (iOS's PDF viewer reads a PDF in ranges): the network as asked; with no
+// connection, or no answer in 3 seconds, the saved file whole (a full 200 is a valid answer to a range).
+// A part is never kept.
+function ranged(req, url) {
+  var net = fetch(req);
+  return race(net, WAIT).then(function (res) {
+    if (res) { return res; }
+    return saved(url).then(function (s) { return s || net; });
+  });
+}
 function art(e, req, url) {
   var name = /\.t\.webp$/.test(url.pathname) ? ART_S : ART_F, max = name === ART_S ? SMALL_MAX : FULL_MAX;
   return caches.open(name).then(function (c) {
@@ -194,7 +212,8 @@ self.addEventListener("fetch", function (e) {
   try { url = new URL(req.url); } catch (err) { return; }
   if (url.origin !== self.location.origin) { return; }
   var r = rel(url);
-  if (skip(r) || req.headers.get("range")) { return; }
+  if (skip(r)) { return; }
+  if (req.headers.get("range")) { if (!isArt(r)) { e.respondWith(ranged(req, url).catch(function () { return fetch(req); })); } return; }
   // a folder without its slash: answer with the slash form, which is what is saved
   if (req.mode === "navigate" && r !== "" && !/\/$/.test(r) && !/\.[a-z0-9]+$/i.test(r)) {
     e.respondWith(Response.redirect(url.origin + url.pathname + "/" + url.search, 301));
