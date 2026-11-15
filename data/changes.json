@@ -22,6 +22,11 @@
       "date": "2026-11-15",
       "items": [
         {
+          "page": "rules",
+          "t": "Rules documents offline",
+          "d": "The Core Rules and Tournament Rules open from RAVI's own copy, kept in step with Riot's each day, so they read with no connection too."
+        },
+        {
           "page": "decks",
           "t": "Suggest a rune split",
           "d": "In Edit, Suggest split shares a deck's 12 runes between its two domains by how much Power the Main deck needs of each."
