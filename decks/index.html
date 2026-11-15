@@ -2351,8 +2351,15 @@ body{-webkit-font-smoothing:antialiased;
       document.body.appendChild(ta); ta.select(); var ok = false; try{ ok = document.execCommand("copy"); }catch(e){} document.body.removeChild(ta);
       toast(ok ? "Copied" : "Could not copy: press the text to copy it");
     }
-    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, fallback); }
-    else fallback();
+    // PLAIN TEXT ON AN IPHONE (Mako 2026-11-15: the event text pasted into Notes as one big link, and
+    // PlayRiftbound would not take it): iOS reads text that writeText puts on the clipboard as a web address
+    // once it holds a colon ('Legend:'; WebKit bug 253708), so it is written as a ClipboardItem of plain
+    // text alone, and writeText only where that is missing
+    function viaText(){ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, fallback); } else fallback(); }
+    var item = null;
+    try{ if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) item = new ClipboardItem({ "text/plain": new Blob([t], { type: "text/plain" }) }); }catch(e){ item = null; }
+    if(item) navigator.clipboard.write([item]).then(function(){ toast("Copied"); }, viaText);
+    else viaText();
   }
   // PLAIN TEXT ONLY (plan 2 M10, Mako 2026-11-15: the event text pasted like links): copying by hand
   // from the export box would carry the page's styling as rich text; it gives the plain words alone,
