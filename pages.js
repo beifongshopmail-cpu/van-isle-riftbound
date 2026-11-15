@@ -870,6 +870,8 @@ window.RAVI_STALE = (function(){
     opts = opts || {};
     return health().then(function(h){
       var now = Date.now(), r = rule(feed, stamp, h, now);
+      // with no connection the page shows what was saved: that one line stands in for this one (RAVI_OFFLINE)
+      if (!opts.el && window.RAVI_OFFLINE && window.RAVI_OFFLINE.at !== null) { window.RAVI_OFFLINE.show(); return r; }
       if (/[?&]stale=1(&|$)/.test(location.search) && ALLOW[feed]) {
         r = { late: true, at: r.at !== null ? r.at : (ms(stamp) !== null ? ms(stamp) : now - (ALLOW[feed] + 12) * HOUR) };
       }
@@ -880,8 +882,51 @@ window.RAVI_STALE = (function(){
   }
   show.rule = rule;
   show.words = words;
+  show.fill = fill;
   show.ALLOW = ALLOW;
   return show;
+})();
+
+// THE OFFLINE COPY (plan 2 M10 block 3, Mako's yes 2026-11-15). Every page registers RAVI's one service
+// worker (alerts-sw.js, which also carries the alerts), in the installed app and in a Safari tab. Fresh
+// first: with a connection nothing changes; with none, or no answer in 3 seconds, the worker serves the
+// copy it saved and tells the page each time it served a saved data file. The page then shows one line
+// where the late-data line goes (the same .stale look, in its place): the triangle and 'No connection.
+// Showing what was saved Nov 14.' It replaces the late-data line, never sits beside it. Pages with no
+// [data-stale] (the Tracker, Top cut, Settings, the hub) say nothing. Not registered under test tools
+// (navigator.webdriver, or a headless browser, which many suites pair with webdriver turned off to make
+// an account), so the suites that stand in for the network keep doing so; rb-tools p2m10d runs as an
+// ordinary browser to test the worker itself.
+window.RAVI_OFFLINE = (function(){
+  var me = typeof document !== "undefined" ? document.currentScript : null;
+  var base = me && me.src ? me.src.replace(/pages\.js(\?.*)?$/, "") : "";
+  var st = { at: null };
+  st.words = function(at){
+    return "No connection. Showing what was saved" + (at ? " " + window.RAVI_DATE(new Date(at), true) : "") + ".";
+  };
+  st.show = function(){
+    if (st.at === null || !window.RAVI_STALE) { return; }
+    var els = document.querySelectorAll("[data-stale]");
+    if (els.length) { window.RAVI_STALE.fill(els, st.words(st.at), false); }
+  };
+  var sw = typeof navigator !== "undefined" ? navigator.serviceWorker : null;
+  if (!sw || navigator.webdriver || /HeadlessChrome/.test(navigator.userAgent || "")) { return st; }
+  sw.addEventListener("message", function(e){
+    var d = e.data;
+    if (!d || d.ravi !== "saved") { return; }
+    var at = +d.at || 0;
+    st.at = st.at === null ? at : (at && (!st.at || at < st.at) ? at : st.at);   // the oldest saved file
+    if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", st.show); } else { st.show(); }
+  });
+  try { sw.startMessages(); } catch (e) {}
+  // registered once the page has loaded; the copy is asked for 4 seconds later, so its reading never
+  // competes with the page's own (the worker reads it at most every 10 minutes)
+  function go(){
+    sw.register(base + "alerts-sw.js").then(function(){ return sw.ready; })
+      .then(function(reg){ setTimeout(function(){ if (reg && reg.active) { reg.active.postMessage({ ravi: "save" }); } }, 4000); }).catch(function(){});
+  }
+  if (document.readyState === "complete") { go(); } else { window.addEventListener("load", go); }
+  return st;
 })();
 
 // THE BAR (from M9.6). Every page's bar is built here, so a slot two pages share is the same
