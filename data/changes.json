@@ -24,6 +24,16 @@
   ],
   "shipped": [
     {
+      "date": "2026-11-15",
+      "items": [
+        {
+          "page": "decks",
+          "t": "Suggest a rune split",
+          "d": "In Edit, Suggest split shares a deck's 12 runes between its two domains by how much Power the Main deck needs of each."
+        }
+      ]
+    },
+    {
       "date": "2026-11-14",
       "items": [
         {

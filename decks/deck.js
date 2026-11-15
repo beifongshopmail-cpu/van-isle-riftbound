@@ -728,6 +728,53 @@
     else { deck.runes[baseRuneOf(I, ds[0])] = 6; deck.runes[baseRuneOf(I, ds[1])] = 6; }
     return true;
   }
+  // SUGGEST A SPLIT (plan 2 M10 block 2B, Mako 2026-11-14): the 12 split between a two-domain
+  // Legend's domains by each domain's share of the Main deck's Power (copies x Power; a card of
+  // both domains counts half to each). Rounded so the two add to 12: each takes its whole part,
+  // the larger remainder takes the odd rune (on a tie, the larger share, then the Legend's first
+  // domain). A pure share, no floor: Undo is one tap. The deck's own printing of each domain is
+  // kept (the most held one), else the base rune. runeSplit only reads; splitRunes applies it.
+  // Returns null for a Legend that is not two domains; { ds, pw, n, none } otherwise, none true
+  // while the Main deck holds no Power in the Legend's domains.
+  function runeSplit(I, deck) {
+    var ds = legendDomains(I, deck);
+    if (ds.length !== 2) { return null; }
+    var pw = [0, 0];
+    keys(deck.main || {}).forEach(function (code) {
+      var x = card(I, code), w = x && +x.w, n = deck.main[code] || 0;
+      if (!x || !w || !n) { return; }
+      var cd = (x.d || []).filter(function (d) { return d !== "colorless"; });
+      if (!cd.length) { return; }
+      cd.forEach(function (d) { var i = ds.indexOf(d); if (i > -1) { pw[i] += n * w / cd.length; } });
+    });
+    var tot = pw[0] + pw[1];
+    if (!tot) { return { ds: ds, pw: pw, n: null, none: true }; }
+    var share = [pw[0] * 12 / tot, pw[1] * 12 / tot], n = [Math.floor(share[0]), Math.floor(share[1])];
+    if (n[0] + n[1] < 12) {
+      var r0 = share[0] - n[0], r1 = share[1] - n[1], eps = 1e-9;
+      var first = r0 > r1 + eps ? 0 : (r1 > r0 + eps ? 1 : (share[1] > share[0] + eps ? 1 : 0));
+      n[first] += 12 - n[0] - n[1];
+    }
+    return { ds: ds, pw: pw, n: n, none: false };
+  }
+  function splitRunes(I, deck) {
+    var s = runeSplit(I, deck);
+    if (!s || s.none) { return s; }
+    function held(d) {
+      var best = "";
+      keys(deck.runes).forEach(function (c) {
+        var y = card(I, c);
+        if (!y || (y.d || [])[0] !== d || !deck.runes[c]) { return; }
+        if (!best || deck.runes[c] > deck.runes[best] || (deck.runes[c] === deck.runes[best] && rank(y) < rank(card(I, best)))) { best = c; }
+      });
+      return best || baseRuneOf(I, d);
+    }
+    var codes = [held(s.ds[0]), held(s.ds[1])], out = {};
+    codes.forEach(function (c, i) { if (c && s.n[i] > 0) { out[c] = s.n[i]; } });
+    deck.runes = out;
+    s.codes = codes;
+    return s;
+  }
   // dir +1 or -1 on one rune card; returns true when something changed
   function runeStep(I, deck, code, dir) {
     var x = card(I, code), dm = x && (x.d || [])[0], ds = legendDomains(I, deck);
@@ -973,7 +1020,7 @@
     encode: encode, decode: decode, toText: toText, toCode: toCode, toTTS: toTTS, parse: parse,
     findCode: findCode, findName: findName, stats: stats, keywordsOf: keywordsOf, deal: deal, mulligan: mulligan,
     draw: draw, odds: odds, share: share, matches: matches,
-    tokens: tokens, needed: needed, unchange: unchange, fitRunes: fitRunes, runeStep: runeStep, baseRuneOf: baseRuneOf, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
+    tokens: tokens, needed: needed, unchange: unchange, fitRunes: fitRunes, runeStep: runeStep, runeSplit: runeSplit, splitRunes: splitRunes, baseRuneOf: baseRuneOf, priceIndex: priceIndex, versionsOf: versionsOf, verLabel: verLabel, printingsOf: printingsOf, isToken: isToken, rank: rank
   };
   if (typeof module !== "undefined" && module.exports) { module.exports = API; }
   else { root.RAVI_DECK = API; }

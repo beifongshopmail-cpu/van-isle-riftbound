@@ -213,6 +213,14 @@ body{-webkit-font-smoothing:antialiased;
 #vdeck > :first-child{margin-top:0}
 .lrhd .shead{margin:0 4px 10px}
 .lrhd .shead + .shead{grid-column:span 2}
+/* SUGGEST A SPLIT (plan 2 M10 block 2B): a compact pill in the Runes head, as the like pill (36, type 13; Split
+   alone on a phone under 390 wide, where Suggest split does not fit beside 12/12; -2 above and below so the
+   32 head keeps its height and nothing under it moves when Edit brings the pill in),
+   and its one note under the runes, 12 muted as the page's other notes */
+.rsug{flex:0 0 auto;margin:-2px 0;height:var(--sz-sm);padding:0 14px;border-radius:18px;font-family:var(--disp);font-size:13px;font-weight:600;color:var(--bone);white-space:nowrap}
+.rsn{display:none}
+@media (max-width:389px){ .rsw{display:none} .rsn{display:inline} }   /* under 390 wide the head holds only the short word */
+.rnote{margin:8px 4px 0;font-size:12px;line-height:1.5;color:var(--muted)}
 .lrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .lcell{position:relative;min-width:0}
 .lcard{display:block;width:100%;aspect-ratio:744/1039;border-radius:7px;overflow:hidden;padding:0;background:var(--recess)}
@@ -868,12 +876,12 @@ body{-webkit-font-smoothing:antialiased;
     el("undocnt").textContent = mine.length;   // a bare count, as every menu head (M11 sweep)
     el("undolist").innerHTML = mine.map(function(u, i){ return '<button type="button" class="door btn glass act" data-act="undoat" data-i="' + i + '" data-k="do"><span class="t">' + esc(u.t) + '</span></button>'; }).join("");
   }
-  function save(quiet){
+  function save(quiet, words){
     if(isRO()) return;   // a deck someone shares is read-only here; Copy to my decks makes it yours
     var d = deck();
     if(d){
       var now = bare(d);
-      if(!quiet && LASTID === d.id && LASTJ && LASTJ !== now){ UND.push({ id: d.id, j: LASTJ, n: now, t: changeWords(JSON.parse(LASTJ), JSON.parse(now)) }); if(UND.length > 60) UND.shift(); }
+      if(!quiet && LASTID === d.id && LASTJ && LASTJ !== now){ UND.push({ id: d.id, j: LASTJ, n: now, t: words || changeWords(JSON.parse(LASTJ), JSON.parse(now)) }); if(UND.length > 60) UND.shift(); }
       LASTJ = now; LASTID = d.id; d.t = Date.now();
     }
     try{ localStorage.setItem(KEY, JSON.stringify({ decks: DECKS, cur: CURID })); }catch(e){}
@@ -1492,7 +1500,7 @@ body{-webkit-font-smoothing:antialiased;
   // (there is only ever one of a Legend)
   function legendRunesHTML(d){
     var L = C(d.legend), r = X.sum(d.runes), h = "";
-    h += '<div class="lrhd"><div class="shead"><h2>Legend</h2></div><div class="shead"><h2>Runes</h2><span class="sp"></span><span class="cnt">' + r + '/12</span></div></div><div class="lrow" id="lrow">';
+    h += '<div class="lrhd"><div class="shead"><h2>Legend</h2></div><div class="shead"><h2>Runes</h2><span class="sp"></span><span class="cnt">' + r + '/12</span>' + sugBtn(d) + '</div></div><div class="lrow" id="lrow">';
     if(L) h += '<div class="lcell"><button type="button" class="lcard" data-act="card" data-sec="legend" data-code="' + esc(d.legend) + '" aria-label="Legend: ' + esc(nm(L)) + (banned(L) ? ', banned' : '') + '" data-k="card">' + img(L, true) + '</button>' + badges(L, d.legend, "low") + '</div>';
     else h += '<div class="lcell">' + (EDIT ? '<button type="button" class="addt btn glass" data-act="badd" data-sec="legend" data-k="do">' + IC.plus + '<span>Legend</span></button>' : '<div class="lcard none">No Legend yet.</div>') + '</div>';
     var rcodes = Object.keys(d.runes).filter(function(c){ return d.runes[c] > 0; }), have = {};
@@ -1505,7 +1513,34 @@ body{-webkit-font-smoothing:antialiased;
         + (EDIT ? '<div class="lsteps"><button type="button" class="lpm glass" data-act="rdec" data-code="' + esc(c) + '"' + (n < 1 ? " disabled" : "") + ' aria-label="One fewer ' + esc(nm(x)) + '" data-k="do">' + IC.minus + '</button><button type="button" class="lpm glass" data-act="rinc" data-code="' + esc(c) + '"' + (r >= 12 && n >= r ? " disabled" : "") + ' aria-label="One more ' + esc(nm(x)) + '" data-k="do">' + IC.plus + '</button></div>' : '') + '</div>';
     });
     for(var i = rcodes.length; i < 2; i++) h += '<div class="lcell"><div class="lcard none">The Legend\'s runes show here.</div></div>';
-    return h + '</div>';
+    h += '</div>';
+    var sn = sugNote(d);
+    return h + (sn ? '<p class="rnote" id="rnote">' + esc(sn) + '</p>' : '');
+  }
+  // SUGGEST A SPLIT (plan 2 M10 block 2B, Mako 2026-11-14, after Piltover Archive's 'calculate
+  // runes'): in Edit, a two-domain Legend's Runes head carries Suggest split; one tap splits the 12
+  // by the Main deck's Power (deck.js runeSplit). Its note says what it did while the runes stay as
+  // it left them; with no Power yet the button is dim and the note says what is missing. Undo takes
+  // it back like any change.
+  var SPLIT = null;   // { id, j: the runes as the split left them, t: its words }
+  function sugOn(d){ return EDIT && !isRO() && !!X.runeSplit(I, d); }
+  function sugBtn(d){
+    if(!sugOn(d)) return '';
+    var s = X.runeSplit(I, d);
+    return '<button type="button" class="rsug btn glass" data-act="rsplit"' + (s.none ? ' disabled' : '') + ' aria-label="Suggest split" data-k="do"><span class="rsw">Suggest split</span><span class="rsn">Split</span></button>';
+  }
+  function sugNote(d){
+    if(!sugOn(d)) return '';
+    if(X.runeSplit(I, d).none) return 'Add cards with a Power cost first.';
+    return SPLIT && SPLIT.id === d.id && SPLIT.j === JSON.stringify(d.runes) ? SPLIT.t : '';
+  }
+  function doSplit(){
+    var d = deck(); if(!d || !sugOn(d)) return;
+    var s = X.splitRunes(I, d); if(!s || s.none) return;
+    var t = "Split by Power: " + cap(s.ds[0]) + " " + s.n[0] + ", " + cap(s.ds[1]) + " " + s.n[1] + ".";
+    SPLIT = { id: d.id, j: JSON.stringify(d.runes), t: t };
+    save(false, "Rune split: " + cap(s.ds[0]) + " " + s.n[0] + ", " + cap(s.ds[1]) + " " + s.n[1]);
+    render();
   }
   // THE COUNTS AND THE RULES: at the top only while something needs fixing (in red, with the
   // triangle and the words); a ready deck shows them at the foot (Mako 2026-10-19)
@@ -2319,6 +2354,15 @@ body{-webkit-font-smoothing:antialiased;
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, fallback); }
     else fallback();
   }
+  // PLAIN TEXT ONLY (plan 2 M10, Mako 2026-11-15: the event text pasted like links): copying by hand
+  // from the export box would carry the page's styling as rich text; it gives the plain words alone,
+  // as Copy does
+  document.addEventListener("copy", function(e){
+    var b = el("xbox"), sel = window.getSelection ? window.getSelection() : null;
+    if(!b || b.hidden || !sel || sel.isCollapsed || !b.contains(sel.anchorNode) || !e.clipboardData) return;
+    e.clipboardData.setData("text/plain", sel.toString());
+    e.preventDefault();
+  });
   function saveFile(t){
     if(!t){ toast("Nothing to save"); return; }
     var d = deck(), base = (d.name || "deck").replace(/[^A-Za-z0-9 _-]+/g, "").trim().replace(/\s+/g, "-") || "deck";
@@ -2594,6 +2638,7 @@ body{-webkit-font-smoothing:antialiased;
     if(a === "shut"){ var sc = t.getAttribute("data-sec"); SET.shut[sc] = !SET.shut[sc]; saveSet(); render(); return; }
     if(a === "spot"){ spotOpen(t.getAttribute("data-code")); return; }
     // runes stay 12: a plus takes one from the other domain, a minus gives one to it (round 6)
+    if(a === "rsplit"){ doSplit(); return; }
     if(a === "rinc" || a === "rdec"){ var rc = t.getAttribute("data-code"); if(X.runeStep(I, d, rc, a === "rinc" ? 1 : -1)){ save(); render(); } return; }
     if(a === "sinc" || a === "sdec"){ bump(t.getAttribute("data-sec"), t.getAttribute("data-code"), a === "sinc" ? 1 : -1); if(!el("brw").hidden) brRender(true); else { render(); if(EQ) eRender(); } return; }
     if(a === "badd"){ brOpen(t.getAttribute("data-sec")); return; }
