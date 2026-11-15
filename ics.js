@@ -13,11 +13,10 @@ const LABELS = {
   other: "Event"
 };
 
-// Two feeds so a subscriber gets the same choice the page offers.
+// The whole island in one feed. Each town has its own (writeTownFeeds), each store its own
+// (writeStoreFeeds): the same choices Follow offers.
 const FEEDS = [
-  { file: "victoria.ics", name: "RAVI - Victoria", regions: ["victoria"] },
-  { file: "upisland.ics", name: "RAVI - Up Island", regions: ["island"] },
-  { file: "island.ics",   name: "RAVI - Island",   regions: ["victoria", "island"] }
+  { file: "island.ics", name: "RAVI - Island" }
 ];
 
 // An event id goes into a .ics line (UID, URL) and a file name: letters,
@@ -162,12 +161,9 @@ function writeFeeds(outDir, events, now) {
   const stamp = utcStamp(at), checked = checkedAt(at);
   const written = [];
   for (const feed of FEEDS) {
-    const subset = events.filter(function (e) {
-      return feed.regions.indexOf(e.region) !== -1;
-    });
-    const body = buildFeed(feed.name, subset, stamp, checked);
+    const body = buildFeed(feed.name, events, stamp, checked);
     fs.writeFileSync(path.join(outDir, feed.file), body, "utf8");
-    written.push({ file: feed.file, count: subset.length });
+    written.push({ file: feed.file, count: events.length });
   }
   return written;
 }
@@ -235,4 +231,40 @@ function writeStoreFeeds(outDir, events, now) {
   return { count: Object.keys(groups).length, empty: empty };
 }
 
-module.exports = { writeFeeds, writeEventFiles, writeStoreFeeds, storeFile, buildFeed, eventUrl, esc, fold };
+// The file name of a town's feed: its name in lower case, anything but a letter or digit a
+// dash (the calendar page's Follow menu and the server's notify.js build the same name).
+function townFile(city) {
+  return String(city == null ? "" : city).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") + ".ics";
+}
+
+// ONE FEED PER TOWN, data/town/<town>.ics, for Follow (plan 2 M10: towns everywhere). As a
+// store's, a town's file is never removed: a town with no events left keeps its file, empty,
+// under its name, so a follower's calendar never points at a missing file.
+function writeTownFeeds(outDir, events, now) {
+  const at = now || new Date();
+  const stamp = utcStamp(at), checked = checkedAt(at);
+  const dir = path.join(outDir, "town");
+  fs.mkdirSync(dir, { recursive: true });
+  const groups = {};
+  for (const ev of events) {
+    const city = String(ev.city || "").trim();
+    const f = townFile(city);
+    if (f === ".ics") continue;
+    if (!groups[f]) groups[f] = { name: "RAVI - " + city, list: [] };
+    groups[f].list.push(ev);
+  }
+  let empty = 0;
+  for (const f of fs.readdirSync(dir)) {
+    if (!/\.ics$/.test(f) || groups[f]) continue;
+    const old = fs.readFileSync(path.join(dir, f), "utf8").replace(/\r?\n /g, "");
+    const m = old.match(/X-WR-CALNAME:(.*)/);
+    groups[f] = { name: m ? m[1].replace(/\\(.)/g, "$1").trim() : "RAVI", list: [] };
+    empty++;
+  }
+  for (const f of Object.keys(groups)) {
+    fs.writeFileSync(path.join(dir, f), buildFeed(groups[f].name, groups[f].list, stamp, checked), "utf8");
+  }
+  return { count: Object.keys(groups).length, empty: empty };
+}
+
+module.exports = { writeTownFeeds, townFile,  writeFeeds, writeEventFiles, writeStoreFeeds, storeFile, buildFeed, eventUrl, esc, fold };

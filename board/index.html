@@ -366,7 +366,9 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   function money(u){ if (u == null) { return "No price"; } var v = CUR === "CAD" ? u * FX : u; return "$" + v.toFixed(2); }
 
   // ---- WHAT THE SERVER SAYS, rebuilt from checked fields ----
-  var AREAS = { victoria: "Greater Victoria", island: "Up Island", away: "Somewhere else" };
+  // a home area is an island town or Somewhere else (account.js RAVI_AREAS; plan 2 M10: towns everywhere)
+  function areaName(a){ return window.RAVI_AREAS ? window.RAVI_AREAS.name(a) : ""; }
+  function nearOf(a, b){ return window.RAVI_AREAS ? window.RAVI_AREAS.near(a, b) : 0; }
   function okH(v){ return typeof v === "string" && /^[0-9a-f]{24}$/.test(v); }
   function okLine(x){
     if (!x || typeof x !== "object") { return null; }
@@ -383,13 +385,13 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
       ["x", "y", "z"].forEach(function(k){ if (typeof p[k] === "number" && isFinite(p[k])) { pic[k] = p[k]; } });
     } else if (p && p.k === "p" && Number.isSafeInteger(p.v)) { pic = { k: "p", v: p.v }; }
     return { h: x.h, name: typeof x.name === "string" ? x.name.slice(0, 32) : "", user: typeof x.user === "string" && /^[a-z0-9_]{3,20}$/.test(x.user) ? x.user : "",
-      area: AREAS[x.area] ? x.area : "", col: window.RAVI_COLOUR && window.RAVI_COLOUR(x.col) ? x.col : "", pic: pic };
+      area: areaName(x.area) ? x.area : "", col: window.RAVI_COLOUR && window.RAVI_COLOUR(x.col) ? x.col : "", pic: pic };
   }
   function clean(j){
     var out = { me: { area: "", have: 0, want: 0, off: false, pich: false, blocked: 0 }, saved: !!(j && j.saved), traders: [], people: {}, browse: [], wanted: {} };
     if (!j || j.v !== 1) { return out; }
     if (j.me && typeof j.me === "object") {
-      out.me.area = AREAS[j.me.area] ? j.me.area : "";
+      out.me.area = areaName(j.me.area) ? j.me.area : "";
       out.me.have = Number.isSafeInteger(j.me.have) ? j.me.have : 0;
       out.me.want = Number.isSafeInteger(j.me.want) ? j.me.want : 0;
       out.me.off = j.me.off === true; out.me.pich = j.me.pich === true;
@@ -404,7 +406,7 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
       if (!f) { return; }
       more(f, x);
       out.people[f.h] = out.people[f.h] || f;
-      f.has = okLines(x.has); f.wants = okLines(x.wants); f.two = x.two === 1 ? 1 : 0; f.near = x.near === 1 ? 1 : 0;
+      f.has = okLines(x.has); f.wants = okLines(x.wants); f.two = x.two === 1 ? 1 : 0; f.near = x.near === 2 ? 2 : (x.near === 1 ? 1 : 0);
       if (f.has.length || f.wants.length) { out.traders.push(f); }
     });
     (Array.isArray(j.browse) ? j.browse : []).forEach(function(x){ var c = okLine(x); if (c && x && okH(x.h) && out.people[x.h]) { c.h = x.h; out.browse.push(c); } });
@@ -436,7 +438,7 @@ if (window.RAVI_SIDES_PAINT) { window.RAVI_SIDES_PAINT(); } // yours in your col
   function subOf(f){
     var bits = [];
     if (f.user && f.name) { bits.push("@" + f.user); }
-    if (f.area) { bits.push(AREAS[f.area]); }
+    if (f.area) { bits.push(areaName(f.area)); }
     return bits.join(" \u00b7 ");
   }
   var BOTH = '<span class="bboth">Both ways</span>';
@@ -478,7 +480,8 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   function byValue(a, b){ return sg() * (sk() === "price" ? byPrice(a, b) : sk() === "name" ? nameCmp(a, b) || a.alt - b.alt : byDemand(a, b)); }
   // a Players preview shows their best four: by price when sorting by price, else most in demand
   function byPreview(a, b){ return sk() === "price" ? byPrice(a, b) : byDemand(a, b); }
-  function near(f){ return SORT.near && DATA.me.area && f && f.area === DATA.me.area ? 1 : 0; }
+  // 2 your town, 1 the rest of your region, 0 otherwise
+  function near(f){ return SORT.near && f ? nearOf(DATA.me.area, f.area) : 0; }
   function whoCmp(fa, fb){ var x = nameOf(fa).toLowerCase(), y = nameOf(fb).toLowerCase(); return x < y ? -1 : x > y ? 1 : (fa.h < fb.h ? -1 : 1); }
   // two players' cards compared by the sort: the sum of demand or of price, or their names
   function cardsScore(list){ return list.reduce(function(n, x){ return n + (sk() === "price" ? pr(x) * x.q : dem(x)); }, 0); }
@@ -544,10 +547,10 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
       if (!g) { g = G[k] = { i: r.i, f: r.f, who: [], near: 0 }; order.push(g); }
       g.who.push({ h: r.h, q: r.q });
       var f = DATA.people[r.h];
-      if (DATA.me.area && f && f.area === DATA.me.area) { g.near++; }
+      if (f && nearOf(DATA.me.area, f.area)) { g.near++; g.town = Math.max(g.town || 0, nearOf(DATA.me.area, f.area)); }
     });
     order.forEach(function(g){ g.alt = 0; });
-    order.sort(function(a, b){ return (SORT.near ? (b.near ? 1 : 0) - (a.near ? 1 : 0) : 0) || (sk() === "demand" ? sg() * (dem(b) - dem(a) || b.who.length - a.who.length) : 0) || byValue(a, b) || b.who.length - a.who.length; });
+    order.sort(function(a, b){ return (SORT.near ? (b.town || 0) - (a.town || 0) : 0) || (sk() === "demand" ? sg() * (dem(b) - dem(a) || b.who.length - a.who.length) : 0) || byValue(a, b) || b.who.length - a.who.length; });
     return order;
   }
   function tile(g){
@@ -706,7 +709,7 @@ var CVR = '<svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18
   // from this phone's Collection and profile, so it shows what sync is about to share ----
   function selfFace(){
     var a = (A && A.view()) || {};
-    return { h: "self", self: 1, name: typeof a.name === "string" ? a.name.slice(0, 32) : "", user: typeof a.user === "string" ? a.user : "", area: AREAS[a.area] ? a.area : "", col: typeof a.col === "string" ? a.col : "" };
+    return { h: "self", self: 1, name: typeof a.name === "string" ? a.name.slice(0, 32) : "", user: typeof a.user === "string" ? a.user : "", area: areaName(a.area) ? a.area : "", col: typeof a.col === "string" ? a.col : "" };
   }
   function merged(lists){
     var o = {}, out = [];

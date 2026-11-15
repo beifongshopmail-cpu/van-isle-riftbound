@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const { API_BASE, ANCHORS, TYPE_MAP, TZ, MIN_EVENTS, RB, STORE_POSTS, TOWNS } = require("./config");
-const { writeFeeds, writeEventFiles, writeStoreFeeds } = require("./ics");
+const { writeFeeds, writeEventFiles, writeStoreFeeds, writeTownFeeds } = require("./ics");
 
 // Store id -> a short display name. Keys are the same store ids sid uses.
 const STORE_SHORT = {
@@ -975,6 +975,8 @@ async function main() {
   for (const f of feeds) {
     console.log(`wrote ${f.file} (${f.count} events)`);
   }
+  const tw = writeTownFeeds(OUT_DIR, events);
+  console.log(`wrote town/ (${tw.count} town feeds, ${tw.empty} with no events left)`);
   const st = writeStoreFeeds(OUT_DIR, events);
   console.log(`wrote store/ (${st.count} store feeds, ${st.empty} with no events left)`);
   const one = writeEventFiles(OUT_DIR, events);

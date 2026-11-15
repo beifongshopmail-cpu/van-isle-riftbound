@@ -69,6 +69,7 @@ import { REPORT, BLOCK, cleanWhy, closeFor, queueOf } from "./reports.js";
 import { send as pushSend } from "./push.js";
 import { cleanSub, SITE } from "./alerts.js";
 import { KINDS, SEND_MAX, quiet, islandDay, freshEvents, follows, eventMsg, wishMoves, wishMsg, noticeMsg } from "./notify.js";
+import { AREAS } from "./towns.js";
 import { DECK_KEY, DECKS, DECK_ID, rowsFrom as deckRows, rowOf as deckRow, search as deckSearch, codesFrom } from "./decks.js";
 
 export const RP_ID = "ravi.tools";
@@ -98,7 +99,7 @@ export const LIMITS = { opt: 300, made: 30, code: 20, prof: 200, photo: 30, disp
 export const GUEST_DAYS = 90;
 export const DEVS = ["iPhone", "iPad", "Android", "Mac", "Windows", "Computer"]; // the only device names kept
 export const PHOTO_MAX = 150000; // bytes of JPEG
-export const AREAS = ["victoria", "island", "away"]; // Greater Victoria, Up Island, Somewhere else
+export { AREAS }; // a home area: an island town or "away", Somewhere else (towns.js; plan 2 M10)
 // YOUR COLOUR (plan 2 M8 block 2): one of the player colours (pages.js RAVI_PLAYER_COLOURS), or none
 export const COLOURS = ["blue", "pink", "gold", "tangerine", "lime", "mint", "orchid", "white"];
 const RESERVED = ["ravi", "admin", "administrator", "support", "help", "mod", "moderator", "staff", "official", "riot", "riotgames", "system", "root", "null", "undefined", "me", "you", "account", "settings"];

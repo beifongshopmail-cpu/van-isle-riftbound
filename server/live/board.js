@@ -16,7 +16,8 @@
 // on your Wishlist; "they want" is what others want from your For trade
 // binders. Your own lists count for your matches whether or not you share
 // them. The same card in another printing counts as Other printing. Players
-// matching both ways come first, then those in your home area, then the most
+// matching both ways come first, then those in your town, then those in the
+// rest of your region (towns.js nearOf: 2, 1), then the most
 // cards. Never a rank, rating or record of a player: the board lists cards.
 //
 // ON THE SERVER: table board (acct, s side h or w, i product id, f finish, q
@@ -25,6 +26,8 @@
 // match is two indexed joins against the viewer's own rows. A trader is named
 // to others by a handle (24 hex, from the account id and a fixed word), never
 // the account id.
+
+import { nearOf } from "./towns.js";
 
 export const BOARD_KEYS = ["vir.coll.v1", "vir.board.v1"];
 export const BOARD = { side: 2000, traders: 100, browse: 3000, perCard: 40 };
@@ -105,7 +108,7 @@ export async function boardFor(db, me, face, skip) {
     const f = face(acct);
     const two = exact(x.has) > 0 && exact(x.wants) > 0 ? 1 : 0;
     traders.push({ acct: acct, h: await handleOf(acct), name: f.name, user: f.user, area: f.area, col: f.col || "", pic: f.pic, open: f.open || "trade", pct: f.pct || 100, dk: f.dk || 0, nx: f.nx || null,
-      has: x.has, wants: x.wants, two: two, near: myArea && f.area === myArea ? 1 : 0, n: x.has.length + x.wants.length });
+      has: x.has, wants: x.wants, two: two, near: nearOf(myArea, f.area), n: x.has.length + x.wants.length });
   }
   traders.sort((a, b) => b.two - a.two || b.near - a.near || b.n - a.n || (a.h < b.h ? -1 : 1));
   const keep = traders.slice(0, BOARD.traders + 400); // matches first, then those only in Browse

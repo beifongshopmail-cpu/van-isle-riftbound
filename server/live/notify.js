@@ -27,12 +27,16 @@ export function quiet(now) { const h = islandHour(now); return h >= QUIET.from |
 export function storeFile(e) {
   return String(e.sid !== null && e.sid !== undefined ? e.sid : (e.venue + "-" + e.city)).replace(/[^A-Za-z0-9_-]/g, "") + ".ics";
 }
-// files: the calendar feeds an account follows (vir.follow.v1's item ids without "f:")
+// a town's calendar feed file (ics.js townFile)
+export function townFile(city) {
+  return String(city == null ? "" : city).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") + ".ics";
+}
+// files: the calendar feeds an account follows (vir.follow.v1's item ids without "f:"):
+// the whole island, a town (town/<town>.ics) or a store (store/<id>.ics)
 export function follows(files, e) {
   if (!files || !files.length) return false;
   if (files.indexOf("island.ics") >= 0) return true;
-  if (e.region === "victoria" && files.indexOf("victoria.ics") >= 0) return true;
-  if (e.region === "island" && files.indexOf("upisland.ics") >= 0) return true;
+  if (e.city && files.indexOf("town/" + townFile(e.city)) >= 0) return true;
   return files.indexOf("store/" + storeFile(e)) >= 0;
 }
 

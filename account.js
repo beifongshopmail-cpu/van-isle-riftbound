@@ -506,7 +506,7 @@
         '<a class="door" id="acsunew" href="' + REL + 'start/#ravi"><span class="t">Guide</span><span class="sp"></span>' + CV + '</a></div></div>' +
         '<div class="pfoot"><button type="button" class="pact btn glass" id="acsudone" data-k="do">Done</button></div>',
       accode: headTitle("Recovery code") + '<div class="pbody" id="accodebody"></div><div class="pfoot" id="accodefoot"></div>',
-      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Exchange shows players in your area first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
+      acarea: headTitle("Home area") + '<div class="pbody"><div class="pick" id="acareas" data-k="pick"></div><p class="pnote">Where you mostly play. The Exchange shows players near you first.</p><p class="acmsg" id="acareamsg" aria-live="polite"></p></div>',
       acnotm: headTitle("Notices") + '<div class="pbody"><div id="acnotlist"></div></div>',
       acdispm: headTitle("Disputes") + '<div class="pbody"><div id="acdisplist"></div><p class="acmsg" id="acdispmsg" aria-live="polite"></p></div>',
       acrepm: headTitle("Reports") + '<div class="pbody"><div id="acreplist"></div><p class="acmsg" id="acrepmsg" aria-live="polite"></p></div>',
@@ -670,7 +670,7 @@
       say("acprofmsg", ""); say("acriotmsg", ""); $("acdispw").hidden = true;
       claimState(); areaText(); colours(a && a.col || ""); paintAll();
     }
-    else if (id === "acarea") { renderAreas(); say("acareamsg", ""); }
+    else if (id === "acarea") { renderAreas(true); say("acareamsg", ""); }
     else if (id === "acdispm") { renderDisputes(); }
     else if (id === "acrepm") { renderReports(); }
     else if (id === "acpicm") { work = null; renderPics(); say("acpicmsg", ""); }
@@ -1190,22 +1190,41 @@
   }
 
   // ---- Home area ----
-  var AREAS = [["", "Not set"], ["victoria", "Greater Victoria"], ["island", "Up Island"], ["away", "Somewhere else"]];
+  // A home area is an island town, or Somewhere else (plan 2 M10: towns everywhere). The same
+  // towns as the server's (server/live/towns.js) and the event refresh's (config.js TOWNS);
+  // the first fifteen are the Capital Region, which only says which towns are near each other.
+  var TOWNS_V = ["Victoria", "Saanich", "Oak Bay", "Esquimalt", "View Royal", "Colwood", "Langford", "Sidney", "North Saanich", "Central Saanich", "Saanichton", "Brentwood Bay", "Sooke", "Metchosin", "Highlands"];
+  var TOWNS_I = ["Courtenay", "Comox", "Cumberland", "Campbell River", "Nanaimo", "Lantzville", "Ladysmith", "Chemainus", "Duncan", "North Cowichan", "Lake Cowichan", "Mill Bay", "Cobble Hill", "Shawnigan Lake", "Parksville", "Qualicum Beach", "Port Alberni", "Tofino", "Ucluelet", "Port Hardy", "Port McNeill", "Salt Spring Island", "Gabriola"];
+  var TOWN = {}; // key (the name in lower case) -> [name, region]
+  TOWNS_V.forEach(function (n) { TOWN[n.toLowerCase()] = [n, "v"]; });
+  TOWNS_I.forEach(function (n) { TOWN[n.toLowerCase()] = [n, "i"]; });
+  var AREAS = [["", "Not set"]].concat(Object.keys(TOWN).sort().map(function (k) { return [k, TOWN[k][0]]; }), [["away", "Somewhere else"]]);
   function areaName(code) { for (var i = 0; i < AREAS.length; i++) if (AREAS[i][0] === (code || "")) return AREAS[i][1]; return "Not set"; }
+  // for the pages (the Exchange): a home area's name ("" when it is not one RAVI knows), and how
+  // near two are: 2 the same town, 1 the same region, 0 otherwise
+  root.RAVI_AREAS = {
+    name: function (code) { return code === "away" ? "Somewhere else" : (TOWN[code] ? TOWN[code][0] : ""); },
+    near: function (a, b) { return !a || !b || !TOWN[a] || !TOWN[b] ? 0 : (a === b ? 2 : (TOWN[a][1] === TOWN[b][1] ? 1 : 0)); },
+    towns: function () { var o = {}; Object.keys(TOWN).forEach(function (k) { o[k] = TOWN[k][1]; }); return o; }
+  };
   function areaText() { var a = A.view(); $("acareat").textContent = areaName(a && a.area); }
-  function renderAreas() {
-    var a = A.view(), cur = a && a.area || "", g = $("acareas");
+  function renderAreas(show) {
+    var a = A.view(), cur = a && a.area || "", g = $("acareas"), on = null;
     g.innerHTML = "";
     AREAS.forEach(function (x) {
       var b = el("button", x[0] === cur ? "on" : "");
       b.type = "button"; b.textContent = x[1]; b.setAttribute("data-area", x[0]);
+      if (x[0] === cur) on = b;
       g.appendChild(b);
     });
+    // a long list: opened, it shows the town already chosen
+    if (show && on && cur && on.scrollIntoView) on.scrollIntoView({ block: "center" });
   }
   function pickArea(code) {
     say("acareamsg", "Saving...");
     A.setArea(code || null, function (err) {
-      if (err) return say("acareamsg", err);
+      // the list is long: a refusal is brought into view; a pick that took shows its check where it was tapped
+      if (err) { say("acareamsg", err); if ($("acareamsg").scrollIntoView) $("acareamsg").scrollIntoView({ block: "nearest" }); return; }
       renderAreas(); areaText(); say("acareamsg", "Saved.");
     });
   }
