@@ -2352,22 +2352,27 @@ body{-webkit-font-smoothing:antialiased;
       toast(ok ? "Copied" : "Could not copy: press the text to copy it");
     }
     // PLAIN TEXT ON AN IPHONE (Mako 2026-11-15: the event text pasted into Notes as one big link, and
-    // PlayRiftbound would not take it): iOS reads text that writeText puts on the clipboard as a web address
-    // once it holds a colon ('Legend:'; WebKit bug 253708), so it is written as a ClipboardItem of plain
-    // text alone, and writeText only where that is missing
+    // PlayRiftbound would not take it). Since iOS 17 Safari also files any copied text that reads as a web
+    // address as a link (WebKit's addRepresentationsForPlainText: NSURL URLWithString now encodes spaces
+    // and line breaks instead of refusing them), and text that starts 'Legend:' reads as one, its scheme
+    // 'legend'. Text that starts with a scheme and a colon therefore goes out after one line break, which
+    // no address can start with and every deck list reader skips (noScheme). Written as a ClipboardItem of
+    // plain text alone, writeText only where that is missing.
+    t = noScheme(t);
     function viaText(){ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, fallback); } else fallback(); }
     var item = null;
     try{ if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) item = new ClipboardItem({ "text/plain": new Blob([t], { type: "text/plain" }) }); }catch(e){ item = null; }
     if(item) navigator.clipboard.write([item]).then(function(){ toast("Copied"); }, viaText);
     else viaText();
   }
+  function noScheme(t){ return /^[A-Za-z][A-Za-z0-9+.-]*:/.test(t) && !/^https?:\/\/\S+$/.test(t) ? "\n" + t : t; }   // a real link stays a link
   // PLAIN TEXT ONLY (plan 2 M10, Mako 2026-11-15: the event text pasted like links): copying by hand
   // from the export box would carry the page's styling as rich text; it gives the plain words alone,
   // as Copy does
   document.addEventListener("copy", function(e){
     var b = el("xbox"), sel = window.getSelection ? window.getSelection() : null;
     if(!b || b.hidden || !sel || sel.isCollapsed || !b.contains(sel.anchorNode) || !e.clipboardData) return;
-    e.clipboardData.setData("text/plain", sel.toString());
+    e.clipboardData.setData("text/plain", noScheme(sel.toString()));
     e.preventDefault();
   });
   function saveFile(t){
