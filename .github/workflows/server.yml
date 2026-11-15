@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: "22"
       - name: Parser and server load
-        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js'), import('./finishes.js'), import('./accounts.js'), import('./notify.js')]).then(() => console.log('server code loads'))"
+        run: node --input-type=module -e "Promise.all([import('./parse.js'), import('./push.js'), import('./alerts.js'), import('./finishes.js'), import('./accounts.js'), import('./notify.js'), import('./drill.js')]).then(() => console.log('server code loads'))"
       - name: Secrets in place?
         id: sec
         run: |
@@ -67,3 +67,13 @@ jobs:
           curl -fsS "$URL/event/117213852100443736" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);if(j.status!=='done'||j.rounds.length!==3)process.exit(1);console.log('reads Riot: '+j.name+', '+j.rounds.length+' rounds');})"
           curl -fsS "$URL/finishes?ids=117213852100443736" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);if(j.v!==1||typeof j.events!=='object')process.exit(1);console.log('decks store answers');})"
           curl -fsS -X POST -H "Content-Type: application/json" -d '{}' "$URL/acct/auth/options" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);if(typeof j.challenge!=='string'||j.rpId!=='ravi.tools')process.exit(1);console.log('accounts answer');})"
+      - name: Restore drill
+        if: steps.sec.outputs.ok == '1'
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: |
+          # RAVI's backup is Cloudflare's point-in-time recovery of each store (records: ARCH -- account
+          # data, its backup and the server's limits). drill.js proves it on its own throwaway store:
+          # keep a row, mark the moment, keep another, put the store back to the mark, read one row.
+          curl -fsS "$URL/drill" | tee drill.json; echo
+          node -e "const j=JSON.parse(require('fs').readFileSync('drill.json','utf8'));const w=j.ok?'Restore drill: the store went back to the mark ('+JSON.stringify(j.rows)+(j.recent?', run in the last 10 minutes':'')+')':'Restore drill FAILED: '+JSON.stringify(j);require('fs').appendFileSync(process.env.GITHUB_STEP_SUMMARY,w+'\n');console.log(w);if(!j.ok)process.exit(1)"

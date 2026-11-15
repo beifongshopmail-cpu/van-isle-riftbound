@@ -46,3 +46,14 @@ class_name = "Accounts"
 [[migrations]]
 tag = "v3"
 new_sqlite_classes = ["Accounts"]
+
+# The restore drill (drill.js, plan 2 M10 block 4): a fourth Durable Object on SQLite storage, free
+# plan, holding only its own two rows. It proves that point-in-time recovery, RAVI's backup of the
+# three stores above, works on this account (GET /drill; the deploy workflow runs it).
+[[durable_objects.bindings]]
+name = "DRILL"
+class_name = "Drill"
+
+[[migrations]]
+tag = "v4"
+new_sqlite_classes = ["Drill"]

@@ -10,6 +10,7 @@ import { makeAlerts } from "./alerts.js";
 import { vapidPublic } from "./push.js";
 import { makeFinishes } from "./finishes.js";
 import { makeAccounts } from "./accounts.js";
+import { makeDrill, runDrill } from "./drill.js";
 
 const UA = "VanIsleRiftbound/1.0 (+https://github.com/beifongshopmail-cpu/van-isle-riftbound)";
 const GQL = "https://playriftbound.com/api/gql";
@@ -162,6 +163,11 @@ async function toFinishes(req, env, path, method) {
 // for this server from ravi.tools: a cross-site cookie is blocked).
 export const Accounts = makeAccounts();
 
+// The restore drill (drill.js, plan 2 M10 block 4): its own throwaway store, which proves that the
+// stores above can be put back to any moment of the last 30 days. GET /drill runs it (at most once in
+// 10 minutes; inside that, the last result).
+export const Drill = makeDrill();
+
 async function toAccounts(req, env, path) {
   const init = { method: req.method, headers: { "Content-Type": "application/json", "X-Ravi-Ip": req.headers.get("CF-Connecting-IP") || "" } };
   const auth = req.headers.get("Authorization");
@@ -232,6 +238,10 @@ export default {
       return json(req, 200, { key: vapidPublic(JSON.parse(env.VAPID_JWK)) });
     }
     if (url.pathname === "/" || url.pathname === "/health") return json(req, 200, { ok: true, name: "ravi-live" });
+    if (url.pathname === "/drill") {
+      if (!env || !env.DRILL) return json(req, 503, { error: "not set up" });
+      try { return json(req, 200, await runDrill(env.DRILL)); } catch (e) { return json(req, 500, { ok: false, error: String(e && e.message || e).slice(0, 200) }); }
+    }
     const m = /^\/event\/(\d{6,24})$/.exec(url.pathname);
     if (!m) return json(req, 404, { error: "not found" });
     try {
