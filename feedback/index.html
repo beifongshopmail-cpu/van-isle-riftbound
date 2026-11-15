@@ -87,7 +87,27 @@ body{-webkit-font-smoothing:antialiased;
     <div class="shead"><h2>Send feedback</h2></div>
 <div class="doors fgrp">
   <div class="fbody" id="fform">
-    <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+    <iframe data-tally-src="https://tally.so/embed/QKlGxX?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="200" frameborder="0" marginheight="0" marginwidth="0" title="Feedback form"></iframe><script>
+(function(){
+  // The form carries what a report needs without asking (plan 2 M10 block 5, Mako's yes 2026-11-15): RAVI's
+  // version, the page you came from and the phone, as Tally's hidden fields version, page and device. The form
+  // loads once the version is known (or after 1.5 s without it), then as Tally's own embed code does.
+  var d = document, w = "https://tally.so/widgets/embed.js", done = false, f = d.querySelector("#fform iframe[data-tally-src]");
+  function load(v){
+    if (done) return; done = true;
+    var c = window.RAVI_REPORT_CTX ? window.RAVI_REPORT_CTX() : {}, q = "";
+    if (v) q += "&version=" + encodeURIComponent(v);
+    if (c.page) q += "&page=" + encodeURIComponent(c.page);
+    if (c.device) q += "&device=" + encodeURIComponent(c.device);
+    if (f) f.setAttribute("data-tally-src", f.getAttribute("data-tally-src") + q);
+    var go = function(){ "undefined" != typeof Tally ? Tally.loadEmbeds() : d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach(function(e){ e.src = e.dataset.tallySrc; }); };
+    if ("undefined" != typeof Tally) go();
+    else if (d.querySelector('script[src="' + w + '"]') == null) { var s = d.createElement("script"); s.src = w; s.onload = go; s.onerror = go; d.body.appendChild(s); }
+  }
+  setTimeout(function(){ load(null); }, 1500);
+  if (window.RAVI_VERSION) window.RAVI_VERSION("../", load); else load(null);
+})();
+</script>
   </div>
   </div>
   </section>
@@ -141,6 +161,7 @@ body{-webkit-font-smoothing:antialiased;
   document.addEventListener("click", function(ev){ if(ev.target.closest("[data-close]")) show(null); });
 
   // ---- PLANNED AND RECENTLY SHIPPED, from data/changes.json ----
+  var OPENALL = false;
   function esc(t){ return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   var PG = {};
   (window.RAVI_PAGES || []).forEach(function(p){ PG[p.id] = p; });
@@ -184,9 +205,12 @@ body{-webkit-font-smoothing:antialiased;
       el("alist").innerHTML = sh.map(update).join("");
       el("scnt").textContent = sh.length;
       el("shipped").hidden = false;
+      if(OPENALL){ OPENALL = false; show(el("pall")); }
     }
   }).catch(function(){});
   el("sall").addEventListener("click", function(){ show(el("pall")); });
+  // a link in (?open=pall, from App settings' Version row) opens All updates once they are drawn
+  if(/[?&]open=pall\b/.test(location.search)) OPENALL = true;
 })();
 </script>
 <script>

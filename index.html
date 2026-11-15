@@ -433,6 +433,7 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
 #pall{bottom:calc(max(4px,calc(env(safe-area-inset-bottom,0px) - 12px)) + 8px)}
 .hubfoot{margin-top:auto;padding:28px 12px calc(env(safe-area-inset-bottom,0px) + 16px)}
 .hubfoot p{margin:0;text-align:center;font-family:var(--text);font-size:12px;line-height:1.4;color:var(--muted)}
+.hubfoot .hubver{margin-top:6px}
 </style>
 </head>
 <body>
@@ -473,7 +474,10 @@ html.rm .sheen,html[data-glow="off"] .sheen{display:none} /* App settings: Reduc
 
   <footer class="hubfoot">
     <p>RAVI was created under Riot Games' Legal Jibber Jabber policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</p>
+    <p class="hubver" id="hubver" hidden></p>
   </footer>
+  <!-- the app's version (plan 2 M10 block 5, Mako 2026-11-15: a spot on the hub's footer) -->
+  <script>RAVI_VERSION("", function(v){ if (!v) return; var e = document.getElementById("hubver"); e.textContent = "Version " + v; e.hidden = false; });</script>
 </div>
 <div class="scrim" id="scrim"></div>
 <section class="panel frost tray" id="pall" aria-hidden="true" aria-label="All pages">

@@ -20,6 +20,7 @@
   "shipped": [
     {
       "date": "2026-11-15",
+      "v": "0.10.0",
       "items": [
         {
           "page": "rules",

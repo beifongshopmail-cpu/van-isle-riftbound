@@ -102,7 +102,10 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   <div class="doors stgrp" id="stabout" data-k="deeper">
       <button type="button" class="door" data-st="pprivacy"><span class="t">Privacy</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
       <button type="button" class="door" data-st="pterms"><span class="t">Terms</span><span class="sp"></span><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></button>
+      <a class="door" id="stver" href="../feedback/?open=pall" hidden><span class="t">Version</span><span class="sp"></span><small id="stverv"></small><svg class="cvr" viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg></a>
   </div>
+  <!-- the app's version (plan 2 M10 block 5): its row opens Feedback's All updates -->
+  <script>RAVI_VERSION("../", function(v){ if (!v) return; document.getElementById("stverv").textContent = v; document.getElementById("stver").hidden = false; });</script>
   <p class="stn stnone" id="stnone" hidden>No setting matches.</p>
 
   <section class="sup glass" id="support"></section>
@@ -355,7 +358,11 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
     stqx.disabled = !stq.value;
     ["stalert", "sthubg", "sttier", "stdisp", "stabout"].forEach(function(g){
       var grp = document.getElementById(g), left = 0;
-      grp.querySelectorAll("[data-st]").forEach(function(b){
+      grp.querySelectorAll("[data-st],#stver").forEach(function(b){
+        if (b.id === "stver") {   // the version row: only once there is a version
+          var vh = !!document.getElementById("stverv").textContent && q.every(function(w){ return ["version", "updates", "patch", "notes", "whats", "new"].some(function(h){ return h.indexOf(w) === 0; }); });
+          b.hidden = !vh; if (vh) { left++; } return;
+        }
         var id = b.getAttribute("data-st"), have = (b.querySelector(".t").textContent + " " + WORDS[id] + " " + (id === "phub" || id === "popen" ? PAGES.map(function(p){ return p.name; }).join(" ") : "")).toLowerCase().split(/[^a-z0-9#]+/);
         var hit = q.every(function(w){ return have.some(function(h){ return h.indexOf(w) === 0; }); }) && !(b.hasAttribute("data-adm") && !isAdm());
         b.hidden = !hit; if (hit) { left++; }

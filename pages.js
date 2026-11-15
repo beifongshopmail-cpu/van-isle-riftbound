@@ -816,6 +816,45 @@ window.RAVI_SUPPORT = function(el, rel){
 // trusted at all: the page then knows only a heartbeat stamp and says nothing otherwise. Never a false
 // alarm. Late past: events 36 h, prices 48 h, news 24 h, rules 24 h, results 48 h, cards 9 days.
 // ?stale=1 on a page shows the line as if its feed were late (a Safari tab; it skips the install screen).
+// THE APP'S VERSION (plan 2 M10 block 5, Mako's yes 2026-11-15): the newest update in data/changes.json that
+// carries a version (v: 0.10.0 for testers; each update a player would notice adds one to the last number, a
+// new milestone to the middle one, the App Store 1.0). Shown on the hub's footer, App settings' About and
+// Feedback's update heads. RAVI_VERSION(rel, cb): cb(version or null), one read per page.
+window.RAVI_VERSION = (function(){
+  var job = null;
+  return function(rel, cb){
+    if (!job) {
+      job = fetch((rel || "") + "data/changes.json", { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+        var sh = d && Array.isArray(d.shipped) ? d.shipped : [], i;
+        for (i = 0; i < sh.length; i++) { if (sh[i] && typeof sh[i].v === "string" && /^\d+\.\d+\.\d+$/.test(sh[i].v)) { return sh[i].v; } }
+        return null;
+      }).catch(function(){ return null; });
+    }
+    job.then(function(v){ try { cb(v); } catch (e) {} });
+  };
+})();
+// WHAT A REPORT CARRIES (plan 2 M10 block 5): for Feedback's form, the page you came from (your Back trail),
+// and the phone: its system and version, installed or in a browser tab, and the screen size. Never who you are.
+window.RAVI_REPORT_CTX = function(){
+  var ua = navigator.userAgent || "", sys = "", from = "";
+  var m = /(iPhone|iPad|iPod)[^)]*OS (\d+)_(\d+)/.exec(ua);
+  if (m) { sys = m[1] + ", iOS " + m[2] + "." + m[3]; }
+  else if ((m = /Android (\d+(?:\.\d+)?)/.exec(ua))) { sys = "Android " + m[1]; }
+  else if (/Macintosh/.test(ua)) { sys = navigator.maxTouchPoints > 1 ? "iPad" : "Mac"; }
+  else if (/Windows/.test(ua)) { sys = "Windows"; }
+  else { sys = "Other"; }
+  var inst = (navigator.standalone === true) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  try {
+    var t = JSON.parse(sessionStorage.getItem("ravi.back.v2") || "[]"), top = Array.isArray(t) ? t[t.length - 1] : null;
+    var here = location.pathname.replace(/index\.html$/, "");
+    if (top && top.to === here && typeof top.from === "string") {
+      var pages = window.RAVI_PAGES || [], i;
+      from = "Hub";
+      for (i = 0; i < pages.length; i++) { if (pages[i].path && top.from.slice(-pages[i].path.length - 1) === "/" + pages[i].path) { from = pages[i].name; break; } }
+    }
+  } catch (e) { from = ""; }
+  return { page: from, device: sys + ", " + (inst ? "installed" : "browser tab") + ", " + Math.round(screen.width) + " x " + Math.round(screen.height) };
+};
 window.RAVI_STALE = (function(){
   var HOUR = 3600000;
   var ALLOW = { events: 36, prices: 48, feed: 24, rules: 24, tier: 48, cards: 216 };
