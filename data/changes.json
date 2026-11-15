@@ -23,6 +23,11 @@
       "v": "0.10.0",
       "items": [
         {
+          "page": "app",
+          "t": "Version numbers",
+          "d": "RAVI has a version number, on the hub, in App settings and on each update here. Feedback sends it with your note, along with the page you came from and your phone, so a bug report needs no extra details."
+        },
+        {
           "page": "rules",
           "t": "Rules documents offline",
           "d": "The Core Rules and Tournament Rules open from RAVI's own copy, kept in step with Riot's each day, so they read with no connection too."
