@@ -1889,14 +1889,13 @@ body{-webkit-font-smoothing:antialiased;
     var dk = deck(), DL = C(dk.legend), ek = CURID + "|" + (dk.legend || "");
     if(EF.deck !== ek){ EF.deck = ek; EF.f.dom = DL ? doms(DL).concat(["colorless"]) : []; }
     el("echips").innerHTML = chipsHTML(EF, "main");
-    var keep = BR.sort; BR.sort = EF.sort;
+    var keep = BR.sort; BR.sort = EF.sort; SQ = EQ;
     var hits = I.list.filter(function(x){
       var sc = X.sectionOf(x);
       if(!sc || sc === "legend") return false; // a legend changes by tapping the deck's legend (Mako 2026-11-02)
       if(!SET.allp && !BASE[X.codeOf(x.c)]) return false;
       if(!eMatch(x)) return false;
-      var hay = (nm(x) + " " + X.codeOf(x.c) + " " + (x.g || []).join(" ")).toLowerCase();
-      return q.split(/\s+/).every(function(t){ return hay.indexOf(t) > -1; });
+      return brRank(x, EQ) > 0;   // the card's name, number and tags, then its text (brRank)
     }).sort(brSort);
     BR.sort = keep;
     ELEN = hits.length;
@@ -2011,12 +2010,34 @@ body{-webkit-font-smoothing:antialiased;
       return s === "main";
     });
   }
-  function brMatch(x){
-    var f = BR.f, q = BR.q.trim().toLowerCase();
-    if(q){
-      var hay = (nm(x) + " " + X.codeOf(x.c) + " " + (x.g || []).join(" ")).toLowerCase();
-      if(q.split(/\s+/).some(function(w){ return hay.indexOf(w) < 0; })) return false;
+  // THE SEARCH READS THE CARD, NOT ONLY ITS NAME (Mako 2026-11-14: 'deathknell' found nothing but the
+  // cards named Death...). Every word must be in the card's name, number or tags (rank 2), or failing
+  // that in its name, its rules text with its keywords, its type or its domains (rank 1), as the Cards
+  // page's search; cards found by name come first. The words are kept per card, built once.
+  var BRTXT = {}, SQ = "";   // SQ: the search being sorted (the browser's, or Edit's)
+  function brKey(s){ return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+  function brText(x){
+    var c = x.c;
+    if(BRTXT[c] === undefined) BRTXT[c] = " " + brKey(String(x.q || "").replace(/<[^>]*>/g, " ").replace(/:rb_[a-z0-9_]+:/g, " ") + " " + (x.t || "") + " " + (x.d || []).join(" ")) + " ";
+    return BRTXT[c];
+  }
+  function brRank(x, query){
+    var q = String(query === undefined ? BR.q : query).trim().toLowerCase();
+    if(!q) return 2;
+    var hay = (nm(x) + " " + X.codeOf(x.c) + " " + (x.g || []).join(" ")).toLowerCase(), words = q.split(/\s+/), txt = null, i, w, k, rank = 2;
+    for(i = 0; i < words.length; i++){
+      w = words[i];
+      if(hay.indexOf(w) > -1) continue;
+      k = brKey(w);
+      if(txt === null) txt = brText(x);
+      if(!k || txt.indexOf(k) < 0) return 0;
+      rank = 1;
     }
+    return rank;
+  }
+  function brMatch(x){
+    var f = BR.f;
+    if(!brRank(x)) return false;
     if(f.dom.length){ if(!(x.d || []).length) return false; var ds = doms(x); if(!ds.length) ds = ["colorless"]; if(!ds.every(function(v){ return f.dom.indexOf(v) > -1; })) return false; } // no domain at all is not Colorless: Riot has not filled it in yet (11 Radiance cards, 2026-11-02)
     if(f.type.length && BR.sec !== "legend" && BR.sec !== "bf" && f.type.indexOf(x.t) < 0) return false;
     if(f.energy.length){ var e = typeof x.e === "number" ? Math.min(x.e, 9) : -1; if(f.energy.indexOf(String(e)) < 0) return false; }
@@ -2024,7 +2045,10 @@ body{-webkit-font-smoothing:antialiased;
     if(!SET.allp && !BASE[X.codeOf(x.c)]) return false;
     return true;
   }
-  function brSort(a, b){ var r = brSort0(a, b); return window.RAVI_SORT.flip(BR.sort) ? -r : r; }
+  function brSort(a, b){
+    if(SQ.trim()){ var ra = brRank(a, SQ), rb = brRank(b, SQ); if(ra !== rb) return rb - ra; }   // found by name before found by text
+    var r = brSort0(a, b); return window.RAVI_SORT.flip(BR.sort) ? -r : r;
+  }
   function brSort0(a, b){
     var bs = window.RAVI_SORT.key(BR.sort);
     if(bs === "price"){ var pa = price(X.codeOf(a.c)) || 0, pb = price(X.codeOf(b.c)) || 0; if(pb !== pa) return pb - pa; }
@@ -2086,6 +2110,7 @@ body{-webkit-font-smoothing:antialiased;
     return '<div class="ctile"><div class="cbox"><button type="button" class="cpic' + (land ? " land" : "") + '" data-act="bpick" data-code="' + esc(c) + '" aria-label="' + esc(nm(x)) + (n ? ", " + n + " in the deck" : "") + (banned(x) ? ", banned" : "") + '" data-k="card">' + img(x) + '</button>' + badges(x, "", stp && stp.indexOf("lsteps") > -1 ? "" : "low") + stp + '</div><p class="cname">' + esc(nm(x)) + '</p></div>';
   }
   function brRender(keepScroll){
+    SQ = BR.q;
     var list = brPool().filter(brMatch).sort(brSort), h = "";
     list.slice(0, BR.n).forEach(function(x){ h += brTile(x); });
     paint(el("bgrid"), h);
