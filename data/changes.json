@@ -7,11 +7,6 @@
       "d": "Pick any area, not only Vancouver Island."
     },
     {
-      "page": "app",
-      "t": "Use RAVI offline",
-      "d": "The app opens and works with no connection."
-    },
-    {
       "page": "rules",
       "t": "Ask a rules judge",
       "d": "Ask a rules question in plain words and get an answer from Riot's own rules."
@@ -30,6 +25,11 @@
           "page": "decks",
           "t": "Suggest a rune split",
           "d": "In Edit, Suggest split shares a deck's 12 runes between its two domains by how much Power the Main deck needs of each."
+        },
+        {
+          "page": "app",
+          "t": "Use RAVI offline",
+          "d": "The installed app saves itself and opens with no connection, showing what was saved and saying so."
         }
       ]
     },
