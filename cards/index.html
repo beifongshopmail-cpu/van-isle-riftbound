@@ -151,6 +151,7 @@ body{-webkit-font-smoothing:antialiased;
 <main id="cd">
   <h2 class="sr">Cards</h2>
 
+  <p class="stale" data-stale hidden></p>
   <div class="srow plate glass">
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
@@ -722,6 +723,7 @@ body{-webkit-font-smoothing:antialiased;
     if(w){ openCard(w); try{ history.replaceState(null, "", location.pathname); }catch(e){} }
     fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(P){
       pricesIn(P); var st = el("stamp"); if(st) st.innerHTML = window.RAVI_STAMP(P) || "&nbsp;";
+      window.RAVI_STALE("prices", P.generated_at);
       render(true);
       if(CV && OPENP === el("pcard")){ var keep = CV.rows[CV.pi] && CV.rows[CV.pi].code; CV.rows = X.printingsOf(I, PX, CV.e.x, LAB.sets || {}); CV.pi = 0; CV.rows.forEach(function(r, i){ if(r.code && r.code === keep) CV.pi = i; }); fillCard(); }
     }).catch(function(){});

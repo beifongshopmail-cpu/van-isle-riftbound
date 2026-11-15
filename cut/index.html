@@ -65,6 +65,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 .hwb p{margin:0;font-size:15px;line-height:1.4;color:var(--muted)}
 /* the event menu's rows carry two lines */
 /* (its rows are app.css's two-line pick rows, .pick.twol, as the Tracker's Event menu) */
+#evstale{margin:0 2px 10px}   /* the menu's one note: the events are late (pages.js RAVI_STALE) */
 /* the Event row (M17 block 4 phone check): the label stays whole, the value takes the rest and
    is trimmed only when even the short name is too long; the chevron always shows */
 #evbtn .t,#evbtn .cvr{flex-shrink:0}
@@ -113,7 +114,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
 </section>
 <section class="panel frost" id="pev" aria-hidden="true" aria-label="Event">
   <div class="phead"><h4 class="ttl">Event</h4><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick twol" id="evl" data-k="pick"></div></div>
+  <div class="pbody"><p class="pnote" id="evstale" hidden></p><div class="pick twol" id="evl" data-k="pick"></div></div>
 </section>
 <!-- How it's worked out (M17 sweep, Mako 2026-10-30): the explanation sits behind the bar's info
      slot, as the Tier list's How it's counted, instead of a standing note under Your finishes. -->
@@ -437,6 +438,7 @@ body{-webkit-font-smoothing:antialiased;touch-action:manipulation}
   render();
   fetch("../data/events.json", { cache: "no-cache" }).then(function(r){ if (!r.ok) { throw new Error("http " + r.status); } return r.json(); }).then(function(j){
     var a = j && Array.isArray(j.events) ? j.events : [], i, e;
+    window.RAVI_STALE("events", j && j.generated_at, { el: document.getElementById("evstale"), plain: true });
     // a real event visited from anywhere (?visit=<id> on the Events page; live.js)
     if (window.RAVI_LIVE) { a = window.RAVI_LIVE.withVisit(a); }
     evs = [];

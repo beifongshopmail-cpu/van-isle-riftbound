@@ -342,6 +342,13 @@ html.lock,html.lock body{overflow:hidden}
    trade pages do. */
 /* a text page opens with one plain line under the wordmark (no glass); its title is for screen readers */
 .lede{margin:6px 4px 0;font-size:13px;line-height:1.45;color:var(--muted)}
+/* DATA THAT IS LATE (plan 2 M10 block 2; pages.js RAVI_STALE): one line at the top of a page's content, above its
+   plate or list, scrolling away with the page: the warning triangle and one sentence, bone at 13. No surface, no
+   colour, not tappable; the words and the triangle carry it. A plate held in a zero-height sticky (.stick) gets the
+   14 the other plates bring themselves. */
+.stale{box-sizing:border-box;max-width:480px;margin:0 auto;padding:0 18px;display:flex;justify-content:center;align-items:flex-start;gap:6px;font-family:var(--text);font-size:13px;line-height:1.4;font-weight:400;color:var(--bone)}
+.stale svg{flex:0 0 auto;width:16px;height:16px;margin-top:1px}
+.stale + .stick{margin-top:14px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .pghead{border-radius:22px;padding:14px 16px 15px;margin:6px 0 0}
 .pghead h2{font-size:20px;line-height:1.2}

@@ -94,6 +94,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
 <main id="rl">
   <h2 class="sr">Rules</h2>
 
+  <p class="stale" data-stale hidden></p>
   <div class="srow plate glass">
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
@@ -618,7 +619,7 @@ mark.chg{background:none;color:var(--bone);font-weight:700;text-decoration:under
   el("q").addEventListener("input", search);
   el("qx").addEventListener("click", function(){ el("q").value = ""; search(); el("q").focus(); });
 
-  fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ D = d; boot(); })
+  fetch("../data/rules.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){ D = d; window.RAVI_STALE("rules"); boot(); })
     .catch(function(){ el("home").hidden = true; el("loadfail").hidden = false; });
 })();
 </script>

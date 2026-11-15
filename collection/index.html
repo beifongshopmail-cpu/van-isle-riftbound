@@ -228,6 +228,7 @@ input[type="file"]{display:none}
   <div id="app" hidden>
     <!-- THE PLATE (round 3, Mako 2026-10-25: as Decks', one sticky block): which portfolio, its search,
          and how its cards show -->
+    <p class="stale" data-stale hidden></p>
     <div class="stk"><div class="plate glass">
       <div class="doors" data-k="deeper"><button type="button" class="door btn glass" id="portbtn" data-fills="pport"><span class="t" id="portname">Collection</span><span class="sp"></span><small id="portcnt"></small><svg class="cvr" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button></div>
       <div class="sf psf" id="hsf">
@@ -1506,6 +1507,7 @@ input[type="file"]{display:none}
   fetch("../data/prices.json", { cache: "no-store" }).then(function(r){ return r.json(); }).then(function(d){
     P = d; FX = (d.fx && d.fx.rate) || FX;
     el("stamp").innerHTML = window.RAVI_STAMP(d) || "&nbsp;";
+    window.RAVI_STALE("prices", d.generated_at);
     d.sets.forEach(function(s){ SETS[s.g] = s; });
     d.cards.forEach(function(c){ BYID[c.i] = c; });
     return fetch("../data/hist/index.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(ix){

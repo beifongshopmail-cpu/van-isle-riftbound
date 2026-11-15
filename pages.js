@@ -105,6 +105,9 @@ window.RAVI_ICON = (function(){
     updates: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M3.91,16.5A8.85 8.85 0 1 0 3.83,8.33"/><path d="M7.06,7.28L3.83,8.33L2.78,5.1"/><path d="M11.72 8.45V12.35l2.81 1.56"/></g><g class="icf"><mask id="@" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#000" stroke="none"/><circle cx="11.72" cy="12.35" r="6.449999999999999" fill="#fff" stroke="none"/><path d="M11.72 8.45V12.35l2.81 1.56" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></mask><rect width="24" height="24" fill="currentColor" stroke="none" mask="url(#@)"/><path d="M3.91,16.5A8.85 8.85 0 1 0 3.83,8.33"/><path d="M7.06,7.28L3.83,8.33L2.78,5.1z" fill="currentColor"/></g></svg>',
     // The like heart (Decks, plan 2 M9 block 2; into the table block 9): Lucide's heart (ISC), filled the shape itself.
     heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="ico"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></g><g class="icf"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" fill="currentColor"/></g></svg>',
+    // The warning (Decks' problems, M13 icon pass, Mako's pick 2026-10-25; into the table plan 2 M10 block 2 for the
+    // stale-data line): a solid triangle with its mark cut out. Material Symbols Rounded warning, filled, weight 600 (Apache-2.0).
+    warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M96.52-112.65q-11.82 0-20.59-5.7-8.76-5.69-13.89-14.39-5.13-8.69-5.63-19.02t5.63-21.15L445.52-835q6.13-10.26 15.18-14.89 9.04-4.63 19.3-4.63 10.26 0 19.3 4.63 9.05 4.63 15.18 14.89l383.48 662.09q6.13 10.82 5.63 21.15-.5 10.33-5.63 19.02-5.13 8.7-13.89 14.39-8.77 5.7-20.59 5.7H96.52Zm410.39-134.83q9.35-9.35 9.35-22.91 0-13.57-9.35-22.63-9.34-9.07-22.91-9.07t-22.91 9.07q-9.35 9.06-9.35 22.63 0 13.56 9.35 22.91 9.34 9.35 22.91 9.35t22.91-9.35ZM505.5-356.5Q514-365 514-378v-159.48q0-13-8.5-21.5t-21.5-8.5q-13 0-21.5 8.5t-8.5 21.5V-378q0 13 8.5 21.5T484-348q13 0 21.5-8.5Z" transform="matrix(.025 0 0 .025 0 24)" fill="currentColor" stroke="none"/></svg>',
     // a menu head's explanation, opened in place (calendar Follow)
     // THE SORT ARROW (plan 2 M8, Mako 2026-11-05: an arrow and the sort's name, as Apple's Files and Mail
     // do): up for ascending (A to Z, low to high, oldest first), down for descending. RAVI_ARROW, Lucide (ISC) as
@@ -787,13 +790,98 @@ window.RAVI_SUPPORT = function(el, rel){
   window.RAVI_STAMP = function(D){
     if (!D || !D.generated_at) { return ""; }
     function e(v){ return String(v).replace(/[&<>"]/g, function(c){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
-    var gen = new Date(D.generated_at), age = (Date.now() - gen.getTime()) / 3600000;
+    var gen = new Date(D.generated_at);
     var s = "Prices are TCGplayer market price via tcgcsv.com, updated <b>" + e(window.RAVI_DATE(gen, true)) + "</b>";
-    s += (age > 48) ? ". These may be out of date." : ".";
+    s += ".";
     if (D.fx && D.fx.rate) { s += " 1 USD = <b>" + e(String(D.fx.rate)) + "</b> CAD, Bank of Canada, " + e(window.RAVI_DATE(D.fx.date) || D.fx.date || "") + "."; }
     if (D.totals) { s += " " + D.totals.priced + " products priced across " + D.totals.sets + " sets."; }
     return s;
   };
+})();
+
+// DATA THAT IS LATE (plan 2 M10 block 2, Mako 2026-11-14). When a data refresh has stopped, each page
+// that reads its file says so in words, once, at the top of its content: the warning triangle and
+// '<Things> last checked Nov 12. They may be out of date.' (app.css .stale). One copy, so every page
+// says it the same way; the footers no longer say it.
+//   RAVI_STALE(feed, stamp, opts): feed is events, prices, feed (News), rules, tier or cards; stamp is
+//   the file's own generated_at where it has one; opts.word names the things when the page is not the
+//   feed's own (Stores); opts.el is the element to fill (default: every [data-stale] on the page);
+//   opts.plain writes the words alone (a menu's note).
+// THE RULE. A file's own stamp is a heartbeat only where the refresh rewrites the file on every run
+// (events, prices). News, Rules and the Tier list commit only on a change, so their stamps look old on
+// a good day: for those the time comes from data/health.json, where health.js writes each refresh's
+// last good run once a day. A heartbeat stamp is judged against now. A time known only from the health
+// file is judged against the moment the health file was written, since that is when it was true, so
+// the wait for the next health run never reads as lateness. A health file older than two days is not
+// trusted at all: the page then knows only a heartbeat stamp and says nothing otherwise. Never a false
+// alarm. Late past: events 36 h, prices 48 h, news 24 h, rules 24 h, results 48 h, cards 9 days.
+// ?stale=1 on a page shows the line as if its feed were late (a Safari tab; it skips the install screen).
+window.RAVI_STALE = (function(){
+  var HOUR = 3600000;
+  var ALLOW = { events: 36, prices: 48, feed: 24, rules: 24, tier: 48, cards: 216 };
+  var BEAT = { events: true, prices: true };
+  var WORD = { events: "Events", prices: "Prices", feed: "News", rules: "Rules", tier: "Results", cards: "Cards" };
+  var HEALTH_MAX = 48;
+  var me = typeof document !== "undefined" ? document.currentScript : null;
+  var base = me && me.src ? me.src.replace(/pages\.js(\?.*)?$/, "") : "";
+  var got = null;
+  function ms(x){
+    if (x === null || x === undefined || x === "") { return null; }
+    var t = (x instanceof Date) ? x.getTime() : Date.parse(String(x));
+    return isNaN(t) ? null : t;
+  }
+  // -> { late, at }: at is the last time the feed is known to have been checked (ms), or null
+  function rule(feed, stamp, health, now){
+    var allow = ALLOW[feed];
+    if (!allow) { return { late: false, at: null }; }
+    var own = BEAT[feed] ? ms(stamp) : null;
+    var hat = health ? ms(health.at) : null, hf = null;
+    if (hat !== null && now - hat <= HEALTH_MAX * HOUR && now - hat >= -HOUR && health.feeds) { hf = ms(health.feeds[feed]); }
+    if (own !== null) {
+      var at = (hf !== null && hf > own) ? hf : own;
+      return { late: now - at > allow * HOUR, at: at };
+    }
+    if (hf !== null) { return { late: hat - hf > allow * HOUR, at: hf }; }
+    return { late: false, at: null };
+  }
+  function health(){
+    if (!got) {
+      got = fetch(base + "data/health.json", { cache: "no-cache" }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+    }
+    return got;
+  }
+  function words(feed, at, word){
+    return (word || WORD[feed]) + " last checked " + window.RAVI_DATE(new Date(at), true) + ". They may be out of date.";
+  }
+  function fill(els, text, plain){
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (!text) { el.hidden = true; el.textContent = ""; continue; }
+      if (plain) { el.textContent = text; }
+      else {
+        el.innerHTML = window.RAVI_ICON("warn") + "<span></span>";
+        el.lastChild.textContent = text;
+        el.setAttribute("role", "status");
+      }
+      el.hidden = false;
+    }
+  }
+  function show(feed, stamp, opts){
+    opts = opts || {};
+    return health().then(function(h){
+      var now = Date.now(), r = rule(feed, stamp, h, now);
+      if (/[?&]stale=1(&|$)/.test(location.search) && ALLOW[feed]) {
+        r = { late: true, at: r.at !== null ? r.at : (ms(stamp) !== null ? ms(stamp) : now - (ALLOW[feed] + 12) * HOUR) };
+      }
+      var els = opts.el ? [opts.el] : document.querySelectorAll("[data-stale]");
+      fill(els, r.late ? words(feed, r.at, opts.word) : "", !!opts.plain);
+      return r;
+    });
+  }
+  show.rule = rule;
+  show.words = words;
+  show.ALLOW = ALLOW;
+  return show;
 })();
 
 // THE BAR (from M9.6). Every page's bar is built here, so a slot two pages share is the same
@@ -1085,6 +1173,7 @@ window.RAVI_BAR = function(nav, slots){
   if (navigator.webdriver) { return; }
   if (document.documentElement.hasAttribute("data-read")) { window.RAVI_TAB = true; return; }
   if (/[?&]sim=/.test(location.search)) { return; }
+  if (/[?&]stale=1(&|$)/.test(location.search)) { return; }   // the stale-data test switch (RAVI_STALE), this page only
   // a ?visit= test link (live.js) opens this tab as the browser version, so
   // the Game page and Top cut can be reached from it too
   if (/[?&]visit=/.test(location.search)) { try { sessionStorage.setItem("ravi.web.v1", "1"); } catch (e) {} return; }

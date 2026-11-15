@@ -274,6 +274,7 @@
   /* the Event menu: each row is name, then venue/time under it. Content
      row: sized by its own two lines, with the row floor under it. */
   /* its rows are app.css's two-line pick rows (.pick.twol), as Top cut's Event menu */
+  #evstale{margin:0 2px 10px}   /* the menu's one note: the events are late (pages.js RAVI_STALE) */
 
   /* colours: a sunken one-of-six track now (app.css's .seg.swatch) --
      each capsule IS the colour, no inner dot. */
@@ -599,7 +600,7 @@
 </section>
 <section class="panel frost" id="pevt" aria-hidden="true" aria-label="Event">
   <div class="phead"><div class="ht"><button type="button" class="circ btn glass back" data-back aria-label="Back" hidden data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button><h4 class="ttl">Event</h4></div><button type="button" class="circ btn glass" data-close aria-label="Close" data-k="do"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <div class="pbody"><div class="pick twol" id="evlist" data-k="pick"></div></div>
+  <div class="pbody"><p class="pnote" id="evstale" hidden></p><div class="pick twol" id="evlist" data-k="pick"></div></div>
 </section>
 
 <!-- END GAME: one deeper from the Game settings foot -->
@@ -1079,6 +1080,7 @@
       if(!r.ok) throw new Error("http " + r.status);
       return r.json();
     }).then(function(j){
+      window.RAVI_STALE("events", j && j.generated_at, { el: document.getElementById("evstale"), plain: true });
       cseRenderList(withSim((j && j.events) || []));
     }).catch(function(){
       if(box){ box.innerHTML = "<div class=\"lgpempty\">Events could not load</div>"; }

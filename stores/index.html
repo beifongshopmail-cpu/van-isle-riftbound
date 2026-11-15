@@ -126,6 +126,7 @@ body{-webkit-font-smoothing:antialiased;
 <main id="str">
   <h2 class="sr">Stores</h2>
 
+  <p class="stale" data-stale hidden></p>
   <div class="srow plate glass">
     <div class="sf">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M15.8 15.8 21 21"/></svg>
@@ -443,7 +444,7 @@ body{-webkit-font-smoothing:antialiased;
     try{ if(m) want = decodeURIComponent(m[1]); }catch(e){}
     function again(){ render(); if(CUR && OPENP === el("pstore")){ var y = el("sbody").scrollTop; fillStore(CUR); el("sbody").scrollTop = y; } }
     if(want && openStore(want)){ try{ history.replaceState(null, "", location.pathname); }catch(e){} }
-    get("../data/events.json").then(function(E){ EVENTS = E.events || []; again(); }).catch(function(){});
+    get("../data/events.json").then(function(E){ EVENTS = E.events || []; window.RAVI_STALE("events", E.generated_at, { word: "Stores" }); again(); }).catch(function(){});
     get("../data/store-info.json").then(function(I){ INFO = (I && I.stores) || {}; again(); }).catch(function(){});
     get("../data/feed.json").then(function(F){ POSTS = (F.items || []).filter(function(p){ return p && p.kind === "local" && p.source && p.title && p.sum; }).sort(function(a, b){ return String(b.posted).localeCompare(String(a.posted)); }); again(); }).catch(function(){});
   }).catch(function(){ el("boot").remove(); el("loadfail").hidden = false; });
