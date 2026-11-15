@@ -27,6 +27,11 @@
       "date": "2026-11-14",
       "items": [
         {
+          "page": "decks",
+          "t": "Search by keyword",
+          "d": "A deck's card searches read the whole card, so a keyword like Deathknell finds every card that has it. Cards named for your search come first."
+        },
+        {
           "page": "calendar",
           "t": "Follow a town",
           "d": "Follow lists each town with events, so you can add one town's events to your calendar. Your home area on Profile is a town too, and the Exchange puts players in your town first."
