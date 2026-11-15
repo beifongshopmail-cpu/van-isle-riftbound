@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-15T07:37:42.423Z",
- "generated_local": "2026-11-15T00:37:42-07:00",
+ "generated_at": "2026-11-15T19:16:08.698Z",
+ "generated_local": "2026-11-15T12:16:08-07:00",
  "window_start": "2026-11-15T07:00:00.000Z",
  "anchors": [
   {
@@ -160,8 +160,8 @@
  ],
  "totals": {
   "fetched": 68,
-  "unique": 70,
-  "prev_unique": 77,
+  "unique": 71,
+  "prev_unique": 70,
   "recent": [
    {
     "d": "2026-11-03",
@@ -213,7 +213,7 @@
    },
    {
     "d": "2026-11-15",
-    "n": 70
+    "n": 71
    }
   ]
  },
@@ -229,9 +229,9 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-14",
-  "listed": 77,
-  "added": 2,
+  "run": "2026-11-15",
+  "listed": 71,
+  "added": 3,
   "error": null
  },
  "other_towns": [],
@@ -249,7 +249,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 3,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -287,6 +287,33 @@
    "bo": 3
   },
   {
+   "id": "st908683265121",
+   "name": "Mini-Worlds",
+   "type": "open",
+   "start": "2026-11-16T17:30:00-07:00",
+   "end": null,
+   "day": "2026-11-16",
+   "time": "5:30 PM",
+   "venue": "Skyhaven Games",
+   "city": "Victoria",
+   "address": "",
+   "region": "victoria",
+   "cap": null,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 4294,
+   "store": "Skyhaven",
+   "src": "store",
+   "url": "https://www.facebook.com/groups/1289633928950754/posts/1845310586716416",
+   "conf": "2026-11-15",
+   "swiss": null,
+   "cut": null
+  },
+  {
    "id": "st496098811572",
    "name": "Riftbound casual play",
    "type": "open",
@@ -309,7 +336,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid02NtzvyUtwmetu75A8eWuZsjzzUou3roajaSK9fduarCWKebeKjuF3tpeyBUxt9Jf9l",
-   "conf": "2026-11-14",
+   "conf": "2026-11-15",
    "swiss": null,
    "cut": null
   },
@@ -536,7 +563,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid02NtzvyUtwmetu75A8eWuZsjzzUou3roajaSK9fduarCWKebeKjuF3tpeyBUxt9Jf9l",
-   "conf": "2026-11-14",
+   "conf": "2026-11-15",
    "swiss": null,
    "cut": null
   },
@@ -628,7 +655,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 48,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
