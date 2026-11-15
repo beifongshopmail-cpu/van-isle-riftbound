@@ -844,15 +844,23 @@ window.RAVI_REPORT_CTX = function(){
   else if (/Windows/.test(ua)) { sys = "Windows"; }
   else { sys = "Other"; }
   var inst = (navigator.standalone === true) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  // the page: your Back trail's last move here, else the page the browser says you came from (a move from
+  // the hub is not on the trail), else 'Opened directly'
+  function name(p){
+    var pages = window.RAVI_PAGES || [], i;
+    for (i = 0; i < pages.length; i++) { if (pages[i].path && p.slice(-pages[i].path.length - 1) === "/" + pages[i].path) { return pages[i].name; } }
+    return "Hub";
+  }
   try {
     var t = JSON.parse(sessionStorage.getItem("ravi.back.v2") || "[]"), top = Array.isArray(t) ? t[t.length - 1] : null;
     var here = location.pathname.replace(/index\.html$/, "");
-    if (top && top.to === here && typeof top.from === "string") {
-      var pages = window.RAVI_PAGES || [], i;
-      from = "Hub";
-      for (i = 0; i < pages.length; i++) { if (pages[i].path && top.from.slice(-pages[i].path.length - 1) === "/" + pages[i].path) { from = pages[i].name; break; } }
+    if (top && top.to === here && typeof top.from === "string") { from = name(top.from); }
+    else if (document.referrer) {
+      var r = new URL(document.referrer);
+      if (r.origin === location.origin && r.pathname.replace(/index\.html$/, "") !== here) { from = name(r.pathname.replace(/index\.html$/, "")); }
     }
   } catch (e) { from = ""; }
+  if (!from) { from = "Opened directly"; }
   return { page: from, device: sys + ", " + (inst ? "installed" : "browser tab") + ", " + Math.round(screen.width) + " x " + Math.round(screen.height) };
 };
 window.RAVI_STALE = (function(){
