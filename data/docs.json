@@ -1,0 +1,23 @@
+{
+ "note": "Riot's rules documents as RAVI keeps them in docs/. Written by fetch-core-rules.js; never by hand.",
+ "docs": [
+  {
+   "id": "core-rules",
+   "title": "Core Rules",
+   "file": "docs/core-rules.pdf",
+   "url": "https://cmsassets.rgpub.io/sanity/files/dsfx7636/news_live/5c7946f7c3b8c6e0faff85ab6dadc6d2e721ea94.pdf",
+   "updated": "October 9, 2026",
+   "size": 1612011,
+   "sha256": "94d41fee86f88b61c4157c0389c0595d990b98e5b42555c99d9f649ee64d1fec"
+  },
+  {
+   "id": "tournament-rules",
+   "title": "Tournament Rules",
+   "file": "docs/tournament-rules.pdf",
+   "url": "https://cmsassets.rgpub.io/sanity/files/dsfx7636/news_live/861752822d217edf37d9febaeaf77a7d924c1bb6.pdf",
+   "updated": "October 9, 2026",
+   "size": 17509551,
+   "sha256": "ce07da4fb632526afbbce7f058287a57e7444fa6bde17b0938ff52ce3fab3d07"
+  }
+ ]
+}
