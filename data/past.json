@@ -473,28 +473,6 @@
    "store": "Gauntlet",
    "region": "victoria",
    "sid": 2069
-  },
-  {
-   "id": "rb117089690871093619",
-   "name": "Riftbound Radiance Pre-rift 2",
-   "type": "prerift",
-   "start": "2026-10-17T14:00:00-07:00",
-   "day": "2026-10-17",
-   "venue": "AJ's Games",
-   "store": "AJ's",
-   "region": "island",
-   "sid": 21894
-  },
-  {
-   "id": "rb117125737703142979",
-   "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-17T12:00:00-07:00",
-   "day": "2026-10-17",
-   "venue": "North Park Picture Framing and Collectables",
-   "store": "North Park Framing",
-   "region": "victoria",
-   "sid": 18437
   }
  ]
 }
