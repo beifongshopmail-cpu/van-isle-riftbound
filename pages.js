@@ -1069,6 +1069,83 @@ window.RAVI_BAR = function(nav, slots){
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function(){ setTimeout(boot, 0); }); } else { setTimeout(boot, 0); }
 })();
 
+// MENUS ARE DIALOGS FOR A SCREEN READER (plan 2 M10 block 6, Mako's yes 2026-11-15 16:03). Every menu
+// is a dialog (role, aria-modal while open). When the first menu opens, VoiceOver moves into it (its
+// title, or the menu itself when it has none, unless the page already put focus inside it), and
+// the page behind is hidden from screen readers (aria-hidden on the body's other parts), except the
+// bars and your picture, which stay in reach as they do for a finger. When the last menu closes, the
+// page is read again and focus goes back to the control that opened it. A deeper menu or a switch
+// moves focus to the new one. Nothing a finger sees or does changes. This watches the menus' class.
+(function(){
+  if (typeof document === "undefined" || !window.MutationObserver) { return; }
+  var opener = null, hid = [], wasOpen = false, lastTap = null;
+  document.addEventListener("click", function(e){
+    var c = e.target && e.target.closest ? e.target.closest("button, a, [role=button]") : null;
+    lastTap = c && !c.closest(".panel") ? c : lastTap;
+  }, true);
+  function shown(){ return Array.prototype.slice.call(document.querySelectorAll(".panel.show")); }
+  function keep(el, open){
+    if (el.matches(".panel, .scrim, .bar, .toast, .acpic, script, style")) { return true; }
+    if (el.querySelector(".bar, .acpic")) { return true; }
+    for (var i = 0; i < open.length; i++) { if (el.contains(open[i])) { return true; } }
+    return false;
+  }
+  function hide(open){
+    var kids = document.body ? document.body.children : [], i;
+    for (i = 0; i < kids.length; i++) {
+      var k = kids[i];
+      if (keep(k, open) || k.getAttribute("aria-hidden") === "true" || hid.indexOf(k) > -1) { continue; }
+      k.setAttribute("aria-hidden", "true"); hid.push(k);
+    }
+  }
+  function unhide(){ hid.forEach(function(k){ k.removeAttribute("aria-hidden"); }); hid = []; }
+  function into(p){
+    if (p.contains(document.activeElement)) { return; }
+    var t = p.querySelector(".phead h4, .phead .ttl") || p;
+    if (!t.hasAttribute("tabindex")) { t.setAttribute("tabindex", "-1"); }
+    try { t.focus({ preventScroll: true }); } catch (e) { try { t.focus(); } catch (e2) {} }
+  }
+  function seen(el){ return !!el && document.contains(el) && !!(el.offsetWidth || el.offsetHeight) && !el.disabled; }
+  var mo = new MutationObserver(function(list){
+    var fresh = [];
+    list.forEach(function(m){
+      var p = m.target, was = /(^| )show( |$)/.test(m.oldValue || ""), is = p.classList.contains("show");
+      if (is) { p.setAttribute("aria-modal", "true"); if (!was) { fresh.push(p); } }
+      else { p.removeAttribute("aria-modal"); }
+    });
+    var open = shown();
+    if (open.length) {
+      if (!wasOpen) {
+        var a = document.activeElement;
+        opener = (a && a !== document.body && !a.closest(".panel")) ? a : lastTap;
+      }
+      wasOpen = true;
+      unhide(); hide(open);
+      var go = fresh.length ? fresh[fresh.length - 1] : null;
+      if (!go && !open.some(function(p){ return p.contains(document.activeElement); })) { go = open[open.length - 1]; }
+      if (go) { into(go); }
+    } else if (wasOpen) {
+      wasOpen = false; unhide();
+      var o = opener; opener = null;
+      if (seen(o)) { try { o.focus({ preventScroll: true }); } catch (e) {} }
+    }
+  });
+  function join(p){
+    if (!p.getAttribute("role")) { p.setAttribute("role", "dialog"); }
+    mo.observe(p, { attributes: true, attributeFilter: ["class"], attributeOldValue: true });
+  }
+  function boot(){
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), join);
+    var w = window.RAVI_WATCH;   // menus added later (RAVI_WATCH: the account menus) join too
+    if (w && !w.__dialog) {
+      window.RAVI_WATCH = function(list){ for (var k = 0; k < list.length; k++) { join(list[k]); } return w(list); };
+      window.RAVI_WATCH.__dialog = true;
+      window.RAVI_WATCH.__grow = w.__grow;
+    }
+  }
+  if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function(){ setTimeout(boot, 0); }); } else { setTimeout(boot, 0); }
+})();
+
 // ROWS FOLD OPEN AND SHUT (plan 2 M8.7 motion polish; Mako 2026-11-08 10:41: "anywhere else there
 // should or could be a bit more polish on the motion"). Content a tap opens in place used to fade in
 // while everything under it jumped down in one frame, and snapped shut on close. Now its height moves

@@ -467,6 +467,7 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rglyph" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  .3 .59 .11 0 0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1"/></feComponentTransfer></filter></svg>
 <div class="stage" id="stage" data-mode="focus" data-won="0">
   <div class="field" id="field"></div>
+  <p class="sr" id="said" role="status" aria-live="polite"></p>
 </div>
 <!-- THE BANNER SITS OUTSIDE THE STAGE: the stage is fixed, so it is its own
      layer, and a banner inside it could not rise above the strip. -->
@@ -1744,9 +1745,12 @@
   function acts(p){
     var d = gameOver() ? " disabled" : "";
     return "<div class=\"acts\" data-k=\"play\">" +
-      "<button data-p=\"" + p + "\" data-s=\"conquer\"" + d + ">Conquer</button>" +
-      "<button data-p=\"" + p + "\" data-s=\"hold\"" + d + ">Hold</button>" +
-      "<button data-p=\"" + p + "\" data-s=\"other\"" + d + ">Other</button></div>";
+      "<button data-p=\"" + p + "\" data-s=\"conquer\"" + whose("Conquer", p) + d + ">Conquer</button>" +
+      "<button data-p=\"" + p + "\" data-s=\"hold\"" + whose("Hold", p) + d + ">Hold</button>" +
+      "<button data-p=\"" + p + "\" data-s=\"other\"" + whose("Other", p) + d + ">Other</button></div>";
+  }
+  // a screen reader hears whose button it is (plan 2 M10 block 6): 'Conquer, You'
+  function whose(w, p){ return " aria-label=\"" + w + ", " + esc(nameOf(p)) + "\"";
   }
 
   function pipsOf(p){
@@ -1763,7 +1767,7 @@
     var lgaR = lgrOn ? lgaDom(players[p].legend, "lgarune") : "";
     var lgaS = lgaSrc(p);
     var lgaT = (lgaMode === "small" && lgaS)
-      ? "<button type=\"button\" class=\"lgathumb\" data-spot=\"" + p + "\" aria-label=\"Expand card\" data-k=\"play\" style=\"background-image:url(" + lgaS + ")\"></button>"
+      ? "<button type=\"button\" class=\"lgathumb\" data-spot=\"" + p + "\" aria-label=\"Expand card, " + esc(nameOf(p)) + "\" data-k=\"play\" style=\"background-image:url(" + lgaS + ")\"></button>"
       : "";
     var pn =
       "<div class=\"name\"><span class=\"nm\">" + esc(nameOf(p)) + leg +
@@ -1854,15 +1858,15 @@
     var out = !!tallyMP(ev, FMT).out[p];
     var lgaS = lgaSrc(p);
     var art = (lgaMode === "small" && lgaS)
-      ? "<button type=\"button\" class=\"lgathumb\" data-spot=\"" + p + "\" aria-label=\"Expand card\" data-k=\"play\" style=\"background-image:url(" + lgaS + ")\"></button>"
+      ? "<button type=\"button\" class=\"lgathumb\" data-spot=\"" + p + "\" aria-label=\"Expand card, " + esc(nameOf(p)) + "\" data-k=\"play\" style=\"background-image:url(" + lgaS + ")\"></button>"
       : "";
     var tm = FMT === "2v2" ? "<span class=\"stm\">" + teamName(teamOf(p)) + "</span>" : "";
     return art +
       "<div class=\"name\">" + tm + "<span class=\"nm\">" + esc(nameOf(p)) + "</span>" + (out ? "<span class=\"stm\">Out</span>" : "") + "</div>" +
       "<div class=\"num\">" + scoreMP(p) + "</div>" +
       "<div class=\"acts\" data-k=\"play\">" +
-        "<button data-p=\"" + p + "\" data-s=\"conquer\">Conquer</button>" +
-        "<button data-p=\"" + p + "\" data-s=\"hold\">Hold</button></div>" +
+        "<button data-p=\"" + p + "\" data-s=\"conquer\"" + whose("Conquer", p) + ">Conquer</button>" +
+        "<button data-p=\"" + p + "\" data-s=\"hold\"" + whose("Hold", p) + ">Hold</button></div>" +
       "<button type=\"button\" class=\"pass btn glass\" data-k=\"play\">Pass turn</button>";
   }
   function fillSeat(el, p){
@@ -2344,8 +2348,17 @@
       if (nb) { nb.classList.remove("flash-p"); void nb.offsetWidth;
                 nb.classList.add("flash-p"); }
       landPoint(parseInt(fp, 10));
+      sayScore(parseInt(fp, 10));
     }
   });
+  // a point is read out by a screen reader (plan 2 M10 block 6): 'You, 4'
+  function sayScore(p){
+    var el = document.getElementById("said");
+    if (!el) { return; }
+    var t = nameOf(p) + ", " + (isMP() ? scoreMP(p) : score(p));
+    el.textContent = "";
+    setTimeout(function(){ el.textContent = t; }, 60);
+  }
 
   // The strip does not rest: the card system's bar never dims, so the old
   // dim-after-touch is gone. Screen wake was never tied to the strip;

@@ -97,6 +97,13 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 button:active{transform:scale(.96);transition-duration:.08s}
 button:disabled{opacity:.4;pointer-events:none}                   /* dim means disabled, holds its place */
 button:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
+.panel:focus,.panel [tabindex="-1"]:focus{outline:none}            /* a menu's title takes VoiceOver's focus when it opens (pages.js) */
+/* TAP AREAS (plan 2 M10 block 6): a round button (36) and your picture take taps 4 out from their edge,
+   44 across, and a track's option (34) takes them 5 above and below, so a finger
+   that lands just off one still hits it. Nothing drawn changes. */
+.circ.glass::after,.acpic::after{content:"";position:absolute;inset:-4px;border-radius:999px}
+.seg > button{position:relative}
+.seg > button::after{content:"";position:absolute;inset:-5px 0;border-radius:999px}
 
 /* .glass: the one glass recipe. Buttons, surfaces, event cards and the
    glass group (.doors) all use it. */

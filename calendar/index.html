@@ -87,6 +87,8 @@ a{color:inherit;text-decoration:none}
 .hemi svg{width:16px;height:16px;stroke:var(--bone);stroke-width:2.4;fill:none}
 .hl{border-radius:calc(var(--sz-sm) / 2) 5px 5px calc(var(--sz-sm) / 2);margin-right:-4px}
 .hr{border-radius:5px calc(var(--sz-sm) / 2) calc(var(--sz-sm) / 2) 5px}
+.hl::after,.hr::after{content:"";position:absolute;top:-4px;bottom:-4px}   /* tap areas 44 high, out from the pair's ends only (app.css TAP AREAS) */
+.hl::after{left:-4px;right:0} .hr::after{left:0;right:-4px}
 .mrow .circ svg{stroke:currentColor;stroke-width:2.4;fill:none}
 #prev svg,#next svg{width:18px;height:18px;stroke-width:2.4} /* the round-button chevron, the same as the collapse chevron beside them */
 
