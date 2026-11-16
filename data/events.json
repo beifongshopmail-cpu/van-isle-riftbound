@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-15T19:16:08.698Z",
- "generated_local": "2026-11-15T12:16:08-07:00",
- "window_start": "2026-11-15T07:00:00.000Z",
+ "generated_at": "2026-11-16T07:43:04.042Z",
+ "generated_local": "2026-11-16T00:43:04-07:00",
+ "window_start": "2026-11-16T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 50,
-   "added": 50
+   "returned": 48,
+   "added": 48
   },
   {
    "name": "Sidney",
@@ -159,9 +159,9 @@
   }
  ],
  "totals": {
-  "fetched": 68,
-  "unique": 71,
-  "prev_unique": 70,
+  "fetched": 66,
+  "unique": 69,
+  "prev_unique": 71,
   "recent": [
    {
     "d": "2026-11-03",
@@ -214,6 +214,10 @@
    {
     "d": "2026-11-15",
     "n": 71
+   },
+   {
+    "d": "2026-11-16",
+    "n": 69
    }
   ]
  },
@@ -236,56 +240,6 @@
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "rb117606968523210429",
-   "name": "sunday morning nexus \"night\"",
-   "type": "nexus",
-   "start": "2026-11-15T11:30:00-07:00",
-   "end": null,
-   "day": "2026-11-15",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Langford",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 3,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 16866,
-   "store": "Everything Games",
-   "swiss": 3,
-   "cut": false,
-   "bo": 3
-  },
-  {
-   "id": "rb117073785007006396",
-   "name": "Radiance Skirmish #1",
-   "type": "skirmish",
-   "start": "2026-11-15T17:00:00-07:00",
-   "end": null,
-   "day": "2026-11-15",
-   "time": "5:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 21,
-   "cents": 1000,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 4294,
-   "store": "Skyhaven",
-   "swiss": 5,
-   "cut": false,
-   "bo": 3
-  },
   {
    "id": "st908683265121",
    "name": "Mini-Worlds",
@@ -428,7 +382,7 @@
    "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
