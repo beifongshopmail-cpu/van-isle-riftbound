@@ -409,37 +409,6 @@
    "store": "Colossal Victoria",
    "region": "victoria",
    "sid": 15103
-  },
-  {
-   "id": "rb117021055583706596",
-   "name": "Radiance Pre-Rift 2",
-   "type": "prerift",
-   "start": "2026-10-18T14:00:00-07:00",
-   "day": "2026-10-18",
-   "venue": "Elite4 Games",
-   "region": "victoria",
-   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895"
-  },
-  {
-   "id": "rb117091108751475574",
-   "name": "Sunday Morning Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-18T11:30:00-07:00",
-   "day": "2026-10-18",
-   "venue": "Everything Games",
-   "store": "Everything Games",
-   "region": "victoria",
-   "sid": 16866
-  },
-  {
-   "id": "rb117021049810644601",
-   "name": "Radiance Pre-Rift 1",
-   "type": "prerift",
-   "start": "2026-10-18T10:30:00-07:00",
-   "day": "2026-10-18",
-   "venue": "Elite4 Games",
-   "region": "victoria",
-   "sid": "019fb060-927e-7709-b9cb-32c53ec8c895"
   }
  ]
 }
