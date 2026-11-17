@@ -440,39 +440,6 @@
    "venue": "Elite4 Games",
    "region": "victoria",
    "sid": "019fb060-927e-7709-b9cb-32c53ec8c895"
-  },
-  {
-   "id": "rb117089686336807689",
-   "name": "Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-17T18:00:00-07:00",
-   "day": "2026-10-17",
-   "venue": "AJ's Games",
-   "store": "AJ's",
-   "region": "island",
-   "sid": 21894
-  },
-  {
-   "id": "rb117089935987420441",
-   "name": "Radiance Pre Rift Sealed Event (Colossal Cards & Collectables Courtenay)",
-   "type": "prerift",
-   "start": "2026-10-17T17:00:00-07:00",
-   "day": "2026-10-17",
-   "venue": "Colossal Cards & Collectables",
-   "store": "Colossal Courtenay",
-   "region": "island",
-   "sid": 902
-  },
-  {
-   "id": "rb117129734731960429",
-   "name": "Gauntlet Games Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-17T17:00:00-07:00",
-   "day": "2026-10-17",
-   "venue": "Gauntlet Games",
-   "store": "Gauntlet",
-   "region": "victoria",
-   "sid": 2069
   }
  ]
 }

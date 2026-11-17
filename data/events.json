@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-16T22:45:58.733Z",
- "generated_local": "2026-11-16T15:45:58-07:00",
- "window_start": "2026-11-16T07:00:00.000Z",
+ "generated_at": "2026-11-17T08:52:58.204Z",
+ "generated_local": "2026-11-17T01:52:58-07:00",
+ "window_start": "2026-11-17T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -160,13 +160,9 @@
  ],
  "totals": {
   "fetched": 66,
-  "unique": 68,
-  "prev_unique": 69,
+  "unique": 67,
+  "prev_unique": 68,
   "recent": [
-   {
-    "d": "2026-11-03",
-    "n": 59
-   },
    {
     "d": "2026-11-04",
     "n": 60
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-16",
     "n": 69
+   },
+   {
+    "d": "2026-11-17",
+    "n": 67
    }
   ]
  },
@@ -235,38 +235,11 @@
  "store_posts": {
   "run": "2026-11-16",
   "listed": 68,
-  "added": 2,
+  "added": 1,
   "error": null
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "st908683265121",
-   "name": "Mini-Worlds",
-   "type": "open",
-   "start": "2026-11-16T17:30:00-07:00",
-   "end": null,
-   "day": "2026-11-16",
-   "time": "5:30 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "",
-   "region": "victoria",
-   "cap": null,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 4294,
-   "store": "Skyhaven",
-   "src": "store",
-   "url": "https://www.facebook.com/groups/1289633928950754/posts/1845310586716416",
-   "conf": "2026-11-16",
-   "swiss": null,
-   "cut": null
-  },
   {
    "id": "rb117560610583491608",
    "name": "Gauntlet Games Nexus Night",
@@ -305,7 +278,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 0,
+   "reg": 1,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -330,7 +303,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 3,
+   "reg": 4,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
