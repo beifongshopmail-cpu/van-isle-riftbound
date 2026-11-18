@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-17T21:31:48.566Z",
- "generated_local": "2026-11-17T14:31:48-07:00",
- "window_start": "2026-11-17T07:00:00.000Z",
+ "generated_at": "2026-11-18T08:16:55.549Z",
+ "generated_local": "2026-11-18T01:16:55-07:00",
+ "window_start": "2026-11-18T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -160,13 +160,9 @@
  ],
  "totals": {
   "fetched": 66,
-  "unique": 69,
-  "prev_unique": 67,
+  "unique": 68,
+  "prev_unique": 69,
   "recent": [
-   {
-    "d": "2026-11-04",
-    "n": 60
-   },
    {
     "d": "2026-11-05",
     "n": 66
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-17",
     "n": 69
+   },
+   {
+    "d": "2026-11-18",
+    "n": 68
    }
   ]
  },
@@ -235,38 +235,11 @@
  "store_posts": {
   "run": "2026-11-17",
   "listed": 66,
-  "added": 3,
+  "added": 2,
   "error": null
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "st496098811572",
-   "name": "Riftbound casual play",
-   "type": "open",
-   "start": "2026-11-17T17:00:00-07:00",
-   "end": "2026-11-17T20:00:00-07:00",
-   "day": "2026-11-17",
-   "time": "5:00 PM",
-   "venue": "Rotty's Creations",
-   "city": "Victoria",
-   "address": "",
-   "region": "victoria",
-   "cap": null,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": "st-rottys-creations-victoria",
-   "store": "Rotty's",
-   "src": "store",
-   "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-17",
-   "swiss": null,
-   "cut": null
-  },
   {
    "id": "rb117560610583491608",
    "name": "Gauntlet Games Nexus Night",
@@ -1284,7 +1257,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 2,
+   "reg": 3,
    "cents": 4500,
    "currency": "CAD",
    "updated": null,
@@ -1359,7 +1332,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 4,
+   "reg": 5,
    "cents": 5000,
    "currency": "CAD",
    "updated": null,
@@ -1484,7 +1457,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 2,
+   "reg": 3,
    "cents": 4500,
    "currency": "USD",
    "updated": null,
@@ -1784,7 +1757,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 2,
+   "reg": 3,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -1884,7 +1857,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 1,
+   "reg": 2,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,

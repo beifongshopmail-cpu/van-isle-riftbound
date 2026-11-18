@@ -376,39 +376,6 @@
    "store": "Skyhaven",
    "region": "victoria",
    "sid": 4294
-  },
-  {
-   "id": "rb117073744968569504",
-   "name": "Radiance Pre-Rift Sunday",
-   "type": "prerift",
-   "start": "2026-10-18T17:00:00-07:00",
-   "day": "2026-10-18",
-   "venue": "Skyhaven Games",
-   "store": "Skyhaven",
-   "region": "victoria",
-   "sid": 4294
-  },
-  {
-   "id": "rb117368564203616505",
-   "name": "Radiance Pre Rift (Colossal Cards & Collectables Courtenay)",
-   "type": "prerift",
-   "start": "2026-10-18T17:00:00-07:00",
-   "day": "2026-10-18",
-   "venue": "Colossal Cards & Collectables",
-   "store": "Colossal Courtenay",
-   "region": "island",
-   "sid": 902
-  },
-  {
-   "id": "rb117170860186945231",
-   "name": "Colossal Cards Victoria Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-18T15:30:00-07:00",
-   "day": "2026-10-18",
-   "venue": "Colossal Cards & Collectables",
-   "store": "Colossal Victoria",
-   "region": "victoria",
-   "sid": 15103
   }
  ]
 }
