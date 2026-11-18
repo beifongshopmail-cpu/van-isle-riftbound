@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//van-isle-riftbound//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:rb117638532167547816@van-isle-riftbound
+DTSTAMP:20260901T000000Z
+DTSTART;TZID=America/Vancouver:20261118T190000
+DTEND;TZID=America/Vancouver:20261118T220000
+SUMMARY:weekly Nexus Night
+LOCATION:2220 Bowen Rd\, Nanaimo\, BC V9S 1H9\, Canada
+DESCRIPTION:Nexus Nights\nSports Card Alley\, Nanaimo\n8 of 16 spots left\n
+ $5.00 CAD\nSign up: https://playriftbound.com/en-US/events/117638532167547
+ 816
+URL:https://playriftbound.com/en-US/events/117638532167547816
+CATEGORIES:Nexus Nights
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

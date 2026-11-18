@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-18T08:16:55.549Z",
- "generated_local": "2026-11-18T01:16:55-07:00",
+ "generated_at": "2026-11-18T21:08:13.312Z",
+ "generated_local": "2026-11-18T14:08:13-07:00",
  "window_start": "2026-11-18T07:00:00.000Z",
  "anchors": [
   {
@@ -35,8 +35,8 @@
    "name": "Nanaimo",
    "region": "island",
    "source": "playriftbound",
-   "returned": 3,
-   "added": 3
+   "returned": 4,
+   "added": 4
   },
   {
    "name": "Parksville",
@@ -159,9 +159,9 @@
   }
  ],
  "totals": {
-  "fetched": 66,
+  "fetched": 67,
   "unique": 68,
-  "prev_unique": 69,
+  "prev_unique": 68,
   "recent": [
    {
     "d": "2026-11-05",
@@ -233,9 +233,9 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-17",
+  "run": "2026-11-18",
   "listed": 66,
-  "added": 2,
+  "added": 1,
   "error": null
  },
  "other_towns": [],
@@ -266,6 +266,31 @@
    "bo": 3
   },
   {
+   "id": "rb117638532167547816",
+   "name": "weekly Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-18T19:00:00-07:00",
+   "end": null,
+   "day": "2026-11-18",
+   "time": "7:00 PM",
+   "venue": "Sports Card Alley",
+   "city": "Nanaimo",
+   "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
+   "region": "island",
+   "cap": 16,
+   "reg": 8,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": 2,
+   "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
+   "store": "Sports Card Alley",
+   "swiss": 3,
+   "cut": false,
+   "bo": 3
+  },
+  {
    "id": "rb117525465882512888",
    "name": "North Park Picture Framing and Collectables Open Play",
    "type": "open",
@@ -278,7 +303,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 1,
+   "reg": 2,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -364,33 +389,6 @@
    "swiss": 4,
    "cut": false,
    "bo": 3
-  },
-  {
-   "id": "st174637944204",
-   "name": "Riftbound Saturday",
-   "type": "other",
-   "start": "2026-11-21T19:00:00-07:00",
-   "end": "2026-11-21T22:00:00-07:00",
-   "day": "2026-11-21",
-   "time": "7:00 PM",
-   "venue": "Everything Games",
-   "city": "Langford",
-   "address": "",
-   "region": "victoria",
-   "cap": null,
-   "reg": 0,
-   "cents": 600,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": 16866,
-   "store": "Everything Games",
-   "src": "store",
-   "url": "https://www.everythinggames.ca/",
-   "conf": "2026-11-17",
-   "swiss": null,
-   "cut": null
   },
   {
    "id": "rb117096953908084886",
@@ -490,7 +488,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-17",
+   "conf": "2026-11-18",
    "swiss": null,
    "cut": null
   },
@@ -682,7 +680,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 6,
+   "reg": 7,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
