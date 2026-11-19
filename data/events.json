@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-18T21:08:13.312Z",
- "generated_local": "2026-11-18T14:08:13-07:00",
- "window_start": "2026-11-18T07:00:00.000Z",
+ "generated_at": "2026-11-19T08:28:34.974Z",
+ "generated_local": "2026-11-19T01:28:34-07:00",
+ "window_start": "2026-11-19T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 48,
-   "added": 48
+   "returned": 47,
+   "added": 47
   },
   {
    "name": "Sidney",
@@ -35,8 +35,8 @@
    "name": "Nanaimo",
    "region": "island",
    "source": "playriftbound",
-   "returned": 4,
-   "added": 4
+   "returned": 3,
+   "added": 3
   },
   {
    "name": "Parksville",
@@ -159,14 +159,10 @@
   }
  ],
  "totals": {
-  "fetched": 67,
-  "unique": 68,
+  "fetched": 65,
+  "unique": 66,
   "prev_unique": 68,
   "recent": [
-   {
-    "d": "2026-11-05",
-    "n": 66
-   },
    {
     "d": "2026-11-06",
     "n": 69
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-18",
     "n": 68
+   },
+   {
+    "d": "2026-11-19",
+    "n": 66
    }
   ]
  },
@@ -240,56 +240,6 @@
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "rb117560610583491608",
-   "name": "Gauntlet Games Nexus Night",
-   "type": "nexus",
-   "start": "2026-11-18T18:00:00-07:00",
-   "end": null,
-   "day": "2026-11-18",
-   "time": "6:00 PM",
-   "venue": "Gauntlet Games",
-   "city": "Victoria",
-   "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 0,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 2069,
-   "store": "Gauntlet",
-   "swiss": 3,
-   "cut": false,
-   "bo": 3
-  },
-  {
-   "id": "rb117638532167547816",
-   "name": "weekly Nexus Night",
-   "type": "nexus",
-   "start": "2026-11-18T19:00:00-07:00",
-   "end": null,
-   "day": "2026-11-18",
-   "time": "7:00 PM",
-   "venue": "Sports Card Alley",
-   "city": "Nanaimo",
-   "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
-   "region": "island",
-   "cap": 16,
-   "reg": 8,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
-   "store": "Sports Card Alley",
-   "swiss": 3,
-   "cut": false,
-   "bo": 3
-  },
   {
    "id": "rb117525465882512888",
    "name": "North Park Picture Framing and Collectables Open Play",
@@ -328,7 +278,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 9,
+   "reg": 10,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -403,7 +353,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 1,
+   "reg": 2,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -428,7 +378,7 @@
    "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 1500,
    "currency": "CAD",
    "updated": null,
@@ -530,7 +480,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 5,
+   "reg": 10,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -580,7 +530,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 48,
-   "reg": 2,
+   "reg": 5,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -930,7 +880,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 32,
-   "reg": 4,
+   "reg": 3,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -1480,7 +1430,7 @@
    "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
    "region": "island",
    "cap": 18,
-   "reg": 0,
+   "reg": 1,
    "cents": 4000,
    "currency": "CAD",
    "updated": null,

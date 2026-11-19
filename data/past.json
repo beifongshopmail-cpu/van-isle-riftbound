@@ -3,6 +3,30 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117638532167547816",
+   "name": "weekly Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-18T19:00:00-07:00",
+   "day": "2026-11-18",
+   "venue": "Sports Card Alley",
+   "city": "Nanaimo",
+   "store": "Sports Card Alley",
+   "region": "island",
+   "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e"
+  },
+  {
+   "id": "rb117560610583491608",
+   "name": "Gauntlet Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-18T18:00:00-07:00",
+   "day": "2026-11-18",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "store": "Gauntlet",
+   "region": "victoria",
+   "sid": 2069
+  },
+  {
    "id": "rb117073785007006396",
    "name": "Radiance Skirmish #1",
    "type": "skirmish",
@@ -365,17 +389,6 @@
    "store": "Gauntlet",
    "region": "victoria",
    "sid": 2069
-  },
-  {
-   "id": "rb117073776522584746",
-   "name": "Radiance Pre-Rift Monday",
-   "type": "prerift",
-   "start": "2026-10-19T17:00:00-07:00",
-   "day": "2026-10-19",
-   "venue": "Skyhaven Games",
-   "store": "Skyhaven",
-   "region": "victoria",
-   "sid": 4294
   }
  ]
 }
