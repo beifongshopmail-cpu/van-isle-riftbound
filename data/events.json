@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-19T21:13:08.442Z",
- "generated_local": "2026-11-19T14:13:08-07:00",
- "window_start": "2026-11-19T07:00:00.000Z",
+ "generated_at": "2026-11-20T08:10:21.612Z",
+ "generated_local": "2026-11-20T01:10:21-07:00",
+ "window_start": "2026-11-20T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 48,
-   "added": 48
+   "returned": 47,
+   "added": 47
   },
   {
    "name": "Sidney",
@@ -159,14 +159,10 @@
   }
  ],
  "totals": {
-  "fetched": 66,
+  "fetched": 65,
   "unique": 67,
-  "prev_unique": 66,
+  "prev_unique": 67,
   "recent": [
-   {
-    "d": "2026-11-06",
-    "n": 69
-   },
    {
     "d": "2026-11-07",
     "n": 69
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-19",
     "n": 67
+   },
+   {
+    "d": "2026-11-20",
+    "n": 67
    }
   ]
  },
@@ -235,36 +235,11 @@
  "store_posts": {
   "run": "2026-11-19",
   "listed": 66,
-  "added": 1,
+  "added": 2,
   "error": null
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "rb117525465882512888",
-   "name": "North Park Picture Framing and Collectables Open Play",
-   "type": "open",
-   "start": "2026-11-19T18:00:00-07:00",
-   "end": null,
-   "day": "2026-11-19",
-   "time": "6:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 4,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 1,
-   "sid": 18437,
-   "store": "North Park Framing",
-   "swiss": 5,
-   "cut": false,
-   "bo": 1
-  },
   {
    "id": "rb117125749989086783",
    "name": "North Park Picture Framing and Collectables Radiance Summoner Skirmish I",
@@ -378,7 +353,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 3,
+   "reg": 4,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -655,7 +630,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 7,
+   "reg": 8,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -793,6 +768,31 @@
    "bo": 3
   },
   {
+   "id": "rb117089949356892554",
+   "name": "Radiance Summoner Skirmish II @ Colossal Cards & Collectables Courtenay",
+   "type": "skirmish",
+   "start": "2026-12-13T15:00:00-07:00",
+   "end": null,
+   "day": "2026-12-13",
+   "time": "3:00 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Courtenay",
+   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
+   "region": "island",
+   "cap": 32,
+   "reg": 6,
+   "cents": 1000,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": 2,
+   "sid": 902,
+   "store": "Colossal Courtenay",
+   "swiss": 5,
+   "cut": false,
+   "bo": 3
+  },
+  {
    "id": "rb117454321388311216",
    "name": "Skyhaven Sunday Nexus Night",
    "type": "nexus",
@@ -893,29 +893,31 @@
    "bo": 3
   },
   {
-   "id": "rb117089949356892554",
-   "name": "Radiance Summoner Skirmish II @ Colossal Cards & Collectables Courtenay",
-   "type": "skirmish",
+   "id": "st150174365196",
+   "name": "Radiance Summoner Skirmish II",
+   "type": "other",
    "start": "2026-12-19T16:00:00-07:00",
    "end": null,
    "day": "2026-12-19",
    "time": "4:00 PM",
    "venue": "Colossal Cards & Collectables",
    "city": "Courtenay",
-   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
+   "address": "",
    "region": "island",
-   "cap": 32,
-   "reg": 3,
+   "cap": null,
+   "reg": 0,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
    "round": null,
-   "wins": 2,
+   "wins": null,
    "sid": 902,
    "store": "Colossal Courtenay",
-   "swiss": 5,
-   "cut": false,
-   "bo": 3
+   "src": "store",
+   "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
+   "conf": "2026-11-19",
+   "swiss": null,
+   "cut": null
   },
   {
    "id": "rb117124218815349026",
