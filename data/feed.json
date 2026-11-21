@@ -1,7 +1,46 @@
 {
- "updated": "2026-11-20",
+ "updated": "2026-11-21",
  "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence). kind local: a local store's post, RAVI's summary only, never the store's words; hold: read and left out.",
  "items": [
+  {
+   "id": "fb:https://facebook.com/groups/1289633928950754/permalink/1859133608667447",
+   "kind": "local",
+   "tier": "local",
+   "url": "https://facebook.com/groups/1289633928950754/permalink/1859133608667447",
+   "posted": "2026-11-20",
+   "source": "Skyhaven Games",
+   "credit": "Skyhaven Games, on Facebook",
+   "via": [
+    "muse"
+   ],
+   "title": "Skyhaven Games lowers Proving Grounds box price",
+   "sum": "Skyhaven has cut the Proving Grounds box to $59.99 plus taxes. Buyers who paid more were contacted and credited the difference, so check your account if you bought one.",
+   "sumBy": "claude",
+   "sumKey": "c6add4ce8207e9c0"
+  },
+  {
+   "id": "fb:https://facebook.com/playriftbound/posts/pfbid02UjZBTfUA9ta2DAReTk1W4J5tcXVwhm2mKyPEfM7tzvtMHzv5MLABwurwD6TuqAXjl",
+   "kind": "announcement",
+   "url": "https://facebook.com/playriftbound/posts/pfbid02UjZBTfUA9ta2DAReTk1W4J5tcXVwhm2mKyPEfM7tzvtMHzv5MLABwurwD6TuqAXjl",
+   "posted": "2026-11-20",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Riftbounders, wave 2 of emails for the Worlds 2026 Edition and T1 2025 Worlds Champion Player Bundle drawings have gone out today! Check your inbox or spam folder for an email from support@riotgames.com. Watch out for impersonators and only trust emails from the official address above!",
+   "via": [
+    "muse"
+   ],
+   "title": "Wave 2 Worlds 2026 bundle drawing emails sent",
+   "sum": "Wave 2 winner emails for the Worlds 2026 Edition and T1 2025 Worlds Champion Player Bundle drawings were sent today. Check your inbox or spam folder for mail from support@riotgames.com only.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "drawing",
+     "label": "Wave 2 winner emails sent",
+     "from": "2026-11-20"
+    }
+   ],
+   "sumKey": "82446998591d3b9c"
+  },
   {
    "id": "fb:https://facebook.com/playriftbound/posts/pfbid0ckTsXeGuexZV64QWngjgqKJXHVAvXTtdXxGDh4gDJ2EVV2fZk5jfHsg5P35Pzk5Zl",
    "kind": "announcement",
