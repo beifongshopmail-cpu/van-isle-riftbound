@@ -390,17 +390,6 @@
    "store": "North Park Framing",
    "region": "victoria",
    "sid": 18437
-  },
-  {
-   "id": "rb117129739220447379",
-   "name": "Gauntlet Games Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-21T18:00:00-07:00",
-   "day": "2026-10-21",
-   "venue": "Gauntlet Games",
-   "store": "Gauntlet",
-   "region": "victoria",
-   "sid": 2069
   }
  ]
 }
