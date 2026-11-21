@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-21T08:03:56.670Z",
- "generated_local": "2026-11-21T01:03:56-07:00",
+ "generated_at": "2026-11-21T19:58:06.425Z",
+ "generated_local": "2026-11-21T12:58:06-07:00",
  "window_start": "2026-11-21T07:00:00.000Z",
  "anchors": [
   {
@@ -233,8 +233,8 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-20",
-  "listed": 66,
+  "run": "2026-11-21",
+  "listed": 65,
   "added": 2,
   "error": null
  },
@@ -253,7 +253,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 11,
+   "reg": 14,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -378,7 +378,7 @@
    "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 0,
    "cents": 1500,
    "currency": "CAD",
    "updated": null,
@@ -438,7 +438,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-20",
+   "conf": "2026-11-21",
    "swiss": null,
    "cut": null
   },
@@ -915,7 +915,7 @@
    "store": "Colossal Courtenay",
    "src": "store",
    "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
-   "conf": "2026-11-20",
+   "conf": "2026-11-21",
    "swiss": null,
    "cut": null
   },
