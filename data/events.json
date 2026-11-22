@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-21T19:58:06.425Z",
- "generated_local": "2026-11-21T12:58:06-07:00",
- "window_start": "2026-11-21T07:00:00.000Z",
+ "generated_at": "2026-11-22T07:50:12.747Z",
+ "generated_local": "2026-11-22T00:50:12-07:00",
+ "window_start": "2026-11-22T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 47,
-   "added": 47
+   "returned": 45,
+   "added": 45
   },
   {
    "name": "Sidney",
@@ -56,15 +56,15 @@
    "name": "Courtenay",
    "region": "island",
    "source": "playriftbound",
-   "returned": 6,
-   "added": 6
+   "returned": 5,
+   "added": 5
   },
   {
    "name": "Campbell River",
    "region": "island",
    "source": "playriftbound",
-   "returned": 5,
-   "added": 5
+   "returned": 4,
+   "added": 4
   },
   {
    "name": "Tofino",
@@ -159,14 +159,10 @@
   }
  ],
  "totals": {
-  "fetched": 65,
-  "unique": 67,
+  "fetched": 61,
+  "unique": 63,
   "prev_unique": 67,
   "recent": [
-   {
-    "d": "2026-11-08",
-    "n": 66
-   },
    {
     "d": "2026-11-09",
     "n": 68
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-21",
     "n": 67
+   },
+   {
+    "d": "2026-11-22",
+    "n": 63
    }
   ]
  },
@@ -241,106 +241,6 @@
  "other_towns": [],
  "events": [
   {
-   "id": "rb117125749989086783",
-   "name": "North Park Picture Framing and Collectables Radiance Summoner Skirmish I",
-   "type": "skirmish",
-   "start": "2026-11-21T12:00:00-07:00",
-   "end": null,
-   "day": "2026-11-21",
-   "time": "12:00 PM",
-   "venue": "North Park Picture Framing and Collectables",
-   "city": "Victoria",
-   "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
-   "region": "victoria",
-   "cap": 28,
-   "reg": 14,
-   "cents": 1000,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 18437,
-   "store": "North Park Framing",
-   "swiss": 5,
-   "cut": false,
-   "bo": 3
-  },
-  {
-   "id": "rb117089694282897798",
-   "name": "Radiance Summoner Skirmish I",
-   "type": "skirmish",
-   "start": "2026-11-21T15:00:00-07:00",
-   "end": null,
-   "day": "2026-11-21",
-   "time": "3:00 PM",
-   "venue": "AJ's Games",
-   "city": "Campbell River",
-   "address": "615 11 Ave, Campbell River, BC V9W 4G5, Canada",
-   "region": "island",
-   "cap": 16,
-   "reg": 2,
-   "cents": 1000,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 21894,
-   "store": "AJ's",
-   "swiss": 4,
-   "cut": false,
-   "bo": 3
-  },
-  {
-   "id": "rb117497236336804009",
-   "name": "Nexus Night's at Colossal Cards & Collectables Courtenay",
-   "type": "nexus",
-   "start": "2026-11-21T17:00:00-07:00",
-   "end": null,
-   "day": "2026-11-21",
-   "time": "5:00 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Courtenay",
-   "address": "444 Lerwick Rd Unit 405, Courtenay, BC V9N 0A9, Canada",
-   "region": "island",
-   "cap": 48,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 902,
-   "store": "Colossal Courtenay",
-   "swiss": 4,
-   "cut": false,
-   "bo": 3
-  },
-  {
-   "id": "rb117643383596638190",
-   "name": "Everything Games Saturday nexus night",
-   "type": "nexus",
-   "start": "2026-11-21T18:00:00-07:00",
-   "end": null,
-   "day": "2026-11-21",
-   "time": "6:00 PM",
-   "venue": "Everything Games",
-   "city": "Langford",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 1,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 16866,
-   "store": "Everything Games",
-   "swiss": 3,
-   "cut": false,
-   "bo": 3
-  },
-  {
    "id": "rb117096953908084886",
    "name": "Radiance Summoner skirmish",
    "type": "skirmish",
@@ -353,7 +253,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 4,
+   "reg": 6,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -378,7 +278,7 @@
    "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 1500,
    "currency": "CAD",
    "updated": null,

@@ -3,6 +3,54 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117643383596638190",
+   "name": "Everything Games Saturday nexus night",
+   "type": "nexus",
+   "start": "2026-11-21T18:00:00-07:00",
+   "day": "2026-11-21",
+   "venue": "Everything Games",
+   "city": "Langford",
+   "store": "Everything Games",
+   "region": "victoria",
+   "sid": 16866
+  },
+  {
+   "id": "rb117497236336804009",
+   "name": "Nexus Night's at Colossal Cards & Collectables Courtenay",
+   "type": "nexus",
+   "start": "2026-11-21T17:00:00-07:00",
+   "day": "2026-11-21",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Courtenay",
+   "store": "Colossal Courtenay",
+   "region": "island",
+   "sid": 902
+  },
+  {
+   "id": "rb117089694282897798",
+   "name": "Radiance Summoner Skirmish I",
+   "type": "skirmish",
+   "start": "2026-11-21T15:00:00-07:00",
+   "day": "2026-11-21",
+   "venue": "AJ's Games",
+   "city": "Campbell River",
+   "store": "AJ's",
+   "region": "island",
+   "sid": 21894
+  },
+  {
+   "id": "rb117125749989086783",
+   "name": "North Park Picture Framing and Collectables Radiance Summoner Skirmish I",
+   "type": "skirmish",
+   "start": "2026-11-21T12:00:00-07:00",
+   "day": "2026-11-21",
+   "venue": "North Park Picture Framing and Collectables",
+   "city": "Victoria",
+   "store": "North Park Framing",
+   "region": "victoria",
+   "sid": 18437
+  },
+  {
    "id": "rb117525465882512888",
    "name": "North Park Picture Framing and Collectables Open Play",
    "type": "open",
@@ -375,17 +423,6 @@
    "type": "nexus",
    "start": "2026-10-24T12:00:00-07:00",
    "day": "2026-10-24",
-   "venue": "North Park Picture Framing and Collectables",
-   "store": "North Park Framing",
-   "region": "victoria",
-   "sid": 18437
-  },
-  {
-   "id": "rb117125741673379397",
-   "name": "North Park Picture Framing and Collectables Radiance Pre-Rift",
-   "type": "prerift",
-   "start": "2026-10-22T18:00:00-07:00",
-   "day": "2026-10-22",
    "venue": "North Park Picture Framing and Collectables",
    "store": "North Park Framing",
    "region": "victoria",
