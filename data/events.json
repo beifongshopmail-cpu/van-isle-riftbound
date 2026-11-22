@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-22T07:50:12.747Z",
- "generated_local": "2026-11-22T00:50:12-07:00",
+ "generated_at": "2026-11-22T20:11:32.823Z",
+ "generated_local": "2026-11-22T13:11:32-07:00",
  "window_start": "2026-11-22T07:00:00.000Z",
  "anchors": [
   {
@@ -161,7 +161,7 @@
  "totals": {
   "fetched": 61,
   "unique": 63,
-  "prev_unique": 67,
+  "prev_unique": 63,
   "recent": [
    {
     "d": "2026-11-09",
@@ -233,8 +233,8 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-21",
-  "listed": 65,
+  "run": "2026-11-22",
+  "listed": 63,
   "added": 2,
   "error": null
  },
@@ -253,7 +253,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 32,
-   "reg": 6,
+   "reg": 8,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -278,7 +278,7 @@
    "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 1,
+   "reg": 6,
    "cents": 1500,
    "currency": "CAD",
    "updated": null,
@@ -303,7 +303,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -338,7 +338,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-21",
+   "conf": "2026-11-22",
    "swiss": null,
    "cut": null
   },
@@ -705,7 +705,7 @@
    "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -755,7 +755,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 3,
+   "reg": 4,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -815,7 +815,7 @@
    "store": "Colossal Courtenay",
    "src": "store",
    "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
-   "conf": "2026-11-21",
+   "conf": "2026-11-22",
    "swiss": null,
    "cut": null
   },
