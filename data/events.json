@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-22T20:11:32.823Z",
- "generated_local": "2026-11-22T13:11:32-07:00",
- "window_start": "2026-11-22T07:00:00.000Z",
+ "generated_at": "2026-11-23T08:40:00.936Z",
+ "generated_local": "2026-11-23T01:40:00-07:00",
+ "window_start": "2026-11-23T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 45,
-   "added": 45
+   "returned": 42,
+   "added": 42
   },
   {
    "name": "Sidney",
@@ -159,14 +159,10 @@
   }
  ],
  "totals": {
-  "fetched": 61,
-  "unique": 63,
+  "fetched": 58,
+  "unique": 60,
   "prev_unique": 63,
   "recent": [
-   {
-    "d": "2026-11-09",
-    "n": 68
-   },
    {
     "d": "2026-11-10",
     "n": 81
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-22",
     "n": 63
+   },
+   {
+    "d": "2026-11-23",
+    "n": 60
    }
   ]
  },
@@ -240,81 +240,6 @@
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "rb117096953908084886",
-   "name": "Radiance Summoner skirmish",
-   "type": "skirmish",
-   "start": "2026-11-22T11:30:00-07:00",
-   "end": null,
-   "day": "2026-11-22",
-   "time": "11:30 AM",
-   "venue": "Everything Games",
-   "city": "Langford",
-   "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
-   "region": "victoria",
-   "cap": 32,
-   "reg": 8,
-   "cents": 2000,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 16866,
-   "store": "Everything Games",
-   "swiss": 5,
-   "cut": true,
-   "bo": 3
-  },
-  {
-   "id": "rb117170908777826678",
-   "name": "Colossal Cards Victoria Radiance Skirmish 1",
-   "type": "skirmish",
-   "start": "2026-11-22T12:00:00-07:00",
-   "end": null,
-   "day": "2026-11-22",
-   "time": "12:00 PM",
-   "venue": "Colossal Cards & Collectables",
-   "city": "Victoria",
-   "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
-   "region": "victoria",
-   "cap": 16,
-   "reg": 6,
-   "cents": 1500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 15103,
-   "store": "Colossal Victoria",
-   "swiss": 4,
-   "cut": false,
-   "bo": 3
-  },
-  {
-   "id": "rb117454301417787736",
-   "name": "Skyhaven Sunday Nexus Night",
-   "type": "nexus",
-   "start": "2026-11-22T17:00:00-07:00",
-   "end": null,
-   "day": "2026-11-22",
-   "time": "5:00 PM",
-   "venue": "Skyhaven Games",
-   "city": "Victoria",
-   "address": "3458 Tillicum Rd, Victoria, BC V8Z 4H3, Canada",
-   "region": "victoria",
-   "cap": 24,
-   "reg": 1,
-   "cents": 500,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": 2,
-   "sid": 4294,
-   "store": "Skyhaven",
-   "swiss": 3,
-   "cut": false,
-   "bo": 3
-  },
   {
    "id": "st272621717112",
    "name": "Riftbound casual play",
@@ -355,7 +280,7 @@
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 0,
+   "reg": 1,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -530,7 +455,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 8,
+   "reg": 9,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -1632,7 +1557,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 3,
+   "reg": 4,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
