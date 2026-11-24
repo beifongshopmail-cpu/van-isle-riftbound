@@ -441,28 +441,6 @@
    "store": "Everything Games",
    "region": "victoria",
    "sid": 16866
-  },
-  {
-   "id": "rb117497226094640921",
-   "name": "Nexus Night at Colossal Cards & Collectables Courtenay",
-   "type": "nexus",
-   "start": "2026-10-24T17:00:00-07:00",
-   "day": "2026-10-24",
-   "venue": "Colossal Cards & Collectables",
-   "store": "Colossal Courtenay",
-   "region": "island",
-   "sid": 902
-  },
-  {
-   "id": "rb117473609547786875",
-   "name": "Saturday Afternoon Nexus Play @ North Park Picture Framing and Collectables",
-   "type": "nexus",
-   "start": "2026-10-24T12:00:00-07:00",
-   "day": "2026-10-24",
-   "venue": "North Park Picture Framing and Collectables",
-   "store": "North Park Framing",
-   "region": "victoria",
-   "sid": 18437
   }
  ]
 }

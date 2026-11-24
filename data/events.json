@@ -1,14 +1,14 @@
 {
- "generated_at": "2026-11-23T08:40:00.936Z",
- "generated_local": "2026-11-23T01:40:00-07:00",
+ "generated_at": "2026-11-24T00:37:18.683Z",
+ "generated_local": "2026-11-23T17:37:18-07:00",
  "window_start": "2026-11-23T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
    "region": "victoria",
    "source": "playriftbound",
-   "returned": 42,
-   "added": 42
+   "returned": 43,
+   "added": 43
   },
   {
    "name": "Sidney",
@@ -159,9 +159,9 @@
   }
  ],
  "totals": {
-  "fetched": 58,
-  "unique": 60,
-  "prev_unique": 63,
+  "fetched": 59,
+  "unique": 61,
+  "prev_unique": 60,
   "recent": [
    {
     "d": "2026-11-10",
@@ -217,7 +217,7 @@
    },
    {
     "d": "2026-11-23",
-    "n": 60
+    "n": 61
    }
   ]
  },
@@ -233,13 +233,38 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-22",
-  "listed": 63,
+  "run": "2026-11-23",
+  "listed": 60,
   "added": 2,
   "error": null
  },
  "other_towns": [],
  "events": [
+  {
+   "id": "rb117667342518406036",
+   "name": "Colossal Cards Vic Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-23T17:15:00-07:00",
+   "end": null,
+   "day": "2026-11-23",
+   "time": "5:15 PM",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Victoria",
+   "address": "515 Chatham St #101, Victoria, BC V8T 1E1, Canada",
+   "region": "victoria",
+   "cap": 16,
+   "reg": 5,
+   "cents": 500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": 1,
+   "sid": 15103,
+   "store": "Colossal Victoria",
+   "swiss": 4,
+   "cut": false,
+   "bo": 1
+  },
   {
    "id": "st272621717112",
    "name": "Riftbound casual play",
@@ -263,7 +288,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-22",
+   "conf": "2026-11-23",
    "swiss": null,
    "cut": null
   },
@@ -305,7 +330,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 13,
+   "reg": 3,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -680,7 +705,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 4,
+   "reg": 5,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
@@ -740,7 +765,7 @@
    "store": "Colossal Courtenay",
    "src": "store",
    "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
-   "conf": "2026-11-22",
+   "conf": "2026-11-23",
    "swiss": null,
    "cut": null
   },
