@@ -3,6 +3,18 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117667342518406036",
+   "name": "Colossal Cards Vic Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-23T17:15:00-07:00",
+   "day": "2026-11-23",
+   "venue": "Colossal Cards & Collectables",
+   "city": "Victoria",
+   "store": "Colossal Victoria",
+   "region": "victoria",
+   "sid": 15103
+  },
+  {
    "id": "rb117454301417787736",
    "name": "Skyhaven Sunday Nexus Night",
    "type": "nexus",
@@ -426,17 +438,6 @@
    "type": "nexus",
    "start": "2026-10-25T11:30:00-07:00",
    "day": "2026-10-25",
-   "venue": "Everything Games",
-   "store": "Everything Games",
-   "region": "victoria",
-   "sid": 16866
-  },
-  {
-   "id": "rb117437289555157382",
-   "name": "Saturday evening nexus night",
-   "type": "nexus",
-   "start": "2026-10-24T18:00:00-07:00",
-   "day": "2026-10-24",
    "venue": "Everything Games",
    "store": "Everything Games",
    "region": "victoria",
