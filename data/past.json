@@ -431,17 +431,6 @@
    "store": "Skyhaven",
    "region": "victoria",
    "sid": 4294
-  },
-  {
-   "id": "rb117437297319078671",
-   "name": "Sunday morning Nexus\"night\"",
-   "type": "nexus",
-   "start": "2026-10-25T11:30:00-07:00",
-   "day": "2026-10-25",
-   "venue": "Everything Games",
-   "store": "Everything Games",
-   "region": "victoria",
-   "sid": 16866
   }
  ]
 }

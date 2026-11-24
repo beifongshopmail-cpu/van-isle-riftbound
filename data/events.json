@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-24T10:43:08.228Z",
- "generated_local": "2026-11-24T03:43:08-07:00",
+ "generated_at": "2026-11-24T22:56:03.211Z",
+ "generated_local": "2026-11-24T15:56:03-07:00",
  "window_start": "2026-11-24T07:00:00.000Z",
  "anchors": [
   {
@@ -160,8 +160,8 @@
  ],
  "totals": {
   "fetched": 58,
-  "unique": 60,
-  "prev_unique": 61,
+  "unique": 61,
+  "prev_unique": 60,
   "recent": [
    {
     "d": "2026-11-11",
@@ -217,7 +217,7 @@
    },
    {
     "d": "2026-11-24",
-    "n": 60
+    "n": 61
    }
   ]
  },
@@ -233,9 +233,9 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-23",
-  "listed": 60,
-  "added": 2,
+  "run": "2026-11-24",
+  "listed": 61,
+  "added": 3,
   "error": null
  },
  "other_towns": [],
@@ -263,7 +263,7 @@
    "store": "Rotty's",
    "src": "store",
    "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-23",
+   "conf": "2026-11-24",
    "swiss": null,
    "cut": null
   },
@@ -368,6 +368,33 @@
    "bo": 3
   },
   {
+   "id": "st300820440295",
+   "name": "Riftbound",
+   "type": "other",
+   "start": "2026-11-29T11:30:00-07:00",
+   "end": null,
+   "day": "2026-11-29",
+   "time": "11:30 AM",
+   "venue": "Everything Games",
+   "city": "Langford",
+   "address": "",
+   "region": "victoria",
+   "cap": null,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games",
+   "src": "store",
+   "url": "https://www.facebook.com/everythinggames.ca",
+   "conf": "2026-11-24",
+   "swiss": null,
+   "cut": null
+  },
+  {
    "id": "rb117454304230078174",
    "name": "Skyhaven Sunday Nexus Night",
    "type": "nexus",
@@ -455,7 +482,7 @@
    "address": "250 Jubilee St, Duncan, BC V9L 1W8, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 9,
+   "reg": 10,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -740,7 +767,7 @@
    "store": "Colossal Courtenay",
    "src": "store",
    "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
-   "conf": "2026-11-23",
+   "conf": "2026-11-24",
    "swiss": null,
    "cut": null
   },
