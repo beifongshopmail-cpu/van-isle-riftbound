@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-25T09:38:15.971Z",
- "generated_local": "2026-11-25T02:38:15-07:00",
+ "generated_at": "2026-11-25T22:10:37.173Z",
+ "generated_local": "2026-11-25T15:10:37-07:00",
  "window_start": "2026-11-25T07:00:00.000Z",
  "anchors": [
   {
@@ -35,8 +35,8 @@
    "name": "Nanaimo",
    "region": "island",
    "source": "playriftbound",
-   "returned": 3,
-   "added": 3
+   "returned": 4,
+   "added": 4
   },
   {
    "name": "Parksville",
@@ -159,9 +159,9 @@
   }
  ],
  "totals": {
-  "fetched": 58,
-  "unique": 60,
-  "prev_unique": 61,
+  "fetched": 59,
+  "unique": 61,
+  "prev_unique": 60,
   "recent": [
    {
     "d": "2026-11-12",
@@ -217,7 +217,7 @@
    },
    {
     "d": "2026-11-25",
-    "n": 60
+    "n": 61
    }
   ]
  },
@@ -233,8 +233,8 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-24",
-  "listed": 61,
+  "run": "2026-11-25",
+  "listed": 60,
   "added": 2,
   "error": null
  },
@@ -266,6 +266,31 @@
    "bo": 3
   },
   {
+   "id": "rb117678184431180707",
+   "name": "Weekly Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-25T19:00:00-07:00",
+   "end": null,
+   "day": "2026-11-25",
+   "time": "7:00 PM",
+   "venue": "Sports Card Alley",
+   "city": "Nanaimo",
+   "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
+   "region": "island",
+   "cap": 16,
+   "reg": 5,
+   "cents": 1500,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": 2,
+   "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e",
+   "store": "Sports Card Alley",
+   "swiss": 3,
+   "cut": false,
+   "bo": 3
+  },
+  {
    "id": "rb117525468546556104",
    "name": "North Park Picture Framing and Collectables Open Play",
    "type": "open",
@@ -278,7 +303,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 4,
+   "reg": 5,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -362,8 +387,8 @@
    "sid": 16866,
    "store": "Everything Games",
    "src": "store",
-   "url": "https://www.facebook.com/everythinggames.ca",
-   "conf": "2026-11-24",
+   "url": "https://www.facebook.com/everythinggames.ca/posts/pfbid0x647YTEw3Z7t5dxg5ZiAHxYPbU5WYb7vNfo4cgFa74zzVghxt1ryYHJiLJKo7M4Fl",
+   "conf": "2026-11-25",
    "swiss": null,
    "cut": null
   },
@@ -740,7 +765,7 @@
    "store": "Colossal Courtenay",
    "src": "store",
    "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
-   "conf": "2026-11-24",
+   "conf": "2026-11-25",
    "swiss": null,
    "cut": null
   },
@@ -757,7 +782,7 @@
    "address": "2220 Bowen Rd, Nanaimo, BC V9S 1H9, Canada",
    "region": "island",
    "cap": 16,
-   "reg": 9,
+   "reg": 10,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,
