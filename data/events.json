@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-24T22:56:03.211Z",
- "generated_local": "2026-11-24T15:56:03-07:00",
- "window_start": "2026-11-24T07:00:00.000Z",
+ "generated_at": "2026-11-25T09:38:15.971Z",
+ "generated_local": "2026-11-25T02:38:15-07:00",
+ "window_start": "2026-11-25T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -160,13 +160,9 @@
  ],
  "totals": {
   "fetched": 58,
-  "unique": 61,
-  "prev_unique": 60,
+  "unique": 60,
+  "prev_unique": 61,
   "recent": [
-   {
-    "d": "2026-11-11",
-    "n": 81
-   },
    {
     "d": "2026-11-12",
     "n": 108
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-24",
     "n": 61
+   },
+   {
+    "d": "2026-11-25",
+    "n": 60
    }
   ]
  },
@@ -235,38 +235,11 @@
  "store_posts": {
   "run": "2026-11-24",
   "listed": 61,
-  "added": 3,
+  "added": 2,
   "error": null
  },
  "other_towns": [],
  "events": [
-  {
-   "id": "st272621717112",
-   "name": "Riftbound casual play",
-   "type": "open",
-   "start": "2026-11-24T17:00:00-07:00",
-   "end": "2026-11-24T20:00:00-07:00",
-   "day": "2026-11-24",
-   "time": "5:00 PM",
-   "venue": "Rotty's Creations",
-   "city": "Victoria",
-   "address": "",
-   "region": "victoria",
-   "cap": null,
-   "reg": 0,
-   "cents": 0,
-   "currency": "CAD",
-   "updated": null,
-   "round": null,
-   "wins": null,
-   "sid": "st-rottys-creations-victoria",
-   "store": "Rotty's",
-   "src": "store",
-   "url": "https://www.facebook.com/RottysCreations/posts/pfbid028uEbvzdqHKH6i5ApSLEVZkVGddidTVzARL1wJR64eYJkiNyGeYtbL8PzyagfhitKl",
-   "conf": "2026-11-24",
-   "swiss": null,
-   "cut": null
-  },
   {
    "id": "rb117560611882439366",
    "name": "Gauntlet Games Nexus Night",
@@ -280,7 +253,7 @@
    "address": "1633 Hillside Ave #103, Victoria, BC V8T 2C4, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 2,
+   "reg": 4,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -305,7 +278,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 3,
+   "reg": 4,
    "cents": 0,
    "currency": "CAD",
    "updated": null,
@@ -582,7 +555,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 6,
+   "reg": 7,
    "cents": 2000,
    "currency": "CAD",
    "updated": null,
@@ -707,7 +680,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 5,
+   "reg": 6,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,

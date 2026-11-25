@@ -420,17 +420,6 @@
    "store": "Gauntlet",
    "region": "victoria",
    "sid": 2069
-  },
-  {
-   "id": "rb117454291705531862",
-   "name": "Skyhaven Sunday Nexus Night (CANCELLED)",
-   "type": "nexus",
-   "start": "2026-10-25T17:00:00-07:00",
-   "day": "2026-10-25",
-   "venue": "Skyhaven Games",
-   "store": "Skyhaven",
-   "region": "victoria",
-   "sid": 4294
   }
  ]
 }
