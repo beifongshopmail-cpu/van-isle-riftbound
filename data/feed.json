@@ -1,7 +1,26 @@
 {
- "updated": "2026-11-25",
+ "updated": "2026-11-26",
  "note": "Riot's own posts. Their text and Riot's articles are Riot's, word for word; sum is RAVI's summary (sumBy claude: written by Claude; first: Riot's first sentence). kind local: a local store's post, RAVI's summary only, never the store's words; hold: read and left out.",
  "items": [
+  {
+   "id": "fb:https://facebook.com/playriftbound",
+   "kind": "announcement",
+   "url": "https://facebook.com/playriftbound",
+   "posted": "2026-11-25",
+   "source": "Riftbound",
+   "credit": "Riot, on Facebook",
+   "text": "Pause for the beat drop before they take our box",
+   "via": [
+    "muse"
+   ],
+   "title": "Vague Riot post gives no event details",
+   "sum": "The post, published 2026-11-25, asks players to pause for a beat drop before something is taken from them. It gives no dates, events or specifics.",
+   "sumBy": "claude",
+   "sumKey": "918379e7389965b5",
+   "links": [
+    "https://instagram.com/reel/DftGI43liIO"
+   ]
+  },
   {
    "id": "fb:https://facebook.com/elite4games/posts/pfbid024bA4NGLihtuBu1M2Ha4AjVTuQ2FiGAGiQacGjbGyWHcjR4XBFwtFexpRUw4tfKk1l",
    "kind": "local",
@@ -36,6 +55,37 @@
    "sum": "Riot Games posted a short message encouraging players to open Riftbound packs at any time. The post gives no event, release, or deadline dates.",
    "sumBy": "claude",
    "sumKey": "e68d7a0eb3e720f5"
+  },
+  {
+   "id": "fb:https://x.com/riftboundop/status/2125293799618335007",
+   "kind": "announcement",
+   "url": "https://x.com/riftboundop/status/2125293799618335007",
+   "posted": "2026-11-24",
+   "source": "Riftbound",
+   "credit": "Riot, on X",
+   "text": "Calling our Riftbound Press and Creators! Media applications for #RBRMadrid and #RBRPhiladelphia are officially open until November 30, 12pm PT, so submit yours now! Apply for Regional Madrid: riot.com/3XKFHgq Apply for Regional Philadelphia: riot.com/4jwJerf",
+   "via": [
+    "muse"
+   ],
+   "links": [
+    "https://x.com/playriftbound/status/2125294148093898945"
+   ],
+   "title": "Riftbound Press and Creators Media Applications Open for Regionals",
+   "sum": "Media applications for the Riftbound Regional events in Madrid and Philadelphia are open. Applications close November 30 at 12pm PT.",
+   "sumBy": "claude",
+   "dates": [
+    {
+     "what": "entries close",
+     "label": "Media applications close 12pm PT",
+     "from": "2026-11-30"
+    },
+    {
+     "what": "entries open",
+     "label": "Media applications open",
+     "from": "2026-11-24"
+    }
+   ],
+   "sumKey": "c7b79408ad0d28dd"
   },
   {
    "id": "fb:https://facebook.com/everythinggames.ca",
@@ -788,25 +838,6 @@
    "sum": "Skyhaven Games restocked two Radiance Vaults at $49.99 plus tax. To enter the raffle, comment on their post. Winners are drawn at random after Skirmish starts.",
    "sumBy": "claude",
    "sumKey": "9156cdba4bd29e31"
-  },
-  {
-   "id": "fb:https://facebook.com/playriftbound",
-   "kind": "announcement",
-   "url": "https://facebook.com/playriftbound",
-   "posted": "2026-11-13",
-   "source": "Riftbound",
-   "credit": "Riot, on Facebook",
-   "text": "Giving you a sneak peek of what's to come at Convergence Fest, live from #Worlds2026 Fan Fest! Riftbound 🤝 TFT 🤝 League Of Legends",
-   "via": [
-    "muse"
-   ],
-   "title": "Riot Teases Convergence Fest Content From Worlds Fan Fest",
-   "sum": "Riot is previewing upcoming Convergence Fest content live from the Worlds 2026 Fan Fest, tying Riftbound to TFT and League of Legends. The post gives no dates for the reveals.",
-   "sumBy": "claude",
-   "sumKey": "4e414a4ddcb0afe8",
-   "links": [
-    "https://instagram.com/reel/DftGI43liIO"
-   ]
   },
   {
    "id": "fb:https://instagram.com/p/DfsHq3rF5yh",
