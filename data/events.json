@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-26T09:14:00.909Z",
- "generated_local": "2026-11-26T02:14:00-07:00",
+ "generated_at": "2026-11-26T22:09:22.489Z",
+ "generated_local": "2026-11-26T15:09:22-07:00",
  "window_start": "2026-11-26T07:00:00.000Z",
  "anchors": [
   {
@@ -160,8 +160,8 @@
  ],
  "totals": {
   "fetched": 57,
-  "unique": 59,
-  "prev_unique": 61,
+  "unique": 60,
+  "prev_unique": 59,
   "recent": [
    {
     "d": "2026-11-13",
@@ -217,7 +217,7 @@
    },
    {
     "d": "2026-11-26",
-    "n": 59
+    "n": 60
    }
   ]
  },
@@ -233,9 +233,9 @@
  },
  "old_feed_error": null,
  "store_posts": {
-  "run": "2026-11-25",
+  "run": "2026-11-26",
   "listed": 60,
-  "added": 2,
+  "added": 3,
   "error": null
  },
  "other_towns": [],
@@ -316,6 +316,33 @@
    "bo": 3
   },
   {
+   "id": "st466489825053",
+   "name": "Riftbound Saturday",
+   "type": "other",
+   "start": "2026-11-28T18:00:00-07:00",
+   "end": "2026-11-28T21:00:00-07:00",
+   "day": "2026-11-28",
+   "time": "6:00 PM",
+   "venue": "Everything Games",
+   "city": "Langford",
+   "address": "",
+   "region": "victoria",
+   "cap": null,
+   "reg": 0,
+   "cents": 0,
+   "currency": "CAD",
+   "updated": null,
+   "round": null,
+   "wins": null,
+   "sid": 16866,
+   "store": "Everything Games",
+   "src": "store",
+   "url": "https://www.everythinggames.ca/",
+   "conf": "2026-11-26",
+   "swiss": null,
+   "cut": null
+  },
+  {
    "id": "st300820440295",
    "name": "Riftbound",
    "type": "other",
@@ -338,7 +365,7 @@
    "store": "Everything Games",
    "src": "store",
    "url": "https://www.facebook.com/everythinggames.ca/posts/pfbid0x647YTEw3Z7t5dxg5ZiAHxYPbU5WYb7vNfo4cgFa74zzVghxt1ryYHJiLJKo7M4Fl",
-   "conf": "2026-11-25",
+   "conf": "2026-11-26",
    "swiss": null,
    "cut": null
   },
@@ -715,7 +742,7 @@
    "store": "Colossal Courtenay",
    "src": "store",
    "url": "https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597",
-   "conf": "2026-11-25",
+   "conf": "2026-11-26",
    "swiss": null,
    "cut": null
   },
