@@ -3,6 +3,30 @@
  "days": 30,
  "events": [
   {
+   "id": "rb117678184431180707",
+   "name": "Weekly Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-25T19:00:00-07:00",
+   "day": "2026-11-25",
+   "venue": "Sports Card Alley",
+   "city": "Nanaimo",
+   "store": "Sports Card Alley",
+   "region": "island",
+   "sid": "019fb060-93e6-7a79-a82a-fc4762d7e46e"
+  },
+  {
+   "id": "rb117560611882439366",
+   "name": "Gauntlet Games Nexus Night",
+   "type": "nexus",
+   "start": "2026-11-25T18:00:00-07:00",
+   "day": "2026-11-25",
+   "venue": "Gauntlet Games",
+   "city": "Victoria",
+   "store": "Gauntlet",
+   "region": "victoria",
+   "sid": 2069
+  },
+  {
    "id": "rb117667342518406036",
    "name": "Colossal Cards Vic Nexus Night",
    "type": "nexus",
