@@ -11,13 +11,13 @@ REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
 UID:rb117686232929200593@van-isle-riftbound
-DTSTAMP:20261127T092902Z
+DTSTAMP:20261127T215001Z
 DTSTART:20261129T010000Z
 DTEND:20261129T040000Z
 SUMMARY:saturday evening nexus night
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Langford\n31 of 32 spots left\
- , checked Nov 27\, 2:29 AM\nFree\nSign up: https://playriftbound.com/en-US
+ , checked Nov 27\, 2:50 PM\nFree\nSign up: https://playriftbound.com/en-US
  /events/117686232929200593
 URL:https://playriftbound.com/en-US/events/117686232929200593
 CATEGORIES:Nexus Nights
@@ -26,13 +26,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117686218318339205@van-isle-riftbound
-DTSTAMP:20261127T092902Z
+DTSTAMP:20261127T215001Z
 DTSTART:20261129T183000Z
 DTEND:20261129T213000Z
 SUMMARY:Sunday morning Nexus "night"
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Nexus Nights\nEverything Games\, Langford\n23 of 24 spots left\
- , checked Nov 27\, 2:29 AM\n$6.00 USD\nSign up: https://playriftbound.com/
+ , checked Nov 27\, 2:50 PM\n$6.00 USD\nSign up: https://playriftbound.com/
  en-US/events/117686218318339205
 URL:https://playriftbound.com/en-US/events/117686218318339205
 CATEGORIES:Nexus Nights
@@ -40,14 +40,29 @@ STATUS:CONFIRMED
 TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
+UID:st298728647017@van-isle-riftbound
+DTSTAMP:20261127T215001Z
+DTSTART:20261213T183000Z
+DTEND:20261213T213000Z
+SUMMARY:Sunday Morning Nexus 'Night'
+LOCATION:Everything Games
+DESCRIPTION:Event\nEverything Games\, Langford\n$6.00 CAD\nFrom the store's
+  own post\, not on PlayRiftbound. Check with the store before you go.\nThe
+  post: https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+URL:https://playriftbound.com/en-US/events?lat=48.4371&lng=-123.3597
+CATEGORIES:Event
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
 UID:rb117096961730592935@van-isle-riftbound
-DTSTAMP:20261127T092902Z
+DTSTAMP:20261127T215001Z
 DTSTART:20261227T183000Z
 DTEND:20261227T213000Z
 SUMMARY:Radiance summoner skirmish
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Summoner Skirmish\nEverything Games\, Langford\n32 of 32 spots 
- left\, checked Nov 27\, 2:29 AM\n$20.00 CAD\nSign up: https://playriftboun
+ left\, checked Nov 27\, 2:50 PM\n$20.00 CAD\nSign up: https://playriftboun
  d.com/en-US/events/117096961730592935
 URL:https://playriftbound.com/en-US/events/117096961730592935
 CATEGORIES:Summoner Skirmish
@@ -56,13 +71,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117533557541460958@van-isle-riftbound
-DTSTAMP:20261127T092902Z
+DTSTAMP:20261127T215001Z
 DTSTART:20270123T010000Z
 DTEND:20270123T040000Z
 SUMMARY:Legacy Pre rift
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Pre-Rift\nEverything Games\, Langford\n21 of 24 spots left\, ch
- ecked Nov 27\, 2:29 AM\n$45.00 CAD\nSign up: https://playriftbound.com/en-
+ ecked Nov 27\, 2:50 PM\n$45.00 CAD\nSign up: https://playriftbound.com/en-
  US/events/117533557541460958
 URL:https://playriftbound.com/en-US/events/117533557541460958
 CATEGORIES:Pre-Rift
@@ -71,13 +86,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117533563518629686@van-isle-riftbound
-DTSTAMP:20261127T092902Z
+DTSTAMP:20261127T215001Z
 DTSTART:20270124T183000Z
 DTEND:20270124T213000Z
 SUMMARY:Legacy Pre rift
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Pre-Rift\nEverything Games\, Langford\n29 of 32 spots left\, ch
- ecked Nov 27\, 2:29 AM\n$45.00 USD\nSign up: https://playriftbound.com/en-
+ ecked Nov 27\, 2:50 PM\n$45.00 USD\nSign up: https://playriftbound.com/en-
  US/events/117533563518629686
 URL:https://playriftbound.com/en-US/events/117533563518629686
 CATEGORIES:Pre-Rift
@@ -86,13 +101,13 @@ TRANSP:OPAQUE
 END:VEVENT
 BEGIN:VEVENT
 UID:rb117533572584004975@van-isle-riftbound
-DTSTAMP:20261127T092902Z
+DTSTAMP:20261127T215001Z
 DTSTART:20270307T183000Z
 DTEND:20270307T213000Z
 SUMMARY:Legacy Nexus cup
 LOCATION:721 Station Ave\, Victoria\, BC V9B 5R5\, Canada
 DESCRIPTION:Event\nEverything Games\, Langford\n30 of 32 spots left\, check
- ed Nov 27\, 2:29 AM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/
+ ed Nov 27\, 2:50 PM\n$20.00 CAD\nSign up: https://playriftbound.com/en-US/
  events/117533572584004975
 URL:https://playriftbound.com/en-US/events/117533572584004975
 CATEGORIES:Event

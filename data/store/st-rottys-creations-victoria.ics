@@ -9,4 +9,79 @@ X-WR-CALDESC:Riftbound events on Vancouver Island. Sign-ups happen on each
  event's own page.
 REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:st113443543340@van-isle-riftbound
+DTSTAMP:20261127T215001Z
+DTSTART:20261202T000000Z
+DTEND:20261202T030000Z
+SUMMARY:Riftbound Casual Nights
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://www.facebook.com/RottysCreations
+URL:https://www.facebook.com/RottysCreations
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st472681259445@van-isle-riftbound
+DTSTAMP:20261127T215001Z
+DTSTART:20261209T000000Z
+DTEND:20261209T030000Z
+SUMMARY:Riftbound Casual Nights
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://www.facebook.com/RottysCreations
+URL:https://www.facebook.com/RottysCreations
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st844937857636@van-isle-riftbound
+DTSTAMP:20261127T215001Z
+DTSTART:20261216T000000Z
+DTEND:20261216T030000Z
+SUMMARY:Riftbound Casual Nights
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://www.facebook.com/RottysCreations
+URL:https://www.facebook.com/RottysCreations
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st820011377186@van-isle-riftbound
+DTSTAMP:20261127T215001Z
+DTSTART:20261223T000000Z
+DTEND:20261223T030000Z
+SUMMARY:Riftbound Casual Nights
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://www.facebook.com/RottysCreations
+URL:https://www.facebook.com/RottysCreations
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+BEGIN:VEVENT
+UID:st889348798199@van-isle-riftbound
+DTSTAMP:20261127T215001Z
+DTSTART:20261230T000000Z
+DTEND:20261230T030000Z
+SUMMARY:Riftbound Casual Nights
+LOCATION:Rotty's Creations
+DESCRIPTION:Open Play\nRotty's Creations\, Victoria\nFrom the store's own p
+ ost\, not on PlayRiftbound. Check with the store before you go.\nThe post:
+  https://www.facebook.com/RottysCreations
+URL:https://www.facebook.com/RottysCreations
+CATEGORIES:Open Play
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
 END:VCALENDAR
