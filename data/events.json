@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-27T21:50:01.050Z",
- "generated_local": "2026-11-27T14:50:01-07:00",
- "window_start": "2026-11-27T07:00:00.000Z",
+ "generated_at": "2026-11-28T08:42:47.239Z",
+ "generated_local": "2026-11-28T01:42:47-07:00",
+ "window_start": "2026-11-28T07:00:00.000Z",
  "anchors": [
   {
    "name": "Victoria",
@@ -161,12 +161,8 @@
  "totals": {
   "fetched": 59,
   "unique": 66,
-  "prev_unique": 59,
+  "prev_unique": 66,
   "recent": [
-   {
-    "d": "2026-11-14",
-    "n": 79
-   },
    {
     "d": "2026-11-15",
     "n": 71
@@ -218,6 +214,10 @@
    {
     "d": "2026-11-27",
     "n": 66
+   },
+   {
+    "d": "2026-11-28",
+    "n": 66
    }
   ]
  },
@@ -253,7 +253,7 @@
    "address": "2770 Leigh Rd, Front Unit # 136, Victoria, BC V9B 4G2, Canada",
    "region": "victoria",
    "cap": 16,
-   "reg": 2,
+   "reg": 3,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -278,7 +278,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 2,
+   "reg": 4,
    "cents": 500,
    "currency": "CAD",
    "updated": null,
@@ -353,7 +353,7 @@
    "address": "721 Station Ave, Victoria, BC V9B 5R5, Canada",
    "region": "victoria",
    "cap": 24,
-   "reg": 1,
+   "reg": 2,
    "cents": 600,
    "currency": "USD",
    "updated": null,
@@ -786,7 +786,7 @@
    "address": "1046 Mason St #4, Victoria, BC V8T 1A3, Canada",
    "region": "victoria",
    "cap": 28,
-   "reg": 6,
+   "reg": 7,
    "cents": 1000,
    "currency": "CAD",
    "updated": null,

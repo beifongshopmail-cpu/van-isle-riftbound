@@ -445,17 +445,6 @@
    "store": "North Park Framing",
    "region": "victoria",
    "sid": 18437
-  },
-  {
-   "id": "rb117482449148410932",
-   "name": "Nexus Night at Gauntlet Games",
-   "type": "nexus",
-   "start": "2026-10-28T18:00:00-07:00",
-   "day": "2026-10-28",
-   "venue": "Gauntlet Games",
-   "store": "Gauntlet",
-   "region": "victoria",
-   "sid": 2069
   }
  ]
 }
