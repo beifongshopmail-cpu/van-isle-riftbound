@@ -1,7 +1,7 @@
 {
  "v": 1,
- "generated_at": "2026-10-11T10:07:29.507Z",
- "hash": "0a4aa282dac7c23c",
+ "generated_at": "2026-11-28T11:57:33.132Z",
+ "hash": "5ec4cabb26c65d78",
  "sources": [
   {
    "id": "hub",
@@ -10,7 +10,7 @@
    "title": "Rules Hub",
    "url": "https://playriftbound.com/en-us/rules-hub/",
    "published": "2026-07-17T00:30:00.000Z",
-   "rev": "T4xYXIZ0qoV31nY2YA0myb",
+   "rev": "axBHTD7zvToV8okxEtJaP3",
    "notice": null
   },
   {
@@ -106,7 +106,12 @@
  ],
  "later": [
   {
-   "title": "[Article] Radiance Patch Notes [RFB_ST0526_030_R001]",
+   "title": "Radiance Ban List Updates (Effective November 23, 2026)",
+   "url": "https://playriftbound.com/en-us/news/announcements/radiance-ban-list-updates-effective-november-23-2026/",
+   "published": "2026-11-13T16:00:00.000Z"
+  },
+  {
+   "title": "Core Rules: Radiance Patch Notes (Effective October 16, 2026)",
    "url": "https://playriftbound.com/en-us/news/announcements/core-rules-radiance-patch-notes-effective-october-16-2026/",
    "published": "2026-10-09T16:00:00.000Z"
   },
@@ -178,9 +183,9 @@
    "source": "hub",
    "set": null,
    "title": "Constructed Format Legality",
-   "html": "<p><i>Last updated: September 18, 2026</i></p><p>All sets currently produced for Riftbound are legal to be played in sanctioned tournaments at your local game store as well as at larger tournaments. Starting in 2028, we intend to introduce rotation of legal sets for play in Standard Constructed (our primary constructed format.)</p><p>The following are banned from play in sanctioned Constructed tournaments:</p><table><tbody><tr><td><h4>Cards</h4><ul><li>Called Shot</li><li>Ekko, Recurrent</li><li>Draven, Vanquisher</li><li>Fight or Flight</li><li>Scrapheap</li><li>Stealthy Pursuer</li><li>Stacked Deck</li></ul></td><td><h4>Battlefields</h4><ul><li>The Arena’s Greatest</li><li>Aspirant’s Climb</li><li>Dreaming Tree</li><li>Obelisk of Power</li><li>Reaver’s Row</li></ul></td></tr></tbody></table>",
+   "html": "<p><i>Last updated: November 23, 2026</i></p><p>All sets currently produced for Riftbound are legal to be played in sanctioned tournaments at your local game store as well as at larger tournaments. Starting in 2028, we intend to introduce rotation of legal sets for play in Standard Constructed (our primary constructed format.)</p><p>The following are banned from play in sanctioned Constructed tournaments:</p><table><tbody><tr><td><h4>Cards</h4><ul><li>Called Shot</li><li>Ekko, Recurrent</li><li>Draven, Vanquisher</li><li>Fight or Flight</li><li>Scrapheap</li><li>Stealthy Pursuer</li><li>Stacked Deck</li><li>Riven, Broken Blade</li><li>Zhonya’s Hourglass</li><li>Stellacorn Herder</li><li>Nocturne, Horrifying</li><li>Rhasa the Sunderer</li><li>Brynhir Thundersong&nbsp;</li><li>Dazzling Aurora</li><li>Baited Hook</li></ul></td><td><h4>Battlefields</h4><ul><li>The Arena’s Greatest</li><li>Aspirant’s Climb</li><li>Dreaming Tree</li><li>Obelisk of Power</li><li>Reaver’s Row</li><li>Star Spring</li><li>Emperor’s Dais</li></ul></td></tr></tbody></table>",
    "seen": "2026-10-10",
-   "changed": "2026-10-10"
+   "changed": "2026-11-28"
   },
   {
    "id": "hub#2v2-constructed-legality",
@@ -188,9 +193,9 @@
    "source": "hub",
    "set": null,
    "title": "2v2 Constructed Legality",
-   "html": "<p><i>Last updated: September 18, 2026</i></p><p>As above, all sets currently produced for Riftbound are legal to be played in sanctioned tournaments.</p><table><tbody><tr><td><h3>Legends</h3><ul><li>Master Yi, Wuju Bladesman</li></ul></td><td><h3>Cards</h3><ul><li>Called Shot</li><li>Ekko, Recurrent</li><li>Draven Vanquisher</li><li>Fight or Flight</li><li>Scrapheap</li><li>Stealthy Pursuer</li><li>Stacked Deck</li></ul></td><td><h3>Battlefields</h3><ul><li>The Arena’s Greatest</li><li>Aspirant’s Climb</li><li>Dreaming Tree</li><li>Obelisk of Power</li><li>Reaver’s Row</li></ul></td></tr></tbody></table>",
+   "html": "<p><i>Last updated: November 23, 2026</i></p><p>As above, all sets currently produced for Riftbound are legal to be played in sanctioned tournaments.</p><table><tbody><tr><td><h3>Legends</h3><ul><li>Master Yi, Wuju Bladesman</li></ul></td><td><h3>Cards</h3><ul><li>Called Shot</li><li>Ekko, Recurrent</li><li>Draven Vanquisher</li><li>Scrapheap</li><li>Stealthy Pursuer</li><li>Stacked Deck</li><li>Riven, Broken Blade</li><li>Zhonya’s Hourglass</li><li>Stellacorn Herder</li><li>Nocturne, Horrifying</li><li>Rhasa the Sunderer</li><li>Brynhir Thundersong&nbsp;</li><li>Dazzling Aurora</li><li>Baited Hook</li></ul></td><td><h3>Battlefields</h3><ul><li>The Arena’s Greatest</li><li>Aspirant’s Climb</li><li>Dreaming Tree</li><li>Obelisk of Power</li><li>Reaver’s Row</li><li>Star Spring</li><li>Emperor’s Dais</li></ul></td></tr></tbody></table>",
    "seen": "2026-10-10",
-   "changed": "2026-10-10"
+   "changed": "2026-11-28"
   },
   {
    "id": "hub#core-rules",
